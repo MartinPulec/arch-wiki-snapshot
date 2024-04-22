@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-zebra-design-disabled vector-feature-custom-font-size-clientpref-disabled vector-feature-client-preferences-disabled vector-feature-typography-survey-disabled vector-toc-available" lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<title>Advanced Linux Sound Architecture - ArchWiki</title>
+<link rel="stylesheet" href="../ArchWikiOffline.css">
+<meta name="ResourceLoaderDynamicStyles" content="">
+<meta name="generator" content="MediaWiki 1.41.1">
+<meta name="referrer" content="no-referrer-when-downgrade">
+<meta name="robots" content="max-image-preview:standard">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, minimum-scale=0.25, maximum-scale=5.0">
+<link rel="icon" href="/favicon.ico">
+<link rel="search" type="application/opensearchdescription+xml" href="/opensearch_desc.php" title="ArchWiki (en)">
+<link rel="EditURI" type="application/rsd+xml" href="https://wiki.archlinux.org/api.php?action=rsd">
+<link rel="license" href="https://www.gnu.org/copyleft/fdl.html">
+<link rel="alternate" type="application/atom+xml" title="ArchWiki Atom feed" href="/index.php?title=Special:RecentChanges&amp;feed=atom">
+</head>
+<body class="skin-vector skin-vector-search-vue mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-0 ns-subject page-Advanced_Linux_Sound_Architecture rootpage-Advanced_Linux_Sound_Architecture skin-vector-2022 action-view skin--responsive">
+<a class="mw-jump-link" href="#bodyContent">Jump to content</a>
+<div class="vector-header-container">
+	</div>
+<div class="mw-page-container">
+	<div class="mw-page-container-inner">
+		<div class="vector-main-menu-container">
+		</div>
+	<input type="checkbox" id="vector-toc-collapsed-checkbox" class="vector-menu-checkbox">
+			<nav id="mw-panel-toc" role="navigation" aria-label="Contents" data-event-name="ui.sidebar-toc" class="mw-table-of-contents-container vector-toc-landmark vector-sticky-pinned-container">
+				<div id="vector-toc-pinned-container" class="vector-pinned-container">
+				<div id="vector-toc" class="vector-toc vector-pinnable-element">
+	<div class="vector-pinnable-header vector-toc-pinnable-header vector-pinnable-header-pinned" data-feature-name="toc-pinned" data-pinnable-element-id="vector-toc">
+	<h2 class="vector-pinnable-header-label">Contents</h2>
+	<button class="vector-pinnable-header-toggle-button vector-pinnable-header-pin-button" data-event-name="pinnable-header.vector-toc.pin">move to sidebar</button>
+	<button class="vector-pinnable-header-toggle-button vector-pinnable-header-unpin-button" data-event-name="pinnable-header.vector-toc.unpin">hide</button>
+</div>
+
+
+	<ul class="vector-toc-contents" id="mw-panel-toc-list">
+		<li id="toc-mw-content-text" class="vector-toc-list-item vector-toc-level-1">
+			<a href="#" class="vector-toc-link">
+				<div class="vector-toc-text">Beginning</div>
+			</a>
+		</li>
+		<li id="toc-Installation" class="vector-toc-list-item vector-toc-level-1">
+		<a class="vector-toc-link" href="#Installation">
+			<div class="vector-toc-text">
+			<span class="vector-toc-numb">1</span>Installation</div>
+		</a>
+		
+			<button aria-controls="toc-Installation-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon vector-icon--x-small mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle Installation subsection</span>
+			</button>
+		
+		<ul id="toc-Installation-sublist" class="vector-toc-list">
+			<li id="toc-User_privileges" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#User_privileges">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">1.1</span>User privileges</div>
+			</a>
+			
+			<ul id="toc-User_privileges-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-ALSA_utilities" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#ALSA_utilities">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">1.2</span>ALSA utilities</div>
+			</a>
+			
+			<ul id="toc-ALSA_utilities-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-OSS_compatibility" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#OSS_compatibility">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">1.3</span>OSS compatibility</div>
+			</a>
+			
+			<ul id="toc-OSS_compatibility-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-PulseAudio_compatibility" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#PulseAudio_compatibility">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">1.4</span>PulseAudio compatibility</div>
+			</a>
+			
+			<ul id="toc-PulseAudio_compatibility-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-ALSA_and_systemd" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#ALSA_and_systemd">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">1.5</span>ALSA and systemd</div>
+			</a>
+			
+			<ul id="toc-ALSA_and_systemd-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-ALSA_firmware" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#ALSA_firmware">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">1.6</span>ALSA firmware</div>
+			</a>
+			
+			<ul id="toc-ALSA_firmware-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+	</li>
+	<li id="toc-Unmuting_the_channels" class="vector-toc-list-item vector-toc-level-1">
+		<a class="vector-toc-link" href="#Unmuting_the_channels">
+			<div class="vector-toc-text">
+			<span class="vector-toc-numb">2</span>Unmuting the channels</div>
+		</a>
+		
+			<button aria-controls="toc-Unmuting_the_channels-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon vector-icon--x-small mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle Unmuting the channels subsection</span>
+			</button>
+		
+		<ul id="toc-Unmuting_the_channels-sublist" class="vector-toc-list">
+			<li id="toc-Unmute_with_amixer" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Unmute_with_amixer">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">2.1</span>Unmute with amixer</div>
+			</a>
+			
+			<ul id="toc-Unmute_with_amixer-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Unmute_with_alsamixer" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Unmute_with_alsamixer">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">2.2</span>Unmute with alsamixer</div>
+			</a>
+			
+			<ul id="toc-Unmute_with_alsamixer-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Unmute_5.1/7.1_sound" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Unmute_5.1/7.1_sound">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">2.3</span>Unmute 5.1/7.1 sound</div>
+			</a>
+			
+			<ul id="toc-Unmute_5.1/7.1_sound-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Enable_the_microphone" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Enable_the_microphone">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">2.4</span>Enable the microphone</div>
+			</a>
+			
+			<ul id="toc-Enable_the_microphone-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Test_your_changes" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Test_your_changes">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">2.5</span>Test your changes</div>
+			</a>
+			
+			<ul id="toc-Test_your_changes-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Additional_notes" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Additional_notes">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">2.6</span>Additional notes</div>
+			</a>
+			
+			<ul id="toc-Additional_notes-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+	</li>
+	<li id="toc-Configuration" class="vector-toc-list-item vector-toc-level-1">
+		<a class="vector-toc-link" href="#Configuration">
+			<div class="vector-toc-text">
+			<span class="vector-toc-numb">3</span>Configuration</div>
+		</a>
+		
+			<button aria-controls="toc-Configuration-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon vector-icon--x-small mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle Configuration subsection</span>
+			</button>
+		
+		<ul id="toc-Configuration-sublist" class="vector-toc-list">
+			<li id="toc-Basic_syntax" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Basic_syntax">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.1</span>Basic syntax</div>
+			</a>
+			
+			<ul id="toc-Basic_syntax-sublist" class="vector-toc-list">
+				<li id="toc-Assignments_and_Separators" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Assignments_and_Separators">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.1.1</span>Assignments and Separators</div>
+			</a>
+			
+			<ul id="toc-Assignments_and_Separators-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Data_types" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Data_types">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.1.2</span>Data types</div>
+			</a>
+			
+			<ul id="toc-Data_types-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Operation_modes" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Operation_modes">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.1.3</span>Operation modes</div>
+			</a>
+			
+			<ul id="toc-Operation_modes-sublist" class="vector-toc-list">
+				<li id='toc-An_example_of_setting_default_device_using_"defaults"_node' class="vector-toc-list-item vector-toc-level-4">
+			<a class="vector-toc-link" href='#An_example_of_setting_default_device_using_"defaults"_node'>
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.1.3.1</span>An example of setting default device using "defaults" node</div>
+			</a>
+			
+			<ul id='toc-An_example_of_setting_default_device_using_"defaults"_node-sublist' class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+		</li>
+		<li id="toc-Nesting" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Nesting">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.1.4</span>Nesting</div>
+			</a>
+			
+			<ul id="toc-Nesting-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Including_configuration_files" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Including_configuration_files">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.1.5</span>Including configuration files</div>
+			</a>
+			
+			<ul id="toc-Including_configuration_files-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+		</li>
+		<li id="toc-Set_the_default_sound_card" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Set_the_default_sound_card">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.2</span>Set the default sound card</div>
+			</a>
+			
+			<ul id="toc-Set_the_default_sound_card-sublist" class="vector-toc-list">
+				<li id="toc-Setting_the_default_sound_card_via_defaults_node" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Setting_the_default_sound_card_via_defaults_node">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.2.1</span>Setting the default sound card via defaults node</div>
+			</a>
+			
+			<ul id="toc-Setting_the_default_sound_card_via_defaults_node-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Configuring_the_index_order_via_kernel_module_options" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Configuring_the_index_order_via_kernel_module_options">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.2.2</span>Configuring the index order via kernel module options</div>
+			</a>
+			
+			<ul id="toc-Configuring_the_index_order_via_kernel_module_options-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Select_the_default_PCM_via_environment_variable" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Select_the_default_PCM_via_environment_variable">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.2.3</span>Select the default PCM via environment variable</div>
+			</a>
+			
+			<ul id="toc-Select_the_default_PCM_via_environment_variable-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Alternative_method" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Alternative_method">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.2.4</span>Alternative method</div>
+			</a>
+			
+			<ul id="toc-Alternative_method-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+		</li>
+		<li id="toc-Verifying_correct_sound_modules_are_loaded" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Verifying_correct_sound_modules_are_loaded">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.3</span>Verifying correct sound modules are loaded</div>
+			</a>
+			
+			<ul id="toc-Verifying_correct_sound_modules_are_loaded-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Getting_S/PDIF_output" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Getting_S/PDIF_output">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.4</span>Getting S/PDIF output</div>
+			</a>
+			
+			<ul id="toc-Getting_S/PDIF_output-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Equalizer" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Equalizer">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.5</span>Equalizer</div>
+			</a>
+			
+			<ul id="toc-Equalizer-sublist" class="vector-toc-list">
+				<li id="toc-ALSAEqual_system-wide" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#ALSAEqual_system-wide">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.5.1</span>ALSAEqual system-wide</div>
+			</a>
+			
+			<ul id="toc-ALSAEqual_system-wide-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-ALSAEqual_for_specific_outputs_only" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#ALSAEqual_for_specific_outputs_only">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.5.2</span>ALSAEqual for specific outputs only</div>
+			</a>
+			
+			<ul id="toc-ALSAEqual_for_specific_outputs_only-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Managing_ALSAEqual_states" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Managing_ALSAEqual_states">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.5.3</span>Managing ALSAEqual states</div>
+			</a>
+			
+			<ul id="toc-Managing_ALSAEqual_states-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Using_mbeq" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Using_mbeq">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.5.4</span>Using mbeq</div>
+			</a>
+			
+			<ul id="toc-Using_mbeq-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+		</li>
+	</ul>
+	</li>
+	<li id="toc-High_quality_resampling" class="vector-toc-list-item vector-toc-level-1">
+		<a class="vector-toc-link" href="#High_quality_resampling">
+			<div class="vector-toc-text">
+			<span class="vector-toc-numb">4</span>High quality resampling</div>
+		</a>
+		
+		<ul id="toc-High_quality_resampling-sublist" class="vector-toc-list">
+		</ul>
+	</li>
+	<li id="toc-Upmixing/downmixing" class="vector-toc-list-item vector-toc-level-1">
+		<a class="vector-toc-link" href="#Upmixing/downmixing">
+			<div class="vector-toc-text">
+			<span class="vector-toc-numb">5</span>Upmixing/downmixing</div>
+		</a>
+		
+			<button aria-controls="toc-Upmixing/downmixing-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon vector-icon--x-small mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle Upmixing/downmixing subsection</span>
+			</button>
+		
+		<ul id="toc-Upmixing/downmixing-sublist" class="vector-toc-list">
+			<li id="toc-Upmixing" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Upmixing">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">5.1</span>Upmixing</div>
+			</a>
+			
+			<ul id="toc-Upmixing-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Downmixing" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Downmixing">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">5.2</span>Downmixing</div>
+			</a>
+			
+			<ul id="toc-Downmixing-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+	</li>
+	<li id="toc-Dmix" class="vector-toc-list-item vector-toc-level-1">
+		<a class="vector-toc-link" href="#Dmix">
+			<div class="vector-toc-text">
+			<span class="vector-toc-numb">6</span>Dmix</div>
+		</a>
+		
+		<ul id="toc-Dmix-sublist" class="vector-toc-list">
+		</ul>
+	</li>
+	<li id="toc-Tips_and_tricks" class="vector-toc-list-item vector-toc-level-1">
+		<a class="vector-toc-link" href="#Tips_and_tricks">
+			<div class="vector-toc-text">
+			<span class="vector-toc-numb">7</span>Tips and tricks</div>
+		</a>
+		
+			<button aria-controls="toc-Tips_and_tricks-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon vector-icon--x-small mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle Tips and tricks subsection</span>
+			</button>
+		
+		<ul id="toc-Tips_and_tricks-sublist" class="vector-toc-list">
+			<li id="toc-Disabling_auto_mute_on_startup" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Disabling_auto_mute_on_startup">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">7.1</span>Disabling auto mute on startup</div>
+			</a>
+			
+			<ul id="toc-Disabling_auto_mute_on_startup-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Hot-plugging_a_USB_sound_card" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Hot-plugging_a_USB_sound_card">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">7.2</span>Hot-plugging a USB sound card</div>
+			</a>
+			
+			<ul id="toc-Hot-plugging_a_USB_sound_card-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Simultaneous_output" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Simultaneous_output">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">7.3</span>Simultaneous output</div>
+			</a>
+			
+			<ul id="toc-Simultaneous_output-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Keyboard_volume_control" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Keyboard_volume_control">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">7.4</span>Keyboard volume control</div>
+			</a>
+			
+			<ul id="toc-Keyboard_volume_control-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Virtual_sound_device_using_snd-aloop" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Virtual_sound_device_using_snd-aloop">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">7.5</span>Virtual sound device using snd-aloop</div>
+			</a>
+			
+			<ul id="toc-Virtual_sound_device_using_snd-aloop-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Debugging_ALSA" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Debugging_ALSA">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">7.6</span>Debugging ALSA</div>
+			</a>
+			
+			<ul id="toc-Debugging_ALSA-sublist" class="vector-toc-list">
+				<li id="toc-Retrieving_the_driver_state" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Retrieving_the_driver_state">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">7.6.1</span>Retrieving the driver state</div>
+			</a>
+			
+			<ul id="toc-Retrieving_the_driver_state-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Reconfiguring_input/output_ports" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Reconfiguring_input/output_ports">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">7.6.2</span>Reconfiguring input/output ports</div>
+			</a>
+			
+			<ul id="toc-Reconfiguring_input/output_ports-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Resetting_codecs" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Resetting_codecs">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">7.6.3</span>Resetting codecs</div>
+			</a>
+			
+			<ul id="toc-Resetting_codecs-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+		</li>
+		<li id="toc-Correctly_detect_microphone_plugged_in_a_4-pin_3.5mm_(TRRS)_jack" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Correctly_detect_microphone_plugged_in_a_4-pin_3.5mm_(TRRS)_jack">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">7.7</span>Correctly detect microphone plugged in a 4-pin 3.5mm (TRRS) jack</div>
+			</a>
+			
+			<ul id="toc-Correctly_detect_microphone_plugged_in_a_4-pin_3.5mm_(TRRS)_jack-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+	</li>
+	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1">
+		<a class="vector-toc-link" href="#See_also">
+			<div class="vector-toc-text">
+			<span class="vector-toc-numb">8</span>See also</div>
+		</a>
+		
+		<ul id="toc-See_also-sublist" class="vector-toc-list">
+		</ul>
+	</li>
+</ul>
+</div>
+
+				</div>
+	</nav>
+		
+		<div class="mw-content-container">
+			<main id="content" class="mw-body" role="main" style="margin: 0">
+				<header class="mw-body-header vector-page-titlebar">
+					<label id="vector-toc-collapsed-button" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet vector-button-flush-left cdx-button--icon-only" for="vector-toc-collapsed-checkbox" role="button" aria-controls="vector-toc" tabindex="0" title="Table of Contents">
+						<span class="vector-icon mw-ui-icon-wikimedia-listBullet"></span>
+						<span>Toggle the table of contents</span>
+					</label>
+					<nav role="navigation" aria-label="Contents" class="vector-toc-landmark">
+						
+<div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left">
+	<input type="checkbox" id="vector-page-titlebar-toc-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-vector-page-titlebar-toc" class="vector-dropdown-checkbox " aria-label="Toggle the table of contents">
+	<label id="vector-page-titlebar-toc-label" for="vector-page-titlebar-toc-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only " aria-hidden="true"><span class="vector-icon mw-ui-icon-listBullet mw-ui-icon-wikimedia-listBullet"></span>
+
+<span class="vector-dropdown-label-text">Toggle the table of contents</span>
+	</label>
+	<div class="vector-dropdown-content">
+
+
+							<div id="vector-page-titlebar-toc-unpinned-container" class="vector-unpinned-container">
+			</div>
+		
+	</div>
+</div>
+
+					</nav>
+					<h1 id="firstHeading" class="firstHeading mw-first-heading"><span class="mw-page-title-main">Advanced Linux Sound Architecture</span></h1>
+							
+<div id="p-lang-btn" class="vector-dropdown mw-portlet mw-portlet-lang">
+	<input type="checkbox" id="p-lang-btn-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-p-lang-btn" class="vector-dropdown-checkbox mw-interlanguage-selector" aria-label="Go to an article in another language. Available in 5 languages">
+	<label id="p-lang-btn-label" for="p-lang-btn-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive mw-portlet-lang-heading-5" aria-hidden="true"><span class="vector-icon mw-ui-icon-language-progressive mw-ui-icon-wikimedia-language-progressive"></span>
+
+<span class="vector-dropdown-label-text">5 languages</span>
+	</label>
+	<div class="vector-dropdown-content">
+
+		<div class="vector-menu-content">
+			
+			<ul class="vector-menu-content-list">
+				
+				<li class="interlanguage-link interwiki-de mw-list-item"><a href="https://wiki.archlinux.de/title/Advanced_Linux_Sound_Architecture" title="Advanced Linux Sound Architecture – Deutsch" lang="de" hreflang="de" class="interlanguage-link-target"><span>Deutsch</span></a></li>
+<li class="interlanguage-link interwiki-es mw-list-item"><a href="../es/Advanced_Linux_Sound_Architecture.html" title="Advanced Linux Sound Architecture – español" lang="es" hreflang="es" class="interlanguage-link-target"><span>Español</span></a></li>
+<li class="interlanguage-link interwiki-fr mw-list-item"><a href="../fr/Advanced_Linux_Sound_Architecture.html" title="Advanced Linux Sound Architecture – français" lang="fr" hreflang="fr" class="interlanguage-link-target"><span>Français</span></a></li>
+<li class="interlanguage-link interwiki-ja mw-list-item"><a href="https://wiki.archlinux.jp/index.php/Advanced_Linux_Sound_Architecture" title="Advanced Linux Sound Architecture – 日本語" lang="ja" hreflang="ja" class="interlanguage-link-target"><span>日本語</span></a></li>
+<li class="interlanguage-link interwiki-zh-hans mw-list-item"><a href="https://wiki.archlinuxcn.org/wiki/Advanced_Linux_Sound_Architecture" title="Advanced Linux Sound Architecture – 中文（简体）" lang="zh-Hans" hreflang="zh-Hans" class="interlanguage-link-target"><span>中文（简体）</span></a></li>
+			</ul>
+			
+		</div>
+
+	</div>
+</div>
+</header>
+				<div class="vector-column-end">
+					<nav class="vector-page-tools-landmark vector-sticky-pinned-container" aria-label="Page tools">
+						<div id="vector-page-tools-pinned-container" class="vector-pinned-container">
+			
+						</div>
+	</nav>
+				</div>
+				<div id="bodyContent" class="vector-body" aria-labelledby="firstHeading" data-mw-ve-target-container>
+					<div class="vector-body-before-content">
+							<div class="mw-indicators">
+		</div>
+
+						<div id="siteSub" class="noprint">From ArchWiki</div>
+					</div>
+					<div id="contentSub"><div id="mw-content-subtitle"></div></div>
+					
+					
+					<div id="mw-content-text" class="mw-body-content mw-content-ltr" lang="en" dir="ltr">
+<div class="mw-parser-output">
+<div class="archwiki-template-meta-related-articles">
+<p>Related articles</p>
+<ul>
+<li><a href="../en/Advanced_Linux_Sound_Architecture/Configuration_examples.html" class="mw-redirect" title="ALSA configuration examples">ALSA configuration examples</a></li>
+<li><a href="../en/Advanced_Linux_Sound_Architecture/Troubleshooting.html" class="mw-redirect" title="ALSA troubleshooting">ALSA troubleshooting</a></li>
+<li><a href="../en/Sound_system.html" title="Sound system">Sound system</a></li>
+<li><a href="../en/PC_speaker.html" title="PC speaker">PC speaker</a></li>
+<li><a href="../en/PulseAudio.html" title="PulseAudio">PulseAudio</a></li>
+<li><a href="../en/Open_Sound_System.html" title="Open Sound System">Open Sound System</a></li>
+<li><a href="../en/List_of_applications/Multimedia.html#Volume_control" title="List of applications/Multimedia">List of applications/Multimedia#Volume control</a></li>
+</ul>
+</div>
+<p>The <a href="https://en.wikipedia.org/wiki/Advanced_Linux_Sound_Architecture" class="extiw" title="wikipedia:Advanced Linux Sound Architecture">Advanced Linux Sound Architecture</a> (<b>ALSA</b>) provides kernel driven sound card drivers. It replaces the original <a href="../en/Open_Sound_System.html" title="Open Sound System">Open Sound System</a> (OSS).
+</p>
+<p>Besides the sound device drivers, ALSA also bundles a user space driven library for application developers. They can then use those ALSA drivers for high level API development. This enables direct (kernel) interaction with sound devices through ALSA libraries.
+</p>
+<meta property="mw:PageProp/toc">
+<h2><span class="mw-headline" id="Installation">Installation</span></h2>
+<p>ALSA is a set of built-in Linux kernel modules. Therefore, manual installation is not necessary.
+</p>
+<p><a href="../en/Udev.html" title="Udev">udev</a> will automatically detect your hardware and select needed drivers at boot time, therefore, your sound should already be working. However, your sound may be initially muted. If it is, see <a href="#Unmuting_the_channels">#Unmuting the channels</a>.
+</p>
+<h3><span class="mw-headline" id="User_privileges">User privileges</span></h3>
+<p>Usually, local users have permission to play audio and change mixer levels.
+</p>
+<p>To allow remote users to use ALSA, you need to <a href="../en/Users_and_groups.html#Group_management" title="Users and groups">add</a> those users to the <code>audio</code> group; however, this is not recommended by default (see note below).
+</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> Adding users to the <code>audio</code> group allows direct access to devices. Keep in mind that this allows applications to exclusively reserve output devices. This may break software mixing or fast-user-switching on multi-seat systems. Therefore, adding a user to the <code>audio</code> group is <b>not</b> recommended by default unless you specifically need to <a rel="nofollow" class="external autonumber" href="https://wiki.ubuntu.com/Audio/TheAudioGroup">[1]</a>.</div>
+<h3><span class="mw-headline" id="ALSA_utilities">ALSA utilities</span></h3>
+<p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=alsa-utils">alsa-utils</a></span> package. This contains (among other utilities) the <span class="plainlinks archwiki-template-man" title="$ man 1 alsamixer"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/alsamixer.1">alsamixer(1)</a></span> and <span class="plainlinks archwiki-template-man" title="$ man 1 amixer"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/amixer.1">amixer(1)</a></span> utilities. <i>amixer</i> is a shell command to change audio settings, while <i>alsamixer</i> provides a more intuitive <a href="https://en.wikipedia.org/wiki/Ncurses" class="extiw" title="wikipedia:Ncurses">ncurses</a> based interface for audio device configuration.
+</p>
+<p>If you need <a href="#High_quality_resampling">high quality resampling</a>, install the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=alsa-plugins">alsa-plugins</a></span> package to enable <a href="#Upmixing/downmixing">upmixing/downmixing</a> and other advanced features.
+</p>
+<h3><span class="mw-headline" id="OSS_compatibility">OSS compatibility</span></h3>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> This is important if your application complains about missing <code>/dev/dsp</code> or <code>/dev/snd/seq</code>.</div>
+<p>ALSA has some ability to intercept <a href="../en/Open_Sound_System.html" class="mw-redirect" title="OSS">OSS</a> calls and re-route them through ALSA instead. This emulation layer is useful e.g. for legacy applications which try to open <code>/dev/dsp</code> and write sound data to them directly. Without OSS or the emulation library, <code>/dev/dsp</code> will be missing, and the application will not produce any sound.
+</p>
+<p>If you want <a href="../en/Open_Sound_System.html" class="mw-redirect" title="OSS">OSS</a> applications to work with <a href="#Dmix">dmix</a>, install the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=alsa-oss">alsa-oss</a></span> package as well. Then load the <code>snd-seq-oss</code>, <code>snd-pcm-oss</code> and <code>snd-mixer-oss</code> <a href="../en/Kernel_module.html" class="mw-redirect" title="Kernel modules">kernel modules</a> to enable OSS emulation.
+</p>
+<h3><span class="mw-headline" id="PulseAudio_compatibility">PulseAudio compatibility</span></h3>
+<p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/apulse/">apulse</a></span><sup><small>AUR</small></sup> lets you use ALSA for applications that support only <a href="../en/PulseAudio.html" title="PulseAudio">PulseAudio</a> for sound. Usage is simply
+</p>
+<pre>$ apulse <i>application</i>
+</pre>
+<h3><span class="mw-headline" id="ALSA_and_systemd">ALSA and systemd</span></h3>
+<p>The <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=alsa-utils">alsa-utils</a></span> package comes with <a href="../en/Systemd.html" title="Systemd">systemd</a> unit configuration files <code>alsa-restore.service</code> and <code>alsa-state.service</code> by default.
+</p>
+<p>These are automatically installed and activated during installation (via package provided symlink to <a href="../en/Systemd.html#Targets" title="Systemd">sound.target</a>). The options are as follows:
+</p>
+<ul>
+<li>
+<code>alsa-restore.service</code> reads <code>/var/lib/alsa/asound.state</code> on boot and writes updated values on shutdown, provided <code>/etc/alsa/state-daemon.conf</code> does not exist. As <code>/etc/alsa/state-daemon.conf</code> is not created without a conscious action of the user, it is the default method.</li>
+<li>
+<code>alsa-state.service</code> (Re-)Starts alsactl in daemon mode to continuously keep track of, and persist, volume changes, under the condition that the user has consciously created <code>/etc/alsa/state-daemon.conf</code>.</li>
+</ul>
+<p>Evidently, both methods are mutually exclusive. You can decide for one of the two approaches depending on your requirements. To edit these units, see <a href="../en/Systemd.html#Editing_provided_units" title="Systemd">systemd#Editing provided units</a>. You can check their status using <a href="../en/Systemd.html#Basic_systemctl_usage" class="mw-redirect" title="Systemctl">systemctl</a>.
+</p>
+<p>For further information, see <span class="plainlinks archwiki-template-man" title="$ man 1 alsactl"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/alsactl.1">alsactl(1)</a></span>.
+</p>
+<h3><span class="mw-headline" id="ALSA_firmware">ALSA firmware</span></h3>
+<p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sof-firmware">sof-firmware</a></span> is required for some newer laptop models (mainly since 2019) because they implement their drivers with firmware provided by the <a rel="nofollow" class="external text" href="https://www.sofproject.org/">Sound Open Firmware</a> project. Checking the <a href="../en/Systemd/Journal.html" class="mw-redirect" title="Journal">journal</a> will provide messages about the missing firmware (see <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?id=275577">BBS#275577</a>).
+</p>
+<p>The <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=alsa-firmware">alsa-firmware</a></span> package contains firmware that may be required for certain sound cards (e.g. Creative SB0400 Audigy2).
+</p>
+<h2><span class="mw-headline" id="Unmuting_the_channels">Unmuting the channels</span></h2>
+<p>By default, ALSA has all channels muted. Those have to be unmuted manually.
+</p>
+<h3><span class="mw-headline" id="Unmute_with_amixer">Unmute with amixer</span></h3>
+<p>Unmuting the sound card's master volume can be done by using <i>amixer</i>:
+</p>
+<pre>$ amixer sset Master unmute
+$ amixer sset Speaker unmute
+$ amixer sset Headphone unmute
+</pre>
+<h3><span class="mw-headline" id="Unmute_with_alsamixer">Unmute with alsamixer</span></h3>
+<p>Unmuting the sound card can be done using <i>alsamixer</i>:
+</p>
+<pre>$ alsamixer
+</pre>
+<p>The <code>MM</code> label below a channel indicates that the channel is muted, and <code>OO</code> indicates that it is open.
+</p>
+<p>Scroll to the <code>Master</code> and <code>PCM</code> channels with the <code>Left</code> and <code>Right</code> keys and unmute them by pressing the <code>m</code> key.
+</p>
+<p>Use the <code>Up</code> key to increase the volume and obtain a value of <code>0</code> dB gain. The gain can be found in the upper left next to the <code>Item:</code> field.
+</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> If gain is set above 0 dB, audible distortion can become present.</div>
+<h3>
+<span id="Unmute_5.1.2F7.1_sound"></span><span class="mw-headline" id="Unmute_5.1/7.1_sound">Unmute 5.1/7.1 sound</span>
+</h3>
+<p>To get full <a href="https://en.wikipedia.org/wiki/5.1_surround_sound" class="extiw" title="wikipedia:5.1 surround sound">5.1</a> or <a href="https://en.wikipedia.org/wiki/7.1_surround_sound" class="extiw" title="wikipedia:7.1 surround sound">7.1 surround sound</a>, you will likely need to unmute other channels such as <code>Front</code>, <code>Surround</code>, <code>Center</code>, <code>LFE</code> (subwoofer) and <code>Side</code>. (Those are channel names with <a href="https://en.wikipedia.org/wiki/Intel_High_Definition_Audio" class="extiw" title="wikipedia:Intel High Definition Audio">Intel HD Audio</a>; they may vary with different hardware)
+</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> Please take note that this will not automatically upmix stereo sources (like most music). In order to accomplish that, see <a href="#Upmixing/downmixing">#Upmixing/downmixing</a>.</div>
+<h3><span class="mw-headline" id="Enable_the_microphone">Enable the microphone</span></h3>
+<p>To enable your microphone, switch to the Capture tab with <code>F4</code> and enable a channel with <code>Space</code>. See <a href="../en/Advanced_Linux_Sound_Architecture/Troubleshooting.html#Microphone" title="Advanced Linux Sound Architecture/Troubleshooting">/Troubleshooting#Microphone</a> if microphone does not work.
+</p>
+<h3><span class="mw-headline" id="Test_your_changes">Test your changes</span></h3>
+<p>Next, test to see if sound works:
+</p>
+<pre>$ speaker-test -c 2
+</pre>
+<p>Change <code>-c</code> to fit your speaker setup. Use <code>-c 8</code> for 7.1, for instance:
+</p>
+<pre>$ speaker-test -c 8
+</pre>
+<p>If audio is being outputted to the wrong device, try manually specifying it with the argument <code>-D</code>.
+</p>
+<pre>$ speaker-test -D default:PCH -c 8
+</pre>
+<p><code>-D</code> accepts PCM channel names as values, which can be retrieved by running the following:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ aplay -L | grep :CARD</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">default:CARD=PCH  # 'default:PCH' is the PCM channel name for -D
+sysdefault:CARD=PCH
+front:CARD=PCH,DEV=0
+surround21:CARD=PCH,DEV=0
+surround40:CARD=PCH,DEV=0
+surround41:CARD=PCH,DEV=0
+surround50:CARD=PCH,DEV=0
+surround51:CARD=PCH,DEV=0
+surround71:CARD=PCH,DEV=0</pre>
+<p>If that does not work, consult the <a href="#Configuration">#Configuration</a> section or the <a href="../en/Advanced_Linux_Sound_Architecture/Troubleshooting.html" title="Advanced Linux Sound Architecture/Troubleshooting">/Troubleshooting</a> page.
+</p>
+<h3><span class="mw-headline" id="Additional_notes">Additional notes</span></h3>
+<ul><li>If your system has more than one soundcard, then you can switch between them by pressing <code>F6</code>
+</li></ul>
+<ul><li>Some cards need to have digital output muted or disabled in order to hear analog sound. For the Soundblaster Audigy LS, mute the channel labeled <code>IEC958</code>.</li></ul>
+<ul><li>Some machines, like the Thinkpad T61, have a <code>Speaker</code> channel which must be unmuted and adjusted as well.</li></ul>
+<ul><li>Some machines, like the Dell E6400, may also require the <code>Front</code> and <code>Headphone</code> channels to be unmuted and adjusted.</li></ul>
+<ul><li>If your volume adjustments seem to be lost after you reboot, try running <i>alsamixer</i> as root.</li></ul>
+<h2><span class="mw-headline" id="Configuration">Configuration</span></h2>
+<p>The system configuration file is <code>/etc/asound.conf</code>, and the per-user configuration file is <code>~/.asoundrc</code>.
+</p>
+<h3><span class="mw-headline" id="Basic_syntax">Basic syntax</span></h3>
+<p>ALSA configuration files follow a simple syntax consisting of hierarchical value to parameter (key) assignments. The syntax is also shown in <a rel="nofollow" class="external autonumber" href="https://www.alsa-project.org/alsa-doc/alsa-lib/conf.html">[2]</a>.
+</p>
+<h4><span class="mw-headline" id="Assignments_and_Separators">Assignments and Separators</span></h4>
+<p>Assignments define a value of a given key. There are different assignment types and styles available.
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">Simple assignment</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># This is a comment. Everything after the '#' symbol to the end of the line will be ignored by ALSA.
+key = value # Equal signs are usually left out, since space can also be used as a separator.
+
+key value # Equivalent to the example above.</pre>
+<p>Separators are used to indicate the start and end of an assignment, but using commas or whitespace is also possible.
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">Separators</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># The following three assignments are equivalent.
+key value0; key valueN;
+key value0, key valueN,
+key value0 key valueN
+
+key
+value0
+	key
+valueN</pre>
+<p>Compound assignments use braces as separators.
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">Compound assignment</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">key {	subkey0 value0;
+	subkeyN valueN;	}
+
+key.subkey0 value0; # Equivalent to the example above.
+key.subkeyN valueN;</pre>
+<p>For easier reading, it is recommended to use first style for definitions including more than three keys.
+</p>
+<p>Array definition is an alternative syntax to define compound statements. It uses brackets as separators. The keys are automatically generated as numbers, starting with zero.
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">Single array</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">key [	"value0";
+	"value1";	
+	"value<i>N</i>";	]
+
+key.0 "value0"; # Equivalent to the example above.
+key.1 "value1";
+key.<i>N</i> "value<i>N</i>";</pre>
+<p>Everything depends on user preferences when it comes to different styles of configuration; however, one should avoid mixing different styles. Further information on basic configuration can be found in <a rel="nofollow" class="external autonumber" href="https://www.volkerschatz.com/noise/alsa.html#basicconf">[3]</a>.
+</p>
+<h4><span class="mw-headline" id="Data_types">Data types</span></h4>
+<p>ALSA uses different data types for parameter values, which must be set in the users respective configuration file. Some keys accept multiple data types, while most do not. A list of configuration options and their respective type requirements for PCM plugins can be found in <a rel="nofollow" class="external autonumber" href="https://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html">[4]</a>.
+</p>
+<h4><span class="mw-headline" id="Operation_modes">Operation modes</span></h4>
+<p>There are different operation modes for parsing nodes, the default mode is merge and create. If operation mode is either merge/create or merge, type checking is done. Only same type assignments can be merged, so strings cannot be merged with integers. Trying to define a simple assignment in default operation mode to a compound (and vice versa) will also not work.
+</p>
+<p>Prefixes of operation modes:
+</p>
+<ul>
+<li>"+" -- merge and create</li>
+<li>"-" -- merge</li>
+<li>"?" -- do not override</li>
+<li>"!" -- override</li>
+</ul>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">Operation modes</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># Merge/create - If a node does not exist, it is created. If it does exist and types match,
+# subkeyN is merged into key.
+key.subkeyN valueN;
+
+# Merge/create - Equivalent to above
+key.+subkeyN valueN;
+
+# Merge - Node key.subkeyN must already exist and must have same data type
+key.-subkeyN valueN;
+
+# No override - Ignore new assignment if key.subkeyN node already exists
+key.?subkeyN valueN;
+
+# Override - Removes subkeyN and all keys below it, then creates node key.subkeyN
+key.!subkeyN valueN;</pre>
+<p>Using override operation mode, when done correctly, is usually safe; however, one should bear in mind that there might be other necessary keys in a node for proper functioning.
+</p>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning:</strong>  Overriding pcm node itself will most definitely make alsa unusable, since every plugin definition will be deleted. Therefore, <b>do not use !pcm.key</b> unless you are making a configuration from scratch.</div>
+<h5>
+<span id="An_example_of_setting_default_device_using_.22defaults.22_node"></span><span class="mw-headline" id='An_example_of_setting_default_device_using_"defaults"_node'>An example of setting default device using "defaults" node</span>
+</h5>
+<p>Assuming that "defaults" node is set in <code>/usr/share/alsa/alsa.conf</code>, where "defaults.pcm.card" and its "ctl" counterpart have assignment values "0" (type integer), user wants to set default pcm and control device to (third) sound card "2" or "SB" for an Azalia sound card.
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">Defaults node</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">defaults.ctl.card 2; # Sets default device and control to third card (counting begins with 0).
+defaults.pcm.card 2; # This does not change the data type.
+
+defaults.ctl.+card 2; # Equivalent to above.
+defaults.pcm.+card 2;
+
+defaults.ctl.-card 2; # Same effect on a default setup, however if defaults node was removed or
+defaults.pcm.-card 2; # type has been changed, merge operation mode will result in error.
+
+defaults.pcm.?card 2; # This does nothing, since this assignment already exists.
+defaults.ctl.?card 2;
+
+defaults.pcm.!card "SB"; # The override operation mode is necessary here, because of
+defaults.ctl.!card "SB"; # different value types.</pre>
+<p>Using double quotes here automatically sets values data type to string, so in the above example, setting defaults.pcm.!card "2" would result in retaining last default device, in this case card 0. Using double quotes for strings is not mandatory as long as no special characters are used, which ideally should never be the case. This may be irrelevant in other assignments.
+</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong>  From a configuration point of view, those are not equivalent to setting a compound "default" pcm device, since most users specify addressing type in there also, which actually may be the same, but the assignment itself still differs. Also, defaults.pcm.card is referred to multiple times in alsa configuration files, usually as a fallback assignment, where different environment variables take precedence.</div>
+<h4><span class="mw-headline" id="Nesting">Nesting</span></h4>
+<p>Sometimes, it may be useful and even easier to read using nesting in configuration.
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">Nesting PCM plugins</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">pcm.azalia {	type hw; card 0	}
+pcm.!default {	type plug; slave.pcm "azalia"	}
+
+# is equivalent to
+
+pcm.!default {	type plug; slave.pcm {	type hw; card 0;	}	}
+
+# which is also equivalent to
+
+pcm.!default.type plug;
+pcm.default.slave.pcm.type hw;
+pcm.default.slave.pcm.card 0;</pre>
+<h4><span class="mw-headline" id="Including_configuration_files">Including configuration files</span></h4>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">Include other configuration files</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">&lt;/path/to/configuration-file&gt; # Include a configuration file
+&lt;confdir:/path/to/configuration-file&gt; # Reference to a global configuration directory</pre>
+<h3><span class="mw-headline" id="Set_the_default_sound_card">Set the default sound card</span></h3>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong> An explanation of ALSA related terminology "card", "device" (a "card" is not a "device"), "subdevice", and more, can be found on <a href="https://en.wikipedia.org/wiki/Advanced_Linux_Sound_Architecture#Concepts" class="extiw" title="wikipedia:Advanced Linux Sound Architecture">Wikipedia:Advanced Linux Sound Architecture#Concepts</a>. Wikipedia also has many articles on related terms, such as <a href="https://en.wikipedia.org/wiki/PCM" class="extiw" title="wikipedia:PCM">PCM</a>, and <a href="https://en.wikipedia.org/wiki/S/PDIF" class="extiw" title="wikipedia:S/PDIF">S/PDIF</a>.</div>
+<h4><span class="mw-headline" id="Setting_the_default_sound_card_via_defaults_node">Setting the default sound card via defaults node</span></h4>
+<p>Putting the <a href='#An_example_of_setting_default_device_using_"defaults"_node'>previous example</a> regarding <code>defaults.pcm.card</code> and <code>defaults.pcm.device</code> into practice, assuming we have 2 cards with index 0 and 1 respectively and wish to simply change the default card to index 1, would lead to the following configuration in <code>/etc/asound.conf</code> or the user-specific <code>~/.asoundrc</code> to change both the playback and the mixer control card.
+</p>
+<pre>defaults.pcm.card 1
+defaults.ctl.card 1</pre>
+<h4><span class="mw-headline" id="Configuring_the_index_order_via_kernel_module_options">Configuring the index order via kernel module options</span></h4>
+<p>If your sound card order changes on boot, you can specify their order in any file ending with <code>.conf</code> in <code>/etc/modprobe.d</code> (<code>/etc/modprobe.d/alsa-base.conf</code> is suggested).
+For example, if you want your mia sound card to be #0:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/modprobe.d/alsa-base.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">options snd_mia index=0
+options snd_hda_intel index=1</pre>
+<p>Use <code>$ cat /proc/asound/modules</code> to get the loaded sound modules and their order. This list is usually all that is needed for the loading order. Use <code>$ lsmod | grep snd</code> to get a devices &amp; modules list. This configuration assumes you have one mia sound card using <code>snd_mia</code> and one (e.g. onboard) card using <code>snd_hda_intel</code>.
+</p>
+<p>You can also provide an index of <code>-2</code> to instruct ALSA to never use a card as the primary one. Distributions such as Linux Mint and Ubuntu use the following settings to avoid USB and other "abnormal" drivers from getting index <code>0</code>:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/modprobe.d/alsa-base.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">options bt87x index=-2
+options cx88_alsa index=-2
+options saa7134-alsa index=-2
+options snd-atiixp-modem index=-2
+options snd-intel8x0m index=-2
+options snd-via82xx-modem index=-2
+options snd-usb-caiaq index=-2
+options snd-usb-ua101 index=-2
+options snd-usb-us122l index=-2
+options snd-usb-usx2y index=-2
+options snd-pcsp index=-2
+options snd-usb-audio index=-2</pre>
+<p>These changes require a system reboot.
+</p>
+<p>See also <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?pid=1446773#p1446773">[5]</a>
+</p>
+<h4><span class="mw-headline" id="Select_the_default_PCM_via_environment_variable">Select the default PCM via environment variable</span></h4>
+<p>Probably, it is enough to set ALSA_CARD to the name of the device.  First, get the names with <code>aplay -l</code>, then set ALSA_CARD to the name which comes after the colon and before the bracket; e.g. if you have
+</p>
+<pre>card 1: HDMI [HDA ATI HDMI], device 3: HDMI 0 [HDMI 0]
+</pre>
+<p>then set <code>ALSA_CARD=HDMI</code>.
+</p>
+<p>Other variables are also checked in the default global configuration <code>/usr/share/alsa/alsa.conf</code>. By looking there for constructs of the form <code>vars [ ... ]</code>, the following table emerges:
+</p>
+<table class="wikitable">
+
+<tbody>
+<tr>
+<th style="width: 7.5%;"></th>
+<th>Variable name</th>
+<th>Used by
+</th>
+</tr>
+<tr>
+<td style="background: inherit; color: inherit; vertical-align: middle; text-align: center;">1</td>
+<td>ALSA_CARD</td>
+<td>pcm.default , pcm.hw , pcm.plughw , ctl.sysdefault , ctl.hw ,  rawmidi.default , rawmidi.hw , hwdep.hw
+</td>
+</tr>
+<tr>
+<td style="background: inherit; color: inherit; vertical-align: middle; text-align: center;">2</td>
+<td>ALSA_CTL_CARD</td>
+<td>ctl.sysdefault , ctl.hw
+</td>
+</tr>
+<tr>
+<td style="background: inherit; color: inherit; vertical-align: middle; text-align: center;">3</td>
+<td>ALSA_HWDEP_CARD</td>
+<td>hwdep.default , hwdep.hw
+</td>
+</tr>
+<tr>
+<td style="background: inherit; color: inherit; vertical-align: middle; text-align: center;">4</td>
+<td>ALSA_HWDEP_DEVICE</td>
+<td>hwdep.default , hwdep.hw
+</td>
+</tr>
+<tr>
+<td style="background: inherit; color: inherit; vertical-align: middle; text-align: center;">5</td>
+<td>ALSA_PCM_CARD</td>
+<td>pcm.default , pcm.hw , pcm.plughw
+</td>
+</tr>
+<tr>
+<td style="background: inherit; color: inherit; vertical-align: middle; text-align: center;">6</td>
+<td>ALSA_PCM_DEVICE</td>
+<td>pcm.hw  , pcm.plughw
+</td>
+</tr>
+<tr>
+<td style="background: inherit; color: inherit; vertical-align: middle; text-align: center;">7</td>
+<td>ALSA_RAWMIDI_CARD</td>
+<td>rawmidi.default , rawmidi.hw
+</td>
+</tr>
+<tr>
+<td style="background: inherit; color: inherit; vertical-align: middle; text-align: center;">8</td>
+<td>ALSA_RAWMIDI_DEVICE</td>
+<td>rawmidi.default , rawmidi.hw
+</td>
+</tr>
+</tbody>
+</table>
+<p>Alternatively, you can override the behavior in your own configuration file, preferably the global one (<code>/etc/asound.conf</code>).  Add:
+</p>
+<pre>pcm.!default {
+   type plug
+   slave.pcm {
+       @func getenv
+       vars [ ALSAPCM ]
+       default "hw:Audigy2"
+   }
+}
+</pre>
+<p>In this case as well, replace <code>Audigy2</code> with the name of your device. You can get the names with <code>aplay -l</code> or you can also use PCMs like <b>surround51</b>. But if you need to use the microphone, it is a good idea to select full-duplex PCM as default.
+</p>
+<p>Now, you can select the sound card when starting programs by just changing the environment variable <code>ALSAPCM</code>. It works fine for all program that do not allow to select the card; for the others, ensure you keep the default card.
+For example, assuming you wrote a downmix PCM called <code>mix51to20</code>, you can use it with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mplayer">mplayer</a></span> using the commandline <code>ALSAPCM=mix51to20 mplayer example_6_channel.wav</code>
+</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> Pay attention to default addressing type.</div>
+<h4><span class="mw-headline" id="Alternative_method">Alternative method</span></h4>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong> This process can be partly automated using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/asoundconf/">asoundconf</a></span><sup><small>AUR</small></sup>.</div>
+<p>First, you will have to find out the card and device id that you want to set as the default:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ aplay -l</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">**** List of PLAYBACK Hardware Devices ****
+card 0: Intel [HDA Intel], device 0: CONEXANT Analog [CONEXANT Analog]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: Intel [HDA Intel], device 1: Conexant Digital [Conexant Digital]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 1: JamLab [JamLab], device 0: USB Audio [USB Audio]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 2: Audio [Altec Lansing XT1 - USB Audio], device 0: USB Audio [USB Audio]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0</pre>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning:</strong> Simply setting a <code>type hw</code> as default card is equivalent to addressing hardware directly, which leaves the device unavailable to other applications. This method is only recommended if it is a part of a more sophisticated setup <code>~/.asoundrc</code> or if user deliberately wants to address sound card directly (digital output through <code>eic958</code> or dedicated music server for example).</div>
+<p>For example, the last entry in this list has the card ID 2 and the device ID 0. To set this card as the default, you can either use the system-wide file <code>/etc/asound.conf</code> or the user-specific file <code>~/.asoundrc</code>. You may have to create the file if it does not exist. Then insert the following options with the corresponding card.
+</p>
+<pre>pcm.!default {
+   type hw
+   card 2
+}
+
+ctl.!default {
+   type hw
+   card 2
+}
+</pre>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> For the Asus U32U series it seems that card should be set to 1 for both pcm and ctl.</div>
+<p>In most cases, it is recommended to use sound card names instead of number references. Card names are easier to grasp, and also overcomes the boot order problem. Therefore, the following would be correct for the above example.
+</p>
+<pre>pcm.!default {
+   type hw
+   card Audio
+}
+
+ctl.!default {
+   type hw
+   card Audio
+}
+</pre>
+<p>To get valid ALSA card names, use <i>aplay</i>:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ aplay -l | awk -F \: '/,/{print $2}' | awk '{print $1}' | uniq</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">PCH
+</pre>
+<p>Alternatively, use <i>cat</i>, which might return unused devices:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ cat /proc/asound/card*/id</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">PCH
+ThinkPadEC
+</pre>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> This method could be problematic if your system has several cards of the same (ALSA)name.</div>
+<p>The 'pcm' options affect which card and device will be used for audio playback while the 'ctl' option affects which card is used by control utilities like alsamixer.
+</p>
+<p>The changes should take effect as soon as you (re-)start an application (MPlayer etc.). You can also test with a command like <i>aplay</i>.
+</p>
+<pre>$ aplay -D default:PCH <i>your_favourite_sound.wav</i>
+</pre>
+<p>If you receive an error regarding your asound configuration, check the <a rel="nofollow" class="external text" href="https://www.alsa-project.org/main/index.php/Asoundrc#The_default_plugin">upstream documentation</a> for possible changes to the configuration file format.
+</p>
+<h3><span class="mw-headline" id="Verifying_correct_sound_modules_are_loaded">Verifying correct sound modules are loaded</span></h3>
+<p>You can assume that udev will autodetect your sound properly. You can check this with the command:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ lsmod | grep '^snd' | column -t</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">snd_hda_codec_hdmi     22378   4
+snd_hda_codec_realtek  294191  1
+snd_hda_intel          21738   1
+snd_hda_codec          73739   3  snd_hda_codec_hdmi,snd_hda_codec_realtek,snd_hda_intel
+snd_hwdep              6134    1  snd_hda_codec
+snd_pcm                71032   3  snd_hda_codec_hdmi,snd_hda_intel,snd_hda_codec
+snd_timer              18992   1  snd_pcm
+snd                    55132   9  snd_hda_codec_hdmi,snd_hda_codec_realtek,snd_hda_intel,snd_hda_codec,snd_hwdep,snd_pcm,snd_timer
+snd_page_alloc         7017    2  snd_hda_intel,snd_pcm</pre>
+<p>If the output looks similar, your sound drivers have been successfully autodetected.
+</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> Since <a href="../en/Udev.html" title="Udev">udev</a> ≥ 171, the OSS emulation modules (<code>snd_seq_oss, snd_pcm_oss, snd_mixer_oss</code>) are not loaded by default: <a href="../en/Kernel_module.html#Manual_module_handling" class="mw-redirect" title="Kernel modules">Load them manually</a>, if they are needed.</div>
+<p>You might also want to check the directory <code>/dev/snd/</code> for the right device files:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ ls -l /dev/snd</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">total 0
+crw-rw----  1 root audio 116,  0 Apr  8 14:17 controlC0
+crw-rw----  1 root audio 116, 32 Apr  8 14:17 controlC1
+crw-rw----  1 root audio 116, 24 Apr  8 14:17 pcmC0D0c
+crw-rw----  1 root audio 116, 16 Apr  8 14:17 pcmC0D0p
+crw-rw----  1 root audio 116, 25 Apr  8 14:17 pcmC0D1c
+crw-rw----  1 root audio 116, 56 Apr  8 14:17 pcmC1D0c
+crw-rw----  1 root audio 116, 48 Apr  8 14:17 pcmC1D0p
+crw-rw----  1 root audio 116,  1 Apr  8 14:17 seq
+crw-rw----  1 root audio 116, 33 Apr  8 14:17 timer</pre>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> If requesting help on IRC or the forums, please post the output of the above commands, if requested.</div>
+<p>If you have at least the devices <b>controlC0</b> and <b>pcmC0D0p</b> or similar, then your sound modules have been detected and loaded properly.
+</p>
+<p>If this is not the case, your sound modules have not been detected properly. To solve this, you can try loading the modules manually:
+</p>
+<ul>
+<li>Locate the module for your sound card: <a rel="nofollow" class="external text" href="https://www.alsa-project.org/main/index.php/Matrix:Main">ALSA Soundcard Matrix</a> The module will be prefixed with 'snd-' (for example: <code>snd-via82xx</code>).</li>
+<li>
+<a href="../en/Kernel_module.html#Manual_module_handling" class="mw-redirect" title="Kernel modules">Load the module</a>.</li>
+<li>Check for the device files in <code>/dev/snd</code> (see above) and/or try if <code>alsamixer</code> or <code>amixer</code> have reasonable output.</li>
+<li>Configure <code>snd-<i>name-of-module</i></code> and <code>snd-pcm-oss</code> to <a href="../en/Kernel_module.html#systemd" title="Kernel module">load at boot</a>.</li>
+</ul>
+<h3>
+<span id="Getting_S.2FPDIF_output"></span><span class="mw-headline" id="Getting_S/PDIF_output">Getting S/PDIF output</span>
+</h3>
+<p><a href="https://en.wikipedia.org/wiki/S/PDIF" class="extiw" title="wikipedia:S/PDIF">S/PDIF</a> is a digital audio interface often used to connect a computer to a digital amplifier (such as a home theatre with 5.1/7.1 surround sound).
+</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> With some soundcards this disables analog sound output  (eg. Sound Blaster Audigy 2).</div>
+<p>Depending on what <a href="../en/Command-line_shell.html" class="mw-redirect" title="Shell">shell</a> you use, add the following line to your shell's configuration file:
+</p>
+<pre>$ amixer -c 0 cset name='IEC958 Playback Switch' on
+</pre>
+<p>You can see the name of your card's digital output with:
+</p>
+<pre>$ amixer scontrols
+</pre>
+<h3><span class="mw-headline" id="Equalizer">Equalizer</span></h3>
+<h4><span class="mw-headline" id="ALSAEqual_system-wide">ALSAEqual system-wide</span></h4>
+<p>Install the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/alsaequal/">alsaequal</a></span><sup><small>AUR</small></sup> package.
+</p>
+<p>After installing the package, add the following to your ALSA configuration file:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/asound.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">ctl.equal {
+    type equal;
+}
+
+pcm.plugequal {
+    type equal;
+    # Normally, the equalizer feeds into dmix so that audio
+    # from multiple applications can be played simultaneously:
+    slave.pcm "plug:dmix";
+    # If you want to feed directly into a device, specify it instead of dmix:
+    #slave.pcm "plughw:0,0";
+}
+
+# Configuring pcm.!default will make the equalizer your default sink
+pcm.!default {
+# If you do not want the equalizer to be your default,
+# give it a different name, like pcm.equal commented below
+# Then you can choose it as the output device by addressing
+# it in individual apps, for example mpg123 -a equal 06.Back_In_Black.mp3
+# pcm.equal {
+    type plug;
+    slave.pcm plugequal;
+}</pre>
+<p>To change your equalizer settings, run
+</p>
+<pre>$ alsamixer -D equal
+</pre>
+<p>Note that the equalizer configuration is different for each user (until not specified else). It is saved in <code>~/.alsaequal.bin</code>.
+So if you want to use ALSAEqual with <a href="../en/Music_Player_Daemon.html" class="mw-redirect" title="Mpd">mpd</a> or another software running under different user, you can configure it using
+</p>
+<pre>$ su mpd -c 'alsamixer -D equal'
+</pre>
+<p>or for example, you can make a symlink to your <code>.alsaequal.bin</code> in their home directory.
+</p>
+<h4><span class="mw-headline" id="ALSAEqual_for_specific_outputs_only">ALSAEqual for specific outputs only</span></h4>
+<p>If you wish to apply an equalizer to a specific output device only (for example your speakers connected to the S/PDIF output, but not your headphones connected to the headphone jack), but also want be able to output from multiple applications and to both output devices simultaneously, you need to create two <code>dmix</code> devices that feed into their respective devices (<code>slave.pcm</code>) directly. The following works for stereo output and maintains a regular stereo input, applying the equalizer to the S/PDIF output only.
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/asound.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">#
+#  (capture.pcm)  &lt;-- dnsoop
+#        |
+# !default                               --&gt; dmixa
+#        |                               |
+#  (playback.pcm) --&gt; stereo2quad ==&gt; quad
+#                                        |
+#                                        --&gt; softvol --&gt; plugequal --&gt; dmixd 
+#
+
+# dmix for analog output
+pcm.dmixa {
+  type dmix
+  ipc_key 1024
+  ipc_perm 0666
+  slave.pcm "hw:PCH,0"
+  slave {
+    period_time 0
+    period_size 1024
+    buffer_size 4096
+    channels 2
+  }
+  bindings {
+    0 0
+    1 1
+  }
+}
+
+# dmix for digital output
+pcm.dmixd {
+  type dmix
+  ipc_key 2048
+  ipc_perm 0666
+  slave.pcm "hw:PCH,1"
+  slave {
+    period_time 0
+    period_size 1024
+    buffer_size 4096
+    channels 2
+  }
+  bindings {
+    0 0
+    1 1
+  }
+}
+
+# equalizer with controls
+pcm.plugequal {
+  type equal
+  slave {
+    pcm "plug:dmixd"
+  }
+}
+ctl.equal {
+ type equal
+}
+
+# Volume control for S/PDIF
+pcm.softvol {
+    type softvol
+    slave.pcm "plug:plugequal"
+    control {
+        name "S/PDIF"
+    }
+}
+
+# multi:
+# "a" (analog)  -&gt; dmix,
+# "d" (digital) -&gt; softvol -&gt; plugequal -&gt; dmix
+pcm.quad {
+    type multi
+    slaves {
+      a.pcm "dmixa"
+      a.channels 2
+      d.pcm "plug:softvol" # detour via softvol and equalizer
+      d.channels 2
+    }
+    bindings {
+      0 { slave a; channel 0; }
+      1 { slave a; channel 1; }
+      2 { slave d; channel 0; }
+      3 { slave d; channel 1; }
+    }
+}
+
+# stereo to quad
+pcm.stereo2quad {
+  type route
+  slave.pcm "quad"
+  ttable [
+    [ 1 0 1 0 ]
+    [ 0 1 0 1 ]
+  ]
+}
+
+# playback to stereo to quad, capture as usual
+pcm.!default {
+  type asym
+  playback.pcm "plug:stereo2quad"
+  capture.pcm "plug:dnsoop"
+}</pre>
+<h4><span class="mw-headline" id="Managing_ALSAEqual_states">Managing ALSAEqual states</span></h4>
+<p>Install the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/alsaequal-mgr/">alsaequal-mgr</a></span><sup><small>AUR</small></sup> package.
+</p>
+<p>Configure the equalizer as usual with
+</p>
+<pre>$ alsamixer -D equal
+</pre>
+<p>When you are satisfied with the state, you may give it a name (<i>foo</i> in this example) and save it:
+</p>
+<pre>$ alsaequal-mgr save <i>foo</i>
+</pre>
+<p>The state "foo" can then be restored at a later time with
+</p>
+<pre>$ alsaequal-mgr load <i>foo</i>
+</pre>
+<p>This, however, only restores <code>~/.alsaequal.bin</code>. You then have to update the equalizer by <code>alsamixer -D equal</code>.
+</p>
+<p>You can thus create different equalizer states for games, movies, music genres, VoIP apps, etc. and reload them as necessary.
+</p>
+<p>See the <a rel="nofollow" class="external text" href="https://xyne.dev/projects/alsaequal-mgr/">project page</a> and the help message for more options.
+</p>
+<h4><span class="mw-headline" id="Using_mbeq">Using mbeq</span></h4>
+<p>mbeq is a fairly typical multi band graphical equalizer. <a rel="nofollow" class="external autonumber" href="https://github.com/swh/ladspa/blob/b0c0b9261819bc9bc9d9f392b49ff177285cc0f9/mbeq_1197.xml#L45-L48">[6]</a>
+</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> This method requires the use of a <a href="https://en.wikipedia.org/wiki/LADSPA" class="extiw" title="wikipedia:LADSPA">LADSPA</a> plugin which might be CPU intensive during playback. In addition, this was made with stereophonic sound (e.g. headphones) in mind.</div>
+<p>Install the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=alsa-plugins">alsa-plugins</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=ladspa">ladspa</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=swh-plugins">swh-plugins</a></span> packages if you do not already have them.
+</p>
+<p>If you have not already created either an <code>~/.asoundrc</code> or a <code>/etc/asound.conf</code> file, then create either one and insert the following:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/asound.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">pcm.eq {
+    type ladspa
+
+    # The output from the EQ can either go direct to a hardware device
+    # (if you have a hardware mixer, e.g. SBLive/Audigy) or it can go
+    # to the software mixer shown here.
+    #slave.pcm "plughw:0,0"
+    slave.pcm "plug:dmix"
+
+    # Sometimes, you may need to specify the path to the plugins,
+    # especially if you have just installed them.  Once you have logged
+    # out/restarted, this should not be necessary, but if you get errors
+    # about being unable to find plugins, try uncommenting this.
+    #path "/usr/lib/ladspa"
+
+    plugins [
+    {
+        label mbeq
+        id 1197
+        input {
+            # The following setting is just an example, edit to your own taste:
+            # bands: 50hz, 100hz, 156hz, 220hz, 311hz, 440hz, 622hz, 880hz, 1250hz, 1750hz, 25000hz,
+            # 50000hz, 10000hz, 20000hz
+            controls [ -5 -5 -5 -5 -5 -10 -20 -15 -10 -10 -10 -10 -10 -3 -2 ]
+            }
+        }
+    ]
+}
+
+# Redirect the default device to go via the EQ - you may want to do
+# this last, once you are sure everything is working.  Otherwise, all
+# your audio programs will break/crash if something has gone wrong.
+pcm.!default {
+    type plug
+    slave.pcm "eq"
+}
+
+# Redirect the OSS emulation through the EQ too (when programs are running through "aoss")
+pcm.dsp0 {
+    type plug
+    slave.pcm "eq"
+}</pre>
+<h2><span class="mw-headline" id="High_quality_resampling">High quality resampling</span></h2>
+<p>When software mixing is enabled, ALSA is forced to resample everything to the same frequency (48 kHz by default when supported). By default, it will try to use the <i>speexrate</i> converter to do so, and fallback to low-quality linear interpolation if it is not available<a rel="nofollow" class="external autonumber" href="https://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=src/pcm/pcm_rate.c;h=2eb4b1b33933dec878d0f25ad118869adac95767;hb=HEAD#l1278">[7]</a>.
+Thus, if you are getting poor sound quality due to bad resampling, the problem can be solved by simply installing the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=alsa-plugins">alsa-plugins</a></span> package.
+</p>
+<p>For even higher quality resampling, you can change the default rate converter to <code>speexrate_medium</code> or <code>speexrate_best</code>. Both perform well enough that in practice it does not matter which one you choose, so using the best converter is usually not worth the extra CPU cycles it requires.
+</p>
+<p>To change the default converter, place the following contents in your <code>~/.asoundrc</code> or <code>/etc/asound.conf</code>:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/asound.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">defaults.pcm.rate_converter "speexrate_medium"
+</pre>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> 
+<ul>
+<li>It is also possible to use <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=libsamplerate">libsamplerate</a></span> converters, which are only about half as fast as the <i>speexrate</i> converters but do not achieve much higher quality. See <a href="../en/Talk:Advanced_Linux_Sound_Architecture.html#On_high_quality_resampling" title="Talk:Advanced Linux Sound Architecture">discussion</a>.</li>
+<li>It is also possible to use lavcrate<a rel="nofollow" class="external autonumber" href="https://github.com/alsa-project/alsa-plugins/blob/86d695c5d6ba028a3c01758a3b398312408ee0cf/doc/lavrate.txt">[8]</a> resamplers that use <a href="../en/FFmpeg.html" title="FFmpeg">FFmpeg</a>. With filter sizes of lavcrate_faster:4 lavcrate_fast:8 lavcrate:16 lavcrate_high:32 lavcrate_higher:64. With the last 2 options being equal to <a href="../en/Kodi.html" title="Kodi">Kodi</a> low and medium quality resamplers respectively.</li>
+<li>Some applications (like MPlayer and its forks) do their own resampling by default because some ALSA drivers have incorrect delay reporting when resampling is enabled (hence leading to AV desynchronization), so changing this setting will not have any effect unless you configure them to use ALSA resampling.</li>
+</ul>
+</div>
+<h2>
+<span id="Upmixing.2Fdownmixing"></span><span class="mw-headline" id="Upmixing/downmixing">Upmixing/downmixing</span>
+</h2>
+<h3><span class="mw-headline" id="Upmixing">Upmixing</span></h3>
+<p>In order for stereo sources like music to be able to saturate a 5.1 or 7.1 sound system, you need to use upmixing. In darker days, this used to be tricky and error prone, but nowadays, plugins exist to easily take care of this task. We will use the <a rel="nofollow" class="external text" href="https://github.com/alsa-project/alsa-plugins/blob/master/doc/upmix.txt">upmix</a> plugin, included in the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=alsa-plugins">alsa-plugins</a></span> package.
+</p>
+<p>Then add the following to your ALSA configuration file of choice (either <code>/etc/asound.conf</code> or <code>~/.asoundrc</code>):
+</p>
+<pre>pcm.upmix71 {
+   type upmix
+   slave.pcm "surround71"
+   delay 15
+   channels 8
+}
+</pre>
+<p>You can easily change this example for 7.1 upmixing to 5.1 or 4.0.
+</p>
+<p>The following example adds a new PCM channel that you can use for upmixing. If you want all sound sources to go through this channel, add it as a default below the previous definition like so:
+</p>
+<pre>pcm.!default "plug:upmix71"
+</pre>
+<p>The plugin automatically allows multiple sources to play through it without problems so setting is as a default is actually a safe choice.
+If this is not working, you have to setup your own dmixer for the upmixing PCM like this:
+</p>
+<pre>pcm.dmix6 {
+   type asym
+   playback.pcm {
+       type dmix
+       ipc_key 567829
+       slave {
+           pcm "hw:0,0"
+           channels 6
+       }
+   }
+}
+</pre>
+<p>and use "dmix6" instead of "surround71".
+If you experience skipping or distorted sound, consider increasing the buffer_size (to 32768, for example) or use a <a href="#High_quality_resampling">high quality resampler</a>.
+</p>
+<h3><span class="mw-headline" id="Downmixing">Downmixing</span></h3>
+<p>If you want to downmix sources to stereo because you, for instance, want to watch a movie with 5.1 sound on a stereo system, use the <code>vdownmix</code> plugin, included in the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=alsa-plugins">alsa-plugins</a></span> package.
+</p>
+<p>Again, in your configuration file, add this:
+</p>
+<pre>pcm.!surround51 {
+   type vdownmix
+   slave.pcm "default"
+}
+pcm.!surround40 {
+   type vdownmix
+   slave.pcm "default"
+}
+</pre>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> This might not be enough to make downmixing working; see <a rel="nofollow" class="external autonumber" href="https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=541786">[9]</a>. So, you might also need to add <code>pcm.!default "plug:surround51"</code> or <code>pcm.!default "plug:surround40"</code>. Only one <code>vdownmix</code> plug can be used; if you have 7.1 channels, you will need to use <code>surround71</code> instead the configuration above. A good example, which includes a configuration that makes both <code>vdownmix</code> and <code>dmix</code> working, can be found in <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=167275">[10]</a>.</div>
+<h2><span class="mw-headline" id="Dmix">Dmix</span></h2>
+<p>Mixing enables multiple applications to output sound at the same time. Most discrete sound cards support hardware mixing, which is enabled by default if available. Integrated motherboard sound cards (such as Intel HD Audio), usually do not support hardware mixing. On such cards, software mixing is done by an ALSA plugin called <code>dmix</code>. This feature is enabled automatically if hardware mixing is unavailable.
+</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> Dmix is enabled by default for soundcards which do not support hardware mixing. Dmix is not enabled by default for digital output (S/PDIF) and will require the configuration snippet below.</div>
+<p>To manually enable dmix, add the following to your ALSA configuration file:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/asound.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">pcm.dsp {
+    type plug
+    slave.pcm "dmix"
+}</pre>
+<h2><span class="mw-headline" id="Tips_and_tricks">Tips and tricks</span></h2>
+<h3><span class="mw-headline" id="Disabling_auto_mute_on_startup">Disabling auto mute on startup</span></h3>
+<p><i>Auto-Mute Mode</i> can be configured on startup with <code>amixer</code>. For example, to disable it:
+</p>
+<pre># amixer -c 0 sset "Auto-Mute Mode" Disabled
+</pre>
+<p>Alternatively, the graphical interface can be utilized through <code>alsamixer</code>. In order to save any modifications, use:
+</p>
+<pre># alsactl store
+</pre>
+<p>or
+</p>
+<pre># alsactl daemon
+</pre>
+<p>See <a href="#ALSA_and_systemd">ALSA and Systemd</a>
+</p>
+<h3><span class="mw-headline" id="Hot-plugging_a_USB_sound_card">Hot-plugging a USB sound card</span></h3>
+<p>See <a rel="nofollow" class="external text" href="https://alsa.opensrc.org/Udev">Writing Udev rules for ALSA</a>.
+</p>
+<h3><span class="mw-headline" id="Simultaneous_output">Simultaneous output</span></h3>
+<p>You might want to play music via external speakers connected via mini jack and internal speakers simultaneously. This can be done by unmuting <b>Auto-Mute</b> item using <code>alsamixer</code> or <code>amixer</code>:
+</p>
+<pre>$ amixer sset "Auto-Mute" unmute
+</pre>
+<p>and then unmuting other required items, such as <b>Headphones</b>, <b>Speaker</b>, <b>Bass Speaker</b>...
+</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> If you have a crackling sound through headphones connector (mini-jack) after, see <a href="../en/Advanced_Linux_Sound_Architecture/Troubleshooting.html#Crackling_sound_through_mini-jack_(headphones_connector)" title="Advanced Linux Sound Architecture/Troubleshooting">/Troubleshooting#Crackling sound through mini-jack (headphones connector)</a>.</div>
+<h3><span class="mw-headline" id="Keyboard_volume_control">Keyboard volume control</span></h3>
+<p><a href="../en/Keyboard_input.html" title="Keyboard input">Map</a> the following commands to your volume keys: <code>XF86AudioRaiseVolume</code>, <code>XF86AudioLowerVolume</code>, <code>XF86AudioMute</code>.
+</p>
+<p>To raise the volume:
+</p>
+<pre>amixer set Master 5%+
+</pre>
+<p>To lower the volume:
+</p>
+<pre>amixer set Master 5%-
+</pre>
+<p>To toggle mute/unmute of the volume:
+</p>
+<pre>amixer set Master toggle
+</pre>
+<h3><span class="mw-headline" id="Virtual_sound_device_using_snd-aloop">Virtual sound device using snd-aloop</span></h3>
+<p>You might want a jack alternative to create a virtual recording or play device in order to mix different sources, using the snd-aloop module:
+</p>
+<pre>modprobe snd-aloop
+</pre>
+<p>List your new virtual devices using:
+</p>
+<pre>aplay -l
+</pre>
+<p>now you can for example using ffmpeg:
+</p>
+<pre>ffmpeg -f alsa -i hw:1,1,0 -f alsa -i hw:1,1,1 -filter_complex amerge output.mp3
+</pre>
+<p>In the hw:R,W,N phrase, R is your virtual card device number. W should be set to 1 for recording devices, or 0 for playing. N is your sub device. You can use all the virtual devices available and play/stop using  applications like mplayer:
+</p>
+<pre>mplayer -ao alsa:device=hw=1,0,0 fileA
+mplayer -ao alsa:device=hw=1,0,1 fileB
+</pre>
+<p>Another thing you could do with this approach is using <a href="../en/Festival.html" title="Festival">festival</a> to generate a voice into a recording stream using a script like this:
+</p>
+<pre>#!/bin/sh
+echo "$1" | iconv -f utf-8 -t iso-8859-1 | text2wave  &gt; "_tmp_.wav"
+mplayer -ao alsa:device=hw=2,0,0 "_tmp.wav"
+rm "_tmp.wav"
+</pre>
+<h3><span class="mw-headline" id="Debugging_ALSA">Debugging ALSA</span></h3>
+<h4><span class="mw-headline" id="Retrieving_the_driver_state">Retrieving the driver state</span></h4>
+<p>The <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=alsa-utils">alsa-utils</a></span> package also contains the <code>alsa-info.sh</code> command, which can be used to gather detailed data on the ALSA driver and user-space state.
+</p>
+<p>See <a rel="nofollow" class="external text" href="https://alsa-project.org/main/index.php/Bug_Tracking">ALSA bug tracking</a> for more info.
+</p>
+<h4>
+<span id="Reconfiguring_input.2Foutput_ports"></span><span class="mw-headline" id="Reconfiguring_input/output_ports">Reconfiguring input/output ports</span>
+</h4>
+<p>The <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=alsa-tools">alsa-tools</a></span> package contains the <code>hdajackretask</code> tool, which can be used (on Intel HDA cards) to reconfigure the sound card input/output ports; for instance, to turn a microphone jack into a headphone jack.
+</p>
+<h4><span class="mw-headline" id="Resetting_codecs">Resetting codecs</span></h4>
+<p>The ALSA driver can fully reconfigure attached codecs (the parts of the sound system that actually process audio streams), by doing:
+</p>
+<pre># echo 1 &gt; /sys/class/sound/<i>card</i>/reconfig
+</pre>
+<p>Before doing this, all processes using the ALSA driver (such as <a href="../en/PulseAudio.html#Running" title="PulseAudio">Pulseaudio</a> or <a href="../en/JACK_Audio_Connection_Kit.html" class="mw-redirect" title="JACK">JACK</a>) must be stopped.
+</p>
+<h3>
+<span id="Correctly_detect_microphone_plugged_in_a_4-pin_3.5mm_.28TRRS.29_jack"></span><span class="mw-headline" id="Correctly_detect_microphone_plugged_in_a_4-pin_3.5mm_(TRRS)_jack">Correctly detect microphone plugged in a 4-pin 3.5mm (TRRS) jack</span>
+</h3>
+<p>On some modern laptops, you may have a combined 3.5mm headset jack, instead of two separated ones, which may not be correctly detected by default. To make ALSA correctly detect plug-in status on your 3.5mm jack, you can put the following line into your <code>/etc/modprobe.d/alsa-base.conf</code>:
+</p>
+<pre>options snd_hda_intel index=0 model=<i>your_model_setting</i>
+</pre>
+<p>For a complete list of options to put in <code><i>your_model_setting</i></code>, see <a rel="nofollow" class="external text" href="https://docs.kernel.org/sound/hd-audio/models.html">HD-Audio Codec-Specific Models</a> or its source located at <code>/usr/lib/modules/$(uname -r)/build/Documentation/sound/hd-audio/models.rst</code> (provided by the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-docs">linux-docs</a></span> package). A common model is <code>dell-headset-multi</code>, even if the hardware is not from Dell.
+</p>
+<h2><span class="mw-headline" id="See_also">See also</span></h2>
+<ul>
+<li><a rel="nofollow" class="external text" href="https://www.alsa-project.org/">ALSA wiki</a></li>
+<li><a rel="nofollow" class="external text" href="https://www.alsa-project.org/main/index.php/Asoundrc">Asoundrc</a></li>
+<li><a rel="nofollow" class="external text" href="https://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html">ALSA plugins documentation</a></li>
+<li><a rel="nofollow" class="external text" href="https://alsa.opensrc.org/">Unofficial ALSA wiki</a></li>
+<li><a rel="nofollow" class="external text" href="https://www.mjmwired.net/kernel/Documentation/sound/alsa/ALSA-Configuration.txt">Advanced ALSA module configuration</a></li>
+<li><a rel="nofollow" class="external text" href="https://www.volkerschatz.com/noise/alsa.html">A close look at ALSA: ALSA concept introduction</a></li>
+<li><a rel="nofollow" class="external text" href="http://www.sabi.co.uk/Notes/linuxSoundALSA.html">Linux ALSA sound notes</a></li>
+</ul>
+</div>
+</div>
+					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
+<a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Sound.html" title="Category:Sound">Sound</a></li></ul>
+</div></div>
+				</div>
+			</main>
+			
+		</div>
+		<div class="mw-footer-container">
+			
+<footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
+	<ul id="footer-info">
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Advanced_Linux_Sound_Architecture&amp;oldid=799083">https://wiki.archlinux.org/index.php?title=Advanced_Linux_Sound_Architecture&amp;oldid=799083</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 1 February 2024, at 17:58.</li>
+	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
+<br>
+</ul>
+
+	<ul id="footer-places">
+	<li id="footer-places-privacy"><a href="https://terms.archlinux.org/docs/privacy-policy/">Privacy policy</a></li>
+	<li id="footer-places-about"><a href="../en/ArchWiki:About.html">About ArchWiki</a></li>
+	<li id="footer-places-disclaimers"><a href="../en/ArchWiki:General_disclaimer.html">Disclaimers</a></li>
+</ul>
+
+	<ul id="footer-icons" class="noprint">
+	<li id="footer-copyrightico"><a href="https://www.gnu.org/copyleft/fdl.html"><img src="/resources/assets/licenses/gnu-fdl.png" alt="GNU Free Documentation License 1.3 or later" width="88" height="31" loading="lazy"></a></li>
+	<li id="footer-poweredbyico"><img src="/resources/assets/poweredby_mediawiki_88x31.png" srcset="/resources/assets/poweredby_mediawiki_132x47.png 1.5x, /resources/assets/poweredby_mediawiki_176x62.png 2x" width="88" height="31" loading="lazy"></li>
+</ul>
+
+</footer>
+
+		</div>
+	</div> 
+</div> 
+<div class="vector-settings" id="p-dock-bottom">
+	<ul>
+		<li>
+		
+		<button class="cdx-button cdx-button--icon-only vector-limited-width-toggle" id=""><span class="vector-icon mw-ui-icon-fullScreen mw-ui-icon-wikimedia-fullScreen"></span>
+
+<span>Toggle limited content width</span>
+</button>
+</li>
+	</ul>
+</div>
+</body>
+</html>
