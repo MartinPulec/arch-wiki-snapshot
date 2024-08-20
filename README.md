@@ -6,5 +6,3 @@ Creation:
 ```
 mksquashfs html/ arch-wiki.squashfs -comp xz
 ```
-
-**TODO**: do the squashfs automatically with CI

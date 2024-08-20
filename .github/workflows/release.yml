@@ -19,10 +19,12 @@ jobs:
        tag_name: ${{ github.ref }}
        release_name: Release ${{ github.ref }}
        body: Auto generated release
-       draft: true
+       draft: false
        prerelease: false
    - name: Build
-     run: mksquashfs html/ arch-wiki.squashfs -comp xz
+     run: |
+       sudo apt install squashfs-tools
+       mksquashfs html/ arch-wiki.squashfs -comp xz
    - name: Upload Assets to Release with a wildcard
      uses: csexton/release-asset-action@v3
      with:
