@@ -1,0 +1,31 @@
+name: Build and relase
+
+on:
+ push:
+   tags:
+     - '2*'
+
+jobs:
+ build:
+   runs-on: ubuntu-latest
+   steps:
+   - uses: actions/checkout@v1
+   - name: Create Release
+     id: create_release
+     uses: actions/create-release@v1
+     env:
+       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+     with:
+       tag_name: ${{ github.ref }}
+       release_name: Release ${{ github.ref }}
+       body: Auto generated release
+       draft: true
+       prerelease: false
+   - name: Build
+     run: mksquashfs html/ arch-wiki.squashfs -comp xz
+   - name: Upload Assets to Release with a wildcard
+     uses: csexton/release-asset-action@v3
+     with:
+       pattern: "arch-wiki.squashfs"
+       github-token: ${{ secrets.GITHUB_TOKEN }}
+       release-url: ${{ steps.create_release.outputs.upload_url }}
