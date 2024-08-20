@@ -283,15 +283,10 @@
 <li><a href="../en/Domain_name_resolution.html" title="Domain name resolution">Domain name resolution</a></li>
 </ul>
 </div>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-clear.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs language, wiki syntax or style improvements. See <a href="../en/Help:Style.html" title="Help:Style">Help:Style</a> for reference.</b></p>
-<div>
-<b>Reason:</b> Numerous style and content issues. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:BIND.html">Talk:BIND</a>)</div>
-</div>
 <p><a rel="nofollow" class="external text" href="https://www.isc.org/downloads/bind/">BIND</a> (or named) is the most widely used Domain Name System (DNS) server.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> The organization developing BIND is serving security notices to paying customers up to four days before Linux distributions or the general public.<a rel="nofollow" class="external autonumber" href="https://kb.isc.org/article/AA-00861/0/ISC-Software-Defect-and-Security-Vulnerability-Disclosure-Policy.html">[1]</a><sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2023-09-16 ⓘ]</sup>
+<strong>Note:</strong> The organization developing BIND is serving security notices to paying customers up to four days before Linux distributions or the general public.<a rel="nofollow" class="external autonumber" href="https://kb.isc.org//docs/aa-00861">[1]</a>
 </div>
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Installation">Installation</span></h2>
@@ -299,8 +294,7 @@
 </p>
 <p><a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start/enable">Start/enable</a> the <code>named.service</code> systemd unit.
 </p>
-<p>To use the DNS server locally, use the <code>127.0.0.1</code> nameserver (meaning clients like Firefox resolve via 127.0.0.1), see <a href="../en/Domain_name_resolution.html" title="Domain name resolution">Domain name resolution</a>.
-This will however require you to <a href="#Allow_recursion">#Allow recursion</a> while a firewall might block outside queries to your local named.
+<p>To use the DNS server locally, use the <code>127.0.0.1</code> nameserver (meaning clients like Firefox resolve via 127.0.0.1), see <a href="../en/Domain_name_resolution.html" title="Domain name resolution">Domain name resolution</a>. This will however require you to <a href="#Allow_recursion">#Allow recursion</a> while a firewall might block outside queries to your local named.
 </p>
 <h2><span class="mw-headline" id="Configuration">Configuration</span></h2>
 <p>BIND is configured in <code>/etc/named.conf</code>. The available options are documented in <span class="plainlinks archwiki-template-man" title="$ man 5 named.conf"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/named.conf.5">named.conf(5)</a></span>.
@@ -351,7 +345,8 @@ options {
     //listen-on    port 8443 tls none http default { 127.0.0.1; };
     //listen-on-v6 port 8443 tls none http default { ::1; };
 };
-...</pre>
+...
+</pre>
 <p>Note that <code>tls{}</code> is defined at the top level, <i>not</i> inside the <code>options{}</code> block.
 </p>
 <h2><span class="mw-headline" id="A_configuration_template_for_running_a_domain">A configuration template for running a domain</span></h2>
@@ -391,8 +386,7 @@ ns2             A       198.51.100.5
 mail            A       198.51.100.6
                 AAAA    2001:db8:5100::6
 imap            CNAME   mail
-smtp            CNAME   mail
-</pre>
+smtp            CNAME   mail</pre>
 <p><code>$ORIGIN</code> defines the default suffix for all names which do not already end with a <code>.</code> (dot), e.g. <code>mail</code> will be expanded to <code>mail.$ORIGIN</code> ⇒ <code>mail.domain.tld.</code> everywhere.
 </p>
 <p><code>$TTL</code> defines the default time-to-live (i.e. cache expiry time) for all records which do not have their own TTL specified. Here it is 2 hours.
@@ -402,16 +396,16 @@ smtp            CNAME   mail
 <h3><span class="mw-headline" id="Configuring_master_server">Configuring master server</span></h3>
 <p>Add your zone to <code>/etc/named.conf</code>:
 </p>
-<pre>zone "domain.tld" IN {
-        type master;
-        file "domain.tld.zone";
-        allow-update { none; };
-};
+<pre> zone "domain.tld" IN {
+         type master;
+         file "domain.tld.zone";
+         allow-update { none; };
+ };
 </pre>
 <p><a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Reload">Reload</a> the <code>named.service</code> unit to apply the configuration change.
 </p>
 <h2><span class="mw-headline" id="Allow_recursion">Allow recursion</span></h2>
-<p>If you are running your own DNS server, you might as well use it for all DNS lookups, or even <a href="#Serve_the_root_zone_locally">#Serve the root zone locally</a> by yourself. The former will require the ability to do <i>recursive</i> lookups.  In order to prevent <a rel="nofollow" class="external text" href="https://www.us-cert.gov/ncas/alerts/TA13-088A">DNS Amplification Attacks</a>, recursion is turned off by default for most resolvers.  The default Arch <code>/etc/named.conf</code> file allows for recursion only on the loopback interface:
+<p>If you are running your own DNS server, you might as well use it for all DNS lookups, or even <a href="#Serve_the_root_zone_locally">#Serve the root zone locally</a> by yourself. The former will require the ability to do <i>recursive</i> lookups. In order to prevent <a rel="nofollow" class="external text" href="https://www.us-cert.gov/ncas/alerts/TA13-088A">DNS Amplification Attacks</a>, recursion is turned off by default for most resolvers. The default Arch <code>/etc/named.conf</code> file allows for recursion only on the loopback interface:
 </p>
 <pre>allow-recursion { 127.0.0.1; ::1; };
 </pre>
@@ -448,9 +442,9 @@ smtp            CNAME   mail
        file "master/example.com.zone";
  };
 </pre>
-<p>Now bind will sign zone automatically. (This example assumes that all required files are in /var/named/master/)
+<p>Now bind will sign zone automatically. (This example assumes that all required files are in <code>/var/named/master/</code>)
 </p>
-<p>Then you should pass DS records (from dsset-example.com. file) to parent zone owner probably using your registrar website. It glues parent zone with your KSK.
+<p>Then you should pass DS records (from <code>dsset-example.com.</code> file) to parent zone owner probably using your registrar website. It glues parent zone with your KSK.
 </p>
 <p>KSK (and corresponding DS records) should be changed rarely because it needs manual intervention, ZSK can be changed more often because this key is usually shorter to be faster in signature checking.
 </p>
@@ -466,12 +460,11 @@ smtp            CNAME   mail
 <h2><span class="mw-headline" id="Automatically_listen_on_new_interfaces">Automatically listen on new interfaces</span></h2>
 <p>By default bind scan for new interfaces and stop listening on interfaces which no longer exist every hour. You can tune this value by adding :
 </p>
-<pre>interface-interval &lt;rescan-timeout-in-minutes&gt;;
+<pre>interface-interval <i>rescan-timeout-in-minutes</i>;
 </pre>
-<p>parameter into <code>named.conf</code> options section. Max value is 28 days. (40320 min) <br>
-You can disable this feature by setting its value to 0.
+<p>parameter into <code>named.conf</code> options section, the max value is 28 days (40320 min). You can disable this feature by setting its value to 0. 
 </p>
-<p>Then restart the service.
+<p>Then <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Restart">restart</a> the service.
 </p>
 <h2><span class="mw-headline" id="Running_BIND_in_a_chrooted_environment">Running BIND in a chrooted environment</span></h2>
 <p>Running in a <a href="../en/Chroot.html" title="Chroot">chroot</a> environment is not required but improves security.
@@ -539,7 +532,7 @@ You can disable this feature by setting its value to 0.
 <li><a rel="nofollow" class="external text" href="https://cira.ca/domain-name-system-dns-glossary">DNS Glossary</a></li>
 <li><a rel="nofollow" class="external text" href="https://lists.archlinux.org/archives/list/arch-dev-public@lists.archlinux.org/thread/RR3TKD5ZWTYKQHQBFPHTHDLN3JKUOOWV/">Archived mailing list discussion on BIND's future</a></li>
 <li>
-<a rel="nofollow" class="external text" href="https://www.heise.de/netze/rfc/rfcs/rfc7706.shtml#page-9">root zone transfer made simple - serve root@home</a> copy the /etc/named.conf , restart BIND &amp; enjoy!</li>
+<a rel="nofollow" class="external text" href="https://www.heise.de/netze/rfc/rfcs/rfc7706.shtml#page-9">root zone transfer made simple - serve root@home</a> copy the <code>/etc/named.conf</code>, restart BIND &amp; enjoy!</li>
 <li><a rel="nofollow" class="external text" href="https://www.dnssec.net/practical-documents">DNSSEC</a></li>
 <li><a rel="nofollow" class="external text" href="https://www.cymru.com/Documents/secure-bind-template.html">a BIND configuration template</a></li>
 </ul>
@@ -550,8 +543,6 @@ You can disable this feature by setting its value to 0.
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Domain_Name_System.html" title="Category:Domain Name System">Domain Name System</a></li></ul>
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li>
-<li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
 </ul>
@@ -565,8 +556,8 @@ You can disable this feature by setting its value to 0.
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=BIND&amp;oldid=787785">https://wiki.archlinux.org/index.php?title=BIND&amp;oldid=787785</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 16 September 2023, at 16:09.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=BIND&amp;oldid=811996">https://wiki.archlinux.org/index.php?title=BIND&amp;oldid=811996</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 6 July 2024, at 07:57.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

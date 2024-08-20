@@ -393,6 +393,15 @@
 			<ul id="toc-LoaderDevicePartUUID-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-ISO_images" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#ISO_images">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">7.5</span>ISO images</div>
+			</a>
+			
+			<ul id="toc-ISO_images-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-Troubleshooting" class="vector-toc-list-item vector-toc-level-1">
@@ -703,11 +712,19 @@ Exec=/usr/bin/refind-install</pre>
 <h2><span class="mw-headline" id="Configuration">Configuration</span></h2>
 <p>The rEFInd configuration <code>refind.conf</code> is located in the same directory as the rEFInd EFI application (usually <code><i>esp</i>/EFI/refind</code> or <code><i>esp</i>/EFI/BOOT</code>). The default configuration file contains extensive comments explaining all its options, see <a rel="nofollow" class="external text" href="https://www.rodsbooks.com/refind/configfile.html">Configuring the Boot Manager</a> for more detailed explanations.
 </p>
+<p>rEFInd detects bootable EFI binaries (Linux kernels, other operating system boot loaders, UEFI boot entries and etc.) at runtime. This means that in most simple situations, rEFInd works without any configuration. In particular, it is likely possible to boot Windows by default.
+</p>
+<p>This does not mean there is no need to configure; for Linux, probably a user wants to set kernel parameters and initramfs. This can be done in another configuration file, <code>refind_linux.conf</code>. See below for details.
+</p>
 <h3><span class="mw-headline" id="Passing_kernel_parameters">Passing kernel parameters</span></h3>
 <p>There are two methods for setting the <a href="../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a> that rEFInd will pass to the kernel.
 </p>
 <h4><span class="mw-headline" id="For_kernels_automatically_detected_by_rEFInd">For kernels automatically detected by rEFInd</span></h4>
+<p>rEFInd has two (or more) configuration files. <code>refind.conf</code>, which lies in the <a href="../en/EFI_system_partition.html" class="mw-redirect" title="ESP">ESP</a>, configures rEFInd itself. On the other hand <code>refind_linux.conf</code> lies in <code>/boot</code>, i.e. the directory that kernel images lie, and it configures how the kernels are booted.
+</p>
 <p>For automatically detected kernels you can either specify the kernel parameters explicitly in <code>/boot/refind_linux.conf</code> or rely on rEFInd's ability to identify the root partition and kernel parameters. See <a rel="nofollow" class="external text" href="https://www.rodsbooks.com/refind/linux.html#easiest">Methods of Booting Linux: For Those With Foresight or Luck: The Easiest Method</a> for more information.
+</p>
+<p><br>
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> 
@@ -947,6 +964,9 @@ write_systemd_vars true
 ...</pre>
 <p>You can verify if it is set by checking its value with <code>cat /sys/firmware/efi/efivars/LoaderDevicePartUUID-4a67b082-0a4c-41cf-b6c7-440b29bb8c4f</code> or by looking at the state of "Boot loader sets ESP information" in <code>bootctl</code> output.
 </p>
+<h3><span class="mw-headline" id="ISO_images">ISO images</span></h3>
+<p>rEFInd does not support booting ISO files since it <a rel="nofollow" class="external text" href="https://sourceforge.net/p/refind/discussion/general/thread/60e840f4/">lacks a loopback driver</a>, but it can boot a ISO image that has been directly written to a partition. This requires the <code>iso9660_x64.efi</code> driver.
+</p>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
 <h3><span class="mw-headline" id="Apple_Macs">Apple Macs</span></h3>
 <p>Use <i>bless</i> from within macOS to set rEFInd as the default boot entry:
@@ -1006,8 +1026,8 @@ dont_scan_volumes 13aa9955-1234-5678-9098-006c334b5088,4eced110-0987-6543-2123-b
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=REFInd&amp;oldid=808354">https://wiki.archlinux.org/index.php?title=REFInd&amp;oldid=808354</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 15 May 2024, at 11:44.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=REFInd&amp;oldid=812209">https://wiki.archlinux.org/index.php?title=REFInd&amp;oldid=812209</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 10 July 2024, at 08:06.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

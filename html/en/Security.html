@@ -1082,10 +1082,10 @@ password required pam_unix.so use_authtok sha512 shadow</pre>
 <h4>
 <span id="Simultaneous_multithreading_.28hyper-threading.29"></span><span class="mw-headline" id="Simultaneous_multithreading_(hyper-threading)">Simultaneous multithreading (hyper-threading)</span>
 </h4>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> This is something mostly hypervisors benefit from. Enabling it on an ordinary system has very little to no security benefits.</div>
 <p><a href="https://en.wikipedia.org/wiki/Simultaneous_multithreading" class="extiw" title="wikipedia:Simultaneous multithreading">Simultaneous multithreading</a> (SMT), also called hyper-threading on Intel CPUs, is a hardware feature that may be a source of <a rel="nofollow" class="external text" href="https://docs.kernel.org/admin-guide/hw-vuln/l1tf.html">L1 Terminal Fault</a> and <a rel="nofollow" class="external text" href="https://docs.kernel.org/admin-guide/hw-vuln/mds.html">Microarchitectural Data Sampling</a> vulnerabilities. The Linux kernel and microcode updates contain mitigations for known vulnerabilities, but <a rel="nofollow" class="external text" href="https://docs.kernel.org/admin-guide/hw-vuln/l1tf.html#virtualization-with-untrusted-guests">disabling SMT may still be required on certain CPUs if untrusted virtualization guests are present</a>.
 </p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> Disabling SMT is something mostly hypervisors benefit from.<a rel="nofollow" class="external autonumber" href="https://security.stackexchange.com/questions/219753/sacrificing-30-of-my-cpu-performance-by-disabling-hyper-threading-to-fully-mi/219759#219759">[2]</a> On an ordinary system it has very little to no security benefits.</div>
 <p>SMT can often be disabled in your system's firmware. Consult your motherboard or system documentation for more information. You can also disable SMT in the kernel by adding the following <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a>:
 </p>
 <pre>mitigations=auto,nosmt
@@ -1122,7 +1122,7 @@ password required pam_unix.so use_authtok sha512 shadow</pre>
 <p>These are some methods to encrypt files:
 </p>
 <ul>
-<li>Some <a href="../en/Archiving_and_compression.html" title="Archiving and compression">archiving and compressing</a> tools also provide basic encryption. Some examples are <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=p7zip">p7zip</a></span> (<code>-p</code> flag), <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=zip">zip</a></span> (<code>-e</code> flag). The encryption should only be relied on particular care, because the tools may use custom algorithms for cross-platform compatibility.<a rel="nofollow" class="external autonumber" href="https://math.ucr.edu/~mike/zipattacks.pdf">[2]</a>
+<li>Some <a href="../en/Archiving_and_compression.html" title="Archiving and compression">archiving and compressing</a> tools also provide basic encryption. Some examples are <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=p7zip">p7zip</a></span> (<code>-p</code> flag), <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=zip">zip</a></span> (<code>-e</code> flag). The encryption should only be relied on particular care, because the tools may use custom algorithms for cross-platform compatibility.<a rel="nofollow" class="external autonumber" href="https://math.ucr.edu/~mike/zipattacks.pdf">[3]</a>
 </li>
 <li>
 <a href="../en/GnuPG.html" title="GnuPG">GnuPG</a> can be used to <a href="../en/GnuPG.html#Encrypt_and_decrypt" title="GnuPG">encrypt files</a>.</li>
@@ -1219,7 +1219,7 @@ password required pam_unix.so use_authtok sha512 shadow</pre>
 <li><a href="../en/Users_and_groups.html#User_management" class="mw-redirect" title="Passwd">passwd</a></li>
 <li><a href="../en/Firejail.html" title="Firejail">firejail</a></li>
 </ul>
-<p>The prominent risks of such executable files include privilege escalation vulnerabilities, see e.g <a href="https://en.wikipedia.org/wiki/Setuid#Security_impact" class="extiw" title="wikipedia:Setuid">Wikipedia:Setuid#Security impact</a>.<a rel="nofollow" class="external autonumber" href="https://www.cvedetails.com/vulnerability-list/vendor_id-16224/product_id-36412/Calibre-ebook-Calibre.html">[3]</a><a rel="nofollow" class="external autonumber" href="https://www.cvedetails.com/product/32625/Sudo-Project-Sudo.html?vendor_id=15714">[4]</a><a rel="nofollow" class="external autonumber" href="https://www.cvedetails.com/vulnerability-list/vendor_id-16191/Firejail-Project.html">[5]</a>
+<p>The prominent risks of such executable files include privilege escalation vulnerabilities, see e.g <a href="https://en.wikipedia.org/wiki/Setuid#Security_impact" class="extiw" title="wikipedia:Setuid">Wikipedia:Setuid#Security impact</a>.<a rel="nofollow" class="external autonumber" href="https://www.cvedetails.com/vulnerability-list/vendor_id-16224/product_id-36412/Calibre-ebook-Calibre.html">[4]</a><a rel="nofollow" class="external autonumber" href="https://www.cvedetails.com/product/32625/Sudo-Project-Sudo.html?vendor_id=15714">[5]</a><a rel="nofollow" class="external autonumber" href="https://www.cvedetails.com/vulnerability-list/vendor_id-16191/Firejail-Project.html">[6]</a>
 </p>
 <p>Files with the SUID bit set and not owned by root, or files with the SGID bit set <i>typically</i> have less potential impact but can theoretically still do decent damage if vulnerable. It is usually possible to avoid using Setuid or Setgid by assigning <a href="../en/Capabilities.html" title="Capabilities">Capabilities</a> instead.
 </p>
@@ -1240,7 +1240,7 @@ password required pam_unix.so use_authtok sha512 shadow</pre>
 <p>Make sure that at least one copy of the data is stored offline, i.e. not connected to the system under threat in any way. <a href="https://en.wikipedia.org/wiki/Ransomware" class="extiw" title="wikipedia:Ransomware">Ransomware</a> and other destructive attacks may also attack any connected backup systems.
 </p>
 <h3><span class="mw-headline" id="SATA_SSD_frozen_mode">SATA SSD frozen mode</span></h3>
-<p>See <a href="../en/Solid_state_drive.html#Setting_the_SSD_state_to_frozen_mode_after_waking_up_from_sleep" title="Solid state drive">Solid state drive#Setting the SSD state to frozen mode after waking up from sleep</a>.
+<p>See <a href="../en/Solid_state_drive.html#Setting_the_SATA_SSD_state_to_frozen_mode_after_waking_up_from_sleep" title="Solid state drive">Solid state drive#Setting the SATA SSD state to frozen mode after waking up from sleep</a>.
 </p>
 <h2><span class="mw-headline" id="User_setup">User setup</span></h2>
 <h3><span class="mw-headline" id="Do_not_use_the_root_account_for_daily_use">Do not use the root account for daily use</span></h3>
@@ -1502,7 +1502,7 @@ Randomization under memory exhaustion @0 : No randomization
 <ul>
 <li>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-hardened">linux-hardened</a></span> sets <code>net.core.bpf_jit_harden=2</code> by default rather than <code>0</code>.</li>
-<li>By default, BPF programs can be run even by unprivileged users. To change that behaviour set <code>kernel.unprivileged_bpf_disabled=1</code><a rel="nofollow" class="external autonumber" href="https://access.redhat.com/security/cve/cve-2021-33624">[6]</a>.</li>
+<li>By default, BPF programs can be run even by unprivileged users. To change that behaviour set <code>kernel.unprivileged_bpf_disabled=1</code><a rel="nofollow" class="external autonumber" href="https://access.redhat.com/security/cve/cve-2021-33624">[7]</a>.</li>
 </ul>
 </div>
 <h3><span class="mw-headline" id="ptrace_scope">ptrace scope</span></h3>
@@ -1523,7 +1523,7 @@ Randomization under memory exhaustion @0 : No randomization
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
 <div>
-<b>Reason:</b> Enabling <code>hidepid</code> globally is not a supported way of operation by <a href="../en/Systemd.html" title="Systemd">systemd</a>, nor does it have any practical improvements security-wise when systemd is running as service manager. <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/29893#issuecomment-1798030108">[7]</a> (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Security.html">Talk:Security</a>)</div>
+<b>Reason:</b> Enabling <code>hidepid</code> globally is not a supported way of operation by <a href="../en/Systemd.html" title="Systemd">systemd</a>, nor does it have any practical improvements security-wise when systemd is running as service manager. <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/29893#issuecomment-1798030108">[8]</a> (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Security.html">Talk:Security</a>)</div>
 </div>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> 
@@ -1602,7 +1602,7 @@ SupplementaryGroups=proc</pre>
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
 <div>
-<b>Reason:</b> Masking <code>emergency.target</code> and <code>emergency.service</code> will have no effect on those units being added to the initramfs and run in early userspace. Even with them in the initramfs, mkinitcpio's systemd hook locks the root account<a rel="nofollow" class="external autonumber" href="https://gitlab.archlinux.org/archlinux/packaging/packages/systemd/-/commit/292cdf8a2f7dd7c6c7d91d2b59617391935c837c">[8]</a><a rel="nofollow" class="external autonumber" href="https://gitlab.archlinux.org/archlinux/packaging/packages/systemd/-/commit/8835b2f5dfbe8663f1a2fd08edbd35f90bf08691">[9]</a> for "security reasons" (see <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/70408">FS#70408</a>). The solution for the issue in the linked article, if even needed, would be to prevent <code>rescue.target</code>, <code>rescue.service</code>, <code>emergency.target</code> and <code>emergency.service</code> from being added to the initramfs image. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Security.html">Talk:Security</a>)</div>
+<b>Reason:</b> Masking <code>emergency.target</code> and <code>emergency.service</code> will have no effect on those units being added to the initramfs and run in early userspace. Even with them in the initramfs, mkinitcpio's systemd hook locks the root account<a rel="nofollow" class="external autonumber" href="https://gitlab.archlinux.org/archlinux/packaging/packages/systemd/-/commit/292cdf8a2f7dd7c6c7d91d2b59617391935c837c">[9]</a><a rel="nofollow" class="external autonumber" href="https://gitlab.archlinux.org/archlinux/packaging/packages/systemd/-/commit/8835b2f5dfbe8663f1a2fd08edbd35f90bf08691">[10]</a> for "security reasons" (see <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/70408">FS#70408</a>). The solution for the issue in the linked article, if even needed, would be to prevent <code>rescue.target</code>, <code>rescue.service</code>, <code>emergency.target</code> and <code>emergency.service</code> from being added to the initramfs image. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Security.html">Talk:Security</a>)</div>
 </div>
 <p>The emergency shell is used to interactively troubleshoot the machine during the boot process. However, it is also a gadget that an attacker can use to access secure resources such as the TPM. See <a rel="nofollow" class="external text" href="https://pulsesecurity.co.nz/advisories/tpm-luks-bypass">this article</a> for a practical example. The difficulty of attacks can be increased by disabling the emergency shell, at the tradeoff of removing a tool to troubleshoot early boot failures.
 </p>
@@ -1688,7 +1688,7 @@ SupplementaryGroups=proc</pre>
 <h3><span class="mw-headline" id="Proxies">Proxies</span></h3>
 <p>Proxies are commonly used as an extra layer between applications and the network, sanitizing data from untrusted sources. The attack surface of a small proxy running with lower privileges is significantly smaller than a complex application running with the end user privileges.
 </p>
-<p>For example the DNS resolver is implemented in <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=glibc">glibc</a></span>, that is linked with the application (that may be running as root), so a bug in the DNS resolver might lead to a remote code execution. This can be prevented by installing a DNS caching server, such as <a href="../en/Dnsmasq.html" title="Dnsmasq">dnsmasq</a>, which acts as a proxy. <a rel="nofollow" class="external autonumber" href="https://googleonlinesecurity.blogspot.it/2016/02/cve-2015-7547-glibc-getaddrinfo-stack.html">[10]</a>
+<p>For example the DNS resolver is implemented in <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=glibc">glibc</a></span>, that is linked with the application (that may be running as root), so a bug in the DNS resolver might lead to a remote code execution. This can be prevented by installing a DNS caching server, such as <a href="../en/Dnsmasq.html" title="Dnsmasq">dnsmasq</a>, which acts as a proxy. <a rel="nofollow" class="external autonumber" href="https://googleonlinesecurity.blogspot.it/2016/02/cve-2015-7547-glibc-getaddrinfo-stack.html">[11]</a>
 </p>
 <h3><span class="mw-headline" id="Managing_TLS_certificates">Managing TLS certificates</span></h3>
 <p>See <a href="../en/Transport_Layer_Security.html#Trust_management" class="mw-redirect" title="TLS">TLS#Trust management</a>.
@@ -1696,7 +1696,7 @@ SupplementaryGroups=proc</pre>
 <h2><span class="mw-headline" id="Physical_security">Physical security</span></h2>
 <p>Physical access to a computer is root access given enough time and resources. However, a high <i>practical</i> level of security can be obtained by putting up enough barriers.
 </p>
-<p>An attacker can gain full control of your computer on the next boot by simply attaching a malicious IEEE 1394 (FireWire), Thunderbolt or PCI Express device as they are given full memory access by default.<a rel="nofollow" class="external autonumber" href="https://web.archive.org/web/20210312083421/http://breaknenter.org/2014/09/inception-metasploit-integration/">[11]</a> For Thunderbolt, you can restrict the direct memory access completely or to known devices, see <a href="../en/Thunderbolt.html#User_device_authorization" title="Thunderbolt">Thunderbolt#User device authorization</a>. For Firewire and PCI Express, there is little you can do from preventing this, or modification of the hardware itself - such as flashing malicious firmware onto a drive. However, the vast majority of attackers will not be this knowledgeable and determined.
+<p>An attacker can gain full control of your computer on the next boot by simply attaching a malicious IEEE 1394 (FireWire), Thunderbolt or PCI Express device as they are given full memory access by default.<a rel="nofollow" class="external autonumber" href="https://web.archive.org/web/20210312083421/http://breaknenter.org/2014/09/inception-metasploit-integration/">[12]</a> For Thunderbolt, you can restrict the direct memory access completely or to known devices, see <a href="../en/Thunderbolt.html#User_device_authorization" title="Thunderbolt">Thunderbolt#User device authorization</a>. For Firewire and PCI Express, there is little you can do from preventing this, or modification of the hardware itself - such as flashing malicious firmware onto a drive. However, the vast majority of attackers will not be this knowledgeable and determined.
 </p>
 <p><a href="#Data-at-rest_encryption">#Data-at-rest encryption</a> will prevent access to your data if the computer is stolen, but malicious firmware can be installed to obtain this data upon your next log in by a resourceful attacker.
 </p>
@@ -1932,8 +1932,8 @@ esac
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Security&amp;oldid=811096">https://wiki.archlinux.org/index.php?title=Security&amp;oldid=811096</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 22 June 2024, at 16:30.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Security&amp;oldid=812632">https://wiki.archlinux.org/index.php?title=Security&amp;oldid=812632</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 19 July 2024, at 09:53.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

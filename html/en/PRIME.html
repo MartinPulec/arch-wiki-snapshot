@@ -523,7 +523,7 @@ $ prime-run vulkaninfo
 <p>Kernel PCI power management turns off the GPU when not used with PRIME offloading or reverse PRIME.
 This feature is supported by modesetting, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xf86-video-amdgpu">xf86-video-amdgpu</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xf86-video-intel">xf86-video-intel</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xf86-video-nouveau">xf86-video-nouveau</a></span> drivers.
 </p>
-<p>The following command can be used to check current <a rel="nofollow" class="external text" href="https://docs.kernel.org/power/pci.html#native-pci-power-management">power state</a> of each GPU:
+<p>The following command can be used to check current <a rel="nofollow" class="external autonumber" href="https://docs.kernel.org/power/pci.html#native-pci-power-management">[1]</a> power state of each GPU:
 </p>
 <pre>$ cat /sys/class/drm/card*/device/power_state
 </pre>
@@ -532,7 +532,8 @@ This feature is supported by modesetting, <span class="plainlinks archwiki-templ
 <strong>Note:</strong> 
 <ul>
 <li>No configuration is generally needed for Ampere as this is enabled by default. For some Ampere users, udev rules may be necessary.</li>
-<li>Some users with hybrid graphics are reporting that their discrete NVIDIA Ampere GPUs are failing to remain in the D3Cold power state after upgrading to newer NVIDIA drivers (seemingly &gt;525) <a rel="nofollow" class="external autonumber" href="https://forums.developer.nvidia.com/t/nvidia-gpu-fails-to-power-off-prime-razer-blade-14-2022/250023">[1]</a>.</li>
+<li>Some users with hybrid graphics are reporting that their discrete NVIDIA Ampere GPUs are failing to remain in the D3Cold power state after upgrading to newer NVIDIA drivers (seemingly &gt;525) <a rel="nofollow" class="external autonumber" href="https://forums.developer.nvidia.com/t/nvidia-gpu-fails-to-power-off-prime-razer-blade-14-2022/250023">[2]</a>.</li>
+<li>Some users with pre-Ampere card and broken D3 support on newer drivers reported a workaround to disable the GSP firmware with <code>NVreg_EnableGpuFirmware=0</code><a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?pid=2182638">[3]</a>.</li>
 </ul>
 </div>
 <p>For Turing generation cards with Intel Coffee Lake or above CPUs as well as some Ryzen CPUs like the 5800H, it is possible to fully <a rel="nofollow" class="external text" href="https://us.download.nvidia.com/XFree86/Linux-x86_64/550.54.14/README/dynamicpowermanagement.html">power down the GPU when not in use</a>.
@@ -580,7 +581,7 @@ ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030200"
 </pre>
 <p>While the GPU is in <code>suspended</code> state, the counter will be incrementing every time you run the command. When the GPU's state becomes <code>running</code> it will stop incrementing.
 </p>
-<p>We also need to <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> <code>nvidia-persistenced.service</code> to avoid the kernel tearing down the device state whenever the NVIDIA device resources are no longer in use. <a rel="nofollow" class="external autonumber" href="https://us.download.nvidia.com/XFree86/Linux-x86_64/550.54.14/README/nvidia-persistenced.html">[2]</a>
+<p>We also need to <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> <code>nvidia-persistenced.service</code> to avoid the kernel tearing down the device state whenever the NVIDIA device resources are no longer in use. <a rel="nofollow" class="external autonumber" href="https://us.download.nvidia.com/XFree86/Linux-x86_64/550.54.14/README/nvidia-persistenced.html">[4]</a>
 </p>
 <h4><span class="mw-headline" id="Configure_applications_to_render_using_GPU">Configure applications to render using GPU</span></h4>
 <div class="noprint archwiki-template-message">
@@ -588,9 +589,9 @@ ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030200"
 <div>
 <b>Notes:</b> Target section mentions these variables. Perhaps this can be merged with the target section to avoid duplication? (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:PRIME.html">Talk:PRIME</a>)</div>
 </div>
-<p>Even without enabling Dynamic Power Management, offload rendering of applications is required <a rel="nofollow" class="external autonumber" href="https://web.archive.org/web/20211203072304/https://jeansenvaars.wordpress.com/2021/12/02/endeavouros-hybrid-gpu-benchmarks/">[3]</a>.
+<p>Even without enabling Dynamic Power Management, offload rendering of applications is required <a rel="nofollow" class="external autonumber" href="https://web.archive.org/web/20211203072304/https://jeansenvaars.wordpress.com/2021/12/02/endeavouros-hybrid-gpu-benchmarks/">[5]</a>.
 </p>
-<p>To run an application offloaded to the NVIDIA GPU with Dynamic Power Management enabled, add the following <a href="../en/Environment_variables.html" title="Environment variables">environment variables</a>: <a rel="nofollow" class="external autonumber" href="https://download.nvidia.com/XFree86/Linux-x86_64/550.54.14/README/primerenderoffload.html">[4]</a>
+<p>To run an application offloaded to the NVIDIA GPU with Dynamic Power Management enabled, add the following <a href="../en/Environment_variables.html" title="Environment variables">environment variables</a>: <a rel="nofollow" class="external autonumber" href="https://download.nvidia.com/XFree86/Linux-x86_64/550.54.14/README/primerenderoffload.html">[6]</a>
 </p>
 <pre>__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia <i>command</i>
 </pre>
@@ -666,8 +667,8 @@ ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030200"
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> 
 <ul>
-<li>Reverse PRIME is not supported for AMDGPU + NVIDIA on NVIDIA driver prior to 470 beta. See <a rel="nofollow" class="external autonumber" href="https://forums.developer.nvidia.com/t/hp-omen-15-ryzen-4600h-nvidia-1660ti-no-display-over-hdmi/165265/2">[5]</a> for more details. An alternative for older versions is to use NVIDIA as the primary card as described in <a href="#Discrete_card_as_primary_GPU">#Discrete card as primary GPU</a>.</li>
-<li>Currently when only external display is enabled, you will only get 1 FPS. See <a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/xorg/xserver/-/issues/1028">[6]</a> for more details.</li>
+<li>Reverse PRIME is not supported for AMDGPU + NVIDIA on NVIDIA driver prior to 470 beta. See <a rel="nofollow" class="external autonumber" href="https://forums.developer.nvidia.com/t/hp-omen-15-ryzen-4600h-nvidia-1660ti-no-display-over-hdmi/165265/2">[7]</a> for more details. An alternative for older versions is to use NVIDIA as the primary card as described in <a href="#Discrete_card_as_primary_GPU">#Discrete card as primary GPU</a>.</li>
+<li>Currently when only external display is enabled, you will only get 1 FPS. See <a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/xorg/xserver/-/issues/1028">[8]</a> for more details.</li>
 </ul>
 </div>
 <p>If the second GPU has outputs that are not accessible by the primary GPU, you can use <b>Reverse PRIME</b> to make use of them. This will involve using the primary GPU to render the images, and then pass them off to the second GPU.
@@ -768,7 +769,7 @@ Section "Screen"
 EndSection
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> For the proprietary NVIDIA driver see <a rel="nofollow" class="external autonumber" href="https://us.download.nvidia.com/XFree86/Linux-x86_64/550.54.14/README/randr14.html">[7]</a> instead.</div>
+<strong>Note:</strong> For the proprietary NVIDIA driver see <a rel="nofollow" class="external autonumber" href="https://us.download.nvidia.com/XFree86/Linux-x86_64/550.54.14/README/randr14.html">[9]</a> instead.</div>
 <p>Restart Xorg. The discrete NVIDIA card should be used now. The HDMI and Display Port outputs are the main outputs. The LVDS1 and VGA outputs are off. To enable them run:
 </p>
 <pre>$ xrandr --setprovideroutputsource Intel nouveau
@@ -841,9 +842,9 @@ EndSection
 <h3>
 <span id="Glitches.2FGhosting_synchronization_problem_on_second_monitor_when_using_reverse_PRIME"></span><span class="mw-headline" id="Glitches/Ghosting_synchronization_problem_on_second_monitor_when_using_reverse_PRIME">Glitches/Ghosting synchronization problem on second monitor when using reverse PRIME</span>
 </h3>
-<p>This problem can affect users when not using a <a href="../en/Xorg.html#Composite" class="mw-redirect" title="Composite manager">composite manager</a>, such as with <a href="../en/I3.html" title="I3">i3</a>. <a rel="nofollow" class="external autonumber" href="https://bugs.freedesktop.org/show_bug.cgi?id=75579">[8]</a>
+<p>This problem can affect users when not using a <a href="../en/Xorg.html#Composite" class="mw-redirect" title="Composite manager">composite manager</a>, such as with <a href="../en/I3.html" title="I3">i3</a>. <a rel="nofollow" class="external autonumber" href="https://bugs.freedesktop.org/show_bug.cgi?id=75579">[10]</a>
 </p>
-<p>If you experience this problem under Gnome, then a possible fix is to set some environment variables in <code>/etc/environment</code> <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=177925">[9]</a>
+<p>If you experience this problem under Gnome, then a possible fix is to set some environment variables in <code>/etc/environment</code> <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=177925">[11]</a>
 </p>
 <pre>CLUTTER_PAINT=disable-clipped-redraws:disable-culling
 CLUTTER_VBLANK=True
@@ -857,7 +858,7 @@ You can overcome this error by appending <code>radeon.runpm=0</code> to the kern
 <h3>
 <span id="Constant_hangs.2Ffreezes_with_Vulkan_applications.2Fgames_using_VSync_with_closed-source_drivers_and_reverse_PRIME"></span><span class="mw-headline" id="Constant_hangs/freezes_with_Vulkan_applications/games_using_VSync_with_closed-source_drivers_and_reverse_PRIME">Constant hangs/freezes with Vulkan applications/games using VSync with closed-source drivers and reverse PRIME</span>
 </h3>
-<p>Some Vulkan applications (particularly ones using VK_PRESENT_MODE_FIFO_KHR and/or VK_PRESENT_MODE_FIFO_RELAXED_KHR, including Windows games ran with DXVK) will cause the GPU to lockup constantly (~5-10 seconds freezed, ~1 second working fine)<a rel="nofollow" class="external autonumber" href="https://devtalk.nvidia.com/default/topic/1044496/linux/hangs-freezes-when-vulkan-v-sync-vk_present_mode_fifo_khr-is-enabled/">[10]</a> when ran on a system using <b>reverse PRIME</b>.
+<p>Some Vulkan applications (particularly ones using VK_PRESENT_MODE_FIFO_KHR and/or VK_PRESENT_MODE_FIFO_RELAXED_KHR, including Windows games ran with DXVK) will cause the GPU to lockup constantly (~5-10 seconds freezed, ~1 second working fine)<a rel="nofollow" class="external autonumber" href="https://devtalk.nvidia.com/default/topic/1044496/linux/hangs-freezes-when-vulkan-v-sync-vk_present_mode_fifo_khr-is-enabled/">[12]</a> when ran on a system using <b>reverse PRIME</b>.
 </p>
 <p>A GPU lockup will render any input unusable (this includes switching TTYs and using SysRq functions).
 </p>
@@ -865,7 +866,7 @@ You can overcome this error by appending <code>radeon.runpm=0</code> to the kern
 </p>
 <ul>
 <li>Turning Vsync off (not possible for some applications)</li>
-<li>Turning PRIME Synchronization<a rel="nofollow" class="external autonumber" href="https://devtalk.nvidia.com/default/topic/957814/linux/prime-and-prime-synchronization/">[11]</a> off (will introduce screen tearing):</li>
+<li>Turning PRIME Synchronization<a rel="nofollow" class="external autonumber" href="https://devtalk.nvidia.com/default/topic/957814/linux/prime-and-prime-synchronization/">[13]</a> off (will introduce screen tearing):</li>
 </ul>
 <pre>xrandr --output HDMI-0 --set "PRIME Synchronization" 0 #replace HDMI-0 with your xrandr output ID
 </pre>
@@ -906,8 +907,8 @@ __GLX_VENDOR_LIBRARY_NAME=mesa</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PRIME&amp;oldid=805457">https://wiki.archlinux.org/index.php?title=PRIME&amp;oldid=805457</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 7 April 2024, at 06:24.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PRIME&amp;oldid=812130">https://wiki.archlinux.org/index.php?title=PRIME&amp;oldid=812130</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 8 July 2024, at 20:36.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

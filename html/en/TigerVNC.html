@@ -467,11 +467,11 @@
 <p>For a quick start, see the steps below.  Users are encouraged to read <span class="plainlinks archwiki-template-man" title="$ man 8 vncserver"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/vncserver.8">vncserver(8)</a></span> for the complete list of configuration options.
 </p>
 <ol>
-<li>Create a password using <code>vncpasswd</code> which will store the hashed password in <code>~/.vnc/passwd</code>. Ensure the file's permission is set to <code>0600</code>.</li>
+<li>Create a password using <code>vncpasswd</code> which will store the hashed password in <code>$XDG_CONFIG_HOME/tigervnc/passwd</code>. Ensure the file's permission is set to <code>0600</code>.</li>
 <li>Edit <code>/etc/tigervnc/vncserver.users</code> to define user mappings.  Each user defined in this file will have a corresponding port on which its session will run.  The number in the file corresponds to a TCP port.  By default, :1 is TCP port 5901 (5900+1).  If another parallel server is needed, a second instance can then run on the next highest, free port, i.e 5902 (5900+2).</li>
-<li>Create <code>~/.vnc/config</code> and at a minimum, define the type of session desired with a line like <code>session=foo</code> where foo corresponds to whichever <a href="../en/Desktop_environment.html" title="Desktop environment">desktop environment</a> is to run.  One can see which desktop environments are available on the system by seeing their corresponding <i>.desktop</i> files within <code>/usr/share/xsessions/</code>. For example:</li>
+<li>Create <code>$XDG_CONFIG_HOME/tigervnc/config</code> and at a minimum, define the type of session desired with a line like <code>session=foo</code> where foo corresponds to whichever <a href="../en/Desktop_environment.html" title="Desktop environment">desktop environment</a> is to run.  One can see which desktop environments are available on the system by seeing their corresponding <i>.desktop</i> files within <code>/usr/share/xsessions/</code>. For example:</li>
 </ol>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.vnc/config</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$XDG_CONFIG_HOME/tigervnc/config</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">session=lxqt
 geometry=1920x1080
 localhost
@@ -502,7 +502,7 @@ EndSection
 <h2><span class="mw-headline" id="Running_x0vncserver_to_directly_control_the_local_display">Running x0vncserver to directly control the local display</span></h2>
 <p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=tigervnc">tigervnc</a></span> also provides <span class="plainlinks archwiki-template-man" title="$ man 1 x0vncserver"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/x0vncserver.1">x0vncserver(1)</a></span> which allows direct control over a physical X session. After defining a session password using the <i>vncpasswd</i> tool, invoke the server like so:
 </p>
-<pre>$ x0vncserver -rfbauth ~/.vnc/passwd
+<pre>$ x0vncserver -rfbauth $XDG_CONFIG_HOME/tigervnc/passwd
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> 
@@ -518,7 +518,7 @@ EndSection
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.xprofile</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">...
-x0vncserver -rfbauth ~/.vnc/passwd &amp;
+x0vncserver -rfbauth $XDG_CONFIG_HOME/tigervnc/passwd &amp;
 </pre>
 <h3><span class="mw-headline" id="With_systemd">With systemd</span></h3>
 <h4><span class="mw-headline" id="With_a_system_service">With a system service</span></h4>
@@ -539,13 +539,13 @@ After=display-manager.service
 Type=simple
 Environment=HOME=/root
 Environment=XAUTHORITY=/var/run/lightdm/root/:0
-ExecStart=x0vncserver -display :0 -rfbauth ~/.vnc/passwd
+ExecStart=x0vncserver -display :0 -rfbauth $XDG_CONFIG_HOME/tigervnc/passwd
 Restart=on-failure
 RestartSec=500ms
 
 [Install]
 WantedBy=multi-user.target</pre>
-<p>As this is a system unit, <code>-rfbauth ~/.vnc/passwd</code> refers to <code>/root/.vnc/passwd</code>
+<p>As this is a system unit, <code>-rfbauth $XDG_CONFIG_HOME/tigervnc/passwd</code> refers to <code>/root/.vnc/passwd</code>
 </p>
 <p><a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start/enable">Start/enable</a> <code>x0vncserver.service</code>.
 </p>
@@ -596,7 +596,7 @@ StandardInput=socket
 StandardError=syslog</pre>
 <p><a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start/enable">Start/enable</a> <code>xvnc.socket</code>. Now, any number of users can get unique desktops by connecting to port 5900.
 </p>
-<p>If the VNC server is exposed to the internet, add the <code>-localhost</code> option to <code>Xvnc</code> in <code>xvnc@.service</code> (note that <code>-query localhost</code> and <code>-localhost</code> are different switches) and follow <a href="#Accessing_vncserver_via_SSH_tunnels">#Accessing vncserver via SSH tunnels</a>. Since we only select a user after connecting, the VNC server runs as user <i>nobody</i> and uses <code>Xvnc</code> directly instead of the <code>vncserver</code> script, so any options in <code>~/.vnc</code> are ignored. Optionally, <a href="../en/Autostarting.html" class="mw-redirect" title="Autostart">autostart</a> <i>vncconfig</i> so that the clipboard works (<i>vncconfig</i> exits immediately in non-VNC sessions). One way is to create:
+<p>If the VNC server is exposed to the internet, add the <code>-localhost</code> option to <code>Xvnc</code> in <code>xvnc@.service</code> (note that <code>-query localhost</code> and <code>-localhost</code> are different switches) and follow <a href="#Accessing_vncserver_via_SSH_tunnels">#Accessing vncserver via SSH tunnels</a>. Since we only select a user after connecting, the VNC server runs as user <i>nobody</i> and uses <code>Xvnc</code> directly instead of the <code>vncserver</code> script, so any options in <code>$XDG_CONFIG_HOME/tigervnc</code> are ignored. Optionally, <a href="../en/Autostarting.html" class="mw-redirect" title="Autostart">autostart</a> <i>vncconfig</i> so that the clipboard works (<i>vncconfig</i> exits immediately in non-VNC sessions). One way is to create:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/X11/xinit/xinitrc.d/99-vncconfig.sh</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">#!/bin/sh
@@ -613,7 +613,7 @@ When <code>SecurityTypes</code> on the server is set to a non-encrypted option a
 <pre>$ vncviewer 10.1.10.2:1
 </pre>
 <h3><span class="mw-headline" id="Passwordless_authentication">Passwordless authentication</span></h3>
-<p>The <code>-passwd</code> switch enables one to specify the location of the server's <code>~/.vnc/passwd</code> file. This file is expected to be accessible to the user through <a href="../en/Secure_Shell.html" class="mw-redirect" title="SSH">SSH</a> or physical access to the server. In either case, place the file on the client's file system in a safe location, i.e. one in which only the intended user has read access.
+<p>The <code>-passwd</code> switch enables one to specify the location of the server's <code>$XDG_CONFIG_HOME/tigervnc/passwd</code> file. This file is expected to be accessible to the user through <a href="../en/Secure_Shell.html" class="mw-redirect" title="SSH">SSH</a> or physical access to the server. In either case, place the file on the client's file system in a safe location, i.e. one in which only the intended user has read access.
 </p>
 <pre>$ vncviewer -passwd <i>/path/to/server-passwd-file</i>
 </pre>
@@ -644,9 +644,9 @@ When <code>SecurityTypes</code> on the server is set to a non-encrypted option a
 <h3><span class="mw-headline" id="On_the_server">On the server</span></h3>
 <p>On the server side, <i>vncserver</i> or <i>x0vncserver</i> must be run.
 </p>
-<p>When running either one of these, it is recommended to use the <code>localhost</code> option in <code>~/.vnc/config</code> or the <code>-localhost</code> switch (for <i>x0vncserver</i>) since it allows connections from the localhost only and by analogy, only from users ssh'ed and authenticated on the box. For example:
+<p>When running either one of these, it is recommended to use the <code>localhost</code> option in <code>$XDG_CONFIG_HOME/tigervnc/config</code> or the <code>-localhost</code> switch (for <i>x0vncserver</i>) since it allows connections from the localhost only and by analogy, only from users ssh'ed and authenticated on the box. For example:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.vnc/config</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$XDG_CONFIG_HOME/tigervnc/config</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">session=lxqt
 geometry=1920x1080
 localhost
@@ -787,7 +787,7 @@ Port: 5901
 </p>
 <pre>$ vncviewer DotWhenNoCursor=1 <i>server</i>
 </pre>
-<p>Alternatively, put <code>DotWhenNoCursor=1</code> in the TigerVNC configuration file, which is at <code>~/.vnc/default.tigervnc</code> by default.
+<p>Alternatively, put <code>DotWhenNoCursor=1</code> in the TigerVNC configuration file, which is at <code>$XDG_CONFIG_HOME/tigervnc/default.tigervnc</code> by default.
 </p>
 <h3><span class="mw-headline" id="Copying_clipboard_content_from_the_remote_machine">Copying clipboard content from the remote machine</span></h3>
 <p>If copying from the remote machine to the local machine does not work, run <code>autocutsel</code> on the server, as mentioned in <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=101243">[1]</a>:
@@ -826,8 +826,8 @@ Port: 5901
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=TigerVNC&amp;oldid=801631">https://wiki.archlinux.org/index.php?title=TigerVNC&amp;oldid=801631</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 28 February 2024, at 21:36.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=TigerVNC&amp;oldid=813222">https://wiki.archlinux.org/index.php?title=TigerVNC&amp;oldid=813222</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 29 July 2024, at 20:40.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

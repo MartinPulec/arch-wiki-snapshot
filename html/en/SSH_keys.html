@@ -589,7 +589,13 @@ The key's randomart image is:
 <p><a href="#RSA">#RSA</a> keys will give you the greatest portability, while <a href="#Ed25519">#Ed25519</a> will give you the best security but requires recent versions of client &amp; server<a rel="nofollow" class="external autonumber" href="https://web.archive.org/web/20191222003107/https://www.gentoo.org/support/news-items/2015-08-13-openssh-weak-keys.html">[1]</a>. <a href="#ECDSA">#ECDSA</a> is likely more compatible than Ed25519 (though still less than RSA), but suspicions exist about its security (see below).
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> These keys are used only to authenticate you; choosing stronger keys will not increase CPU load when transferring data over SSH.
+<strong>Note:</strong> These keys are used only to authenticate you; choosing stronger keys will not increase CPU load when transferring data over SSH.</div>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong> To protect SSH keys against exfiltration from the machine, it is possible to store them in <a href="../en/Universal_2nd_Factor.html" title="Universal 2nd Factor">FIDO/U2F hardware authenticators</a> or <a href="../en/Trusted_Platform_Module.html" title="Trusted Platform Module">Trusted Platform Modules</a>.
+<ul>
+<li>Ed25519 and ECDSA keys can be stored in FIDO/U2F hardware authenticators by using the special "security key" key types when generating the keys. See <a href="#FIDO/U2F">#FIDO/U2F</a>.</li>
+<li>ECDSA and RSA are supported by Trusted Platform Modules making it possible to seal SSH keys inside the TPM. See <a href="../en/Trusted_Platform_Module.html#SSH" title="Trusted Platform Module">Trusted Platform Module#SSH</a>.</li>
+</ul>
 </div>
 <h4><span class="mw-headline" id="Ed25519">Ed25519</span></h4>
 <p><a rel="nofollow" class="external text" href="https://ed25519.cr.yp.to/">Ed25519</a> was introduced in <a rel="nofollow" class="external text" href="https://www.openssh.com/txt/release-6.5">OpenSSH 6.5</a> of January 2014: "<i>Ed25519 is an elliptic curve signature scheme that offers better security than ECDSA and DSA and good performance</i>". Its main strengths are its speed, its constant-time run time (and resistance against side-channel attacks), and its lack of nebulous hard-coded constants.<a rel="nofollow" class="external autonumber" href="https://git.libssh.org/projects/libssh.git/tree/doc/curve25519-sha256@libssh.org.txt">[2]</a> See also <a rel="nofollow" class="external text" href="https://blog.mozilla.org/warner/2011/11/29/ed25519-keys/">this blog post</a> by a Mozilla developer on how it works.
@@ -617,8 +623,6 @@ The key's randomart image is:
 </ol>
 <p>Both of those concerns are best summarized in <a rel="nofollow" class="external text" href="https://git.libssh.org/projects/libssh.git/tree/doc/curve25519-sha256@libssh.org.txt#n4">libssh curve25519 introduction</a>. Although the political concerns are still subject to debate, there is a <a rel="nofollow" class="external text" href="https://news.ycombinator.com/item?id=7597653">clear consensus</a> that <a href="#Ed25519">#Ed25519</a> is technically superior and should therefore be preferred.
 </p>
-<div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> ECDSA is supported by <a href="../en/Trusted_Platform_Module.html" title="Trusted Platform Module">Trusted Platform Modules</a> making it possible to seal ECDSA SSH keys inside the TPM protecting them against exfiltration from the machine. See <a href="../en/Trusted_Platform_Module.html#SSH" title="Trusted Platform Module">Trusted Platform Module#SSH</a>.</div>
 <p>ECDSA key pairs can be generated with:
 </p>
 <pre>$ ssh-keygen -t ecdsa
@@ -679,6 +683,8 @@ The key's randomart image is:
 </p>
 <pre>PubkeyAuthOptions none
 </pre>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong> <a rel="nofollow" class="external text" href="https://github.com/orgs/community/discussions/10593">GitHub</a> and <a rel="nofollow" class="external text" href="https://gitlab.com/gitlab-org/gitlab/-/issues/367682">GitLab</a> do not support <code>no-touch-required</code>.</div>
 <p>An ECDSA-based keypair may also be generated with the <code>ecdsa-sk</code> keytype, but the relevant concerns in the <a href="#ECDSA">#ECDSA</a> section above still apply.
 </p>
 <pre>$ ssh-keygen -t ecdsa-sk
@@ -971,7 +977,7 @@ exec openbox-session</pre>
 <li><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lxqt-openssh-askpass">lxqt-openssh-askpass</a></span></li>
 </ul>
 <h3><span class="mw-headline" id="pam_ssh">pam_ssh</span></h3>
-<p>The <a rel="nofollow" class="external text" href="http://pam-ssh.sourceforge.net/">pam_ssh</a> project exists to provide a <a href="../en/PAM.html" class="mw-redirect" title="Pluggable Authentication Module">Pluggable Authentication Module</a> (PAM) for SSH private keys.  This module can provide single sign-on behavior for your SSH connections.  On login, your SSH private key passphrase can be entered in place of, or in addition to, your traditional system password.  Once you have been authenticated, the pam_ssh module spawns ssh-agent to store your decrypted private key for the duration of the session.
+<p>The <a rel="nofollow" class="external text" href="https://pam-ssh.sourceforge.net/">pam_ssh</a> project exists to provide a <a href="../en/PAM.html" class="mw-redirect" title="Pluggable Authentication Module">Pluggable Authentication Module</a> (PAM) for SSH private keys.  This module can provide single sign-on behavior for your SSH connections.  On login, your SSH private key passphrase can be entered in place of, or in addition to, your traditional system password.  Once you have been authenticated, the pam_ssh module spawns ssh-agent to store your decrypted private key for the duration of the session.
 </p>
 <p>To enable single sign-on behavior at the tty login prompt, install the unofficial <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/pam_ssh/">pam_ssh</a></span><sup><small>AUR</small></sup> package.
 </p>
@@ -1125,8 +1131,8 @@ $ chmod 600 ~/.ssh/authorized_keys
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=SSH_keys&amp;oldid=811741">https://wiki.archlinux.org/index.php?title=SSH_keys&amp;oldid=811741</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 1 July 2024, at 12:43.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=SSH_keys&amp;oldid=813149">https://wiki.archlinux.org/index.php?title=SSH_keys&amp;oldid=813149</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 29 July 2024, at 06:35.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

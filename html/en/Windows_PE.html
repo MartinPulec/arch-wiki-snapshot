@@ -72,14 +72,32 @@
 			<ul id="toc-Prepare_a_bootable_Windows_PE_ISO-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Prepare_a_bootable_Windows_PE_USB_key_for_UEFI_systems" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Prepare_a_bootable_Windows_PE_USB_key_for_UEFI_systems">
+		<li id="toc-Prepare_bootable_Windows_PE_media_for_UEFI_systems" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Prepare_bootable_Windows_PE_media_for_UEFI_systems">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">1.3</span>Prepare a bootable Windows PE USB key for UEFI systems</div>
+				<span class="vector-toc-numb">1.3</span>Prepare bootable Windows PE media for UEFI systems</div>
 			</a>
 			
-			<ul id="toc-Prepare_a_bootable_Windows_PE_USB_key_for_UEFI_systems-sublist" class="vector-toc-list">
+			<ul id="toc-Prepare_bootable_Windows_PE_media_for_UEFI_systems-sublist" class="vector-toc-list">
+				<li id="toc-Option_1:_Create_an_ISO_file_for_UEFI_systems" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Option_1:_Create_an_ISO_file_for_UEFI_systems">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">1.3.1</span>Option 1: Create an ISO file for UEFI systems</div>
+			</a>
+			
+			<ul id="toc-Option_1:_Create_an_ISO_file_for_UEFI_systems-sublist" class="vector-toc-list">
 			</ul>
+		</li>
+		<li id="toc-Option_2:_Create_an_USB_key_for_UEFI_systems" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Option_2:_Create_an_USB_key_for_UEFI_systems">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">1.3.2</span>Option 2: Create an USB key for UEFI systems</div>
+			</a>
+			
+			<ul id="toc-Option_2:_Create_an_USB_key_for_UEFI_systems-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
 		</li>
 	</ul>
 	</li>
@@ -310,7 +328,7 @@
 <li>For a 32-bit version of Windows PE, download a <a rel="nofollow" class="external text" href="https://www.microsoft.com/en-us/software-download/windows10ISO">Windows 10 iso</a>, as Windows 11 has dropped support for 32-bit.</li>
 <li>For versions prior to Windows 8, you can download the Windows Automated Installation Kit (WAIK) image instead. See <a rel="nofollow" class="external autonumber" href="https://www.microsoft.com/download/details.aspx?id=10333">[1]</a>, <a rel="nofollow" class="external autonumber" href="https://www.microsoft.com/download/details.aspx?id=5753">[2]</a>
 </li>
-<li>It may be possible to use <a rel="nofollow" class="external text" href="http://httpfs.sourceforge.net/">httpfs</a> to avoid downloading the entire image file.</li>
+<li>It may be possible to use <a rel="nofollow" class="external text" href="https://httpfs.sourceforge.net/">httpfs</a> to avoid downloading the entire image file.</li>
 </ul>
 </div>
 <div class="archwiki-template-box archwiki-template-box-warning">
@@ -332,23 +350,47 @@
 </p>
 <pre># umount /media/winimg
 </pre>
-<h3><span class="mw-headline" id="Prepare_a_bootable_Windows_PE_USB_key_for_UEFI_systems">Prepare a bootable Windows PE USB key for UEFI systems</span></h3>
-<p><code>mkwinpeimg</code> cannot build a bootable UEFI system natively, but the necessary UEFI boot files are included in  the Windows installation media and can be used by following the next steps:
+<h3><span class="mw-headline" id="Prepare_bootable_Windows_PE_media_for_UEFI_systems">Prepare bootable Windows PE media for UEFI systems</span></h3>
+<p><code>mkwinpeimg</code> cannot build a bootable UEFI system natively, but the necessary UEFI boot files are included in  the Windows installation media.
 </p>
-<div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> Make sure you selected an appropriate architecture for your Windows ISO image (x86 or x64). This guide has only been tested with x64, i.e. it boots using <code>/efi/boot/bootx64.efi</code>. It is unknown whether a UEFI system would boot a x86 image of Windows this way. Please update this page if you can test.</div>
-<p>On a USB key, <a href="../en/Fdisk.html#Create_a_partition_table_and_partitions" title="Fdisk">create a GPT partition table</a> with a single partition of type <code>EFI System</code>, and format the partition <a href="../en/FAT.html#File_system_creation" title="FAT">to FAT32</a>.
+<p>These can be used for creating a bootable USB key or a bootable ISO file for UEFI systems.
 </p>
-<p>Mount the <code>winpe.iso</code> file created by <code>mkwinpeimg</code>, mount your USB key, and copy everything:
+<p>The following steps assume that <code><i>winimg</i>.iso</code> is still mounted at <code>/mnt/winimg</code>.
+</p>
+<p>Create a directory <code><i>winpe_uefi</i></code> which will contain the files necessary for creating UEFI boot media.
+</p>
+<p>Mount the newly created Windows PE ISO file and copy the necessary files over to <code><i>winpe_uefi</i></code>:
 </p>
 <pre># mount --mkdir winpe.iso /media/winpe
-# mount --mkdir /dev/sd<i>X</i>1 /media/usb
-# cp -r /media/winpe/* /media/usb/
+# cp -r /media/winpe/* <i>winpe_uefi</i>
+# cp -r /mnt/winimg/efi <i>winpe_uefi</i>
 </pre>
-<p>Finally, mount the original Windows ISO image and copy all boot files in <code>efi</code>:
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning:</strong> Make sure you selected an appropriate architecture for your Windows ISO image (x86 or x64). This guide has only been tested with x64, i.e. it boots using <code>/efi/boot/bootx64.efi</code>. It is unknown whether a UEFI system would boot a x86 image of Windows this way. Please update this page if you can test.</div>
+<h4><span class="mw-headline" id="Option_1:_Create_an_ISO_file_for_UEFI_systems">Option 1: Create an ISO file for UEFI systems</span></h4>
+<p>Use the following command to create a version of the ISO file which can be booted from UEFI systems:
 </p>
-<pre># mount <i>winimg</i>.iso /media/winimg
-# cp -r /media/winimg/efi /media/usb/
+<pre>$ mkisofs \
+    -no-emul-boot \
+    -b "efi/microsoft/boot/efisys.bin" \
+    -iso-level 4 \
+    -udf \
+    -joliet \
+    -disable-deep-relocation \
+    -omit-version-number \
+    -relaxed-filenames \
+    -output "winpe_uefi.iso" \
+    <i>winpe_uefi</i>
+</pre>
+<p>You can now unmount all ISO. Your <code>winpe_uefi.iso</code> file is ready to boot on UEFI systems now.
+</p>
+<h4><span class="mw-headline" id="Option_2:_Create_an_USB_key_for_UEFI_systems">Option 2: Create an USB key for UEFI systems</span></h4>
+<p>On a USB key, <a href="../en/Fdisk.html#Create_a_partition_table_and_partitions" title="Fdisk">create a GPT partition table</a> with a single partition of type <code>EFI System</code>, and format the partition <a href="../en/FAT.html#File_system_creation" title="FAT">to FAT32</a>.
+</p>
+<p>Copy the files prepared in the <code><i>winpe_uefi</i></code> directory over to the USB key:
+</p>
+<pre># mount --mkdir /dev/sd<i>X</i>1 /media/usb
+# cp -r <i>winpe_uefi</i>/* /media/usb/
 </pre>
 <p>You can now umount all ISO and the USB key, your USB key is ready to boot.
 </p>
@@ -523,8 +565,8 @@ Apparently whatever part hides this from the user did not make it into the PE bu
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Windows_PE&amp;oldid=775333">https://wiki.archlinux.org/index.php?title=Windows_PE&amp;oldid=775333</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 11 April 2023, at 05:37.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Windows_PE&amp;oldid=813181">https://wiki.archlinux.org/index.php?title=Windows_PE&amp;oldid=813181</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 29 July 2024, at 07:04.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

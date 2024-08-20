@@ -226,10 +226,19 @@
 			<ul id="toc-Setting_the_Environment-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Setting_logind_session_type" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Setting_logind_session_type">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">4.4</span>Setting logind session type</div>
+			</a>
+			
+			<ul id="toc-Setting_logind_session_type-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 		<li id="toc-Missing_mouse_cursor" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Missing_mouse_cursor">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.4</span>Missing mouse cursor</div>
+				<span class="vector-toc-numb">4.5</span>Missing mouse cursor</div>
 			</a>
 			
 			<ul id="toc-Missing_mouse_cursor-sublist" class="vector-toc-list">
@@ -451,7 +460,7 @@ command = "sway --config /etc/greetd/sway-config"
 ...
 </pre>
 <h3><span class="mw-headline" id="ReGreet">ReGreet</span></h3>
-<p>Similar to gtkgreet, ReGreet needs a compositor. For example, both Cage and Sway can be used just like they're used for gtkgreet, replacing the <i>gtkgreet</i> command with <i>regreet</i>. The config for Sway would thus look like:
+<p>Similar to gtkgreet, ReGreet needs a compositor. For example, both Cage and Sway can be used just like they are used for gtkgreet, replacing the <i>gtkgreet</i> command with <i>regreet</i>. The config for Sway would thus look like:
 </p>
 <pre># Notice that `swaymsg exit` will run after ReGreet.
 exec "regreet; swaymsg exit"
@@ -466,7 +475,7 @@ include /etc/sway/config.d/*
 </pre>
 <p>ReGreet picks up available sessions from <code>/usr/share/xsession</code> (for X11 sessions) and <code>/usr/share/wayland-sessions</code> (for Wayland sessions). Thus, there is no need to list sessions in <code>/etc/greetd/environments</code>.
 </p>
-<p>ReGreet can be configured through a TOML file in <code>/etc/greetd/regreet.toml</code>. A sample file is provided in <code>/usr/share/doc/greetd-regreet/regreet.sample.toml</code> with all available options. Copy this to <code>/etc/greetd/regreet.toml</code> and make the changes you want, commenting out or deleting the lines you don't need. Any invalid options are ignored.
+<p>ReGreet can be configured through a TOML file in <code>/etc/greetd/regreet.toml</code>. A sample file is provided in <code>/usr/share/doc/greetd-regreet/regreet.sample.toml</code> with all available options. Copy this to <code>/etc/greetd/regreet.toml</code> and make the changes you want, commenting out or deleting the lines you do not need. Any invalid options are ignored.
 </p>
 <h3><span class="mw-headline" id="wlgreet">wlgreet</span></h3>
 <p>In order to start wlgreet, a compositor with <code>wlr-layer-shell-unstable</code> is required. Follow the steps required to set up gtkgreet with Sway as <a href="#Using_sway">described above</a> but use the following for <code>/etc/greetd/sway-config</code> instead:
@@ -545,7 +554,7 @@ user = "<i>myuser</i>"
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.profile</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">export PATH="$HOME/.local/bin:$PATH"</pre>
 <h3><span class="mw-headline" id="Setting_the_Environment">Setting the Environment</span></h3>
-<p>By default greetd doesn't set environment variables such as XDG_SESSION_TYPE and XDG_CURRENT_DESKTOP, unless the greeter sets them based on the session you chose (for example TUI will set the session type based on the location of the session file chosen). One way to solve this is to use a wrapper script that sets any desired environment variables
+<p>By default greetd does not set environment variables such as XDG_SESSION_TYPE and XDG_CURRENT_DESKTOP, unless the greeter sets them based on the session you chose (for example TUI will set the session type based on the location of the session file chosen). One way to solve this is to use a wrapper script that sets any desired environment variables
 before running the actual command. For example to start sway:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/usr/local/bin/start-sway</pre>
@@ -571,6 +580,27 @@ command = "gtkgreet -c /usr/local/bin/start-sway"
 </p>
 <p>See <a rel="nofollow" class="external text" href="https://man.sr.ht/~kennylevinsen/greetd/#how-to-set-xdg_session_typewayland">How to Set XDG_SESSION_TYPE=wayland</a>
 </p>
+<h3><span class="mw-headline" id="Setting_logind_session_type">Setting logind session type</span></h3>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> This is necessary for running GNOME on Wayland properly.</div>
+<p>The logind session type is set by the XDG_SESSION_TYPE environment variable. However, it must be set <b>before</b> the PAM session is opened. Because of this, setting the variable through <code>~/.profile</code> or a wrapper script will not work (both happen after session open).
+</p>
+<p>The correct way to achieve this is through the environment variables sent by greeters (these are set before session open). So if your greeter supports it, just make it send the appropriate <code>XDG_SESSION_TYPE=xxx.</code>
+</p>
+<p>If your greeter does not support this, it is also possible to use <a href="../en/Environment_variables.html#Using_pam_env" title="Environment variables">pam_env</a> under the auth group. The drawback is that all the sessions spawned by greetd will use that session type, which may or may not be problematic depending on your use case.
+</p>
+<p>Here is how one could use the pam_env method to have a Wayland session:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/greetd/config.toml</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[general]
+service = "greetd-spawn"</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/greetd/greetd-spawn.pam_env.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">XDG_SESSION_TYPE DEFAULT=wayland OVERRIDE=wayland</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pam.d/greetd-spawn</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">auth       include      greetd
+auth       required     pam_env.so conffile=/etc/greetd/greetd-spawn.pam_env.conf
+account    include      greetd
+session    include      greetd</pre>
 <h3><span class="mw-headline" id="Missing_mouse_cursor">Missing mouse cursor</span></h3>
 <p>If you are using <code>qtgreet</code> with a compositor such as <code>wayfire</code> and generally need to export variables, such as <code>WLR_NO_HARDWARE_CURSORS=1</code> to get the mouse cursor working, one solution would be to create a separate <a href="../en/Help:Reading.html#Make_executable" class="mw-redirect" title="Executable">executable</a> script and then calling that from <code>/etc/greetd/config.toml</code>.
 </p>
@@ -602,8 +632,8 @@ command = "/usr/local/bin/greetd-startup.sh"
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Greetd&amp;oldid=806130">https://wiki.archlinux.org/index.php?title=Greetd&amp;oldid=806130</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 16 April 2024, at 07:04.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Greetd&amp;oldid=812782">https://wiki.archlinux.org/index.php?title=Greetd&amp;oldid=812782</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 23 July 2024, at 07:26.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

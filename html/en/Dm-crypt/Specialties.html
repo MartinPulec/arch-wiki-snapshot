@@ -119,13 +119,13 @@
 		</li>
 	</ul>
 	</li>
-	<li id="toc-Using_GPG,_LUKS,_or_OpenSSL_Encrypted_Keyfiles" class="vector-toc-list-item vector-toc-level-1">
-		<a class="vector-toc-link" href="#Using_GPG,_LUKS,_or_OpenSSL_Encrypted_Keyfiles">
+	<li id="toc-Using_GPG,_LUKS,_or_OpenSSL_encrypted_keyfiles" class="vector-toc-list-item vector-toc-level-1">
+		<a class="vector-toc-link" href="#Using_GPG,_LUKS,_or_OpenSSL_encrypted_keyfiles">
 			<div class="vector-toc-text">
-			<span class="vector-toc-numb">2</span>Using GPG, LUKS, or OpenSSL Encrypted Keyfiles</div>
+			<span class="vector-toc-numb">2</span>Using GPG, LUKS, or OpenSSL encrypted keyfiles</div>
 		</a>
 		
-		<ul id="toc-Using_GPG,_LUKS,_or_OpenSSL_Encrypted_Keyfiles-sublist" class="vector-toc-list">
+		<ul id="toc-Using_GPG,_LUKS,_or_OpenSSL_encrypted_keyfiles-sublist" class="vector-toc-list">
 		</ul>
 	</li>
 	<li id="toc-Remote_unlocking_of_root_(or_other)_partition" class="vector-toc-list-item vector-toc-level-1">
@@ -211,8 +211,31 @@
 			<span class="vector-toc-numb">5</span>Discard/TRIM support for solid state drives (SSD)</div>
 		</a>
 		
+			<button aria-controls="toc-Discard/TRIM_support_for_solid_state_drives_(SSD)-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon vector-icon--x-small mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle Discard/TRIM support for solid state drives (SSD) subsection</span>
+			</button>
+		
 		<ul id="toc-Discard/TRIM_support_for_solid_state_drives_(SSD)-sublist" class="vector-toc-list">
-		</ul>
+			<li id="toc-LUKS2" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#LUKS2">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">5.1</span>LUKS2</div>
+			</a>
+			
+			<ul id="toc-LUKS2-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-LUKS1_and_plain_dm-crypt" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#LUKS1_and_plain_dm-crypt">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">5.2</span>LUKS1 and plain dm-crypt</div>
+			</a>
+			
+			<ul id="toc-LUKS1_and_plain_dm-crypt-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
 	</li>
 	<li id="toc-Disable_workqueue_for_increased_solid_state_drive_(SSD)_performance" class="vector-toc-list-item vector-toc-level-1">
 		<a class="vector-toc-link" href="#Disable_workqueue_for_increased_solid_state_drive_(SSD)_performance">
@@ -584,7 +607,7 @@ Please type uppercase yes to continue:
 <p>As part of the thesis <a rel="nofollow" class="external text" href="https://13.tc/p/potts/manual.html">installation</a> instructions based on Arch Linux (ISO as of 2013-01) have been published. If you want to try it, be aware these tools are not in standard repositories and the solution will be time consuming to maintain.
 </p>
 <h2>
-<span id="Using_GPG.2C_LUKS.2C_or_OpenSSL_Encrypted_Keyfiles"></span><span class="mw-headline" id="Using_GPG,_LUKS,_or_OpenSSL_Encrypted_Keyfiles">Using GPG, LUKS, or OpenSSL Encrypted Keyfiles</span>
+<span id="Using_GPG.2C_LUKS.2C_or_OpenSSL_encrypted_keyfiles"></span><span class="mw-headline" id="Using_GPG,_LUKS,_or_OpenSSL_encrypted_keyfiles">Using GPG, LUKS, or OpenSSL encrypted keyfiles</span>
 </h2>
 <p>The following forum posts give instructions to use two factor authentication, gpg or openssl encrypted keyfiles, instead of a plaintext keyfile described earlier in this wiki article <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?id=120243">System Encryption using LUKS with GPG encrypted keys</a>:
 </p>
@@ -735,6 +758,32 @@ Please type uppercase yes to continue:
 </li></ul>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> Before enabling TRIM on a drive, make sure the device fully supports TRIM commands, or data loss can occur. See <a href="../../en/Solid_state_drive.html#TRIM" class="mw-redirect" title="Solid State Drives">Solid State Drives#TRIM</a>.</div>
+<p>Besides enabling discard support in dm-crypt, it is also required to periodically run <span class="plainlinks archwiki-template-man" title="$ man 8 fstrim"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/fstrim.8">fstrim(8)</a></span> or mount the filesystem (e.g. <code>/dev/mapper/root</code> in this example) with the <code>discard</code> option in <code>/etc/fstab</code>. For details, please refer to the <a href="../../en/Solid_state_drive.html#TRIM" class="mw-redirect" title="TRIM">TRIM</a> page.
+</p>
+<h3><span class="mw-headline" id="LUKS2">LUKS2</span></h3>
+<p>For a LUKS2 device, TRIM support can be enabled by using the <code>--allow-discards --persistent</code> options when opening it. The <code>allow-discards</code> flag will be written into the LUKS2 header and the option will be automatically used whenever the LUKS2 device is opened.
+</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> 
+<ul>
+<li>Setting new persistent flags via <code>cryptsetup --persistent</code> replaces old flags with new ones instead of adding a new flag to the already set flags. This means if you want to enable other flags too, you have to set them all at once.</li>
+<li>When using OPAL encryption without dm-crypt (<span class="plainlinks archwiki-template-man" title="$ man 8 cryptsetup-luksFormat"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/cryptsetup-luksFormat.8">cryptsetup-luksFormat(8)</a></span> option <code>--hw-opal-only</code>), discard support does not need to be explicitly enabled since there is no dm-crypt layer between the file system and the disk.</li>
+</ul>
+</div>
+<pre># cryptsetup --allow-discards --persistent open /dev/sdaX root
+</pre>
+<p>If the device is already opened, the <code>open</code> action will raise an error, in which case, use the <span class="plainlinks archwiki-template-man" title="$ man 8 cryptsetup-refresh"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/cryptsetup-refresh.8">cryptsetup-refresh(8)</a></span> command instead:
+</p>
+<pre># cryptsetup --allow-discards --persistent refresh root
+</pre>
+<p>You can confirm the flag is persistently set in the LUKS2 header by looking at the <code>cryptsetup luksDump</code> output:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># cryptsetup luksDump /dev/sdaX | grep Flags</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Flags:          allow-discards
+</pre>
+<h3><span class="mw-headline" id="LUKS1_and_plain_dm-crypt">LUKS1 and plain dm-crypt</span></h3>
+<p>For LUKS1 and plain dm-crypt, TRIM support needs to be explicitly enabled when opening the device.
+</p>
 <p>To enable TRIM support during boot, set the following <a href="../../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a>.
 </p>
 <p>If using the <a href="../../en/Dm-crypt/System_configuration.html#Using_encrypt_hook" title="Dm-crypt/System configuration">encrypt</a> hook:
@@ -747,28 +796,15 @@ Please type uppercase yes to continue:
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> The <code>rd.luks.options=discard</code> kernel option does not have any effect on devices included in the initramfs image's <code>/etc/crypttab</code> file (<code>/etc/crypttab.initramfs</code> on real root). You must specify option <code>discard</code> in <code>/etc/crypttab.initramfs</code>.</div>
-<p>Besides the kernel option, it is also required to periodically run <code>fstrim</code> or mount the filesystem (e.g. <code>/dev/mapper/root</code> in this example) with the <code>discard</code> option in <code>/etc/fstab</code>. For details, please refer to the <a href="../../en/Solid_state_drive.html#TRIM" class="mw-redirect" title="TRIM">TRIM</a> page.
-</p>
-<p>For LUKS devices unlocked via <code>/etc/crypttab</code> use option <code>discard</code>, e.g.:
+<p>For devices unlocked via <code>/etc/crypttab</code> use option <code>discard</code>, e.g.:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/crypttab</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">luks-123abcdef-etc UUID=123abcdef-etc none discard</pre>
 <p>When manually unlocking devices on the console use <code>--allow-discards</code>.
 </p>
-<p>Alternatively, <i>cryptsetup</i> gained a new <code>--allow-discards</code> option for opening a blockdevice with the option, as well as a <span class="plainlinks archwiki-template-man" title="$ man 8 cryptsetup-refresh"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/cryptsetup-refresh.8">cryptsetup-refresh(8)</a></span> command to persistently set it in the LUKS2 header.
-</p>
-<p>For example, you can open a LUKS device with the <code>--allow-discards</code> option to execute a manual <i>fstrim</i> command:
+<p>For example, you can open a device with the <code>--allow-discards</code> option to execute a manual <i>fstrim</i> command:
 </p>
 <pre># cryptsetup --allow-discards open /dev/sdaX root
-</pre>
-<p>When the device is already opened, the <code>open</code> action will raise an error. For a LUKS2 device, you can still use the <code>refresh</code> command in these cases, as well as set the <code>--persistent</code> option for the LUKS2 header:
-</p>
-<pre># cryptsetup --allow-discards --persistent refresh root
-</pre>
-<p>You can confirm the flag is persistently set in the LUKS2 header by looking at the <code>cryptsetup luksDump</code> output:
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># cryptsetup luksDump /dev/sdaX | grep Flags</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Flags:          allow-discards
 </pre>
 <p>In any case, you can verify whether the device actually was opened with discards by inspecting the <code>dmsetup table</code> output:
 </p>
@@ -1154,8 +1190,8 @@ HOOKS=(base udev autodetect microcode modconf kms keyboard keymap consolefont bl
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/Specialties&amp;oldid=803829">https://wiki.archlinux.org/index.php?title=Dm-crypt/Specialties&amp;oldid=803829</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 18 March 2024, at 08:18.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/Specialties&amp;oldid=812786">https://wiki.archlinux.org/index.php?title=Dm-crypt/Specialties&amp;oldid=812786</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 23 July 2024, at 08:57.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

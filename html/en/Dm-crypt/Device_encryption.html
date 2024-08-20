@@ -568,7 +568,7 @@ This section covers how to manually utilize <i>dm-crypt</i> from the command lin
 </p>
 <p>The tool is used as follows: 
 </p>
-<pre># cryptsetup <i>OPTIONS</i> <i>action</i> <i>action-specific-options</i> <i>device</i> <i>dmname</i>
+<pre># cryptsetup <i>action</i> <i>options</i> <i>device</i> <i>dmname</i>
 </pre>
 <p>It has compiled-in defaults for the options and the encryption mode, which will be used if no others are specified on the command line. Have a look at 
 </p>
@@ -606,10 +606,9 @@ Since different parameters are required or optional, depending on encryption mod
 <code>--type luks2</code> for using LUKS2, the current version of LUKS that introduced additional extensions,
 <ul>
 <li>
-<code>--type luks2 --hw-opal</code> for OPAL with dm-crypt. See <span class="plainlinks archwiki-template-man" title="$ man 8 cryptsetup"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/cryptsetup.8#SED_(SELF_ENCRYPTING_DRIVE)_OPAL_EXTENSION">cryptsetup(8) § SED (SELF ENCRYPTING DRIVE) OPAL EXTENSION</a></span>
-</li>
+<code>--hw-opal-only</code> for hardware-based encryption on drives supporting the TCG OPAL standard. See <a href="../../en/Self-encrypting_drives.html#Using_cryptsetup" title="Self-encrypting drives">Self-encrypting drives#Using cryptsetup</a> and <span class="plainlinks archwiki-template-man" title="$ man 8 cryptsetup"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/cryptsetup.8#SED_(SELF_ENCRYPTING_DRIVE)_OPAL_EXTENSION">cryptsetup(8) § SED (SELF ENCRYPTING DRIVE) OPAL EXTENSION</a></span>.</li>
 <li>
-<code>--type luks2 --hw-opal-only</code> for OPAL only.</li>
+<code>--hw-opal</code> for OPAL hardware encryption layered with dm-crypt software encryption.</li>
 </ul>
 </li>
 <li>
@@ -746,7 +745,7 @@ Since different parameters are required or optional, depending on encryption mod
 </tr>
 </tbody>
 </table>
-<p>The properties of LUKS features and options are described in the <a rel="nofollow" class="external text" href="https://gitlab.com/cryptsetup/cryptsetup/wikis/Specification">LUKS1</a> (pdf) and <a rel="nofollow" class="external text" href="https://gitlab.com/cryptsetup/cryptsetup/blob/master/docs/on-disk-format-luks2.pdf">LUKS2</a> (pdf) specifications.
+<p>The properties of LUKS features and options are described in the <a rel="nofollow" class="external text" href="https://gitlab.com/cryptsetup/cryptsetup/-/raw/master/docs/on-disk-format.pdf">LUKS1</a> (pdf) and <a rel="nofollow" class="external text" href="https://gitlab.com/cryptsetup/cryptsetup/-/raw/master/docs/on-disk-format-luks2.pdf">LUKS2</a> (pdf) specifications.
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> The project developers' <a rel="nofollow" class="external text" href="https://mbroz.fedorapeople.org/talks/devconf2016-luks2.pdf">devconfcz2016</a> (pdf) presentation summarizes the motivation for the major specification update to LUKS2. See also cryptsetup's major <a rel="nofollow" class="external text" href="https://mirrors.edge.kernel.org/pub/linux/utils/cryptsetup/v2.0/v2.0.0-ReleaseNotes">v2 release notes</a>.</div>
@@ -820,7 +819,7 @@ Since different parameters are required or optional, depending on encryption mod
 <td>
 <code>512</code>
 </td>
-<td>The key size (in bits). The size will depend on the cipher being used and also the chainmode in use. Xts mode requires twice the key size of cbc.
+<td>The key size (in bits). The size will depend on the cipher being used and also the chainmode in use. <a href="https://en.wikipedia.org/wiki/Disk_encryption_theory#XEX-based_tweaked-codebook_mode_with_ciphertext_stealing_.28XTS.29" class="extiw" title="wikipedia:Disk encryption theory">XTS mode requires twice the key size</a> of CBC.
 </td>
 </tr>
 <tr>
@@ -931,7 +930,7 @@ Since different parameters are required or optional, depending on encryption mod
 <p>This section shows how to employ the options for creating new encrypted block devices and accessing them manually. 
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> GRUB's support for LUKS2 is limited; see <a href="../../en/GRUB.html#Encrypted_/boot" title="GRUB">GRUB#Encrypted /boot</a> for details. Use LUKS1 (<code>cryptsetup luksFormat --type luks1</code>) for partitions that GRUB will need to unlock.</div>
+<strong>Warning:</strong> GRUB's support for LUKS2 is limited; see <a href="../../en/GRUB.html#Encrypted_/boot" title="GRUB">GRUB#Encrypted /boot</a> for details. Use LUKS2 with PBKDF2 (<code>cryptsetup luksFormat --pbkdf pbkdf2</code>) for partitions that GRUB will need to unlock.</div>
 <h3><span class="mw-headline" id="Encrypting_devices_with_LUKS_mode">Encrypting devices with LUKS mode</span></h3>
 <h4><span class="mw-headline" id="Formatting_LUKS_partitions">Formatting LUKS partitions</span></h4>
 <p>In order to setup a partition as an encrypted LUKS partition execute:
@@ -980,7 +979,7 @@ Since different parameters are required or optional, depending on encryption mod
 </p>
 <p>In order to write encrypted data into the partition it must be accessed through the device mapped name. The first step of access will typically be to <a href="../../en/File_systems.html#Create_a_file_system" class="mw-redirect" title="Create a file system">create a file system</a>. For example:
 </p>
-<pre># mkfs -t ext4 /dev/mapper/root
+<pre># mkfs.ext4 /dev/mapper/root
 </pre>
 <p>The device <code>/dev/mapper/root</code> can then be <a href="../../en/File_systems.html#Mount_a_file_system" class="mw-redirect" title="Mount">mounted</a> like any other partition.
 </p>
@@ -997,13 +996,16 @@ Since different parameters are required or optional, depending on encryption mod
 <p>A first mapper is created with <i>cryptsetup's</i> plain-mode defaults, as described in the table's left column above  
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># cryptsetup --type plain -v open /dev/sd<i>xY</i> plain1</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Enter passphrase: 
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">WARNING: Using default options for cipher (aes-xts-plain64, key size 256 bits) that could be incompatible with older versions.
+WARNING: Using default options for hash (sha256) that could be incompatible with older versions.
+For plain mode, always use options --cipher, --key-size and if no keyfile is used, then also --hash.
+Enter passphrase for /dev/sd<i>xY</i>:
 Command successful.
 </pre>
 <p>Now we add the second block device inside it, using different encryption parameters and with an (optional) offset, create a file system and mount it  
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># cryptsetup --type plain --cipher=serpent-xts-plain64 --hash=sha256 --key-size=256 --offset=10  open /dev/mapper/plain1 plain2</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Enter passphrase:</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Enter passphrase for /dev/mapper/plain1:</pre>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># lsblk -p</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"> NAME                                                     
  /dev/sda                                     
@@ -1026,8 +1028,9 @@ Command successful.
 <pre># cryptsetup --type plain --cipher=serpent-xts-plain64 --hash=sha256 --key-size=256 --offset=10 open /dev/sd<i>xY</i> plain2
 </pre>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># mount -t ext2 /dev/mapper/plain2 /mnt</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">mount: wrong fs type, bad option, bad superblock on /dev/mapper/plain2,
-      missing codepage or helper program, or other error
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">mount: /mnt: wrong fs type, bad option, bad superblock on /dev/mapper/plain2, missing codepage or helper program, or other error.
+       dmesg(1) may have more information after failed mount system call.
+
 </pre>
 <p>Why that did not work? Because the "plain2" starting block (<code>10</code>) is still encrypted with the cipher from "plain1". It can only be accessed via the stacked mapper. The error is arbitrary though, trying a wrong passphrase or wrong options will yield the same. For <i>dm-crypt</i> plain mode, the <code>open</code> action will not error out itself.  
 </p>
@@ -1036,10 +1039,13 @@ Command successful.
 <pre># cryptsetup close plain2    # dysfunctional mapper from previous try
 </pre>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># cryptsetup --type plain open /dev/sd<i>xY</i> plain1</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Enter passphrase:
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">WARNING: Using default options for cipher (aes-xts-plain64, key size 256 bits) that could be incompatible with older versions.
+WARNING: Using default options for hash (sha256) that could be incompatible with older versions.
+For plain mode, always use options --cipher, --key-size and if no keyfile is used, then also --hash.
+Enter passphrase for /dev/sd<i>xY</i>:
 </pre>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># cryptsetup --type plain --cipher=serpent-xts-plain64 --hash=sha256 --key-size=256 --offset=10 open /dev/mapper/plain1 plain2</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Enter passphrase:</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Enter passphrase for /dev/mapper/plain1:</pre>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># mount /dev/mapper/plain2 /mnt &amp;&amp; cat /mnt/stacked.txt</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">This is stacked. one passphrase per foot to shoot.
 </pre>
@@ -1048,9 +1054,14 @@ Command successful.
 <p>Available for plain mode only is the option <code>--shared</code>. With it a single device can be segmented into different non-overlapping mappers. We do that in the next example, using a <i>loopaes</i> compatible cipher mode for "plain2" this time: 
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># cryptsetup --type plain --offset 0 --size 1000 open /dev/sd<i>xY</i> plain1</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Enter passphrase:</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">WARNING: Using default options for cipher (aes-xts-plain64, key size 256 bits) that could be incompatible with older versions.
+WARNING: Using default options for hash (sha256) that could be incompatible with older versions.
+For plain mode, always use options --cipher, --key-size and if no keyfile is used, then also --hash.
+Enter passphrase for /dev/sd<i>xY</i>:</pre>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># cryptsetup --type plain --offset 1000 --size 1000 --shared --cipher=aes-cbc-lmk --hash=sha256 open /dev/sd<i>xY</i> plain2</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Enter passphrase:</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">WARNING: Using default options for cipher (aes-cbc-lmk, key size 256 bits) that could be incompatible with older versions.
+For plain mode, always use options --cipher, --key-size and if no keyfile is used, then also --hash.
+Enter passphrase for /dev/sd<i>xY</i>:</pre>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># lsblk -p</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">NAME                    
 dev/sd<i>xY</i>                    
@@ -1075,7 +1086,7 @@ dev/sd<i>xY</i>
 <p>Adding new keyslots is accomplished with the <code>luksAddKey</code> action. For safety it will always, even for already unlocked devices, ask for a valid existing key (a passphrase for any existing slot) before a new one may be entered:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># cryptsetup luksAddKey /dev/<i>device</i> [<i>/path/to/additionalkeyfile</i>]</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Enter any passphrase:
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Enter any existing passphrase:
 Enter new passphrase for key slot:
 Verify passphrase: 
 </pre>
@@ -1086,7 +1097,8 @@ Verify passphrase:
 <p>If it is intended to use multiple keys and change or revoke them, the <code>--key-slot</code> or <code>-S</code> option may be used to specify the slot: 
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># cryptsetup luksAddKey /dev/<i>device</i> -S 6</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Enter any passphrase: 
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">WARNING: The --key-slot parameter is used for new keyslot number.
+Enter any existing passphrase: 
 Enter new passphrase for key slot: 
 Verify passphrase:
 </pre>
@@ -1104,8 +1116,9 @@ Keyslots:
 <p>To show an associated action in this example, we decide to change the key right away:  
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># cryptsetup luksChangeKey /dev/<i>device</i> -S 6</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Enter LUKS passphrase to be changed: 
-Enter new LUKS passphrase:
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Enter passphrase to be changed: 
+Enter new passphrase:
+Verify passphrase:
 </pre>
 <p>before continuing to remove it.
 </p>
@@ -1114,43 +1127,42 @@ Enter new LUKS passphrase:
 </p>
 <ul>
 <li>
-<code>luksRemoveKey</code> removes a key by specifying its passphrase/key-file.</li>
+<code>luksRemoveKey</code> removes a key by specifying its passphrase/key-file. See <span class="plainlinks archwiki-template-man" title="$ man 8 cryptsetup-luksRemoveKey"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/cryptsetup-luksRemoveKey.8">cryptsetup-luksRemoveKey(8)</a></span>.</li>
 <li>
-<code>luksKillSlot</code> removes a key by specifying its slot (needs another valid key). Obviously, this is extremely useful if you have forgotten a passphrase, lost a key-file, or have no access to it.</li>
+<code>luksKillSlot</code> removes a key by specifying its slot (needs another valid key). Obviously, this is extremely useful if you have forgotten a passphrase, lost a key-file, or have no access to it. See <span class="plainlinks archwiki-template-man" title="$ man 8 cryptsetup-luksKillSlot"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/cryptsetup-luksKillSlot.8">cryptsetup-luksKillSlot(8)</a></span>.</li>
 <li>
-<code>luksErase</code> removes <b>all</b> active keys.</li>
+<code>erase</code> removes <b>all</b> active keys. See <span class="plainlinks archwiki-template-man" title="$ man 8 cryptsetup-erase"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/cryptsetup-erase.8">cryptsetup-erase(8)</a></span>.</li>
 </ul>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> 
 <ul>
 <li>All above actions can be used to irrevocably delete the last active key for an encrypted device!</li>
-<li>The <code>luksErase</code> command was added in version 1.6.4 to quickly nuke access to the device. This action <b>will not</b> prompt for a valid passphrase! It will not <a href="../../en/Dm-crypt/Drive_preparation.html#Wipe_LUKS_header" title="Dm-crypt/Drive preparation">wipe the LUKS header</a>, but all keyslots at once and you will, therefore, not be able to regain access unless you have a valid backup of the LUKS header.</li>
+<li>The <code>erase</code> command <b>will not</b> prompt for a valid passphrase! It will not <a href="../../en/Dm-crypt/Drive_preparation.html#Wipe_LUKS_header" title="Dm-crypt/Drive preparation">wipe the LUKS header</a>, but all keyslots at once and you will, therefore, not be able to regain access unless you have a valid backup of the LUKS header.</li>
+<li>When using the <code>erase</code> command on an <a href="../../en/Self-encrypting_drives.html" class="mw-redirect" title="OPAL">OPAL</a> hardware-encrypted partition, the LUKS header will be wiped and the OPAL locking range removed. Unlike with software encryption, this action is unrecoverable even with a valid LUKS header backup.</li>
 </ul>
 </div>
 <p>For above warning it is good to know the key we want to <b>keep</b> is valid. An easy check is to unlock the device with the <code>-v</code> option, which will specify which slot it occupies:  
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># cryptsetup --test-passphrase -v open /dev/<i>device</i></pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Enter passphrase for /dev/<i>device</i>: 
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">No usable token is available.
+Enter passphrase for /dev/<i>device</i>: 
 Key slot 1 unlocked.
 Command successful.
 </pre>
 <p>Now we can remove the key added in the previous subsection using its passphrase: 
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># cryptsetup luksRemoveKey /dev/<i>device</i></pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Enter LUKS passphrase to be deleted:
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Enter passphrase to be deleted:
 </pre>
 <p>If we had used the same passphrase for two keyslots, the first slot would be wiped now. Only executing it again would remove the second one. 
 </p>
 <p>Alternatively, we can specify the key slot: 
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># cryptsetup luksKillSlot /dev/<i>device</i> 6</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Enter any remaining LUKS passphrase:
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Enter any remaining passphrase:
 </pre>
 <p>Note that in both cases, no confirmation was required.
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># cryptsetup luksDump /dev/sda8 | grep 'Slot 6'</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Key Slot 6: DISABLED
-</pre>
 <p>To re-iterate the warning above: If the same passphrase had been used for key slots 1 and 6, both would be gone now.
 </p>
 <h3><span class="mw-headline" id="Backup_and_restore">Backup and restore</span></h3>
@@ -1181,7 +1193,9 @@ Command successful.
 <p>In order to evade restoring a wrong header, you can ensure it does work by using it as a remote <code>--header</code> first: 
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># cryptsetup -v --header /mnt/<i>backup</i>/<i>file</i>.img open /dev/<i>device</i> test</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Key slot 0 unlocked.
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">No usable token is available.
+Enter passphrase for /dev/<i>device</i>:
+Key slot 0 unlocked.
 Command successful.
 </pre>
 <pre># mount /dev/mapper/test /mnt/test &amp;&amp; ls /mnt/test 
@@ -1197,6 +1211,11 @@ Command successful.
 <h4><span class="mw-headline" id="Manual_backup_and_restore">Manual backup and restore</span></h4>
 <p>The header always resides at the beginning of the device and a backup can be performed without access to <i>cryptsetup</i> as well. First you have to find out the payload offset of the crypted partition:
 </p>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../../File:View-refresh-red.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is out of date.</b></p>
+<div>
+<b>Reason:</b> LUKS2 has a different <code>cryptsetup luksDump</code> output. (Discuss in <a rel="nofollow" class="external text" href="../../en/Talk:Dm-crypt/Device_encryption.html">Talk:Dm-crypt/Device encryption</a>)</div>
+</div>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># cryptsetup luksDump /dev/<i>device</i> | grep "Payload offset"</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Payload offset:	4040
 </pre>
@@ -1315,6 +1334,11 @@ The filesystem on /dev/mapper/recrypt is now 664807 (4k) blocks long.
 </pre>
 <p>Existing keys are retained when re-encrypting a device with a different cipher and/or hash. Another use case is to re-encrypt LUKS devices which have non-current encryption options. Apart from above warning on specifying options correctly, the ability to change the LUKS header may also be limited by its size. For example, if the device was initially encrypted using a CBC mode cipher and 128 bit key-size, the LUKS header will be half the size of above mentioned <code>4096</code> sectors: 
 </p>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../../File:View-refresh-red.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is out of date.</b></p>
+<div>
+<b>Reason:</b> LUKS2 has a different <code>cryptsetup luksDump</code> output. (Discuss in <a rel="nofollow" class="external text" href="../../en/Talk:Dm-crypt/Device_encryption.html">Talk:Dm-crypt/Device encryption</a>)</div>
+</div>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># cryptsetup luksDump /dev/sd<i>xY</i> | grep -e "mode" -e "Payload" -e "MK bits"</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Cipher mode:   	cbc-essiv:sha256
 Payload offset:	<b>2048</b>
@@ -1403,7 +1427,7 @@ MK bits:       	128
 </pre>
 <h2><span class="mw-headline" id="Keyfiles">Keyfiles</span></h2>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> This section describes using a plaintext keyfile. If you want to encrypt your keyfile giving you two factor authentication see <a href="../../en/Dm-crypt/Specialties.html#Using_GPG,_LUKS,_or_OpenSSL_Encrypted_Keyfiles" title="Dm-crypt/Specialties">Using GPG or OpenSSL Encrypted Keyfiles</a> for details, but please still read this section.</div>
+<strong>Note:</strong> This section describes using a plaintext keyfile. If you want to encrypt your keyfile giving you two factor authentication see <a href="../../en/Dm-crypt/Specialties.html#Using_GPG,_LUKS,_or_OpenSSL_encrypted_keyfiles" title="Dm-crypt/Specialties">dm-crypt/Specialties#Using GPG, LUKS, or OpenSSL encrypted keyfiles</a> for details, but please still read this section.</div>
 <p><b>What is a keyfile?</b>
 </p>
 <p>A keyfile is a file whose data is used as the passphrase to unlock an encrypted volume.
@@ -1478,9 +1502,7 @@ That means if such a file is lost or changed, decrypting the volume may no longe
 <p>Add a keyslot for the keyfile to the LUKS header:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># cryptsetup luksAddKey /dev/sda2 /etc/mykeyfile</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Enter any LUKS passphrase:
-key slot 0 unlocked.
-Command successful.
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Enter any existing passphrase:
 </pre>
 <h3><span class="mw-headline" id="Manually_unlocking_a_partition_using_a_keyfile">Manually unlocking a partition using a keyfile</span></h3>
 <p>Use the <code>--key-file</code> option when opening the LUKS device:
@@ -1550,7 +1572,10 @@ Command successful.
 <div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../../en/Category:Data-at-rest_encryption.html" title="Category:Data-at-rest encryption">Data-at-rest encryption</a></li></ul>
 </div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li></ul>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
+<li><a href="../../en/Category:Pages_or_sections_flagged_with_Template:Out_of_date.html" title="Category:Pages or sections flagged with Template:Out of date">Pages or sections flagged with Template:Out of date</a></li>
+<li><a href="../../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
+</ul>
 </div>
 </div>
 				</div>
@@ -1561,8 +1586,8 @@ Command successful.
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/Device_encryption&amp;oldid=811424">https://wiki.archlinux.org/index.php?title=Dm-crypt/Device_encryption&amp;oldid=811424</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 28 June 2024, at 12:09.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/Device_encryption&amp;oldid=812939">https://wiki.archlinux.org/index.php?title=Dm-crypt/Device_encryption&amp;oldid=812939</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 28 July 2024, at 09:24.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

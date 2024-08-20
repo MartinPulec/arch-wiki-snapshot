@@ -167,16 +167,16 @@
 <h2><span class="mw-headline" id="Creating_patches">Creating patches</span></h2>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> If you only need to change one or two lines, you might want to use <a href="../en/Core_utilities.html#Essentials" class="mw-redirect" title="Sed">sed</a> instead.</div>
-<p>The <i>diff</i> tool compares files line by line. If you save its output you have a patch, e.g. <code>diff --unified --recursive --text foo bar &gt; foobar.patch</code>. If you pass directories <i>diff</i> will compare the files they contain.
+<p>The <i>diff</i> tool compares files line by line. If you save its output you have a patch, e.g. <code>diff --unified --recursive --text foo bar &gt; foobar.patch</code> (which can be shortened to <code>diff -ura</code>). If you pass directories <i>diff</i> will compare the files they contain.
 </p>
 <ol>
 <li>Delete the <code>src</code> directory if you have already built the package.</li>
-<li>Run <code>makepkg --nobuild</code> which will download and extract the source files, specified in <code>PKGBUILD</code>, but not build them. If the system you are making the patch on does not have the required dependencies, you may have to run <code>makepkg --nobuild --nodeps</code> instead.</li>
+<li>Run <code>makepkg --nobuild</code>/<code>makepkg -n</code> which will download and extract the source files, specified in <code>PKGBUILD</code>, but not build them. If the system you are making the patch on does not have the required dependencies, you may have to run <code>makepkg --nobuild --nodeps</code>/<code>makepkg -nd</code> instead.</li>
 <li>Create two copies of the extracted directory in the <code>src</code> directory, one as a pristine copy and one for your altered version. We will call them <code>package.orig</code> and <code>package.new</code>.</li>
 <li>Make your changes in the <code>package.new</code> directory.</li>
-<li>Run <code>diff --unified --recursive --text package.orig package.new --color</code> and check if the patch looks good.</li>
-<li>Run <code>diff --unified --recursive --text package.orig package.new &gt; package.patch</code> to create the patch.</li>
-<li>Change into the initial <code>package.orig</code> directory from which you made copies and apply the patch using <code>patch --strip=1 &lt; ../package.patch</code>. Verify that the patch is working by building and installing the modified package with <code>makepkg --noextract --install</code>.</li>
+<li>Run <code>diff -ura package.orig package.new --color</code> and check if the patch looks good.</li>
+<li>Run <code>diff -ura package.orig package.new &gt; package.patch</code> to create the patch.</li>
+<li>Change into the initial <code>package.orig</code> directory from which you made copies and apply the patch using <code>patch --strip=1 --input=../package.patch</code> (which can be shortened to <code>patch -p1 -i ../package.patch</code>). Verify that the patch is working by building and installing the modified package with <code>makepkg --noextract --install</code>/<code>makepkg -ei</code>.</li>
 </ol>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> You can also create patches with <a href="../en/Git.html" title="Git">Git</a> using <code>git diff</code> or <code>git format-patch</code> <a rel="nofollow" class="external autonumber" href="https://stackoverflow.com/questions/6658313/generate-a-git-patch-for-a-specific-commit">[1]</a>.</div>
@@ -185,11 +185,6 @@
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong>  Most git hosting platforms (such as GitHub or GitLab) allow to generate patches for a specific commit or a specific merge/pull request by appending <code>.patch</code> to their URL. For GitHub, consider also adding a <code>?full_index=1</code> parameter at the end of the URL to avoid checksum mismatches due to future changes to the object hash length.</div>
 <h2><span class="mw-headline" id="Applying_patches">Applying patches</span></h2>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-clear.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs language, wiki syntax or style improvements. See <a href="../en/Help:Style.html" title="Help:Style">Help:Style</a> for reference.</b></p>
-<div>
-<b>Reason:</b> Showing long options is not practical, 99% of the real PKGBUILDs use short options like <code>patch -d $pkgname-$pkgver -Np1 -i ../eject.patch</code>. These were on this page <a rel="nofollow" class="external text" href="https://wiki.archlinux.org/index.php?title=Patching_packages&amp;diff=prev&amp;oldid=567733">before 2019</a>. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Patching_packages.html">Talk:Patching packages</a>)</div>
-</div>
 <p>This section outlines how to apply patches you created or downloaded from the Internet from within a <code>PKGBUILD</code>'s <code>prepare()</code> function. Follow these steps:
 </p>
 <ol>
@@ -197,26 +192,28 @@
 <li>Then use <code>makepkg -g &gt;&gt; PKGBUILD</code> or <code>updpkgsums</code> (from <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pacman-contrib">pacman-contrib</a></span>) to update the <code>sha512sums</code> array. Or manually add an entry to the <code>sha512sums</code> array; you can generate the sum of your patch using <i>sha512sum</i> tool.</li>
 <li>Create the <code>prepare()</code> function in the <code>PKGBUILD</code> if one is not already present.</li>
 <li>The first step is to change into the directory that needs to be patched (in the <code>prepare()</code> function, not on your terminal! You want to automate the process of applying the patch).  You can do this with something like <code>cd $pkgname-$pkgver</code>. <code>$pkgname-$pkgver</code> is often the name of a directory created by untarring a downloaded source file, but not in all cases.</li>
-<li>Now you simply need to apply the patch from within this directory. This is very simply done by adding <code>patch --strip=1 --input=<i>pkgname</i>.patch</code> to your <code>prepare()</code> function, changing <code><i>pkgname</i>.patch</code> to the name of the file containing the diff (the file that was automatically copied into your <code>src</code> directory because it was in the <code>source</code> array of the <code>PKGBUILD</code> file).</li>
+<li>Now you simply need to apply the patch from within this directory. This is very simply done by adding <code>patch -p1 -i <i>pkgname</i>.patch</code> to your <code>prepare()</code> function, changing <code><i>pkgname</i>.patch</code> to the name of the file containing the diff (the file that was automatically copied into your <code>src</code> directory because it was in the <code>source</code> array of the <code>PKGBUILD</code> file).</li>
 </ol>
 <p>An example prepare-function:
 </p>
 <pre>prepare() {
     cd $pkgname-$pkgver
-    patch --forward --strip=1 --input=../eject.patch
-}</pre>
-<p>Alternatively, you can use the <code>--directory</code> flag of <code>patch</code> without having to cd first. The example above would then become:
+    patch -Np1 -i ../eject.patch
+}
+</pre>
+<p>Alternatively, you can use the <code>--directory</code>/<code>-d</code> flag of <code>patch</code> without having to cd first. The example above would then become:
 </p>
 <pre>prepare() {
-    patch --directory=$pkgname-$pkgver --forward --strip=1 --input=../eject.patch
-}</pre>
-<p>Run <code>makepkg</code> (from the terminal now). If all goes well, the patch will be automatically applied, and your new package will contain whatever changes were included in the patch.  If not, you may have to experiment with the <code>--strip</code> option of patch. While experimenting, you might find <code>--dry-run</code>, <code>--reverse</code> or <code>--verbose</code> options usable. Read <span class="plainlinks archwiki-template-man" title="$ man 1 patch"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/patch.1">patch(1)</a></span> for more information.
+    patch -d $pkgname-$pkgver -Np1 -i ../eject.patch
+}
+</pre>
+<p>Run <code>makepkg</code> (from the terminal now). If all goes well, the patch will be automatically applied, and your new package will contain whatever changes were included in the patch.  If not, you may have to experiment with the <code>--strip</code>/<code>-p</code> option of patch. While experimenting, you might find <code>--dry-run</code>, <code>--reverse</code> or <code>--verbose</code> options usable. Read <span class="plainlinks archwiki-template-man" title="$ man 1 patch"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/patch.1">patch(1)</a></span> for more information.
 </p>
-<p>Basically it works as follows. If the diff file was created to apply patches to files in <code>myversion/</code>, the diff files will be applied to <code>myversion/file</code>. You are running it from within the <code>yourversion/</code> directory (because you would cd into that directory in the <code>PKGBUILD</code>), so when patch applies the file, you want it to apply it to the file <code>file</code>, taking off the <code>myversion/</code> part. <code>--strip=1</code> does this, by removing one directory from the path.  However, if the developer patched in <code>myfiles/myversion</code>, you need to remove two directories, so you use <code>--strip=2</code>.
+<p>Basically it works as follows. If the diff file was created to apply patches to files in <code>myversion/</code>, the diff files will be applied to <code>myversion/file</code>. You are running it from within the <code>yourversion/</code> directory (because you would cd into that directory in the <code>PKGBUILD</code>), so when patch applies the file, you want it to apply it to the file <code>file</code>, taking off the <code>myversion/</code> part. <code>-p1</code> does this, by removing one directory from the path. However, if the developer patched in <code>myfiles/myversion</code>, you need to remove two directories, so you use <code>-p2</code>.
 </p>
-<p>If you do not apply a <code>--strip</code> option, it will take off all directory structure. This is OK if all the files are in the base directory, but if the patch was created on <code>myversion/</code> and one of the edited files was <code>myversion/src/file</code>, and you run the patch without a <code>--strip</code> option from within <code>yourversion</code>, it will try to patch a file named <code>yourversion/file</code>.
+<p>If you do not apply a <code>-p</code> option, it will take off all directory structure. This is OK if all the files are in the base directory, but if the patch was created on <code>myversion/</code> and one of the edited files was <code>myversion/src/file</code>, and you run the patch without a <code>-p</code> option from within <code>yourversion</code>, it will try to patch a file named <code>yourversion/file</code>.
 </p>
-<p>Most developers create patches from the parent directory of the directory that is being patched, so <code>--strip=1</code> will usually be right.
+<p>Most developers create patches from the parent directory of the directory that is being patched, so <code>-p1</code> will usually be right.
 </p>
 <h2><span class="mw-headline" id="Using_quilt">Using quilt</span></h2>
 <p>A simpler way to create patches is using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=quilt">quilt</a></span> which provides better support for managing many patches, such as applying patches, refreshing patches, and reverting patched files to original state. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=quilt">quilt</a></span> is used on <a href="https://wiki.debian.org/UsingQuilt" class="extiw" title="debian:UsingQuilt">Debian</a> to manage their patches. See <a rel="nofollow" class="external text" href="http://www.shakthimaan.com/downloads/glv/quilt-tutorial/quilt-doc.pdf">Using Quilt</a> for basic information about basic quilt usage to generate, apply patches, and reverting patched files.
@@ -226,13 +223,9 @@
 <a rel="nofollow" class="external free" href="http://www.kegel.com/academy/opensource.html">http://www.kegel.com/academy/opensource.html</a> — Useful information on patching files</li></ul>
 </div>
 </div>
-					<div id="catlinks" class="catlinks" data-mw="interface">
-<div id="mw-normal-catlinks" class="mw-normal-catlinks">
+					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Package_management.html" title="Category:Package management">Package management</a></li></ul>
-</div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li></ul>
-</div>
-</div>
+</div></div>
 				</div>
 			</main>
 			
@@ -241,8 +234,8 @@
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Patching_packages&amp;oldid=810745">https://wiki.archlinux.org/index.php?title=Patching_packages&amp;oldid=810745</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 17 June 2024, at 09:30.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Patching_packages&amp;oldid=813588">https://wiki.archlinux.org/index.php?title=Patching_packages&amp;oldid=813588</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 31 July 2024, at 07:45.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

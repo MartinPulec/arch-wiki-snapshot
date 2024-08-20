@@ -496,6 +496,15 @@
 			<ul id="toc-mt7612u-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-mt7921" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#mt7921">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">7.1.6</span>mt7921</div>
+			</a>
+			
+			<ul id="toc-mt7921-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 		</li>
 		<li id="toc-Realtek" class="vector-toc-list-item vector-toc-level-2">
@@ -1261,7 +1270,7 @@ This can be bypassed by changing the operating mode to <code>__ap</code> (<code>
 </p>
 <p>Misconfiguring the regdomain can be useful - for example, by allowing use of an unused channel when other channels are crowded, or by allowing an increase in tx power to widen transmitter range. However, <b>this is not recommended</b> as it could break local laws and cause interference with other radio devices.
 </p>
-<p>The kernel loads the database directly when <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=wireless-regdb">wireless-regdb</a></span> is <a href="../../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">installed</a>. For direct loading, the kernel should, for security's sake, be configured with <code>CONFIG_CFG80211_USE_KERNEL_REGDB_KEYS</code> set to yes to allow for cryptographic verification of the database. This is true of the stock Arch kernel, but if you are using an alternate kernel, or compiling your own, you should verify this. More information is available at <a rel="nofollow" class="external text" href="http://docker.hd-wireless.com/Support/WifiRegulatoryDomainsinLinux">this guide</a><sup title="Last check status: 401">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2023-05-06 ⓘ]</sup>.
+<p>The kernel loads the database directly when <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=wireless-regdb">wireless-regdb</a></span> is <a href="../../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">installed</a>. For direct loading, the kernel should, for security's sake, be configured with <code>CONFIG_CFG80211_USE_KERNEL_REGDB_KEYS</code> set to yes to allow for cryptographic verification of the database. This is true of the stock Arch kernel, but if you are using an alternate kernel, or compiling your own, you should verify this. More information is available at <a rel="nofollow" class="external text" href="http://docker.hd-wireless.com/Support/WifiRegulatoryDomainsinLinux">this guide</a><sup title="Last check status: domain name not resolved">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-07-30 ⓘ]</sup>.
 </p>
 <p>To configure the regdomain, install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=wireless-regdb">wireless-regdb</a></span> and reboot, then edit <code>/etc/conf.d/wireless-regdom</code> and uncomment the appropriate domain.
 </p>
@@ -1524,6 +1533,15 @@ wlp1s0: authentication with 56:e7:ee:7b:55:bc timed out</pre>
 </p>
 <p><a rel="nofollow" class="external text" href="https://github.com/morrownr/7612u/blob/main/README.md#known-issues">DFS channels are currently not supported in 5 GHz AP mode</a>.
 </p>
+<h4><span class="mw-headline" id="mt7921">mt7921</span></h4>
+<p>There are some high latency problems with these MediaTek chipsets. To fix this, the only solution is to disable ASPM:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/modprobe.d/wifi.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">options mt7921e disable_aspm=1</pre>
+<p>This configuration file will take effect on next reboot or after reloading the module with <a href="../../en/Kernel_module.html" class="mw-redirect" title="Modprobe">modprobe</a>:
+</p>
+<pre># modprobe -r mt7921e &amp;&amp; modprobe mt7921e
+</pre>
 <h3><span class="mw-headline" id="Realtek">Realtek</span></h3>
 <p>See <a rel="nofollow" class="external autonumber" href="https://wikidevi.wi-cat.ru/Realtek">[7]</a> for a list of Realtek chipsets and specifications.
 </p>
@@ -1820,7 +1838,7 @@ Try disabling ASPM-related features using the config below.
 <li><a rel="nofollow" class="external text" href="https://wireless.wiki.kernel.org/">The Linux Wireless project</a></li>
 <li><a rel="nofollow" class="external text" href="https://aircrack-ng.org/doku.php?id=install_drivers">Aircrack-ng guide on installing drivers</a></li>
 <li>
-<a rel="nofollow" class="external text" href="https://wikidevi.wi-cat.ru">Wireless Device Database Wiki</a> (This fork is hosted by wi-cat.ru since the original wiki has shut down. There are two less complete versions available: <a rel="nofollow" class="external text" href="http://en.techinfodepot.shoutwiki.com">TechInfoDepot</a>, <a rel="nofollow" class="external text" href="https://deviwiki.com/">deviwiki</a>)</li>
+<a rel="nofollow" class="external text" href="https://wikidevi.wi-cat.ru">Wireless Device Database Wiki</a> (This fork is hosted by wi-cat.ru since the original wiki has shut down. There are two less complete versions available: <a rel="nofollow" class="external text" href="https://en.techinfodepot.shoutwiki.com">TechInfoDepot</a>, <a rel="nofollow" class="external text" href="https://deviwiki.com/">deviwiki</a>)</li>
 <li>
 <a rel="nofollow" class="external free" href="https://github.com/morrownr/USB-WiFi">https://github.com/morrownr/USB-WiFi</a> – various information on different Wi-Fi adapters and chipsets, including performance tests, driver info and general info</li>
 </ul>
@@ -1848,8 +1866,8 @@ Try disabling ASPM-related features using the config below.
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Network_configuration/Wireless&amp;oldid=811099">https://wiki.archlinux.org/index.php?title=Network_configuration/Wireless&amp;oldid=811099</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 22 June 2024, at 16:45.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Network_configuration/Wireless&amp;oldid=813420">https://wiki.archlinux.org/index.php?title=Network_configuration/Wireless&amp;oldid=813420</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 30 July 2024, at 15:02.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

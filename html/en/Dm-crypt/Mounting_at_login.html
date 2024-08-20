@@ -215,7 +215,7 @@ Options=defaults,relatime,compress=zstd
 [Install]
 RequiredBy=user@<i>1000</i>.service</pre>
 <h2><span class="mw-headline" id="Locking_after_unmounting">Locking after unmounting</span></h2>
-<p>After unmounting, the device will still be unlocked, and it will be possible to mount it without re-entering password. You can create and <a href="../../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> a service that starts when the device gets unlocked (<code>BindsTo=dev-mapper-home\x2d<i>username</i>.device</code>) and dies after the device gets unmounted (<code>Requires,Before=home-<i>username</i>.mount</code>), locking the device in the process (<code>ExecStop=cryptsetup close</code>):
+<p>After unmounting, the device will still be unlocked, and it will be possible to mount it without re-entering password (shutting down or rebooting will lock the partition because the <a href="../../en/Data-at-rest_encryption.html#Basic_principle" title="Data-at-rest encryption">key is wiped from RAM</a>, but unmounting alone will not). You can create and <a href="../../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> a service that starts when the device gets unlocked (<code>BindsTo=dev-mapper-home\x2d<i>username</i>.device</code>) and dies after the device gets unmounted (<code>Requires,Before=home-<i>username</i>.mount</code>), locking the device in the process (<code>ExecStop=cryptsetup close</code>):
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/cryptsetup-<i>username</i>.service</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Unit]
@@ -259,8 +259,8 @@ RequiredBy=dev-mapper-home\x2d<i>username</i>.device</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/Mounting_at_login&amp;oldid=806738">https://wiki.archlinux.org/index.php?title=Dm-crypt/Mounting_at_login&amp;oldid=806738</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 23 April 2024, at 18:33.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/Mounting_at_login&amp;oldid=812699">https://wiki.archlinux.org/index.php?title=Dm-crypt/Mounting_at_login&amp;oldid=812699</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 20 July 2024, at 18:25.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

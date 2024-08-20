@@ -312,19 +312,28 @@
 			</button>
 		
 		<ul id="toc-Tips_and_tricks-sublist" class="vector-toc-list">
-			<li id="toc-Store_private_keys_in_encrypted_form" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Store_private_keys_in_encrypted_form">
+			<li id="toc-Store_private_keys_in_encrypted_form_(wg-quick)" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Store_private_keys_in_encrypted_form_(wg-quick)">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">5.1</span>Store private keys in encrypted form</div>
+				<span class="vector-toc-numb">5.1</span>Store private keys in encrypted form (wg-quick)</div>
 			</a>
 			
-			<ul id="toc-Store_private_keys_in_encrypted_form-sublist" class="vector-toc-list">
+			<ul id="toc-Store_private_keys_in_encrypted_form_(wg-quick)-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Store_private_keys_in_TPM_(systemd-networkd)" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Store_private_keys_in_TPM_(systemd-networkd)">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">5.2</span>Store private keys in TPM (systemd-networkd)</div>
+			</a>
+			
+			<ul id="toc-Store_private_keys_in_TPM_(systemd-networkd)-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 		<li id="toc-Endpoint_with_changing_IP" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Endpoint_with_changing_IP">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">5.2</span>Endpoint with changing IP</div>
+				<span class="vector-toc-numb">5.3</span>Endpoint with changing IP</div>
 			</a>
 			
 			<ul id="toc-Endpoint_with_changing_IP-sublist" class="vector-toc-list">
@@ -333,7 +342,7 @@
 		<li id="toc-Generate_QR_code" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Generate_QR_code">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">5.3</span>Generate QR code</div>
+				<span class="vector-toc-numb">5.4</span>Generate QR code</div>
 			</a>
 			
 			<ul id="toc-Generate_QR_code-sublist" class="vector-toc-list">
@@ -342,7 +351,7 @@
 		<li id="toc-Enable_debug_logs" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Enable_debug_logs">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">5.4</span>Enable debug logs</div>
+				<span class="vector-toc-numb">5.5</span>Enable debug logs</div>
 			</a>
 			
 			<ul id="toc-Enable_debug_logs-sublist" class="vector-toc-list">
@@ -351,7 +360,7 @@
 		<li id="toc-Reload_peer_(server)_configuration" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Reload_peer_(server)_configuration">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">5.5</span>Reload peer (server) configuration</div>
+				<span class="vector-toc-numb">5.6</span>Reload peer (server) configuration</div>
 			</a>
 			
 			<ul id="toc-Reload_peer_(server)_configuration-sublist" class="vector-toc-list">
@@ -360,7 +369,7 @@
 		<li id="toc-Workaround_for_some_public_WiFi/networks_seemingly_blocking_WireGuard_connections" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Workaround_for_some_public_WiFi/networks_seemingly_blocking_WireGuard_connections">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">5.6</span>Workaround for some public WiFi/networks seemingly blocking WireGuard connections</div>
+				<span class="vector-toc-numb">5.7</span>Workaround for some public WiFi/networks seemingly blocking WireGuard connections</div>
 			</a>
 			
 			<ul id="toc-Workaround_for_some_public_WiFi/networks_seemingly_blocking_WireGuard_connections-sublist" class="vector-toc-list">
@@ -788,7 +797,7 @@ DNS = 10.0.0.12
 
 [Peer]
 PublicKey = <i>PEER_C_PUBLIC_KEY</i>
-AllowedIPs = 0.0.0.0/0, ::0
+AllowedIPs = 0.0.0.0/0, ::/0
 Endpoint = 10.1.2.3:52180</pre>
 <p>Further explanation and some python to work out how to exclude ranges can found <i>here</i>.<a rel="nofollow" class="external autonumber" href="https://github.com/ZerGo0/WireGuard-Allowed-IPs-Excluder">[2]</a>
 </p>
@@ -1129,6 +1138,11 @@ FirewallMark=0x8888
 InvertRule=true
 Table=1000
 Priority=10
+
+# Exempt the endpoint IP address so that wireguard can still connect to it.
+[RoutingPolicyRule]
+To=198.51.100.101/32
+Priority=5
 
 [Route]
 Destination=0.0.0.0/0
@@ -1506,7 +1520,9 @@ peer: 9jalV3EEBnVXahro0pRMQ+cHlmjE33Slo9tddzCVtCw=
   latest handshake: 1 minutes, 17 seconds ago
   transfer: 56.43 GiB received, 1.06 TiB sent</pre>
 <h2><span class="mw-headline" id="Tips_and_tricks">Tips and tricks</span></h2>
-<h3><span class="mw-headline" id="Store_private_keys_in_encrypted_form">Store private keys in encrypted form</span></h3>
+<h3>
+<span id="Store_private_keys_in_encrypted_form_.28wg-quick.29"></span><span class="mw-headline" id="Store_private_keys_in_encrypted_form_(wg-quick)">Store private keys in encrypted form (wg-quick)</span>
+</h3>
 <p>It may be desirable to store private keys in encrypted form, such as through use of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pass">pass</a></span>. Just replace the <code>PrivateKey</code> line under <code>[Interface]</code> in the WireGuard configuration file with:
 </p>
 <pre>PostUp = wg set %i private-key &lt;(su user -c "export PASSWORD_STORE_DIR=/path/to/your/store/; pass WireGuard/private-keys/%i")
@@ -1522,6 +1538,25 @@ peer: 9jalV3EEBnVXahro0pRMQ+cHlmjE33Slo9tddzCVtCw=
 <p>Finally, replace the <code>PrivateKey</code> line under <code>[Interface]</code> in the WireGuard configuration file with:
 </p>
 <pre>PostUp = wg set %i private-key &lt;(systemd-creds decrypt /etc/credstore.encrypted/<i>wg-private-key</i>.cred)
+</pre>
+<h3>
+<span id="Store_private_keys_in_TPM_.28systemd-networkd.29"></span><span class="mw-headline" id="Store_private_keys_in_TPM_(systemd-networkd)">Store private keys in TPM (systemd-networkd)</span>
+</h3>
+<p>Check whether your system supports TPM2:
+</p>
+<pre># systemd-creds has-tpm2
+</pre>
+<p>Store your keys:
+</p>
+<pre># echo -n <i>your_wg_private_key</i> | systemd-creds encrypt - /etc/credstore.encrypted/network.wireguard.private.wg0
+# echo -n <i>your_pre_shared_key</i> | systemd-creds encrypt - /etc/credstore.encrypted/network.wireguard.psk.wg0
+</pre>
+<p>(Note that the name of the store must match <code>network.wireguard.*</code>.)
+</p>
+<p>Modify your <i>.netdev</i> file to use
+</p>
+<pre>PrivateKey = @network.wireguard.private.wg0
+PresharedKey = @network.wireguard.psk.wg0
 </pre>
 <h3><span class="mw-headline" id="Endpoint_with_changing_IP">Endpoint with changing IP</span></h3>
 <p>After resolving a server's domain, WireGuard <a rel="nofollow" class="external text" href="https://lists.zx2c4.com/pipermail/wireguard/2017-November/002028.html">will not check for changes in DNS again</a>.
@@ -1699,8 +1734,8 @@ esac</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=WireGuard&amp;oldid=810380">https://wiki.archlinux.org/index.php?title=WireGuard&amp;oldid=810380</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 12 June 2024, at 14:32.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=WireGuard&amp;oldid=813439">https://wiki.archlinux.org/index.php?title=WireGuard&amp;oldid=813439</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 30 July 2024, at 15:38.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

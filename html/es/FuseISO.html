@@ -221,7 +221,7 @@
 <h3><span class="mw-headline" id="Archivos_de_GNOME">Archivos de GNOME</span></h3>
 <p>Para los usuarios de GNOME, hay una forma fácil de usar fuseiso desde el menú contextual de nautilus.
 </p>
-<p>Primero necesitará el paquet <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=filemanager-actions">filemanager-actions</a></span><sup>[<a href="../en/Help:Procedures.html#Fix_broken_package_links" title="Help:Procedures">enlace roto</a>: package not found]</sup>, luego deberá guardar los siguientes scripts en una carpeta de su elección (por ejemplo, <code>~/.local/bin/</code>):
+<p>Primero necesitará el paquet <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/actions-for-nautilus-git/">actions-for-nautilus-git</a></span><sup><small>AUR</small></sup>, luego deberá guardar los siguientes scripts en una carpeta de su elección (por ejemplo, <code>~/.local/bin/</code>):
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">filemanager-actions-iso-mount.sh</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"> #!/bin/bash
@@ -241,25 +241,29 @@
 </pre>
 <p>Hága <a href="../es/Help:Reading.html#Hacer_ejecutable" class="mw-redirect" title="Executable (Español)">ejecutables</a> los scripts.
 </p>
-<p>Ahora, inicie <i>fma-config-tool</i> (<i>Sistema&gt; Preferencias&gt; Configuración de acciones de Nautilus</i>).
+<p>Ahora, inicie <i>Actions for Nautilus</i>.
 </p>
 <p>Añada una nueva acción con la siguiente configuración:
 </p>
 <ul>
-<li>Etiqueta: <i>Mount ISO</i>
+<li>En la pestaña <i>Basic</i>:
+<ul>
+<li>Label for the command: <i>Mount ISO</i>
 </li>
-<li>Icono: un símbolo de su elección (por ejemplo: <i>gtk-cdrom</i>)</li>
-<li>Ruta: <code>/'ruta_a_los_scripts<i>/filemanager-actions-iso-mount.sh</i></code>
+<li>Command line to execute: <i>/path_to_scripts/filemanager-actions-iso-mount.sh %F</i>
 </li>
-<li>Parámetros: <i>%F</i>
+<li>Current working directory: <i>%d</i>
 </li>
-<li>Directorio de trabajo: <i>%d</i>
+</ul>
 </li>
-<li>Basenames: <i>*.iso ; *.nrg ; *.bin ; *.img ; *.mdf (para cada uno agregue una entrada separada)</i>
-</li>
-<li>Caso de coincidencia: <i>"must match one of"</i>
-</li>
-<li>Mimetypes: <i>*/*</i>
+<li>En la pestaña <i>Path patterns</i>, agregue las entradas siguientas:
+<ul>
+<li><i>*.iso</i></li>
+<li><i>*.nrg</i></li>
+<li><i>*.bin</i></li>
+<li><i>*.img</i></li>
+<li><i>*.mdf</i></li>
+</ul>
 </li>
 </ul>
 <p>Con esta acción puede montar imágenes ISO en su escritorio. Creará una carpeta en ~/Escritorio con el nombre de la imagen iso. fuseiso montará la iso a dicha carpeta. 
@@ -267,23 +271,29 @@
 <p>Añada una segunda acción:
 </p>
 <ul>
-<li>Etiqueta: <i>Unmount ISO</i>
+<li>En la pestaña <i>Basic</i>:
+<ul>
+<li>Label for the command: <i>Unmount ISO</i>
 </li>
-<li>Icono: un símbolo de su elección (por ejemplo <i>gtk-cdrom</i>)</li>
-<li>Ruta: <code>/<i>path_to_scripts</i>/filemanager-actions-iso-umount.sh</code>
+<li>Command line to execute: <code>/<i>path_to_scripts</i>/filemanager-actions-iso-umount.sh %F</code>
 </li>
-<li>Parámetros: <i>%F</i>
+<li>Current working directory: <i>%d</i>
 </li>
-<li>Directorio de trabajo directory: <i>%d</i>
+</ul>
 </li>
-<li>Basenames: <i>*.iso ; *.nrg ; *.bin ; *.img ; *.mdf (para cada uno agregue una entrada separada)</i>
-</li>
-<li>Caso de coincidencia: <i>"must match one of"</i>
-</li>
-<li>Mimetypes: <i>*/*</i>
+<li>En la pestaña <i>Path patterns</i>, agregue las entradas siguientas:
+<ul>
+<li><i>*.iso</i></li>
+<li><i>*.nrg</i></li>
+<li><i>*.bin</i></li>
+<li><i>*.img</i></li>
+<li><i>*.mdf</i></li>
+</ul>
 </li>
 </ul>
 <p>Esta segunda acción desmontará la iso montada y eliminará la carpeta del escritorio.
+</p>
+<p>Ahora, reincia Nautilus con <i>nautilus -q</i> en el Terminal.
 </p>
 <p>A veces, debe cerrar la sesión para poder montar cualquier imagen de los tipos dados, simplemente haciendo clic con el botón secundario sobre Archivos y seleccionando <i>Montar ISO</i>. Para volver a desmontarlo, haga clic con el botón secundario sobre la carpeta correspondiente de su escritorio y seleccione <i>Desmontar ISO</i>.
 </p>
@@ -292,13 +302,9 @@
 </p>
 </div>
 </div>
-					<div id="catlinks" class="catlinks" data-mw="interface">
-<div id="mw-normal-catlinks" class="mw-normal-catlinks">
+					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../es/Category:FUSE.html" title="Category:FUSE (Español)">FUSE (Español)</a></li></ul>
-</div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_with_broken_package_links.html" title="Category:Pages with broken package links">Pages with broken package links</a></li></ul>
-</div>
-</div>
+</div></div>
 				</div>
 			</main>
 			
@@ -307,8 +313,8 @@
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=FuseISO_(Espa%C3%B1ol)&amp;oldid=808107">https://wiki.archlinux.org/index.php?title=FuseISO_(Español)&amp;oldid=808107</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 11 May 2024, at 07:13.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=FuseISO_(Espa%C3%B1ol)&amp;oldid=812547">https://wiki.archlinux.org/index.php?title=FuseISO_(Español)&amp;oldid=812547</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 16 July 2024, at 17:22.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

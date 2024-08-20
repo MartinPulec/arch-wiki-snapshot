@@ -284,21 +284,27 @@
 <p>The different configuration files of the base installation link together and are stacked during runtime. For example, on a local user logon, the <i>login</i> application sources the <code>system-local-login</code> policy, which in turn sources others: 
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pam.d/</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">login -&gt; system-local-login -&gt; system-login -&gt; system-auth</pre> 
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">login -&gt; system-local-login -&gt; system-login -&gt; system-auth
+</pre> 
 <p>For a different application, a different path may apply. For example, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=openssh">openssh</a></span> installs its <code>sshd</code> PAM policy: 
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pam.d/</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">sshd -&gt; system-remote-login -&gt; system-login -&gt; system-auth</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">sshd -&gt; system-remote-login -&gt; system-login -&gt; system-auth
+</pre>
 <p>Consequently, the choice of the configuration file in the stack matters. For the above example, a special authentication method could be required for <code>sshd</code> only, or all remote logins by changing <code>system-remote-login</code>; both changes would not affect local logins. Applying the change to <code>system-login</code> or <code>system-auth</code> instead would affect local and remote logins.
 </p>
 <p>Like the example of <code>sshd</code>, any <b>pam-aware</b> application is required to install its policy to <code>/etc/pam.d</code> in order to integrate and rely on the PAM stack appropriately. If an application fails to do it, the <code>/etc/pam.d/other</code> default policy to deny and log a warning is applied.
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> PAM is dynamically linked at runtime. For example: 
+<strong>Tip:</strong> 
+<p>PAM is dynamically linked at runtime. For example: 
+</p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ ldd /usr/bin/login | grep pam</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">libpam.so.0 =&gt; /usr/lib/libpam.so.0 (0x000003d8c32d6000)
 libpam_misc.so.0 =&gt; /usr/lib/libpam_misc.so.0 (0x000003d8c30d2000)</pre>
-the <i>login</i> application is pam-aware and <b>must</b>, therefore, have a policy.</div> 
+<p>the <i>login</i> application is pam-aware and <b>must</b>, therefore, have a policy.
+</p>
+</div> 
 <p>The PAM package manual pages <span class="plainlinks archwiki-template-man" title="$ man 8 pam"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/pam.8">pam(8)</a></span> and <span class="plainlinks archwiki-template-man" title="$ man 5 pam.d"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/pam.d.5">pam.d(5)</a></span> describe the standardized content of the configuration files. In particular, they explain the four PAM groups: account, authentication, password, and session management, as well as the control values that may be used to configure stacking and behavior of the modules. 
 </p>
 <p>Additionally, extensive documentation is installed to <code>/usr/share/doc/Linux-PAM/index.html</code> which, among various guides, contains browsable man pages for each of the standard modules. 
@@ -315,11 +321,12 @@ the <i>login</i> application is pam-aware and <b>must</b>, therefore, have a pol
 </div>
 <p>Two short examples to illustrate the above warning. 
 </p>
-<p>First, we take the following two lines from a <a rel="nofollow" class="external text" href="https://github.com/archlinux/svntogit-packages/commit/2d5af94ae55a5c98837ce9631f331ad2aad32bb3#diff-aec230c42317e26304d9510982853cc56a2f4a5d63d91eb4da46d247def8cd9aL3-L4">historic Arch default</a>:
+<p>First, we take the following two lines from a <a rel="nofollow" class="external text" href="https://gitlab.archlinux.org/archlinux/packaging/packages/pambase/-/commit/8cf30df1a9aaf8eed6b268404b81002d0668bc2c#d23fac583d82f8e2ba4206a8c9314d3b5da39c88_3_3">historic Arch default</a>:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pam.d/system-auth</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">auth      required  pam_unix.so     try_first_pass nullok
-auth      optional  pam_permit.so</pre> 
+auth      optional  pam_permit.so
+</pre> 
 <p>From <span class="plainlinks archwiki-template-man" title="$ man 8 pam_unix"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/pam_unix.8">pam_unix(8)</a></span>:
 </p>
 <dl><dd>The authentication component <code>pam_unix.so</code> performs the task of checking the users credentials (password). The default action of this module is to not permit the user access to a service if their official password is blank.</dd></dl>
@@ -429,8 +436,8 @@ auth      optional  pam_permit.so</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PAM&amp;oldid=805851">https://wiki.archlinux.org/index.php?title=PAM&amp;oldid=805851</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 13 April 2024, at 07:18.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PAM&amp;oldid=812045">https://wiki.archlinux.org/index.php?title=PAM&amp;oldid=812045</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 7 July 2024, at 08:18.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

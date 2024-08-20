@@ -862,7 +862,7 @@
 <strong>Note:</strong> 
 <ul>
 <li>There is no official support from Chromium or Arch Linux for this feature <a rel="nofollow" class="external autonumber" href="https://chromium.googlesource.com/chromium/src/+/master/docs/gpu/vaapi.md#vaapi-on-linux">[2]</a>. However, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=chromium">chromium</a></span> from official repositories is compiled with VA-API support and you may ask for help in <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?id=244031">the dedicated forum thread</a>.</li>
-<li>Since Chromium version 122, the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/chromium-wayland-vaapi/">chromium-wayland-vaapi</a></span><sup><small>AUR</small></sup><sup>[<a href="../en/Help:Procedures.html#Fix_broken_package_links" title="Help:Procedures">broken link</a>: package not found]</sup> package is no longer needed. VA-API works when using the native Wayland backend with the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=chromium">chromium</a></span> package from official repositories.</li>
+<li>Since Chromium version 122, an extra <a href="../en/Hardware_video_acceleration.html" class="mw-redirect" title="VA-API">VA-API</a> package is no longer needed. VA-API works when using the native Wayland backend with the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=chromium">chromium</a></span> package from official repositories.</li>
 <li>On AMD GPU devices, VA-API <a rel="nofollow" class="external text" href="https://crbug.com/1445074">does not work out of the box</a> and requires mesa &gt;= 24.1 as well as <a rel="nofollow" class="external text" href="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/26165">enabling Vulkan</a>. This may cause issues with WebGL under X11/XWayland. Vulkan with <a href="#Native_Wayland_support">#Native Wayland support</a> works since version 125.0.6422.141-1.</li>
 </ul>
 </div>
@@ -879,7 +879,7 @@ When trying to find the correct combination of flags in chromium-flags.conf, not
 <p>To enable VA-API support in Chromium:
 </p>
 <ul>
-<li>Install the correct VA-API driver for your video card and verify VA-API has been enabled and working correctly, see <a href="../en/Hardware_video_acceleration.html" title="Hardware video acceleration">Hardware video acceleration</a>. For proprietary NVIDIA support, installing <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/libva-vdpau-driver-chromium/">libva-vdpau-driver-chromium</a></span><sup><small>AUR</small></sup><sup>[<a href="../en/Help:Procedures.html#Fix_broken_package_links" title="Help:Procedures">broken link</a>: package not found]</sup> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/libva-vdpau-driver-vp9-git/">libva-vdpau-driver-vp9-git</a></span><sup><small>AUR</small></sup> is required.</li>
+<li>Install the correct VA-API driver for your video card and verify VA-API has been enabled and working correctly, see <a href="../en/Hardware_video_acceleration.html" title="Hardware video acceleration">Hardware video acceleration</a>. For proprietary NVIDIA support, installing <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/libva-vdpau-driver-vp9-git/">libva-vdpau-driver-vp9-git</a></span><sup><small>AUR</small></sup> is required.</li>
 <li>Set the option <code>--enable-features=VaapiVideoDecoder</code>. This is enough when using ANGLE GL renderer and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=libva-intel-driver">libva-intel-driver</a></span>.</li>
 <li>When using ANGLE, Chromium forces the older i965 driver and fails when <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=intel-media-driver">intel-media-driver</a></span> is used. As a workaround, <a href="../en/Hardware_video_acceleration.html#Configuring_VA-API" title="Hardware video acceleration">configure VA-API manually</a>. See <a rel="nofollow" class="external autonumber" href="https://github.com/intel/media-driver/issues/818">[3]</a> for details.</li>
 <li>To use the system GL renderer on Xorg or Wayland, use <code>--use-gl=egl</code>. Setting this option might no longer be needed when using Chrome 112 and may break GPU acceleration when using AMD GPUs.</li>
@@ -898,12 +898,12 @@ When trying to find the correct combination of flags in chromium-flags.conf, not
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:View-refresh-red.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is out of date.</b></p>
 <div>
-<b>Reason:</b> Chromium uses VaapiVideoDecoder for AV1 on Wayland + RADV (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Chromium.html">Talk:Chromium</a>)</div>
-</div>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:View-refresh-red.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is out of date.</b></p>
-<div>
-<b>Reason:</b> Chromium uses VaapiVideoDecoder for videos of any size on Wayland + RADV (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Chromium.html">Talk:Chromium</a>)</div>
+<b>Reason:</b> 
+<ul>
+<li>Chromium uses VaapiVideoDecoder for AV1 on Wayland + RADV</li>
+<li>Chromium uses VaapiVideoDecoder for videos of any size on Wayland + RADV</li>
+</ul>
+ (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Chromium.html">Talk:Chromium</a>)</div>
 </div>
 <p>To check if it is working play a video which is using a codec supported by your VA-API driver (<i>vainfo</i> tells you which codecs are supported, but Chromium will only support VP9 and h264):
 </p>
@@ -958,6 +958,10 @@ When trying to find the correct combination of flags in chromium-flags.conf, not
 </p>
 <pre>--gtk-version=4
 </pre>
+<p>If you are using Fcitx5 and not work properly when using the above flags, try using the <code>--enable-wayland-ime</code> flag instead of <code>--gtk-version=4</code>. <a rel="nofollow" class="external autonumber" href="https://fcitx-im.org/wiki/Using_Fcitx_5_on_Wayland#Chromium_.2F_Electron">[7]</a>
+</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> Enabling the <code>--enable-wayland-ime</code> flag only works if the <code>text_input_v1</code> protocol is implemented. Known compositors that implement this protocol are: Weston, KWin, Hyprland.</div>
 <h4><span class="mw-headline" id="Touchpad_Gestures_for_Navigation">Touchpad Gestures for Navigation</span></h4>
 <p>To enable two finger swipe to go back and forward through your history, use the following flags:
 </p>
@@ -1051,7 +1055,7 @@ You may need to specify which touch device to use. Find your touchscreen device 
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> If the device is designated as a slave pointer, using this may not work, use the master pointer's ID instead.</div>
 <h4><span class="mw-headline" id="Reduce_memory_usage">Reduce memory usage</span></h4>
-<p>By default, Chromium uses a separate OS process for each <i>instance</i> of a visited web site. <a rel="nofollow" class="external autonumber" href="https://www.chromium.org/developers/design-documents/process-models#Supported_Models">[7]</a> However, you can specify command-line switches when starting Chromium to modify this behaviour.
+<p>By default, Chromium uses a separate OS process for each <i>instance</i> of a visited web site. <a rel="nofollow" class="external autonumber" href="https://www.chromium.org/developers/design-documents/process-models#Supported_Models">[8]</a> However, you can specify command-line switches when starting Chromium to modify this behaviour.
 </p>
 <p>For example, to share one process for all instances of a website:
 </p>
@@ -1062,7 +1066,7 @@ You may need to specify which touch device to use. Find your touchscreen device 
 <pre>$ chromium --single-process
 </pre>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> The single-process model is discouraged because it is unsafe and may contain bugs not present in other models.<a rel="nofollow" class="external autonumber" href="https://www.chromium.org/developers/design-documents/process-models#TOC-Single-process">[8]</a>
+<strong>Warning:</strong> The single-process model is discouraged because it is unsafe and may contain bugs not present in other models.<a rel="nofollow" class="external autonumber" href="https://www.chromium.org/developers/design-documents/process-models#TOC-Single-process">[9]</a>
 </div>
 <p>In addition, you can suspend or store inactive Tabs with extensions such as <a rel="nofollow" class="external text" href="https://chrome.google.com/webstore/detail/tab-suspender/fiabciakcmgepblmdkmemdbbkilneeeh?hl=en">Tab Suspender</a> and <a rel="nofollow" class="external text" href="https://chrome.google.com/webstore/detail/onetab/chphlpgkkbolifaimnlloiipkdnihall?hl=en">OneTab</a>.
 </p>
@@ -1104,7 +1108,7 @@ Not only does DOM Distiller provide a better reading experience by distilling th
 <p>Go to <code>chrome://flags#enable-system-notifications</code> and select <i>Enabled</i>.
 </p>
 <h4><span class="mw-headline" id="Enabling_autoscroll_with_middle_mouse_button">Enabling autoscroll with middle mouse button</span></h4>
-<p>The autoscroll is still an experimental feature <a rel="nofollow" class="external autonumber" href="https://niek.github.io/chrome-features/">[9]</a>. It is intent to be disabled by default if Chromium or Chromium-based browsers are not a development build and is running on a Linux environment. <a rel="nofollow" class="external autonumber" href="https://issues.chromium.org/issues/40811836">[10]</a>
+<p>The autoscroll is still an experimental feature <a rel="nofollow" class="external autonumber" href="https://niek.github.io/chrome-features/">[10]</a>. It is intent to be disabled by default if Chromium or Chromium-based browsers are not a development build and is running on a Linux environment. <a rel="nofollow" class="external autonumber" href="https://issues.chromium.org/issues/40811836">[11]</a>
 </p>
 <p>To enable this feature, launch your browser with the <code>--enable-features=MiddleClickAutoscroll</code> flag. In case you want to make the option persistent, see <a href="#Making_flags_persistent">#Making flags persistent</a>.
 </p>
@@ -1253,18 +1257,19 @@ exec 1&gt;&amp;6 6&gt;&amp;-
 <p>To enable <a href="https://en.wikipedia.org/wiki/Do_Not_Track" class="extiw" title="wikipedia:Do Not Track">Do Not Track</a>, visit <code>chrome://settings</code>, scroll down to <i>Advanced</i> and under <i>Privacy and security</i>, check <i>Send a "Do Not Track" request with your browsing traffic</i>.
 </p>
 <h4><span class="mw-headline" id="Force_a_password_store">Force a password store</span></h4>
-<p>Chromium uses a password store to store your passwords and the <i>Chromium Safe Storage</i> key, which is used to encrypt cookie values. <a rel="nofollow" class="external autonumber" href="https://codereview.chromium.org/24734007">[11]</a>
+<p>Chromium uses a password store to store your passwords and the <i>Chromium Safe Storage</i> key, which is used to encrypt cookie values. <a rel="nofollow" class="external autonumber" href="https://codereview.chromium.org/24734007">[12]</a>
 </p>
 <p>By default Chromium auto-detects which password store to use, which can lead to you apparently losing your passwords and cookies when switching to another desktop environment or window manager.
 </p>
-<p>You can force Chromium to use a specific password store by launching it with the <code>--password-store</code> flag with one of following the values <a rel="nofollow" class="external autonumber" href="https://chromium.googlesource.com/chromium/src/+/master/docs/linux/password_storage.md">[12]</a>:
+<p>You can force Chromium to use a specific password store by launching it with the <code>--password-store</code> flag with one of following the values <a rel="nofollow" class="external autonumber" href="https://chromium.googlesource.com/chromium/src/+/master/docs/linux/password_storage.md">[13]</a>:
 </p>
 <ul>
 <li>
 <code>gnome-libsecret</code>, uses <a href="../en/GNOME/Keyring.html" class="mw-redirect" title="Gnome Keyring">Gnome Keyring</a> via <a rel="nofollow" class="external text" href="https://gitlab.gnome.org/GNOME/libsecret">libsecret</a>.</li>
 <li>
-<code>kwallet5</code>, uses <a href="../en/KDE_Wallet.html" title="KDE Wallet">KDE Wallet</a>
-</li>
+<code>kwallet5</code>, uses <a href="../en/KDE_Wallet.html" title="KDE Wallet">KDE Wallet</a> 5</li>
+<li>
+<code>kwallet6</code>, uses <a href="../en/KDE_Wallet.html" title="KDE Wallet">KDE Wallet</a> 6</li>
 <li>
 <code>basic</code>, saves the passwords and the cookies' encryption key as plain text in the file <code>Login Data</code>
 </li>
@@ -1276,7 +1281,7 @@ exec 1&gt;&amp;6 6&gt;&amp;-
 <p>When using a password store of another desktop environment you probably also want to unlock it automatically. See <a href="../en/GNOME/Keyring.html#Using_the_keyring" title="GNOME/Keyring">GNOME/Keyring#Using the keyring</a> and <a href="../en/KDE_Wallet.html#Unlock_KDE_Wallet_automatically_on_login" title="KDE Wallet">KDE Wallet#Unlock KDE Wallet automatically on login</a>.
 </p>
 <h4><span class="mw-headline" id="Enable_hybrid_post-quantum_key_exchange">Enable hybrid post-quantum key exchange</span></h4>
-<p>Chromium supports the hybrid post-quantum key exchange <a rel="nofollow" class="external text" href="https://www.ietf.org/archive/id/draft-tls-westerbaan-xyber768d00-02.html">X25519Kyber768</a> for TLS 1.3 since version 155 <a rel="nofollow" class="external autonumber" href="https://blog.chromium.org/2023/08/protecting-chrome-traffic-with-hybrid.html">[13]</a>. This feature is disabled by default, but can be enable it using the <code>chrome://flags/#enable-tls13-kyber</code> flag.
+<p>Chromium supports the hybrid post-quantum key exchange <a rel="nofollow" class="external text" href="https://www.ietf.org/archive/id/draft-tls-westerbaan-xyber768d00-02.html">X25519Kyber768</a> for TLS 1.3 since version 155 <a rel="nofollow" class="external autonumber" href="https://blog.chromium.org/2023/08/protecting-chrome-traffic-with-hybrid.html">[14]</a>. This feature is disabled by default, but can be enable it using the <code>chrome://flags/#enable-tls13-kyber</code> flag.
 </p>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
 <h3><span class="mw-headline" id="Fonts">Fonts</span></h3>
@@ -1443,7 +1448,6 @@ Notably, Plasma 5 seems to only ever render on 60Hz no matter the setup, but Pla
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Merge.html" title="Category:Pages or sections flagged with Template:Merge">Pages or sections flagged with Template:Merge</a></li>
-<li><a href="../en/Category:Pages_with_broken_package_links.html" title="Category:Pages with broken package links">Pages with broken package links</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Out_of_date.html" title="Category:Pages or sections flagged with Template:Out of date">Pages or sections flagged with Template:Out of date</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
 <li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li>
@@ -1458,8 +1462,8 @@ Notably, Plasma 5 seems to only ever render on 60Hz no matter the setup, but Pla
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Chromium&amp;oldid=810546">https://wiki.archlinux.org/index.php?title=Chromium&amp;oldid=810546</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 15 June 2024, at 03:42.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Chromium&amp;oldid=812650">https://wiki.archlinux.org/index.php?title=Chromium&amp;oldid=812650</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 20 July 2024, at 05:58.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

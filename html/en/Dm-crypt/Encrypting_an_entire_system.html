@@ -772,7 +772,7 @@ The following are examples of common scenarios of full system encryption with <i
 <tr>
 <td>
 <a href="#Encrypted_boot_partition_(GRUB)">#Encrypted boot partition (GRUB)</a>
-<p>shows how to encrypt the boot partition using the GRUB bootloader. <br> This scenario also employs an EFI system partition, which may be applied to the other scenarios.
+<p>shows how to encrypt the boot partition using the GRUB boot loader. <br> This scenario also employs an EFI system partition, which may be applied to the other scenarios.
 </p>
 </td>
 <td>
@@ -786,6 +786,7 @@ The following are examples of common scenarios of full system encryption with <i
 <li>Same disadvantages as the scenario the installation is based on (LVM on LUKS for this particular example)</li>
 <li>More complicated configuration</li>
 <li>Not supported by other boot loaders</li>
+<li>GRUB takes a long time to unlock LUKS, thus slowing down boot</li>
 </ul>
 </td>
 </tr>
@@ -814,12 +815,8 @@ The following are examples of common scenarios of full system encryption with <i
 <strong>Warning:</strong> 
 <ul>
 <li>In any scenario, never use file system repair software such as <a href="../../en/Fsck.html" title="Fsck">fsck</a> directly on an encrypted volume, or it will destroy any means to recover the key used to decrypt your files. Such tools must be used on the decrypted (opened) device instead.</li>
-<li>For the LUKS2 format:
-<ul>
-<li>GRUB's support for LUKS2 is limited; see <a href="../../en/GRUB.html#Encrypted_/boot" title="GRUB">GRUB#Encrypted /boot</a> for details. Use LUKS1 (<code>cryptsetup luksFormat --type luks1</code>) for partitions that GRUB will need to unlock.</li>
-<li>The LUKS2 format has a high RAM usage per design, defaulting to 1GB per encrypted mapper. Machines with low RAM and/or multiple LUKS2 partitions unlocked in parallel may error on boot. See the <code>--pbkdf-memory</code> option to control memory usage.<a rel="nofollow" class="external autonumber" href="https://gitlab.com/cryptsetup/cryptsetup/issues/372">[1]</a>
-</li>
-</ul>
+<li>GRUB's support for LUKS2 is limited; see <a href="../../en/GRUB.html#Encrypted_/boot" title="GRUB">GRUB#Encrypted /boot</a> for details. Use LUKS2 with PBKDF2 (<code>cryptsetup luksFormat --pbkdf pbkdf2</code>) for partitions that GRUB will need to unlock.</li>
+<li>The Argon2 key derivation function has a high RAM usage per design, defaulting to 1 GiB per encrypted mapper. Machines with low RAM and/or multiple LUKS2 partitions unlocked in parallel may error on boot. See the <code>--pbkdf-memory</code> option to control memory usage.<a rel="nofollow" class="external autonumber" href="https://gitlab.com/cryptsetup/cryptsetup/issues/372">[1]</a>
 </li>
 </ul>
 </div>
@@ -827,7 +824,7 @@ The following are examples of common scenarios of full system encryption with <i
 <p>This example covers a full system encryption with <i>dm-crypt</i> + LUKS in a simple partition layout:
 </p>
 <pre style="white-space: pre !important; font-variant-ligatures: no-common-ligatures;">+-----------------------+------------------------+-----------------------+
-| Boot partition        | LUKS2 encrypted root   | Optional free space   |
+| Boot partition        | LUKS encrypted root    | Optional free space   |
 |                       | partition              | for additional        |
 |                       |                        | partitions to be set  |
 | /boot                 | /                      | up later              |
@@ -847,13 +844,18 @@ The following are examples of common scenarios of full system encryption with <i
 <h3><span class="mw-headline" id="Preparing_non-boot_partitions">Preparing non-boot partitions</span></h3>
 <p>This and the next section replace the instructions of <a href="../../en/Installation_guide.html#Format_the_partitions" title="Installation guide">Installation guide#Format the partitions</a>.
 </p>
-<p>The following commands create and mount the encrypted root partition. They correspond to the procedure described in detail in <a href="../../en/Dm-crypt/Encrypting_a_non-root_file_system.html#Partition" title="Dm-crypt/Encrypting a non-root file system">dm-crypt/Encrypting a non-root file system#Partition</a> (which, despite the title, <i>can</i> be applied to root partitions, as long as <a href="#Configuring_mkinitcpio">mkinitcpio</a> and the <a href="#Configuring_the_boot_loader">boot loader</a> are correctly configured).
-If you want to use particular non-default encryption options (e.g. cipher, key length, sector size), see the <a href="../../en/Dm-crypt/Device_encryption.html#Encryption_options_for_LUKS_mode" title="Dm-crypt/Device encryption">encryption options</a> before executing the first command.
+<p>The following commands create and mount the encrypted root partition. They correspond to the procedure described in detail in <a href="../../en/Dm-crypt/Device_encryption.html#Encrypting_devices_with_LUKS_mode" title="Dm-crypt/Device encryption">dm-crypt/Device encryption#Encrypting devices with LUKS mode</a>. If you want to use particular non-default encryption options (e.g. cipher, key length, sector size), see the <a href="../../en/Dm-crypt/Device_encryption.html#Encryption_options_for_LUKS_mode" title="Dm-crypt/Device encryption">encryption options</a> before executing the first command.
 </p>
-<pre># cryptsetup -y -v luksFormat /dev/sda2
+<pre># cryptsetup -v luksFormat /dev/sda2
 # cryptsetup open /dev/sda2 root
-# mkfs.ext4 /dev/mapper/root
-# mount /dev/mapper/root /mnt
+</pre>
+<p><a href="../../en/File_systems.html#Create_a_file_system" class="mw-redirect" title="Create a file system">Create a file system</a> on unlocked LUKS device. For example, to create an <a href="../../en/Ext4.html" title="Ext4">Ext4</a> file system, run:
+</p>
+<pre># mkfs.ext4 /dev/mapper/root
+</pre>
+<p>Mount the root volume to <code>/mnt</code>:
+</p>
+<pre># mount /dev/mapper/root /mnt
 </pre>
 <p>Check the mapping works as intended:
 </p>
@@ -867,13 +869,13 @@ If you want to use particular non-default encryption options (e.g. cipher, key l
 <p>Note that each block device requires its own passphrase. This may be inconvenient, because it results in a separate passphrase to be input during boot. An alternative is to use a keyfile stored in the root partition to unlock the separate partition via <code>crypttab</code>. See <a href="../../en/Dm-crypt/Device_encryption.html#Using_LUKS_to_format_partitions_with_a_keyfile" title="Dm-crypt/Device encryption">dm-crypt/Device encryption#Using LUKS to format partitions with a keyfile</a> for instructions.
 </p>
 <h3><span class="mw-headline" id="Preparing_the_boot_partition">Preparing the boot partition</span></h3>
-<p>What you do have to setup is a non-encrypted <code>/boot</code> partition, which is needed for an encrypted root. For an ordinary boot partition on BIOS systems, for example, execute:
-</p>
-<pre># mkfs.ext4 /dev/sda1
-</pre>
-<p>or for an <a href="../../en/EFI_system_partition.html" title="EFI system partition">EFI system partition</a> on UEFI systems:
+<p>What you do have to setup is a non-encrypted <code>/boot</code> partition, which is needed for an encrypted root. For an <a href="../../en/EFI_system_partition.html" title="EFI system partition">EFI system partition</a> on UEFI systems, execute:
 </p>
 <pre># mkfs.fat -F32 /dev/sda1
+</pre>
+<p>or for an ordinary boot partition on BIOS systems:
+</p>
+<pre># mkfs.ext4 /dev/sda1
 </pre>
 <p>Afterwards create the directory for the mountpoint and mount the partition:
 </p>
@@ -913,7 +915,7 @@ If you want to use particular non-default encryption options (e.g. cipher, key l
 <h2><span class="mw-headline" id="LUKS_on_a_partition_with_TPM2_and_Secure_Boot">LUKS on a partition with TPM2 and Secure Boot</span></h2>
 <p>This example is similar to <a href="#LUKS_on_a_partition">#LUKS on a partition</a>, but integrates the use of <a href="../../en/Unified_Extensible_Firmware_Interface/Secure_Boot.html" class="mw-redirect" title="Secure Boot">Secure Boot</a> and a <a href="../../en/Trusted_Platform_Module.html" title="Trusted Platform Module">Trusted Platform Module</a> (TPM), enhancing the overall security of the boot process.
 </p>
-<p>In this configuration, only the <a href="../../en/EFI_system_partition.html" title="EFI system partition">EFI system partition</a> remains unencrypted, housing a <a href="../../en/Unified_kernel_image.html" title="Unified kernel image">unified kernel image</a> and <a href="../../en/Systemd-boot.html" title="Systemd-boot">systemd-boot</a>—both signed for use with Secure Boot. The TPM plays a crucial role by monitoring the Secure Boot state. If Secure Boot is disabled or its key databases are tampered with, the encrypted partition will not unlock. This approach is akin to BitLocker on Windows or FileVault on macOS. A recovery-key will also be created to make sure the data remains accessible in case of a problem with the TPM unlocking mechanism (unsigned bootloader or kernel update, firmware update, etc.)
+<p>In this configuration, only the <a href="../../en/EFI_system_partition.html" title="EFI system partition">EFI system partition</a> remains unencrypted, housing a <a href="../../en/Unified_kernel_image.html" title="Unified kernel image">unified kernel image</a> and <a href="../../en/Systemd-boot.html" title="Systemd-boot">systemd-boot</a>—both signed for use with Secure Boot. The TPM plays a crucial role by monitoring the Secure Boot state. If Secure Boot is disabled or its key databases are tampered with, the encrypted partition will not unlock. This approach is akin to BitLocker on Windows or FileVault on macOS. A recovery-key will also be created to make sure the data remains accessible in case of a problem with the TPM unlocking mechanism (unsigned boot loader or kernel update, firmware update, etc.)
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> Implementing this method on your root volume means your computer will <b>automatically unlock</b> at boot without requiring an encryption password under specific conditions. However, be cautious of the following risks:
@@ -926,7 +928,7 @@ If you want to use particular non-default encryption options (e.g. cipher, key l
 <p>In this example, partitions are created respecting <a href="../../en/Systemd.html#GPT_partition_automounting" title="Systemd">systemd#GPT partition automounting</a>, there is no need for an fstab or crypttab file.
 </p>
 <pre style="white-space: pre !important; font-variant-ligatures: no-common-ligatures;">+-----------------------+---------------------------------+
-| EFI system partition  | LUKS2 encrypted root partition  |
+| EFI system partition  | LUKS encrypted root partition   |
 |                       |                                 |
 |                       |                                 |
 | /efi                  | /                               |
@@ -948,16 +950,22 @@ If you want to use particular non-default encryption options (e.g. cipher, key l
 <p>In the remaining space on the drive create a root partition (<code>/dev/sda2</code> in this example) which will be encrypted and later mounted to <code>/</code>. Set its partition type GUID to <code>4F68BCE3-E8CD-4DB1-96E7-FBCAF984B709</code> ("Linux root (x86-64)" in <a href="../../en/Fdisk.html" title="Fdisk">fdisk</a>, <code>8304</code> in <a href="../../en/GPT_fdisk.html" class="mw-redirect" title="Gdisk">gdisk</a>).
 </p>
 <h3><span class="mw-headline" id="Preparing_the_root_partition">Preparing the root partition</span></h3>
-<p>The following commands create and mount the encrypted root partition. See <a href="../../en/Dm-crypt/Encrypting_a_non-root_file_system.html#Partition" title="Dm-crypt/Encrypting a non-root file system">dm-crypt/Encrypting a non-root file system#Partition</a> (which, despite the title, <i>can</i> be applied to root partitions, as long as <a href="#Configuring_mkinitcpio">mkinitcpio</a> and the <a href="#Configuring_the_boot_loader">boot loader</a> are correctly configured).
+<p>The following commands create and mount the encrypted root partition. They correspond to the procedure described in detail in <a href="../../en/Dm-crypt/Device_encryption.html#Encrypting_devices_with_LUKS_mode" title="Dm-crypt/Device encryption">dm-crypt/Device encryption#Encrypting devices with LUKS mode</a>.
 </p>
 <p>If you want to use particular non-default encryption options (e.g. cipher, key length), or if you don't want to use TPM based decryption, see the <a href="../../en/Dm-crypt/Device_encryption.html#Encryption_options_for_LUKS_mode" title="Dm-crypt/Device encryption">encryption options</a> before executing the first command.
 </p>
-<p>Create the luks volume (you can simply use a blank password, as it will be wiped later) and mount it:
+<p>Create the LUKS volume (you can simply use a blank password, as it will be wiped later) and mount it:
 </p>
 <pre># cryptsetup luksFormat /dev/sda2
 # cryptsetup open /dev/sda2 root
-# mkfs.ext4 /dev/mapper/root
-# mount /dev/mapper/root /mnt
+</pre>
+<p><a href="../../en/File_systems.html#Create_a_file_system" class="mw-redirect" title="Create a file system">Create a file system</a> on unlocked LUKS device. For example, to create an <a href="../../en/Ext4.html" title="Ext4">Ext4</a> file system, run:
+</p>
+<pre># mkfs.ext4 /dev/mapper/root
+</pre>
+<p>Mount the root volume to <code>/mnt</code>:
+</p>
+<pre># mount /dev/mapper/root /mnt
 </pre>
 <h3><span class="mw-headline" id="Preparing_the_EFI_system_partition">Preparing the EFI system partition</span></h3>
 <p>Format the newly created EFI system partition as instructed in <a href="../../en/EFI_system_partition.html#Format_the_partition" title="EFI system partition">EFI system partition#Format the partition</a> and mount it afterwards.
@@ -1018,7 +1026,7 @@ If you want to use particular non-default encryption options (e.g. cipher, key l
 | /dev/MyVolGroup/swap  | /dev/MyVolGroup/root  | /dev/MyVolGroup/home  | |                |
 |_ _ _ _ _ _ _ _ _ _ _ _|_ _ _ _ _ _ _ _ _ _ _ _|_ _ _ _ _ _ _ _ _ _ _ _| | (may be on     |
 |                                                                       | | other device)  |
-|                         LUKS2 encrypted partition                     | |                |
+|                         LUKS encrypted partition                      | |                |
 |                           /dev/sda1                                   | | /dev/sdb1      |
 +-----------------------------------------------------------------------+ +----------------+
 </pre>
@@ -1071,7 +1079,7 @@ If you want to use particular non-default encryption options (e.g. cipher, key l
 # lvcreate -L 32G MyVolGroup -n root
 # lvcreate -l 100%FREE MyVolGroup -n home
 </pre>
-<p>Format your file systems on each logical volume:
+<p><a href="../../en/File_systems.html#Create_a_file_system" class="mw-redirect" title="Format">Format</a> your file systems on each logical volume. For example, using <a href="../../en/Ext4.html" title="Ext4">Ext4</a> for the root and home volumes:
 </p>
 <pre># mkfs.ext4 /dev/MyVolGroup/root
 # mkfs.ext4 /dev/MyVolGroup/home
@@ -1084,17 +1092,16 @@ If you want to use particular non-default encryption options (e.g. cipher, key l
 # swapon /dev/MyVolGroup/swap
 </pre>
 <h3><span class="mw-headline" id="Preparing_the_boot_partition_2">Preparing the boot partition</span></h3>
-<p>The bootloader loads the kernel, <a href="../../en/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs">initramfs</a>, and its own configuration files from the <code>/boot</code> directory. Any file system on a disk that can be read by the bootloader is eligible.
+<p>The boot loader loads the kernel, <a href="../../en/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs">initramfs</a>, and its own configuration files from the <code>/boot</code> directory. Any file system on a disk that can be read by the boot loader is eligible.
 </p>
-<p>Create a <a href="../../en/File_systems.html" class="mw-redirect" title="File system">file system</a> on the partition intended for <code>/boot</code>:
+<p>Create a <a href="../../en/File_systems.html" class="mw-redirect" title="File system">file system</a> on the partition intended for <code>/boot</code>. For an <a href="../../en/EFI_system_partition.html" title="EFI system partition">EFI system partition</a> on UEFI systems, execute:
+</p>
+<pre># mkfs.fat -F32 /dev/sdb1
+</pre>
+<p>or for an ordinary boot partition on BIOS systems:
 </p>
 <pre># mkfs.ext4 /dev/sdb1
 </pre>
-<div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> When opting to keep <code>/boot</code> on an <a href="../../en/EFI_system_partition.html" title="EFI system partition">EFI system partition</a> the recommended formatting is
-<pre># mkfs.fat -F32 /dev/sdb1
-</pre>
-</div>
 <p>Mount the partition to <code>/mnt/boot</code>:
 </p>
 <pre># mount --mkdir /dev/sdb1 /mnt/boot
@@ -1155,7 +1162,7 @@ If you want to use particular non-default encryption options (e.g. cipher, key l
 <p>Partitioning scheme:
 </p>
 <pre style="white-space: pre !important; font-variant-ligatures: no-common-ligatures;">+----------------+-------------------------------------------------------------------------------------------------+
-| Boot partition | dm-crypt plain encrypted volume | LUKS2 encrypted volume        | LUKS2 encrypted volume        |
+| Boot partition | dm-crypt plain encrypted volume | LUKS encrypted volume         | LUKS encrypted volume         |
 |                |                                 |                               |                               |
 | /boot          | [SWAP]                          | /                             | /home                         |
 |                |                                 |                               |                               |
@@ -1179,7 +1186,10 @@ If you want to use particular non-default encryption options (e.g. cipher, key l
 </pre>
 <pre># cryptsetup luksFormat /dev/MyVolGroup/cryptroot
 # cryptsetup open /dev/MyVolGroup/cryptroot root
-# mkfs.ext4 /dev/mapper/root
+</pre>
+<p><a href="../../en/File_systems.html#Create_a_file_system" class="mw-redirect" title="Create a file system">Create a file system</a> on unlocked LUKS device and mount it. For example, to create an <a href="../../en/Ext4.html" title="Ext4">Ext4</a> file system, run:
+</p>
+<pre># mkfs.ext4 /dev/mapper/root
 # mount /dev/mapper/root /mnt
 </pre>
 <p>More information about the encryption options can be found in <a href="../../en/Dm-crypt/Device_encryption.html#Encryption_options_for_LUKS_mode" title="Dm-crypt/Device encryption">dm-crypt/Device encryption#Encryption options for LUKS mode</a>.
@@ -1188,9 +1198,17 @@ Note that <code>/home</code> will be encrypted in <a href="#Encrypting_logical_v
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> If you ever have to access the encrypted root from the Arch-ISO, the above <code>open</code> action will allow you to after the <a href="../../en/LVM.html#Logical_volumes_do_not_show_up" title="LVM">LVM shows up</a>.</div>
 <h3><span class="mw-headline" id="Preparing_the_boot_partition_3">Preparing the boot partition</span></h3>
-<pre># dd if=/dev/zero of=/dev/sda1 bs=1M status=progress
-# mkfs.ext4 /dev/sda1
-# mount --mkdir /dev/sda1 /mnt/boot
+<p>Create a <a href="../../en/File_systems.html" class="mw-redirect" title="File system">file system</a> on the partition intended for <code>/boot</code>. For an <a href="../../en/EFI_system_partition.html" title="EFI system partition">EFI system partition</a> on UEFI systems, execute:
+</p>
+<pre># mkfs.fat -F32 /dev/sda1
+</pre>
+<p>or for an ordinary boot partition on BIOS systems:
+</p>
+<pre># mkfs.ext4 /dev/sda1
+</pre>
+<p>Afterwards create the directory for the mountpoint and mount the partition:
+</p>
+<pre># mount --mkdir /dev/sda1 /mnt/boot
 </pre>
 <h3><span class="mw-headline" id="Configuring_mkinitcpio_4">Configuring mkinitcpio</span></h3>
 <p>Make sure the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lvm2">lvm2</a></span> package is <a href="../../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">installed</a>.
@@ -1233,26 +1251,30 @@ UUID=<i>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</i> /boot ext4   defaults  0 2
 <p>Since this scenario uses LVM as the primary and dm-crypt as secondary mapper, each encrypted logical volume requires its own encryption. Yet, unlike the temporary file systems configured with volatile encryption above, the logical volume for <code>/home</code> should of course be persistent. The following assumes you have rebooted into the installed system, otherwise you have to adjust paths.
 To save on entering a second passphrase at boot, a <a href="../../en/Dm-crypt/Device_encryption.html#Keyfiles" title="Dm-crypt/Device encryption">keyfile</a> is created:
 </p>
-<pre># mkdir -m 700 /etc/luks-keys
-# dd if=/dev/random of=/etc/luks-keys/home bs=1 count=256 status=progress
+<pre># mkdir -m 700 /etc/cryptsetup-keys.d
+# dd bs=512 count=4 if=/dev/random of=/etc/cryptsetup-keys.d/home.key iflag=fullblock
+# chmod 600 /etc/cryptsetup-keys.d/home.key
 </pre>
 <p>The logical volume is encrypted with it:
 </p>
-<pre># cryptsetup luksFormat -v /dev/MyVolGroup/crypthome /etc/luks-keys/home
-# cryptsetup -d /etc/luks-keys/home open /dev/MyVolGroup/crypthome home
-# mkfs.ext4 /dev/mapper/home
+<pre># cryptsetup luksFormat -v /dev/MyVolGroup/crypthome /etc/cryptsetup-keys.d/home.key
+# cryptsetup -d /etc/cryptsetup-keys.d/home.key open /dev/MyVolGroup/crypthome home
+</pre>
+<p><a href="../../en/File_systems.html#Create_a_file_system" class="mw-redirect" title="Create a file system">Create a file system</a> on unlocked LUKS device and mount it. For example, to create an <a href="../../en/Ext4.html" title="Ext4">Ext4</a> file system, run:
+</p>
+<pre># mkfs.ext4 /dev/mapper/home
 # mount /dev/mapper/home /home
 </pre>
 <p>The encrypted mount is configured in both <a href="../../en/Dm-crypt/System_configuration.html#crypttab" class="mw-redirect" title="Crypttab">crypttab</a> and <a href="../../en/Fstab.html" title="Fstab">fstab</a>:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/crypttab</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">home	/dev/MyVolGroup/crypthome   /etc/luks-keys/home
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">home	/dev/MyVolGroup/crypthome   none
 </pre>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/fstab</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">/dev/mapper/home        /home   ext4        defaults        0       2
 </pre>
 <h2><span class="mw-headline" id="LUKS_on_software_RAID">LUKS on software RAID</span></h2>
-<p>This example is based on a real-world setup for a workstation class laptop equipped with two SSDs of equal size, and an additional HDD for bulk storage. The end result is LUKS1 based full disk encryption (including <code>/boot</code>) for all drives, with the SSDs in a <a href="../../en/RAID.html" title="RAID">RAID0</a> array, and keyfiles used to unlock all encryption after <a href="../../en/GRUB.html" title="GRUB">GRUB</a> is given a correct passphrase at boot.
+<p>This example is based on a real-world setup for a workstation class laptop equipped with two SSDs of equal size, and an additional HDD for bulk storage. The end result is LUKS based full disk encryption (including <code>/boot</code>) for all drives, with the SSDs in a <a href="../../en/RAID.html" title="RAID">RAID0</a> array, and keyfiles used to unlock all encryption after <a href="../../en/GRUB.html" title="GRUB">GRUB</a> is given a correct passphrase at boot.
 </p>
 <p>This setup utilizes a very simplistic partitioning scheme, with all the available RAID storage being mounted at <code>/</code> (no separate <code>/boot</code> partition), and the decrypted HDD being mounted at <code>/data</code>.
 </p>
@@ -1267,7 +1289,7 @@ To save on entering a second passphrase at boot, a <a href="../../en/Dm-crypt/De
 /dev/sdc = HDD
 </pre>
 <pre style="white-space: pre !important; font-variant-ligatures: no-common-ligatures;">+---------------------+---------------------------+---------------------------+ +---------------------+---------------------------+---------------------------+ +---------------------------+
-| BIOS boot partition | EFI system partition      | LUKS1 encrypted volume    | | BIOS boot partition | EFI system partition      | LUKS1 encrypted volume    | | LUKS2 encrypted volume    |
+| BIOS boot partition | EFI system partition      | LUKS encrypted volume     | | BIOS boot partition | EFI system partition      | LUKS encrypted volume     | | LUKS encrypted volume     |
 |                     |                           |                           | |                     |                           |                           | |                           |
 |                     | /efi                      | /                         | |                     | /efi                      | /                         | | /data                     |
 |                     |                           |                           | |                     |                           |                           | |                           |
@@ -1285,7 +1307,7 @@ To save on entering a second passphrase at boot, a <a href="../../en/Dm-crypt/De
 <h3><span class="mw-headline" id="Preparing_the_disks">Preparing the disks</span></h3>
 <p>Prior to creating any partitions, you should inform yourself about the importance and methods to securely erase the disk, described in <a href="../../en/Dm-crypt/Drive_preparation.html" title="Dm-crypt/Drive preparation">dm-crypt/Drive preparation</a>.
 </p>
-<p>For <a href="../../en/GRUB.html#BIOS_systems" title="GRUB">BIOS systems</a> with GPT, create a <a href="../../en/GRUB.html#GUID_Partition_Table_(GPT)_specific_instructions" class="mw-redirect" title="BIOS boot partition">BIOS boot partition</a> with size of 1 MiB for GRUB to store the second stage of BIOS bootloader. Do not mount the partition.
+<p>For <a href="../../en/GRUB.html#BIOS_systems" title="GRUB">BIOS systems</a> with GPT, create a <a href="../../en/GRUB.html#GUID_Partition_Table_(GPT)_specific_instructions" class="mw-redirect" title="BIOS boot partition">BIOS boot partition</a> with size of 1 MiB for GRUB to store the second stage of BIOS boot loader. Do not mount the partition.
 </p>
 <p>For <a href="../../en/GRUB.html#UEFI_systems" title="GRUB">UEFI systems</a> create an <a href="../../en/EFI_system_partition.html" title="EFI system partition">EFI system partition</a> with an appropriate size, it will later be mounted at <code>/efi</code>.
 </p>
@@ -1326,15 +1348,21 @@ To save on entering a second passphrase at boot, a <a href="../../en/Dm-crypt/De
 <p>Set up encryption for <code>/dev/md/root</code>:
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> GRUB's support for LUKS2 is limited; see <a href="../../en/GRUB.html#Encrypted_/boot" title="GRUB">GRUB#Encrypted /boot</a> for details. Use LUKS1 (<code>cryptsetup luksFormat --type luks1</code>) for partitions that GRUB will need to unlock.</div>
-<pre># cryptsetup -y -v luksFormat --type luks1 /dev/md/root
+<strong>Warning:</strong> GRUB's support for LUKS2 is limited; see <a href="../../en/GRUB.html#Encrypted_/boot" title="GRUB">GRUB#Encrypted /boot</a> for details. Use LUKS2 with PBKDF2 (<code>cryptsetup luksFormat --pbkdf pbkdf2</code>) for partitions that GRUB will need to unlock.</div>
+<pre># cryptsetup -v luksFormat --pbkdf pbkdf2 /dev/md/root
 # cryptsetup open /dev/md/root root
-# mkfs.ext4 /dev/mapper/root
-# mount /dev/mapper/root /mnt
+</pre>
+<p><a href="../../en/File_systems.html#Create_a_file_system" class="mw-redirect" title="Create a file system">Create a file system</a> on unlocked LUKS device. For example, to create an <a href="../../en/Ext4.html" title="Ext4">Ext4</a> file system, run:
+</p>
+<pre># mkfs.ext4 /dev/mapper/root
+</pre>
+<p>Mount the root volume to <code>/mnt</code>:
+</p>
+<pre># mount /dev/mapper/root /mnt
 </pre>
 <p>And repeat for the HDD:
 </p>
-<pre># cryptsetup -y -v luksFormat /dev/sdc1
+<pre># cryptsetup -v luksFormat /dev/sdc1
 # cryptsetup open /dev/sdc1 data
 # mkfs.ext4 /dev/mapper/data
 # mount --mkdir /dev/mapper/data /mnt/data
@@ -1345,7 +1373,7 @@ To save on entering a second passphrase at boot, a <a href="../../en/Dm-crypt/De
 # mount --mkdir /dev/md/ESP /mnt/efi
 </pre>
 <h3><span class="mw-headline" id="Configuring_GRUB">Configuring GRUB</span></h3>
-<p>Configure <a href="../../en/GRUB.html" title="GRUB">GRUB</a> for the LUKS1 encrypted system by editing <code>/etc/default/grub</code> with the following:
+<p>Configure <a href="../../en/GRUB.html" title="GRUB">GRUB</a> for the LUKS encrypted system by editing <code>/etc/default/grub</code> with the following:
 </p>
 <pre>GRUB_CMDLINE_LINUX="cryptdevice=/dev/md/root:root"
 GRUB_ENABLE_CRYPTODISK=y
@@ -1372,7 +1400,7 @@ GRUB_PRELOAD_MODULES="usb usb_keyboard ohci uhci ehci"
 # grub-mkconfig -o /boot/grub/grub.cfg
 </pre>
 <h3><span class="mw-headline" id="Creating_the_keyfiles">Creating the keyfiles</span></h3>
-<p>The next steps save you from entering your passphrase twice when you boot the system (once so GRUB can unlock the LUKS1 device, and second time once the initramfs assumes control of the system). This is done by creating a <a href="../../en/Dm-crypt/Device_encryption.html#Keyfiles" title="Dm-crypt/Device encryption">keyfile</a> for the encryption and adding it to the initramfs image to allow the encrypt hook to unlock the root device. See <a href="../../en/Dm-crypt/Device_encryption.html#With_a_keyfile_embedded_in_the_initramfs" title="Dm-crypt/Device encryption">dm-crypt/Device encryption#With a keyfile embedded in the initramfs</a> for details.
+<p>The next steps save you from entering your passphrase twice when you boot the system (once so GRUB can unlock the LUKS device, and second time once the initramfs assumes control of the system). This is done by creating a <a href="../../en/Dm-crypt/Device_encryption.html#Keyfiles" title="Dm-crypt/Device encryption">keyfile</a> for the encryption and adding it to the initramfs image to allow the encrypt hook to unlock the root device. See <a href="../../en/Dm-crypt/Device_encryption.html#With_a_keyfile_embedded_in_the_initramfs" title="Dm-crypt/Device encryption">dm-crypt/Device encryption#With a keyfile embedded in the initramfs</a> for details.
 </p>
 <ul>
 <li>Create the <a href="../../en/Dm-crypt/Device_encryption.html#Keyfiles" title="Dm-crypt/Device encryption">keyfile</a> and add the key to <code>/dev/md/root</code>.</li>
@@ -1436,7 +1464,7 @@ HOOKS=(base udev autodetect microcode modconf kms <b>keyboard</b> <b>keymap</b> 
 <li>It is also possible to use a single USB key physical device:
 <ul>
 <li>By putting the key on another partition (/dev/sdb2) of the USB storage device (/dev/sdb).</li>
-<li>By copying the keyfile to the initramfs directly. An example keyfile <code>/etc/keyfile</code> gets copied to the initramfs image by setting <code>FILES=(/etc/keyfile)</code> in <code>/etc/mkinitcpio.conf</code>. The way to instruct the <code>encrypt</code> hook to read the keyfile in the initramfs image is using <code>rootfs:</code> prefix before the filename, e.g. <code>cryptkey=rootfs:/etc/keyfile</code>.</li>
+<li>By copying the keyfile to the initramfs directly. An example keyfile <code>/etc/cryptsetup-keys.d/root.key</code> gets copied to the initramfs image by setting <code>FILES=(/etc/cryptsetup-keys.d/root.key)</code> in <code>/etc/mkinitcpio.conf</code>. The way to instruct the <code>encrypt</code> hook to read the keyfile in the initramfs image is using <code>rootfs:</code> prefix before the filename, e.g. <code>cryptkey=rootfs:/etc/cryptsetup-keys.d/root.key</code>.</li>
 </ul>
 </li>
 <li>Another option is using a passphrase with good <a href="../../en/Security.html#Choosing_secure_passwords" title="Security">entropy</a>.</li>
@@ -1520,14 +1548,14 @@ HOOKS=(base udev autodetect microcode modconf kms <b>keyboard</b> <b>keymap</b> 
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/fstab</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># /dev/sdb1
 UUID=<i>XXXX-XXXX</i> /boot vfat <b>noauto</b>,rw,noatime 0 2</pre>
-<p>However, when an update to anything used in the initramfs, or a kernel, or the bootloader is required; the <code>/boot</code> partition must be present and mounted. As the entry in <code>fstab</code> already exists, it can be mounted simply with:
+<p>However, when an update to anything used in the initramfs, or a kernel, or the boot loader is required; the <code>/boot</code> partition must be present and mounted. As the entry in <code>fstab</code> already exists, it can be mounted simply with:
 </p>
 <pre># mount /boot
 </pre>
 <h2>
 <span id="Encrypted_boot_partition_.28GRUB.29"></span><span class="mw-headline" id="Encrypted_boot_partition_(GRUB)">Encrypted boot partition (GRUB)</span>
 </h2>
-<p>This setup utilizes the same partition layout and configuration as the previous <a href="#LVM_on_LUKS">#LVM on LUKS</a> section, with the difference that the <a href="../../en/GRUB.html" title="GRUB">GRUB</a> boot loader is used since it is capable of booting from an LVM logical volume and a LUKS1-encrypted <code>/boot</code>. See also <a href="../../en/GRUB.html#Encrypted_/boot" title="GRUB">GRUB#Encrypted /boot</a>.
+<p>This setup utilizes the same partition layout and configuration as the previous <a href="#LVM_on_LUKS">#LVM on LUKS</a> section, with the difference that the <a href="../../en/GRUB.html" title="GRUB">GRUB</a> boot loader is used since it is capable of booting from an LVM logical volume and a LUKS-encrypted <code>/boot</code>. See also <a href="../../en/GRUB.html#Encrypted_/boot" title="GRUB">GRUB#Encrypted /boot</a>.
 </p>
 <p>The disk layout in this example is:
 </p>
@@ -1538,7 +1566,7 @@ UUID=<i>XXXX-XXXX</i> /boot vfat <b>noauto</b>,rw,noatime 0 2</pre>
 |                     |                      |                      |                      |                      |
 |                     |                      | /dev/MyVolGroup/root | /dev/MyVolGroup/swap | /dev/MyVolGroup/home |
 | /dev/sda1           | /dev/sda2            |----------------------+----------------------+----------------------+
-| unencrypted         | unencrypted          | /dev/sda3 encrypted using LVM on LUKS1                             |
+| unencrypted         | unencrypted          | /dev/sda3 encrypted using LVM on LUKS                              |
 +---------------------+----------------------+--------------------------------------------------------------------+
 </pre>
 <div class="archwiki-template-box archwiki-template-box-tip">
@@ -1551,17 +1579,17 @@ UUID=<i>XXXX-XXXX</i> /boot vfat <b>noauto</b>,rw,noatime 0 2</pre>
 <h3><span class="mw-headline" id="Preparing_the_disk_6">Preparing the disk</span></h3>
 <p>Prior to creating any partitions, you should inform yourself about the importance and methods to securely erase the disk, described in <a href="../../en/Dm-crypt/Drive_preparation.html" title="Dm-crypt/Drive preparation">dm-crypt/Drive preparation</a>.
 </p>
-<p>For <a href="../../en/GRUB.html#GUID_Partition_Table_(GPT)_specific_instructions" title="GRUB">BIOS/GPT systems</a> create a <a href="../../en/GRUB.html#GUID_Partition_Table_(GPT)_specific_instructions" class="mw-redirect" title="BIOS boot partition">BIOS boot partition</a> with size of 1 MiB for GRUB to store the second stage of BIOS bootloader. Do not mount the partition. For BIOS/MBR systems this is not necessary.
-</p>
 <p>For <a href="../../en/GRUB.html#UEFI_systems" title="GRUB">UEFI systems</a> create an <a href="../../en/EFI_system_partition.html" title="EFI system partition">EFI system partition</a> with an appropriate size, it will later be mounted at <code>/efi</code>.
+</p>
+<p>For <a href="../../en/GRUB.html#GUID_Partition_Table_(GPT)_specific_instructions" title="GRUB">BIOS/GPT setups</a> create a <a href="../../en/GRUB.html#GUID_Partition_Table_(GPT)_specific_instructions" class="mw-redirect" title="BIOS boot partition">BIOS boot partition</a> with size of 1 MiB for GRUB to store the second stage of BIOS boot loader. Do not mount the partition. For BIOS/MBR setups this is not necessary.
 </p>
 <p>Create a partition of type <code>8309</code>, which will later contain the encrypted container for the LVM.
 </p>
 <p>Create the LUKS encrypted container:
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> GRUB's support for LUKS2 is limited; see <a href="../../en/GRUB.html#Encrypted_/boot" title="GRUB">GRUB#Encrypted /boot</a> for details. Use LUKS1 (<code>cryptsetup luksFormat --type luks1</code>) for partitions that GRUB will need to unlock.</div>
-<pre># cryptsetup luksFormat --type luks1 /dev/sda3
+<strong>Warning:</strong> GRUB's support for LUKS2 is limited; see <a href="../../en/GRUB.html#Encrypted_/boot" title="GRUB">GRUB#Encrypted /boot</a> for details. Use LUKS2 with PBKDF2 (<code>cryptsetup luksFormat --pbkdf pbkdf2</code>) for partitions that GRUB will need to unlock.</div>
+<pre># cryptsetup luksFormat --pbkdf pbkdf2 /dev/sda3
 </pre>
 <p>For more information about the available cryptsetup options see the <a href="../../en/Dm-crypt/Device_encryption.html#Encryption_options_for_LUKS_mode" title="Dm-crypt/Device encryption">LUKS encryption options</a> prior to above command.
 </p>
@@ -1583,7 +1611,7 @@ Number  Start (sector)    End (sector)  Size       Code  Name
 <h3><span class="mw-headline" id="Preparing_the_logical_volumes_3">Preparing the logical volumes</span></h3>
 <p>The LVM logical volumes of this example follow the exact layout as the <a href="#LVM_on_LUKS">#LVM on LUKS</a> scenario. Therefore, please follow <a href="#Preparing_the_logical_volumes">#Preparing the logical volumes</a> above and adjust as required.
 </p>
-<p>If you plan to boot in UEFI mode, create a mountpoint for the <a href="../../en/EFI_system_partition.html" title="EFI system partition">EFI system partition</a> at <code>/efi</code> for compatibility with <code>grub-install</code> and mount it:
+<p>For UEFI systems, create a mountpoint for the <a href="../../en/EFI_system_partition.html" title="EFI system partition">EFI system partition</a> at <code>/efi</code> for compatibility with <code>grub-install</code> and mount it:
 </p>
 <pre># mount --mkdir /dev/sda2 /mnt/efi
 </pre>
@@ -1614,7 +1642,7 @@ sda                   8:0      0   200G  0 disk
 <p><a href="../../en/Mkinitcpio.html#Image_creation_and_activation" class="mw-redirect" title="Regenerate the initramfs">Regenerate the initramfs</a> after saving the changes. See <a href="../../en/Dm-crypt/System_configuration.html#mkinitcpio" title="Dm-crypt/System configuration">dm-crypt/System configuration#mkinitcpio</a> for details and other hooks that you may need.
 </p>
 <h3><span class="mw-headline" id="Configuring_GRUB_2">Configuring GRUB</span></h3>
-<p>Configure GRUB to allow booting from <code>/boot</code> on a LUKS1 encrypted partition:
+<p>Configure GRUB to allow booting from <code>/boot</code> on a LUKS encrypted partition:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/default/grub</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">GRUB_ENABLE_CRYPTODISK=y</pre>
@@ -1648,32 +1676,29 @@ sda                   8:0      0   200G  0 disk
 <div>
 <b>Notes:</b> Too much duplicated content, too much detail here for this overview page. (Discuss in <a href="../../en/Talk:Dm-crypt/Encrypting_an_entire_system.html#Security_Issue_with_Grub_Keyfile" title="Talk:Dm-crypt/Encrypting an entire system">Talk:Dm-crypt/Encrypting an entire system#Security Issue with Grub Keyfile</a>)</div>
 </div>
-<p>While GRUB asks for a passphrase to unlock the LUKS1 encrypted partition after above instructions, the partition unlock is not passed on to the initramfs. Hence, you have to enter the passphrase twice at boot: once for GRUB and once for the initramfs.
+<p>While GRUB asks for a passphrase to unlock the LUKS encrypted partition after above instructions, the partition unlock is not passed on to the initramfs. Hence, you have to enter the passphrase twice at boot: once for GRUB and once for the initramfs.
 </p>
 <p>This section deals with extra configuration to let the system boot by only entering the passphrase once, in GRUB. This is accomplished by <a href="../../en/Dm-crypt/Device_encryption.html#With_a_keyfile_embedded_in_the_initramfs" title="Dm-crypt/Device encryption">with a keyfile embedded in the initramfs</a>.
 </p>
 <p>First create a keyfile and add it as LUKS key:
 </p>
-<pre># dd bs=512 count=4 if=/dev/random of=/root/cryptlvm.keyfile iflag=fullblock
-# chmod 000 /root/cryptlvm.keyfile
-# cryptsetup -v luksAddKey /dev/sda3 /root/cryptlvm.keyfile
+<pre># mkdir -m 700 /etc/cryptsetup-keys.d
+# dd bs=512 count=4 if=/dev/random of=/etc/cryptsetup-keys.d/cryptlvm.key iflag=fullblock
+# chmod 600 /etc/cryptsetup-keys.d/cryptlvm.key
+# cryptsetup -v luksAddKey /dev/sda3 /etc/cryptsetup-keys.d/cryptlvm.key
 </pre>
 <p>Add the keyfile to the initramfs image:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/mkinitcpio.conf</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">FILES=(/root/cryptlvm.keyfile)</pre>
-<p>Recreate the initramfs image and secure the embedded keyfile:
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">FILES=(/etc/cryptsetup-keys.d/cryptlvm.key)</pre>
+<p><a href="../../en/Mkinitcpio.html#Image_creation_and_activation" class="mw-redirect" title="Regenerate the initramfs">Regenerate the initramfs</a>.
 </p>
-<pre># chmod 600 /boot/initramfs-linux*
-</pre>
 <p>Set the following kernel parameters to unlock the LUKS partition with the keyfile. Using the <code>encrypt</code> hook:
 </p>
-<pre>GRUB_CMDLINE_LINUX="... cryptkey=rootfs:/root/cryptlvm.keyfile"
+<pre>GRUB_CMDLINE_LINUX="... cryptkey=rootfs:/etc/cryptsetup-keys.d/cryptlvm.key"
 </pre>
-<p>Or, using the <a href="../../en/Dm-crypt/System_configuration.html#Using_systemd-cryptsetup-generator" class="mw-redirect" title="Sd-encrypt">sd-encrypt</a> hook:
+<p>When using the <a href="../../en/Dm-crypt/System_configuration.html#Using_systemd-cryptsetup-generator" class="mw-redirect" title="Sd-encrypt">sd-encrypt</a> hook, <code>/etc/cryptsetup-keys.d/<i>name</i>.key</code> will be used by default, so no additional kernel parameters need to be set.
 </p>
-<pre>GRUB_CMDLINE_LINUX="... rd.luks.key=<i>device-UUID</i>=/root/cryptlvm.keyfile"
-</pre>
 <p>If for some reason the keyfile fails to unlock the boot partition, systemd will fallback to ask for a passphrase to unlock and, in case that is correct, continue booting.
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
@@ -1701,6 +1726,11 @@ normal</pre>
 # install -v /tmp/grubx64.efi /efi/EFI/GRUB/grubx64.efi
 </pre>
 <h2><span class="mw-headline" id="Root_on_ZFS">Root on ZFS</span></h2>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../../File:Tango-edit-cut.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is being considered for removal.</b></p>
+<div>
+<b>Reason:</b> There is nothing inherently different in the encryption setup between ZFS on LUKS or plain dm-crypt compared to any other file system on LUKS or plain dm-crypt. ZFS native encryption is out of scope of this article. (Discuss in <a rel="nofollow" class="external text" href="../../en/Talk:Dm-crypt/Encrypting_an_entire_system.html">Talk:Dm-crypt/Encrypting an entire system</a>)</div>
+</div>
 <p>To use dm-crypt with <a href="../../en/ZFS.html" title="ZFS">ZFS</a>, see <a href="../../en/ZFS.html#Encryption_in_ZFS_using_dm-crypt" title="ZFS">ZFS#Encryption in ZFS using dm-crypt</a>.
 </p>
 <p>Additionally, ZFS features <a href="../../en/ZFS.html#Native_encryption" title="ZFS">native encryption</a>, which may also be utilized to encrypt the system root, excluding the boot loader and file system metadata. See:
@@ -1725,6 +1755,7 @@ normal</pre>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
 <li><a href="../../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
 <li><a href="../../en/Category:Pages_or_sections_flagged_with_Template:Merge.html" title="Category:Pages or sections flagged with Template:Merge">Pages or sections flagged with Template:Merge</a></li>
+<li><a href="../../en/Category:Sections_flagged_with_Template:Remove.html" title="Category:Sections flagged with Template:Remove">Sections flagged with Template:Remove</a></li>
 </ul>
 </div>
 </div>
@@ -1736,8 +1767,8 @@ normal</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/Encrypting_an_entire_system&amp;oldid=811425">https://wiki.archlinux.org/index.php?title=Dm-crypt/Encrypting_an_entire_system&amp;oldid=811425</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 28 June 2024, at 12:12.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/Encrypting_an_entire_system&amp;oldid=812936">https://wiki.archlinux.org/index.php?title=Dm-crypt/Encrypting_an_entire_system&amp;oldid=812936</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 28 July 2024, at 08:53.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

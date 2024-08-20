@@ -437,19 +437,17 @@ export <i>GUI_VAR</i>=<i>value</i>
 </p>
 <p><a href="../en/Greetd.html" title="Greetd">greetd</a> also sources <code>/etc/profile</code> and <code>~/.profile</code> - this behavior is controlled by its <code>source_profile</code> setting, enabled by default.
 </p>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-clear.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs language, wiki syntax or style improvements. See <a href="../en/Help:Style.html" title="Help:Style">Help:Style</a> for reference.</b></p>
-<div>
-<b>Reason:</b> The following depends on <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=run-parts">run-parts</a></span>. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Environment_variables.html">Talk:Environment variables</a>)</div>
-</div>
 <p>If your display manager sources startup scripts like <code>~/.bash_profile</code> and you want to use <code>environment.d</code>, you can source it like so:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.bash_profile</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># use systemd-environment-d-generator(8) to generate environment, and export those variables
-export $(run-parts /usr/lib/systemd/user-environment-generators | sed '/:$/d; /^$/d' | xargs)
+set -o allexport
+source &lt;(/usr/lib/systemd/user-environment-generators/30-systemd-environment-d-generator)
+set +o allexport
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> The above runs all executables in <code>/usr/lib/systemd/user-environment-generators</code>, which may or may not be desirable. Feel free to run <code>/usr/lib/systemd/user-environment-generators/30-systemd-environment-d-generator</code> directly instead.</div>
+<strong>Note:</strong> Other generators in <code>/usr/lib/systemd/user-environment-generators</code> like <code>60-flatpak</code> may not quote the values of environment variables. In this case the output should be sourced with <code>export -- "$(/usr/lib/systemd/user-environment-generators/60-flatpak)"</code>
+</div>
 <h5><span class="mw-headline" id="Per_application">Per application</span></h5>
 <p>To set environment variables only for a specific application instead of the whole session, edit the application's <i>.desktop</i> file. See <a href="../en/Desktop_entries.html#Modify_environment_variables" title="Desktop entries">Desktop entries#Modify environment variables</a> for instructions.
 </p>
@@ -548,10 +546,7 @@ http_proxy="http://192.168.0.1:80"
 <div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:System_administration.html" title="Category:System administration">System administration</a></li></ul>
 </div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
-</ul>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li></ul>
 </div>
 </div>
 				</div>
@@ -562,8 +557,8 @@ http_proxy="http://192.168.0.1:80"
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Environment_variables&amp;oldid=810274">https://wiki.archlinux.org/index.php?title=Environment_variables&amp;oldid=810274</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 11 June 2024, at 03:29.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Environment_variables&amp;oldid=813616">https://wiki.archlinux.org/index.php?title=Environment_variables&amp;oldid=813616</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 31 July 2024, at 14:31.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

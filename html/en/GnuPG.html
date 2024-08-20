@@ -773,6 +773,15 @@
 			<ul id="toc-Keyblock_resource_does_not_exist-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Subkey_is_created_with_Restricted_capability" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Subkey_is_created_with_Restricted_capability">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">9.14</span>Subkey is created with Restricted capability</div>
+			</a>
+			
+			<ul id="toc-Subkey_is_created_with_Restricted_capability-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1">
@@ -1339,12 +1348,12 @@ In this case you firstly need to kill the ongoing gpg-agent process and then you
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> 
 <ul>
-<li>The pinentry programs <code>/usr/bin/pinentry-gnome3</code> (GNOME), <code>/usr/bin/pinentry-qt</code>, <code>/usr/bin/pinentry-qt5</code> and <code>/usr/bin/pinentry-gtk-2</code> (generic) <a rel="nofollow" class="external autonumber" href="https://avaldes.co/2020/01/28/secret-service-keepassxc.html">[7]</a> support the <a rel="nofollow" class="external text" href="https://specifications.freedesktop.org/secret-service/">DBus Secret Service API</a>, which allows for remembering passwords via a compliant manager such as <a href="../en/GNOME/Keyring.html" class="mw-redirect" title="GNOME Keyring">GNOME Keyring</a>, <a href="../en/KeePass.html#Secret_Service" title="KeePass">KeePassXC</a> or <a href="../en/KDE_Wallet.html" title="KDE Wallet">KDE Wallet</a>.</li>
+<li>The pinentry programs <code>/usr/bin/pinentry-gnome3</code> (GNOME), <code>/usr/bin/pinentry-qt</code>, <code>/usr/bin/pinentry-qt5</code> and <code>/usr/bin/pinentry-gtk</code> (generic) <a rel="nofollow" class="external autonumber" href="https://avaldes.co/2020/01/28/secret-service-keepassxc.html">[7]</a> support the <a rel="nofollow" class="external text" href="https://specifications.freedesktop.org/secret-service/">DBus Secret Service API</a>, which allows for remembering passwords via a compliant manager such as <a href="../en/GNOME/Keyring.html" class="mw-redirect" title="GNOME Keyring">GNOME Keyring</a>, <a href="../en/KeePass.html#Secret_Service" title="KeePass">KeePassXC</a> or <a href="../en/KDE_Wallet.html" title="KDE Wallet">KDE Wallet</a>.</li>
 <li>An alternative for <a href="../en/KDE_Wallet.html" title="KDE Wallet">KDE Wallet</a> is <code>/usr/bin/pinentry-kwallet</code> which requires installing the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/kwalletcli/">kwalletcli</a></span><sup><small>AUR</small></sup> package.</li>
 </ul>
 </div>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> When using <a href="../en/KDE.html" title="KDE">KDE</a>, the Secret Service API integration is disabled due to <a rel="nofollow" class="external text" href="https://dev.gnupg.org/rPefb6de7fb2c15c1e31349b80fa7c8c1d4694c6cf">a change in pinentry</a>. A workaround is to ensure that <code>gpg-agent</code> is started with the <code>XDG_SESSION_DESKTOP</code> environment variable set to a value that doesn't contain "kde". When <a rel="nofollow" class="external text" href="https://dev.gnupg.org/rP23753cfb03c61e9c6534c1410e470ab85babc05a">this change to pinentry</a> is released, this workaround can be changed to setting <code>PINENTRY_KDE_USE_WALLET</code> to a non-empty value.</div>
+<strong>Note:</strong> When using <a href="../en/KDE.html" title="KDE">KDE</a>, the Secret Service API integration is disabled to <a rel="nofollow" class="external text" href="https://dev.gnupg.org/rPefb6de7fb2c15c1e31349b80fa7c8c1d4694c6cf">prevent a deadlock</a> in case <a href="../en/KDE_Wallet.html" title="KDE Wallet">KDE Wallet</a> uses GnuPG encryption. If you use KDE Wallet with the classic, blowfish encrypted file instead, re-enable the Secret Service API integration by setting the <a href="../en/Environment_variables.html" class="mw-redirect" title="Environment variable">environment variable</a> <code>PINENTRY_KDE_USE_WALLET</code> to a non-empty value.</div>
 <p>Remember to <a href="#Reload_the_agent">reload the agent</a> after making changes to the configuration.
 </p>
 <h3><span class="mw-headline" id="Cache_passwords">Cache passwords</span></h3>
@@ -1501,6 +1510,10 @@ StreamLocalBindUnlink yes
 </div>
 <p>GnuPG uses <i>scdaemon</i> as an interface to your smartcard reader, please refer to the <a href="../en/Man_page.html" title="Man page">man page</a> <span class="plainlinks archwiki-template-man" title="$ man 1 scdaemon"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/scdaemon.1">scdaemon(1)</a></span> for details.
 </p>
+<p>GnuPG's <i>gpg-card</i> tool can be used to configure <i>scdaemon</i> and serves as front-end for smartcard configuration, see <span class="plainlinks archwiki-template-man" title="$ man 1 gpg-card"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/gpg-card.1">gpg-card(1)</a></span> for details.
+</p>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning:</strong> GnuPG 2.4.3 (and 2.2.42, 2.4.2 not packaged by Arch Linux) contained a security regression that may have retained a clear private key backup, if you used it to move a key to a smartcard with the <code>gpg --edit-card</code> command.<a rel="nofollow" class="external autonumber" href="https://dev.gnupg.org/T6944">[12]</a> See the <a rel="nofollow" class="external text" href="https://gnupg.org/blog/20240125-smartcard-backup-key.html">GnuPG advisory</a> for information and remediation with <code>gpg-card checkkeys</code>.</div>
 <h3><span class="mw-headline" id="GnuPG_only_setups">GnuPG only setups</span></h3>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong>  To allow scdaemon direct access to USB smartcard readers the optional dependency <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=libusb-compat">libusb-compat</a></span> must be installed</div>
@@ -1528,7 +1541,9 @@ disable-ccid
 <p>Please check <span class="plainlinks archwiki-template-man" title="$ man 1 scdaemon"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/scdaemon.1">scdaemon(1)</a></span> if you do not use OpenSC.
 </p>
 <h4><span class="mw-headline" id="Shared_access_with_pcscd">Shared access with pcscd</span></h4>
-<p>GnuPG <code>scdaemon</code> is the only popular <code>pcscd</code> client that uses <code>PCSC_SHARE_EXCLUSIVE</code> flag when connecting to <code>pcscd</code>. Other clients like OpenSC PKCS#11 that are used by browsers and programs listed in <a href="../en/Electronic_identification.html" title="Electronic identification">Electronic identification</a> are using <code>PCSC_SHARE_SHARED</code> that allows simultaneous access to single smartcard. <code>pcscd</code> will not give exclusive access to smartcard while there are other clients connected. This means that to use GnuPG smartcard features you must before have to close all your open browser windows or do some other inconvenient operations. Starting from version 2.2.28 LTS and 2.3.0 you can enable shared access by modifying your <code>scdaemon.conf</code> file and adding <code>pcsc-shared</code> line end of it.
+<p>GnuPG <code>scdaemon</code> is the only popular <code>pcscd</code> client that uses <code>PCSC_SHARE_EXCLUSIVE</code> flag when connecting to <code>pcscd</code>. Other clients like OpenSC PKCS#11 that are used by browsers and programs listed in <a href="../en/Electronic_identification.html" title="Electronic identification">Electronic identification</a> are using <code>PCSC_SHARE_SHARED</code> that allows simultaneous access to single smartcard. <code>pcscd</code> will not give exclusive access to smartcard while there are other clients connected. This means that to use GnuPG smartcard features you must before have to close all your open browser windows or do some other inconvenient operations.
+</p>
+<p>Starting from version 2.2.28 LTS and 2.3.0 you can enable shared access by modifying your <code>scdaemon.conf</code> file and adding the line <code>pcsc-shared</code> to the end of it. Keep in mind that <span class="plainlinks archwiki-template-man" title="$ man 1 scdaemon"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/scdaemon.1#pcsc">scdaemon(1) § --pcsc-shared</a></span> describes this flag as a "somewhat dangerous option" due to "certain information being cached from the card".
 </p>
 <h5><span class="mw-headline" id="Multi_applet_smart_cards">Multi applet smart cards</span></h5>
 <p>When using <a href="../en/YubiKey.html" title="YubiKey">YubiKeys</a> or other multi applet USB dongles with OpenSC PKCS#11 may run into problems where OpenSC switches your Yubikey from OpenPGP to PIV applet, breaking the <code>scdaemon</code>. 
@@ -1767,6 +1782,9 @@ gpg: [stdin]: clear-sign failed: Inappropriate ioctl for device
 </p>
 <pre>$ mkdir -m 700 <i>gnupg_home</i>
 </pre>
+<h3><span class="mw-headline" id="Subkey_is_created_with_Restricted_capability">Subkey is created with Restricted capability</span></h3>
+<p>In some cases creating a subkey with a custom set of capabilities results in the subkey marked as "Restricted". This happens in the <code>addkey</code> command with option 7 or 8 ("set your own capabilities") when the capabilities are toggled in the interactive prompt. A workaround is to enter the desired capability set directly as a string instead of toggling individual capabilities, when prompted with the capability selection. For example, enter "=A" to create a subkey with only the Authentication capability.
+</p>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul>
 <li><a rel="nofollow" class="external text" href="https://gnupg.org/">GNU Privacy Guard Homepage</a></li>
@@ -1802,8 +1820,8 @@ gpg: [stdin]: clear-sign failed: Inappropriate ioctl for device
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GnuPG&amp;oldid=811821">https://wiki.archlinux.org/index.php?title=GnuPG&amp;oldid=811821</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 3 July 2024, at 07:04.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GnuPG&amp;oldid=812853">https://wiki.archlinux.org/index.php?title=GnuPG&amp;oldid=812853</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 25 July 2024, at 05:11.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

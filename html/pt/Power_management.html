@@ -451,7 +451,7 @@
 					<div id="mw-content-text" class="mw-body-content">
 <div class="mw-content-ltr mw-parser-output" lang="pt" dir="ltr">
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Status de tradução:</strong> Esse artigo é uma tradução de <a href="../en/Power_management.html" title="Power management">Power management</a>. Data da última tradução: 2024-04-01. Você pode ajudar a sincronizar a tradução, se houver <a rel="nofollow" class="external text" href="https://wiki.archlinux.org/index.php?title=Power_management&amp;diff=0&amp;oldid=804988">alterações</a> na versão em inglês.</div>
+<strong>Status de tradução:</strong> Esse artigo é uma tradução de <a href="../en/Power_management.html" title="Power management">Power management</a>. Data da última tradução: 2024-07-11. Você pode ajudar a sincronizar a tradução, se houver <a rel="nofollow" class="external text" href="https://wiki.archlinux.org/index.php?title=Power_management&amp;diff=0&amp;oldid=811020">alterações</a> na versão em inglês.</div>
 <div class="archwiki-template-meta-related-articles">
 <p>Artigos relacionados</p>
 <ul>
@@ -524,7 +524,12 @@
 <a rel="nofollow" class="external free" href="https://linrunner.de/tlp">https://linrunner.de/tlp</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=tlp">tlp</a></span>
 </dd></dl>
 <ul><li>
-<b>upower</b> — Uma abstração para contagem de dispositivos de energia, escuta de eventos dos mesmos e consulta de histórico e estastísticas.</li></ul>
+<b>TuneD</b> — Um daemon que monitora e cria configurações de adaptação para dispositivos no sistema.</li></ul>
+<dl><dd>
+<a rel="nofollow" class="external free" href="https://tuned-project.org">https://tuned-project.org</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/tuned/">tuned</a></span><sup><small>AUR</small></sup>
+</dd></dl>
+<ul><li>
+<b><a href="https://en.wikipedia.org/wiki/UPower" class="extiw" title="wikipedia:UPower">UPower</a></b> — Uma abstração para contagem de dispositivos de energia, escuta de eventos dos mesmos e consulta de histórico e estatísticas.</li></ul>
 <dl><dd>
 <a rel="nofollow" class="external free" href="https://upower.freedesktop.org">https://upower.freedesktop.org</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=upower">upower</a></span>
 </dd></dl>
@@ -699,7 +704,7 @@
 </p>
 <pre>$ cat /sys/devices/system/cpu/cpufreq/policy*/energy_performance_available_preferences
 </pre>
-<p>Para reduzir o gasto energético, você pode criar uma configuração com o seguinte arquivo:
+<p>Para reduzir o gasto energético, você pode editar a configuração ao criar o seguinte arquivo:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/tmpfiles.d/energy_performance_preference.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">w /sys/devices/system/cpu/cpufreq/policy*/energy_performance_preference - - - - balance_power
@@ -745,17 +750,17 @@
 <p>Veja a página em inglês sobre <a href="../en/Backlight.html" title="Backlight">Backlight</a>.
 </p>
 <h3><span class="mw-headline" id="Bluetooth">Bluetooth</span></h3>
-<p>Para desativar completamente o bluetooth <a href="../pt/Kernel_module.html#Adicionar_um_m%C3%B3dulo_em_uma_lista_negra_(Blacklisting)" class="mw-redirect" title="Módulo de kernel">crie uma lista negra</a> com os módulos <code>btusb</code> e <code>bluetooth</code>.
+<p>Para desativar completamente o Bluetooth <a href="../pt/Kernel_module.html#Adicionar_um_m%C3%B3dulo_em_uma_lista_negra_(Blacklisting)" class="mw-redirect" title="Módulo de kernel">crie uma lista negra</a> com os módulos <code>btusb</code> e <code>bluetooth</code>.
 </p>
-<p>Desligue apenas temporariamente o bluetooth por <i>rfkill</i>:
+<p>De forma alternativa, crie o seguinte arquivo de regras udev:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/udev/rules.d/50-bluetooth.rules</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># desabilita bluetooth
+SUBSYSTEM=="rfkill", ATTR{type}=="bluetooth", ATTR{state}="0"</pre>
+<p>Para desligar o Bluetooth somente temporariamente, use <span class="plainlinks archwiki-template-man" title="$ man 8 rfkill"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/rfkill.8">rfkill(8)</a></span>:
 </p>
 <pre># rfkill block bluetooth
 </pre>
-<p>Ou por regra udev:
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/udev/rules.d/50-bluetooth.rules</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># Desabilitar bluetooth
-SUBSYSTEM=="rfkill", ATTR{type}=="bluetooth", ATTR{state}="0"</pre>
 <h3><span class="mw-headline" id="Webcam">Webcam</span></h3>
 <p>Se você não irá usar uma webcam integrada, então <a href="../pt/Kernel_module.html#Adicionar_um_m%C3%B3dulo_em_uma_lista_negra_(Blacklisting)" class="mw-redirect" title="Módulo de kernel">crie uma lista negra</a> para bloquear o módulo <code>uvcvideo</code>.
 </p>
@@ -1083,8 +1088,8 @@ $ systemctl reboot
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Power_management_(Portugu%C3%AAs)&amp;oldid=806976">https://wiki.archlinux.org/index.php?title=Power_management_(Português)&amp;oldid=806976</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 28 April 2024, at 07:21.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Power_management_(Portugu%C3%AAs)&amp;oldid=812254">https://wiki.archlinux.org/index.php?title=Power_management_(Português)&amp;oldid=812254</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 11 July 2024, at 14:44.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

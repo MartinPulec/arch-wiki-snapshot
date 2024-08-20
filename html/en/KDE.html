@@ -731,6 +731,15 @@
 			<ul id="toc-Virtual_keyboard_2-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Mount_network_shares_in_fixed_location" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Mount_network_shares_in_fixed_location">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">5.16</span>Mount network shares in fixed location</div>
+			</a>
+			
+			<ul id="toc-Mount_network_shares_in_fixed_location-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-Troubleshooting" class="vector-toc-list-item vector-toc-level-1">
@@ -1913,7 +1922,7 @@ Comment=KDE Plasma with i3 as the WM</pre>
 <pre>$ ENABLE_HDR_WSI=1 SDL_VIDEODRIVER=wayland quake2rtx
 </pre>
 <h4><span class="mw-headline" id="Video">Video</span></h4>
-<p>Play a video with HDR using MPV: 
+<p>To play a video with HDR using MPV, first install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/vk-hdr-layer-kwin6-git/">vk-hdr-layer-kwin6-git</a></span><sup><small>AUR</small></sup>. Then, run the following command with HDR enabled<a rel="nofollow" class="external autonumber" href="https://github.com/mpv-player/mpv/issues/13078#issuecomment-1863788237">[11]</a>:
 </p>
 <pre>$ ENABLE_HDR_WSI=1 mpv --vo=gpu-next --target-colorspace-hint --gpu-api=vulkan --gpu-context=waylandvk "path/to/video"
 </pre>
@@ -1938,7 +1947,7 @@ Meta=
 <h3><span class="mw-headline" id="IBus_Integration">IBus Integration</span></h3>
 <p><a href="../en/IBus.html" title="IBus">IBus</a> is an <a href="../en/Input_method.html#Input_method_framework" title="Input method">input method framework</a> and can be integrated into KDE. See <a href="../en/IBus.html#Integration" title="IBus">IBus#Integration</a> for details.
 </p>
-<p>Using <a href="../en/IBus.html" title="IBus">IBus</a> may be required when using KDE on <a href="../en/Wayland.html" title="Wayland">Wayland</a> to offer accented characters and dead keys support <a rel="nofollow" class="external autonumber" href="https://bugs.kde.org/show_bug.cgi?id=411729">[11]</a>.
+<p>Using <a href="../en/IBus.html" title="IBus">IBus</a> may be required when using KDE on <a href="../en/Wayland.html" title="Wayland">Wayland</a> to offer accented characters and dead keys support <a rel="nofollow" class="external autonumber" href="https://bugs.kde.org/show_bug.cgi?id=411729">[12]</a>.
 </p>
 <h3><span class="mw-headline" id="Enable_hotspot_in_plasma-nm">Enable hotspot in plasma-nm</span></h3>
 <p>See <a href="../en/NetworkManager.html#Sharing_internet_connection_over_Wi-Fi" title="NetworkManager">NetworkManager#Sharing internet connection over Wi-Fi</a>.
@@ -1995,6 +2004,28 @@ AllowHybridSleep=no</pre>
 </p>
 <h3><span class="mw-headline" id="Virtual_keyboard_2">Virtual keyboard</span></h3>
 <p>There are no virtual keyboards installed by default. Choose an appropriate one from <a href="../en/List_of_applications/Utilities.html#On-screen_keyboards" title="List of applications/Utilities">List of applications/Utilities#On-screen keyboards</a>, for example the Maliit keyboard, and install it. Then enable it in System Settings.
+</p>
+<h3><span class="mw-headline" id="Mount_network_shares_in_fixed_location">Mount network shares in fixed location</span></h3>
+<p>By default KDE mount manager (<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=kio-fuse">kio-fuse</a></span>) will mount network shares to <code>${XDG_RUNTIME_DIR}/kio-fuse-<i>6-char-random-string</i></code>.
+</p>
+<p>Create directory, e.g. <code>mnt_kio</code> in your home directory:
+</p>
+<pre>$ mkdir ~/mnt_kio
+</pre>
+<p>Override default <code>kio-fuse.service</code> using a <a href="../en/Systemd.html#Drop-in_files" class="mw-redirect" title="Drop-in file">drop-in file</a>:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.config/systemd/user/kio-fuse.service.d/mountpoint.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Service]
+ExecStart=
+ExecStart=/usr/lib/kio-fuse -f %h/mnt_kio</pre>
+<p>Now if you mount your network shares via dbus or by openning some file from remote share in Dolphin:
+</p>
+<pre>$ dbus-send --session --print-reply --type=method_call \
+          --dest=org.kde.KIOFuse \
+                 /org/kde/KIOFuse \
+                 org.kde.KIOFuse.VFS.mountUrl "smb://etcetc"
+</pre>
+<p>They will be mounted to <code>~/mnt_kio</code>.
 </p>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
 <h3><span class="mw-headline" id="KDE_applications_fail_to_start_in_GNOME_after_upgrade_to_KDE_6">KDE applications fail to start in GNOME after upgrade to KDE 6</span></h3>
@@ -2192,7 +2223,7 @@ Run <i>powerprofilesctl</i> and check the driver. If it is <code>intel_pstate</c
 </p>
 <h3><span class="mw-headline" id="KMail">KMail</span></h3>
 <h4><span class="mw-headline" id="Clean_Akonadi_configuration_to_fix_KMail">Clean Akonadi configuration to fix KMail</span></h4>
-<p>See <a rel="nofollow" class="external autonumber" href="https://userbase.kde.org/KMail/FAQs_Hints_and_Tips#Clean_start_after_a_failed_migration">[12]</a> for details.
+<p>See <a rel="nofollow" class="external autonumber" href="https://userbase.kde.org/KMail/FAQs_Hints_and_Tips#Clean_start_after_a_failed_migration">[13]</a> for details.
 </p>
 <p>If you want a backup, copy the following configuration directories:
 </p>
@@ -2200,7 +2231,7 @@ Run <i>powerprofilesctl</i> and check the driver. If it is <code>intel_pstate</c
 $ cp -a ~/.config/akonadi ~/.config/akonadi-old
 </pre>
 <h4><span class="mw-headline" id="Empty_IMAP_inbox_in_KMail">Empty IMAP inbox in KMail</span></h4>
-<p>For some IMAP accounts KMail will show the inbox as a top-level container (so it will not be possible to read messages there) with all other folders of this account inside.<a rel="nofollow" class="external autonumber" href="https://bugs.kde.org/show_bug.cgi?id=284172">[13]</a>. To solve this problem simply disable the server-side subscriptions in the KMail account settings.
+<p>For some IMAP accounts KMail will show the inbox as a top-level container (so it will not be possible to read messages there) with all other folders of this account inside.<a rel="nofollow" class="external autonumber" href="https://bugs.kde.org/show_bug.cgi?id=284172">[14]</a>. To solve this problem simply disable the server-side subscriptions in the KMail account settings.
 </p>
 <h4><span class="mw-headline" id="Authorization_error_for_EWS_account_in_KMail">Authorization error for EWS account in KMail</span></h4>
 <p>While setting up EWS account in KMail, you may keep getting errors about failed authorization even for valid and fully working credentials. This is likely caused by broken communication between <a href="../en/KDE_Wallet.html" class="mw-redirect" title="KWallet">KWallet</a> and KMail. To workaround the issue set a passsword via qdbus:
@@ -2296,9 +2327,9 @@ esac</pre>
 <p>Finally, make sure that the KDE setting is enabled by going to <i>System Settings &gt; Screen Locking</i> and checking the <i>Lock screen automatically: After waking from sleep</i> checkbox.
 </p>
 <h3><span class="mw-headline" id="X11_shortcuts_conflict_on_Wayland">X11 shortcuts conflict on Wayland</span></h3>
-<p>Some X11 software like <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=freerdp">freerdp</a></span> can grab keyboard input since KDE 5.27. Others like <a href="../en/VMware.html" title="VMware">VMware</a> cannot grab correctly. <a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/wayland/wayland-protocols/-/blob/main/unstable/keyboard-shortcuts-inhibit/keyboard-shortcuts-inhibit-unstable-v1.xml">[14]</a>
+<p>Some X11 software like <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=freerdp">freerdp</a></span> can grab keyboard input since KDE 5.27. Others like <a href="../en/VMware.html" title="VMware">VMware</a> cannot grab correctly. <a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/wayland/wayland-protocols/-/blob/main/unstable/keyboard-shortcuts-inhibit/keyboard-shortcuts-inhibit-unstable-v1.xml">[15]</a>
 </p>
-<p>It is inappropriate to force grab <a rel="nofollow" class="external text" href="https://gitlab.freedesktop.org/xorg/xserver/-/issues/1332">in Xserver</a> or in compositors. <a rel="nofollow" class="external autonumber" href="https://gitlab.gnome.org/GNOME/mutter/-/issues/1720">[15]</a> You can solve it in an elegant way as follows:
+<p>It is inappropriate to force grab <a rel="nofollow" class="external text" href="https://gitlab.freedesktop.org/xorg/xserver/-/issues/1332">in Xserver</a> or in compositors. <a rel="nofollow" class="external autonumber" href="https://gitlab.gnome.org/GNOME/mutter/-/issues/1720">[16]</a> You can solve it in an elegant way as follows:
 </p>
 <ul>
 <li>Right click the window titlebar (e.g. VMware or Citrix);</li>
@@ -2352,8 +2383,8 @@ esac</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=KDE&amp;oldid=811294">https://wiki.archlinux.org/index.php?title=KDE&amp;oldid=811294</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 26 June 2024, at 17:27.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=KDE&amp;oldid=813303">https://wiki.archlinux.org/index.php?title=KDE&amp;oldid=813303</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 30 July 2024, at 11:24.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

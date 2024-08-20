@@ -343,6 +343,33 @@
 			<ul id='toc-WARN[0000]_"/"_is_not_a_shared_mount,_this_could_cause_issues_or_missing_mounts_with_rootless_containers-sublist' class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Networking_issues_inside_containers" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Networking_issues_inside_containers">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">5.9</span>Networking issues inside containers</div>
+			</a>
+			
+			<ul id="toc-Networking_issues_inside_containers-sublist" class="vector-toc-list">
+				<li id="toc-IP_networking" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#IP_networking">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">5.9.1</span>IP networking</div>
+			</a>
+			
+			<ul id="toc-IP_networking-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-DNS_and_name_resolution" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#DNS_and_name_resolution">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">5.9.2</span>DNS and name resolution</div>
+			</a>
+			
+			<ul id="toc-DNS_and_name_resolution-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1">
@@ -849,6 +876,51 @@ private
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/fstab</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># &lt;device&gt;                                &lt;dir&gt; &lt;type&gt; &lt;options&gt; &lt;dump&gt; &lt;fsck&gt;
 UUID=0a3407de-014b-458b-b5c1-848e92a327a3 /     ext4   defaults,shared   0      1</pre>
+<h3><span class="mw-headline" id="Networking_issues_inside_containers">Networking issues inside containers</span></h3>
+<h4><span class="mw-headline" id="IP_networking">IP networking</span></h4>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
+<div>
+<b>Reason:</b> This is an overly verbose introduction to the statement that containers networking is affected by the firewall on host. Netavark creates its own firewall rules using iptables, so default <code>DROP</code> policy in iptables chains is not a problem. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Podman.html">Talk:Podman</a>)</div>
+</div>
+<p>Podman containers are by default bridged with the host through their own virtual network interfaces.
+</p>
+<p>For example, inside a container, virtual interface <code>eth0@if6</code> has IP 10.89.0.3 (IPs might be different on your system!):
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">container# ip addr</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">...
+2: eth0@if6: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default qlen 1000
+    ...
+    inet 10.89.0.3/24 brd 10.89.0.255 scope global eth0
+       valid_lft forever preferred_lft forever
+</pre>
+<p>On the host, packets from the container exit on the host side from another virtual interface, here named <code>podman1</code> as if routed via IP 10.89.0.1:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">host# ip addr</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">...
+4: podman1: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default qlen 1000
+    ...
+    inet 10.89.0.1/24 brd 10.89.0.255 scope global podman1
+</pre>
+<p>Despite being virtual IP addresses, packets are still routed through the kernel's packet filtering system and can therefore be blocked by iptables/nftables rules. In particular, default <code>DROP</code> policy in <code>INPUT</code> or <code>FORWARD</code> iptables filter chains and/or running firewalls (<a href="../en/Uncomplicated_Firewall.html" class="mw-redirect" title="Ufw">ufw</a>, <a href="../en/Firewalld.html" title="Firewalld">firewalld</a>) can affect containers in some cases. Check your configuration (for example with <code>iptables -L -n -v</code> or <code>nft list ruleset</code>) if you think this may be the case.
+</p>
+<p>After a change in <code>docker-compose.yml</code>, note that created networks (from the <code>networks:</code> section) may not be destroyed when using <code>podman compose down</code> to destroy an environment. Make sure (using <code>podman network ls</code> and <code>podman network rm</code> if necessary) that they are if that is your intention.
+</p>
+<h4><span class="mw-headline" id="DNS_and_name_resolution">DNS and name resolution</span></h4>
+<p>Name resolution is handled by subsystems of Podman (for example <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=aardvark-dns">aardvark-dns</a></span>), which provide both external DNS (usually through the host's DNS resolver) and container name resolution (e.g. <code>webserver.dns.podman</code> talking to <code>database.dns.podman</code>).
+</p>
+<p>In the example above, containers are configured automatically by Podman via <code>/etc/resolv.conf</code> to ask a DNS resolver running on port 53 on the host-side of the pipe:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">container# cat /etc/resolv.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">search dns.podman
+nameserver 10.89.0.1
+</pre>
+<p>Check that you don't have another DNS resolver running on the host on port 53 (for example <a href="../en/Systemd-resolved.html" title="Systemd-resolved">Systemd-resolved</a> or <a href="../en/Unbound.html" title="Unbound">Unbound</a>), as it may interfere with Podman name resolution. If that is the case, you can change the port used by Podman on the host to any other available port, and Podman should automatically forward container requests from containers to the correct port on the host:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">host# # cat /etc/containers/containers.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">...
+dns_bind_port = 20053
+</pre>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul>
 <li><a rel="nofollow" class="external text" href="https://podman.io/">Official website</a></li>
@@ -867,6 +939,7 @@ UUID=0a3407de-014b-458b-b5c1-848e92a327a3 /     ext4   defaults,shared   0      
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Out_of_date.html" title="Category:Pages or sections flagged with Template:Out of date">Pages or sections flagged with Template:Out of date</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Merge.html" title="Category:Pages or sections flagged with Template:Merge">Pages or sections flagged with Template:Merge</a></li>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
 </ul>
 </div>
 </div>
@@ -878,8 +951,8 @@ UUID=0a3407de-014b-458b-b5c1-848e92a327a3 /     ext4   defaults,shared   0      
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Podman&amp;oldid=808856">https://wiki.archlinux.org/index.php?title=Podman&amp;oldid=808856</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 20 May 2024, at 21:43.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Podman&amp;oldid=812595">https://wiki.archlinux.org/index.php?title=Podman&amp;oldid=812595</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 17 July 2024, at 21:05.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

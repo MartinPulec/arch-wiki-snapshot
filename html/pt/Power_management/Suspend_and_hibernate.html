@@ -312,6 +312,15 @@
 			<ul id="toc-Suspender_a_partir_da_tecla_Fn_correspondente_em_notebooks/laptops_não_funciona-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Sistema_congela_por_60_segundos_e_acorda_de_novo_ou_é_irresponsivo_após_acordar" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Sistema_congela_por_60_segundos_e_acorda_de_novo_ou_%C3%A9_irresponsivo_ap%C3%B3s_acordar">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">7.10</span>Sistema congela por 60 segundos e acorda de novo ou é irresponsivo após acordar</div>
+			</a>
+			
+			<ul id="toc-Sistema_congela_por_60_segundos_e_acorda_de_novo_ou_é_irresponsivo_após_acordar-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 </ul>
@@ -394,7 +403,7 @@
 					<div id="mw-content-text" class="mw-body-content">
 <div class="mw-content-ltr mw-parser-output" lang="pt" dir="ltr">
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Status de tradução:</strong> Esse artigo é uma tradução de <a href="../../en/Power_management/Suspend_and_hibernate.html" title="Power management/Suspend and hibernate">Power management/Suspend and hibernate</a>. Data da última tradução: 2024-04-05. Você pode ajudar a sincronizar a tradução, se houver <a rel="nofollow" class="external text" href="https://wiki.archlinux.org/index.php?title=Power_management/Suspend_and_hibernate&amp;diff=0&amp;oldid=805352">alterações</a> na versão em inglês.</div>
+<strong>Status de tradução:</strong> Esse artigo é uma tradução de <a href="../../en/Power_management/Suspend_and_hibernate.html" title="Power management/Suspend and hibernate">Power management/Suspend and hibernate</a>. Data da última tradução: 2024-07-11. Você pode ajudar a sincronizar a tradução, se houver <a rel="nofollow" class="external text" href="https://wiki.archlinux.org/index.php?title=Power_management/Suspend_and_hibernate&amp;diff=0&amp;oldid=812250">alterações</a> na versão em inglês.</div>
 <div class="archwiki-template-meta-related-articles">
 <p>Artigos relacionados</p>
 <ul>
@@ -411,7 +420,7 @@
 <dd>Chamado de <a rel="nofollow" class="external text" href="https://www.intel.com/content/www/us/en/docs/vtune-profiler/user-guide/2023-0/s0ix-states.html">S0ix</a> pela Intel, <a rel="nofollow" class="external text" href="https://docs.microsoft.com/en-us/windows-hardware/design/device-experiences/modern-standby">Modern Standby</a> (antes como "Connected Standby") pela Microsoft e <a rel="nofollow" class="external text" href="https://docs.kernel.org/admin-guide/pm/sleep-states.html#suspend-to-idle">S2Idle</a> pelo kernel. Projetado para ser usado ao invés do <a href="https://en.wikipedia.org/wiki/pt:ACPI#Def" class="extiw" title="wikipedia:pt:ACPI">estado de sono</a> <b>S3</b> em sistemas com este suporte, de forma que fornece economia de energia idêntica, mas que reduz drasticamente o tempo exigido para acordar o sistema. <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Dica:</strong> Enquanto o estado mencionado acima está sujeito a problemas com drenagem de bateria no <a rel="nofollow" class="external text" href="https://www.dell.com/support/kbdoc/en-us/000143524/the-battery-drains-quicker-than-expected-on-a-dell-notebook-with-modern-standby-mode-enabled">Windows</a> ou <a rel="nofollow" class="external text" href="https://support.apple.com/guide/mac-help/mh40773/mac">macOS</a>, pelo fato que ambos os sistemas conseguem acordar dispositivos neste estado de sono para exercer atividade na rede, em contrapartida, o ecossistema de software no Linux atualmente não usa este recurso, e portanto deve permanecer inalterado.</div>
 </dd>
-<dt>Suspender para RAM (conhecido por suspensão padrão/normal, dormir)</dt>
+<dt>Suspender para RAM (conhecido por suspensão)</dt>
 <dd>Este estado de sono é definido pelo ACPI como <b>S3</b>. O funcionamento se baseia em cortar a energia da maior parte da máquina, exceto a RAM, da qual é necessária para restaurar o estado original. Por conta da grande economia de energia, é aconselhável que notebooks/laptops entrem automaticamente neste modo quando o computador estiver descarregando as baterias e com a tampa fechada (ou quando o usuário está inativo por um certo tempo).</dd>
 <dt>Suspender para o disco (conhecido por hibernação)</dt>
 <dd>O estado de sono <b>S4</b>, assim como foi definido pelo ACPI, salva o estado original da máquina dentro de um <a href="../../pt/Swap.html" class="mw-redirect" title="Espaço swap">espaço swap</a> e então desliga completamente a máquina. Quando a máquina volta a ligar, o estado é restaurado. Há <a href="https://en.wikipedia.org/wiki/Standby_power" class="extiw" title="wikipedia:Standby power">zero</a> consumo de energia até o momento que ocorra o retorno do sistema.</dd>
@@ -468,11 +477,16 @@ para efetuar suspensão/hibernação e formas de executar trabalho extra de prep
 <strong>Nota:</strong> A última solução acima pode causar problemas. Por conta que fabricantes pararam de corrigir bugs com o estado S3 do ACPI desde o momento que tais fabricantes regularizaram a escolha do sistema operacional Windows, e os mesmos são encorajados a usar "Modern standby" por padrão; se caso o sistema de fábrica foi propositalmente não informado, então provavelmente o hardware está de alguma forma com defeito.</div>
 <p>Confirme que o hardware não exibe problemas com o estado de sono S3 ao testar alguns ciclos de sono com o método de sono alterado:
 </p>
-<pre># echo "deep" &gt; /sys/power/mem_sleep
+<pre># echo deep &gt; /sys/power/mem_sleep
 </pre>
-<p>Se nenhum problema foi encontrado, então você pode fazer a mudança permanente com o <a href="../../pt/Kernel_parameters.html" title="Kernel parameters (Português)">parâmetro de kernel</a> <code>mem_sleep_default=deep</code>.
+<p>Se nenhum problema foi encontrado, então você pode mudar permanentemente pela diretiva <i>MemorySleepMode</i> em <span class="plainlinks archwiki-template-man" title="$ man 5 systemd-sleep.conf"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-sleep.conf.5">systemd-sleep.conf(5)</a></span>:
 </p>
-<p>Em contrapartida, firmwares danificados anunciam o suporte como sono <code>deep</code>, enquanto que apenas <code>s2idle</code> é suportado. Se este for o caso, um método alternativo ao usar <code>s2idle</code> está disponível através de <code>SuspendState</code> em <span class="plainlinks archwiki-template-man" title="$ man 5 sleep.conf.d"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/sleep.conf.d.5">sleep.conf.d(5)</a></span>:
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/sleep.conf.d/mem-deep.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Sleep]
+MemorySleepMode=deep</pre>
+<p>Ou pelo <a href="../../pt/Kernel_parameters.html" title="Kernel parameters (Português)">parâmetro de kernel</a> <code>mem_sleep_default=deep</code>.
+</p>
+<p>Em contrapartida, firmwares danificados anunciam o suporte como sono <code>deep</code>, enquanto que apenas <code>s2idle</code> é suportado. Se este for o caso, um método alternativo ao usar <code>s2idle</code> está disponível pela configuração do <code>SuspendState</code>:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/sleep.conf.d/freeze.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Sleep]
@@ -734,9 +748,9 @@ esac
 </p>
 <h2><span class="mw-headline" id="Dicas_e_truques">Dicas e truques</span></h2>
 <h3><span class="mw-headline" id="Desabilitando_o_sono_completamente">Desabilitando o sono completamente</span></h3>
-<p>Ao usar um dispositivo com a função de, por exemplo, ser um servidor, suspender pode não ser necessário ou até mesmo indesejável. Cada estado de sono pode ser desabilitado através do arquivo <span class="plainlinks archwiki-template-man" title="$ man 5 systemd-sleep.conf"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-sleep.conf.5">systemd-sleep.conf(5)</a></span>:
+<p>Ao usar um dispositivo que é, por exemplo, um servidor, suspender/hibernar pode não ser necessário ou até mesmo indesejável. Cada estado de sono pode ser desabilitado através do arquivo <span class="plainlinks archwiki-template-man" title="$ man 5 systemd-sleep.conf"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-sleep.conf.5">systemd-sleep.conf(5)</a></span>:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/sleep.conf.d/disable-suspend.conf</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/sleep.conf.d/disable-sleep.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Sleep]	
 AllowSuspend=no
 AllowHibernation=no
@@ -813,7 +827,7 @@ AllowSuspendThenHibernate=no</pre>
 <h3>
 <span id="Sistema_n.C3.A3o_desliga_quando_em_hiberna.C3.A7.C3.A3o"></span><span class="mw-headline" id="Sistema_não_desliga_quando_em_hibernação">Sistema não desliga quando em hibernação</span>
 </h3>
-<p>Ao hibernar o seu sistema, ele precisa desligar (logo depois de salvo o estado da máquina para o disco). Em certas ocasiões talvez você perceba o LED do botão power ainda acesso; se isto ocorrer, é instruído que você defina o <code>HibernateMode</code> para <code>shutdown</code> em <span class="plainlinks archwiki-template-man" title="$ man 5 sleep.conf.d"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/sleep.conf.d.5">sleep.conf.d(5)</a></span>:
+<p>Ao hibernar o seu sistema, ele precisa desligar (logo depois de salvo o estado da máquina para o disco). Em alguns firmwares o estado de sono S4 não funciona apropriadamente, por exemplo ao invés do sistema desligar ele pode reiniciar. Se isto ocorrer, é instruído que você defina o <code>HibernateMode</code> para <code>shutdown</code> em <span class="plainlinks archwiki-template-man" title="$ man 5 sleep.conf.d"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/sleep.conf.d.5">sleep.conf.d(5)</a></span>:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/sleep.conf.d/hibernatemode.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Sleep]
@@ -912,8 +926,19 @@ ATTRS{name}=="SIGMACHIP USB Keyboard"</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">ACTION=="remove", GOTO="power_switch_my_end"
 SUBSYSTEM=="input", KERNEL=="event*", ATTRS{name}=="SIGMACHIP USB Keyboard", TAG+="power-switch"
 LABEL="power_switch_my_end"</pre>
-<p>Depois de <a href="../../en/Udev.html#Loading_new_rules" title="Udev">recarregar as regras udev</a> e <a href="../../pt/Help:Reading.html#Controle_de_unidades_do_systemd" title="Help:Reading (Português)">reiniciar</a> <code>systemd-logind.service</code>, você agora deverá ver o registro do evento sendo monitorado: <code>Watching system buttons on /dev/input/event6</code>, pelo journal do <i>logind</i>.
+<p>Depois de <a href="../../en/Udev.html#Loading_new_rules" title="Udev">recarregar as regras udev</a> e <a href="../../pt/Help:Reading.html#Controle_de_unidades_do_systemd" title="Help:Reading (Português)">reiniciar</a> <code>systemd-logind.service</code>, você agora deverá ver o registro do evento sendo monitorado: <code>Watching system buttons on /dev/input/event6</code>, pelo <i>journal</i> do <i>logind</i>.
 </p>
+<h3>
+<span id="Sistema_congela_por_60_segundos_e_acorda_de_novo_ou_.C3.A9_irresponsivo_ap.C3.B3s_acordar"></span><span class="mw-headline" id="Sistema_congela_por_60_segundos_e_acorda_de_novo_ou_é_irresponsivo_após_acordar">Sistema congela por 60 segundos e acorda de novo ou é irresponsivo após acordar</span>
+</h3>
+<p>Desde a versão 256 do systemd, o mesmo congela <code>user.slice</code> antes de dormir. Esse processo pode falhar devido a bugs no kernel, ocorre em particular quando o KVM está em uso. <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/33083">[10]</a><a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/33626">[11]</a> 
+</p>
+<p>Os logs irão conter avisos sobre a falha antes do sistema adormecer: <code>Failed to freeze unit 'user.slice'</code>. Quando tal problema acontece, tentar fazer o login (ao iniciar outra sessão) poderá falhar com a mensagem: <code>pam_systemd(<i>process</i>:session): Failed to create session: Job 9876 for unit 'session-6.scope' failed with 'frozen'</code>.
+</p>
+<p>Para reverter temporariamente o estado como anteriormente, <a href="../../pt/Systemd.html#Editando_units_fornecidas" class="mw-redirect" title="Edite">edite</a> <code>systemd-suspend.service</code>, <code>systemd-hibernate.service</code>, <code>systemd-hybrid-sleep.service</code> e <code>systemd-suspend-then-hibernate.service</code> com o seguinte drop-in:
+</p>
+<pre>[Service]
+Environment=SYSTEMD_SLEEP_FREEZE_USER_SESSIONS=false</pre>
 </div>
 </div>
 					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
@@ -927,8 +952,8 @@ LABEL="power_switch_my_end"</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Power_management_(Portugu%C3%AAs)/Suspend_and_hibernate_(Portugu%C3%AAs)&amp;oldid=805353">https://wiki.archlinux.org/index.php?title=Power_management_(Português)/Suspend_and_hibernate_(Português)&amp;oldid=805353</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 5 April 2024, at 14:47.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Power_management_(Portugu%C3%AAs)/Suspend_and_hibernate_(Portugu%C3%AAs)&amp;oldid=812255">https://wiki.archlinux.org/index.php?title=Power_management_(Português)/Suspend_and_hibernate_(Português)&amp;oldid=812255</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 11 July 2024, at 14:57.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -224,7 +224,7 @@
 </p>
 <pre>quiet loglevel=3
 </pre>
-<p>Note that this only seems to work if both <code>quiet</code> and <code>loglevel=<i>level</i></code> are both used, and they must be in that order (quiet first). The loglevel parameter will only change that which is printed to the console, the levels of <i>dmesg</i> itself will not be affected and will still be available through the journal as well as <i>dmesg</i>. For more information, see <a rel="nofollow" class="external text" href="https://docs.kernel.org/admin-guide/kernel-parameters.html">kernel parameters</a>.
+<p>Note that this only seems to work if both <code>quiet</code> and <code>loglevel=<i>level</i></code> are used, and they must be in that order (quiet first). The loglevel parameter will only change that which is printed to the console, the levels of <i>dmesg</i> itself will not be affected and will still be available through the journal as well as <i>dmesg</i>. For more information, see <a rel="nofollow" class="external text" href="https://docs.kernel.org/admin-guide/kernel-parameters.html">kernel parameters</a>.
 </p>
 <p>If you also want to stop systemd from printing its version number when booting, you should also append <code>udev.log_level=3</code> to your kernel parameters. If systemd is used in an <a href="../en/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs">initramfs</a>, append <code>rd.udev.log_level=3</code> instead. See <span class="plainlinks archwiki-template-man" title="$ man 8 systemd-udevd.service"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-udevd.service.8#KERNEL_COMMAND_LINE">systemd-udevd.service(8) § KERNEL COMMAND LINE</a></span> for details.
 </p>
@@ -265,22 +265,12 @@ fi
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> Redirection is broken with rootless login. See <a href="../en/Xorg.html#Session_log_redirection" title="Xorg">Xorg#Session log redirection</a>.</div>
 <h2><span class="mw-headline" id="fsck">fsck</span></h2>
-<p>To hide fsck messages during boot, let systemd check the root filesystem. For this, replace <i>udev</i> hook with <i>systemd</i>:
+<p>To hide fsck messages during boot, let systemd check the root filesystem. For this, replace <i>udev</i> hook with <i>systemd</i> and remove the <i>fsck</i> hook:
 </p>
-<pre>HOOKS=(base <b>systemd</b> autodetect microcode modconf kms keyboard <b>sd-vconsole</b> block filesystems fsck)
+<pre>HOOKS=(base <b>systemd</b> autodetect microcode modconf kms keyboard <b>sd-vconsole</b> block filesystems)
 </pre>
 <p>in <code>/etc/mkinitcpio.conf</code> and <a href="../en/Mkinitcpio.html#Image_creation_and_activation" class="mw-redirect" title="Regenerate the initramfs">regenerate the initramfs</a>.
 </p>
-<p>Now <a href="../en/Systemd.html#Editing_provided_units" class="mw-redirect" title="Edit">edit</a> <code>systemd-fsck-root.service</code> and <code>systemd-fsck@.service</code> and configure <code>StandardOutput</code> and <code>StandardError</code> like this:
-</p>
-<pre>[Service]
-Type=oneshot
-RemainAfterExit=yes
-ExecStart=/usr/lib/systemd/systemd-fsck
-StandardOutput=null
-StandardError=journal+console
-TimeoutSec=0
-</pre>
 <p>See <span class="plainlinks archwiki-template-man" title="$ man 8 systemd-fsck@.service"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-fsck%40.service.8">systemd-fsck@.service(8)</a></span> for more info on the options you can pass to <code>systemd-fsck</code> - you can change how often the service will check (or not) your filesystems.
 </p>
 <h2><span class="mw-headline" id="Make_GRUB_silent">Make GRUB silent</span></h2>
@@ -303,7 +293,7 @@ GRUB_RECORDFAIL_TIMEOUT=$GRUB_TIMEOUT</pre>
 <h2><span class="mw-headline" id="Retaining_or_disabling_the_vendor_logo_from_BIOS">Retaining or disabling the vendor logo from BIOS</span></h2>
 <p>Modern UEFI systems display a vendor logo on boot until handing over control to the bootloader; e.g. Lenovo laptops display a bright red Lenovo logo. This vendor logo is typically blanked by the bootloader (if standard GRUB is used) or by the kernel.
 </p>
-<p>To prevent the kernel from blanking the vendor logo, Linux 4.19 introduced a new configuration option <code>FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER</code> that retains the contents of the framebuffer until text needs to be printed on the framebuffer console. As of November 2018 (Linux 4.19.1), the official Arch Linux kernels are compiled with <code>CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER=y</code>.
+<p>To prevent the kernel from blanking the vendor logo, Linux 4.19 introduced a new configuration option <code>FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER</code> that retains the contents of the framebuffer until text needs to be printed on the framebuffer console. Since version <a rel="nofollow" class="external text" href="https://gitlab.archlinux.org/archlinux/packaging/packages/linux/-/commit/4ce5aa26d45f2ec30ffb926f3450ae225226dc41">4.19.arch1</a>, the official Arch Linux kernels are compiled with <code>CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER=y</code>.
 </p>
 <p>When combined with a low loglevel (to prevent text from being printed), the vendor logo can be retained while the system is initialized. Note that GRUB in the standard configuration blanks the screen; consider using <a href="../en/EFISTUB.html" title="EFISTUB">EFISTUB</a> booting instead to boot directly into the kernel and thus leverage deferred takeover.
 </p>
@@ -335,8 +325,8 @@ GRUB_RECORDFAIL_TIMEOUT=$GRUB_TIMEOUT</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Silent_boot&amp;oldid=809012">https://wiki.archlinux.org/index.php?title=Silent_boot&amp;oldid=809012</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 22 May 2024, at 15:09.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Silent_boot&amp;oldid=812022">https://wiki.archlinux.org/index.php?title=Silent_boot&amp;oldid=812022</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 6 July 2024, at 11:56.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -70,16 +70,7 @@
 			</a>
 			
 			<ul id="toc-systemd_service_at_boot-sublist" class="vector-toc-list">
-				<li id="toc-Example" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Example">
-				<div class="vector-toc-text">
-				<span class="vector-toc-numb">1.2.1</span>Example</div>
-			</a>
-			
-			<ul id="toc-Example-sublist" class="vector-toc-list">
 			</ul>
-		</li>
-	</ul>
 		</li>
 	</ul>
 	</li>
@@ -568,9 +559,9 @@ MDEV_TYPE=&lt;GVT_TYPE&gt;
 DOMAIN=&lt;DOMAIN name&gt;
 if [ $# -ge 3 ]; then
     if [[ " $DOMAIN " =~ .*\ $1\ .* ]] &amp;&amp; [ "$2" = "prepare" ] &amp;&amp; [ "$3" = "begin" ]; then
-        echo "$GVT_GUID" &gt; "/sys/devices/pci0000\:00/$GVT_PCI/mdev_supported_types/$MDEV_TYPE/create"
+        echo "$GVT_GUID" &gt; "/sys/devices/pci0000:00/$GVT_PCI/mdev_supported_types/$MDEV_TYPE/create"
     elif [[ " $DOMAIN " =~ .*\ $1\ .* ]] &amp;&amp; [ "$2" = "release" ] &amp;&amp; [ "$3" = "end" ]; then
-        echo 1 &gt; /sys/devices/pci0000\:00/$GVT_PCI/$GVT_GUID/remove
+        echo 1 &gt; "/sys/devices/pci0000:00/$GVT_PCI/$GVT_GUID/remove"
     fi
 fi
 </pre>
@@ -594,49 +585,6 @@ fi
 <pre>After=graphical.target
 Type=oneshot
 User=root
-</pre>
-<h4><span class="mw-headline" id="Example">Example</span></h4>
-<p>Here you have an example systemd unit file. Feel free to modify to your laptop configuration.
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/i915-gvt.service</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Unit]
-Description=Create i915 gvt virtual gpu
-
-[Service]
-Type=simple
-
-Environment="GVT_PCI=0000:00:02.0"
-Environment="GVT_TYPE=i915-GVTg_V5_4"
-Environment="GVT_GUID=58012773-8161-470b-8e86-f23216adeed2"
-
-# load kernel modules
-ExecStartPre=/usr/bin/modprobe kvmgt
-ExecStartPre=/usr/bin/modprobe vfio-iommu-type1
-ExecStartPre=/usr/bin/modprobe mdev
-
-# create virtual gpu
-ExecStart=bash -c 'echo $GVT_GUID &gt; /sys/devices/pci0000:00/$GVT_PCI/mdev_supported_types/$GVT_TYPE/create'
-
-# set access rights
-ExecStartPost=bash -c 'chown :kvm -R /sys/bus/mdev/devices/$GVT_GUID/'
-ExecStartPost=bash -c 'chmod 770 -R /sys/bus/mdev/devices/$GVT_GUID/'
-ExecStartPost=bash -c 'chown :kvm -R /dev/vfio/18'
-ExecStartPost=bash -c 'chmod 770 -R /dev/vfio/18'
-
-# Do not execute ExecStop immediately
-RemainAfterExit=true
-
-# remove virtual gpu
-ExecStop=bash -c 'echo 1 &gt; /sys/devices/pci0000:00/$GVT_PCI/$GVT_GUID/remove'
-
-# unload kernel modules
-ExecStopPost=/usr/bin/rmmod kvmgt
-ExecStopPost=/usr/bin/rmmod vfio-iommu-type1
-ExecStopPost=/usr/bin/rmmod mdev
-
-[Install]
-WantedBy=multi-user.target
-
 </pre>
 <h2><span class="mw-headline" id="Assign_a_virtual_GPU_to_the_virtual_machine">Assign a virtual GPU to the virtual machine</span></h2>
 <p>If you run <code>qemu</code> or <code>libvirtd</code> as a regular user, it may complain that some path <code>/dev/vfio/<i>number</i></code> is not writeable. You need to enable write access to that path for the account, with <code>chmod</code> or <code>setfacl</code>.
@@ -714,7 +662,7 @@ WantedBy=multi-user.target
 </ul>
 <p>We will go with the last option because it does not involve patching anything. (Note: if the link <i>and</i> <a rel="nofollow" class="external text" href="https://web.archive.org/web/20201020144354/http://120.25.59.132:3000/vbios_gvt_uefi.rom">the archive</a> go down, the OpROM can be extracted from the kernel patch by hand.)
 </p>
-<p><a rel="nofollow" class="external text" href="https://github.com/patmagauran/i915ovmfPkg">i915ovmfPkg</a> may be considered as well, it is a currently the most advanced GVT-g ROM for use with OVMF, see <a rel="nofollow" class="external text" href="https://github.com/intel/gvt-linux/issues/23">this discussion</a>.
+<p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/i915ovmf/">i915ovmf</a></span><sup><small>AUR</small></sup> is available, which is an <a rel="nofollow" class="external text" href="https://github.com/x78x79x82x79/i915ovmfPkg">up-to-date fork</a> of the archived <a rel="nofollow" class="external text" href="https://github.com/patmagauran/i915ovmfPkg">i915ovmfPkg</a>, it is a currently the most advanced GVT-g ROM for use with OVMF, see <a rel="nofollow" class="external text" href="https://github.com/intel/gvt-linux/issues/23">this discussion</a>. The AUR package installs the UEFI rom file as <code> /var/lib/libvirt/qemu/drivers/i915ovmf.rom </code>. First boot can take a while, especially if the guest OS needs to install drivers, as is the case with Windows 10.
 </p>
 <p>Download <code>vbios_gvt_uefi.rom</code> and place it somewhere world-accessible (we will use <code>/</code> to make an example).
 </p>
@@ -995,8 +943,8 @@ For example, for the "Coffee Lake" (CFL) platform support, see <a rel="nofollow"
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Intel_GVT-g&amp;oldid=811726">https://wiki.archlinux.org/index.php?title=Intel_GVT-g&amp;oldid=811726</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 1 July 2024, at 11:25.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Intel_GVT-g&amp;oldid=812644">https://wiki.archlinux.org/index.php?title=Intel_GVT-g&amp;oldid=812644</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 20 July 2024, at 00:57.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

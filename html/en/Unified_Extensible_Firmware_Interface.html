@@ -553,7 +553,7 @@
 <p>The latest UEFI specification can be found at <a rel="nofollow" class="external free" href="https://uefi.org/specifications">https://uefi.org/specifications</a>.
 </p>
 <h2><span class="mw-headline" id="UEFI_firmware_bitness">UEFI firmware bitness</span></h2>
-<p>Under UEFI, every program whether it is an OS loader or a utility (e.g. a memory testing or recovery tool), should be an EFI application corresponding to the UEFI firmware bitness/architecture.
+<p>Under UEFI, every program whether it is an operating system loader or a utility (e.g. a memory testing or recovery tool), should be an EFI application corresponding to the UEFI firmware bitness/architecture.
 </p>
 <p>The vast majority of x86_64 systems, including recent Apple Macs, use x64 (64-bit) UEFI firmware. The only known devices that use IA32 (32-bit) UEFI are older (pre 2008) Apple Macs, Intel Atom System-on-Chip systems (as on 2 November 2013)<a rel="nofollow" class="external autonumber" href="https://web.archive.org/web/20201224150025/https://software.intel.com/content/www/us/en/develop/blogs/why-cheap-systems-run-32-bit-uefi-on-x64-systems.html">[1]</a> and some older Intel server boards that are known to operate on Intel EFI 1.10 firmware.
 </p>
@@ -612,7 +612,7 @@ CONFIG_FRAMEBUFFER_CONSOLE=y
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> All of the above options are set accordingly in all <a href="../en/Kernel.html#Officially_supported_kernels" title="Kernel">officially supported kernels</a>.</div>
 <h2><span class="mw-headline" id="UEFI_variables">UEFI variables</span></h2>
-<p>UEFI defines variables through which an operating system can interact with the firmware. UEFI boot variables are used by the boot loader and used by the OS only for early system start-up. UEFI runtime variables allow an OS to manage certain settings of the firmware like the UEFI boot manager or managing the keys for UEFI Secure Boot protocol etc. You can get the list using:
+<p>UEFI defines variables through which an operating system can interact with the firmware. UEFI boot variables are used by the boot loader and used by the operating system only for early system start-up. UEFI runtime variables allow an operating system to manage certain settings of the firmware like the UEFI boot manager or managing the keys for UEFI Secure Boot protocol etc. You can get the list using:
 </p>
 <pre>$ efivar --list
 </pre>
@@ -699,12 +699,26 @@ CONFIG_FRAMEBUFFER_CONSOLE=y
 </p>
 <pre># efibootmgr --create --disk /dev/sda --part 1 --loader '\EFI\refind\refind_x64.efi' --label 'rEFInd Boot Manager' --unicode
 </pre>
+<p>Get an overview of all boot entries:
+</p>
+<pre># efibootmgr --unicode
+</pre>
+<p>To set the boot order:
+</p>
+<pre># efibootmgr --bootorder <i>XXXX</i>,<i>XXXX</i> --unicode
+</pre>
+<p>Where <i>XXXX</i> is the number that appears in the previous output of <i>efibootmgr</i> command.
+</p>
+<p>Delete an unwanted entry:
+</p>
+<pre># efibootmgr --delete-bootnum --bootnum <i>XXXX</i> --unicode
+</pre>
 <p>See <span class="plainlinks archwiki-template-man" title="$ man 8 efibootmgr"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/efibootmgr.8">efibootmgr(8)</a></span> or <a rel="nofollow" class="external text" href="https://raw.githubusercontent.com/rhinstaller/efibootmgr/master/README">efibootmgr README</a> for more info.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> UEFI specification uses backward slash <code>\</code> as path separator but <i>efibootmgr</i> can automatically convert UNIX-style <code>/</code> path separators.</div>
 <h3><span class="mw-headline" id="Disable_UEFI_variable_access">Disable UEFI variable access</span></h3>
-<p>Access to the UEFI can potentially cause harm beyond the running OS level. There are dangerous UEFI exploits like <a rel="nofollow" class="external text" href="https://binarly.io/posts/finding_logofail_the_dangers_of_image_parsing_during_system_boot/index.html">LogoFAIL</a> which allows a malicious actor to take full control over the machine. Even hardware-level bricking is possible in some cases of poor UEFI implementation <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/2402#issuecomment-176806817">[3]</a>.
+<p>Access to the UEFI can potentially cause harm beyond the running operating system level. There are dangerous UEFI exploits like <a rel="nofollow" class="external text" href="https://binarly.io/posts/finding_logofail_the_dangers_of_image_parsing_during_system_boot/index.html">LogoFAIL</a> which allows a malicious actor to take full control over the machine. Even hardware-level bricking is possible in some cases of poor UEFI implementation <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/2402#issuecomment-176806817">[3]</a>.
 </p>
 <p>So, as the UEFI variables access is not required for daily system usage, you may want to disable it, to avoid potential security breaches or accidental harm.
 </p>
@@ -908,7 +922,7 @@ $ bsdtar -x --exclude=EFI/ --exclude=loader/ -f archlinux-<i>version</i>-x86_64.
 <pre>$ qemu-system-x86_64 -enable-kvm -m 1G -drive if=pflash,format=raw,readonly,file=/usr/share/edk2/x64/OVMF_CODE.4m.fd -drive if=pflash,format=raw,file=my_OVMF_VARS.4m.fd …
 </pre>
 <h3><span class="mw-headline" id="DUET_for_BIOS_only_systems">DUET for BIOS only systems</span></h3>
-<p>DUET was a TianoCore project that enabled chainloading a full UEFI environment from a BIOS system, in a way similar to BIOS OS booting. This method is being <a rel="nofollow" class="external text" href="https://www.insanelymac.com/forum/topic/186440-linux-and-windows-uefi-boot-using-tianocore-duet-firmware/">discussed</a> extensively. Pre-build DUET images can be downloaded from one of the <a rel="nofollow" class="external text" href="https://gitlab.com/tianocore_uefi_duet_builds/tianocore_uefi_duet_installer">repos</a><sup title="Last check status: 404 Page Not Found">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2023-04-07 ⓘ]</sup>. Read specific <a rel="nofollow" class="external text" href="https://gitlab.com/tianocore_uefi_duet_builds/tianocore_uefi_duet_installer/blob/master/Migle_BootDuet_INSTALL.txt">instructions</a><sup title="Last check status: 404 Page Not Found">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2023-04-07 ⓘ]</sup> for setting up DUET. However, as of November 2018, the DUET code has been removed from TianoCore git repository.
+<p>DUET was a TianoCore project that enabled chainloading a full UEFI environment from a BIOS system, in a way similar to BIOS operating system booting. This method is being <a rel="nofollow" class="external text" href="https://www.insanelymac.com/forum/topic/186440-linux-and-windows-uefi-boot-using-tianocore-duet-firmware/">discussed</a> extensively. Pre-build DUET images can be downloaded from one of the <a rel="nofollow" class="external text" href="https://gitlab.com/tianocore_uefi_duet_builds/tianocore_uefi_duet_installer">repos</a><sup title="Last check status: 404 Page Not Found">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2023-04-07 ⓘ]</sup>. Read specific <a rel="nofollow" class="external text" href="https://gitlab.com/tianocore_uefi_duet_builds/tianocore_uefi_duet_installer/blob/master/Migle_BootDuet_INSTALL.txt">instructions</a><sup title="Last check status: 404 Page Not Found">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2023-04-07 ⓘ]</sup> for setting up DUET. However, as of November 2018, the DUET code has been removed from TianoCore git repository.
 </p>
 <p>You can also try <a href="../en/Clover.html" title="Clover">Clover</a> which provides modified DUET images that may contain some system specific fixes and is more frequently updated compared to the gitlab repos.
 </p>
@@ -1037,12 +1051,12 @@ exec /usr/bin/efibootmgr -e 3 "$@"
 <h3><span class="mw-headline" id="Boot_entries_are_randomly_removed">Boot entries are randomly removed</span></h3>
 <p>Some motherboards may remove boot entries due to lack of free space in the NVRAM instead of giving an error at creation. To prevent this from occurring, reduce the amount of boot entries being added by minimizing your entry creation process, as well as reducing the amount of automatic drive boot entries by the <a href="https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface#CSM_booting" class="extiw" title="wikipedia:Unified Extensible Firmware Interface">Compatibility Support Module (CSM)</a> by disabling it from your UEFI settings. See <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?pid=1608838#p1608838">BBS#1608838</a>.
 </p>
-<p>Another reason why boot entries might have been removed is the fact that UEFI specification allows OEMs to do "NVRAM maintenance" during boot process. Those manufacturers do it simply: they just look up for EFI applications in predefined, hardcoded paths on the device. If they fail to find any, they conclude there is no OS on the device and wipe all boot entries from NVRAM associated with it, because they assume the NVRAM contains some corrupted or outdated data. If you do not plan to install Windows and still want to load the Linux kernel directly from the firmware, one possible workaround is to create an empty file <code><i>esp</i>/EFI/BOOT/BOOTx64.EFI</code>: 
+<p>Another reason why boot entries might have been removed is the fact that UEFI specification allows OEMs to do "NVRAM maintenance" during boot process. Those manufacturers do it simply: they just look up for EFI applications in predefined, hardcoded paths on the device. If they fail to find any, they conclude there is no operating system on the device and wipe all boot entries from NVRAM associated with it, because they assume the NVRAM contains some corrupted or outdated data. If you do not plan to install Windows and still want to load the Linux kernel directly from the firmware, one possible workaround is to create an empty file <code><i>esp</i>/EFI/BOOT/BOOTx64.EFI</code>: 
 </p>
 <pre># mkdir -p <i>esp</i>/EFI/BOOT 
 # touch <i>esp</i>/EFI/BOOT/BOOTx64.EFI
 </pre>
-<p>And restore the deleted boot entry. Now after reboot the motherboard will see the "Fake OS" and should not wipe other boot entries from NVRAM. You can change the fake OS loader with an actual EFI application if you want, of course, as long as you keep the standard fallback name.
+<p>And restore the deleted boot entry. Now after reboot the motherboard will see the "Fake OS" and should not wipe other boot entries from NVRAM. You can change the fake operating system loader with an actual EFI application if you want, of course, as long as you keep the standard fallback name.
 </p>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul>
@@ -1100,8 +1114,8 @@ exec /usr/bin/efibootmgr -e 3 "$@"
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Unified_Extensible_Firmware_Interface&amp;oldid=806061">https://wiki.archlinux.org/index.php?title=Unified_Extensible_Firmware_Interface&amp;oldid=806061</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 15 April 2024, at 07:52.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Unified_Extensible_Firmware_Interface&amp;oldid=812264">https://wiki.archlinux.org/index.php?title=Unified_Extensible_Firmware_Interface&amp;oldid=812264</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 11 July 2024, at 18:26.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

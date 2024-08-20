@@ -569,7 +569,7 @@
 </p>
 <dl><dd>
 <i>systemd</i> is a suite of basic building blocks for a Linux system. It provides a system and service manager that runs as PID 1 and starts the rest of the system. <i>systemd</i> provides aggressive parallelization capabilities, uses socket and <a href="../en/D-Bus.html" title="D-Bus">D-Bus</a> activation for starting services, offers on-demand starting of daemons, keeps track of processes using Linux <a href="../en/Cgroups.html" class="mw-redirect" title="Control groups">control groups</a>, maintains mount and automount points, and implements an elaborate transactional dependency-based service control logic. <i>systemd</i> supports SysV and LSB init scripts and works as a replacement for sysvinit. Other parts include a logging daemon, utilities to control basic system configuration like the hostname, date, locale, maintain a list of logged-in users and running containers and virtual machines, system accounts, runtime directories and settings, and daemons to manage simple network configuration, network time synchronization, log forwarding, and name resolution.</dd></dl>
-<p>Historically, what systemd calls "service" was named <a href="https://en.wikipedia.org/wiki/Daemon_(computing)" class="extiw" title="wikipedia:Daemon (computing)">daemon</a>: any program that runs as a "background" process (without a terminal or user interface), commonly waiting for events to occur and offering services. A good example is a web server that waits for a request to deliver a page, or a ssh server waiting for someone trying to log in. While these are full featured applications, there are daemons whose work is not that visible. Daemons are for tasks like writing messages into a log file (e.g. <code>syslog</code>, <code>metalog</code>) or keeping your system time accurate (e.g. <a href="../en/Network_Time_Protocol_daemon.html" class="mw-redirect" title="Ntpd">ntpd</a>). For more information see <span class="plainlinks archwiki-template-man" title="$ man 7 daemon"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/daemon.7">daemon(7)</a></span>.
+<p>Historically, what systemd calls "service" was named <a href="https://en.wikipedia.org/wiki/Daemon_(computing)" class="extiw" title="wikipedia:Daemon (computing)">daemon</a>: any program that runs as a "background" process (without a terminal or user interface), commonly waiting for events to occur and offering services. A good example is a web server that waits for a request to deliver a page, or an ssh server waiting for someone trying to log in. While these are full featured applications, there are daemons whose work is not that visible. Daemons are for tasks like writing messages into a log file (e.g. <code>syslog</code>, <code>metalog</code>) or keeping your system time accurate (e.g. <a href="../en/Network_Time_Protocol_daemon.html" class="mw-redirect" title="Ntpd">ntpd</a>). For more information see <span class="plainlinks archwiki-template-man" title="$ man 7 daemon"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/daemon.7">daemon(7)</a></span>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> For a detailed explanation of why Arch moved to <i>systemd</i>, see <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?pid=1149530#p1149530">this forum post</a>.</div>
@@ -896,7 +896,7 @@
 <li>
 <code>Type=forking</code>: <i>systemd</i> considers the service started up once the process forks and the parent has exited. For classic daemons, use this type unless you know that it is not necessary. You should specify <code>PIDFile=</code> as well so <i>systemd</i> can keep track of the main process.</li>
 <li>
-<code>Type=oneshot</code>: this is useful for scripts that do a single job and then exit. You may want to set <code>RemainAfterExit=yes</code> as well so that <i>systemd</i> still considers the service as active after the process has exited. Setting <code>RemainAfterExit=yes</code> is appropriate for the units which change the system state (e.g., mount some partition).</li>
+<code>Type=oneshot</code>: this is useful for scripts that do a single job and then exit. You may want to set <code>RemainAfterExit=yes</code> as well so that <i>systemd</i> still considers the service as active after the process has exited. Setting <code>RemainAfterExit=yes</code> is appropriate for the units which change the system state (e.g., mount some partition). See also <a rel="nofollow" class="external autonumber" href="https://trstringer.com/simple-vs-oneshot-systemd-service/">[1]</a> for the differences of simple and oneshot.</li>
 <li>
 <code>Type=notify</code>: identical to <code>Type=simple</code>, but with the stipulation that the daemon will send a signal to <i>systemd</i> when it is ready. The reference implementation for this notification is provided by <i>libsystemd-daemon.so</i>.</li>
 <li>
@@ -963,7 +963,7 @@ After=<i>new dependency</i></pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Service]
 ExecStart=
 ExecStart=<i>new command</i></pre>
-<p>Note how <code>ExecStart</code> must be cleared before being re-assigned <a rel="nofollow" class="external autonumber" href="https://bugzilla.redhat.com/show_bug.cgi?id=756787#c9">[1]</a>. The same holds for every item that can be specified multiple times, e.g. <code>OnCalendar</code> for timers.
+<p>Note how <code>ExecStart</code> must be cleared before being re-assigned <a rel="nofollow" class="external autonumber" href="https://bugzilla.redhat.com/show_bug.cgi?id=756787#c9">[2]</a>. The same holds for every item that can be specified multiple times, e.g. <code>OnCalendar</code> for timers.
 </p>
 <p>One more example to automatically restart a service:
 </p>
@@ -1198,7 +1198,7 @@ w+   /proc/acpi/wakeup     -    -    -    -   LID0
 <b>Reason:</b> We should document explicitly somewhere the benefits of socket activation over dumb service starting. This is mentioned briefly at the beginning of the page and in related pages like <a href="../en/Avahi.html" title="Avahi">Avahi</a>. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Systemd.html">Talk:Systemd</a>)</div>
 </div>
 <h3><span class="mw-headline" id="Socket_activation">Socket activation</span></h3>
-<p>Some package provide a <i>.socket</i> unit. For example, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=cups">cups</a></span> provides a <code>cups.socket</code> unit<a rel="nofollow" class="external autonumber" href="https://0pointer.de/blog/projects/socket-activation2.html">[2]</a>. If <code>cups.socket</code> is <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enabled</a> (and <code>cups.service</code> is left disabled), <i>systemd</i> will not start CUPS immediately; it will just listen to the appropriate sockets. Then, whenever a program attempts to connect to one of these CUPS sockets, <i>systemd</i> will start <code>cups.service</code> and transparently hand over control of these ports to the CUPS process.
+<p>Some package provide a <i>.socket</i> unit. For example, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=cups">cups</a></span> provides a <code>cups.socket</code> unit<a rel="nofollow" class="external autonumber" href="https://0pointer.de/blog/projects/socket-activation2.html">[3]</a>. If <code>cups.socket</code> is <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enabled</a> (and <code>cups.service</code> is left disabled), <i>systemd</i> will not start CUPS immediately; it will just listen to the appropriate sockets. Then, whenever a program attempts to connect to one of these CUPS sockets, <i>systemd</i> will start <code>cups.service</code> and transparently hand over control of these ports to the CUPS process.
 </p>
 <h3><span class="mw-headline" id="GUI_configuration_tools">GUI configuration tools</span></h3>
 <ul><li>
@@ -1487,8 +1487,8 @@ Environment=SYSTEMD_LOG_LEVEL=debug
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Systemd&amp;oldid=810976">https://wiki.archlinux.org/index.php?title=Systemd&amp;oldid=810976</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 21 June 2024, at 18:19.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Systemd&amp;oldid=812629">https://wiki.archlinux.org/index.php?title=Systemd&amp;oldid=812629</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 19 July 2024, at 06:32.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

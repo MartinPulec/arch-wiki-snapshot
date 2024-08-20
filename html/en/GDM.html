@@ -352,19 +352,10 @@
 			<ul id="toc-Use_Xorg_backend-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-GDM_does_not_start_until_input_is_provided" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#GDM_does_not_start_until_input_is_provided">
-				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.5</span>GDM does not start until input is provided</div>
-			</a>
-			
-			<ul id="toc-GDM_does_not_start_until_input_is_provided-sublist" class="vector-toc-list">
-			</ul>
-		</li>
 		<li id="toc-Incomplete_removal_of_gdm" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Incomplete_removal_of_gdm">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.6</span>Incomplete removal of gdm</div>
+				<span class="vector-toc-numb">4.5</span>Incomplete removal of gdm</div>
 			</a>
 			
 			<ul id="toc-Incomplete_removal_of_gdm-sublist" class="vector-toc-list">
@@ -373,7 +364,7 @@
 		<li id="toc-GDM_auto-suspend_(GNOME_3.28)" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#GDM_auto-suspend_(GNOME_3.28)">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.7</span>GDM auto-suspend (GNOME 3.28)</div>
+				<span class="vector-toc-numb">4.6</span>GDM auto-suspend (GNOME 3.28)</div>
 			</a>
 			
 			<ul id="toc-GDM_auto-suspend_(GNOME_3.28)-sublist" class="vector-toc-list">
@@ -382,7 +373,7 @@
 		<li id="toc-GDM_ignores_Wayland_and_uses_X.Org_by_default" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#GDM_ignores_Wayland_and_uses_X.Org_by_default">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.8</span>GDM ignores Wayland and uses X.Org by default</div>
+				<span class="vector-toc-numb">4.7</span>GDM ignores Wayland and uses X.Org by default</div>
 			</a>
 			
 			<ul id="toc-GDM_ignores_Wayland_and_uses_X.Org_by_default-sublist" class="vector-toc-list">
@@ -391,7 +382,7 @@
 		<li id="toc-Black_screen_on_AMD_or_Intel_GPUs_when_an_NVIDIA_(e)GPU_is_present" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Black_screen_on_AMD_or_Intel_GPUs_when_an_NVIDIA_(e)GPU_is_present">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.9</span>Black screen on AMD or Intel GPUs when an NVIDIA (e)GPU is present</div>
+				<span class="vector-toc-numb">4.8</span>Black screen on AMD or Intel GPUs when an NVIDIA (e)GPU is present</div>
 			</a>
 			
 			<ul id="toc-Black_screen_on_AMD_or_Intel_GPUs_when_an_NVIDIA_(e)GPU_is_present-sublist" class="vector-toc-list">
@@ -400,7 +391,7 @@
 		<li id="toc-GDM_cannot_be_enabled" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#GDM_cannot_be_enabled">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.10</span>GDM cannot be enabled</div>
+				<span class="vector-toc-numb">4.9</span>GDM cannot be enabled</div>
 			</a>
 			
 			<ul id="toc-GDM_cannot_be_enabled-sublist" class="vector-toc-list">
@@ -627,9 +618,15 @@ file-db:/usr/share/gdm/greeter-dconf-defaults
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/dconf/db/gdm.d/02-logo</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[org/gnome/login-screen]
 logo='<i>/path/to/logo.png</i>'</pre>
-<p>Then recompile the GDM database. Alternatively, execute the following as the GDM user temporarily and change the logo:
+<p>Then recompile the GDM database. 
+</p>
+<p>Alternatively, execute the following as the GDM user to change the logo:
 </p>
 <pre>[gdm]$ dbus-launch gsettings set org.gnome.login-screen logo '<i>/path/to/logo.png</i>'
+</pre>
+<p>To disable the logo, you can set the value to an empty string:
+</p>
+<pre>[gdm]$ dbus-launch gsettings set org.gnome.login-screen logo ''
 </pre>
 <h4><span class="mw-headline" id="Changing_the_cursor_theme">Changing the cursor theme</span></h4>
 <p>GDM disregards <a href="../en/GNOME.html" title="GNOME">GNOME</a> cursor theme settings and it also ignores the cursor theme set according to the <a href="../en/Cursor_themes.html#The_default_cursor_theme" title="Cursor themes">XDG specification</a>. To change the cursor theme used in GDM, create the following keyfile:
@@ -919,11 +916,15 @@ ExecStartPre=/bin/cp /home/<i>user</i>/.config/monitors.xml /var/lib/gdm/.config
 <pre># xhost +SI:localuser:gdm</pre>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
 <h3><span class="mw-headline" id="Wayland_and_the_proprietary_NVIDIA_driver">Wayland and the proprietary NVIDIA driver</span></h3>
-<p>To use Wayland in GDM with the <a href="../en/NVIDIA.html" title="NVIDIA">NVIDIA</a> driver, you must first enable <a href="../en/NVIDIA.html#DRM_kernel_mode_setting" title="NVIDIA">NVIDIA#DRM kernel mode setting</a> (DRM KMS).
+<p>To use Wayland in GDM with the <a href="../en/NVIDIA.html" title="NVIDIA">NVIDIA</a> driver, you must fulfill the three following conditions:
 </p>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> If the Wayland option is not displayed in GDM, even after <a href="../en/NVIDIA.html#DRM_kernel_mode_setting" title="NVIDIA">enabling DRM KMS</a> and <a href="../en/NVIDIA.html#Wayland" title="NVIDIA">configuring Wayland</a>, then you most likely have <code>NVreg_PreserveVideoMemoryAllocations</code> and <a rel="nofollow" class="external text" href="https://gitlab.gnome.org/GNOME/gdm/-/commit/51181871e9db716546e9593216220389de0d8b03">NVIDIA systemd services</a> disabled. Before trying the method below to force Wayland, follow <a href="../en/NVIDIA/Tips_and_tricks.html#Preserve_video_memory_after_suspend" title="NVIDIA/Tips and tricks">NVIDIA/Tips and tricks#Preserve video memory after suspend</a> first.</div>
-<p>As of GDM 42 and NVIDIA driver 510, GDM defaults to Wayland. For older NVIDIA drivers (in between version 470 and 510), GDM has chipset-dependent <a rel="nofollow" class="external text" href="https://gitlab.gnome.org/GNOME/gdm/-/blob/main/data/61-gdm.rules.in">udev rules</a> to use Xorg rather than Wayland. To force-enable Wayland, override these rules by creating the following symlink:
+<ul>
+<li>enable <a href="../en/NVIDIA.html#DRM_kernel_mode_setting" title="NVIDIA">DRM KMS</a>,</li>
+<li>
+<a href="../en/Wayland.html#Requirements" title="Wayland">configure Wayland</a>,</li>
+<li>follow <a href="../en/NVIDIA/Tips_and_tricks.html#Preserve_video_memory_after_suspend" title="NVIDIA/Tips and tricks">NVIDIA/Tips and tricks#Preserve video memory after suspend</a>.</li>
+</ul>
+<p>As of GDM 42 and NVIDIA driver 510, GDM defaults to Wayland. For older NVIDIA drivers (in between version 470 and 510), GDM has chipset-dependent <a rel="nofollow" class="external text" href="https://gitlab.gnome.org/GNOME/gdm/-/blob/main/data/61-gdm.rules.in">udev rules</a> to use Xorg rather than Wayland. To force-enable Wayland, instead of following the three regular steps above, override these rules by creating the following symlink:
 </p>
 <pre># ln -s /dev/null /etc/udev/rules.d/61-gdm.rules
 </pre>
@@ -952,18 +953,6 @@ ExecStartPre=/bin/cp /home/<i>user</i>/.config/monitors.xml /var/lib/gdm/.config
 </p>
 <pre>#WaylandEnable=false
 </pre>
-<h3><span class="mw-headline" id="GDM_does_not_start_until_input_is_provided">GDM does not start until input is provided</span></h3>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:View-refresh-red.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is out of date.</b></p>
-<div>
-<b>Reason:</b> No longer relevant since kernel 5.6 (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:GDM.html">Talk:GDM</a>)</div>
-</div>
-<p>If, after booting, the screen stays black and GDM does not start until the mouse is moved or something is typed on the keyboard, it may be due to a lack of entropy required for random number generation. To confirm, check that the following line appears inside <i>systemd-random-seed</i>’s log (which can be read by running <code>journalctl --unit systemd-random-seed</code> with root privileges):
-</p>
-<pre>Kernel entropy pool is not initialized yet, waiting until it is.
-</pre>
-<p>To fix this, you can pass the <code>random.trust_cpu=on</code> <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a> if your CPU supports the <i>RDRAND</i> instruction, or you can use <a href="../en/Haveged.html" title="Haveged">haveged</a> which also provides entropy, albeit it is of allegedly low quality. See <a href="https://wiki.debian.org/BoottimeEntropyStarvation" class="extiw" title="debian:BoottimeEntropyStarvation">Debian’s article on the topic</a> for other solutions.
-</p>
 <h3><span class="mw-headline" id="Incomplete_removal_of_gdm">Incomplete removal of gdm</span></h3>
 <p>After removing <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=gdm">gdm</a></span>, <a href="../en/Systemd.html" title="Systemd">systemd</a> may report the following:
 </p>
@@ -1049,8 +1038,8 @@ systemd[1022]: org.gnome.Shell@wayland.service: Control process exited, code=exi
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GDM&amp;oldid=808060">https://wiki.archlinux.org/index.php?title=GDM&amp;oldid=808060</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 10 May 2024, at 19:07.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GDM&amp;oldid=813227">https://wiki.archlinux.org/index.php?title=GDM&amp;oldid=813227</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 30 July 2024, at 03:18.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>
