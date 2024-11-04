@@ -5,7 +5,7 @@
 <title>namcap - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -60,13 +60,13 @@
 		<ul id="toc-Usage-sublist" class="vector-toc-list">
 		</ul>
 	</li>
-	<li id="toc-Making_a_namcap_module" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
-		<a class="vector-toc-link" href="#Making_a_namcap_module">
+	<li id="toc-Creating_a_module" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#Creating_a_module">
 			<div class="vector-toc-text">
-			<span class="vector-toc-numb">3</span>Making a namcap module</div>
+			<span class="vector-toc-numb">3</span>Creating a module</div>
 		</a>
 		
-		<ul id="toc-Making_a_namcap_module-sublist" class="vector-toc-list">
+		<ul id="toc-Creating_a_module-sublist" class="vector-toc-list">
 		</ul>
 	</li>
 </ul>
@@ -154,33 +154,25 @@
 <li><a href="../en/Pacman.html" title="Pacman">pacman</a></li>
 </ul>
 </div>
-<p><a rel="nofollow" class="external text" href="https://gitlab.archlinux.org/pacman/namcap">Namcap</a> is a tool to check binary packages and source <a href="../en/PKGBUILD.html" title="PKGBUILD">PKGBUILDs</a> for common packaging mistakes, which can also be automatically enabled.
-</p>
-<p><b>Changes</b>: The <a rel="nofollow" class="external text" href="https://gitlab.archlinux.org/pacman/namcap/blob/master/NEWS">NEWS</a> file in the git repository contains the changes from the previous version concisely.
-</p>
-<p>To <b>report a bug</b> or a <b>feature request</b> for namcap, use the <a rel="nofollow" class="external text" href="https://gitlab.archlinux.org/pacman/namcap/-/issues">GitLab issues tracker</a> of the project. If you are reporting a bug, please give concrete examples of packages where the problem occurs and remember to insert the version number.
-</p>
-<p>If you have a patch (fixing a bug or a new namcap module), then you can open a <a rel="nofollow" class="external text" href="https://gitlab.archlinux.org/pacman/namcap/-/merge_requests">merge request</a> on GitLab.
+<p><a rel="nofollow" class="external text" href="https://gitlab.archlinux.org/pacman/namcap">Namcap</a> is an <a href="../en/Arch_Linux.html" title="Arch Linux">Arch Linux</a> <a href="../en/Category:Arch_projects.html" title="Category:Arch projects">tool</a> to check binary packages and source <a href="../en/PKGBUILD.html" title="PKGBUILD">PKGBUILDs</a> for common packaging mistakes.
 </p>
 <h2><span class="mw-headline" id="Installation">Installation</span></h2>
 <p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=namcap">namcap</a></span> package.
 </p>
 <h2><span class="mw-headline" id="Usage">Usage</span></h2>
-<p>To run namcap on a file, where <i>filename</i> is <code>PKGBUILD</code> or the name of a binary <code>pkg.tar.zst</code>:
+<p>To run <i>namcap</i> on a file, where <i>filename</i> is <code>PKGBUILD</code> or the name of a package binary <code><i>package_name</i>.tar.zst</code>:
 </p>
 <pre>$ namcap <i>filename</i>
 </pre>
-<p>If you want to see extra informational messages, then invoke namcap with the <code>-i</code> flag:
+<p>If you want to see extra informational messages, then invoke <i>namcap</i> with the <code>--info</code> (<code>-i</code>) flag:
 </p>
-<pre>$ namcap -i <i>filename</i>
+<pre>$ namcap --info <i>filename</i>
 </pre>
-<p>For more info on usage, see the man page <span class="plainlinks archwiki-template-man" title="$ man 1 namcap"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/namcap.1">namcap(1)</a></span>.
+<p><i>Namcap</i> uses a system of <i>tags</i> to classify the output. Tags are of three types — <i>errors</i> (denoted by <code>E</code>), <i>warnings</i> (denoted by <code>W</code>) and <i>informational</i> (denoted by <code>I</code>). An error is important and should be fixed immediately; mostly they relate to insufficient security, missing licenses or permission problems.
 </p>
-<p>Namcap uses a system of <b>tags</b> to classify the output. Currently, tags are of three types, <i>errors</i> (denoted by E), <i>warnings</i> (denoted by W) and <i>informational</i> (denoted by I). An error is important and should be fixed immediately; mostly they relate to insufficient security, missing licenses or permission problems.
+<p>Normally <i>namcap</i> prints a human-readable explanation (sometimes with suggestions on how to fix the problem). If you want output which can be easily parsed by a program, then pass the <code>--machine-readable</code> (<code>-m</code>) flag to <i>namcap</i>.
 </p>
-<p>Normally namcap prints a human-readable explanation (sometimes with suggestions on how to fix the problem). If you want output which can be easily parsed by a program, then pass the -m (<i>machine-readable</i>) flag to namcap (this feature is currently in the development branch).
-</p>
-<p>The tag file <code>/usr/share/namcap/namcap-tags</code><a rel="nofollow" class="external autonumber" href="https://gitlab.archlinux.org/pacman/namcap/-/blob/master/namcap-tags">[1]</a> consists of lines specifying the human-readable form of the hyphenated tags used in the <i>namcap</i> code. A line beginning with a <code>#</code> is treated as a comment:
+<p>The <i>tag file</i> <code>/usr/share/namcap/namcap-tags</code> (<a rel="nofollow" class="external text" href="https://gitlab.archlinux.org/pacman/namcap/-/blob/master/namcap-tags">online source</a>) consists of lines specifying the human-readable form of the hyphenated tags used in the <i>namcap</i> code. A line beginning with a <code>#</code> is treated as a comment:
 </p>
 <pre># The comment
 machine-parsable-tag %s :: The human-readable description for the tag %s
@@ -191,73 +183,65 @@ machine-parsable-tag %s :: The human-readable description for the tag %s
 <li>
 <code>::</code> (double colon) separates the hyphenated machine-readable tag from the human-readable description.</li>
 <li>
-<code>%s</code> is a format specifier, see <a href="#Making_a_namcap_module">#Making a namcap module</a> for more information.</li>
+<code>%s</code> is a format specifier, see <a href="#Creating_a_module">#Creating a module</a> for more information.</li>
 </ul>
 </div>
-<h2><span class="mw-headline" id="Making_a_namcap_module">Making a namcap module</span></h2>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-clear.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs language, wiki syntax or style improvements. See <a href="../en/Help:Style.html" title="Help:Style">Help:Style</a> for reference.</b></p>
-<div>
-<b>Reason:</b> Use <a href="../en/Template:Ic.html" title="Template:Ic">Template:ic</a> instead of italics and bold. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Namcap.html">Talk:Namcap</a>)</div>
-</div>
-<p>This section documents the innards of namcap and specifies how to create a new namcap module.
+<p>See <span class="plainlinks archwiki-template-man" title="$ man 1 namcap"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/namcap.1">namcap(1)</a></span>, <a rel="nofollow" class="external text" href="https://gitlab.archlinux.org/pacman/namcap#namcap">README</a> and <a rel="nofollow" class="external text" href="https://gitlab.archlinux.org/pacman/namcap/blob/master/NEWS">NEWS</a> for more information.
 </p>
-<p>The main namcap program namcap.py takes as parameters the filename of a package or a PKGBUILD and makes a pkginfo object, which it passes to a list of rules defined in <code>__tarball__</code> and <code>__pkgbuild__</code>.
+<h2><span class="mw-headline" id="Creating_a_module">Creating a module</span></h2>
+<p>The main <i>namcap</i> program <code>namcap.py</code> takes as parameters the filename of a package or a <code>PKGBUILD</code> and makes a <i>pkginfo</i> object, which it passes to a list of rules defined in <code>__tarball__</code> and <code>__pkgbuild__</code>. Once your module is finalized, remember to add it to the appropriate array:
 </p>
 <ul>
 <li>
-<i>__tarball__</i> defines the rules which process binary packages.</li>
+<code>__tarball__</code> defines the rules which process binary packages,</li>
 <li>
-<i>__pkgbuild__</i> defines the rules which process PKGBUILDs</li>
+<code>__pkgbuild__</code> defines the rules which process <code>PKGBUILD</code>s.</li>
 </ul>
-<p>Once your module is finalized, remember to add it to the appropriate array (<i>__tarball__</i> or <i>__pkgbuild__</i>) defined in <i>Namcap/__init__.py</i>
-</p>
-<p>A sample namcap module is like this:
+<p>A sample <i>namcap</i> module is like this:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">namcap/url.py</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">  import pacman
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">import pacman
 
-  class package:
-  	def short_name(self):
-		return "url"
-	def long_name(self):
-		return "Verifies url is included in a PKGBUILD"
-	def prereq(self):
-		return ""
-	def analyze(self, pkginfo, tar):
-		ret = [[],[],[]]
-		if not hasattr(pkginfo, 'url'):
-			ret[0].append(("missing-url", ()))
-		return ret
-	def type(self):
-		return "pkgbuild"
+class package:
+    def short_name(self):
+        return "url"
+
+    def long_name(self):
+        return "Verifies url is included in a PKGBUILD"
+
+    def prereq(self):
+        return ""
+
+    def analyze(self, pkginfo, tar):
+        ret = [[], [], []]
+        if not hasattr(pkginfo, 'url'):
+            ret[0].append(("missing-url", ()))
+        return ret
+
+    def type(self):
+        return "pkgbuild"
 </pre>
-<p>Mostly, the code is self-explanatory. The following are the list of the methods that each namcap module must have:
+<p>Each <i>namcap</i> module must have the following methods:
 </p>
-<ul>
-<li>
-<b>short_name</b>(self) Returns a string containing a short name of the module. Usually, this is the same as the basename of the module file.</li>
-<li>
-<b>long_name</b>(self)  Returns a string containing a concise description of the module. This description is used when listing all the rules using <code>namcap -r list</code>.</li>
-<li>
-<b>prereq</b>(self) Return a string containing the prerequisites needed for the module to operate properly. Usually "" for modules processing PKGBUILDs and "tar" for modules processing package files. "extract" should be specified if the package contents should be extracted to a temporary directory before further processing.</li>
-<li>
-<b>analyze</b>(self, pkginfo, tar) Should return a list comprising in turn of three lists: of error tags, warning tags and information tags respectively. Each member of these tag lists should be a tuple consisting of two components: <b>the short, hyphenated form</b> of the tag with the appropriate format specifiers (%s, etc.) The first word of this string must be the tag name. The human readable form of the tag should be put in the tag file. The format of the tag file is described above; and <b>the parameters</b> which should replace the format specifier tokens in the final output.</li>
-<li>
-<b>type</b>(self) "pkgbuild" for a module processing PKGBUILDs, "tarball" for a module processing a binary package file.</li>
-</ul>
+<ul><li>
+<code>short_name(self)</code> — returns a string containing a short name of the module. Usually, this is the same as the <span class="plainlinks archwiki-template-man" title="$ man 1 basename"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/basename.1">basename(1)</a></span> of the module file.</li></ul>
+<ul><li>
+<code>long_name(self)</code> — returns a string containing a concise description of the module. This description is used when listing all the rules using <code>namcap --rules=<i>rule_list</i></code>.</li></ul>
+<ul><li>
+<code>prereq(self)</code> — returns a string containing the prerequisites needed for the module to operate properly. Usually empty string (<code>""</code>) for modules processing <code>PKGBUILD</code>s and <code>"tar"</code> for modules processing package files. <code>"extract"</code> should be specified if the package contents should be extracted to a temporary directory before further processing.</li></ul>
+<ul><li>
+<code>analyze(self, pkginfo, tar)</code> — should return a list comprising in turn of three lists: <i>error, warning</i> and <i>information</i> tags respectively. Each member of these <i>tag lists</i> should be a tuple consisting of two components: the <i>short — hyphenated — form</i> of the <i>tag</i> with the appropriate format specifiers (like <code>%s</code>) and the <i>parameters</i>.</li></ul>
+<ul><li>
+<code>type(self)</code> — returns <code>"pkgbuild"</code> for a module processing <code>PKGBUILD</code>s, and <code>"tarball"</code> for a module processing a binary package file.</li></ul>
 </div>
 </div>
-					<div id="catlinks" class="catlinks" data-mw="interface">
-<div id="mw-normal-catlinks" class="mw-normal-catlinks">
+					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Categories</a>: <ul>
-<li><a href="../en/Category:Package_management.html" title="Category:Package management">Package management</a></li>
+<li><a href="../en/Category:Arch_projects.html" title="Category:Arch projects">Arch projects</a></li>
+<li><a href="../en/Category:Commands.html" title="Category:Commands">Commands</a></li>
 <li><a href="../en/Category:Package_development.html" title="Category:Package development">Package development</a></li>
 </ul>
-</div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li></ul>
-</div>
-</div>
+</div></div>
 				</div>
 			</main>
 			
@@ -266,8 +250,8 @@ machine-parsable-tag %s :: The human-readable description for the tag %s
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Namcap&amp;oldid=812928">https://wiki.archlinux.org/index.php?title=Namcap&amp;oldid=812928</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 28 July 2024, at 07:16.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Namcap&amp;oldid=818868">https://wiki.archlinux.org/index.php?title=Namcap&amp;oldid=818868</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 13 October 2024, at 08:11.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

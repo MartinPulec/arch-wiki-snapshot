@@ -5,7 +5,7 @@
 <title>Install Arch Linux on a removable medium - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -86,22 +86,22 @@
 			<ul id="toc-GRUB-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-GRUB_legacy" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#GRUB_legacy">
-				<div class="vector-toc-text">
-				<span class="vector-toc-numb">2.2</span>GRUB legacy</div>
-			</a>
-			
-			<ul id="toc-GRUB_legacy-sublist" class="vector-toc-list">
-			</ul>
-		</li>
 		<li id="toc-Syslinux" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Syslinux">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">2.3</span>Syslinux</div>
+				<span class="vector-toc-numb">2.2</span>Syslinux</div>
 			</a>
 			
 			<ul id="toc-Syslinux-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-rEFInd" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#rEFInd">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">2.3</span>rEFInd</div>
+			</a>
+			
+			<ul id="toc-rEFInd-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -125,22 +125,22 @@
 			</a>
 			
 			<ul id="toc-Using_your_portable_install_on_multiple_machines-sublist" class="vector-toc-list">
-				<li id="toc-Compatibility_for_BIOS_systems" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Compatibility_for_BIOS_systems">
-				<div class="vector-toc-text">
-				<span class="vector-toc-numb">3.1.1</span>Compatibility for BIOS systems</div>
-			</a>
-			
-			<ul id="toc-Compatibility_for_BIOS_systems-sublist" class="vector-toc-list">
-			</ul>
-		</li>
-		<li id="toc-Video_drivers" class="vector-toc-list-item vector-toc-level-3">
+				<li id="toc-Video_drivers" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Video_drivers">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">3.1.2</span>Video drivers</div>
+				<span class="vector-toc-numb">3.1.1</span>Video drivers</div>
 			</a>
 			
 			<ul id="toc-Video_drivers-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Audio_drivers" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Audio_drivers">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.1.2</span>Audio drivers</div>
+			</a>
+			
+			<ul id="toc-Audio_drivers-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 		<li id="toc-Persistent_block_device_naming" class="vector-toc-list-item vector-toc-level-3">
@@ -292,7 +292,7 @@
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Installation">Installation</span></h2>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> At least 2 GiB of storage space is recommended. A modest set of packages will fit, leaving a little free space for storage. However, if you plan to install <a href="../en/Desktop_environment.html" title="Desktop environment">desktop environments</a> such as KDE, 3 GiB or more is recommended.</div>
+<strong>Note:</strong> See <a href="../en/Partitioning.html#Partition_scheme" title="Partitioning">Partitioning#Partition scheme</a> for the disk space required.</div>
 <p>There are various ways of installing Arch on removable media, depending on the operating system you have available:
 </p>
 <ul>
@@ -322,28 +322,6 @@
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> Recheck the device map, even if <code>/boot/grub/device.map</code> already exists. You should use this option whenever you add/remove a disk into/from your computer. <a rel="nofollow" class="external autonumber" href="https://www.gnu.org/software/grub/manual/grub/html_node/Invoking-grub_002dinstall.html">[1]</a>
 </div>
-<h3><span class="mw-headline" id="GRUB_legacy">GRUB legacy</span></h3>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> 
-<ul>
-<li>When GRUB is installed on the disk, the disk will always be <code>hd0,0</code>.</li>
-<li>It seems that current versions of GRUB will automatically default to using uuid. The following directions are for GRUB legacy.</li>
-</ul>
-</div>
-<p><code>menu.lst</code>, the GRUB legacy configuration file, should be edited to (loosely) match the following.
-</p>
-<p>When using file system labels your <code>menu.lst</code> should look like this:
-</p>
-<pre>root (hd0,0)
-kernel /boot/vmlinuz-linux root=/dev/disk/by-label/<b>Arch</b> rw
-initrd /boot/initramfs-linux.img
-</pre>
-<p>And for UUID, it should be like this:
-</p>
-<pre>root (hd0,0)
-kernel /boot/vmlinuz-linux root=/dev/disk/by-uuid/3a9f8929-627b-4667-9db4-388c4eaaf9fa rw
-initrd /boot/initramfs-linux.img
-</pre>
 <h3><span class="mw-headline" id="Syslinux">Syslinux</span></h3>
 <p>Using your UUID:
 </p>
@@ -353,30 +331,38 @@ initrd /boot/initramfs-linux.img
         APPEND root=UUID=3a9f8929-627b-4667-9db4-388c4eaaf9fa rw
         INITRD ../initramfs-linux.img
 </pre>
+<h3><span class="mw-headline" id="rEFInd">rEFInd</span></h3>
+<pre>menuentry "Arch Linux" {
+   icon     /EFI/BOOT/icons/os_arch.png
+   volume   5028fa50-0079-4c40-b240-abfaf28693ea
+   loader   <i>/path/to/vmlinux_image</i>
+   initrd   <i>/path/to/initramfs</i>
+   options  "root=PARTUUID=5028fa50-0079-4c40-b240-abfaf28693ea rw"
+}
+</pre>
+<p>See <a href="../en/REFInd.html#For_manual_boot_stanzas" title="REFInd">rEFInd#For manual boot stanzas</a> for details on creating manual boot stanzas.
+</p>
+<p>You must also use the <code>--usedefault /dev/sd<i>XY</i></code> argument when installing rEFInd.
+</p>
 <h2><span class="mw-headline" id="Tips_and_tricks">Tips and tricks</span></h2>
 <h3><span class="mw-headline" id="Using_your_portable_install_on_multiple_machines">Using your portable install on multiple machines</span></h3>
-<h4><span class="mw-headline" id="Compatibility_for_BIOS_systems">Compatibility for BIOS systems</span></h4>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-cut.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is being considered for removal.</b></p>
-<div>
-<b>Reason:</b> This section was added in <a href="../Special:Diff/639207.html" title="Special:Diff/639207">2020</a>; BIOS-only systems are not <i>plenty</i>. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Install_Arch_Linux_on_a_removable_medium.html">Talk:Install Arch Linux on a removable medium</a>)</div>
-</div>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
-<div>
-<b>Reason:</b> Plenty of systems are capable of BIOS/GPT booting without workarounds. For systems that do have issues, hybrid-MBR is not the only solution; <a href="../en/Partitioning.html#Tricking_old_BIOS_into_booting_from_GPT" title="Partitioning">Partitioning#Tricking old BIOS into booting from GPT</a> could be an alternative. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Install_Arch_Linux_on_a_removable_medium.html">Talk:Install Arch Linux on a removable medium</a>)</div>
-</div>
-<p>Since this setup will be run on multiple machines and there are still plenty of BIOS only systems around, you might want to consider enabling compatibility for both UEFI GPT and BIOS GPT/MBR systems. See <a href="../en/Multiboot_USB_drive.html#Hybrid_UEFI_GPT_+_BIOS_GPT/MBR_boot" title="Multiboot USB drive">Multiboot USB drive#Hybrid UEFI GPT + BIOS GPT/MBR boot</a>
-</p>
 <h4><span class="mw-headline" id="Video_drivers">Video drivers</span></h4>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
+<div>
+<b>Reason:</b> The only remaining proprietary driver is <a href="../en/NVIDIA.html" title="NVIDIA">NVIDIA</a> which works just fine, while <a href="../en/Nouveau.html" title="Nouveau">nouveau</a> has been dying since the block of reclocking. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Install_Arch_Linux_on_a_removable_medium.html">Talk:Install Arch Linux on a removable medium</a>)</div>
+</div>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> 
 <ul>
 <li>The use of proprietary video drivers is <b>not</b> recommended for this type of installation.</li>
-<li>See the note about <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xf86-video-intel">xf86-video-intel</a></span> in <a href="../en/Intel_graphics.html#Installation" title="Intel graphics">Intel graphics#Installation</a>.</li>
+<li>See the note about <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xf86-video-intel">xf86-video-intel</a></span> in <a href="../en/Intel_graphics.html#Installation" title="Intel graphics">Intel graphics#Installation</a> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xf86-video-nouveau">xf86-video-nouveau</a></span> in <a href="../en/Nouveau.html#Installation" title="Nouveau">Nouveau#Installation</a> to decide installing these.</li>
 </ul>
 </div>
-<p>To support most common GPUs, install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xf86-video-vesa">xf86-video-vesa</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xf86-video-ati">xf86-video-ati</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xf86-video-intel">xf86-video-intel</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xf86-video-amdgpu">xf86-video-amdgpu</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xf86-video-nouveau">xf86-video-nouveau</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xf86-video-fbdev">xf86-video-fbdev</a></span>.
+<p>To support most common GPUs, install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xf86-video-vesa">xf86-video-vesa</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xf86-video-ati">xf86-video-ati</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xf86-video-amdgpu">xf86-video-amdgpu</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xf86-video-fbdev">xf86-video-fbdev</a></span>.
+</p>
+<h4><span class="mw-headline" id="Audio_drivers">Audio drivers</span></h4>
+<p>To support most common sound cards, install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sof-firmware">sof-firmware</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=alsa-firmware">alsa-firmware</a></span>. For more information about configuring audio device, see <a href="../en/Advanced_Linux_Sound_Architecture.html" title="Advanced Linux Sound Architecture">Advanced Linux Sound Architecture</a>.
 </p>
 <h4><span class="mw-headline" id="Persistent_block_device_naming">Persistent block device naming</span></h4>
 <p>It is recommended to use <a href="../en/Persistent_block_device_naming.html#by-uuid" class="mw-redirect" title="UUID">UUID</a> in both <a href="../en/Fstab.html" title="Fstab">fstab</a> and boot loader configuration. See <a href="../en/Persistent_block_device_naming.html" title="Persistent block device naming">Persistent block device naming</a> for details.
@@ -384,11 +370,21 @@ initrd /boot/initramfs-linux.img
 <p>Alternatively, you may create udev rule to create custom symlink for your disk. Then use this symlink in <a href="../en/Fstab.html" title="Fstab">fstab</a> and boot loader configuration. See <a href="../en/Udev.html#Setting_static_device_names" title="Udev">udev#Setting static device names</a> for details.
 </p>
 <h4><span class="mw-headline" id="Kernel_parameters">Kernel parameters</span></h4>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
+<div>
+<b>Reason:</b> Is this still an issue? No bug report linked. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Install_Arch_Linux_on_a_removable_medium.html">Talk:Install Arch Linux on a removable medium</a>)</div>
+</div>
 <p>You may want to disable KMS for various reasons, such as getting a blank screen or a "no signal" error from the display, when using some Intel video cards, etc. To disable KMS, add <code>nomodeset</code> as a kernel parameter. See <a href="../en/Kernel_parameters.html" title="Kernel parameters">Kernel parameters</a> for more info.
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> Some <a href="../en/Xorg.html" title="Xorg">Xorg</a> drivers will not work with KMS disabled. See the wiki page on your specific driver for details. Nouveau in particular needs KMS to determine the correct display resolution. If you add <code>nomodeset</code> as a kernel parameter as a preemptive measure you may have to adjust the display resolution manually when using machines with Nvidia video cards. See <a href="../en/Xrandr.html" title="Xrandr">Xrandr</a> for more info.</div>
 <h3><span class="mw-headline" id="Compatibility">Compatibility</span></h3>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
+<div>
+<b>Reason:</b> This should be fleshed out in a separate section, so that only a fallback image is generated. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Install_Arch_Linux_on_a_removable_medium.html">Talk:Install Arch Linux on a removable medium</a>)</div>
+</div>
 <p>The fallback image should be used for maximum compatibility.
 </p>
 <h3><span class="mw-headline" id="Minimizing_disk_access">Minimizing disk access</span></h3>
@@ -424,7 +420,7 @@ RuntimeMaxUse=30M</pre>
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Installation_process.html" title="Category:Installation process">Installation process</a></li></ul>
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
-<li><a href="../en/Category:Sections_flagged_with_Template:Remove.html" title="Category:Sections flagged with Template:Remove">Sections flagged with Template:Remove</a></li>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
 </ul>
 </div>
@@ -437,8 +433,8 @@ RuntimeMaxUse=30M</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Install_Arch_Linux_on_a_removable_medium&amp;oldid=813219">https://wiki.archlinux.org/index.php?title=Install_Arch_Linux_on_a_removable_medium&amp;oldid=813219</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 29 July 2024, at 16:10.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Install_Arch_Linux_on_a_removable_medium&amp;oldid=815731">https://wiki.archlinux.org/index.php?title=Install_Arch_Linux_on_a_removable_medium&amp;oldid=815731</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 2 September 2024, at 10:16.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

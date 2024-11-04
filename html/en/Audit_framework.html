@@ -5,7 +5,7 @@
 <title>Audit framework - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -206,6 +206,15 @@
 		</li>
 	</ul>
 	</li>
+	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#See_also">
+			<div class="vector-toc-text">
+			<span class="vector-toc-numb">8</span>See also</div>
+		</a>
+		
+		<ul id="toc-See_also-sublist" class="vector-toc-list">
+		</ul>
+	</li>
 </ul>
 </div>
 
@@ -289,40 +298,38 @@
 <strong>Note:</strong> Audit framework compatibility with containers was fixed in Linux 3.15, see <a rel="nofollow" class="external autonumber" href="https://bugzilla.redhat.com/show_bug.cgi?id=893751">[1]</a>, however interpreting audit records may be difficult as support for namespace ID is still work in progress, see <a rel="nofollow" class="external autonumber" href="https://github.com/linux-audit/audit-kernel/issues/32">[2]</a>.</div>
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Installation">Installation</span></h2>
-<p>In-kernel audit support is available in all <a href="../en/Kernel.html#Officially_supported_kernels" title="Kernel">officially supported kernels</a>. For custom kernels <code>CONFIG_AUDIT</code> should be enabled.
+<p>In-kernel audit support is available in all <a href="../en/Kernel.html#Officially_supported_kernels" title="Kernel">officially supported kernels</a>. For custom kernels <code>CONFIG_AUDIT</code> should be enabled. Userspace support is provided by the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=audit">audit</a></span> package that is already installed as a dependency of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=base">base</a></span> packages.
 </p>
 <p>Audit can be enabled at boot-time by setting <code>audit=1</code> as <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a>. This will ensure that all processes that run before the audit daemon starts are marked as auditable by the kernel. Not doing that will make a few processes impossible to properly audit. See <span class="plainlinks archwiki-template-man" title="$ man 8 auditd"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/auditd.8">auditd(8)</a></span>.
 </p>
-<p>For userspace support <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=audit">audit</a></span> and <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start/enable">start/enable</a> <code>auditd.service</code>.
-</p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> In order to disable audit completely and suppress audit messages from appearing in journal you may set <code>audit=0</code> as <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a> and/or <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Mask">mask</a> <code>systemd-journald-audit.socket</code>.</div>
-<p>Audit framework is composed of the auditd daemon, responsible for writing the audit messages that were generated through the audit kernel interface and triggered by application and system activity.
+<p>Audit framework is composed of the auditd daemon, responsible for writing the audit messages that were generated through the audit kernel interface and triggered by application and system activity. <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start/enable">Start/enable</a> <code>auditd.service</code> to activate the daemon.
 </p>
 <p>This daemon can be controlled by several commands and files:
 </p>
 <ul>
 <li>
-<i>auditctl</i>: to control the behavior of the daemon on the fly, adding rules etc.</li>
+<span class="plainlinks archwiki-template-man" title="$ man 8 auditctl"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/auditctl.8">auditctl(8)</a></span>: to control the behavior of the daemon on the fly, adding rules etc.</li>
 <li>
-<code>/etc/audit/audit.rules</code>: contains the rules and various parameters of the auditd daemon</li>
+<code>/etc/audit/audit.rules</code>: contains the rules and various parameters of the auditd daemon. See <span class="plainlinks archwiki-template-man" title="$ man 7 audit.rules"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/audit.rules.7">audit.rules(7)</a></span> for details.</li>
 <li>
-<i>aureport</i>: generate report of the activity on a system</li>
+<span class="plainlinks archwiki-template-man" title="$ man 8 aureport"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/aureport.8">aureport(8)</a></span>: generate report of the activity on a system</li>
 <li>
-<i>ausearch</i>: search for various events</li>
+<span class="plainlinks archwiki-template-man" title="$ man 8 ausearch"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/ausearch.8">ausearch(8)</a></span>: search for various events</li>
 <li>
 <i>auditspd</i>: the daemon which can be used to relay event notifications to other applications instead of writing them to disk in the audit log</li>
 <li>
 <i>autrace</i>: this command can be used to trace a process, in a similar way as strace.</li>
 <li>
-<code>/etc/audit/auditd.conf</code>: configuration file related to the logging.</li>
+<code>/etc/audit/auditd.conf</code>: configuration file related to the logging. See <span class="plainlinks archwiki-template-man" title="$ man 5 auditd.conf"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/auditd.conf.5">auditd.conf(5)</a></span> for details.</li>
 </ul>
 <h2><span class="mw-headline" id="Adding_rules">Adding rules</span></h2>
 <p>Before adding rules, you must know that the audit framework can be very verbose and that each rule must be carefully tested before being effectively deployed. Indeed, just one rule can flood all your logs within a few minutes.
 </p>
 <h3><span class="mw-headline" id="Audit_files_and_directories_access">Audit files and directories access</span></h3>
 <p>The most basic use of the audit framework is to log the access to the files you want.
-To do this, you must use a watch <code>-w</code> to a file or a directory.
+To do this, you must place a watch on a file or a directory using the option <code>-w</code> followed by a path.
 The most basic rule to set up is to track accesses to the passwd file:
 </p>
 <pre># auditctl -w /etc/passwd -p rwxa
@@ -460,6 +467,12 @@ tcp_client_max_idle = 0</pre>
 </ul>
 <p>See the <a rel="nofollow" class="external text" href="https://github.com/systemd/systemd/issues/15324">systemd issue 15324 on GitHub</a> for the details.
 </p>
+<h2><span class="mw-headline" id="See_also">See also</span></h2>
+<ul>
+<li><a rel="nofollow" class="external text" href="https://linux-audit.com/configuring-and-auditing-linux-systems-with-audit-daemon/#more">Configuring and auditing Linux systems with Audit daemon</a></li>
+<li><a rel="nofollow" class="external text" href="https://linux-audit.com/linux-audit-framework-101-basic-rules-for-configuration/">Linux Audit Framework 101 – Basic Rules for Configuration</a></li>
+<li><a rel="nofollow" class="external text" href="https://linux-audit.com/tuning-auditd-high-performance-linux-auditing/">Tuning auditd: high-performance Linux Auditing</a></li>
+</ul>
 </div>
 </div>
 					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
@@ -476,8 +489,8 @@ tcp_client_max_idle = 0</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Audit_framework&amp;oldid=810602">https://wiki.archlinux.org/index.php?title=Audit_framework&amp;oldid=810602</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 15 June 2024, at 17:03.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Audit_framework&amp;oldid=818951">https://wiki.archlinux.org/index.php?title=Audit_framework&amp;oldid=818951</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 13 October 2024, at 23:04.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

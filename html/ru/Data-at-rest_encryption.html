@@ -5,7 +5,7 @@
 <title>Data-at-rest encryption (Русский) - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -322,7 +322,7 @@
 				
 				<li class="interlanguage-link interwiki-en mw-list-item"><a href="../en/Data-at-rest_encryption.html" title="Data-at-rest encryption – English" lang="en" hreflang="en" class="interlanguage-link-target"><span>English</span></a></li>
 <li class="interlanguage-link interwiki-es mw-list-item"><a href="../es/Data-at-rest_encryption.html" title="Data-at-rest encryption – español" lang="es" hreflang="es" class="interlanguage-link-target"><span>Español</span></a></li>
-<li class="interlanguage-link interwiki-ja mw-list-item"><a href="https://wiki.archlinux.jp/index.php/%E3%83%87%E3%82%A3%E3%82%B9%E3%82%AF%E6%9A%97%E5%8F%B7%E5%8C%96" title="ディスク暗号化 – 日本語" lang="ja" hreflang="ja" class="interlanguage-link-target"><span>日本語</span></a></li>
+<li class="interlanguage-link interwiki-ja mw-list-item"><a href="https://wiki.archlinux.jp/index.php/%E4%BF%9D%E5%AD%98%E3%83%87%E3%83%BC%E3%82%BF%E6%9A%97%E5%8F%B7%E5%8C%96" title="保存データ暗号化 – 日本語" lang="ja" hreflang="ja" class="interlanguage-link-target"><span>日本語</span></a></li>
 <li class="interlanguage-link interwiki-pt mw-list-item"><a href="../pt/Data-at-rest_encryption.html" title="Data-at-rest encryption – português" lang="pt" hreflang="pt" class="interlanguage-link-target"><span>Português</span></a></li>
 <li class="interlanguage-link interwiki-zh-hans mw-list-item"><a href="https://wiki.archlinuxcn.org/wiki/Data-at-rest_encryption" title="Data-at-rest encryption – 中文（简体）" lang="zh-Hans" hreflang="zh-Hans" class="interlanguage-link-target"><span>中文（简体）</span></a></li>
 			</ul>
@@ -423,7 +423,7 @@
 <ul><li>(возможные способы решения: избегать таких приложений; монтировать <code>/tmp</code> как <a href="../ru/Tmpfs.html" title="Tmpfs (Русский)">ram-диск</a>)</li></ul>
 </li>
 <li>
-<code>/var</code> (файлы журналов, базы данных и т.п.; например, <a href="../ru/Locate.html" title="Locate (Русский)">mlocate</a> хранит индекс всех имён файлов в <code>/var/lib/mlocate/mlocate.db</code>).</li>
+<code>/var</code> (файлы журналов, базы данных и т.п.; например, <a href="../ru/Locate.html" title="Locate (Русский)">locate</a> хранит индекс всех имён файлов в <code>/var/lib/plocate/plocate.db</code>).</li>
 </ul></dd></dl>
 <p>Решением является шифрование и системных, и пользовательских данных, что предотвращает несанкционированный физический доступ к секретным данным, которые могли осесть в кэшах системы. Недостаток такого подхода в том, разблокировка зашифрованных частей диска должна происходить ещё в начале загрузки. Также преимуществом шифрования данных системы является то, что оно усложняет установку вредоносных программ, таких как <a href="https://en.wikipedia.org/wiki/ru:%D0%9A%D0%B5%D0%B9%D0%BB%D0%BE%D0%B3%D0%B5%D1%80" class="extiw" title="wikipedia:ru:Кейлогер">кейлоггеры</a> или руткиты, злоумышленнику с физическим доступом.
 </p>
@@ -1471,7 +1471,7 @@
 </p>
 <p>Когда операционная система или приложение запрашивает какие-то данные из блочного устройства или файла, весь сектор (или сектора), содержащий нужные данные, считывается с диска, расшифровывается на лету и временно сохраняется в оперативной памяти:
 </p>
-<pre style="white-space: pre !important; font-variant-ligatures: no-common-ligatures;">             ╔═══════╗
+<pre style="white-space: pre !important; font-family:'DejaVu Sans Mono',monospace,monospace; font-variant-ligatures: no-common-ligatures;">             ╔═══════╗
     сектор 1 ║"???.."║
              ╠═══════╣         ╭┈┈┈┈┈┈╮
     сектор 2 ║"???.."║         ┊ ключ ┊
@@ -1518,7 +1518,7 @@
 </p>
 <p>Обычно применяется так называемое «растяжение ключа» («key stretching») к паролю с помощью «функции формирования ключа» («key derivation function»), и полученный таким образом ключ используется для дешифровки главного мастер-ключа (который ранее хранился в зашифрованном виде):
 </p>
-<pre style="white-space: pre !important; font-variant-ligatures: no-common-ligatures;"> ╭┈┈┈┈┈┈┈┈╮                             ╭┈┈┈┈┈┈╮
+<pre style="white-space: pre !important; font-family:'DejaVu Sans Mono',monospace,monospace; font-variant-ligatures: no-common-ligatures;"> ╭┈┈┈┈┈┈┈┈╮                             ╭┈┈┈┈┈┈╮
  ┊ пароль ┊━━━━━⎛     функция      ⎞━━━▶┊ ключ ┊
  ╰┈┈┈┈┈┈┈┈╯  ,──⎝формирования ключа⎠    ╰┈┈┬┈┈┈╯
  ╭──────╮   ╱                              │
@@ -1542,7 +1542,7 @@
 <p>Однако обычно он не используется для (де)шифровки данных на диске напрямую.
 Например, в случае шифрования поверх файловой системы для каждого файла может создаваться отдельный ключ шифрования. Когда файл читается или изменяется, этот ключ сначала нужно расшифровать с помощью мастер-ключа, после чего он может использоваться для (де)шифровки содержимого файла:
 </p>
-<pre style="white-space: pre !important; font-variant-ligatures: no-common-ligatures;">                       ╭┈┈┈┈┈┈┈┈┈┈┈┈┈╮
+<pre style="white-space: pre !important; font-family:'DejaVu Sans Mono',monospace,monospace; font-variant-ligatures: no-common-ligatures;">                       ╭┈┈┈┈┈┈┈┈┈┈┈┈┈╮
                        ┊ мастер-ключ ┊
    файл на диске:      ╰┈┈┈┈┈┈┬┈┈┈┈┈┈╯
   ┌ ─ ─ ─ ─ ─ ─ ─ ─ ┐         │
@@ -1644,7 +1644,7 @@
 </p>
 <p>Самым простым (и распространённым) режимом шифрования, используемым на практике, является «<i>режим сцепления блоков шифротекста</i>» — «<i>cipher-block chaining (CBC)</i>». При шифровании сектора в этом режиме каждый блок данных открытого текста объединяется математическим способом с шифротекстом предыдущего блока перед его шифрованием. Для первого блока, так как перед ним нет предыдущего блока, используется специальный предварительно сгенерированный блок данных, хранящийся вместе с криптографическими метаданными сектора и называемый «<b>вектор инициализации</b>» — «<b>initialization vector (IV)</b>»:
 </p>
-<pre style="white-space: pre !important; font-variant-ligatures: no-common-ligatures;">                                          ╭─────────────╮
+<pre style="white-space: pre !important; font-family:'DejaVu Sans Mono',monospace,monospace; font-variant-ligatures: no-common-ligatures;">                                          ╭─────────────╮
                                           │вектор       │
                                           │инициализации│
                                           ╰───────┬─────╯
@@ -1746,8 +1746,8 @@
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Data-at-rest_encryption_(%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9)&amp;oldid=813287">https://wiki.archlinux.org/index.php?title=Data-at-rest_encryption_(Русский)&amp;oldid=813287</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 30 July 2024, at 06:03.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Data-at-rest_encryption_(%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9)&amp;oldid=816242">https://wiki.archlinux.org/index.php?title=Data-at-rest_encryption_(Русский)&amp;oldid=816242</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 11 September 2024, at 08:40.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

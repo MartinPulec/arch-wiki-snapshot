@@ -5,7 +5,7 @@
 <title>Kernel mode setting - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -267,6 +267,16 @@
 <li>Any <code>video=</code> lines that enable a framebuffer that conflicts with the driver.</li>
 <li>Any other framebuffer drivers (such as <a href="../en/Uvesafb.html" title="Uvesafb">uvesafb</a>).</li>
 </ul>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:View-refresh-red.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is out of date.</b></p>
+<div>
+<b>Reason:</b> Arch <a href="../en/Kernel.html#Officially_supported_kernels" title="Kernel">officially supported kernels</a> have <i>simpledrm</i> KMS driver inbuilt <a rel="nofollow" class="external autonumber" href="https://gitlab.archlinux.org/archlinux/packaging/packages/linux/-/blob/88ea405f03782d77b9cb30f54efa1f52280e53aa/config#L6955">[1]</a> for years now. Which means Arch users <b>always</b> have early KMS start. So this section is more about "when <i>simpledrm</i> transfers control to another driver". (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Kernel_mode_setting.html">Talk:Kernel mode setting</a>)</div>
+</div>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
+<div>
+<b>Reason:</b> Mention <i>simpledrm</i> and its ability to work as a generic graphics driver. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Kernel_mode_setting.html">Talk:Kernel mode setting</a>)</div>
+</div>
 <h3><span class="mw-headline" id="Late_KMS_start">Late KMS start</span></h3>
 <p><a href="../en/Intel_graphics.html" class="mw-redirect" title="Intel">Intel</a>, <a href="../en/Nouveau.html" title="Nouveau">Nouveau</a>, <a href="../en/ATI.html" title="ATI">ATI</a> and <a href="../en/AMDGPU.html" title="AMDGPU">AMDGPU</a> drivers already enable KMS automatically for all chipsets, so you do not need to do anything.
 </p>
@@ -290,7 +300,7 @@
 <ul>
 <li>
 <code>mgag200</code> for Matrox graphics.</li>
-<li>Depending on <a href="../en/QEMU.html" title="QEMU">QEMU</a> graphics in use (<i>qemu</i> option <code>-vga <i>type</i></code> or <a href="../en/Libvirt.html" title="Libvirt">libvirt</a> <code>&lt;video&gt;&lt;model type='<i>type</i>'&gt;</code><a rel="nofollow" class="external autonumber" href="https://libvirt.org/formatdomain.html#video-devices">[1]</a>):
+<li>Depending on <a href="../en/QEMU.html" title="QEMU">QEMU</a> graphics in use (<i>qemu</i> option <code>-vga <i>type</i></code> or <a href="../en/Libvirt.html" title="Libvirt">libvirt</a> <code>&lt;video&gt;&lt;model type='<i>type</i>'&gt;</code><a rel="nofollow" class="external autonumber" href="https://libvirt.org/formatdomain.html#video-devices">[2]</a>):
 <ul>
 <li>
 <code>bochs</code> for <code>std</code> (<i>qemu</i>) and <code>vga</code>/<code>bochs</code> (<i>libvirt</i>),</li>
@@ -323,7 +333,7 @@
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/mkinitcpio.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">MODULES=(... nvidia nvidia_modeset nvidia_uvm nvidia_drm ...)</pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> If you use <a href="../en/PRIME.html" title="PRIME">PRIME</a> Graphics Processing Unit (GPU) with Intel Integrated Graphics Processors (IGP) being your primary GPU and AMD as the discrete one, <code>intel_agp</code> may lead to troubles when resuming from hibernation (monitor gets no signal). See <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=262043">[2]</a> for details.</div>
+<strong>Note:</strong> If you use <a href="../en/PRIME.html" title="PRIME">PRIME</a> Graphics Processing Unit (GPU) with Intel Integrated Graphics Processors (IGP) being your primary GPU and AMD as the discrete one, <code>intel_agp</code> may lead to troubles when resuming from hibernation (monitor gets no signal). See <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=262043">[3]</a> for details.</div>
 <p>If you are using the <a href="#Forcing_modes_and_EDID">#Forcing modes and EDID</a> method, you should embed the custom file into <a href="../en/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs">initramfs</a> as well:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/mkinitcpio.conf</pre>
@@ -505,7 +515,10 @@ VGA-1: disconnected
 <li><a href="../en/Category:Kernel.html" title="Category:Kernel">Kernel</a></li>
 </ul>
 </div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li></ul>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Out_of_date.html" title="Category:Pages or sections flagged with Template:Out of date">Pages or sections flagged with Template:Out of date</a></li>
+</ul>
 </div>
 </div>
 				</div>
@@ -516,8 +529,8 @@ VGA-1: disconnected
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Kernel_mode_setting&amp;oldid=811278">https://wiki.archlinux.org/index.php?title=Kernel_mode_setting&amp;oldid=811278</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 26 June 2024, at 10:04.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Kernel_mode_setting&amp;oldid=814470">https://wiki.archlinux.org/index.php?title=Kernel_mode_setting&amp;oldid=814470</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 13 August 2024, at 15:45.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -5,7 +5,7 @@
 <title>Arch boot process - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -332,7 +332,7 @@
 <p>The firmware is the very first program that is executed once the system is switched on.
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> The words BIOS and (U)EFI are often used instead of firmware</div>
+<strong>Tip:</strong> The words BIOS and (U)EFI are often used instead of firmware.</div>
 <h3><span class="mw-headline" id="BIOS">BIOS</span></h3>
 <p>A <a href="https://en.wikipedia.org/wiki/BIOS" class="extiw" title="wikipedia:BIOS">BIOS</a> or Basic Input-Output System is in most cases stored in a flash memory in the motherboard itself and independent of the system storage. Originally created for the <a href="https://en.wikipedia.org/wiki/IBM_PC" class="extiw" title="wikipedia:IBM PC">IBM PC</a> to handle hardware initialization and the boot process, it has been replaced progressively since 2010 by the <a href="#UEFI">UEFI</a> which does not suffer from the same technical limitations.
 </p>
@@ -373,7 +373,7 @@
 </li>
 <li>Firmware launches the EFI application.
 <ul>
-<li>This could be a <a href="#Boot_loader">boot loader</a> or the Arch <a href="../en/Kernel.html" title="Kernel">kernel</a> itself using <a href="../en/EFISTUB.html" title="EFISTUB">EFISTUB</a>.</li>
+<li>This could be a <a href="#Boot_loader">boot loader</a> or the Arch <a href="../en/Kernel.html" title="Kernel">kernel</a> itself using an <a href="../en/EFI_boot_stub.html" title="EFI boot stub">EFI boot stub</a>.</li>
 <li>It could be some other EFI application such as the <a href="../en/Unified_Extensible_Firmware_Interface.html#UEFI_Shell" class="mw-redirect" title="UEFI shell">UEFI shell</a> or a <a href="#Boot_loader">boot manager</a> like <a href="../en/Systemd-boot.html" title="Systemd-boot">systemd-boot</a> or <a href="../en/REFInd.html" title="REFInd">rEFInd</a>.</li>
 </ul>
 </li>
@@ -388,7 +388,7 @@
 <p>See also <a href="../en/Dual_boot_with_Windows.html" title="Dual boot with Windows">Dual boot with Windows</a>.
 </p>
 <h2><span class="mw-headline" id="Boot_loader">Boot loader</span></h2>
-<p>A boot loader is a piece of software started by the firmware (<a href="https://en.wikipedia.org/wiki/BIOS" class="extiw" title="wikipedia:BIOS">BIOS</a> or <a href="../en/Unified_Extensible_Firmware_Interface.html" class="mw-redirect" title="UEFI">UEFI</a>). It is responsible for loading the kernel with the wanted <a href="../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a> and any external initramfs images. In the case of UEFI, the kernel itself can be directly launched by the UEFI using the <a href="../en/EFISTUB.html" title="EFISTUB">EFI boot stub</a>. A separate boot loader or boot manager can still be used for the purpose of editing kernel parameters before booting.
+<p>A boot loader is a piece of software started by the firmware (<a href="https://en.wikipedia.org/wiki/BIOS" class="extiw" title="wikipedia:BIOS">BIOS</a> or <a href="../en/Unified_Extensible_Firmware_Interface.html" class="mw-redirect" title="UEFI">UEFI</a>). It is responsible for loading the kernel with the wanted <a href="../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a> and any external initramfs images. In the case of UEFI, the kernel itself can be directly launched by the UEFI using the <a href="../en/EFI_boot_stub.html" title="EFI boot stub">EFI boot stub</a>. A separate boot loader or boot manager can still be used for the purpose of editing kernel parameters before booting.
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> To successfully boot Arch, the boot loader needs access to the kernel and initramfs image(s) which typically reside in the <code>/boot</code> directory. That means the boot loader must have support for everything starting from the block devices, stacked block devices (LVM, RAID, dm-crypt, LUKS, etc.) and ending with the file system on which the kernel(s) and initramfs image(s) reside.
@@ -433,7 +433,7 @@
 </tr>
 <tr>
 <th>
-<a href="../en/EFISTUB.html" title="EFISTUB">EFISTUB</a>
+<a href="../en/EFI_boot_stub.html" title="EFI boot stub">EFI boot stub</a>
 </th>
 <td data-sort-value="5" style="background: inherit; color: inherit; vertical-align: middle; text-align: center;">–
 </td>
@@ -484,7 +484,7 @@
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">
 <a href="../en/GRUB.html#Supported_file_systems" title="GRUB">Built-in</a>
 </td>
-<td>Supports RAID, LUKS1 and LVM (but not thin provisioned volumes). See <a href="../en/GRUB.html" title="GRUB">GRUB</a> for setup-specific limitations.
+<td>Supports RAID, LUKS (but not Argon2 PBKDFs) and LVM (but not thin provisioned volumes). See <a href="../en/GRUB.html" title="GRUB">GRUB</a> for setup-specific limitations.
 </td>
 </tr>
 <tr>
@@ -625,11 +625,11 @@
 <h2><span class="mw-headline" id="initramfs">initramfs</span></h2>
 <p>The root file system at <code>/</code> starts out as an empty <a rel="nofollow" class="external text" href="https://docs.kernel.org/filesystems/ramfs-rootfs-initramfs.html">rootfs</a>, which is a special instance of ramfs or tmpfs. This is the temporary root file system where the initramfs (<i>init</i>ial <i>RAM</i> <i>f</i>ile <i>s</i>ystem) images will be unpacked to.
 </p>
-<p>The main purpose of the initramfs is to bootstrap the system to the point where it can access the root file system (see <a href="../en/Frequently_asked_questions.html#Does_Arch_follow_the_Linux_Foundation's_Filesystem_Hierarchy_Standard_(FHS)?" class="mw-redirect" title="FHS">FHS</a> for details). This includes setting up the storage stack where the rootfs may be lying on, e.g. through <a href="../en/Dm-crypt.html" title="Dm-crypt">dm-crypt</a>, <a href="../en/Dm-verity.html" title="Dm-verity">dm-verity</a>, <span class="plainlinks archwiki-template-man" title="$ man 8 systemd-repart"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-repart.8">systemd-repart(8)</a></span>, etc. It also resolves the <a href="../en/Persistent_block_device_naming.html" title="Persistent block device naming">persistent block device names</a> to real device through <a href="../en/Udev.html" title="Udev">udev</a>. It does not need to contain every module one would ever want to use; it should only have modules required for the root device like IDE, SCSI, SATA or USB/FW (if booting from an external drive) and encryption. The majority of modules will be loaded later on by <a href="../en/Udev.html" title="Udev">udev</a> after switching root into the root file system, during the init process.
+<p>The main purpose of the initramfs is to bootstrap the system to the point where it can access the root file system (see <a href="../en/Frequently_asked_questions.html#Does_Arch_follow_the_Linux_Foundation's_Filesystem_Hierarchy_Standard_(FHS)?" class="mw-redirect" title="FHS">FHS</a> for details). This includes setting up the storage stack where the root file system may be lying on, e.g. through <a href="../en/Dm-crypt.html" title="Dm-crypt">dm-crypt</a>, <a href="../en/Dm-verity.html" title="Dm-verity">dm-verity</a>, <span class="plainlinks archwiki-template-man" title="$ man 8 systemd-repart"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-repart.8">systemd-repart(8)</a></span>, etc. It also resolves the <a href="../en/Persistent_block_device_naming.html" title="Persistent block device naming">persistent block device names</a> to real device through <a href="../en/Udev.html" title="Udev">udev</a>. It does not need to contain every module one would ever want to use; it should only have modules required for the root device like NVMe, SATA, SAS, eMMC or USB (if booting from an external drive) and encryption. The majority of modules will be loaded later on by <a href="../en/Udev.html" title="Udev">udev</a> after switching root into the root file system, during the init process.
 </p>
 <p>First, the kernel unpacks its builtin initramfs into the temporary root. Arch Linux's <a href="../en/Kernel.html#Officially_supported_kernels" title="Kernel">official kernels</a> use an empty archive for the builtin initramfs, which is the default when building Linux. Then, the kernel unpacks external initramfs files specified by the command line passed by the <a href="#Boot_loader">boot loader</a>, overwriting any files from the embedded initramfs. These external initramfs images can be generated with <a href="../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a>, <a href="../en/Dracut.html" title="Dracut">dracut</a> or <a href="../en/Booster.html" title="Booster">booster</a>, and are Arch's preferred method for setting up for <i>early userspace</i>.
 </p>
-<p>Note that the initramfs serves more than setting up the root file system. There are tasks that can only be performed before the rootfs is mounted, such as <a href="../en/Fsck.html" title="Fsck">fsck</a> and resuming from <a href="../en/Power_management/Suspend_and_hibernate.html#Hibernation" class="mw-redirect" title="Hibernation">hibernation</a>.
+<p>Note that the initramfs serves more than setting up the root file system. There are tasks that can only be performed before the root file system is mounted, such as <a href="../en/Fsck.html" title="Fsck">fsck</a> and resuming from <a href="../en/Power_management/Suspend_and_hibernate.html#Hibernation" class="mw-redirect" title="Hibernation">hibernation</a>.
 </p>
 <p>Also, the Linux <a href="../en/Kernel.html" title="Kernel">kernel</a> <a rel="nofollow" class="external text" href="https://github.com/torvalds/linux/blob/1b907d0507354b74a4f2c286380cd6059af79248/fs/namespace.c#L4222">pins</a> the original root it is started from. If an initramfs is not used, the real root file system could end up failing to be cleanly unmounted during shutdown.
 </p>
@@ -671,14 +671,16 @@
 </p>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul>
-<li><a rel="nofollow" class="external text" href="https://web.archive.org/web/20150430223035/http://archlinux.me/brain0/2010/02/13/early-userspace-in-arch-linux/">Early Userspace in Arch Linux</a></li>
-<li><a rel="nofollow" class="external text" href="https://developer.ibm.com/articles/l-linuxboot/">Inside the Linux boot process</a></li>
-<li><a href="https://en.wikipedia.org/wiki/Linux_startup_process" class="extiw" title="wikipedia:Linux startup process">Wikipedia:Linux startup process</a></li>
-<li><a href="https://en.wikipedia.org/wiki/initrd" class="extiw" title="wikipedia:initrd">Wikipedia:initrd</a></li>
-<li><a rel="nofollow" class="external text" href="https://neosmart.net/wiki/mbr-boot-process/">NeoSmart: The BIOS/MBR Boot Process</a></li>
-<li><a rel="nofollow" class="external text" href="https://www.linux.com/learn/kernel-newbie-corner-initrd-and-initramfs-whats">Kernel Newbie Corner: initrd and initramfs</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Booting_process_of_Linux" class="extiw" title="wikipedia:Booting process of Linux">Wikipedia:Booting process of Linux</a></li>
+<li><a rel="nofollow" class="external text" href="https://web.archive.org/web/20230313210814/https://developer.ibm.com/articles/l-linuxboot/">Inside the Linux boot process</a></li>
 <li><a rel="nofollow" class="external text" href="https://www.rodsbooks.com/efi-bootloaders/">Rod Smith - Managing EFI Boot Loaders for Linux</a></li>
+<li><a rel="nofollow" class="external text" href="https://neosmart.net/wiki/mbr-boot-process/">NeoSmart: The BIOS/MBR Boot Process</a></li>
 <li><a rel="nofollow" class="external text" href="https://0pointer.net/blog/linux-boot-partitions.html">Lennart Poettering - Linux Boot Partitions and How to Set Them Up</a></li>
+<li><a href="https://en.wikipedia.org/wiki/initrd" class="extiw" title="wikipedia:initrd">Wikipedia:initrd</a></li>
+<li><a rel="nofollow" class="external text" href="https://web.archive.org/web/20150430223035/http://archlinux.me/brain0/2010/02/13/early-userspace-in-arch-linux/">Early Userspace in Arch Linux</a></li>
+<li><a rel="nofollow" class="external text" href="https://www.linux.com/learn/kernel-newbie-corner-initrd-and-initramfs-whats">Kernel Newbie Corner: initrd and initramfs</a></li>
+<li>
+<span class="plainlinks archwiki-template-man" title="$ man 7 bootup"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/bootup.7">bootup(7)</a></span> (mostly about the systemd initrd + userspace portion)</li>
 </ul>
 </div>
 </div>
@@ -700,8 +702,8 @@
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Arch_boot_process&amp;oldid=806063">https://wiki.archlinux.org/index.php?title=Arch_boot_process&amp;oldid=806063</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 15 April 2024, at 07:52.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Arch_boot_process&amp;oldid=816947">https://wiki.archlinux.org/index.php?title=Arch_boot_process&amp;oldid=816947</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 21 September 2024, at 10:53.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

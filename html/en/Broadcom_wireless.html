@@ -5,7 +5,7 @@
 <title>Broadcom wireless - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -253,6 +253,15 @@
 			<ul id="toc-SSH_freeze_for_BCM4331_with_b43-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-BRCM43430_not_found_during_installation" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#BRCM43430_not_found_during_installation">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">5.12</span>BRCM43430 not found during installation</div>
+			</a>
+			
+			<ul id="toc-BRCM43430_not_found_during_installation-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 </ul>
@@ -374,7 +383,7 @@
 </tbody>
 </table>
 <h2><span class="mw-headline" id="Driver_selection">Driver selection</span></h2>
-<p>To know what driver(s) are operable on the computer's Broadcom wireless network device, the <a href="https://en.wikipedia.org/wiki/PCI_configuration_space" class="extiw" title="wikipedia:PCI configuration space">device ID</a> and chipset name will need to be detected. Cross-reference them with the driver list of supported <a rel="nofollow" class="external text" href="https://wireless.wiki.kernel.org/en/users/Drivers/brcm80211#supported_chips">brcm80211</a> and <a rel="nofollow" class="external text" href="https://wireless.wiki.kernel.org/en/users/Drivers/b43#list_of_hardware">b43</a> devices.
+<p>To know what driver(s) are operable on the computer's Broadcom wireless network device, the <a href="https://en.wikipedia.org/wiki/PCI_configuration_space" class="extiw" title="wikipedia:PCI configuration space">device ID</a> and chipset name will need to be detected. Cross-reference them with the driver list of supported <a rel="nofollow" class="external text" href="https://wireless.docs.kernel.org/en/latest/en/users/drivers/brcm80211.html#supported-chips">brcm80211</a> and <a rel="nofollow" class="external text" href="https://wireless.docs.kernel.org/en/latest/en/users/drivers/b43.html#list-of-hardware">b43</a> devices.
 </p>
 <pre>$ lspci -vnn -d 14e4:
 </pre>
@@ -524,6 +533,31 @@ If your router has the same SSID for the 2.4GHZ and 5GHZ, this can fix problems 
 <h3><span class="mw-headline" id="SSH_freeze_for_BCM4331_with_b43">SSH freeze for BCM4331 with b43</span></h3>
 <p>The <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/b43-firmware/">b43-firmware</a></span><sup><small>AUR</small></sup> driver has been observed hanging in ssh sessions with BCM4331. Installing <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=broadcom-wl">broadcom-wl</a></span> and removing b43 solves it.
 </p>
+<h3><span class="mw-headline" id="BRCM43430_not_found_during_installation">BRCM43430 not found during installation</span></h3>
+<p>If you have a brcm43430 connected via SDIO, you are unable to see the device after booting the installation ISO, because in the delivered image is missing a default parameter file for the device: <code>brcmfmac43430-sdio.txt</code>.
+</p>
+<p>To overcome the problem, you have to download <a rel="nofollow" class="external text" href="https://github.com/armbian/firmware/blob/master/brcm/brcmfmac43430-sdio.txt">brcmfmac43430-sdio.txt</a> on another machine, and copy it on a different pendrive.
+</p>
+<p>After booting the install ISO you need to copy the file to the <code>/lib/firmware/brcm/</code> directory. Then follow these steps in order to activate it:
+</p>
+<ul>
+<li>
+<a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Stop">stop</a> <code>iwd.service</code>
+</li>
+<li>
+<a href="../en/Kernel_module.html#Manual_module_handling" title="Kernel module">unload the kernel module</a>: <code>modprobe -r brcmfmac</code>
+</li>
+<li>
+<a href="../en/Kernel_module.html#Manual_module_handling" title="Kernel module">load the kernel module</a>: <code>modprobe brcmfmac</code>
+</li>
+<li>
+<a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start">start</a> <code>iwd.service</code>
+</li>
+</ul>
+<p>After that you can start <i>iwctl</i> that now should find your device, and proceed with the installation as usual.
+</p>
+<p>After completing the installation, do not forget to copy the file to the target disk to the same location.
+</p>
 </div>
 </div>
 					<div id="catlinks" class="catlinks" data-mw="interface">
@@ -541,8 +575,8 @@ If your router has the same SSID for the 2.4GHZ and 5GHZ, this can fix problems 
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Broadcom_wireless&amp;oldid=787267">https://wiki.archlinux.org/index.php?title=Broadcom_wireless&amp;oldid=787267</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 9 September 2023, at 07:35.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Broadcom_wireless&amp;oldid=819806">https://wiki.archlinux.org/index.php?title=Broadcom_wireless&amp;oldid=819806</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 29 October 2024, at 09:47.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

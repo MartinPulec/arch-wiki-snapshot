@@ -5,7 +5,7 @@
 <title>systemd - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -972,7 +972,7 @@ ExecStart=<i>new command</i></pre>
 Restart=always
 RestartSec=30</pre>
 <h2><span class="mw-headline" id="Targets">Targets</span></h2>
-<p><i>systemd</i> uses <i>targets</i> to group units together via dependencies and as standardized synchronization points. They serve a similar purpose as <a href="https://en.wikipedia.org/wiki/Runlevel" class="extiw" title="wikipedia:Runlevel">runlevels</a> but act a little differently. Each <i>target</i> is named instead of numbered and is intended to serve a specific purpose with the possibility of having multiple ones active at the same time. Some <i>target</i>s are implemented by inheriting all of the services of another <i>target</i> and adding additional services to it. There are <i>systemd</i> <i>target</i>s that mimic the common SystemVinit runlevels so you can still switch <i>target</i>s using the familiar <code>telinit RUNLEVEL</code> command.
+<p><i>systemd</i> uses <i>targets</i> to group units together via dependencies and as standardized synchronization points. They serve a similar purpose as <a href="https://en.wikipedia.org/wiki/Runlevel" class="extiw" title="wikipedia:Runlevel">runlevels</a> but act a little differently. Each <i>target</i> is named instead of numbered and is intended to serve a specific purpose with the possibility of having multiple ones active at the same time. Some <i>target</i>s are implemented by inheriting all of the services of another <i>target</i> and adding additional services to it. There are <i>systemd</i> <i>target</i>s that mimic the common SystemVinit runlevels.
 </p>
 <h3><span class="mw-headline" id="Get_current_targets">Get current targets</span></h3>
 <p>The following should be used under <i>systemd</i> instead of running <code>runlevel</code>:
@@ -993,37 +993,37 @@ RestartSec=30</pre>
 </tr>
 <tr>
 <td>0</td>
-<td>runlevel0.target, poweroff.target</td>
+<td>poweroff.target</td>
 <td>Halt the system.
 </td>
 </tr>
 <tr>
 <td>1, s, single</td>
-<td>runlevel1.target, rescue.target</td>
+<td>rescue.target</td>
 <td>Single user mode.
 </td>
 </tr>
 <tr>
 <td>2, 4</td>
-<td>runlevel2.target, runlevel4.target, multi-user.target</td>
+<td>multi-user.target</td>
 <td>User-defined/Site-specific runlevels. By default, identical to 3.
 </td>
 </tr>
 <tr>
 <td>3</td>
-<td>runlevel3.target, multi-user.target</td>
+<td>multi-user.target</td>
 <td>Multi-user, non-graphical. Users can usually login via multiple consoles or via the network.
 </td>
 </tr>
 <tr>
 <td>5</td>
-<td>runlevel5.target, graphical.target</td>
+<td>graphical.target</td>
 <td>Multi-user, graphical. Usually has all the services of runlevel 3 plus a graphical login.
 </td>
 </tr>
 <tr>
 <td>6</td>
-<td>runlevel6.target, reboot.target</td>
+<td>reboot.target</td>
 <td>Reboot
 </td>
 </tr>
@@ -1124,6 +1124,7 @@ Created symlink /etc/systemd/system/default.target -&gt; /usr/lib/systemd/system
 <p>The prerequisites are:
 </p>
 <ul>
+<li>When using <a href="../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a>, use the <a href="../en/Mkinitcpio.html#Common_hooks" title="Mkinitcpio">systemd hook</a>.</li>
 <li>The boot loader must set the <a rel="nofollow" class="external text" href="https://systemd.io/BOOT_LOADER_INTERFACE/">LoaderDevicePartUUID</a> EFI variable, so that the used EFI system partition can be identified. This is supported by <a href="../en/Systemd-boot.html" title="Systemd-boot">systemd-boot</a>, <span class="plainlinks archwiki-template-man" title="$ man 7 systemd-stub"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-stub.7">systemd-stub(7)</a></span>, <a href="../en/GRUB.html" title="GRUB">GRUB</a> (with <i>grub-mkconfig</i> generated <code>grub.cfg</code>; custom <code>grub.cfg</code> requires <a href="../en/GRUB.html#LoaderDevicePartUUID" title="GRUB">loading the bli module</a>) and <a href="../en/REFInd.html#LoaderDevicePartUUID" title="REFInd">rEFInd (not enabled by default)</a>. This can be verified by running <code>bootctl</code> and checking the status of <code>Boot loader sets ESP information</code> or the status of <code>Stub sets ESP information</code> when booting via <a href="../en/Unified_kernel_image.html" title="Unified kernel image">Unified kernel images</a>.</li>
 <li>The root partition must be on the same physical disk as the used EFI system partition. Other partitions that will be automounted must be on the same physical disk as the root partition. This basically means that all automounted partitions must share the same physical disk with the ESP.</li>
 <li>The <code>/efi</code> mount point must be manually created (if desired), otherwise <code>systemd-gpt-auto-generator</code> will use <code>/boot</code>.</li>
@@ -1463,7 +1464,7 @@ Environment=SYSTEMD_LOG_LEVEL=debug
 <li><a rel="nofollow" class="external text" href="https://dvdhrm.wordpress.com/2013/08/24/session-management-on-linux/">Session management with systemd-logind</a></li>
 <li><a href="../en/Emacs.html#Syntax_highlighting_for_systemd_Files" title="Emacs">Emacs Syntax highlighting for Systemd files</a></li>
 <li>
-<a rel="nofollow" class="external text" href="http://www.h-online.com/open/features/Control-Centre-The-systemd-Linux-init-system-1565543.html">Two</a> <a rel="nofollow" class="external text" href="http://www.h-online.com/open/features/Booting-up-Tools-and-tips-for-systemd-1570630.html">part</a> introductory article in <i>The H Open</i> magazine.</li>
+<a rel="nofollow" class="external text" href="https://www.h-online.com/open/features/Control-Centre-The-systemd-Linux-init-system-1565543.html">Two</a> <a rel="nofollow" class="external text" href="https://www.h-online.com/open/features/Booting-up-Tools-and-tips-for-systemd-1570630.html">part</a> introductory article in <i>The H Open</i> magazine.</li>
 </ul>
 </div>
 </div>
@@ -1487,8 +1488,8 @@ Environment=SYSTEMD_LOG_LEVEL=debug
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Systemd&amp;oldid=812629">https://wiki.archlinux.org/index.php?title=Systemd&amp;oldid=812629</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 19 July 2024, at 06:32.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Systemd&amp;oldid=819957">https://wiki.archlinux.org/index.php?title=Systemd&amp;oldid=819957</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 1 November 2024, at 07:17.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

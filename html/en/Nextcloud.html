@@ -5,7 +5,7 @@
 <title>Nextcloud - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -955,7 +955,7 @@ FLUSH privileges;</pre>
     --admin-pass=<i>admin-password</i> \
     --admin-email=<i>admin-email</i> \
     --data-dir=/var/lib/nextcloud/data</pre>
-<p>Mind the placeholders (e.g. <code><i>db-password</i></code>) and replace them with appropriate values. This command assumes that you run your database on the same host as Nextcloud. Enter <code>occ help maintenance:install </code> and see Nextcloud's <a rel="nofollow" class="external text" href="https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/occ_command.html#command-line-installation">documentation</a> for other options. See <a href='#Using_the_"occ"_command_line_tool'>Using the "occ" command line tool</a> for Arch-specific details about this tool.
+<p>Mind the placeholders (e.g. <code><i>db-password</i></code>) and replace them with appropriate values. This command assumes that you run your database on the same host as Nextcloud. Enter <code>occ help maintenance:install </code> and see Nextcloud's <a rel="nofollow" class="external text" href="https://docs.nextcloud.com/server/latest/admin_manual/occ_command.html#command-line-installation">documentation</a> for other options. See <a href='#Using_the_"occ"_command_line_tool'>Using the "occ" command line tool</a> for Arch-specific details about this tool.
 </p>
 <h3><span class="mw-headline" id="PostgreSQL">PostgreSQL</span></h3>
 <p>Consult the corresponding <a href="../en/PostgreSQL.html" title="PostgreSQL">article</a> for detailed information about PostgreSQL. In case you want to run your database on the same host as Nextcloud install, <a href="../en/PostgreSQL.html#Initial_configuration" title="PostgreSQL">configure</a> and <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start">start</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=postgresql">postgresql</a></span> (if you have not done so already). For additional security in this scenario it is recommended to configure PostgreSQL to <a href="../en/PostgreSQL.html#Configure_PostgreSQL_to_be_accessible_exclusively_through_UNIX_Sockets" title="PostgreSQL">only listen on a local UNIX socket</a>:
@@ -987,7 +987,7 @@ GRANT ALL PRIVILEGES ON DATABASE nextcloud TO nextcloud;
     --admin-pass=<i>admin-password</i> \
     --admin-email=<i>admin-email</i> \
     --data-dir=/var/lib/nextcloud/data</pre>
-<p>Mind the placeholders (e.g. <code><i>db-password</i></code>) and replace them with appropriate values. This command assumes that you run your database on the same host as Nextcloud. Enter <code>occ help maintenance:install </code> and see Nextcloud's <a rel="nofollow" class="external text" href="https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/occ_command.html#command-line-installation">documentation</a> for other options. See <a href='#Using_the_"occ"_command_line_tool'>Using the "occ" command line tool</a> for Arch-specific details about this tool.
+<p>Mind the placeholders (e.g. <code><i>db-password</i></code>) and replace them with appropriate values. This command assumes that you run your database on the same host as Nextcloud. Enter <code>occ help maintenance:install </code> and see Nextcloud's <a rel="nofollow" class="external text" href="https://docs.nextcloud.com/server/latest/admin_manual/occ_command.html#command-line-installation">documentation</a> for other options. See <a href='#Using_the_"occ"_command_line_tool'>Using the "occ" command line tool</a> for Arch-specific details about this tool.
 </p>
 <h2><span class="mw-headline" id="Application_server">Application server</span></h2>
 <p>There are two prevalent application servers that can be used to process PHP code: <a href="../en/UWSGI.html" title="UWSGI">uWSGI</a> or <a rel="nofollow" class="external text" href="https://cwiki.apache.org/confluence/display/HTTPD/PHP-FPM">FPM</a>. <i>FPM</i> is specialized on PHP. The protocol used between the web server and <i>FPM</i> is <i>fastcgi</i>. The tool's <a rel="nofollow" class="external text" href="https://www.php.net/manual/en/install.fpm.php">documentation</a> leaves room for improvement. <i>uWSGI</i> on the other hand can serve code written in a <a rel="nofollow" class="external text" href="https://uwsgi-docs.readthedocs.io/en/latest/LanguagesAndPlatforms.html">handful of languages</a> by means of language specific plugins. The protocol used is <i>uwsgi</i> (lowercase). The tool is <a rel="nofollow" class="external text" href="https://uwsgi-docs.readthedocs.io/en/latest/index.html">extensively documented</a> - albeit the sheer amount of documentation can become confusing and unwieldy.
@@ -1068,7 +1068,7 @@ ReadWritePaths=/etc/webapps/nextcloud/config</pre>
 <h4>
 <span id="Keep_.2Fetc_tidy"></span><span class="mw-headline" id="Keep_/etc_tidy">Keep /etc tidy</span>
 </h4>
-<p>The Nextcloud package unconditionally creates the uWSGI configuration file <code>/etc/uwsgi/nextcloud.ini</code>. Of course it is of no use when you run <i>FPM</i> instead of <i>uWSGI</i> (and it does no harm whatsoever). In case you nevertheless want to get rid of it just add the following lines to <code>/etc/pacman.conf</code>
+<p>The Nextcloud package unconditionally creates the uWSGI configuration file <code>/etc/uwsgi/nextcloud.ini</code>. Of course it is of no use when you run <i>FPM</i> instead of <i>uWSGI</i> (and it does no harm whatsoever). In case you nevertheless want to get rid of it, just add the following <a href="../en/Pacman.html#Skip_files_from_being_installed_to_system" class="mw-redirect" title="NoExtract">NoExtract</a> line to <code>/etc/pacman.conf</code>: 
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pacman.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># uWSGI configuration that comes with Nextcloud is not needed
@@ -1318,7 +1318,7 @@ apc.enable_cli = 1</pre>
 <h3>
 <span id="Using_the_.22occ.22_command_line_tool"></span><span class="mw-headline" id='Using_the_"occ"_command_line_tool'>Using the "occ" command line tool</span>
 </h3>
-<p>A useful tool for server administration is <code>occ</code>. Refer to Nextcloud's documentation for <a rel="nofollow" class="external text" href="https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/occ_command.html">details</a>. You can perform many common server operations with <code>occ</code>, such as managing users and configuring apps.
+<p>A useful tool for server administration is <code>occ</code>. Refer to Nextcloud's documentation for <a rel="nofollow" class="external text" href="https://docs.nextcloud.com/server/latest/admin_manual/occ_command.html">details</a>. You can perform many common server operations with <code>occ</code>, such as managing users and configuring apps.
 </p>
 <p>A convenience wrapper around the original <code>/usr/share/webapps/nextcloud/occ</code> is provided with <code>/usr/bin/occ</code> which automatically runs as the default user (<i>nextcloud</i>), using the default PHP executable and PHP configuration file. The environment variables <code>NEXTCLOUD_USER</code>, <code>NEXTCLOUD_PHP</code> and <code>NEXTCLOUD_PHP_CONFIG</code> can be used to specify a non-default user, PHP executable and PHP configuration file (respectively). Especially the latter (using <code>NEXTCLOUD_PHP_CONFIG</code>) is necessary when Nextcloud was setup in a way as described in the sections <a href="#Configuration">Configuration</a> and <a href="#Application_server">Application server</a>, i.e. using a PHP configuration specific to Nextcloud. In this case put <code>export NEXTCLOUD_PHP_CONFIG=/etc/webapps/nextcloud/php.ini</code> in your <code>.bashrc</code>.
 </p>
@@ -1724,8 +1724,8 @@ mysql&gt; exit;
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Nextcloud&amp;oldid=812581">https://wiki.archlinux.org/index.php?title=Nextcloud&amp;oldid=812581</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 17 July 2024, at 11:37.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Nextcloud&amp;oldid=819822">https://wiki.archlinux.org/index.php?title=Nextcloud&amp;oldid=819822</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 29 October 2024, at 10:51.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -5,7 +5,7 @@
 <title>OpenSSH - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -957,9 +957,9 @@ $ ssh <i>myserver</i>
 </p>
 <pre>Banner /etc/issue
 </pre>
-<p>Public and private host keys are automatically generated in <code>/etc/ssh</code> by the <i>sshdgenkeys</i> <a href="#Daemon_management">service</a> and regenerated if missing even if <code>HostKeyAlgorithms</code> option in <code>sshd_config</code> allows only some. Three key pairs are provided based on the algorithms <a href="../en/SSH_keys.html#Choosing_the_authentication_key_type" title="SSH keys">rsa, ecdsa and ed25519</a>. To have sshd use a particular key, specify the following option:
+<p>Public and private host keys are automatically generated in <code>/etc/ssh</code> by the <i>sshdgenkeys</i> <a href="#Daemon_management">service</a> and regenerated if missing even if <code>HostKeyAlgorithms</code> option in <code>sshd_config</code> allows only some. Three key pairs are provided based on the algorithms <a href="../en/SSH_keys.html#Choosing_the_authentication_key_type" title="SSH keys">ed25519, ecdsa and rsa</a>. To have sshd use a particular key, specify the following option:
 </p>
-<pre>HostKey /etc/ssh/ssh_host_rsa_key
+<pre>HostKey /etc/ssh/ssh_host_ed25519_key
 </pre>
 <p>If the server is to be exposed to the WAN, it is recommended to change the default port from 22 to a random higher one like this:
 </p>
@@ -1018,6 +1018,11 @@ AuthenticationMethods publickey
 <p>For <a rel="nofollow" class="external text" href="https://duo.com/">Duo</a>, <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/duo_unix/">duo_unix</a></span><sup><small>AUR</small></sup> which will supply the <code>pam_duo.so</code> module. Read the <a rel="nofollow" class="external text" href="https://duo.com/docs/duounix">Duo Unix documentation</a> for instructions on how to setup the necessary Duo credentials (Integration Key, Secret Key, API Hostname).
 </p>
 <h5><span class="mw-headline" id="PAM_setup">PAM setup</span></h5>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
+<div>
+<b>Reason:</b> The distribution defaults to <code>KbdInteractiveAuthentication no</code> since <a rel="nofollow" class="external autonumber" href="https://gitlab.archlinux.org/archlinux/packaging/packages/openssh/-/commit/1d834b1fb688e148797c39cffd95eac3404ef894">[1]</a>. Later, the lexical order of the defaults was adjusted due to <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/79285">FS#79285</a> to allow for higher priority user snippets, which would match below <code>20-pam.conf</code>. However, a <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?id=300451">BBS thread</a> appears to be resolved by ordering custom after <code>99-archlinux.conf</code> defaults only. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:OpenSSH.html">Talk:OpenSSH</a>)</div>
+</div>
 <p>To use <a href="../en/PAM.html" title="PAM">PAM</a> with OpenSSH, edit the following files:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/ssh/sshd_config.d/20-pam.conf</pre>
@@ -1049,7 +1054,9 @@ session   include   system-remote-login
 </p>
 <p>See <a href="../en/Uncomplicated_Firewall.html#Rate_limiting_with_ufw" class="mw-redirect" title="Ufw">ufw#Rate limiting with ufw</a> or <a href="../en/Simple_stateful_firewall.html#Bruteforce_attacks" title="Simple stateful firewall">Simple stateful firewall#Bruteforce attacks</a> for <a href="../en/Iptables.html" title="Iptables">iptables</a>.
 </p>
-<p>Alternatively, you can protect yourself from brute force attacks by using an automated script that blocks anybody trying to brute force their way in, for example <a href="../en/Fail2ban.html" title="Fail2ban">fail2ban</a> or <a href="../en/Sshguard.html" title="Sshguard">sshguard</a>.
+<p>Since 9.8 a basic protection similar to <a href="../en/Fail2ban.html" title="Fail2ban">fail2ban</a> is implemented: the option <code>PerSourcePenalties</code> is set with reasonable default values. Penalties for various conditions are enforced against a client on its source address, resulting in a refused connection for a time period.
+</p>
+<p>Alternatively, you can protect yourself from brute force attacks by using an automated script that blocks anybody trying to brute force their way in.
 </p>
 <ul>
 <li>Only allow incoming SSH connections from trusted locations</li>
@@ -1078,7 +1085,7 @@ session   include   system-remote-login
 <h5><span class="mw-headline" id="Restrict">Restrict</span></h5>
 <p>Some automated tasks such as remote, full-system backup require full root access. To allow these in a secure way, instead of disabling root login via SSH, it is possible to only allow root logins for selected commands. This can be achieved by editing <code>~root/.ssh/authorized_keys</code>, by prefixing the desired key, e.g. as follows:
 </p>
-<pre>command="rrsync -ro /" ssh-rsa …
+<pre>command="rrsync -ro /" ssh-ed25519 ...
 </pre>
 <p>This will allow any login with this specific key only to execute the command specified between the quotes.
 </p>
@@ -1367,7 +1374,7 @@ github.com IN SSHFP 4 2 f83898df0bef57a4ee24985ba598ac17fccb0c0d333cc4af1dd92be1
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-clear.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs language, wiki syntax or style improvements. See <a href="../en/Help:Style.html" title="Help:Style">Help:Style</a> for reference.</b></p>
 <div>
-<b>Reason:</b> The idea of SSH tunneling is classic, so some references for detailed explanation would be nice. E.g. <a rel="nofollow" class="external autonumber" href="https://unix.stackexchange.com/questions/46235/how-does-reverse-ssh-tunneling-work/118650#118650">[1]</a> which includes other scenarios. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:OpenSSH.html">Talk:OpenSSH</a>)</div>
+<b>Reason:</b> The idea of SSH tunneling is classic, so some references for detailed explanation would be nice. E.g. <a rel="nofollow" class="external autonumber" href="https://unix.stackexchange.com/questions/46235/how-does-reverse-ssh-tunneling-work/118650#118650">[2]</a> which includes other scenarios. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:OpenSSH.html">Talk:OpenSSH</a>)</div>
 </div>
 <p>The idea is that the client connects to the server via another relay while the server is connected to the same relay using a reverse SSH tunnel. This is useful when the server is behind a NAT, and the relay is a publicly accessible SSH server used as a proxy to which the user has access. Therefore, the prerequisite is that the client's keys are authorized against both the relay and the server, and the server needs to be authorized against the relay as well for the reverse SSH connection.
 </p>
@@ -1385,7 +1392,7 @@ github.com IN SSHFP 4 2 f83898df0bef57a4ee24985ba598ac17fccb0c0d333cc4af1dd92be1
 <strong>Note:</strong> <code>ssh <i>user3</i>@<i>relay</i> -p 2222</code> would require you to open this port in the firewall of your relay server, as well as to allow connections to this port from other addresses.</div>
 <p>The remote command to establish the connection to reverse tunnel can also be defined in relay's <code>~/.ssh/authorized_keys</code> by including the <code>command</code> field as follows:
 </p>
-<pre>command="ssh <i>user3</i>@localhost -p 2222" <i>ssh-rsa</i> <i>KEY2</i> <i>user1</i>@<i>client</i>
+<pre>command="ssh <i>user3</i>@localhost -p 2222" <i>ssh-ed25519</i> <i>KEY2</i> <i>user1</i>@<i>client</i>
 </pre>
 <p>In this case the connection is established with:
 </p>
@@ -1540,7 +1547,7 @@ OnFailure=telnet.socket</pre>
   #User username
   # Use a different known_hosts file (for private network or synchronisation)
   #UserKnownHostsFile &lt;network&gt;_known_hosts</pre>
-<p>Another example for <code>Match host ... exec "..."</code>: Consider that connecting to <code>internal.example.com</code> requires a bastion/proxy (via <code>ProxyJump</code>) unless you are already connected via VPN. The fragment <code>!exec "host internal.example.com"</code> applies only when <code>internal.example.com</code> cannot be looked up via DNS. Various alternatives are discussed at <a rel="nofollow" class="external autonumber" href="https://serverfault.com/q/536043/117525">[2]</a>.
+<p>Another example for <code>Match host ... exec "..."</code>: Consider that connecting to <code>internal.example.com</code> requires a bastion/proxy (via <code>ProxyJump</code>) unless you are already connected via VPN. The fragment <code>!exec "host internal.example.com"</code> applies only when <code>internal.example.com</code> cannot be looked up via DNS. Various alternatives are discussed at <a rel="nofollow" class="external autonumber" href="https://serverfault.com/q/536043/117525">[3]</a>.
 </p>
 <pre>Match host internal.example.com !exec "host internal.example.com"
   ProxyJump bastion.example.com
@@ -1633,7 +1640,7 @@ $ chmod 600 ~/.ssh/*
 $ chown -R $USER ~/.ssh
 </pre>
 </li>
-<li>Check that the client's public key (e.g. <code>id_rsa.pub</code>) is in <code>~/.ssh/authorized_keys</code> on the server.</li>
+<li>Check that the client's public key (e.g. <code>id_ed25519.pub</code>) is in <code>~/.ssh/authorized_keys</code> on the server.</li>
 <li>Check that you did not limit SSH access with <code>AllowUsers</code> or <code>AllowGroups</code> in the <a href="#Configuration_2">server config</a>.</li>
 <li>Check if the user has set a password. Sometimes new users who have not yet logged in to the server do not have a password.</li>
 <li>
@@ -1759,7 +1766,7 @@ $ scp /usr/share/terminfo/${TERM:0:1}/$TERM myserver:~/.terminfo/${TERM:0:1}/
 </h3>
 <p>If you are seeing this error in your sshd logs, make sure you have set a valid HostKey
 </p>
-<pre>HostKey /etc/ssh/ssh_host_rsa_key
+<pre>HostKey /etc/ssh/ssh_host_ed25519_key
 </pre>
 <h3><span class="mw-headline" id="subsystem_request_failed">subsystem request failed</span></h3>
 <p>Since <i>OpenSSH</i> 8.8, <i>scp</i> uses <i>SFTP</i> as the default protocol for data transfers by requesting the subsystem named <code>sftp</code>. If you run <i>scp</i> in verbose mode, <code>scp -v</code>, you can determine which subsystem your client is using (e.g. <code>Sending subsystem: &lt;subsystem-name&gt;</code>). Errors such as <code>subsystem request failed on channel 0</code> may be fixed by configuring the server's Subsystem settings: <span class="plainlinks archwiki-template-man" title="$ man 5 sshd_config"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/sshd_config.5#Subsystem">sshd_config(5) § Subsystem</a></span>. The server configuration should resemble the example below.
@@ -1770,7 +1777,7 @@ Subsystem subsystem-name /path/to/subsystem-executable
 ...
 </pre>
 <h3><span class="mw-headline" id="id_dsa_refused">id_dsa refused</span></h3>
-<p>OpenSSH 7.0 deprecated DSA public keys for security reasons and OpenSSH 9.8 is built without support for DSA keys by default. The first OpenSSH release of 2025 will remove DSA support entirely. For now, if you absolutely must use them, you will need to rebuild <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=openssh">openssh</a></span> while passing <code>--enable-dsa-keys</code> to <code>configure</code>.<a rel="nofollow" class="external autonumber" href="https://marc.info/?l=openssh-unix-dev&amp;m=171982945528949&amp;w=2">[3]</a>
+<p>OpenSSH 7.0 deprecated DSA public keys for security reasons and OpenSSH 9.8 is built without support for DSA keys by default. The first OpenSSH release of 2025 will remove DSA support entirely. For now, if you absolutely must use them, you will need to rebuild <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=openssh">openssh</a></span> while passing <code>--enable-dsa-keys</code> to <code>configure</code>.<a rel="nofollow" class="external autonumber" href="https://marc.info/?l=openssh-unix-dev&amp;m=171982945528949&amp;w=2">[4]</a>
 </p>
 <h3><span class="mw-headline" id="No_matching_key_exchange_method_found_by_OpenSSH_7.0">No matching key exchange method found by OpenSSH 7.0</span></h3>
 <p>OpenSSH 7.0 deprecated the diffie-hellman-group1-sha1 key algorithm because it is weak and within theoretical range of the so-called Logjam attack (see <a rel="nofollow" class="external free" href="https://www.openssh.com/legacy.html">https://www.openssh.com/legacy.html</a>). If the key algorithm is needed for a particular host, ssh will produce an error message like this:
@@ -1852,9 +1859,9 @@ Connection closed by UNKNOWN port 65535
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Out_of_date.html" title="Category:Pages or sections flagged with Template:Out of date">Pages or sections flagged with Template:Out of date</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
 </ul>
 </div>
 </div>
@@ -1866,8 +1873,8 @@ Connection closed by UNKNOWN port 65535
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=OpenSSH&amp;oldid=812918">https://wiki.archlinux.org/index.php?title=OpenSSH&amp;oldid=812918</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 27 July 2024, at 19:55.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=OpenSSH&amp;oldid=819501">https://wiki.archlinux.org/index.php?title=OpenSSH&amp;oldid=819501</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 23 October 2024, at 19:49.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

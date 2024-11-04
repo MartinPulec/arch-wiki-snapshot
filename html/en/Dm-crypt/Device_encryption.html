@@ -5,7 +5,7 @@
 <title>dm-crypt/Device encryption - ArchWiki</title>
 <link rel="stylesheet" href="../../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -347,31 +347,31 @@
 			</a>
 			
 			<ul id="toc-Types_of_keyfiles-sublist" class="vector-toc-list">
-				<li id="toc-passphrase" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#passphrase">
+				<li id="toc-Passphrase" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Passphrase">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">7.1.1</span>passphrase</div>
+				<span class="vector-toc-numb">7.1.1</span>Passphrase</div>
 			</a>
 			
-			<ul id="toc-passphrase-sublist" class="vector-toc-list">
+			<ul id="toc-Passphrase-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-randomtext" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#randomtext">
+		<li id="toc-Random_characters" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Random_characters">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">7.1.2</span>randomtext</div>
+				<span class="vector-toc-numb">7.1.2</span>Random characters</div>
 			</a>
 			
-			<ul id="toc-randomtext-sublist" class="vector-toc-list">
+			<ul id="toc-Random_characters-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-binary" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#binary">
+		<li id="toc-Binary" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Binary">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">7.1.3</span>binary</div>
+				<span class="vector-toc-numb">7.1.3</span>Binary</div>
 			</a>
 			
-			<ul id="toc-binary-sublist" class="vector-toc-list">
+			<ul id="toc-Binary-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -401,13 +401,13 @@
 		</li>
 	</ul>
 		</li>
-		<li id="toc-Storing_the_keyfile_in_ramfs" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Storing_the_keyfile_in_ramfs">
+		<li id="toc-Storing_the_keyfile_in_tmpfs_(with_swapping_disabled)" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Storing_the_keyfile_in_tmpfs_(with_swapping_disabled)">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">7.2.2</span>Storing the keyfile in ramfs</div>
+				<span class="vector-toc-numb">7.2.2</span>Storing the keyfile in tmpfs (with swapping disabled)</div>
 			</a>
 			
-			<ul id="toc-Storing_the_keyfile_in_ramfs-sublist" class="vector-toc-list">
+			<ul id="toc-Storing_the_keyfile_in_tmpfs_(with_swapping_disabled)-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -991,7 +991,7 @@ Since different parameters are required or optional, depending on encryption mod
 <p>See <a href="../../en/Trusted_Platform_Module.html#Data-at-rest_encryption_with_LUKS" title="Trusted Platform Module">Trusted Platform Module#Data-at-rest encryption with LUKS</a>.
 </p>
 <h3><span class="mw-headline" id="Encrypting_devices_with_plain_mode">Encrypting devices with plain mode</span></h3>
-<p>The creation and subsequent access of a <i>dm-crypt</i> plain mode encryption both require not more than using the <i>cryptsetup</i> <code>open</code> action with correct <a href="#Encryption_options_for_plain_mode">parameters</a>. The following shows that with two examples of non-root devices, but adds a quirk by stacking both (i.e. the second is created inside the first). Obviously, stacking the encryption doubles overhead. The usecase here is simply to illustrate another example of the cipher option usage. 
+<p>The creation and subsequent access of a <i>dm-crypt</i> plain mode encryption both require no more than using the <i>cryptsetup</i> <code>open</code> action with correct <a href="#Encryption_options_for_plain_mode">parameters</a>. The following shows that with two examples of non-root devices, but adds a quirk by stacking both (i.e. the second is created inside the first). Obviously, stacking the encryption doubles overhead. The usecase here is simply to illustrate another example of the cipher option usage. 
 </p>
 <p>A first mapper is created with <i>cryptsetup's</i> plain-mode defaults, as described in the table's left column above  
 </p>
@@ -1177,16 +1177,16 @@ Command successful.
 </pre>
 <p>where <code><i>device</i></code> is the partition containing the LUKS volume.
 </p>
-<p>You can also back up the plain text header into ramfs and encrypt it with e.g. <a href="../../en/GnuPG.html" class="mw-redirect" title="GPG">GPG</a> before writing it to persistent storage:
+<p>You can also back up the plain text header into <a href="../../en/Tmpfs.html" title="Tmpfs">tmpfs</a> and encrypt it with e.g. <a href="../../en/GnuPG.html" class="mw-redirect" title="GPG">GPG</a> before writing it to persistent storage:
 </p>
-<pre># mount --mkdir -t ramfs ramfs /root/<i>tmp</i>
+<pre># mount --mkdir -t tmpfs -o noswap tmpfs /root/<i>tmp</i>
 # cryptsetup luksHeaderBackup /dev/<i>device</i> --header-backup-file /root/<i>tmp</i>/<i>file</i>.img
-# gpg2 --recipient <i>User_ID</i> --encrypt /root/<i>tmp</i>/<i>file</i>.img 
+# gpg --recipient <i>User_ID</i> --encrypt /root/<i>tmp</i>/<i>file</i>.img 
 # cp /root/<i>tmp</i>/<i>file</i>.img.gpg /mnt/<i>backup</i>/
 # umount /root/<i>tmp</i>
 </pre>
-<div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> <a href="../../en/Tmpfs.html" title="Tmpfs">tmpfs</a> can swap to the disk in low memory situations, so it is not recommended here.</div>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong> The <code>noswap</code> option ensures that the file system does not get swapped to disk.</div>
 <h4><span class="mw-headline" id="Restore_using_cryptsetup">Restore using cryptsetup</span></h4>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> Restoring the wrong header or restoring to an unencrypted partition will cause data loss! The action can not perform a check whether the header is actually the <i>correct</i> one for that particular device.</div> 
@@ -1262,11 +1262,6 @@ Command successful.
 In short, create a partition with the size of at least 260 MiB if needed. See <a href="../../en/Partitioning.html#/boot" title="Partitioning">Partitioning#/boot</a>.</div>
 <p>A LUKS encryption header is always stored at the beginning of the device. Since an existing file system will usually be allocated all partition sectors, the first step is to shrink it to make space for the LUKS header.
 </p>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
-<div>
-<b>Reason:</b> cryptsetup man pages suggest using twice the LUKS2 header size. That implies 32 MiB and using <code>--reduce-device-size 32M</code> (Discuss in <a rel="nofollow" class="external text" href="../../en/Talk:Dm-crypt/Device_encryption.html">Talk:Dm-crypt/Device encryption</a>)</div>
-</div>
 <p>The <a href="#Encryption_options_for_LUKS_mode">default</a> LUKS2 header requires 16 MiB. If the current file system occupies all the available space, we will have to shrink it at least that much. To shrink an existing <code>ext4</code> file system on <code>/dev/sd<i>xY</i></code> to its current possible minimum:
 </p>
 <pre># umount /mnt
@@ -1288,7 +1283,7 @@ The filesystem on /dev/sd<i>xY</i> is now 26347 (4k) blocks long.
 <strong>Warning:</strong> The file system should be shrunk while the underlying device (e.g., a partition) should be kept at its original size. Some graphical tools (e.g., <a href="../../en/Parted.html" class="mw-redirect" title="GParted">GParted</a>) may resize both the file system and the partition, and data loss may occur after encryption.</div>
 <p>Now we encrypt it, using the default cipher we do not have to specify it explicitly:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># cryptsetup reencrypt --encrypt --reduce-device-size 16M /dev/sd<i>xY</i></pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># cryptsetup reencrypt --encrypt --reduce-device-size 32M /dev/sd<i>xY</i></pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">
 
 WARNING!
@@ -1324,30 +1319,29 @@ The filesystem on /dev/mapper/recrypt is now 664807 (4k) blocks long.
 </ol>
 </div>
 <h4><span class="mw-headline" id="Re-encrypting_an_existing_LUKS_partition">Re-encrypting an existing LUKS partition</span></h4>
-<p>In this example an existing LUKS device is re-encrypted. 
+<p>In this example an existing LUKS device is re-encrypted.
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> Double-check you specify encryption options for correctly and <i>never</i> re-encrypt without a <b>reliable backup</b>!</div>
-<p>In order to re-encrypt a device with current LUKS2/1 default encryption options, they do not need to be specified:
+<strong>Warning:</strong> <i>Never</i> re-encrypt without a <b>reliable backup</b>! If you re-encrypt because of a leaked (e.g. shoulder-surfed) passphrase, use <code>luksChangeKey</code> <i>prior</i> to re-encryption and/or creating the backup.</div>
+<p>In order to re-encrypt a device with its current encryption options, they do not need to be specified:
 </p>
 <pre># cryptsetup reencrypt /dev/sd<i>xY</i>
 </pre>
-<p>Existing keys are retained when re-encrypting a device with a different cipher and/or hash. Another use case is to re-encrypt LUKS devices which have non-current encryption options. Apart from above warning on specifying options correctly, the ability to change the LUKS header may also be limited by its size. For example, if the device was initially encrypted using a CBC mode cipher and 128 bit key-size, the LUKS header will be half the size of above mentioned <code>4096</code> sectors: 
+<p>Existing keys are retained when re-encrypting a device with a different cipher and/or hash.
 </p>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../../File:View-refresh-red.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is out of date.</b></p>
-<div>
-<b>Reason:</b> LUKS2 has a different <code>cryptsetup luksDump</code> output. (Discuss in <a rel="nofollow" class="external text" href="../../en/Talk:Dm-crypt/Device_encryption.html">Talk:Dm-crypt/Device encryption</a>)</div>
-</div>
+<p>Another use case is to re-encrypt LUKS devices which have non-current encryption options. In this case you have to specify the desired new options. Note a LUKS2 header allows individual per-keyslot encryption options, hence a re-encryption will apply to the data segment only.
+</p>
+<p>The ability to change the LUKS header may also be limited by its size. For example, if the device was initially LUKS1 encrypted using a CBC mode cipher and 128 bit key-size, the LUKS header will be half the size of above mentioned <code>4096</code> sectors:
+</p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># cryptsetup luksDump /dev/sd<i>xY</i> | grep -e "mode" -e "Payload" -e "MK bits"</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Cipher mode:   	cbc-essiv:sha256
 Payload offset:	<b>2048</b>
 MK bits:       	128
 </pre>
-<p>While it is possible to upgrade the encryption of such a device, it is currently only feasible in two steps. First, re-encrypting with the same encryption options, but using the <code>--reduce-device-size</code> option to make further space for the larger LUKS header. Second, re-encypt the whole device again with the desired cipher. For this reason and the fact that a backup should be created in any case, creating a new, fresh encrypted device to restore into is always the faster option.
+<p>To upgrade the encryption options of such a device, consider to <a href="#Conversion_from_LUKS1_to_LUKS2_and_back">convert</a> the header to LUKS2 prior to re-encryption. If the conversion fails due to inadequate header size, you may have to re-encrypt with the <code>--reduce-device-size</code> option to make further space for the larger LUKS header before re-encrypting with the desired new encryption. Keep in mind that both methods carry inherent risks: for the header during conversion, and the filesystem data if needed extra header sectors are in use.
 </p>
 <h3><span class="mw-headline" id="Conversion_from_LUKS1_to_LUKS2_and_back">Conversion from LUKS1 to LUKS2 and back</span></h3>
-<p>The <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=cryptsetup">cryptsetup</a></span> package has <code>convert</code> option that needed for conversion between LUKS1 and LUKS2 container types. The argument <code>--type</code> is <b>required</b>.
+<p>The <i>cryptsetup</i> tool has a <code>convert</code> action for LUKS1 and LUKS2 header format conversions. It is advised to create a <a href="#Backup_using_cryptsetup">header backup</a> prior to a conversion. The argument <code>--type</code> is <b>required</b>.
 </p>
 <p>Migration from LUKS1 to LUKS2:
 </p>
@@ -1392,11 +1386,11 @@ MK bits:       	128
 # cryptsetup close secret
 # losetup -d /dev/loop0
 </pre>
-<p>Next, expand the container file with the size of the data you want to add. In this example, the file will be expanded with 1M * 1024, which is 1G.
+<p>Next, expand the container file with the size of the data you want to add. In this example, the file will be expanded by 1 MiB × 1024, which is 1 GiB.
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> Make absolutely sure to use <b>two</b> <code>&gt;</code>,  instead of just one, or else you will overwrite the file instead of appending to it. Making a backup before this step is strongly recommended.</div>
-<pre># dd if=/dev/urandom bs=1M count=1024 | cat - &gt;&gt; /bigsecret
+<strong>Warning:</strong> Make absolutely sure to use the <code>oflag=append conv=notrunc</code> options, otherwise you will overwrite the file instead of appending to it. Making a backup before this step is strongly recommended.</div>
+<pre># dd if=/dev/urandom of=/bigsecret bs=1M count=1024 iflag=fullblock oflag=append conv=notrunc status=progress
 </pre>
 <p>Now map the container to the loop device:
 </p>
@@ -1440,27 +1434,34 @@ That means if such a file is lost or changed, decrypting the volume may no longe
 <p>There are many kinds of keyfiles. Each type of keyfile used has benefits and disadvantages summarized below:
 </p>
 <h3><span class="mw-headline" id="Types_of_keyfiles">Types of keyfiles</span></h3>
-<h4><span class="mw-headline" id="passphrase">passphrase</span></h4>
-<p>This is a keyfile containing a simple passphrase. The benefit of this type of keyfile is that if the file is lost the data it contained is known and hopefully easily remembered by the owner of the encrypted volume. However the disadvantage is that this does not add any security over entering a passphrase during the initial system start.
+<h4><span class="mw-headline" id="Passphrase">Passphrase</span></h4>
+<p>This is a keyfile containing a simple passphrase. The benefit of this type of keyfile is that if the file is lost, the data it contained is known and hopefully easily remembered by the owner of the encrypted volume. Nevertheless, this does not add any security over entering a passphrase during the initial system start.
 </p>
-<p>Example: <code>1234</code>
+<p>Example: <code>correct horse battery staple</code>
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> The keyfile containing the passphrase must not have a newline in it. One option is to create it using 
-<pre># echo -n 'your_passphrase' &gt; <i>/path/to/keyfile</i>
-# chown root:root <i>/path/to/keyfile</i>; chmod 400 <i>/path/to/keyfile</i>
+<pre># printf '%s' '<i>your_passphrase</i>' | install -m 0600 /dev/stdin /etc/cryptsetup-keys.d/<i>keyfile</i>.key
 </pre>
-<p>If the file contains special characters such as a backslash, rather than escaping these, it is recommended to simply edit the key file directly entering or pasting the passphrase and then remove the trailing newline with a handy perl one-liner:
+<p>If the file contains special characters such as quotes or backslashes, rather than escaping these, it is recommended to simply edit the key file, directly entering or pasting the passphrase, and then remove the trailing newline with a handy perl one-liner:
 </p>
-<pre># perl -pi -e 'chomp if eof' <i>/path/to/keyfile</i>
+<pre># perl -pi -e 'chomp if eof' /etc/cryptsetup-keys.d/<i>keyfile</i>.key
 </pre>
 </div>
-<h4><span class="mw-headline" id="randomtext">randomtext</span></h4>
-<p>This is a keyfile containing a block of random characters. The benefit of this type of keyfile is that it is much more resistant to dictionary attacks than a simple passphrase. An additional strength of keyfiles can be utilized in this situation which is the length of data used. Since this is not a string meant to be memorized by a person for entry, it is trivial to create files containing thousands of random characters as the key. The disadvantage is that if this file is lost or changed, it will most likely not be possible to access the encrypted volume without a backup passphrase.
+<h4><span class="mw-headline" id="Random_characters">Random characters</span></h4>
+<p>This is a keyfile containing a block of random characters. The benefit of this type of keyfile is that it is much more resistant to dictionary attacks than a simple passphrase. An additional strength of keyfiles which can be utilized in this situation is the length of data used. Since this is not a string meant to be memorized by a person for entry, it is trivial to create files containing thousands of random characters as the key. The disadvantage is that if this file is lost or changed, it will most likely not be possible to access the encrypted volume without a backup passphrase.
 </p>
-<p>Example: <code>fjqweifj830149-57 819y4my1-38t1934yt8-91m 34co3;t8y;9p3y-</code>
+<p>Random character keyfiles may use any character set, but sticking to a portable set of ASCII letters and numbers can make things easier in situations where keyboard layout or Unicode support is unreliable, like typing an emergency password at the startup LUKS unlock stage, or measuring keyfiles with old Unicode-naive POSIX utilities. You can generate such a string like this:
 </p>
-<h4><span class="mw-headline" id="binary">binary</span></h4>
+<pre>$ tr -dc '[:alnum:]' &lt;/dev/urandom | head -c64
+</pre>
+<p>Example: <code>rTCBW6j1dI2aYC5KcD6Ar38rBGN2DkWyang3RT7pdMGpdf1kRuMXi8EBHKu0BJ8X</code>
+</p>
+<p>Alternatively, a random (UTF-8) Unicode character keyfile could look like this:
+</p>
+<p>Example: <code>W[�5ODó?Oéµ»9���¬hjT}­�DÐ§íŽ�uLÝæ�Ýœ�§aþ�óx±)Ñ)l­éeð��ú=èe</code>
+</p>
+<h4><span class="mw-headline" id="Binary">Binary</span></h4>
 <p>This is a binary file that has been defined as a keyfile. When identifying files as candidates for a keyfile, it is recommended to choose files that are relatively static such as photos, music, video clips. The benefit of these files is that they serve a dual function which can make them harder to identify as keyfiles. Instead of having a text file with a large amount of random text, the keyfile would look like a regular image file or music clip to the casual observer. The disadvantage is that if this file is lost or changed, it will most likely not be possible to access the encrypted volume without a backup passphrase. Additionally, there is a theoretical loss of randomness when compared to a randomly generated text file. This is due to the fact that images, videos and music have some intrinsic relationship between neighboring bits of data that does not exist for a random text file. However this is controversial and has never been exploited publicly.
 </p>
 <p>Example: images, text, video, ...
@@ -1469,17 +1470,13 @@ That means if such a file is lost or changed, decrypting the volume may no longe
 <h4><span class="mw-headline" id="Storing_the_keyfile_on_a_file_system">Storing the keyfile on a file system</span></h4>
 <p>A keyfile can be of arbitrary content and size. 
 </p>
-<p>Here <a href="../../en/Dd.html" title="Dd">dd</a> is used to generate a keyfile of 2048 random bytes, storing it in the file <code>/etc/mykeyfile</code>:
+<p>Here <a href="../../en/Dd.html" title="Dd">dd</a> is used to generate a keyfile of 2048 random bytes, storing it in the file <code>/etc/cryptsetup-keys.d/mykeyfile.key</code>:
 </p>
-<pre># dd bs=512 count=4 if=/dev/random of=/etc/mykeyfile iflag=fullblock
+<pre># dd bs=512 count=4 if=/dev/random iflag=fullblock | install -m 0600 /dev/stdin /etc/cryptsetup-keys.d/mykeyfile.key
 </pre>
-<p>If you are planning to store the keyfile on an external device, you can also simply change the outputfile to the corresponding directory:
+<p>If you are planning to store the keyfile on an external device, you can also simply change the output file to the corresponding directory:
 </p>
-<pre># dd bs=512 count=4 if=/dev/random of=/media/usbstick/mykeyfile iflag=fullblock
-</pre>
-<p>To deny any access for other users than <code>root</code>:
-</p>
-<pre># chmod 600 /etc/mykeyfile
+<pre># dd bs=512 count=4 if=/dev/random of=/run/media/<i>user</i>/<i>usbstick</i>/mykeyfile.key iflag=fullblock
 </pre>
 <h5><span class="mw-headline" id="Securely_overwriting_stored_keyfiles">Securely overwriting stored keyfiles</span></h5>
 <p>If you stored your temporary keyfile on a physical storage device, and want to delete it, remember to not just remove the keyfile later on, but use something like
@@ -1488,26 +1485,28 @@ That means if such a file is lost or changed, decrypting the volume may no longe
 </pre>
 <p>to securely overwrite it. For overaged file systems like FAT or ext2 this will suffice while in the case of journaling file systems, flash memory hardware and other cases it is highly recommended to <a href="../../en/Securely_wipe_disk.html" title="Securely wipe disk">wipe the entire device</a>.
 </p>
-<h4><span class="mw-headline" id="Storing_the_keyfile_in_ramfs">Storing the keyfile in ramfs</span></h4>
-<p>Alternatively, you can mount a ramfs for storing the keyfile temporarily:
+<h4>
+<span id="Storing_the_keyfile_in_tmpfs_.28with_swapping_disabled.29"></span><span class="mw-headline" id="Storing_the_keyfile_in_tmpfs_(with_swapping_disabled)">Storing the keyfile in tmpfs (with swapping disabled)</span>
+</h4>
+<p>Alternatively, you can mount a <a href="../../en/Tmpfs.html" title="Tmpfs">tmpfs</a> with swapping disabled for storing the keyfile temporarily:
 </p>
-<pre># mount --mkdir -t ramfs ramfs /root/myramfs
-# cd /root/myramfs
+<pre># mount --mkdir -t tmpfs -o noswap tmpfs /root/mytmpfs
+# cd /root/mytmpfs
 </pre>
-<p>The advantage is that it resides in RAM and not on a physical disk, therefore it can not be recovered after unmounting the ramfs. After copying the keyfile to another secure and persistent file system, unmount the ramfs again with
+<p>The advantage is that it resides in RAM and not on a physical disk, therefore it can not be recovered after unmounting the tmpfs. After copying the keyfile to another secure and persistent file system, unmount the tmpfs again with:
 </p>
-<pre># umount /root/myramfs
+<pre># umount /root/mytmpfs
 </pre>
 <h3><span class="mw-headline" id="Configuring_LUKS_to_make_use_of_the_keyfile">Configuring LUKS to make use of the keyfile</span></h3>
 <p>Add a keyslot for the keyfile to the LUKS header:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># cryptsetup luksAddKey /dev/sda2 /etc/mykeyfile</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># cryptsetup luksAddKey /dev/sda2 /etc/cryptsetup-keys.d/mykeyfile.key</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Enter any existing passphrase:
 </pre>
 <h3><span class="mw-headline" id="Manually_unlocking_a_partition_using_a_keyfile">Manually unlocking a partition using a keyfile</span></h3>
 <p>Use the <code>--key-file</code> option when opening the LUKS device:
 </p>
-<pre># cryptsetup open /dev/sda2 <i>dm_name</i> --key-file /etc/mykeyfile
+<pre># cryptsetup open /dev/sda2 <i>dm_name</i> --key-file /etc/cryptsetup-keys.d/mykeyfile.key
 </pre>
 <h3><span class="mw-headline" id="Unlocking_the_root_partition_at_boot">Unlocking the root partition at boot</span></h3>
 <p>This is simply a matter of configuring <a href="../../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a> to include the necessary modules or files and configuring the <a href="../../en/Dm-crypt/System_configuration.html#cryptkey" title="Dm-crypt/System configuration">cryptkey</a> <a href="../../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a> to know where to find the keyfile.
@@ -1544,23 +1543,26 @@ That means if such a file is lost or changed, decrypting the volume may no longe
 </div>
 <p>This method allows to use a specially named keyfile that will be embedded in the <a href="../../en/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs">initramfs</a> and picked up by the <code>encrypt</code> <a href="../../en/Mkinitcpio.html#HOOKS" title="Mkinitcpio">hook</a> to unlock the root file system (<code>cryptdevice</code>) automatically. It may be useful to apply when using the <a href="../../en/GRUB.html#Encrypted_/boot" title="GRUB">GRUB early cryptodisk</a> feature, in order to avoid entering two passphrases during boot.
 </p>
-<p>The <code>encrypt</code> hook lets the user specify a keyfile with the <code>cryptkey</code> kernel parameter: in the case of initramfs, the syntax is <code>rootfs:<i>/path/to/keyfile</i></code>. See <a href="../../en/Dm-crypt/System_configuration.html#cryptkey" title="Dm-crypt/System configuration">dm-crypt/System configuration#cryptkey</a>. Besides, this kernel parameter defaults to use <code>/crypto_keyfile.bin</code>, and if the initramfs contains a valid key with this name, decryption will occur automatically without the need to configure the <code>cryptkey</code> parameter.
-</p>
-<p>If using <code>sd-encrypt</code> instead of <code>encrypt</code>, specify the location of the keyfile with the <code>rd.luks.key</code> kernel parameter: in the case of initramfs, the syntax is <code><i>/path/to/keyfile</i></code>. See <a href="../../en/Dm-crypt/System_configuration.html#rd.luks.key" title="Dm-crypt/System configuration">dm-crypt/System configuration#rd.luks.key</a>. This kernel parameter defaults to using <code>/etc/cryptsetup-keys.d/<i>name</i>.key</code> (where <code><i>name</i></code> is the <code><i>dm_name</i></code> used for decryption in <a href="#Encrypting_devices_with_cryptsetup">#Encrypting devices with cryptsetup</a>) and can be omitted if initramfs contains a valid key with this path.
-</p>
 <p><a href="#Creating_a_keyfile_with_random_characters">Generate the keyfile</a>, give it suitable permissions and <a href="#Adding_LUKS_keys">add it as a LUKS key</a>:
 </p>
-<pre># dd bs=512 count=4 if=/dev/random of=/crypto_keyfile.bin iflag=fullblock
-# chmod 600 /crypto_keyfile.bin
-# cryptsetup luksAddKey /dev/sdX# /crypto_keyfile.bin
+<pre># dd bs=512 count=4 if=/dev/random iflag=fullblock | install -m 0600 /dev/stdin /etc/cryptsetup-keys.d/root.key
+# cryptsetup luksAddKey /dev/sd<i>X#</i> /etc/cryptsetup-keys.d/root.key
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> The initramfs is generated by mkinitcpio with <code>600</code> <a href="../../en/File_permissions_and_attributes.html" class="mw-redirect" title="Permissions">permissions</a> by default, so regular users are not able to read the keyfile via the generated initramfs.</div>
 <p>Include the key in <a href="../../en/Mkinitcpio.html#BINARIES_and_FILES" title="Mkinitcpio">mkinitcpio's FILES array</a>:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/mkinitcpio.conf</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">FILES=(/crypto_keyfile.bin)</pre>
-<p>Finally <a href="../../en/Mkinitcpio.html#Image_creation_and_activation" class="mw-redirect" title="Regenerate the initramfs">regenerate the initramfs</a>.
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">FILES=(/etc/cryptsetup-keys.d/root.key)</pre>
+<p><a href="../../en/Mkinitcpio.html#Image_creation_and_activation" class="mw-redirect" title="Regenerate the initramfs">Regenerate the initramfs</a>.
+</p>
+<p>For the <code>encrypt</code> hook, the keyfile is specified with the <code>cryptkey=</code> kernel parameter: in the case of initramfs, the syntax is <code>rootfs:<i>/path/to/keyfile</i></code>. The default is <code>/crypto_keyfile.bin</code> and <code>cryptkey</code> can be omitted if initramfs contains a valid key with this path. See <a href="../../en/Dm-crypt/System_configuration.html#cryptkey" title="Dm-crypt/System configuration">dm-crypt/System configuration#cryptkey</a>.
+</p>
+<p>For the above example, set the following kernel parameter when using busybox-based initramfs with the <code>encrypt</code> hook:
+</p>
+<pre>cryptkey=rootfs:/etc/cryptsetup-keys.d/root.key
+</pre>
+<p>If using the <code>sd-encrypt</code> hook instead, the keyfile is specified with the <code>rd.luks.key=</code> kernel parameter: in the case of initramfs, the syntax is <code><i>/path/to/keyfile</i></code>. The default is <code>/etc/cryptsetup-keys.d/<i>name</i>.key</code> (where <code><i>name</i></code> is the <i>dm_name</i> used for decryption in <a href="#Encrypting_devices_with_cryptsetup">#Encrypting devices with cryptsetup</a>) and <code>rd.luks.key</code> can be omitted if initramfs contains a valid key with this path. See <a href="../../en/Dm-crypt/System_configuration.html#rd.luks.key" title="Dm-crypt/System configuration">dm-crypt/System configuration#rd.luks.key</a>.
 </p>
 <p>On the next reboot you should only have to enter your container decryption passphrase once.
 </p>
@@ -1586,8 +1588,8 @@ That means if such a file is lost or changed, decrypting the volume may no longe
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/Device_encryption&amp;oldid=812939">https://wiki.archlinux.org/index.php?title=Dm-crypt/Device_encryption&amp;oldid=812939</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 28 July 2024, at 09:24.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/Device_encryption&amp;oldid=819732">https://wiki.archlinux.org/index.php?title=Dm-crypt/Device_encryption&amp;oldid=819732</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 27 October 2024, at 21:26.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

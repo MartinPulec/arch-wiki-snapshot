@@ -5,7 +5,7 @@
 <title>Power management/Suspend and hibernate - ArchWiki</title>
 <link rel="stylesheet" href="../../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -124,25 +124,34 @@
 		</li>
 	</ul>
 		</li>
-		<li id="toc-Maintaining_swap_file_for_hibernation_with_zram" class="vector-toc-list-item vector-toc-level-3">
+	</ul>
+		</li>
+		<li id="toc-Maintaining_swap_file_for_hibernation_with_zram" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Maintaining_swap_file_for_hibernation_with_zram">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.3.2</span>Maintaining swap file for hibernation with zram</div>
+				<span class="vector-toc-numb">4.4</span>Maintaining swap file for hibernation with zram</div>
 			</a>
 			
 			<ul id="toc-Maintaining_swap_file_for_hibernation_with_zram-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Hibernation_into_a_thinly-provisioned_LVM_volume" class="vector-toc-list-item vector-toc-level-3">
+		<li id="toc-Hibernation_into_a_thinly-provisioned_LVM_volume" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Hibernation_into_a_thinly-provisioned_LVM_volume">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.3.3</span>Hibernation into a thinly-provisioned LVM volume</div>
+				<span class="vector-toc-numb">4.5</span>Hibernation into a thinly-provisioned LVM volume</div>
 			</a>
 			
 			<ul id="toc-Hibernation_into_a_thinly-provisioned_LVM_volume-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-	</ul>
+		<li id="toc-Disable_zswap_writeback_to_use_the_swap_space_only_for_hibernation" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Disable_zswap_writeback_to_use_the_swap_space_only_for_hibernation">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">4.6</span>Disable zswap writeback to use the swap space only for hibernation</div>
+			</a>
+			
+			<ul id="toc-Disable_zswap_writeback_to_use_the_swap_space_only_for_hibernation-sublist" class="vector-toc-list">
+			</ul>
 		</li>
 	</ul>
 	</li>
@@ -258,13 +267,13 @@
 			<ul id="toc-Wake-on-LAN-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Instantaneous_wakeups_from_suspend" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Instantaneous_wakeups_from_suspend">
+		<li id="toc-Instantaneous_wakeup_after_suspending" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Instantaneous_wakeup_after_suspending">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">7.4</span>Instantaneous wakeups from suspend</div>
+				<span class="vector-toc-numb">7.4</span>Instantaneous wakeup after suspending</div>
 			</a>
 			
-			<ul id="toc-Instantaneous_wakeups_from_suspend-sublist" class="vector-toc-list">
+			<ul id="toc-Instantaneous_wakeup_after_suspending-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 		<li id="toc-System_does_not_power_off_when_hibernating" class="vector-toc-list-item vector-toc-level-2">
@@ -617,10 +626,10 @@ File size of /swapfile is 4294967296 (1048576 blocks of 4096 bytes)
 </div>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> For a stacked block device such as an encrypted container (LUKS), RAID or LVM, the <code>resume</code> parameter must point to the unlocked/mapped device that contains the file system with the swap file.</div>
-<h4><span class="mw-headline" id="Maintaining_swap_file_for_hibernation_with_zram">Maintaining swap file for hibernation with zram</span></h4>
+<h3><span class="mw-headline" id="Maintaining_swap_file_for_hibernation_with_zram">Maintaining swap file for hibernation with zram</span></h3>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> Instead of the following setup which involves multiple swap spaces, <a href="../../en/Zswap.html" title="Zswap">Zswap</a> can be used to establish a similar behavior.</div>
-<p>It is possible solving the hibernation problem with RAM compression (zram) by maintaining two or more swap spaces at the same time. <a href="../../en/Systemd.html" title="Systemd">systemd</a> will always ignore zram block devices before triggering hibernation, therefore keeping both spaces enabled should work without further intervention.
+<strong>Tip:</strong> Instead of the following setup which involves multiple swap spaces, <a href="#Disable_zswap_writeback_to_use_the_swap_space_only_for_hibernation">zswap can be used</a> to establish a similar behavior.</div>
+<p>It is possible solving the hibernation problem with RAM compression (zram) by maintaining two or more swap spaces at the same time. <a href="../../en/Systemd.html" title="Systemd">systemd</a> will always ignore zram block devices before triggering hibernation <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/16708#issuecomment-1632592375">[7]</a>, therefore keeping both spaces enabled should work without further intervention.
 </p>
 <p>After <a href="#Acquire_swap_file_offset">configured the swap file</a>, follow the <a href="../../en/Zram.html" title="Zram">zram</a> page. Make sure zram has the <b>higher swap priority</b> (e.g. <code>pri=100</code>).
 </p>
@@ -633,7 +642,7 @@ File size of /swapfile is 4294967296 (1048576 blocks of 4096 bytes)
 <li>Read the <a rel="nofollow" class="external text" href="https://www.kernel.org/doc/gorman/html/understand/understand014.html">Swap Management in kernel documentation</a> and the <a rel="nofollow" class="external text" href="https://chrisdown.name/2018/01/02/in-defence-of-swap.html">Chris Down's article - In defence of swap: common misconceptions</a> for more details.</li>
 </ul>
 </div>
-<h4><span class="mw-headline" id="Hibernation_into_a_thinly-provisioned_LVM_volume">Hibernation into a thinly-provisioned LVM volume</span></h4>
+<h3><span class="mw-headline" id="Hibernation_into_a_thinly-provisioned_LVM_volume">Hibernation into a thinly-provisioned LVM volume</span></h3>
 <p>Hibernation into a thinly-provisioned <a href="../../en/LVM.html" title="LVM">LVM</a> volume is possible, but you have to make sure that the volume is fully allocated. Otherwise resuming from it will fail, see <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/50703">FS#50703</a>.
 </p>
 <p>You can fully allocate the LVM volume by simply filling it with zeros. E.g.:
@@ -650,6 +659,16 @@ File size of /swapfile is 4294967296 (1048576 blocks of 4096 bytes)
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> Do not to use <a href="../../en/Solid_state_drive.html#TRIM" class="mw-redirect" title="TRIM">TRIM</a> on thinly-provisioned swap volumes that are used for hibernation, i.e. do not use <code>discard</code> in <code>/etc/fstab</code> and the <code>-d</code>/<code>--discard</code> option of <i>swapon</i>. Otherwise the used space will be deallocated.</div>
+<h3><span class="mw-headline" id="Disable_zswap_writeback_to_use_the_swap_space_only_for_hibernation">Disable zswap writeback to use the swap space only for hibernation</span></h3>
+<p>In Linux 6.8, <a href="../../en/Zswap.html" title="Zswap">zswap</a> gained <a rel="nofollow" class="external text" href="https://git.kernel.org/linus/501a06fe8e4c185bbda371b8cedbdf1b23a633d8">a per-cgroup option to disable writeback</a>. By using systemd unit setting <code>MemoryZSwapWriteback</code> (see <span class="plainlinks archwiki-template-man" title="$ man 5 systemd.resource-control"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd.resource-control.5#Memory_Accounting_and_Control">systemd.resource-control(5) § Memory Accounting and Control</a></span>) in all possible unit types, zswap writeback can be effectively disabled entirely. This allows to use zswap just like zram with the added benefit of supporting hibernation.
+</p>
+<p>To avoid having to manually create twelve top level per-type drop-in files (for system and user <code>scope</code>, <code>service</code>, <code>slice</code>, <code>socket</code>, <code>mount</code>, <code>swap</code> units types), <a href="../../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zswap-disable-writeback/">zswap-disable-writeback</a></span><sup><small>AUR</small></sup>. Reboot for the settings to take effect.
+</p>
+<p>Try to perform memory intensive tasks and confirm that zswap has not written anything to disk:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># cat /sys/kernel/debug/zswap/written_back_pages</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">0
+</pre>
 <h2><span class="mw-headline" id="Sleep_hooks">Sleep hooks</span></h2>
 <h3><span class="mw-headline" id="Custom_systemd_units">Custom systemd units</span></h3>
 <p><a href="../../en/Systemd.html" title="Systemd">systemd</a> starts <code>suspend.target</code>, <code>hibernate.target</code>, <code>hybrid-sleep.target</code>, or <code>suspend-then-hibernate.target</code> for each sleep state, respectively. All the aforementioned targets pull in <code>sleep.target</code>. Any of the targets can be used to invoke <a href="../../en/Systemd.html#Writing_unit_files" title="Systemd">custom units</a> before or after suspend/hibernate. Separate files should be created for user actions and root/system actions. Examples:
@@ -788,7 +807,7 @@ AllowSuspendThenHibernate=no</pre>
 <p>Many Intel-based systems have firmware support for IRST but require a special partition on an SSD (rather than an HDD). OEM deployments of Windows may have a pre-existing IRST partition which can be retained during the Arch Linux installation process (rather than wiping and re-partitioning the whole SSD). It should show up as an unformatted partition equal in size to the system's RAM.
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> The Intel Rapid Start partition is not encrypted; "Intel recommends disabling Intel Rapid Start Technology if you are using software-based disk encryption".<a rel="nofollow" class="external autonumber" href="https://www.intel.com/content/www/us/en/support/articles/000024080/technologies.html">[7]</a>
+<strong>Warning:</strong> The Intel Rapid Start partition is not encrypted; "Intel recommends disabling Intel Rapid Start Technology if you are using software-based disk encryption".<a rel="nofollow" class="external autonumber" href="https://www.intel.com/content/www/us/en/support/articles/000024080/technologies.html">[8]</a>
 </div>
 <p>If you intend to wipe and re-partition the whole drive (or have already done so), then the IRST partition must be recreated if you also plan on using the technology. This can be done by creating an empty partition equal in size to the system's RAM and by setting its partition type to <a href="https://en.wikipedia.org/wiki/GUID_Partition_Table#Partition_type_GUIDs" class="extiw" title="wikipedia:GUID Partition Table">GUID</a> <code>D3BFE2DE-3DAF-11DF-BA40-E3A556D89593</code> for a <a href="../../en/Partitioning.html#GUID_Partition_Table" class="mw-redirect" title="GPT">GPT</a> partition or <a href="https://en.wikipedia.org/wiki/Partition_type" class="extiw" title="wikipedia:Partition type">ID</a> <code>0x84</code> for an <a href="../../en/Partitioning.html#Master_Boot_Record" class="mw-redirect" title="MBR">MBR</a> partition. You may also need to enable support for IRST in your system's firmware settings.
 </p>
@@ -820,9 +839,9 @@ AllowSuspendThenHibernate=no</pre>
 </p>
 <p>Moving from the <a href="../../en/ATI.html" title="ATI">ATI</a> video driver to the newer <a href="../../en/AMDGPU.html" title="AMDGPU">AMDGPU</a> driver could also help to make the hibernation and awakening process successful.
 </p>
-<p>For <a href="../../en/NVIDIA.html" title="NVIDIA">NVIDIA</a> users, <a href="../../en/Kernel_module.html#Blacklisting" class="mw-redirect" title="Blacklisting">blacklisting</a> the module <code>nvidiafb</code> might help. <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=234646">[8]</a>
+<p>For <a href="../../en/NVIDIA.html" title="NVIDIA">NVIDIA</a> users, <a href="../../en/Kernel_module.html#Blacklisting" class="mw-redirect" title="Blacklisting">blacklisting</a> the module <code>nvidiafb</code> might help. <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=234646">[9]</a>
 </p>
-<p>Laptops with an Intel CPU that load the <code>intel_lpss_pci</code> module for a touchpad may face kernel panic on resume (blinking caps lock) <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=231881">[9]</a>. The module needs to be added to <a href="../../en/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs">initramfs</a> as:
+<p>Laptops with an Intel CPU that load the <code>intel_lpss_pci</code> module for a touchpad may face kernel panic on resume (blinking caps lock) <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=231881">[10]</a>. The module needs to be added to <a href="../../en/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs">initramfs</a> as:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/mkinitcpio.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">MODULES=(... intel_lpss_pci ...)</pre>
@@ -831,24 +850,11 @@ AllowSuspendThenHibernate=no</pre>
 <h3><span class="mw-headline" id="Wake-on-LAN">Wake-on-LAN</span></h3>
 <p>If <a href="../../en/Wake-on-LAN.html" title="Wake-on-LAN">Wake-on-LAN</a> is active, the network interface card will consume power even if the computer is hibernated.
 </p>
-<h3><span class="mw-headline" id="Instantaneous_wakeups_from_suspend">Instantaneous wakeups from suspend</span></h3>
-<p>See <a href="../../en/Power_management/Wakeup_triggers.html#Instantaneous_wakeups_from_suspend" class="mw-redirect" title="Wakeup triggers">Wakeup triggers#Instantaneous wakeups from suspend</a>.
+<h3><span class="mw-headline" id="Instantaneous_wakeup_after_suspending">Instantaneous wakeup after suspending</span></h3>
+<p>See <a href="../../en/Power_management/Wakeup_triggers.html#Instantaneous_wakeup_after_suspending" class="mw-redirect" title="Wakeup triggers">Wakeup triggers#Instantaneous wakeup after suspending</a>.
 </p>
-<p>If you are using Linux kernel 6.1 and above on an AMD CPU, this can also be caused by <a rel="nofollow" class="external text" href="https://gitlab.freedesktop.org/drm/amd/-/issues/2357">an S3-related control policy issue in the kernel</a>. A temporary solution would be turning off wakeup on related i2c devices. You can find them by
-</p>
-<pre>$ ls /sys/bus/i2c/devices/*/power/wakeup
-</pre>
-<p>And the format of the device name should be <code>i2c-ELAN0679:00</code> or <code>i2c-MSFT0001:00</code>. Then, test if the below command can enter suspend:
-</p>
-<pre># echo disabled &gt; /sys/bus/i2c/devices/<i>device_name</i>/power/wakeup
-# systemctl suspend
-</pre>
-<p>If it works, you can persist this config by adding udev rules:
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/udev/rules.d/99-avoid-i2c-wakeup.rules</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">KERNEL=="<i>device_name</i>", SUBSYSTEM=="i2c", ATTR{power/wakeup}="disabled"</pre>
 <h3><span class="mw-headline" id="System_does_not_power_off_when_hibernating">System does not power off when hibernating</span></h3>
-<p>When you hibernate your system, the system should power off (after saving the state on the disk). On some firmware the S4 sleeping state does not work reliably. For example, instead of powering off, the system might reboot. If that happens, it might be instructive to set the <code>HibernateMode</code> to <code>shutdown</code> in <span class="plainlinks archwiki-template-man" title="$ man 5 sleep.conf.d"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/sleep.conf.d.5">sleep.conf.d(5)</a></span>:
+<p>When you hibernate your system, the system should power off (after saving the state on the disk). On some firmware the S4 sleeping state does not work reliably. For example, instead of powering off, the system might reboot or stay on but unresponsive. If that happens, it might be instructive to set the <code>HibernateMode</code> to <code>shutdown</code> in <span class="plainlinks archwiki-template-man" title="$ man 5 sleep.conf.d"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/sleep.conf.d.5">sleep.conf.d(5)</a></span>:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/sleep.conf.d/hibernatemode.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Sleep]
@@ -914,7 +920,7 @@ WantedBy=multi-user.target</pre>
 <p>The udev daemon is already watching for changes in your system by default. If needed you can <a href="../../en/Udev.html#Loading_new_rules" title="Udev">reload the rules manually</a>.
 </p>
 <h3><span class="mw-headline" id="Suspend_from_corresponding_laptop_Fn_key_not_working">Suspend from corresponding laptop Fn key not working</span></h3>
-<p>If, regardless of the setting in logind.conf, the sleep button does not work (pressing it does not even produce a message in syslog), then logind is probably not watching the keyboard device. <a rel="nofollow" class="external autonumber" href="https://lists.freedesktop.org/archives/systemd-devel/2015-February/028325.html">[10]</a> Do:
+<p>If, regardless of the setting in logind.conf, the sleep button does not work (pressing it does not even produce a message in syslog), then logind is probably not watching the keyboard device. <a rel="nofollow" class="external autonumber" href="https://lists.freedesktop.org/archives/systemd-devel/2015-February/028325.html">[11]</a> Do:
 </p>
 <pre># journalctl --grep="Watching system buttons"
 </pre>
@@ -930,7 +936,7 @@ May 25 21:28:19 vmarch.lan systemd-logind[210]: Watching system buttons on /dev/
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">...
 /dev/input/by-id/usb-SIGMACHIP_USB_Keyboard-event-kbd -&gt; <b>../event6</b>
 ...</pre>
-<p>Now obtain <code>ATTRS{name}</code> for the parent keyboard device <a rel="nofollow" class="external autonumber" href="https://systemd-devel.freedesktop.narkive.com/Rbi3rjNN/patch-1-2-logind-add-support-for-tps65217-power-button">[11]</a>. As an example, on the above list this keyboard device has <code><b>event6</b></code> as device input event, it can be used to search its respective attribute name:
+<p>Now obtain <code>ATTRS{name}</code> for the parent keyboard device <a rel="nofollow" class="external autonumber" href="https://systemd-devel.freedesktop.narkive.com/Rbi3rjNN/patch-1-2-logind-add-support-for-tps65217-power-button">[12]</a>. As an example, on the above list this keyboard device has <code><b>event6</b></code> as device input event, it can be used to search its respective attribute name:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># udevadm info -a /dev/input/<b>event6</b></pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">...
@@ -946,7 +952,7 @@ LABEL="power_switch_my_end"</pre>
 <p>After <a href="../../en/Udev.html#Loading_new_rules" title="Udev">reloading the udev rules</a> and <a href="../../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Restart">restarting</a> <code>systemd-logind.service</code>, you should see <code>Watching system buttons on /dev/input/event6</code> in the journal of <i>logind</i>.
 </p>
 <h3><span class="mw-headline" id="System_freezes_for_60_seconds_and_then_wakes_back_up_or_hangs_after_waking_up">System freezes for 60 seconds and then wakes back up or hangs after waking up</span></h3>
-<p>Since systemd v256, systemd freezes <code>user.slice</code> before sleeping. This process can fail due to kernel bugs, particularly when KVM is in use.<a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/33083">[12]</a><a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/33626">[13]</a> 
+<p>Since systemd v256, systemd freezes <code>user.slice</code> before sleeping. This process can fail due to kernel bugs, particularly when KVM is in use.<a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/33083">[13]</a><a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/33626">[14]</a> 
 </p>
 <p>Messages in the logs will contain <code>Failed to freeze unit 'user.slice'</code> before sleep. When such an issue occurs, trying to login (start another session) would fail with <code>pam_systemd(<i>process</i>:session): Failed to create session: Job 9876 for unit 'session-6.scope' failed with 'frozen'</code>.
 </p>
@@ -974,8 +980,8 @@ Environment=SYSTEMD_SLEEP_FREEZE_USER_SESSIONS=false</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Power_management/Suspend_and_hibernate&amp;oldid=812816">https://wiki.archlinux.org/index.php?title=Power_management/Suspend_and_hibernate&amp;oldid=812816</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 24 July 2024, at 06:04.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Power_management/Suspend_and_hibernate&amp;oldid=817773">https://wiki.archlinux.org/index.php?title=Power_management/Suspend_and_hibernate&amp;oldid=817773</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 3 October 2024, at 18:15.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

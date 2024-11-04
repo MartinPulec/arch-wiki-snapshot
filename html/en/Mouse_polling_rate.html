@@ -5,7 +5,7 @@
 <title>Mouse polling rate - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -51,14 +51,46 @@
 		<ul id="toc-Polling_rate_and_polling_interval-sublist" class="vector-toc-list">
 		</ul>
 	</li>
-	<li id="toc-Display_polling_rate" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
-		<a class="vector-toc-link" href="#Display_polling_rate">
+	<li id="toc-Measure_polling_rate" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#Measure_polling_rate">
 			<div class="vector-toc-text">
-			<span class="vector-toc-numb">2</span>Display polling rate</div>
+			<span class="vector-toc-numb">2</span>Measure polling rate</div>
 		</a>
 		
-		<ul id="toc-Display_polling_rate-sublist" class="vector-toc-list">
-		</ul>
+			<button aria-controls="toc-Measure_polling_rate-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon vector-icon--x-small mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle Measure polling rate subsection</span>
+			</button>
+		
+		<ul id="toc-Measure_polling_rate-sublist" class="vector-toc-list">
+			<li id="toc-Measure_polling_rate_via_libinput" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Measure_polling_rate_via_libinput">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">2.1</span>Measure polling rate via libinput</div>
+			</a>
+			
+			<ul id="toc-Measure_polling_rate_via_libinput-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Measure_polling_rate_via_evhz" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Measure_polling_rate_via_evhz">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">2.2</span>Measure polling rate via evhz</div>
+			</a>
+			
+			<ul id="toc-Measure_polling_rate_via_evhz-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Measure_polling_rate_via_Wine+DirectX" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Measure_polling_rate_via_Wine+DirectX">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">2.3</span>Measure polling rate via Wine+DirectX</div>
+			</a>
+			
+			<ul id="toc-Measure_polling_rate_via_Wine+DirectX-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
 	</li>
 	<li id="toc-Display_polling_interval" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
 		<a class="vector-toc-link" href="#Display_polling_interval">
@@ -230,37 +262,15 @@
 </p>
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Polling_rate_and_polling_interval">Polling rate and polling interval</span></h2>
-<p>The polling rate of a device is measured in Hertz (Hz) and is determined by the polling interval. The polling interval is measured in milliseconds (ms) or nanoseconds and equates to lag time.
+<p>The polling rate of a device is measured in Hertz (Hz) and is determined by the polling interval. The polling interval is measured in milliseconds (ms) or microseconds and equates to lag time.
 </p>
 <p>The default polling interval is 10ms. However, USB controllers round the interval down to the nearest power of two. Thus, an interval setting of 10ms will actually use 8ms, 7ms will use 4ms, etc.
 </p>
-<p>The following table shows the relation between polling rate Hertz and the corresponding interval milliseconds (rate = 1000 / interval).
-</p>
-<table class="wikitable">
-<tbody>
-<tr>
-<th>Hz
-</th>
-<td>1000</td>
-<td>500</td>
-<td>250</td>
-<td>125
-</td>
-</tr>
-<tr>
-<th>ms
-</th>
-<td>1</td>
-<td>2</td>
-<td>4</td>
-<td>8
-</td>
-</tr>
-</tbody>
-</table>
 <p>If the polling rate is 125 Hz, the mouse position will be updated every 8 milliseconds. In situations where lag is critical — for example games — some users decrease the interval to as little as possible. However, this puts more load on the CPU, so care should be taken when adjusting this value.
 </p>
-<p>For the devices with higher polling rate
+<p>For the USB 2.0 High Speed and USB 3.0+ devices are able to poll in intervals smaller that 1 millisecond - in such case kernel will report polling interval in microseconds.
+</p>
+<p>The following table shows the relation between polling rate Hertz and the corresponding interval milliseconds (rate = 1000 / interval) and microseconds (rate = 1000000 / interval):
 </p>
 <table class="wikitable">
 <tbody>
@@ -270,7 +280,10 @@
 <td>8000</td>
 <td>4000</td>
 <td>2000</td>
-<td>1000
+<td>1000</td>
+<td>500</td>
+<td>250</td>
+<td>125
 </td>
 </tr>
 <tr>
@@ -279,24 +292,28 @@
 <td>0.125</td>
 <td>0.25</td>
 <td>0.5</td>
-<td>1
+<td>1</td>
+<td>2</td>
+<td>4</td>
+<td>8
+</td>
+</tr>
+<tr>
+<th>us
+</th>
+<td>125</td>
+<td>250</td>
+<td>500</td>
+<td>1000</td>
+<td>2000</td>
+<td>4000</td>
+<td>8000
 </td>
 </tr>
 </tbody>
 </table>
-<h2><span class="mw-headline" id="Display_polling_rate">Display polling rate</span></h2>
-<p>The <code>evhz</code> tool can display the actual mouse refresh rate.
-</p>
-<p>You can install it from <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/evhz-git/">evhz-git</a></span><sup><small>AUR</small></sup> and execute as root:
-</p>
-<pre># evhz
-</pre>
-<p>Now move the mouse continuously in large circles until the displayed <code>Average</code> stabilizes then press <code>Ctrl+c</code> to exit.
-</p>
-<p>If the <code>Latest</code> value does not stabilize and switches between two values, then the attempted polling rate is faster than the device is capable of; see <a href="#USB_device_speed">#USB device speed</a>.
-</p>
-<p>Alternatively, Windows tools such as <a rel="nofollow" class="external text" href="https://web.archive.org/web/20160605051849/http://razerblueprints.net/index.php/View-document-details/18-DirectX-mouserate-checker.html">DirectX mouserate checker</a> can be run using <a href="../en/Wine.html" title="Wine">Wine</a>. Or use a website based checker like the one <a rel="nofollow" class="external text" href="https://cps-check.com/polling-rate-check">provided by CPS-Check</a>.
-</p>
+<h2><span class="mw-headline" id="Measure_polling_rate">Measure polling rate</span></h2>
+<h3><span class="mw-headline" id="Measure_polling_rate_via_libinput">Measure polling rate via libinput</span></h3>
 <p>In case <code>libinput</code> is used on the host, one can use the <code>libinput debug-events</code> while running <a href="../en/List_of_applications/Security.html#Privilege_elevation" title="List of applications/Security">as root</a> or otherwise having access to the <code>/dev</code> pseudo file system) and observe that events happen periodically. For example, for a 500 hz mouse polling rate one can see maximum difference between two consecutive events being <code>0.002</code> seconds, for 1000 hz updates each millisecond (so <code>0.001</code> seconds), and for the polling rates higher, the reported events may occur at the same millisecond.
 </p>
 <pre># libinput debug-events
@@ -322,6 +339,22 @@ event22  POINTER_MOTION          +14.114s	 -2.00/  0.00 ( -1.00/ +0.00)
 event22  POINTER_MOTION          +14.115s	  0.00/ -2.00 ( +0.00/ -1.00)
 event22  POINTER_MOTION          +14.115s	 -2.00/  0.00 ( -1.00/ +0.00)
 </pre>
+<h3><span class="mw-headline" id="Measure_polling_rate_via_evhz">Measure polling rate via evhz</span></h3>
+<p>The <code>evhz</code> tool can display the actual mouse refresh rate.
+</p>
+<p>You can install it from <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/evhz-git/">evhz-git</a></span><sup><small>AUR</small></sup> and execute as root:
+</p>
+<pre># evhz
+</pre>
+<p>Now move the mouse continuously in large circles until the displayed <code>Average</code> stabilizes then press <code>Ctrl+c</code> to exit.
+</p>
+<p>If the <code>Latest</code> value does not stabilize and switches between two values, then the attempted polling rate is faster than the device is capable of; see <a href="#USB_device_speed">#USB device speed</a>.
+</p>
+<h3>
+<span id="Measure_polling_rate_via_Wine.2BDirectX"></span><span class="mw-headline" id="Measure_polling_rate_via_Wine+DirectX">Measure polling rate via Wine+DirectX</span>
+</h3>
+<p>Alternatively, Windows tools such as <a rel="nofollow" class="external text" href="https://web.archive.org/web/20160605051849/http://razerblueprints.net/index.php/View-document-details/18-DirectX-mouserate-checker.html">DirectX mouserate checker</a> can be run using <a href="../en/Wine.html" title="Wine">Wine</a>. Or use a website based checker like the one <a rel="nofollow" class="external text" href="https://cps-check.com/polling-rate-check">provided by CPS-Check</a>.
+</p>
 <h2><span class="mw-headline" id="Display_polling_interval">Display polling interval</span></h2>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> This only shows the polling interval requested by the device and not the actual interval being used. See <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?pid=1607073#p1607073">BBS</a>.</div>
@@ -448,8 +481,8 @@ E:  Ad=81(I) Atr=03(Int.) MxPS=   2 Ivl=255ms</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Mouse_polling_rate&amp;oldid=809961">https://wiki.archlinux.org/index.php?title=Mouse_polling_rate&amp;oldid=809961</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 4 June 2024, at 17:10.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Mouse_polling_rate&amp;oldid=819689">https://wiki.archlinux.org/index.php?title=Mouse_polling_rate&amp;oldid=819689</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 27 October 2024, at 10:43.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

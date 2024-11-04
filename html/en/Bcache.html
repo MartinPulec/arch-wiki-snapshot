@@ -5,7 +5,7 @@
 <title>Bcache - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -343,7 +343,7 @@
 <p>Related articles</p>
 <ul>
 <li><a href="../en/Bcachefs.html" title="Bcachefs">Bcachefs</a></li>
-<li><a href="../en/LVM.html" class="mw-redirect" title="LVM2">LVM2</a></li>
+<li><a href="../en/LVM.html" title="LVM">LVM</a></li>
 </ul>
 </div>
 <p><a rel="nofollow" class="external text" href="https://bcache.evilpiepirate.org/">Bcache</a> (block cache) allows one to use an SSD as a read/write cache (in writeback mode) or read cache (writethrough or writearound) for another blockdevice (generally a rotating HDD or array). This article will show how to install Arch using Bcache as the root partition. For an intro to bcache itself, see <a rel="nofollow" class="external text" href="https://bcache.evilpiepirate.org/">the bcache homepage</a>. Be sure to read and reference <a rel="nofollow" class="external text" href="https://docs.kernel.org/admin-guide/bcache.html">the bcache manual</a>. 
@@ -666,9 +666,9 @@ cset.uuid		75ff0598-7624-46f6-bcac-c27a3cf1a09f
 <strong>Note:</strong> While it may be true that Grub2 does not offer support for bcache as noted below, it does, however, fully support UEFI. It follows then, that so long as the necessary modules for the linux kernel to properly handle your boot device are either compiled into the kernel or are included in an initramfs, and you can include these files on it, the separate boot partition described below may be omitted in favor of the FAT EFI system partition. See <a href="../en/GRUB.html" title="GRUB">GRUB</a> and/or <a href="../en/Unified_Extensible_Firmware_Interface.html" class="mw-redirect" title="UEFI">UEFI</a> for more.</div>
 <p>grub cannot handle bcache, so you will need at least 2 partitions (boot and one for the bcache backing device). If you are doing UEFI, you will need an <a href="../en/EFI_system_partition.html" title="EFI system partition">EFI system partition</a> (ESP) as well. E.g.:
 </p>
-<pre>     1            2048           22527   10.0 MiB    EF00  EFI System
-     2           22528          432127   200.0 MiB   8300  arch_boot
-     3          432128       625142414   297.9 GiB   8300  bcache_backing
+<pre>   1            2048         2099199   1024.0 MiB  EF00  EFI system partition
+   2         2099200         4196351   1024.0 MiB  EA00  arch_boot
+   3         4196352       499998719   236.4 GiB   8300  bcache_backing
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> This example has no swapfile/partition. For a swap partition on the cache, use LVM in step 7. For a swap partition outside the cache, be sure to make a swap partition now.</div>
@@ -710,7 +710,7 @@ cset.uuid		75ff0598-7624-46f6-bcac-c27a3cf1a09f
 <p>7. Prepare the installation mount point:
 </p>
 <pre># mkfs.ext4 /dev/sda2
-# mkfs.msdos /dev/sda1 (if your ESP is at least 500MB, use mkfs.vfat to make a FAT32 partition instead)
+# mkfs.fat -F 32 /dev/sda1
 </pre>
 <p>Now install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=arch-install-scripts">arch-install-scripts</a></span> package. Then:
 </p>
@@ -1054,8 +1054,8 @@ alignment_offset  bcache  dev  discard_alignment  holders  inflight  partition	p
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Bcache&amp;oldid=790715">https://wiki.archlinux.org/index.php?title=Bcache&amp;oldid=790715</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 22 October 2023, at 08:43.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Bcache&amp;oldid=814839">https://wiki.archlinux.org/index.php?title=Bcache&amp;oldid=814839</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 20 August 2024, at 11:02.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

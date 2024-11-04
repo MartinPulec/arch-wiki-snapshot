@@ -5,7 +5,7 @@
 <title>Arch Linux AMIs for Amazon Web Services - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -253,7 +253,33 @@
 </p>
 <p>It is recommended to set a proper configuration for reflector in <code>/etc/xdg/reflector/reflector.conf</code> and enable the timer services to regularly refresh the mirror list. For details see the <a href="../en/Reflector.html" title="Reflector">Reflector</a> package documentation. 
 </p>
-<p>Alternative provide your own mirrorlist and do not use the reflector package.
+<p>For convenience, a script is included: <code>/etc/pacman.d/pacman_init.sh</code>. 
+</p>
+<p>Executing the script with <code>sudo</code> will automatically run the above <code>pacman-key</code> commands and setup Reflector by writing <code>/etc/xdg/reflector/reflector.conf</code>. Finally it will run Reflector to generate a mirrorlist. 
+</p>
+<p>Country selection for Reflector is done based on the AWS region where the instance is running. The following shows mapping between region and country codes (only regions where the AMIs are distributed to are supported):
+</p>
+<pre># region_to_country['eu-west-1']='IE,UK,DE'
+# region_to_country['eu-west-2']='UK,IE,DE'
+# region_to_country['eu-west-3']='FR,DE,UK'
+# region_to_country['eu-central-1']='DE,FR,UK'
+# region_to_country['eu-north-1']='SE,FI,NO,DE'
+# region_to_country['us-east-1']='US,CA'
+# region_to_country['us-east-2']='US,CA'
+# region_to_country['us-west-1']='US,CA'
+# region_to_country['us-west-2']='US,CA'
+# region_to_country['ap-south-1']='IN,SG,US'
+# region_to_country['ap-northeast-1']='JP,KR,TW,US'
+# region_to_country['ap-northeast-2']='KR,JP,TW,US'
+# region_to_country['ap-northeast-3']='JP,KR,TW,US'
+# region_to_country['ap-southeast-1']='SG,ID,TH,US'
+# region_to_country['ap-southeast-2']='AU,NZ,US'
+# region_to_country['ca-central-1']='CA,US'
+# region_to_country['sa-east-1']='BR,CL,US'
+</pre>
+<p>For EMEA Regions, "DE" (Germany), and for US/APAC/South America Regions, "US" (United States), is always included as a last resort should in country or "neighbor" country repositories be unavailable. 
+</p>
+<p>Alternative provide your own mirrorlist and do not use the Reflector package.
 </p>
 <h3><span class="mw-headline" id="Build_process">Build process</span></h3>
 <div class="archwiki-template-box archwiki-template-box-note">
@@ -296,8 +322,8 @@
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Arch_Linux_AMIs_for_Amazon_Web_Services&amp;oldid=811286">https://wiki.archlinux.org/index.php?title=Arch_Linux_AMIs_for_Amazon_Web_Services&amp;oldid=811286</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 26 June 2024, at 14:48.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Arch_Linux_AMIs_for_Amazon_Web_Services&amp;oldid=819769">https://wiki.archlinux.org/index.php?title=Arch_Linux_AMIs_for_Amazon_Web_Services&amp;oldid=819769</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 28 October 2024, at 13:43.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

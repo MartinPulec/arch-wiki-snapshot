@@ -5,7 +5,7 @@
 <title>OpenVPN - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -396,6 +396,15 @@
 			</ul>
 		</li>
 	</ul>
+		</li>
+		<li id="toc-dhcpcd" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#dhcpcd">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">7.3</span>dhcpcd</div>
+			</a>
+			
+			<ul id="toc-dhcpcd-sublist" class="vector-toc-list">
+			</ul>
 		</li>
 	</ul>
 	</li>
@@ -826,7 +835,7 @@ group nobody
 <div>
 <b>Reason:</b> Usage instructions belong into the wiki text, not into code blocks. Avoid subjective terms like "bleeding edge security". (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:OpenVPN.html">Talk:OpenVPN</a>)</div>
 </div>
-<p>Bleeding edge security
+<p>Bleeding edge security:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/openvpn/server/server.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">cipher AES-256-GCM
@@ -840,7 +849,7 @@ tls-version-min 1.3
 <div>
 <b>Reason:</b> Compatibility options do not fit into a hardening section. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:OpenVPN.html">Talk:OpenVPN</a>)</div>
 </div>
-<p>Compatibility with most devices
+<p>Compatibility with most devices:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/openvpn/server/server.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">cipher AES-256-GCM
@@ -861,7 +870,7 @@ tls-cipher TLS-DHE-RSA-WITH-AES-256-GCM-SHA384:TLS-DHE-RSA-WITH-AES-128-GCM-SHA2
 <h4>
 <span id="Deviating_from_the_standard_port_and.2For_protocol"></span><span class="mw-headline" id="Deviating_from_the_standard_port_and/or_protocol">Deviating from the standard port and/or protocol</span>
 </h4>
-<p>It is generally recommended to use OpenVPN over UDP, because <a rel="nofollow" class="external text" href="http://sites.inka.de/bigred/devel/tcp-tcp.html">TCP over TCP is a bad idea</a><a rel="nofollow" class="external autonumber" href="https://adsabs.harvard.edu/abs/2005SPIE.6011..138H">[2]</a>.
+<p>It is generally recommended to use OpenVPN over UDP, because <a rel="nofollow" class="external text" href="https://web.archive.org/web/20220724145449/sites.inka.de/bigred/devel/tcp-tcp.html">TCP over TCP is a bad idea</a><a rel="nofollow" class="external autonumber" href="https://adsabs.harvard.edu/abs/2005SPIE.6011..138H">[2]</a>.
 </p>
 <p>Some networks may disallow OpenVPN connections on the default port and/or protocol. One strategy to circumvent this is to mimic HTTPS traffic which is very likely unobstructed.
 </p>
@@ -939,7 +948,8 @@ tls-crypt ta.key # Replaces <i>tls-auth ta.key 1</i>
 <h3><span class="mw-headline" id="Converting_certificates_to_encrypted_.p12_format">Converting certificates to encrypted .p12 format</span></h3>
 <p>Some software will only read VPN certificates that are stored in a password-encrypted .p12 file. These can be generated with the following command:
 </p>
-<pre># openssl pkcs12 -export -inkey keys/bugs.key -in keys/bugs.crt -certfile keys/ca.crt -out keys/bugs.p12</pre>
+<pre># openssl pkcs12 -export -inkey keys/bugs.key -in keys/bugs.crt -certfile keys/ca.crt -out keys/bugs.p12
+</pre>
 <h3><span class="mw-headline" id="Testing_the_OpenVPN_configuration">Testing the OpenVPN configuration</span></h3>
 <p>Run <code>openvpn /etc/openvpn/server/server.conf</code> (as the root user) on the server, and <code>openvpn /etc/openvpn/client/client.conf</code> (as the root user) on the client.  Example output should be similar to the following:
 </p>
@@ -1070,6 +1080,17 @@ esac</pre>
 <pre>$ nmcli connection add type vpn vpn-type openvpn ...
 </pre>
 <p>See <span class="plainlinks archwiki-template-man" title="$ man 5 nm-settings-nmcli"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/nm-settings-nmcli.5#vpn_setting">nm-settings-nmcli(5) § vpn setting</a></span> for the detailed options.
+</p>
+<p>If you want to setup login and password, check that there is no <code>auth-user-pass</code> line in the openvpn file or remove it. Then after the import:
+</p>
+<pre>$ nmcli connection modify <i>name</i> \
+   +vpn.data "connection-type=password-tls, username=<i>USERNAME</i>" \
+   vpn.user-name <i>USERNAME</i> \
+   +vpn.secrets "password=<i>PASS</i>"
+</pre>
+<p>You will then be able to connect without re-entering the password with:
+</p>
+<p>$ nmcli connection up <i>name</i>
 </p>
 <h4><span class="mw-headline" id="Sync_state_with_connection">Sync state with connection</span></h4>
 <p>NetworkManager supports syncing the VPN state with a <a href="../en/Network_configuration.html#Check_the_connection" title="Network configuration">interface connection state</a>, i.e start the VPN together with the connection and bringing it down when the connection goes down.
@@ -1260,6 +1281,21 @@ If the OpenVPN connection drops, the system will lose its internet access thereb
 <h4><span class="mw-headline" id="vpnfailsafe">vpnfailsafe</span></h4>
 <p>Alternatively, the <a rel="nofollow" class="external text" href="https://github.com/wknapik/vpnfailsafe">vpnfailsafe</a> (<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/vpnfailsafe-git/">vpnfailsafe-git</a></span><sup><small>AUR</small></sup>) script can be used by the client to prevent DNS leaks and ensure that all traffic to the internet goes over the VPN. If the VPN tunnel goes down, internet access will be cut off, except for connections to the VPN server(s). The script contains the functionality of <a href="#The_update-resolv-conf_custom_script">update-resolv-conf</a>, so the two do not need to be combined.
 </p>
+<h3><span class="mw-headline" id="dhcpcd">dhcpcd</span></h3>
+<p><code>redirect-gateway</code> adds special routes to the system routing table.
+If running <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dhcpcd">dhcpcd</a></span> and the local DHCP configuration changes, perhaps because the wifi access point has changed, then <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dhcpcd">dhcpcd</a></span> will delete all of these special routes. The easiest way to restore them is to prompt <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=openvpn">openvpn</a></span> to reconnect, using <code>/etc/dhcpcd.exit-hook</code>:
+</p>
+<pre># Prompt openvpn to reconnect when the network reconnects.
+if $if_configured &amp;&amp; $if_up &amp;&amp; [ "$reason" != ROUTERADVERT ]; then
+    state="$(systemctl show -P ActiveState openvpn-client@config)"
+    if [ "$state" == 'active' ]; then
+        pid="$(systemctl show -P MainPID openvpn-client@config)"
+        kill -USR1 "$pid"
+    fi
+fi
+</pre>
+<p>Replace <code>@config</code> with the name of your client config.
+</p>
 <h2><span class="mw-headline" id="Layer-3_IPv4_routing">Layer-3 IPv4 routing</span></h2>
 <p>This section describes how to connect client/server LANs to each other using Layer-3 IPv4 routing.
 </p>
@@ -1280,13 +1316,13 @@ If the OpenVPN connection drops, the system will lose its internet access thereb
 <li>Use <a href="../en/Iptables.html" title="Iptables">iptables</a>' NAT feature on the LAN/VPN gateway to masquerade the incoming VPN IP packets.</li>
 </ul>
 <h3><span class="mw-headline" id="Connect_the_server_LAN_to_a_client">Connect the server LAN to a client</span></h3>
-<p>
-The server is on a LAN using the 10.66.0.0/24 subnet.  To inform the client about the available subnet, add a push directive to the server configuration file:</p>
+<p>The server is on a LAN using the 10.66.0.0/24 subnet.  To inform the client about the available subnet, add a push directive to the server configuration file:
+</p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/openvpn/server/server.conf</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">push "route 10.66.0.0 255.255.255.0"</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">push "route 10.66.0.0 255.255.255.0"
+</pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> To route more LANs from the server to the client, add more push directives to the server configuration file, but keep in mind that the server side LANs will need to know how to route to the client.
-</div>
+<strong>Note:</strong> To route more LANs from the server to the client, add more push directives to the server configuration file, but keep in mind that the server side LANs will need to know how to route to the client.</div>
 <h3><span class="mw-headline" id="Connect_the_client_LAN_to_a_server">Connect the client LAN to a server</span></h3>
 <p>Prerequisites:
 </p>
@@ -1329,7 +1365,8 @@ client-config-dir ccd
 route 192.168.4.0 255.255.255.0
 </pre>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/openvpn/ccd/bugs</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">iroute 192.168.4.0 255.255.255.0</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">iroute 192.168.4.0 255.255.255.0
+</pre>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> Remember to make sure that all the LANs or the needed hosts can route to all the destinations.</div>
 <h3><span class="mw-headline" id="Connect_clients_and_client_LANs">Connect clients and client LANs</span></h3>
@@ -1362,18 +1399,18 @@ script-security 2
 up /usr/share/openvpn/contrib/pull-resolv-conf/client.up 
 plugin /usr/lib/openvpn/plugins/openvpn-plugin-down-root.so "/usr/share/openvpn/contrib/pull-resolv-conf/client.down tun0"
 </pre>
-<p>These scripts use the <code>resolvconf</code> command if present. <a href="../en/Systemd-resolved.html#Automatically" class="mw-redirect" title="Systemd-resolvconf">Systemd-resolvconf</a> and <a href="../en/Openresolv.html" title="Openresolv">Openresolv</a> both implement this command. See their wiki pages for more information on getting a working <code>resolvconf</code> implementation.
+<p>These scripts use the <code>resolvconf</code> command if present. <a href="../en/Systemd-resolved.html#Automatically" class="mw-redirect" title="Systemd-resolvconf">systemd-resolvconf</a> and <a href="../en/Openresolv.html" title="Openresolv">Openresolv</a> both implement this command. See their wiki pages for more information on getting a working <i>resolvconf</i> implementation.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> As of October 2019, systemd-resolvconf works as long as the systemd-resolved service is running. Openresolv will not work out of the box because <code>client.up</code> will only create private DNS server entries. These require extra configuration of openresolv to work. See <code>man 8 resolvconf</code> for more details on private DNS servers in openresolv.</div>
-<p>If no implementation of <code>resolvconf</code> is present, <code>client.up</code> preserves the existing <code>resolv.conf</code> at <code>/etc/resolv.conf.ovpnsave</code> and writes a new one. This new one will not have any of the original DNS servers.
+<strong>Note:</strong> As of October 2019, systemd-resolvconf works as long as the systemd-resolved service is running. Openresolv will not work out of the box because <code>client.up</code> will only create private DNS server entries. These require extra configuration of openresolv to work. See <span class="plainlinks archwiki-template-man" title="$ man 8 resolvconf"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/resolvconf.8">resolvconf(8)</a></span> for more details on private DNS servers in openresolv.</div>
+<p>If no implementation of <i>resolvconf</i> is present, <code>client.up</code> preserves the existing <code>resolv.conf</code> at <code>/etc/resolv.conf.ovpnsave</code> and writes a new one. This new one will not have any of the original DNS servers.
 </p>
-<p>When editing these scripts, copy them somewhere else and edit them there, so that the changes do not get overwritten by the next <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=openvpn">openvpn</a></span> package upgrade. <code>/etc/openvpn/client</code> is a pretty good place.
+<p>When editing these scripts, copy them somewhere else and edit them there, so that the changes do not get overwritten by the next <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=openvpn">openvpn</a></span> package upgrade. <code>/etc/openvpn/client/</code> is a pretty good place.
 </p>
-<pre># cp /usr/share/openvpn/contrib/pull-resolv-conf/* /etc/openvpn/client
-# $EDITOR /etc/openvpn/client/client.{up,down}
-# # etc ...
+<pre># cp /usr/share/openvpn/contrib/pull-resolv-conf/* /etc/openvpn/client/
 </pre>
+<p><a href="../en/Help:Reading.html#Append,_add,_create,_edit" class="mw-redirect" title="Textedit">Edit</a> <code>/etc/openvpn/client/client.up</code> and <code>/etc/openvpn/client/client.down</code>.
+</p>
 <h3><span class="mw-headline" id="The_update-resolv-conf_custom_script">The update-resolv-conf custom script</span></h3>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> Another script, <a href="#The_update-systemd-resolved_custom_script">update-systemd-resolved</a>, is recommended by the author of update-resolv-conf for systems with systemd.</div>
@@ -1592,8 +1629,8 @@ $ openssl pkcs12 -in mykeys.pfx.bak -out mykeys.pfx -aes256 -legacy
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=OpenVPN&amp;oldid=813126">https://wiki.archlinux.org/index.php?title=OpenVPN&amp;oldid=813126</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 29 July 2024, at 06:34.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=OpenVPN&amp;oldid=819928">https://wiki.archlinux.org/index.php?title=OpenVPN&amp;oldid=819928</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 31 October 2024, at 12:25.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

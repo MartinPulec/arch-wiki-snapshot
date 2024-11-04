@@ -5,7 +5,7 @@
 <title>Webcam setup - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -394,16 +394,14 @@ usbcore: registered new driver sn9c102
 <p>To find udev attributes like the product name and serial, see <a href="../en/Udev.html#List_the_attributes_of_a_device" title="Udev">Udev#List the attributes of a device</a>. It is also possible to <a href="../en/Udev.html#Setting_static_device_names" title="Udev">set a static name for a video device</a>).
 </p>
 <h3><span class="mw-headline" id="Disable_internal_laptop_webcam">Disable internal laptop webcam</span></h3>
-<p>Sometimes we might want to disable a laptop's internal webcam so that only the one attached
-via USB is showing. This can be done with a udev rule.
-First we will need the device's vendor id and the product id from <code>lsusb</code>
+<p>Sometimes we might want to disable a laptop's internal webcam so that only the one attached via USB is showing. This can be done with a udev rule. First we will need the device's vendor id and the product id:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">lsusb</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Bus 001 Device 008: ID 1bcf:28c1 Sunplus Innovation Technology Inc. Integrated_Webcam_HD</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ lsusb</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Bus 001 Device 008: ID <b>1bcf:28c1</b> Sunplus Innovation Technology Inc. Integrated_Webcam_HD</pre>
 <p>Then we add new udev rule to remove the device as soon as it is detected:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/udev/rules.d/40-disable-internal-webcam.rules</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">ACTION=="add", ATTR{idVendor}=="1bcf", ATTR{idProduct}=="28c1", RUN="/bin/sh -c 'echo 1 &gt;/sys/\$devpath/remove'"</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">ACTION=="add", ATTR{idVendor}=="<b>1bcf</b>", ATTR{idProduct}=="<b>28c1</b>", RUN="/bin/sh -c 'echo 1 &gt;/sys/\$devpath/remove'"</pre>
 <h3><span class="mw-headline" id="Disable_webcam_completely">Disable webcam completely</span></h3>
 <p>To disable webcam completely, you can <a href="../en/Kernel_module.html#Blacklisting" class="mw-redirect" title="Blacklist">blacklist</a> the <code>uvcvideo</code> kernel module. For example:
 </p>
@@ -503,7 +501,7 @@ $ ffmpeg -i http://192.168.1.<i>xxx</i>:8080/video -vf format=yuv420p -f v4l2 /d
 <p>For 32-bit <a href="../en/Official_repositories.html#multilib" class="mw-redirect" title="Multilib">multilib</a> applications, install the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lib32-v4l-utils">lib32-v4l-utils</a></span> package and replace <code>/usr/lib/libv4l/</code> by <code>/usr/lib32/libv4l/</code> in the above commands.
 </p>
 <h3><span class="mw-headline" id="xawtv_with_NVIDIA_card">xawtv with NVIDIA card</span></h3>
-<p>If you are using an NVIDIA graphic card, and get an error like: 
+<p>If you are using an NVIDIA graphics card, and get an error like: 
 </p>
 <pre>X Error of failed request:  XF86DGANoDirectVideoMode
  Major opcode of failed request:  139 (XFree86-DGA)
@@ -585,8 +583,8 @@ Dummy video device (0x0000) (platform:v4l2loopback-000):
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Webcam_setup&amp;oldid=803545">https://wiki.archlinux.org/index.php?title=Webcam_setup&amp;oldid=803545</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 16 March 2024, at 11:57.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Webcam_setup&amp;oldid=817978">https://wiki.archlinux.org/index.php?title=Webcam_setup&amp;oldid=817978</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 8 October 2024, at 08:12.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

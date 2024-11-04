@@ -5,7 +5,7 @@
 <title>dm-crypt/Swap encryption - ArchWiki</title>
 <link rel="stylesheet" href="../../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -302,6 +302,11 @@ swap     LABEL=<i>cryptswap</i>  /dev/urandom  swap,offset=2048,cipher=aes-xts-p
 <p>If the swap volume is in a volume group that gets activated in initramfs, simply follow the instructions in <a href="../../en/Power_management/Suspend_and_hibernate.html#Hibernation" title="Power management/Suspend and hibernate">Power management/Suspend and hibernate#Hibernation</a>.
 </p>
 <h3><span class="mw-headline" id="Using_a_swap_partition">Using a swap partition</span></h3>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
+<div>
+<b>Reason:</b> It's possible to encrypt the swap partition and still use GPT automounting, as long as the key can be located (e.g, using <code># systemd-cryptenroll --tpm2-device=auto ...</code> or any other similar automatic unlock method) (Discuss in <a rel="nofollow" class="external text" href="../../en/Talk:Dm-crypt/Swap_encryption.html">Talk:Dm-crypt/Swap encryption</a>)</div>
+</div>
 <p>If you want to use a partition which is currently used by the system, you have to disable it first:
 </p>
 <pre># swapoff /dev/<i>device</i>
@@ -329,7 +334,7 @@ swap     LABEL=<i>cryptswap</i>  /dev/urandom  swap,offset=2048,cipher=aes-xts-p
 </pre>
 <p>Add the mapped partition to <code>/etc/fstab</code> by adding the following line:
 </p>
-<pre>/dev/mapper/swapDevice swap swap defaults 0 0
+<pre>/dev/mapper/swapDevice none swap defaults 0 0
 </pre>
 <p>Set up your system to resume from <code>/dev/mapper/swapDevice</code>. For example, if you use <a href="../../en/GRUB.html" title="GRUB">GRUB</a> with kernel hibernation support, add the kernel parameter <code>resume=/dev/mapper/swapDevice</code> to GRUB by appending it to the <code>GRUB_CMDLINE_LINUX_DEFAULT</code> variable in <code>/etc/default/grub</code>. A kernel line with encrypted root and swap partitions can look like this:
 </p>
@@ -350,7 +355,7 @@ swap     LABEL=<i>cryptswap</i>  /dev/urandom  swap,offset=2048,cipher=aes-xts-p
 <b>Notes:</b> Same use case. (Discuss in <a rel="nofollow" class="external text" href="../../en/Talk:Dm-crypt/Swap_encryption.html">Talk:Dm-crypt/Swap encryption</a>)</div>
 </div>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> This section is only applicable when using the <code>encrypt</code> hook, which can only unlock a single device (<a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/23182">FS#23182</a>). With <code>sd-encrypt</code> multiple devices may be unlocked, see <a href="../../en/Dm-crypt/System_configuration.html#Using_systemd-cryptsetup-generator" title="Dm-crypt/System configuration">dm-crypt/System configuration#Using systemd-cryptsetup-generator</a>.</div>
+<strong>Note:</strong> This section is only applicable when using the <code>encrypt</code> hook, which can only unlock a single device (<a rel="nofollow" class="external text" href="https://gitlab.archlinux.org/archlinux/mkinitcpio/mkinitcpio/-/issues/231">archlinux/mkinitcpio/mkinitcpio#231</a>). With <code>sd-encrypt</code> multiple devices may be unlocked, see <a href="../../en/Dm-crypt/System_configuration.html#Using_systemd-cryptsetup-generator" title="Dm-crypt/System configuration">dm-crypt/System configuration#Using systemd-cryptsetup-generator</a>.</div>
 <p>Now you have to create a hook to open the swap at boot time. You can either <a href="../../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> and configure <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/mkinitcpio-openswap/">mkinitcpio-openswap</a></span><sup><small>AUR</small></sup>, or follow the following instructions. Create a hook file containing the open command:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/initcpio/hooks/openswap</pre>
@@ -415,11 +420,7 @@ HELPEOF
 <h4><span class="mw-headline" id="dracut">dracut</span></h4>
 <p>Create a keyfile:
 </p>
-<pre># dd bs=512 count=4 if=/dev/random of=/etc/cryptsetup-keys.d/swap.key iflag=fullblock
-</pre>
-<p>Unset permissions:
-</p>
-<pre># chmod 0 /etc/cryptsetup-keys.d/swap.key
+<pre># dd bs=512 count=4 if=/dev/random iflag=fullblock | install -m 0600 /dev/stdin /etc/cryptsetup-keys.d/swap.key
 </pre>
 <p>Add the keyfile to LUKS:
 </p>
@@ -440,8 +441,13 @@ Your kernel command might look like this now:
 <h3><span class="mw-headline" id="Using_a_swap_file">Using a swap file</span></h3>
 <p>A swap file can be used to reserve swap-space within an existing partition and may also be setup inside an encrypted blockdevice's partition.
 </p>
-<p>Follow swap file creation instructions in <a href="../../en/Swap.html#Swap_file" title="Swap">Swap#Swap file</a> and set up hibernation according to <a href="../../en/Power_management/Suspend_and_hibernate.html#Acquire_swap_file_offset" title="Power management/Suspend and hibernate">Power management/Suspend and hibernate#Acquire swap file offset</a>.
+<p>Follow swap file creation instructions in <a href="../../en/Swap.html#Swap_file" title="Swap">Swap#Swap file</a> and set up hibernation according to <a href="../../en/Power_management/Suspend_and_hibernate.html#Configure_the_initramfs" title="Power management/Suspend and hibernate">Power management/Suspend and hibernate#Configure the initramfs</a>.
 </p>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
+<div>
+<b>Reason:</b> A <code>resume</code> hook is only needed for BIOS systems and/or those not using a systemd-based initramfs. See <a href="../../en/Power_management/Suspend_and_hibernate.html#Configure_the_initramfs" title="Power management/Suspend and hibernate">Power management/Suspend and hibernate#Configure the initramfs</a> for more details. (Discuss in <a rel="nofollow" class="external text" href="../../en/Talk:Dm-crypt/Swap_encryption.html">Talk:Dm-crypt/Swap encryption</a>)</div>
+</div>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> 
 <ul>
@@ -459,6 +465,7 @@ Your kernel command might look like this now:
 <a href="../../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../../en/Category:Data-at-rest_encryption.html" title="Category:Data-at-rest encryption">Data-at-rest encryption</a></li></ul>
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
+<li><a href="../../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
 <li><a href="../../en/Category:Pages_or_sections_flagged_with_Template:Merge.html" title="Category:Pages or sections flagged with Template:Merge">Pages or sections flagged with Template:Merge</a></li>
 <li><a href="../../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
 </ul>
@@ -472,8 +479,8 @@ Your kernel command might look like this now:
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/Swap_encryption&amp;oldid=810580">https://wiki.archlinux.org/index.php?title=Dm-crypt/Swap_encryption&amp;oldid=810580</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 15 June 2024, at 08:08.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/Swap_encryption&amp;oldid=816438">https://wiki.archlinux.org/index.php?title=Dm-crypt/Swap_encryption&amp;oldid=816438</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 14 September 2024, at 06:46.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

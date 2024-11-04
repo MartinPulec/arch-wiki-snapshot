@@ -5,7 +5,7 @@
 <title>systemd-nspawn - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -525,7 +525,7 @@
 </div>
 <p><i>systemd-nspawn</i> is like the <a href="../en/Chroot.html" title="Chroot">chroot</a> command, but it is a <i>chroot on steroids</i>.
 </p>
-<p><i>systemd-nspawn</i> may be used to run a command or OS in a light-weight namespace container. It is more powerful than <a href="../en/Chroot.html" title="Chroot">chroot</a> since it fully virtualizes the file system hierarchy, as well as the process tree, the various IPC subsystems and the host and domain name.
+<p><i>systemd-nspawn</i> may be used to run a command or operating system in a light-weight namespace container. It is more powerful than <a href="../en/Chroot.html" title="Chroot">chroot</a> since it fully virtualizes the file system hierarchy, as well as the process tree, the various IPC subsystems and the host and domain name.
 </p>
 <p><i>systemd-nspawn</i> limits access to various kernel interfaces in the container to read-only, such as <code>/sys</code>, <code>/proc/sys</code> or <code>/sys/fs/selinux</code>. Network interfaces and the system clock may not be changed from within the container. Device nodes may not be created. The host system cannot be rebooted and kernel modules may not be loaded from within the container.
 </p>
@@ -572,22 +572,36 @@
 <h3><span class="mw-headline" id="Create_a_Debian_or_Ubuntu_environment">Create a Debian or Ubuntu environment</span></h3>
 <p>Install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=debootstrap">debootstrap</a></span>, and one or both of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=debian-archive-keyring">debian-archive-keyring</a></span> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=ubuntu-keyring">ubuntu-keyring</a></span> depending on which distribution you want.
 </p>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> <i>systemd-nspawn</i> requires that the operating system in the container uses <i>systemd</i> init (has it running as PID 1) and <i>systemd-nspawn</i> is installed in the container. These requirements can be satisfied by making sure the <i>systemd-container</i> package is installed on the container system. The <i>systemd-container</i> package depends on dbus, which is not installed by default. Make sure the <i>dbus</i> or <i>dbus-broker</i> package is installed on the container system.</div>
-<p>From there it is rather easy to set up Debian or Ubuntu environments:
+<p>Then invoke <i>deboostrap</i> with the following structure:
 </p>
-<pre># cd /var/lib/machines
-# debootstrap --include=dbus-broker,systemd-container --components=main,universe <i>codename</i> <i>container-name</i> <i>repository-url</i>
+<pre># debootstrap <i>codename</i> <i>container-name</i> <i>repository-url</i>
 </pre>
-<p>For Debian, valid code names are either the rolling names like "stable" and "testing" or release names like "stretch" and "sid". For Ubuntu, the code name like "xenial" or "zesty" should be used. A complete list of code names is in <code>/usr/share/debootstrap/scripts</code> and the official table of code names to version numbers can be found in <a rel="nofollow" class="external autonumber" href="https://wiki.ubuntu.com/DevelopmentCodeNames#Release_Naming_Scheme">[1]</a>. In case of a Debian image the "repository-url" can be <a rel="nofollow" class="external free" href="https://deb.debian.org/debian/">https://deb.debian.org/debian/</a>. For an Ubuntu image, the "repository-url" can be <a rel="nofollow" class="external free" href="http://archive.ubuntu.com/ubuntu/">http://archive.ubuntu.com/ubuntu/</a>. "repository-url" should <i>not</i> contain a trailing slash.
-</p>
+<ul>
+<li>
+<i>codename</i>: for Debian, valid code names are either the stable aliases <code>stable</code>, <code>testing</code> and <code>unstable</code>, or release names like <code>bookworm</code> and <code>sid</code>: see <a rel="nofollow" class="external autonumber" href="https://www.debian.org/releases/">[1]</a> for a list. For Ubuntu, only code names such as <code>jammy</code> and <code>noble</code> should be used and not version numbers: see <a rel="nofollow" class="external autonumber" href="https://wiki.ubuntu.com/Releases">[2]</a> and <a rel="nofollow" class="external autonumber" href="https://wiki.ubuntu.com/DevelopmentCodeNames#Release_Naming_Scheme">[3]</a> for a table of code names to version numbers.</li>
+<li>
+<i>container-name</i> is the directory that will contain the operating system file tree; it will be created if it does not yet exist</li>
+<li>
+<i>repository-url</i>: the mirror from which it should download the operating system tree. For current Debian releases it can be any <a rel="nofollow" class="external text" href="https://www.debian.org/mirror/list">valid mirror</a> such as the CDN-backed <a rel="nofollow" class="external free" href="https://deb.debian.org/debian">https://deb.debian.org/debian</a>, and for Ubuntu any mirror from <a rel="nofollow" class="external autonumber" href="https://launchpad.net/ubuntu/+archivemirrors">[4]</a> such as the reference <a rel="nofollow" class="external free" href="http://archive.ubuntu.com/ubuntu">http://archive.ubuntu.com/ubuntu</a>.</li>
+</ul>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> 
+<ul>
+<li>If you need an archived version of Debian (as of 2024-08 this is anything before Debian 10/Buster ), use the special <a rel="nofollow" class="external text" href="https://www.debian.org/distrib/archive">debian-archive</a> mirror URL <a rel="nofollow" class="external free" href="https://archive.debian.org/debian/">https://archive.debian.org/debian/</a>. For Ubuntu, use <a rel="nofollow" class="external free" href="https://old-releases.ubuntu.com/ubuntu/">https://old-releases.ubuntu.com/ubuntu/</a>.</li>
+<li>
+<i>systemd-nspawn</i> requires that the operating system in the container uses <i>systemd</i> as its init (has it running as PID 1). It is the default init system for Debian since Debian 8 ("jessie")<a rel="nofollow" class="external autonumber" href="https://wiki.debian.org/systemd#Introduction">[5]</a> and Ubuntu since 15.04 ("vivid")<a rel="nofollow" class="external autonumber" href="https://wiki.ubuntu.com/SystemdForUpstartUsers#Support_status">[6]</a>. Note however that issues relating to "unknown signing key" arise for releases not included in the aforementioned keyring packages, <i>e.g.</i> any release older than 9 ("Stretch") for Debian<a rel="nofollow" class="external autonumber" href="https://ftp-master.debian.org/keys.html#archivekey">[7]</a>, making the latter the oldest release installable without fiddling around.</li>
+</ul>
+</div>
 <p>Just like Arch, Debian and Ubuntu will not let you log in without a password. To set the root password, run <i>systemd-nspawn</i> without the <code>-b</code> option:
 </p>
-<pre># cd /var/lib/machines
-# systemd-nspawn -D ./<i>container-name</i>
+<pre># systemd-nspawn -D ./<i>container-name</i>
 # passwd
 # logout
 </pre>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong> If planning to manage the container with <a href="#machinectl">#machinectl</a>, make sure to install the <a href="../en/D-Bus.html" class="mw-redirect" title="Dbus">dbus</a> package inside the container using its appropriate name for the target operating system, otherwise it won't work. This can be done by installing <code>systemd-container</code>, which always depends on dbus and systemd, using the <code>--include=</code> option as such:
+<pre># debootstrap --include=systemd-container <i>codename</i> /var/lib/machines/<i>container-name</i> <i>repository-url</i></pre>
+</div>
 <h3><span class="mw-headline" id="Create_a_Fedora_or_AlmaLinux_environment">Create a Fedora or AlmaLinux environment</span></h3>
 <p>Install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dnf">dnf</a></span>, and edit the <code>/etc/dnf/dnf.conf</code> file to add the required Fedora repositories.
 </p>
@@ -603,8 +617,7 @@ metalink=https://mirrors.fedoraproject.org/metalink?repo=updates-released-f$rele
 gpgkey=https://getfedora.org/static/fedora.gpg</pre>
 <p>The <i>fedora.gpg</i> file contain the gpg keys for the latest Fedora releases <a rel="nofollow" class="external free" href="https://getfedora.org/security/">https://getfedora.org/security/</a>. To set up a minimal Fedora 37 container:
 </p>
-<pre># cd /var/lib/machines
-# mkdir <i>container-name</i>
+<pre># mkdir /var/lib/machines/<i>container-name</i>
 # dnf --releasever=37 --best --setopt=install_weak_deps=False --repo=fedora --repo=updates --installroot=/var/lib/machines/<i>container-name</i> install dhcp-client dnf fedora-release glibc glibc-langpack-en iputils less ncurses passwd systemd systemd-networkd systemd-resolved util-linux vim-default-editor
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
@@ -653,13 +666,13 @@ gpgkey=https://repo.almalinux.org/almalinux/RPM-GPG-KEY-AlmaLinux-$releasever</p
 </p>
 <h3><span class="mw-headline" id="machinectl">machinectl</span></h3>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> The <i>machinectl</i> tool requires <a href="../en/Systemd.html" title="Systemd">systemd</a> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dbus">dbus</a></span> to be installed in the container. See <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/685">[2]</a> for detailed discussion.</div>
+<strong>Note:</strong> The <i>machinectl</i> tool requires <a href="../en/Systemd.html" title="Systemd">systemd</a> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dbus">dbus</a></span> to be installed in the container. See <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/685">[8]</a> for detailed discussion.</div>
 <p>Containers can be managed by the <code>machinectl <i>subcommand</i> <i>container-name</i></code> command. For example, to start a container:
 </p>
 <pre>$ machinectl start <i>container-name</i>
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> <i>machinectl</i> requires that the container-name consists of only ASCII letters, digits and hyphens so that they are valid <a href="../en/Network_configuration.html#Set_the_hostname" class="mw-redirect" title="Hostname">hostnames</a>. For example, if the container-name contains an underscore, it simply will not be recognized and running <code>machinectl start container_name</code> will result in error <code>Invalid machine name container_name</code>. See <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/11765">[3]</a> and <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/commit/d65652f1f21a4b0c59711320f34266c635393c89">[4]</a> for more details.</div>
+<strong>Note:</strong> <i>machinectl</i> requires that the container-name consists of only ASCII letters, digits and hyphens so that they are valid <a href="../en/Network_configuration.html#Set_the_hostname" class="mw-redirect" title="Hostname">hostnames</a>. For example, if the container-name contains an underscore, it simply will not be recognized and running <code>machinectl start container_name</code> will result in error <code>Invalid machine name container_name</code>. See <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/11765">[9]</a> and <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/commit/d65652f1f21a4b0c59711320f34266c635393c89">[10]</a> for more details.</div>
 <p>Similarly, there are subcommands such as <code>poweroff</code>, <code>reboot</code>, <code>status</code> and <code>show</code>. See <span class="plainlinks archwiki-template-man" title="$ man 1 machinectl"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/machinectl.1#Machine_Commands">machinectl(1) § Machine Commands</a></span> for detailed explanations.
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
@@ -707,9 +720,9 @@ gpgkey=https://repo.almalinux.org/almalinux/RPM-GPG-KEY-AlmaLinux-$releasever</p
 <strong>Note:</strong> 
 <ul>
 <li>
-<i>.nspawn</i> files may be removed unexpectedly from <code>/etc/systemd/nspawn/</code> when you run <code>machinectl remove</code>. <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/15900">[5]</a>
+<i>.nspawn</i> files may be removed unexpectedly from <code>/etc/systemd/nspawn/</code> when you run <code>machinectl remove</code>. <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/15900">[11]</a>
 </li>
-<li>The interaction of network options specified in the <i>.nspawn</i> file and on the command line does not work correctly when there is <code>--settings=override</code> (which is specified in the <code>systemd-nspawn@.service</code> file). <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/12313#issuecomment-681116926">[6]</a> As a workaround, you need to include the option <code>VirtualEthernet=on</code>, even though the service specifies <code>--network-veth</code>.</li>
+<li>The interaction of network options specified in the <i>.nspawn</i> file and on the command line does not work correctly when there is <code>--settings=override</code> (which is specified in the <code>systemd-nspawn@.service</code> file). <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/12313#issuecomment-681116926">[12]</a> As a workaround, you need to include the option <code>VirtualEthernet=on</code>, even though the service specifies <code>--network-veth</code>.</li>
 </ul>
 </div>
 <h3><span class="mw-headline" id="Enable_container_to_start_at_boot">Enable container to start at boot</span></h3>
@@ -799,7 +812,7 @@ VirtualEthernet=no</pre>
 <pre># iptables -A FORWARD -i ve-+ -o <i>internet0</i> -j ACCEPT
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> <i>systemd-networkd</i> and <i>systemd-nspawn</i> can interface with <a href="../en/Iptables.html" title="Iptables">iptables</a> (using the <a rel="nofollow" class="external text" href="https://tldp.org/HOWTO/Querying-libiptc-HOWTO/whatis.html">libiptc</a> library) as well as with <a href="../en/Nftables.html" title="Nftables">nftables</a> <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/13307">[7]</a><a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/blob/9ca34cf5a4a20d48f829b2a36824255aac29078c/NEWS#L295-L304">[8]</a>. In both cases IPv4 and IPv6 NAT is supported.</div>
+<strong>Note:</strong> <i>systemd-networkd</i> and <i>systemd-nspawn</i> can interface with <a href="../en/Iptables.html" title="Iptables">iptables</a> (using the <a rel="nofollow" class="external text" href="https://tldp.org/HOWTO/Querying-libiptc-HOWTO/whatis.html">libiptc</a> library) as well as with <a href="../en/Nftables.html" title="Nftables">nftables</a> <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/13307">[13]</a><a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/blob/9ca34cf5a4a20d48f829b2a36824255aac29078c/NEWS#L295-L304">[14]</a>. In both cases IPv4 and IPv6 NAT is supported.</div>
 <p>Additionally, you need to open the UDP port 67 on the <code>ve-+</code> interfaces for incoming connections to the DHCP server (operated by <i>systemd-networkd</i>):
 </p>
 <pre># iptables -A INPUT -i ve-+ -p udp -m udp --dport 67 -j ACCEPT
@@ -831,9 +844,8 @@ VirtualEthernet=no</pre>
 <h4><span class="mw-headline" id="Use_an_existing_interface">Use an existing interface</span></h4>
 <p>If the host system has multiple physical network interfaces, you can use the <code>--network-interface=<i>interface</i></code> to assign <code><i>interface</i></code> to the container (and make it unavailable to the host while the container is started). Note that <code>--network-interface</code> implies <code>--private-network</code>.
 </p>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> Passing wireless network interfaces to <i>systemd-nspawn</i> containers is currently not supported. <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/7873">[9]</a>
-</div>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong> Passing wireless network interfaces to <i>systemd-nspawn</i> containers is supported since <a rel="nofollow" class="external text" href="https://github.com/systemd/systemd/releases/tag/v256">v256</a>.</div>
 <h3><span class="mw-headline" id="Port_mapping">Port mapping</span></h3>
 <p>When private networking is enabled, individual ports on the host can be mapped to ports on the container using the <code>-p</code>/<code>--port</code> option or by using the <code>Port</code> setting in an <i>.nspawn</i> file. For example, to map a TCP port 8000 on the host to the TCP port 80 in the container:
 </p>
@@ -845,7 +857,7 @@ Port=tcp:8000:80</pre>
 <pre># iptables -A FORWARD -i <i>wan_interface</i> -o ve-+ -p tcp --syn --dport 8000 -m conntrack --ctstate NEW -j ACCEPT
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> <i>systemd-nspawn</i> explicitly excludes the <code>loopback</code> interface when mapping ports. Hence, for the example above, <code>localhost:8000</code> connects to the host and not to the container. Only connections to other interfaces are subjected to port mapping. See <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/6106">[10]</a> for details.</div>
+<strong>Note:</strong> <i>systemd-nspawn</i> explicitly excludes the <code>loopback</code> interface when mapping ports. Hence, for the example above, <code>localhost:8000</code> connects to the host and not to the container. Only connections to other interfaces are subjected to port mapping. See <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/6106">[15]</a> for details.</div>
 <h3><span class="mw-headline" id="Domain_name_resolution">Domain name resolution</span></h3>
 <p><a href="../en/Domain_name_resolution.html" title="Domain name resolution">Domain name resolution</a> in the container can be configured the same way as on the host system. Additionally, <i>systemd-nspawn</i> provides options to manage the <code>/etc/resolv.conf</code> file inside the container:
 </p>
@@ -1121,7 +1133,7 @@ SystemCallFilter=add_key keyctl bpf
 Bind=/proc:/run/proc
 Bind=/sys:/run/sys
 </pre>
-<p>See <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/27994">[11]</a> for more details.
+<p>See <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/27994">[16]</a> for more details.
 </p>
 <p>Since <i>overlayfs</i> does not work with user namespaces and is unavailable inside <i>systemd-nspawn</i>, by default, Docker falls back to using the inefficient <i>vfs</i> as its storage driver, which creates a copy of the image each time a container is started. This can be worked around by using <i>fuse-overlayfs</i> as its storage driver. To do so, we need to first expose <i>fuse</i> to the container:
 </p>
@@ -1195,8 +1207,8 @@ Environment=TERM=xterm-256color</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Systemd-nspawn&amp;oldid=812725">https://wiki.archlinux.org/index.php?title=Systemd-nspawn&amp;oldid=812725</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 21 July 2024, at 08:13.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Systemd-nspawn&amp;oldid=815952">https://wiki.archlinux.org/index.php?title=Systemd-nspawn&amp;oldid=815952</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 6 September 2024, at 19:12.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

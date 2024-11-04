@@ -5,7 +5,7 @@
 <title>Zsh - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -120,7 +120,16 @@
 			</a>
 			
 			<ul id="toc-Command_completion-sublist" class="vector-toc-list">
+				<li id="toc-Custom_completion" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Custom_completion">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.3.1</span>Custom completion</div>
+			</a>
+			
+			<ul id="toc-Custom_completion-sublist" class="vector-toc-list">
 			</ul>
+		</li>
+	</ul>
 		</li>
 		<li id="toc-Key_bindings" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Key_bindings">
@@ -633,7 +642,7 @@ $ zsh-newuser-install -f
 <li>
 <code>/etc/zsh/zlogout</code> Used for executing commands for all users when a <i><b>login shell</b></i> <b>exits</b>.</li>
 </ul>
-<p>See <a rel="nofollow" class="external text" href="https://blog.flowblok.id.au/2013-02/shell-startup-scripts.html#implementation">the graphic representation</a>.
+<p>See <a rel="nofollow" class="external text" href="https://web.archive.org/web/20241008050626/https://blog.flowblok.id.au/2013-02/shell-startup-scripts.html#implementation">the graphic representation</a>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> <code>$HOME/.profile</code> is not a part of the Zsh startup files and <b>is not sourced</b> by Zsh unless Zsh is invoked as <code>sh</code> or <code>ksh</code> and started as a login shell. For more details about the sh and <a href="../en/Command-line_shell.html" class="mw-redirect" title="Ksh">ksh</a> compatibility modes refer to <span class="plainlinks archwiki-template-man" title="$ man 1 zsh"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/zsh.1#COMPATIBILITY">zsh(1) § COMPATIBILITY</a></span>.</div>
@@ -695,6 +704,11 @@ compinit
 <strong>Warning:</strong> This will let Zsh completion scripts run commands with sudo privileges. You should not enable this if you use untrusted autocompletion scripts.</div>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> This special kind of context-aware completion is only available for a small number of commands.</div>
+<h4><span class="mw-headline" id="Custom_completion">Custom completion</span></h4>
+<p>You can write custom completions on your own. Should you do so, you can refer to the <span class="plainlinks archwiki-template-man" title="$ man 1 zshcompsys"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/zshcompsys.1">zshcompsys(1)</a></span> man page.
+</p>
+<p>Note that the official documentation can be hard to read. You can consider trying the simpler <a rel="nofollow" class="external text" href="https://github.com/zsh-users/zsh-completions/blob/master/zsh-completions-howto.org">zsh-completion-howto</a> tutorial for an easy start.
+</p>
 <h3><span class="mw-headline" id="Key_bindings">Key bindings</span></h3>
 <p>Zsh does not use <a href="../en/Readline.html" title="Readline">readline</a>, instead it uses its own and more powerful Zsh Line Editor (ZLE). It does not read <code>/etc/inputrc</code> or <code>~/.inputrc</code>. Read <a rel="nofollow" class="external text" href="https://sgeb.io/posts/2014/04/zsh-zle-custom-widgets/">A closer look at the zsh line editor and creating custom widgets</a> for an introduction to ZLE configuration.
 </p>
@@ -932,7 +946,7 @@ prompt mytheme</pre>
 </pre>
 <p>How it will be displayed:
 </p>
-<div class="mw-no-invert" style="font-family: monospace; white-space: pre; padding: 1em; background-color: #000; border: 1px solid #bcd; color: #c0c0c0; overflow:hidden;"><span style="float:left;">username@host ~ % </span></div>
+<div class="mw-no-invert" style="font-family: monospace, monospace; white-space: pre; padding: 1em; background-color: #000; border: 1px solid #bcd; color: #c0c0c0; overflow:hidden;"><span style="float:left;">username@host ~ % </span></div>
 <p>This is an example of a two-sided prompt with color:
 </p>
 <pre>PROMPT='%F{green}%n%f@%F{magenta}%m%f %F{blue}%B%~%b%f %# '
@@ -940,7 +954,7 @@ RPROMPT='[%F{yellow}%?%f]'
 </pre>
 <p>And here is how it will be displayed:
 </p>
-<div class="mw-no-invert" style="font-family: monospace; white-space: pre; padding: 1em; background-color: #000; border: 1px solid #bcd; color: #c0c0c0; overflow: hidden;">
+<div class="mw-no-invert" style="font-family: monospace, monospace; white-space: pre; padding: 1em; background-color: #000; border: 1px solid #bcd; color: #c0c0c0; overflow: hidden;">
 <span style="float:left;"><span style="color: #008000;">username</span>@<span style="color: #800080;">host</span> <span style="color: #0000ff;">~</span> % </span><span style="float:right;">[<span style="color: #808000;">0</span>]</span>
 </div>
 <p>To use colors from the 16-255 range and 24-bit true color, you can use the number from 0 to 255 assigned to the wanted color and its hexadecimal color code, respectively:
@@ -1206,12 +1220,12 @@ bindkey '^[[1;3D'      cdUndoKey
 
 function xterm_title_precmd () {
 	print -Pn -- '\e]2;%n@%m %~\a'
-	[[ "$TERM" == 'screen'* ]] &amp;&amp; print -Pn -- '\e_\005{g}%n\005{-}@\005{m}%m\005{-} \005{B}%~\005{-}\e\\'
+	[[ "$TERM" == 'screen'* ]] &amp;&amp; print -Pn -- '\e_\005{2}%n\005{-}@\005{5}%m\005{-} \005{+b 4}%~\005{-}\e\\'
 }
 
 function xterm_title_preexec () {
 	print -Pn -- '\e]2;%n@%m %~ %# ' &amp;&amp; print -n -- "${(q)1}\a"
-	[[ "$TERM" == 'screen'* ]] &amp;&amp; { print -Pn -- '\e_\005{g}%n\005{-}@\005{m}%m\005{-} \005{B}%~\005{-} %# ' &amp;&amp; print -n -- "${(q)1}\e\\"; }
+	[[ "$TERM" == 'screen'* ]] &amp;&amp; { print -Pn -- '\e_\005{2}%n\005{-}@\005{5}%m\005{-} \005{+b 4}%~\005{-} %# ' &amp;&amp; print -n -- "${(q)1}\e\\"; }
 }
 
 if [[ "$TERM" == (Eterm*|alacritty*|aterm*|foot*|gnome*|konsole*|kterm*|putty*|rxvt*|screen*|wezterm*|tmux*|xterm*) ]]; then
@@ -1443,8 +1457,8 @@ source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Zsh&amp;oldid=807504">https://wiki.archlinux.org/index.php?title=Zsh&amp;oldid=807504</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 5 May 2024, at 01:05.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Zsh&amp;oldid=819136">https://wiki.archlinux.org/index.php?title=Zsh&amp;oldid=819136</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 17 October 2024, at 22:00.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

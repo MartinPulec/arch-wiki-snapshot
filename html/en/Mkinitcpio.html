@@ -5,7 +5,7 @@
 <title>mkinitcpio - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -454,6 +454,11 @@
 </div>
 <p><a rel="nofollow" class="external text" href="https://gitlab.archlinux.org/archlinux/mkinitcpio/mkinitcpio">mkinitcpio</a> is a Bash script used to create an <a href="https://en.wikipedia.org/wiki/Initial_ramdisk" class="extiw" title="wikipedia:Initial ramdisk">initial ramdisk</a> environment. From the <span class="plainlinks archwiki-template-man" title="$ man 8 mkinitcpio"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/mkinitcpio.8">mkinitcpio(8)</a></span> man page:
 </p>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Merge-arrows-2.svg" decoding="async" width="36" height="40" class="mw-file-element"></span></span><b>This article or section is a candidate for merging with <a href="../en/Arch_boot_process.html#initramfs" title="Arch boot process">Arch boot process#initramfs</a>.</b></p>
+<div>
+<b>Notes:</b> Most of the intro isn't specific to mkinitcpio. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Mkinitcpio.html">Talk:Mkinitcpio</a>)</div>
+</div>
 <dl><dd>The initial ramdisk is in essence a very small environment (early userspace) which loads various kernel modules and sets up necessary things before handing over control to <code>init</code>. This makes it possible to have, for example, encrypted root file systems and root file systems on a software RAID array. <i>mkinitcpio</i> allows for easy extension with custom hooks, has autodetection at runtime, and many other features.</dd></dl>
 <p>Traditionally, the kernel was responsible for all hardware detection and initialization tasks early in the <a href="../en/Arch_boot_process.html" class="mw-redirect" title="Boot process">boot process</a> before mounting the root file system and passing control to <code>init</code>. However, as technology advances, these tasks have become increasingly complex.
 </p>
@@ -511,7 +516,9 @@ By default, it contains the instructions to create two images:
 <pre># mkinitcpio --generate /boot/initramfs-custom2.img --kernel 5.7.12-arch1-1
 </pre>
 <h3><span class="mw-headline" id="Unified_kernel_images">Unified kernel images</span></h3>
-<p><i>mkinitcpio</i> can create <a href="../en/Unified_kernel_image.html" title="Unified kernel image">unified kernel images</a> (UKIs). If <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=systemd-ukify">systemd-ukify</a></span> is installed, <i>mkinitcpio</i> will offload UKI generation to it, if not, <i>mkinitcpio</i> will use its own implementation.
+<p><i>mkinitcpio</i> can create <a href="../en/Unified_kernel_image.html" title="Unified kernel image">unified kernel images</a> (UKIs) either by itself or via <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=systemd-ukify">systemd-ukify</a></span>. If <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=systemd-ukify">systemd-ukify</a></span> is absent or explicitly disabled using <code>--no-ukify</code>, the UKI will be assembled by mkinitcpio itself. Advanced features of <i>ukify</i> will not be available then.
+</p>
+<p>See <a href="../en/Unified_kernel_image.html" title="Unified kernel image">unified kernel image</a> for details about UKI generation.
 </p>
 <h2><span class="mw-headline" id="Configuration">Configuration</span></h2>
 <p>The primary configuration file for <i>mkinitcpio</i> is <code>/etc/mkinitcpio.conf</code>. Drop-in configuration files are also supported, e.g. <code>/etc/mkinitcpio.conf.d/myhooks.conf</code> (they aren't taken into account if mkinitcpio is called with <code>-c</code> option and/or use a preset containing <code>ALL_config</code>). Additionally, preset definitions are provided by kernel packages in the <code>/etc/mkinitcpio.d</code> directory (e.g. <code>/etc/mkinitcpio.d/linux.preset</code>).
@@ -552,7 +559,7 @@ By default, it contains the instructions to create two images:
 <li>If using out-of-tree file systems that will be mounted in early userspace (e.g. when using such a file system as the root file system), their modules (e.g. <code>reiser4</code>) <b>must</b> be added to the <code>MODULES</code> array.</li>
 <li>When using the <b>encrypt</b> or <b>sd-encrypt</b> hook, the keyboard modules and/or filesystems needed to unlock the LUKS device during system boot need to be added to the <code>MODULES</code> array when the target system differs from the one used to run <i>mkinitcpio</i>.  For example, if you use a keyfile on an ext2 file system but no ext2 file system is mounted at the time <i>mkinitcpio</i> runs, add <code>ext2</code>. See <a href="../en/Dm-crypt/System_configuration.html#cryptkey" title="Dm-crypt/System configuration">dm-crypt/System configuration#cryptkey</a> for more details.</li>
 <li>If using a keyboard through a USB 3 hub and wish to use it to unlock a LUKS device, add <code>usbhid xhci_hcd</code>.</li>
-<li>If using displays connected to a docking station, you might need to add a module for your graphic card to make initrd output visible (e.g. <code>i915</code> for most Intel cards).</li>
+<li>If using displays connected to a docking station, you might need to add a module for your graphics card to make initrd output visible (e.g. <code>i915</code> for most Intel cards).</li>
 </ul>
 </div>
 <h3><span class="mw-headline" id="BINARIES_and_FILES">BINARIES and FILES</span></h3>
@@ -1077,7 +1084,10 @@ This will compress the contents present in the current directory in a file named
 <li><a href="../en/Category:Commands.html" title="Category:Commands">Commands</a></li>
 </ul>
 </div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li></ul>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Merge.html" title="Category:Pages or sections flagged with Template:Merge">Pages or sections flagged with Template:Merge</a></li>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
+</ul>
 </div>
 </div>
 				</div>
@@ -1088,8 +1098,8 @@ This will compress the contents present in the current directory in a file named
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Mkinitcpio&amp;oldid=813591">https://wiki.archlinux.org/index.php?title=Mkinitcpio&amp;oldid=813591</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 31 July 2024, at 08:09.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Mkinitcpio&amp;oldid=817967">https://wiki.archlinux.org/index.php?title=Mkinitcpio&amp;oldid=817967</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 8 October 2024, at 08:00.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

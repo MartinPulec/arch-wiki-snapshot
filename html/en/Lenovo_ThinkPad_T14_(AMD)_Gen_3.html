@@ -5,7 +5,7 @@
 <title>Lenovo ThinkPad T14 (AMD) Gen 3 - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -116,31 +116,8 @@
 			<span class="vector-toc-numb">7</span>Mute Mic LED always on</div>
 		</a>
 		
-			<button aria-controls="toc-Mute_Mic_LED_always_on-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
-				<span class="vector-icon vector-icon--x-small mw-ui-icon-wikimedia-expand"></span>
-				<span>Toggle Mute Mic LED always on subsection</span>
-			</button>
-		
 		<ul id="toc-Mute_Mic_LED_always_on-sublist" class="vector-toc-list">
-			<li id="toc-udev_rule" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#udev_rule">
-				<div class="vector-toc-text">
-				<span class="vector-toc-numb">7.1</span>udev rule</div>
-			</a>
-			
-			<ul id="toc-udev_rule-sublist" class="vector-toc-list">
-			</ul>
-		</li>
-		<li id="toc-scripting" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#scripting">
-				<div class="vector-toc-text">
-				<span class="vector-toc-numb">7.2</span>scripting</div>
-			</a>
-			
-			<ul id="toc-scripting-sublist" class="vector-toc-list">
-			</ul>
-		</li>
-	</ul>
+		</ul>
 	</li>
 	<li id="toc-Audio" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
 		<a class="vector-toc-link" href="#Audio">
@@ -622,42 +599,15 @@ exit $?
 <li>The physical key has a symbol on it, which describes its function</li>
 </ol>
 <h2><span class="mw-headline" id="Mute_Mic_LED_always_on">Mute Mic LED always on</span></h2>
-<p>There is an issue where the LED light on the mic button is always on.
+<p>There is an issue where the <a rel="nofollow" class="external text" href="https://github.com/alsa-project/alsa-ucm-conf/issues/100">LED light on the mic button is always on</a>.
 </p>
-<h3><span class="mw-headline" id="udev_rule">udev rule</span></h3>
-<p>There is a scripting fix below this section, but it might be easier to just create an udev rule that sets the trigger to the  <code>audio-micmute</code> trigger.
+<p>Using <i>alsamixer</i> (from <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=alsa-utils">alsa-utils</a></span>)
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/udev/rules.d/micmute-led.rules</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">ACTION=="add", SUBSYSTEM=="leds", KERNEL=="platform::micmute" ATTR{trigger}="audio-micmute"</pre>
-<h3><span class="mw-headline" id="scripting">scripting</span></h3>
-<p>A quick fix is running a simple script at startup and in conjecture with a hotkey daemon. 
+<p>Select the <i>Realtek ALCXXX</i> sound card (with <code>F6</code>). The card label may be "HD-Audio Generic" (it should have 5 channels). Disable <i>Auto-Mute Mode</i>.
 </p>
-<p>If the integer in the file <code>/sys/class/leds/platform\:\:micmute/brightness</code> is 1 the light is on, if its 0 its of. 
+<p>Use <code>Fn+F4</code> to test the mute/unmute functionality for your microphone. The LED should now properly toggle on and off as expected. If it doesn’t work, try rebooting.
 </p>
-<pre>#!/bin/bash
-
-if pactl list sources | grep -A 5 "Family 17h/19h HD Audio Controller Digital Microphone" | grep -q 'Mute: yes'; then
-  echo 1 | sudo tee /sys/class/leds/platform\:\:micmute/brightness
-else
-  echo 0 | sudo tee /sys/class/leds/platform\:\:micmute/brightness
-fi
-</pre>
-<p>Alternatively, it is possible to have the microphone LED work in tandem with the mute status.
-</p>
-<pre># echo -n 7 &gt; /sys/class/sound/card1/controlC1/led-mic/detach
-</pre>
-<p>This can be automated with a service.
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/mute-mic-led-status.service</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Unit]
-Description=Fix the Microphone LED to follow Mic status
-
-[Service]
-ExecStart=/usr/bin/sh -c 'echo -n 7 &gt; /sys/class/sound/card1/controlC1/led-mic/detach'
-
-[Install]
-WantedBy=multi-user.target</pre>
-<p><a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">Enable</a> and <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start">start</a> the service
+<p>Keep the state of <i>Auto-Mute Mode</i> disabled, do not re-enable it.
 </p>
 <h2><span class="mw-headline" id="Audio">Audio</span></h2>
 <p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sof-firmware">sof-firmware</a></span>.
@@ -684,8 +634,8 @@ WantedBy=multi-user.target</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Lenovo_ThinkPad_T14_(AMD)_Gen_3&amp;oldid=804935">https://wiki.archlinux.org/index.php?title=Lenovo_ThinkPad_T14_(AMD)_Gen_3&amp;oldid=804935</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 30 March 2024, at 11:27.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Lenovo_ThinkPad_T14_(AMD)_Gen_3&amp;oldid=815660">https://wiki.archlinux.org/index.php?title=Lenovo_ThinkPad_T14_(AMD)_Gen_3&amp;oldid=815660</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 31 August 2024, at 17:04.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

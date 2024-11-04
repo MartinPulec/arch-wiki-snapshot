@@ -5,7 +5,7 @@
 <title>WirePlumber - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -140,10 +140,19 @@
 			</button>
 		
 		<ul id="toc-Tips_and_tricks-sublist" class="vector-toc-list">
-			<li id="toc-Keyboard_volume_control" class="vector-toc-list-item vector-toc-level-2">
+			<li id="toc-Delete_corrupt_settings" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Delete_corrupt_settings">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.1</span>Delete corrupt settings</div>
+			</a>
+			
+			<ul id="toc-Delete_corrupt_settings-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Keyboard_volume_control" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Keyboard_volume_control">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">3.1</span>Keyboard volume control</div>
+				<span class="vector-toc-numb">3.2</span>Keyboard volume control</div>
 			</a>
 			
 			<ul id="toc-Keyboard_volume_control-sublist" class="vector-toc-list">
@@ -152,7 +161,7 @@
 		<li id="toc-Show_volume_level" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Show_volume_level">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">3.2</span>Show volume level</div>
+				<span class="vector-toc-numb">3.3</span>Show volume level</div>
 			</a>
 			
 			<ul id="toc-Show_volume_level-sublist" class="vector-toc-list">
@@ -161,10 +170,19 @@
 		<li id="toc-Keep_Bluetooth_running_after_logout_/_Headless_Bluetooth" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Keep_Bluetooth_running_after_logout_/_Headless_Bluetooth">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">3.3</span>Keep Bluetooth running after logout / Headless Bluetooth</div>
+				<span class="vector-toc-numb">3.4</span>Keep Bluetooth running after logout / Headless Bluetooth</div>
 			</a>
 			
 			<ul id="toc-Keep_Bluetooth_running_after_logout_/_Headless_Bluetooth-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Disable_audio_stack_integration" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Disable_audio_stack_integration">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.5</span>Disable audio stack integration</div>
+			</a>
+			
+			<ul id="toc-Disable_audio_stack_integration-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -452,53 +470,8 @@ Audio
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> Common use-case, for example, is to disable NVIDIA's HDMI audio output.</div>
 <h3><span class="mw-headline" id="Simultaneous_output_to_multiple_sinks_on_the_same_sound_card">Simultaneous output to multiple sinks on the same sound card</span></h3>
-<p>Create a copy of <code>/usr/share/alsa-card-profile/mixer/profile-sets/default.conf</code> so that changes persist across updates. Here we define a profile joining the two default mappings for Analog and HDMI.
+<p>See <a href="../en/PipeWire.html#Simultaneous_output_to_multiple_sinks_on_the_same_sound_card" title="PipeWire">PipeWire#Simultaneous output to multiple sinks on the same sound card</a>.
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/usr/share/alsa-card-profile/mixer/profile-sets/multiple.conf</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[General]
-auto-profiles = no
-
-[Mapping analog-stereo]
-device-strings = front:%f
-channel-map = left,right
-paths-output = analog-output analog-output-lineout analog-output-speaker analog-output-headphones analog-output-headphones-2
-paths-input = analog-input-front-mic analog-input-rear-mic analog-input-internal-mic analog-input-dock-mic analog-input analog-input-mic analog-input-linein analog-input-aux analog-input-video analog-input-tvtuner analog-input-fm analog-input-mic-line analog-input-headphone-mic analog-input-headset-mic
-priority = 15
-
-[Mapping hdmi-stereo]
-description = Digital Stereo (HDMI)
-device-strings = hdmi:%f
-paths-output = hdmi-output-0
-channel-map = left,right
-priority = 9
-direction = output
-
-[Profile multiple]
-description = Analog Stereo Duplex + Digital Stereo (HDMI) Output
-output-mappings = analog-stereo hdmi-stereo
-input-mappings = analog-stereo</pre>
-<p>Now we configure Wireplumber to use the new card-profile for matching devices. For identifying information see <a href="#Obtain_interface_name_for_rules_matching">#Obtain interface name for rules matching</a>. We apply the configuration by creating a JSON file such as the following:
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/wireplumber/wireplumber.conf.d/51-alsa-custom.conf
-(or ~/.config/wireplumber/wireplumber.conf.d/51-alsa-custom.conf)</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">monitor.alsa.rules = [
-  {
-    matches = [
-      {
-        device.nick = "HDA Intel PCH"
-      }
-    ]
-    actions = {
-      update-props = {
-        api.alsa.use-acp = true,
-        api.acp.auto-profile = false
-        api.acp.auto-port = false
-        device.profile-set = "multiple.conf"
-        device.profile = "multiple"
-      }
-    }
-  }
-]</pre>
 <h3><span class="mw-headline" id="Simultaneous_output_to_transient_devices">Simultaneous output to transient devices</span></h3>
 <p>You may wish to output sound to onboard and external devices simultaneously - even when the external devices are not always plugged in.
 To accomplish this we create a virtual node that will always be present, regardless of what hardware is plugged in. We then link the transient hardware (in this example USB headphones) to the virtual node whenever they are plugged in.
@@ -542,6 +515,13 @@ You will also need to modify the above script so that the XDG_RUNTIME_DIR matche
 <p>If you are having trouble keeping track what devices are connected where, the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=qpwgraph">qpwgraph</a></span> tool is excellent for getting a visual representation of which devices are connected to each other.
 </p>
 <h2><span class="mw-headline" id="Tips_and_tricks">Tips and tricks</span></h2>
+<h3><span class="mw-headline" id="Delete_corrupt_settings">Delete corrupt settings</span></h3>
+<p>If the settings of WirePlumber are corrupted it is possible to delete all user settings:
+</p>
+<pre>$ systemctl --user stop wireplumber.service
+$ rm -r ~/.local/state/wireplumber # deletes settings
+$ systemctl --user start wireplumber.service
+</pre>
 <h3><span class="mw-headline" id="Keyboard_volume_control">Keyboard volume control</span></h3>
 <p>See <a href="../en/Keyboard_shortcuts.html#Xorg" title="Keyboard shortcuts">Keyboard shortcuts#Xorg</a> to bind the following commands to your volume keys: <code>XF86AudioRaiseVolume</code>, <code>XF86AudioLowerVolume</code>, <code>XF86AudioMute</code> and <code>XF86AudioMicMute</code>.
 </p>
@@ -583,6 +563,11 @@ You will also need to modify the above script so that the XDG_RUNTIME_DIR matche
     monitor.bluez.seat-monitoring = disabled
   }
 }</pre>
+<h3><span class="mw-headline" id="Disable_audio_stack_integration">Disable audio stack integration</span></h3>
+<p>If you do not want <a href="../en/PipeWire.html" class="mw-redirect" title="Pipewire">Pipewire</a>/Wireplumber to take over control of your audio devices because you are opting for a different audio solution (e.g. <a href="../en/PulseAudio.html" class="mw-redirect" title="Pulseaudio">Pulseaudio</a>/<a href="../en/JACK_Audio_Connection_Kit.html" class="mw-redirect" title="JACK">JACK</a>/<a href="../en/Advanced_Linux_Sound_Architecture.html" class="mw-redirect" title="ALSA">ALSA</a>) but still want it to be available for screen sharing/video purposes you can make use of the <code>wireplumber@.service</code> <a href="../en/Systemd.html#Using_units" title="Systemd">template unit</a> to enable a different set of default profiles. Wireplumber ships with a profile configuration that enables only the video parts and disables audio integration (including Bluetooth audio) by enabling the <code>video-only</code> template <a href="../en/Systemd/User.html" class="mw-redirect" title="User unit">user unit</a>.
+</p>
+<p><a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Disable">Disable</a> <code>wireplumber.service</code> <a href="../en/Systemd/User.html" class="mw-redirect" title="User unit">user unit</a> and <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> <code>wireplumber@video-only.service</code> user unit.
+</p>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
 <p>Since WirePlumber only exists to manage PipeWire sessions, WirePlumber-related fixes may be found in <a href="../en/PipeWire.html#Troubleshooting" title="PipeWire">PipeWire#Troubleshooting</a>.
 </p>
@@ -613,8 +598,8 @@ You will also need to modify the above script so that the XDG_RUNTIME_DIR matche
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=WirePlumber&amp;oldid=813508">https://wiki.archlinux.org/index.php?title=WirePlumber&amp;oldid=813508</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 30 July 2024, at 20:55.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=WirePlumber&amp;oldid=819712">https://wiki.archlinux.org/index.php?title=WirePlumber&amp;oldid=819712</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 27 October 2024, at 18:22.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

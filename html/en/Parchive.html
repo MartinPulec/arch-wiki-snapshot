@@ -5,7 +5,7 @@
 <title>Parchive - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -275,38 +275,85 @@
 Put this line in your init file in your home directory to make it permanent.</div>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/bin/batchprotect.sh</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">#!/bin/bash
-OIFS="$IFS"
-IFS=$'\n'
-list=$(find . -type f | shuf)
-numleft=$(echo "$list" | wc -l)
-for file in $list ; do
-	ending=$(echo "$file" | sed 's/\(.*\)\.\(.*\)$/\2/')
-	
-	#include this block if you want to have 5% recovery data
-	if [ ! -e "$file-5p.par2" ] &amp;&amp; [ "$ending" != "par2" ] &amp;&amp; [ "$ending" != "sig" ] &amp;&amp; [ "$(stat --format=%s "$file")" != 0 ]; then
-		echo "$numleft original files left"
-		par2create -q -n1 -r5 "$file"
-		rm "$file".par2
-		mv "$file".vol*par2 "$file"-5p.par2
-	fi
-	
-	#include this block if you want to have 100% recovery data
-	if [ ! -e "$file-100p.par2" ] &amp;&amp; [ "$ending" != "par2" ] &amp;&amp; [ "$ending" != "sig" ] &amp;&amp; [ "$(stat --format=%s "$file")" != 0 ]; then
-		echo "$numleft original files left"
-		par2create -q -n1 -r100 "$file"
-		rm "$file".par2
-		mv "$file".vol*par2 "$file"-100p.par2
-	fi
-	
-	#include this block if you want to check for normal AND cryptographic integrity
-	if [ ! -e "$file.sig" ] &amp;&amp; [ "$ending" != "par2" ] &amp;&amp; [ "$ending" != "sig" ]; then
-		gpg --default-key C0FFEEBEEFC0FFEEBEEFC0FFEEDEADBEEF31415926 --detach-sign --yes "$file"
-	fi
-	
-	numleft=$((numleft-1))
-done
-IFS="$OIFS"</pre>
-<p>You would then call <code>batchprotect.sh</code> in order to have all files in the current directory recursively protected by Parchive. The detached signature serves you to be sure that no one tampered with your data. Additionally, you do not have to maintain list of checksums since gpg can do that for you, too.
+readonly REDUNDENCY_PERCENTAGE=5
+readonly PRINT_ON_SUCCESS=1
+
+create_par2() {
+
+  local current_file="${1}"
+  if [ ! -e "${current_file}-5p.par2" ] &amp;&amp; [ -s "${current_file}" ]; then
+    if par2create -n1 -q -q -r"${REDUNDENCY_PERCENTAGE}" "${current_file}"; then
+
+      if [ "${PRINT_ON_SUCCESS}" = 1 ]; then
+        printf '\033[1;37m%s \033[1;34m%s \033[1;32m%s \033[0m\n' \
+                'Creating par2 on' "${current_file}" 'successful'
+      fi
+
+      rm "${current_file}.par2"
+      mv "${current_file}".vol*par2 "${current_file}-${REDUNDENCY_PERCENTAGE}p.par2"
+      return 0
+
+    else
+      printf '\033[1;37m%s \033[1;34m%s \033[1;31m%s \033[0m\n' \
+              'Creating par2 on' "${current_file}" 'failed'
+      return 1
+    fi
+  fi
+}
+
+verify_par2() {
+
+  local current_file="${1}"
+  if [ -f "${current_file}-${REDUNDENCY_PERCENTAGE}p.par2" ]; then
+    if par2verify -q -q "${current_file}-${REDUNDENCY_PERCENTAGE}p.par2"; then
+      if [ "${PRINT_ON_SUCCESS}" = 1 ]; then
+        printf '\033[1;37m%s \033[1;34m%s \033[1;32m%s \033[0m\n' \
+                'Verifying par2 on' "${current_file}" 'successful'
+      fi
+      return 0
+    else
+      printf '\033[1;37m%s \033[1;34m%s \033[1;31m%s \033[0m\n' \
+              'Verifying par2 on' "${current_file}" 'failed'
+      return 1
+    fi
+  fi
+}
+
+repair_par2() {
+
+  local current_file="${1}"
+  if [ -f "${current_file}-${REDUNDENCY_PERCENTAGE}p.par2" ]; then
+    if par2repair -p -q -q "${current_file}-${REDUNDENCY_PERCENTAGE}p.par2"; then
+      if [ "${PRINT_ON_SUCCESS}" = 1 ]; then
+        printf '\033[1;37m%s \033[1;34m%s \033[1;32m%s \033[0m\n' \
+                'Repairing' "${current_file}" 'successful'
+      fi
+      return 0
+    else
+      printf '\033[1;37m%s \033[1;34m%s \033[1;31m%s \033[0m\n' \
+              'Repairing' "${current_file}" 'failed'
+      return 1
+    fi
+  fi
+}
+
+main() {
+
+  while read -r current_file; do
+    # Create or verify
+    if [ ! -e "${current_file}-${REDUNDENCY_PERCENTAGE}p.par2" ]; then
+      create_par2 "$current_file"
+    else
+      if ! verify_par2 "$current_file"; then
+        repair_par2 "$current_file"
+      fi
+    fi
+  # We ignore the file itself, any par2/sig extension and any .git directory and print without the leading ./
+  done &lt; &lt;(find . -type f ! -name '*par2loop.sh' ! -name '*par2' ! -name '*.sig' ! -path '*.git*' -prune -a -printf '%P\n' | shuf)
+}
+
+main</pre>
+<p>You would then call <code>batchprotect.sh</code> in order to have all files in the current directory recursively protected by Parchive. Additionally, you do not have to maintain list of checksums since gpg can do that for you, too.
 </p>
 <h3><span class="mw-headline" id="Verification">Verification</span></h3>
 <pre>$ par2verify <i>file</i>-5.par2
@@ -336,8 +383,8 @@ $ gpg --verify <i>file</i>.sig <i>/new/path/to/fileRenamed</i>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Parchive&amp;oldid=798569">https://wiki.archlinux.org/index.php?title=Parchive&amp;oldid=798569</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 28 January 2024, at 13:22.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Parchive&amp;oldid=819658">https://wiki.archlinux.org/index.php?title=Parchive&amp;oldid=819658</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 27 October 2024, at 01:55.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -5,7 +5,7 @@
 <title>PRIME - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -432,6 +432,11 @@
 </p>
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Installation">Installation</span></h2>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-cut.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is being considered for removal.</b></p>
+<div>
+<b>Reason:</b> This no longer has a purpose: Catalyst has not been linked for years, the NVIDIA driver gained support roughly 5 years ago. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:PRIME.html">Talk:PRIME</a>)</div>
+</div>
 <h3><span class="mw-headline" id="Open-source_drivers">Open-source drivers</span></h3>
 <p>Remove any closed-source graphic drivers and replace them with the open source equivalent:
 </p>
@@ -476,12 +481,7 @@ Provider 1: id: 0x56 cap: 0xf, Source Output, Sink Output, Source Offload, Sink 
 <p>The command <code>xrandr --setprovideroffloadsink provider sink</code> can be used to make a render offload provider send its output to the sink provider (the provider which has a display connected). The provider and sink identifiers can be numeric (0x7d, 0x56) or a case-sensitive name (Intel, radeon). 
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> 
-<ul>
-<li>This setting is no longer necessary when using most default Xorg DDX (the <code>xf86-video-*</code> or built-in modesetting) drivers from the official repositories, as they have DRI3 enabled by default and will therefore automatically make these assignments. Explicitly setting them again does no harm, though.</li>
-<li>GPU offloading is not supported by the closed-source drivers (for the NVIDIA driver this is no longer the case, for more info see <a href="#PRIME_render_offload">#PRIME render offload</a> below).</li>
-</ul>
-</div>
+<strong>Note:</strong> This setting is no longer necessary when using most default Xorg DDX (the <code>xf86-video-*</code> or built-in modesetting) drivers from the official repositories, as they have DRI3 enabled by default and will therefore automatically make these assignments. Explicitly setting them again does no harm, though.</div>
 <p>Example:
 </p>
 <pre>$ xrandr --setprovideroffloadsink radeon Intel
@@ -570,12 +570,7 @@ ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030200"
 </pre>
 <p>You will see either <code>suspended</code> or <code>running</code>, if <code>suspended</code> is displayed, the GPU is turned off. Now the power draw will 0 Watts making the battery last longer.
 </p>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-clear.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs language, wiki syntax or style improvements. See <a href="../en/Help:Style.html" title="Help:Style">Help:Style</a> for reference.</b></p>
-<div>
-<b>Reason:</b> What are "some cases"? At least disclose the GPU. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:PRIME.html">Talk:PRIME</a>)</div>
-</div>
-<p>In some cases, none of the options above might be listed and instead the result will be <code>active</code>. This alone does not mean that the GPU is in the <code>running</code> state. In this case you can check the state using this command:
+<p>In some cases, such as the NVIDIA RTX A1000, none of the options above might be listed and instead the result will be <code>active</code>. This alone does not mean that the GPU is in the <code>running</code> state. In this case you can check the state using this command:
 </p>
 <pre>$ cat /sys/bus/pci/devices/0000:01:00.0/power/runtime_suspended_time
 </pre>
@@ -604,7 +599,7 @@ ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030200"
 <h4><span class="mw-headline" id="Gnome_integration">Gnome integration</span></h4>
 <p>For GNOME integration, <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=switcheroo-control">switcheroo-control</a></span> and <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> <code>switcheroo-control.service</code>.
 </p>
-<p>GNOME will respect the <code>PrefersNonDefaultGPU</code> property in the <a href="../en/Desktop_entries.html" class="mw-redirect" title="Desktop entry">desktop entry</a>. Alternatively, you can launch applications with GPU by right clicking on the icon and choosing <code>Launch using Discrete Graphics Card</code>.
+<p>GNOME will respect the <code>PrefersNonDefaultGPU</code> property in the <a href="../en/Desktop_entries.html" class="mw-redirect" title="Desktop entry">desktop entry</a>. Alternatively, you can launch applications with GPU by right clicking on the icon and choosing <i>Launch using Discrete Graphics Card</i>.
 </p>
 <h4><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h4>
 <p>If you have <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=bumblebee">bumblebee</a></span> installed, you should remove it because it blacklists the <code>nvidia_drm</code> driver which is required to load the NVIDIA driver by X server for offloading.
@@ -627,7 +622,7 @@ ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030200"
 </div>
 <h3><span class="mw-headline" id="Wayland-specific_configuration">Wayland-specific configuration</span></h3>
 <div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-clear.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs language, wiki syntax or style improvements. See <a href="../en/Help:Style.html" title="Help:Style">Help:Style</a> for reference.</b></p>
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-cut.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is being considered for removal.</b></p>
 <div>
 <b>Reason:</b> It looks like this section duplicates all the previous ones, without explaining in details what is Wayland-specific about the environment variable used. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:PRIME.html">Talk:PRIME</a>)</div>
 </div>
@@ -655,8 +650,6 @@ ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030200"
 <p>See the mesa3d documentation for PRIME: <a rel="nofollow" class="external free" href="https://docs.mesa3d.org/envvars.html">https://docs.mesa3d.org/envvars.html</a>
 </p>
 <p>All Xwayland applications should work out of the box just like they do on Xorg. However, as of driver version 525.85, for native Wayland applications, only OpenGL works, provided you have <a href="../en/NVIDIA.html#DRM_kernel_mode_setting" title="NVIDIA">modesetting</a> enabled.
-</p>
-<p>Vulkan Wayland applications will render an invisible window or might even crash since the NVIDIA driver uses hardware specific pixel layout which the Intel or AMD GPUs do not understand. More info on NVIDIA's <a rel="nofollow" class="external text" href="https://github.com/NVIDIA/egl-wayland/issues/72">GitHub issue 72</a>.
 </p>
 <h2><span class="mw-headline" id="Reverse_PRIME">Reverse PRIME</span></h2>
 <div class="noprint archwiki-template-message">
@@ -734,6 +727,11 @@ EndSection
 <p>If after reboot you only have one provider, it might be because when Xorg starts, the <code>nvidia</code> module is not loaded yet. You need to enable early module loading. See <a href="../en/NVIDIA.html#Early_loading" title="NVIDIA">NVIDIA#Early loading</a> for details.
 </p>
 <h2><span class="mw-headline" id="User_scenarios">User scenarios</span></h2>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-cut.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is being considered for removal.</b></p>
+<div>
+<b>Reason:</b> Only a single Xorg-specific example, rehashing what's already explained in the rest of the page. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:PRIME.html">Talk:PRIME</a>)</div>
+</div>
 <h3><span class="mw-headline" id="Discrete_card_as_primary_GPU">Discrete card as primary GPU</span></h3>
 <p>Imagine following scenario: The LVDS1 (internal laptop screen) and VGA outputs are both only accessible through the integrated Intel GPU. The HDMI and Display Port outputs are attached to the discrete NVIDIA card. It is possible to use all four outputs by making use of the <a href="#Reverse_PRIME">#Reverse PRIME</a> technology as described above. However the performance might be slow, because all the rendering for all outputs is done by the integrated Intel card. To improve this situation it is possible to do the rendering by the discrete NVIDIA card, which then copies the framebuffers for the LVDS1 and VGA outputs to the Intel card.
 </p>
@@ -806,7 +804,7 @@ EndSection
 <h3>
 <span id="When_an_application_is_rendered_with_the_discrete_card.2C_it_only_renders_a_black_screen"></span><span class="mw-headline" id="When_an_application_is_rendered_with_the_discrete_card,_it_only_renders_a_black_screen">When an application is rendered with the discrete card, it only renders a black screen</span>
 </h3>
-<p>In some cases PRIME needs a composition manager to properly work. If your window manager doesn’t do compositing, you can use <a href="../en/Xcompmgr.html" title="Xcompmgr">xcompmgr</a> on top of it.
+<p>In some cases PRIME needs a composite manager to properly work. If your window manager does not handle compositing, you can use a <a href="../en/Xorg.html#List_of_composite_managers" title="Xorg">compositor</a> on top of it.
 </p>
 <p>If you use Xfce, you can go to <i>Menu &gt; Settings &gt; Window Manager Tweaks &gt; Compositor</i> and enable compositing, then try again your application.
 </p>
@@ -815,7 +813,7 @@ EndSection
 </p>
 <p>Additionally if you are using an Intel IGP you might be able to fix the GL Compositing issue by running the IGP as UXA instead of SNA, however this may cause issues with the offloading process (ie, <code>xrandr --listproviders</code> may not list the discrete GPU).
 </p>
-<p>For details see <a rel="nofollow" class="external text" href="https://bugs.freedesktop.org/show_bug.cgi?id=69101">FDO Bug #69101</a>.
+<p>For details see <a rel="nofollow" class="external text" href="https://bugs.freedesktop.org/show_bug.cgi?id=69101">FDO Bug #69101</a><sup title="Last check status: SSL error">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-10-12 ⓘ]</sup>.
 </p>
 <p>One other way to approach this issue is by enabling DRI3 in the Intel driver. See the below issue for a sample configuration.
 </p>
@@ -842,7 +840,7 @@ EndSection
 <h3>
 <span id="Glitches.2FGhosting_synchronization_problem_on_second_monitor_when_using_reverse_PRIME"></span><span class="mw-headline" id="Glitches/Ghosting_synchronization_problem_on_second_monitor_when_using_reverse_PRIME">Glitches/Ghosting synchronization problem on second monitor when using reverse PRIME</span>
 </h3>
-<p>This problem can affect users when not using a <a href="../en/Xorg.html#Composite" class="mw-redirect" title="Composite manager">composite manager</a>, such as with <a href="../en/I3.html" title="I3">i3</a>. <a rel="nofollow" class="external autonumber" href="https://bugs.freedesktop.org/show_bug.cgi?id=75579">[10]</a>
+<p>This problem can affect users when not using a <a href="../en/Xorg.html#Composite" class="mw-redirect" title="Composite manager">composite manager</a>, such as with <a href="../en/I3.html" title="I3">i3</a>. <a rel="nofollow" class="external autonumber" href="https://bugs.freedesktop.org/show_bug.cgi?id=75579">[10]</a><sup title="Last check status: SSL error">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-10-12 ⓘ]</sup>
 </p>
 <p>If you experience this problem under Gnome, then a possible fix is to set some environment variables in <code>/etc/environment</code> <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=177925">[11]</a>
 </p>
@@ -892,10 +890,12 @@ __GLX_VENDOR_LIBRARY_NAME=mesa</pre>
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Graphics.html" title="Category:Graphics">Graphics</a></li></ul>
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
+<li><a href="../en/Category:Sections_flagged_with_Template:Remove.html" title="Category:Sections flagged with Template:Remove">Sections flagged with Template:Remove</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Merge.html" title="Category:Pages or sections flagged with Template:Merge">Pages or sections flagged with Template:Merge</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
+<li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li>
 </ul>
 </div>
 </div>
@@ -907,8 +907,8 @@ __GLX_VENDOR_LIBRARY_NAME=mesa</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PRIME&amp;oldid=812130">https://wiki.archlinux.org/index.php?title=PRIME&amp;oldid=812130</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 8 July 2024, at 20:36.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PRIME&amp;oldid=818584">https://wiki.archlinux.org/index.php?title=PRIME&amp;oldid=818584</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 12 October 2024, at 16:41.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

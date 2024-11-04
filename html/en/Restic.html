@@ -5,7 +5,7 @@
 <title>Restic - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -149,24 +149,69 @@
 			<ul id="toc-Configuring_niceness-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-	</ul>
-		</li>
-		<li id="toc-Excludes_list" class="vector-toc-list-item vector-toc-level-3">
+		<li id="toc-Excludes_list" class="vector-toc-list-item vector-toc-level-4">
 			<a class="vector-toc-link" href="#Excludes_list">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">3.1.5</span>Excludes list</div>
+				<span class="vector-toc-numb">3.1.4.4</span>Excludes list</div>
 			</a>
 			
 			<ul id="toc-Excludes_list-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Enable" class="vector-toc-list-item vector-toc-level-3">
+		<li id="toc-Enable" class="vector-toc-list-item vector-toc-level-4">
 			<a class="vector-toc-link" href="#Enable">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">3.1.6</span>Enable</div>
+				<span class="vector-toc-numb">3.1.4.5</span>Enable</div>
 			</a>
 			
 			<ul id="toc-Enable-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+		</li>
+	</ul>
+		</li>
+		<li id="toc-Remote_append-only_backup_repository" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Remote_append-only_backup_repository">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.2</span>Remote append-only backup repository</div>
+			</a>
+			
+			<ul id="toc-Remote_append-only_backup_repository-sublist" class="vector-toc-list">
+				<li id="toc-Setup_restricted_'rclone_serve'_over_ssh" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Setup_restricted_'rclone_serve'_over_ssh">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.2.1</span>Setup restricted 'rclone serve' over ssh</div>
+			</a>
+			
+			<ul id="toc-Setup_restricted_'rclone_serve'_over_ssh-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Run_restic_through_rclone" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Run_restic_through_rclone">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.2.2</span>Run restic through rclone</div>
+			</a>
+			
+			<ul id="toc-Run_restic_through_rclone-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Append-only_script" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Append-only_script">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.2.3</span>Append-only script</div>
+			</a>
+			
+			<ul id="toc-Append-only_script-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Restoring_Backup_Data" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Restoring_Backup_Data">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.2.4</span>Restoring Backup Data</div>
+			</a>
+			
+			<ul id="toc-Restoring_Backup_Data-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -255,17 +300,17 @@
 <li><a href="../en/File_recovery.html" title="File recovery">File recovery</a></li>
 </ul>
 </div>
-<p>This page discusses the restic<a rel="nofollow" class="external autonumber" href="https://restic.readthedocs.io/en/latest/">[1]</a> backup tool including providing a quick start guide and suggesting best practices in the context of Arch Linux.
+<p>This page discusses the restic<a rel="nofollow" class="external autonumber" href="https://restic.readthedocs.io/en/latest/">[1]</a> backup tool, provides a 'quick start' guide, and suggests best practices in the context of Arch Linux.
 </p>
-<p>The main features and benefits are: 
+<p>Restic's main features and benefits are: 
 </p>
 <ul>
 <li>encrypted backups</li>
 <li>remote backups</li>
 <li>built-in support for compression</li>
-<li>efficient storage (chunk based increments, data is not duplicated)</li>
-<li>gives flexibility to use a custom scheduling solution like cron or systemd</li>
-<li>written in go so stand-alone binaries</li>
+<li>efficient storage (chunk-based increments, data is not duplicated)</li>
+<li>gives flexibility to use a custom scheduler like cron or systemd</li>
+<li>written in Go, providing stand-alone binaries</li>
 </ul>
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Installation">Installation</span></h2>
@@ -386,7 +431,7 @@ echo VerySecurePassword123
 <pre># nice -n 19 restic backup ...
 # nice -n 19 restic check ...
 </pre>
-<p>Alternatively if you are using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/ananicy-cpp/">ananicy-cpp</a></span><sup><small>AUR</small></sup> you may want to ensure that the niceness is configured in its configuration file(s) under <code>/etc/ananicy.d/</code>.
+<p>Alternatively if you are using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=ananicy-cpp">ananicy-cpp</a></span> you may want to ensure that the niceness is configured in its configuration file(s) under <code>/etc/ananicy.d/</code>.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/ananicy.d/00-types.types</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">{"type":"file-sync","nice":19,"ionice":7}
@@ -396,7 +441,7 @@ echo VerySecurePassword123
 </pre>
 <p>Refer to the <a rel="nofollow" class="external text" href="https://restic.readthedocs.io/en/latest/faq.html?highlight=nice#how-to-prioritize-restic-s-io-and-cpu-time">restic FAQ</a> for more information.
 </p>
-<h4><span class="mw-headline" id="Excludes_list">Excludes list</span></h4>
+<h5><span class="mw-headline" id="Excludes_list">Excludes list</span></h5>
 <p>Add the excludes file under <code>/etc/restic</code> e.g.:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/restic/excludes.txt</pre>
@@ -425,9 +470,64 @@ echo VerySecurePassword123
 /var/log/**
 /var/run/**
 </pre>
-<h4><span class="mw-headline" id="Enable">Enable</span></h4>
+<h5><span class="mw-headline" id="Enable">Enable</span></h5>
 <p>Do not forget to <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> the <code>restic-backup.timer</code>.
 </p>
+<p><br>
+</p>
+<h3><span class="mw-headline" id="Remote_append-only_backup_repository">Remote append-only backup repository</span></h3>
+<p>As with most backup solutions, restic backups can usually be modified by the user that executes the backup. This makes the backup data vulnerable to manipulation and threats like ransomware. While the above example runs the backup as root and thereby prevents trivial modification by local unprivileged users, a compromise of the system will allow malware to delete/overwrite the backup data as well, even if that data is in a remote repository (since the local user authenticates to the remote repository). In order to setup a secure backup solution that cannot be modified, restic can be used in combination with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=rclone">rclone</a></span> to make use of its append-only feature run on a restricted remote system.
+</p>
+<h4>
+<span id="Setup_restricted_.27rclone_serve.27_over_ssh"></span><span class="mw-headline" id="Setup_restricted_'rclone_serve'_over_ssh">Setup restricted 'rclone serve' over ssh</span>
+</h4>
+<p>The following will restrict the user to the specified command, effectively allowing only the addition of new data to the path <code>/home/myuser/backup</code> while preventing the modification of existing files.
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/ssh/sshd_config</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">/etc/ssh/sshd_config
+Match user myuser
+  ForceCommand rclone serve restic --stdio --append-only ./backup
+</pre>
+<h4><span class="mw-headline" id="Run_restic_through_rclone">Run restic through rclone</span></h4>
+<p>Initialize the backup repository on the remote ssh server:
+</p>
+<pre>restic -o rclone.program='ssh myuser@backup.tld' -r rclone: init
+</pre>
+<p>Execute restic backup with rclone as transport:
+</p>
+<pre>restic -o rclone.program='ssh myuser@backup.tld' -r rclone: backup /home/myuser/importantData
+</pre>
+<h4><span class="mw-headline" id="Append-only_script">Append-only script</span></h4>
+<p>Note that it is no longer possible to use the prune option in order to delete old backups since no data on the remote repository can be modified now. The user can only write-append new files and read existing backup data to restore.
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/usr/local/bin/restic-backup</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">#!/bin/bash
+
+if [[ -n $(pgrep 'restic' | grep 'restic backup') ]]; then
+  echo 'restic is already running...' 1&gt;&amp;2
+  exit 0
+fi
+
+set -e
+set -v
+
+export RESTIC_REPOSITORY="rclone:"
+export RESTIC_PASSWORD_COMMAND='/usr/local/bin/get-restic-password'
+export RESTIC_COMPRESSION='off'
+export RESTIC_CACHE_DIR=~/.cache/restic
+
+RCLONE_EXEC="rclone.program=ssh myuser@backup.tld forced-command"
+DATA_PATH="/home/myuser/importantData"
+
+mkdir -p "${RESTIC_CACHE_DIR}"
+
+restic -o "${RCLONE_EXEC}" unlock
+restic -o "${RCLONE_EXEC}" backup ${DATA_PATH} --exclude-file="$HOME/.local/scripts/excludes" --tag scheduled
+restic -o "${RCLONE_EXEC}" check --with-cache --read-data-subset=5G
+</pre>
+<h4><span class="mw-headline" id="Restoring_Backup_Data">Restoring Backup Data</span></h4>
+<pre>restic -o rclone.program='ssh myuser@backup.tld forced-command' -r rclone: restore latest --target /tmp/restoredData
+</pre>
 </div>
 </div>
 					<div id="catlinks" class="catlinks" data-mw="interface">
@@ -445,8 +545,8 @@ echo VerySecurePassword123
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Restic&amp;oldid=809918">https://wiki.archlinux.org/index.php?title=Restic&amp;oldid=809918</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 2 June 2024, at 20:53.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Restic&amp;oldid=819682">https://wiki.archlinux.org/index.php?title=Restic&amp;oldid=819682</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 27 October 2024, at 07:15.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

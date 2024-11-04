@@ -5,7 +5,7 @@
 <title>Hybrid graphics - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -212,7 +212,7 @@
 			<ul class="vector-menu-content-list">
 				
 				<li class="interlanguage-link interwiki-es mw-list-item"><a href="../es/Hybrid_graphics.html" title="Hybrid graphics – español" lang="es" hreflang="es" class="interlanguage-link-target"><span>Español</span></a></li>
-<li class="interlanguage-link interwiki-ja mw-list-item"><a href="https://wiki.archlinux.jp/index.php/%E3%83%8F%E3%82%A4%E3%83%96%E3%83%AA%E3%83%83%E3%83%89%E3%82%B0%E3%83%A9%E3%83%95%E3%82%A3%E3%83%83%E3%82%AF" title="ハイブリッドグラフィック – 日本語" lang="ja" hreflang="ja" class="interlanguage-link-target"><span>日本語</span></a></li>
+<li class="interlanguage-link interwiki-ja mw-list-item"><a href="https://wiki.archlinux.jp/index.php/%E3%83%8F%E3%82%A4%E3%83%96%E3%83%AA%E3%83%83%E3%83%89%E3%82%B0%E3%83%A9%E3%83%95%E3%82%A3%E3%83%83%E3%82%AF%E3%82%B9" title="ハイブリッドグラフィックス – 日本語" lang="ja" hreflang="ja" class="interlanguage-link-target"><span>日本語</span></a></li>
 <li class="interlanguage-link interwiki-ru mw-list-item"><a href="../ru/Hybrid_graphics.html" title="Hybrid graphics – русский" lang="ru" hreflang="ru" class="interlanguage-link-target"><span>Русский</span></a></li>
 <li class="interlanguage-link interwiki-zh-hans mw-list-item"><a href="https://wiki.archlinuxcn.org/wiki/Hybrid_graphics" title="Hybrid graphics – 中文（简体）" lang="zh-Hans" hreflang="zh-Hans" class="interlanguage-link-target"><span>中文（简体）</span></a></li>
 			</ul>
@@ -254,7 +254,7 @@
 <li><a href="../en/External_GPU.html" title="External GPU">External GPU</a></li>
 </ul>
 </div>
-<p>Hybrid-graphics is a concept involving two graphics cards on same computer. Laptop manufacturers have developed technologies involving two graphic cards with different abilities and power consumption on a single computer. Hybrid-graphics has been developed to support both high performance and power saving use cases by keeping the Dedicated/Discrete Graphics Processor inactive unless its 3D rendering performance is needed over the Integrated Graphics Processor.
+<p>Hybrid-graphics is a concept involving two graphics cards on same computer. Laptop manufacturers have developed technologies involving two graphics cards with different abilities and power consumption on a single computer. Hybrid-graphics has been developed to support both high performance and power saving use cases by keeping the Dedicated/Discrete Graphics Processor inactive unless its 3D rendering performance is needed over the Integrated Graphics Processor.
 </p>
 <p>There are a variety of technologies and each manufacturer developed its own solution to this problem. This technology is well supported on Windows but it is still rough around the edges with Linux distributions. This article will try to explain a little about each approach and describe some community solutions to the lack of GNU/Linux systems support by vendors.
 </p>
@@ -262,8 +262,8 @@
 <strong>Note:</strong> Unless your setup is from before 2010, it likely is using a dynamic switching model. Previous hybrid graphics solutions involved either a reboot for the crudest or a full graphical stack restart which needed a re-log for taking effect.</div>
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Dynamic_switching">Dynamic switching</span></h2>
-<p>Most of the new Hybrid-graphics technologies involve two graphic cards : the dedicated and integrated cards are plugged to a framebuffer and there is no hardware multiplexer. The integrated card is always on and the dedicated card is switched on/off when there is a need in power-save or performance-rendering. In most cases there is no way to use <i>only</i> the dedicated card and all the switching and rendering is controlled by software.
-At startup, the Linux kernel starts using a video mode and setting up low-level graphic drivers which will be used by the applications. Most of the Linux distributions then use X.org to create a graphical environment. Finally, a few other softwares are launched, first a login manager and then a window manager, and so on. This hierarchical system has been designed to be used in most of cases on a single graphic card.
+<p>Most of the new Hybrid-graphics technologies involve two graphics cards: the dedicated and integrated cards are plugged to a framebuffer and there is no hardware multiplexer. The integrated card is always on and the dedicated card is switched on/off when there is a need in power-save or performance-rendering. In most cases there is no way to use <i>only</i> the dedicated card and all the switching and rendering is controlled by software.
+At startup, the Linux kernel starts using a video mode and setting up low-level graphic drivers which will be used by the applications. Most of the Linux distributions then use X.org to create a graphical environment. Finally, a few other softwares are launched, first a login manager and then a window manager, and so on. This hierarchical system has been designed to be used in most of cases on a single graphics card.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> Read <a href="../en/NVIDIA_Optimus.html" title="NVIDIA Optimus">NVIDIA Optimus</a> and <a href="../en/Bumblebee.html" title="Bumblebee">Bumblebee</a> for details about NVIDIA using hybrid graphics with NVIDIA’s proprietary driver. Read <a href="../en/PRIME.html" title="PRIME">PRIME</a> for basically everything else (like AMD or NVIDIA GPUs with the <a href="../en/Nouveau.html" title="Nouveau">nouveau</a> driver).</div>
@@ -298,6 +298,8 @@ ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x040300"
 # Remove NVIDIA VGA/3D controller devices
 ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x03[0-9]*", ATTR{power/control}="auto", ATTR{remove}="1"</pre>
 <p>Reboot and run <code>lspci</code> to see if your NVIDIA GPU is still listed.
+</p>
+<p>Check power usage to ensure your GPU is not drawing power, if it does <a href="#Using_acpi_call">#Using acpi_call</a> may be another option to fully power it down.
 </p>
 <h4><span class="mw-headline" id="Using_bbswitch">Using bbswitch</span></h4>
 <p>With an NVIDIA GPU, this can be more safely done using <a href="../en/Bumblebee.html#Power_management" class="mw-redirect" title="Bbswitch">bbswitch</a>, which consists of a kernel package that automatically issues the correct ACPI calls to disable the discrete GPU when not needed, or automatically at boot.
@@ -402,8 +404,8 @@ w /proc/acpi/call - - - - <i>\\_SB.PCI0.PEG0.PEGP._OFF</i></pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Hybrid_graphics&amp;oldid=805582">https://wiki.archlinux.org/index.php?title=Hybrid_graphics&amp;oldid=805582</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 9 April 2024, at 15:37.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Hybrid_graphics&amp;oldid=818801">https://wiki.archlinux.org/index.php?title=Hybrid_graphics&amp;oldid=818801</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 13 October 2024, at 05:31.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

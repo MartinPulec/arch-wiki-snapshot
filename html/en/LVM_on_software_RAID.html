@@ -5,7 +5,7 @@
 <title>LVM on software RAID - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -102,16 +102,7 @@
 			</a>
 			
 			<ul id="toc-Prepare_the_hard_drives-sublist" class="vector-toc-list">
-				<li id="toc-Partition_hard_drives" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Partition_hard_drives">
-				<div class="vector-toc-text">
-				<span class="vector-toc-numb">2.2.1</span>Partition hard drives</div>
-			</a>
-			
-			<ul id="toc-Partition_hard_drives-sublist" class="vector-toc-list">
 			</ul>
-		</li>
-	</ul>
 		</li>
 		<li id="toc-RAID_installation" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#RAID_installation">
@@ -390,7 +381,7 @@
 </div>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> Be sure to review the <a href="../en/RAID.html" title="RAID">RAID</a> article and be aware of all applicable warnings, particularly if you select RAID5.</div>
-<p>Although <a href="../en/RAID.html" title="RAID">RAID</a> and <a href="../en/LVM.html" title="LVM">LVM</a> may seem like analogous technologies they each present unique features. This article uses an example with three similar 1TB SATA hard drives. The article assumes that the drives are accessible as <code>/dev/sda</code>, <code>/dev/sdb</code>, and <code>/dev/sdc</code>. If you are using IDE drives, for maximum performance make sure that each drive is a master on its own separate channel.
+<p>Although <a href="../en/RAID.html" title="RAID">RAID</a> and <a href="../en/LVM.html" title="LVM">LVM</a> may seem like analogous technologies they each present unique features. This article uses an example with three similar 1TB SATA hard drives. The article assumes that the drives are accessible as <code>/dev/sda</code>, <code>/dev/sdb</code>, and <code>/dev/sdc</code>. 
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> It is good practice to ensure that only the drives involved in the installation are attached while performing the installation.</div>
@@ -485,7 +476,7 @@
 <p>Some boot loaders (e.g. <a href="../en/GRUB_Legacy.html" title="GRUB Legacy">GRUB Legacy</a>, <a href="../en/LILO.html" title="LILO">LILO</a>) will not support any 1.x metadata versions, and instead require the older version, 0.90. If you would like to use one of those boot loaders make sure to add the option <code>--metadata=0.90</code> to the <code>/boot</code> array during <a href="#RAID_installation">RAID installation</a>.
 </p>
 <h2><span class="mw-headline" id="Installation">Installation</span></h2>
-<p>Obtain the latest installation media and boot the Arch Linux installer as outlined in <a href="../en/Installation_guide.html" class="mw-redirect" title="Getting and installing Arch">Getting and installing Arch</a>.
+<p>Obtain the latest installation media and boot the Arch Linux installer as outlined in the <a href="../en/Installation_guide.html" title="Installation guide">installation guide</a>.
 </p>
 <h3><span class="mw-headline" id="Load_kernel_modules">Load kernel modules</span></h3>
 <p><a href="../en/Kernel_module.html#Manual_module_handling" title="Kernel module">Load</a> the appropriate RAID (e.g. <code>raid0</code>, <code>raid1</code>, <code>raid5</code>, <code>raid6</code>, <code>raid10</code>) and LVM (i.e. <code>dm-mod</code>) modules. The following example makes use of RAID1 and RAID5.
@@ -495,20 +486,9 @@
 # modprobe dm-mod
 </pre>
 <h3><span class="mw-headline" id="Prepare_the_hard_drives">Prepare the hard drives</span></h3>
-<p>Each hard drive will have a 1 GiB <code>/boot</code> partition, 4 GiB <code>/swap</code> partition, and a <code>/</code> partition that takes up the remainder of the disk.
+<p><a href="../en/Partitioning.html" class="mw-redirect" title="Partition">Partition</a> each hard drive with a 1 GiB <code>/boot</code> partition, a 4 GiB <code>/swap</code> partition, and a <code>/</code> partition that takes up the remainder of the disk.
 </p>
 <p>The boot partition must be RAID1; i.e it cannot be striped (RAID0) or RAID5, RAID6, etc.. This is because GRUB does not have RAID drivers. Any other level will prevent your system from booting. Additionally, if there is a problem with one boot partition, the boot loader can boot normally from the other two partitions in the <code>/boot</code> array.
-</p>
-<h4><span class="mw-headline" id="Partition_hard_drives">Partition hard drives</span></h4>
-<p>We will use <a href="../en/GPT_fdisk.html" class="mw-redirect" title="Gdisk">gdisk</a> to create three partitions on each of the three hard drives (i.e. <code>/dev/sda</code>, <code>/dev/sdb</code>, <code>/dev/sdc</code>):
-</p>
-<pre>   Name        Flags      Part Type  FS Type          [Label]        Size (MB)
--------------------------------------------------------------------------------
-   sda1        Boot        Primary   linux_raid_m                      1000.00  # /boot
-   sda2                    Primary   linux_raid_m                      4000.00  # /swap
-   sda3                    Primary   linux_raid_m                     97900.00  # /
-</pre>
-<p>To create partitions, see <a href="../en/GPT_fdisk.html#Create_a_partition_table_and_partitions" title="GPT fdisk">GPT fdisk#Create a partition table and partitions</a>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> Make sure to create the same exact partitions on each disk. If a group of partitions of different sizes are assembled to create a RAID partition, it will work, but <i>the redundant partition will be in multiples of the size of the smallest partition</i>, leaving the unallocated space to waste.</div>
@@ -684,6 +664,11 @@ Installed MBR (/usr/lib/syslinux/gptmbr.bin) to /dev/sda
 Installed MBR (/usr/lib/syslinux/gptmbr.bin) to /dev/sdb
 </pre>
 <h4><span class="mw-headline" id="GRUB_legacy">GRUB legacy</span></h4>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-cut.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is being considered for removal.</b></p>
+<div>
+<b>Reason:</b> No one should still use it in 2024. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:LVM_on_software_RAID.html">Talk:LVM on software RAID</a>)</div>
+</div>
 <p>Log in to your new system as root and do:
 </p>
 <pre># grub
@@ -724,7 +709,10 @@ grub&gt; quit
 <li><a href="../en/Category:Storage_virtualization.html" title="Category:Storage virtualization">Storage virtualization</a></li>
 </ul>
 </div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li></ul>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li>
+<li><a href="../en/Category:Sections_flagged_with_Template:Remove.html" title="Category:Sections flagged with Template:Remove">Sections flagged with Template:Remove</a></li>
+</ul>
 </div>
 </div>
 				</div>
@@ -735,8 +723,8 @@ grub&gt; quit
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=LVM_on_software_RAID&amp;oldid=801343">https://wiki.archlinux.org/index.php?title=LVM_on_software_RAID&amp;oldid=801343</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 27 February 2024, at 09:28.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=LVM_on_software_RAID&amp;oldid=815041">https://wiki.archlinux.org/index.php?title=LVM_on_software_RAID&amp;oldid=815041</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 23 August 2024, at 15:55.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

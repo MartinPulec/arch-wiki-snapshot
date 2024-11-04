@@ -5,7 +5,7 @@
 <title>Quassel - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -104,6 +104,15 @@
 			<ul id="toc-Viewing_logs-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Waiting_until_the_network_is_up_to_start" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Waiting_until_the_network_is_up_to_start">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">2.2</span>Waiting until the network is up to start</div>
+			</a>
+			
+			<ul id="toc-Waiting_until_the_network_is_up_to_start-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
@@ -188,16 +197,6 @@
 					
 					<div id="mw-content-text" class="mw-body-content">
 <div class="mw-content-ltr mw-parser-output" lang="en" dir="ltr">
-<div class="archwiki-template-meta-related-articles">
-<p>Related articles</p>
-<ul>
-<li><a href="../en/Arch_IRC_channels.html" class="mw-redirect" title="IRC channels">IRC channels</a></li>
-<li><a href="../en/Arch_IRC_channels.html" class="mw-redirect" title="IRC">IRC</a></li>
-<li><a href="../en/WeeChat.html" title="WeeChat">WeeChat</a></li>
-<li><a href="../en/Irssi.html" title="Irssi">irssi</a></li>
-<li><a href="../en/HexChat.html" title="HexChat">HexChat</a></li>
-</ul>
-</div>
 <p><a rel="nofollow" class="external text" href="https://quassel-irc.org/">Quassel</a> (sometimes referred to as Quassel IRC) is a cross-platform IRC client introduced in 2008. It is dual-licensed under GPLv2 and GPLv3, while most graphical data is licensed under the LGPL and provided by the <a rel="nofollow" class="external text" href="http://www.oxygen-icons.org/">Oxygen Team</a>. The client part of Quassel uses the Qt framework for its user interface.
 </p>
 <p>Quassel is split up into two parts by a server-client model; a client and a core. There is also a monolithic version of the official client that does not require a core. The core(server) is the application that actually does the communication with IRC networks, while the client(s) only communicates with the core. This gives the user a flexibility of having the same instance to IRC networks on different clients (e.g. <a rel="nofollow" class="external text" href="https://bugs.quassel-irc.org/projects/quassel-irc/wiki/Clients#Mobile-amp-Chat-you-can-chat-from-them">mobile</a>, desktop) at the same time.
@@ -205,7 +204,7 @@
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Installation">Installation</span></h2>
 <h3><span class="mw-headline" id="Basic_usage">Basic usage</span></h3>
-<p>Just install the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=quassel-monolithic">quassel-monolithic</a></span> (or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=quassel-monolithic-qt">quassel-monolithic-qt</a></span>) package if you only want to use Quassel from a single computer.
+<p>Just install the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=quassel-monolithic">quassel-monolithic</a></span> (or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=quassel-monolithic-qt">quassel-monolithic-qt</a></span>) package if you only want to use Quassel from a single computer (e.g. for quickly <a href="../en/General_troubleshooting.html#Additional_support" title="General troubleshooting">asking for support</a> on <a href="../en/Arch_IRC_channels.html" title="Arch IRC channels">Arch IRC channels</a>).
 </p>
 <h3>
 <span id="Setting_up_a_bouncer_.28Quassel_core.29_to_be_permanently_online"></span><span class="mw-headline" id="Setting_up_a_bouncer_(Quassel_core)_to_be_permanently_online">Setting up a bouncer (Quassel core) to be permanently online</span>
@@ -253,6 +252,15 @@
 <h3><span class="mw-headline" id="Viewing_logs">Viewing logs</span></h3>
 <p>In addition to the tools listed in the <a rel="nofollow" class="external text" href="https://bugs.quassel-irc.org/projects/quassel-irc/wiki/Quassel_Logging">Quassel wiki</a>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/quarg/">quarg</a></span><sup><small>AUR</small></sup> allows searching through the database.
 </p>
+<h3><span class="mw-headline" id="Waiting_until_the_network_is_up_to_start">Waiting until the network is up to start</span></h3>
+<p>By default, <code>quassel.service</code> is only depending on <code>network.target</code>. To wait until the network is up, <a href="../en/Systemd.html#Editing_provided_units" class="mw-redirect" title="Edit">edit</a> the unit to use <a href="../en/Systemd.html#Running_services_after_the_network_is_up" class="mw-redirect" title="Network-online.target">network-online.target</a> instead: 
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/quassel.service.d/network-online.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Unit]
+After=
+After=network-online.target nss-lookup.target postgresql.service
+Wants=
+Wants=network-online.target postgresql.service</pre>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul><li><a rel="nofollow" class="external text" href="https://bugs.quassel-irc.org/projects/quassel-irc/wiki">QuasselWiki</a></li></ul>
 </div>
@@ -268,8 +276,8 @@
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Quassel&amp;oldid=804068">https://wiki.archlinux.org/index.php?title=Quassel&amp;oldid=804068</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 21 March 2024, at 17:59.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Quassel&amp;oldid=817434">https://wiki.archlinux.org/index.php?title=Quassel&amp;oldid=817434</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 28 September 2024, at 14:17.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

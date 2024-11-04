@@ -5,7 +5,7 @@
 <title>Chrome OS devices/Crostini - ArchWiki</title>
 <link rel="stylesheet" href="../../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -352,23 +352,22 @@
 vmc start termina
 </pre>
 <h4><span class="mw-headline" id="Create_the_container">Create the container</span></h4>
-<p>Open a new crosh terminal in Chrome (<code>Ctrl+Alt+t</code>). Create an Arch Linux container in Termina using VMC:
-</p>
-<pre>vmc container termina arch <a rel="nofollow" class="external free" href="https://images.lxd.canonical.com">https://images.lxd.canonical.com</a> archlinux
-</pre>
-<p>The following error will be shown after completion:
-</p>
-<pre>Error: operation `container_create` failed: failed to create container: `UNKNOWN`: requested VM does not exist: termina
-ERROR - ERROR: command failed
-</pre>
-<p>This is expected behaviour, proceed with following steps.
-</p>
-<p>(If this doesn't work, you might be able to succeed with 'lxc launch images:archlinux' instead. It will create the image with a random name to be changed instead of arch later on. substitute arch in the following steps for this generated name.)
-</p>
-<p>Open a shell in Termina and check if the Arch Linux container is present (it may a few minutes to show on the list):
+<p>Open a new crosh terminal in Chrome (<code>Ctrl+Alt+t</code>). Enter termina using:
 </p>
 <pre>vsh termina
-lxc list
+</pre>
+<p>Now you need to replace the default <code>images</code> remote:
+</p>
+<pre>lxc remote remove images
+lxc remote add images <a rel="nofollow" class="external free" href="https://images.lxd.canonical.com/">https://images.lxd.canonical.com/</a> --protocol=simplestreams
+</pre>
+<p>Then create the Arch Linux container:
+</p>
+<pre>lxc launch images:archlinux arch --config security.privileged=true
+</pre>
+<p>Open a shell in Termina and check if the Arch Linux container is present (it may a few minutes to show on the list):
+</p>
+<pre>lxc list
 </pre>
 <p>If the container is not started, start it:
 </p>
@@ -389,7 +388,8 @@ lxc list
 # groupmod -n <i>new-username</i> <i>old-username</i>
 # usermod -d /home/<i>new-username</i> -l <i>new-username</i> -m -c <i>new-username</i> <i>old-username</i>
 </pre>
-<p>A password needs setting for the user:
+<p><br>
+A password needs setting for the user:
 </p>
 <pre># passwd <i>username</i>
 </pre>
@@ -705,8 +705,8 @@ Feb 24 21:18:23 penguin garcon[183]: [183]: sftp: failed to spawn child process:
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Chrome_OS_devices/Crostini&amp;oldid=812392">https://wiki.archlinux.org/index.php?title=Chrome_OS_devices/Crostini&amp;oldid=812392</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 13 July 2024, at 17:15.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Chrome_OS_devices/Crostini&amp;oldid=817520">https://wiki.archlinux.org/index.php?title=Chrome_OS_devices/Crostini&amp;oldid=817520</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 30 September 2024, at 04:44.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

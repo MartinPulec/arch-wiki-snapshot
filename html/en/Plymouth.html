@@ -5,7 +5,7 @@
 <title>Plymouth - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -197,6 +197,15 @@
 			</a>
 			
 			<ul id="toc-Slow_down_boot_to_show_the_full_animation-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Using_SimpleDRM" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Using_SimpleDRM">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">4.7</span>Using SimpleDRM</div>
+			</a>
+			
+			<ul id="toc-Using_SimpleDRM-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -442,7 +451,7 @@ ShowDelay=5</pre>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/plymouth/plymouthd.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Daemon]
 DeviceScale=<i>an-integer-scaling-factor</i></pre> 
-<p>and rebuild the initrd.
+<p>and <a href="../en/Mkinitcpio.html#Image_creation_and_activation" class="mw-redirect" title="Regenerate the initramfs">regenerate the initramfs</a>.
 </p>
 <h2><span class="mw-headline" id="Tips_and_tricks">Tips and tricks</span></h2>
 <h3><span class="mw-headline" id="Show_boot_messages">Show boot messages</span></h3>
@@ -487,7 +496,7 @@ Alternatively, set the following to keep the firmware background: </p>
 <h3><span class="mw-headline" id="Slow_down_boot_to_show_the_full_animation">Slow down boot to show the full animation</span></h3>
 <p>On systems with a very fast boot time, it might be necessary to add a delay to <code>plymouth-quit.service</code> with a <a href="../en/Systemd.html#Drop-in_files" class="mw-redirect" title="Drop-in snippet">drop-in snippet</a> containing <code>ExecStartPre=/usr/bin/sleep 5</code> if showing the whole animation is desired. See <a rel="nofollow" class="external text" href="https://old.reddit.com/r/archlinux/comments/u5fjbi/how_do_i_make_my_boot_time_slower/">this reddit post</a>.
 </p>
-<p>Alternatively, it is possible to use a new systemd service starting at the same time as plymouth and waiting the whole duration needed for the animation. This method will ensure that inconsistencies in the boot time will not be perceived, as it is not time added <b>after</b> the animation but a delay running '<b>during</b> the animation.
+<p>Alternatively, it is possible to use a new systemd service starting at the same time as plymouth and waiting the whole duration needed for the animation. This method will ensure that inconsistencies in the boot time will not be perceived, as it is not time added <b>after</b> the animation but a delay running <b>during</b> the animation.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/plymouth-wait-for-animation.service</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Unit]
@@ -504,6 +513,13 @@ WantedBy=plymouth-start.service</pre>
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> None of the previous methods will work if you are starting Plymouth from initramfs.</div>
+<h3><span class="mw-headline" id="Using_SimpleDRM">Using SimpleDRM</span></h3>
+<p>On devices using UEFI, Plymouth is able to use the SimpleDRM driver to display the boot splash on the UEFI framebuffer. This allows the boot splash to appear on faster machines where loading the GPU driver takes too long (for example, <a rel="nofollow" class="external text" href="https://hansdegoede.dreamwidth.org/28552.html">systems with AMD GPUs</a>), and also removes any flicker between the motherboard splash screen and Plymouth.
+</p>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning:</strong> When using this method, secondary monitors will not turn on during the boot process. If you use a docked laptop, the password prompt for full disk encryption may not be visible.</div>
+<p>To enable SimpleDRM, append <code>plymouth.use-simpledrm</code> to your <a href="../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a>. See <a rel="nofollow" class="external text" href="https://gitlab.freedesktop.org/plymouth/plymouth/-/issues/264">Plymouth issue 264</a> for more information about this option.
+</p>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
 <h3><span class="mw-headline" id="Disable_with_kernel_parameters">Disable with kernel parameters</span></h3>
 <p>If you experience problems during boot, you can temporary disable Plymouth with the following <a href="../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a>:
@@ -529,6 +545,7 @@ WantedBy=plymouth-start.service</pre>
 <ul>
 <li><a href="https://fedoraproject.org/wiki/Features/BetterStartup" class="extiw" title="fedora:Features/BetterStartup">Original specification</a></li>
 <li><a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?id=81406">Related forum thread</a></li>
+<li><a href="https://wiki.gentoo.org/wiki/Plymouth/Theme_creation" class="extiw" title="gentoo:Plymouth/Theme creation">Gentoo:Plymouth/Theme creation</a></li>
 </ul>
 </div>
 </div>
@@ -543,8 +560,8 @@ WantedBy=plymouth-start.service</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Plymouth&amp;oldid=805961">https://wiki.archlinux.org/index.php?title=Plymouth&amp;oldid=805961</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 14 April 2024, at 12:12.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Plymouth&amp;oldid=817185">https://wiki.archlinux.org/index.php?title=Plymouth&amp;oldid=817185</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 25 September 2024, at 10:26.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -5,7 +5,7 @@
 <title>Security - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -1244,7 +1244,7 @@ password required pam_unix.so use_authtok sha512 shadow</pre>
 </p>
 <h2><span class="mw-headline" id="User_setup">User setup</span></h2>
 <h3><span class="mw-headline" id="Do_not_use_the_root_account_for_daily_use">Do not use the root account for daily use</span></h3>
-<p>Following the principle of least privilege, do not use the root user for daily use. Create a non-privileged user account for each person using the system. Use <a href="../en/Sudo.html" title="Sudo">sudo</a> as necessary for temporary privileged access.
+<p>Following the principle of least privilege, do not use the root user for daily use. Create a non-privileged user account for each person using the system. See <a href="../en/List_of_applications/Security.html#Privilege_elevation" title="List of applications/Security">List of applications/Security#Privilege elevation</a> for ways of temporarily gaining privileged access.
 </p>
 <h3><span class="mw-headline" id="Enforce_a_delay_after_a_failed_login_attempt">Enforce a delay after a failed login attempt</span></h3>
 <p>Add the following line to <code>/etc/pam.d/system-login</code> to add a delay of at least 4 seconds between failed login attempts:
@@ -1254,7 +1254,7 @@ password required pam_unix.so use_authtok sha512 shadow</pre>
 <p><code>4000000</code> is the time in microseconds to delay.
 </p>
 <h3><span class="mw-headline" id="Lock_out_user_after_three_failed_login_attempts">Lock out user after three failed login attempts</span></h3>
-<p>As of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pambase">pambase</a></span> 20200721.1-2, <code>pam_faillock.so</code> is enabled by default to lock out users for 10 minutes after 3 failed login attempts in a 15 minute period (see <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/67644">FS#67644</a>). The lockout only applies to password authentication (e.g. login and <i>sudo</i>), public key authentication over SSH is still accepted. To prevent complete denial-of-service, this lockout is disabled for the root user by default.
+<p>Since <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pambase">pambase</a></span> 20200721.1-2, <code>pam_faillock.so</code> is enabled by default to lock out users for 10 minutes after 3 failed login attempts in a 15 minute period (see <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/67644">FS#67644</a>). The lockout only applies to password authentication (e.g. login and <i>sudo</i>), public key authentication over SSH is still accepted. To prevent complete denial-of-service, this lockout is disabled for the root user by default.
 </p>
 <p>To unlock a user, do:
 </p>
@@ -1614,8 +1614,8 @@ SupplementaryGroups=proc</pre>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> The user namespace configuration item <code>CONFIG_USER_NS</code> is currently enabled in <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-lts">linux-lts</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-zen">linux-zen</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-hardened">linux-hardened</a></span>. Lack of it may prevent certain sandboxing features from being made available to applications.</div>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> Unprivileged user namespace usage (<code>CONFIG_USER_NS_UNPRIVILEGED</code>) is enabled by default in <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-lts">linux-lts</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-zen">linux-zen</a></span>, which greatly increases the attack surface for local privilege escalation (see <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/36969">FS#36969</a>).</div>
-<p>To mitigate this, either :
+<strong>Warning:</strong> Unprivileged user namespace usage (<code>CONFIG_USER_NS_UNPRIVILEGED</code>) is enabled by default in <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-lts">linux-lts</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-zen">linux-zen</a></span>, which greatly increases the attack surface for local privilege escalation (see <a rel="nofollow" class="external text" href="https://gitlab.com/apparmor/apparmor/-/wikis/unprivileged_userns_restriction">AppArmor's Wiki</a> and <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/36969">FS#36969</a>).</div>
+<p>To mitigate this, either:
 </p>
 <ul>
 <li>use the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-hardened">linux-hardened</a></span> kernel which has the safe default, or</li>
@@ -1932,8 +1932,8 @@ esac
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Security&amp;oldid=812632">https://wiki.archlinux.org/index.php?title=Security&amp;oldid=812632</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 19 July 2024, at 09:53.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Security&amp;oldid=817319">https://wiki.archlinux.org/index.php?title=Security&amp;oldid=817319</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 27 September 2024, at 03:34.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

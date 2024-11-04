@@ -5,7 +5,7 @@
 <title>Self-encrypting drives - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -186,6 +186,15 @@
 			</a>
 			
 			<ul id="toc-Troubleshooting:_PBA_Cold_Reboot_Locks_Drives_Again-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Troubleshooting:_UEFI_loses_its_boot_configuration" class="vector-toc-list-item vector-toc-level-5">
+			<a class="vector-toc-link" href="#Troubleshooting:_UEFI_loses_its_boot_configuration">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.1.3.1.5</span>Troubleshooting: UEFI loses its boot configuration</div>
+			</a>
+			
+			<ul id="toc-Troubleshooting:_UEFI_loses_its_boot_configuration-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -511,7 +520,7 @@
 </p>
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Overview">Overview</span></h2>
-<p>Many self-encrypting drives available today implement the <a rel="nofollow" class="external text" href="https://trustedcomputinggroup.org/resource/storage-work-group-storage-security-subsystem-class-opal/">OPAL</a> and <a rel="nofollow" class="external text" href="https://trustedcomputinggroup.org/resource/storage-work-group-storage-security-subsystem-class-enterprise-specification/">Enterprise</a> standards developed by the Trusted Computing Group (TCG). Enterprise SAS versions of the TCG standard are called "TCG Enterprise" drives. Other standards such as Opalite and Pyrite only offer a subset of the functionalities offered by OPAL, and might not even offer any actual encryption of data at rest <a rel="nofollow" class="external autonumber" href="https://winmagic.com/en/opalite-pyrite-sed-specifications-simplified/">[1]</a>. The hardware manufactured according to the standards is <a rel="nofollow" class="external text" href="http://www.wavesys.com/self-encrypting-drive-compatibility-list">labeled</a> accordingly. 
+<p>Many self-encrypting drives available today implement the <a rel="nofollow" class="external text" href="https://trustedcomputinggroup.org/resource/storage-work-group-storage-security-subsystem-class-opal/">OPAL</a>, <a rel="nofollow" class="external text" href="https://trustedcomputinggroup.org/resource/tcg-storage-security-subsystem-class-ruby-specification/">Ruby</a> or <a rel="nofollow" class="external text" href="https://trustedcomputinggroup.org/resource/storage-work-group-storage-security-subsystem-class-enterprise-specification/">Enterprise</a> standards developed by the Trusted Computing Group (TCG). Other standards such as Opalite and Pyrite only offer a subset of the functionalities offered by OPAL, and might not even offer any actual encryption of data at rest <a rel="nofollow" class="external autonumber" href="https://winmagic.com/en/opalite-pyrite-sed-specifications-simplified/">[1]</a>. The hardware manufactured according to the standards is <a rel="nofollow" class="external text" href="http://www.wavesys.com/self-encrypting-drive-compatibility-list">labeled</a> accordingly. 
 </p>
 <p>Unlocking of the drive can be done during operating system runtime using software utilities, in a pre-boot authentication environment, or with a <a href="#BIOS_based_ATA-password">#BIOS based ATA-password</a> on power up.
 </p>
@@ -674,7 +683,7 @@
 <h6><span class="mw-headline" id="Troubleshooting:_PBA_Cold_Reboot_Locks_Drives_Again">Troubleshooting: PBA Cold Reboot Locks Drives Again</span></h6>
 <p>In <a rel="nofollow" class="external text" href="https://github.com/Drive-Trust-Alliance/sedutil/issues/435">some cases</a>, the PBA will load, accept the password, and unlock the drives but when chain-loading to the decrypted operating system it will do a "cold" reboot which powers off the disks for a moment and result in the drives locking again. So you get stuck in a loop of always unlocking the drives but never booting from them.
 </p>
-<p>If this is the case, you will need to edit the `UEFI-*.img` to guarantee it does a "warm" reboot:
+<p>If this is the case, you will need to edit the <code>UEFI-*.img</code> to guarantee it does a "warm" reboot:
 </p>
 <pre># losetup --find --show ./UEFI64-*.img 
 # partprobe /dev/loop0
@@ -690,6 +699,27 @@
 </p>
 <pre># sedutil-cli --loadPBAimage <i>PASSWORD</i> ./UEFI64-*.img <i>DRIVE</i>
 </pre>
+<p>If you are using the recovery image the above might not work (<code>losetup -f ./UIEFI64-*.img</code> fails with <code>no such file</code>), you can edit the file on your computer and copy it on the recovery USB drive (but after the end of the recovery image)
+</p>
+<pre># dd bs=4M if=UEFI64.img of=<i>DRIVE</i> seek=100
+</pre>
+<p><code>seek=100</code> will skip 400 MiB from the start of the drive to avoid overwriting the recovery image itself.
+</p>
+<p>Then, once the recovery is started you can get your image:
+</p>
+<pre># dd bs=4M if=<i>DRIVE</i> of=UEFI64.img skip=100 count=10
+</pre>
+<p><code>count</code>×<code>bs</code> should be more then the file size.
+</p>
+<p>Truncate file to actual size:
+</p>
+<pre># truncate -s <i>IMGSIZE</i> UEFI64.img
+</pre>
+<h6><span class="mw-headline" id="Troubleshooting:_UEFI_loses_its_boot_configuration">Troubleshooting: UEFI loses its boot configuration</span></h6>
+<p>If you use an <a href="../en/EFI_boot_stub.html" title="EFI boot stub">EFI boot stub</a> and configured UEFI to boot your kernel directly, after the disk is unlocked the firmware might forget all its configuration (and it loses it on every unlock). In that case you can install an UEFI <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> to the default/fallback boot path <code><i>esp</i>/EFI/BOOT/BOOTx64.EFI</code> and then the firmware would be able to boot it with its default configuration.
+</p>
+<p>It will be helpful to have an <a href="../en/USB_flash_installation_medium.html" title="USB flash installation medium">USB flash installation medium</a>: if you plug it in after unlocking the disk, it will auto-boot and let you configure your now-unlocked boot disk.
+</p>
 <h4><span class="mw-headline" id="Using_a_mkinitcpio_hook">Using a mkinitcpio hook</span></h4>
 <p>Instead of using a PBA, the drive can be setup to only encrypt the root partition whilst leaving the <code>/boot</code> partition accessible. This way, the system can boot and a <code>mkinitcpio</code> hook used to unlock the drive before the rest of the boot sequence is completed. This has the advantage of not needing to install a PBA and reboot, and also allows for easier support of resume from S3 sleep.
 </p>
@@ -971,7 +1001,7 @@ WantedBy=multi-user.target</pre>
 <p>See the <a rel="nofollow" class="external text" href="https://mirrors.edge.kernel.org/pub/linux/utils/cryptsetup/v2.7/v2.7.0-ReleaseNotes">cryptsetup 2.7.0 release notes</a> for command examples with OPAL related output of the LUKS header.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> Other TCG Security Subsystem Class standards (e.g. TCG Enterprise) <a rel="nofollow" class="external text" href="https://gitlab.com/cryptsetup/cryptsetup/-/issues/831">are not supported</a> since cryptsetup relies on the kernel for SED support and the kernel only supports OPAL.</div>
+<strong>Note:</strong> Other TCG Security Subsystem Class standards (e.g. TCG Ruby and TCG Enterprise) <a rel="nofollow" class="external text" href="https://gitlab.com/cryptsetup/cryptsetup/-/issues/831">are not supported</a> since cryptsetup relies on the kernel for SED support and the kernel only supports OPAL.</div>
 <h3><span class="mw-headline" id="Encrypting_a_partition">Encrypting a partition</span></h3>
 <p>Encrypting a partition with OPAL requires the OPAL admin password. If you have not previously set one, you will need to erase all data on the drive with <span class="plainlinks archwiki-template-man" title="$ man 8 cryptsetup-erase"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/cryptsetup-erase.8">cryptsetup-erase(8)</a></span> to be able to create a new OPAL admin password. Follow the instructions in <a href="#Secure_disk_erasure">#Secure disk erasure</a> to perform the erase.
 </p>
@@ -1073,8 +1103,8 @@ Command successful.</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Self-encrypting_drives&amp;oldid=812609">https://wiki.archlinux.org/index.php?title=Self-encrypting_drives&amp;oldid=812609</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 18 July 2024, at 10:18.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Self-encrypting_drives&amp;oldid=819235">https://wiki.archlinux.org/index.php?title=Self-encrypting_drives&amp;oldid=819235</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 19 October 2024, at 16:27.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

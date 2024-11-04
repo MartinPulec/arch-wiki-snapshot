@@ -5,7 +5,7 @@
 <title>Disk cloning - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -70,7 +70,43 @@
 			</a>
 			
 			<ul id="toc-Using_ddrescue-sublist" class="vector-toc-list">
+				<li id="toc-First_round" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#First_round">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">1.2.1</span>First round</div>
+			</a>
+			
+			<ul id="toc-First_round-sublist" class="vector-toc-list">
 			</ul>
+		</li>
+		<li id="toc-Second_round" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Second_round">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">1.2.2</span>Second round</div>
+			</a>
+			
+			<ul id="toc-Second_round-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Third_round_(optional)" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Third_round_(optional)">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">1.2.3</span>Third round (optional)</div>
+			</a>
+			
+			<ul id="toc-Third_round_(optional)-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Fourth_round" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Fourth_round">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">1.2.4</span>Fourth round</div>
+			</a>
+			
+			<ul id="toc-Fourth_round-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
 		</li>
 	</ul>
 	</li>
@@ -229,17 +265,59 @@
 </p>
 <p>GNU <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=ddrescue">ddrescue</a></span> is a data recovery tool capable of ignoring read errors. <i>ddrescue</i> is not related to dd in any way except that both can be used for copying data from one device to another. The key difference is that <i>ddrescue</i> uses a sophisticated algorithm to copy data from failing drives causing them as little additional damage as possible. See the <a rel="nofollow" class="external text" href="https://www.gnu.org/software/ddrescue/manual/ddrescue_manual.html">ddrescue manual</a> for details.
 </p>
+<h4><span class="mw-headline" id="First_round">First round</span></h4>
 <p>To clone a faulty or dying drive, run <i>ddrescue</i> twice. For the first round, copy every block without read error and map the errors to <code>rescue.map</code>.
 </p>
-<pre># ddrescue --force -n /dev/sd<i>X</i> /dev/sd<i>Y</i> rescue.map
+<pre># ddrescue --force --no-scrape /dev/sd<i>X</i> /dev/sd<i>Y</i> rescue.map
 </pre>
-<p>where <code><i>X</i></code> is the partition letter of the source and <code><i>Y</i></code> of the target <a href="../en/Device_file.html#Block_devices" class="mw-redirect" title="Block device">block device</a>.
+<dl>
+<dt><code>--force</code></dt>
+<dd>This option is used when writing directly to a device (like a disk or partition). Without this flag, <i>ddrescue</i> will refuse to overwrite an existing device to avoid accidental data loss. Using <code>--force</code> allows you to bypass this safety check, so be cautious when using it.</dd>
+<dt><code>--no-scrape</code></dt>
+<dd>This option tells <i>ddrescue</i> to skip the "retrying" phase and focus on copying the easily readable data first (the first pass). It avoids retrying failed sectors, which is useful when you want to quickly recover as much data as possible without getting stuck on bad areas.</dd>
+<dt><code>/dev/sd<i>X</i></code></dt>
+<dd>This represents the source device you want to recover data from. Replace <code>/dev/sd<i>X</i></code> with the actual device name (e.g., <code>/dev/sda</code>). where <code><i>X</i></code> is the partition letter of the source and <code><i>Y</i></code> of the target <a href="../en/Device_file.html#Block_devices" class="mw-redirect" title="Block device">block device</a>.</dd>
+<dt><code>/dev/sd<i>Y</i></code></dt>
+<dd>This is the destination device or file where the recovered data will be written. In this case, it's another device (e.g., <code>/dev/sdb</code>). Be very careful when specifying this, as the command will overwrite this device. Alternatively, you can create image, just typing path/to/file/image.img</dd>
+<dt><code>rescue.map</code></dt>
+<dd>This is the log file used by <i>ddrescue</i> to track recovery progress. The log file is critical because it records which sectors have been successfully recovered and which need further attention. If the recovery process is interrupted, you can resume it later using this log file without starting from scratch.</dd>
+</dl>
+<p>This command copies data from one device (<code>/dev/sd<i>X</i></code>) to another device (<code>/dev/sd<i>Y</i></code>) while prioritizing speed (by skipping retry attempts).
 </p>
+<ul>
+<li>The <code>--force</code> option is needed because you are writing directly to a device (<code>/dev/sd<i>Y</i></code>).</li>
+<li>The <code>rescue.map</code> file keeps track of progress, allowing you to resume the recovery if it stops.</li>
+</ul>
+<h4><span class="mw-headline" id="Second_round">Second round</span></h4>
 <p>For the second round, copy only the bad blocks and try 3 times to read from the source before giving up.
 </p>
-<pre># ddrescue --force -d -r3 -n /dev/sd<i>X</i> /dev/sd<i>Y</i> rescue.map
+<pre># ddrescue --force --idirect --retry-passes=3 --no-scrape /dev/sd<i>X</i> /dev/sd<i>Y</i> rescue.map
 </pre>
-<p>In some circumstances the disk controller or a USB adapter may lock, while attempting to read a particular sector. The <code>-i</code> option may be used to instruct <i>ddrescue</i> to start reading after that position.
+<dl>
+<dt><code>--idirect</code></dt>
+<dd>Direct disk access, which can bypass some issues. If mapfile positions and sizes are multiples of the sector size, the kernel may be caching disk accesses. To bypass this and recover more data, consider using direct disc access or reading from a raw device, ensuring the correct sector size is set with <code>--sector-size</code>. Direct disc access can copy arbitrary domains by reading entire sectors and writing only the necessary parts. Start by trying the <code>--idirect</code> option, or use raw devices if direct access is unavailable. Depending on your OS and hardware, direct access may be slower or faster than normal cached reading.</dd>
+<dt><code>--retry-passes=3</code></dt>
+<dd>Retry bad sectors up to 3 times.</dd>
+</dl>
+<p>This command attempts to read problematic sectors more aggressively.
+</p>
+<h4>
+<span id="Third_round_.28optional.29"></span><span class="mw-headline" id="Third_round_(optional)">Third round (optional)</span>
+</h4>
+<pre># ddrescue --force --idirect --retry-passes=3 --reverse /dev/sdX /dev/sdY rescue.map
+</pre>
+<p><code>--reverse</code> reads the drive in reverse, which can sometimes bypass issues that prevent forward reads.
+</p>
+<h4><span class="mw-headline" id="Fourth_round">Fourth round</span></h4>
+<p>For the fourth round, use <i>scraping mode</i> for <i>fine-grained recovery</i>:
+</p>
+<pre># ddrescue --force --idirect --retry-passes=3 /dev/sdX /dev/sdY rescue.map
+</pre>
+<p><code>--retry-passes=3</code> will scrape over the problematic sectors multiple times. It tries to rescue data from the most damaged sectors.
+</p>
+<p>When to stop: If the drive continues to have read speeds near 0 B/s with no further improvement, the likelihood of recovering more data diminishes. In such cases, professional data recovery services might be the best option. Ultimately, if the process continues to stall without rescuing more data, the drive might be physically failing, and further attempts may yield minimal results..
+</p>
+<p>In some circumstances the disk controller or a USB adapter may lock, while attempting to read a particular sector. The <code>--input-position</code> option may be used to instruct <i>ddrescue</i> to start reading after that position.
 </p>
 <p>Now you can check the file system for corruption and mount the new drive.
 </p>
@@ -412,8 +490,8 @@
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Disk_cloning&amp;oldid=806301">https://wiki.archlinux.org/index.php?title=Disk_cloning&amp;oldid=806301</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 17 April 2024, at 21:23.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Disk_cloning&amp;oldid=819105">https://wiki.archlinux.org/index.php?title=Disk_cloning&amp;oldid=819105</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 17 October 2024, at 07:26.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -5,7 +5,7 @@
 <title>Limine - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -271,7 +271,7 @@
 <strong>Note:</strong> In the entire article <code><i>esp</i></code> denotes the mountpoint of the <a href="../en/EFI_system_partition.html" title="EFI system partition">EFI system partition</a> aka ESP.</div>
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Supported_file_systems">Supported file systems</span></h2>
-<p>Starting with version 6, Limine dropped support for <a href="https://en.wikipedia.org/wiki/Extended_file_system" class="extiw" title="wikipedia:Extended file system">ext2/3/4</a> file systems and only <a rel="nofollow" class="external text" href="https://github.com/limine-bootloader/limine/blob/trunk/README.md#supported-filesystems">supports</a> <a href="../en/FAT.html" class="mw-redirect" title="FAT12">FAT12</a>, <a href="../en/FAT.html" class="mw-redirect" title="FAT16">FAT16</a>, <a href="../en/FAT.html" class="mw-redirect" title="FAT32">FAT32</a> and <a href="https://en.wikipedia.org/wiki/ISO_9660" class="extiw" title="wikipedia:ISO 9660">ISO9660</a>. The list of supported file systems is intentionally limited per Limine's <a rel="nofollow" class="external text" href="https://github.com/limine-bootloader/limine/blob/trunk/PHILOSOPHY.md">design philosophy</a>.
+<p>Limine <a rel="nofollow" class="external text" href="https://github.com/limine-bootloader/limine/blob/trunk/README.md#supported-filesystems">supports</a> <a href="../en/FAT.html" class="mw-redirect" title="FAT12">FAT12</a>, <a href="../en/FAT.html" class="mw-redirect" title="FAT16">FAT16</a>, <a href="../en/FAT.html" class="mw-redirect" title="FAT32">FAT32</a> and <a href="https://en.wikipedia.org/wiki/ISO_9660" class="extiw" title="wikipedia:ISO 9660">ISO9660</a>. Additionally experimental support for ext2 through <a href="../en/Ext4.html" title="Ext4">ext4</a> is present, albeit with limited upstream support. The list of supported file systems is intentionally limited per Limine's <a rel="nofollow" class="external text" href="https://github.com/limine-bootloader/limine/blob/trunk/PHILOSOPHY.md">design philosophy</a>.
 </p>
 <h2><span class="mw-headline" id="Installation">Installation</span></h2>
 <p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=limine">limine</a></span> package.
@@ -312,30 +312,30 @@
 <p>As long as a drive is <a href="../en/Partitioning.html#GUID_Partition_Table" class="mw-redirect" title="GPT">GPT</a> formatted, and it contains an EFI system partition, it is possible to follow both the BIOS and UEFI deployment procedures in order to create a drive capable of booting on both legacy BIOS as well as UEFI systems. This is useful, for example, for installing an operating system on a USB flash drive which is to be used on multiple systems which may, or may not support UEFI, or to ease moving hard drives across systems.
 </p>
 <h2><span class="mw-headline" id="Configuration">Configuration</span></h2>
-<p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=limine">limine</a></span> does not ship a default configuration file, it is therefore necessary to create one. This file is necessary to teach Limine which operating systems are available for boot. The configuration file has a lot of options as Limine allows for a fair degree of customisation. A detailed documentation of the configuration file, its format, and its keys can be found <a rel="nofollow" class="external text" href="https://github.com/limine-bootloader/limine/blob/trunk/CONFIG.md">here</a>.
+<p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=limine">limine</a></span> does not ship a default configuration file, it is therefore necessary to create one. This file is necessary to teach Limine which operating systems are available for boot. The configuration file has a lot of options as Limine allows for a fair degree of customisation. A detailed documentation of the configuration file, its format, and its options can be found <a rel="nofollow" class="external text" href="https://github.com/limine-bootloader/limine/blob/trunk/CONFIG.md">here</a>.
 </p>
-<p>The configuration file, just like <code>limine-bios.sys</code>, needs to reside on either the root, a <code>/boot</code>, a <code>/limine</code>, or a <code>/boot/limine</code> directory of a partition on the drive on which Limine is deployed, as long as the file system of said partition is supported. The configuration file has to be named <code>limine.cfg</code>.
+<p>The configuration file, just like <code>limine-bios.sys</code>, needs to reside on either the root, a <code>/boot</code>, a <code>/limine</code>, or a <code>/boot/limine</code> directory of a partition on the drive on which Limine is deployed, as long as the file system of said partition is supported. The configuration file has to be named <code>limine.conf</code>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> In a Limine config, <code>boot:///</code> represents the partition on which <code>limine.cfg</code> is located. In case there is no separate <code>/boot</code> partition, and <code>limine.cfg</code> resides on the root partition instead, then, in the following example, <code>boot:///</code> should instead be <code>boot:///boot/</code>.</div>
+<strong>Note:</strong> In a Limine config, <code>boot():/</code> represents the partition on which <code>limine.conf</code> is located. In case there is no separate <code>/boot</code> partition, and <code>limine.conf</code> resides on the root partition instead, then, in the following example, <code>boot():/</code> should instead be <code>boot():/boot/</code>.</div>
 <p>Here follows a simple example configuration that contains 1 boot menu entry that describes a typical Arch Linux kernel and initramfs:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">limine.cfg</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">TIMEOUT=5
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">limine.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">timeout: 5
 
-:Arch Linux
-    PROTOCOL=linux
-    KERNEL_PATH=boot:///vmlinuz-linux
-    CMDLINE=root=UUID=<i>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</i> rw
-    MODULE_PATH=boot:///initramfs-linux.img</pre>
+/Arch Linux
+    protocol: linux
+    kernel_path: boot():/vmlinuz-linux
+    kernel_cmdline: root=UUID=<i>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</i> rw
+    module_path: boot():/initramfs-linux.img</pre>
 <p>where <code><i>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</i></code> is the root file system's <a href="../en/Persistent_block_device_naming.html#by-uuid" class="mw-redirect" title="UUID">UUID</a>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> If you're booting from an UEFI system with <a href="../en/Unified_Extensible_Firmware_Interface/Secure_Boot.html" class="mw-redirect" title="Secure Boot">Secure Boot</a> activated then consider securing both Limine config file and resources files like kernels and modules. Indeed everyone that can access the FAT partition that stores the configuration file and the needed resources can alter these file even with SecureBoot.
-<p>To prevent this you should first embed the <code>b2sum</code> checksum of every resource file in the configuration. URIs representing a file have an optional field containing the <code>b2sum</code> checksum of the pointed file. This field can be specified by appending the <code>#</code> character and then the <b>128 characters</b> checksum:
+<p>To prevent this you should first embed the <code>b2sum</code> checksum of every resource file in the configuration. Limine file paths have an optional field containing the <code>b2sum</code> checksum of the file. This field can be specified by appending the <code>#</code> character and then the <b>128 characters</b> checksum:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"></pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">boot:///<i>path</i>#<i>checksum</i></pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">boot():/<i>path</i>#<i>checksum</i></pre>
 To protect the config file you should embed its <code>b2sum</code> in the EFI executable with <code>limine enroll-config</code> command.</div>
 <h3><span class="mw-headline" id="Windows_entry">Windows entry</span></h3>
 <p>In order to be able to boot windows we need to know the path of <code>bootmgfw.efi</code> in the ESP. This can be done by going inside the <a href="../en/EFI_system_partition.html" class="mw-redirect" title="ESP">ESP</a> and using the following command:
@@ -345,10 +345,10 @@ To protect the config file you should embed its <code>b2sum</code> in the EFI ex
 </pre>
 <p>All we need to do now is adding the following to the configuration: 
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">limine.cfg</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">:Windows
-    PROTOCOL=efi_chainload
-    IMAGE_PATH=boot://<b>/EFI/Microsoft/Boot/bootmgfw.efi</b></pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">limine.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">/Windows
+    protocol: efi_chainload
+    image_path: boot():<b>/EFI/Microsoft/Boot/bootmgfw.efi</b></pre>
 <h2><span class="mw-headline" id="pacman_hook">pacman hook</span></h2>
 <p>While not mandatory, it may be useful to set up a <a href="../en/Pacman.html#Hooks" class="mw-redirect" title="Pacman hook">pacman hook</a> to deploy Limine whenever it is upgraded.
 </p>
@@ -402,8 +402,8 @@ Exec = /usr/bin/cp /usr/share/limine/BOOTX64.EFI /boot/EFI/BOOT/</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Limine&amp;oldid=798794">https://wiki.archlinux.org/index.php?title=Limine&amp;oldid=798794</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 29 January 2024, at 07:48.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Limine&amp;oldid=813712">https://wiki.archlinux.org/index.php?title=Limine&amp;oldid=813712</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 3 August 2024, at 06:14.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

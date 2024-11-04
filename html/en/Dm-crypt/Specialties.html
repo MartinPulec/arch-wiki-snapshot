@@ -5,7 +5,7 @@
 <title>dm-crypt/Specialties - ArchWiki</title>
 <link rel="stylesheet" href="../../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -70,7 +70,25 @@
 			</a>
 			
 			<ul id="toc-chkboot-sublist" class="vector-toc-list">
+				<li id="toc-Juergen_Schmidt's_script" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Juergen_Schmidt's_script">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">1.2.1</span>Juergen Schmidt's script</div>
+			</a>
+			
+			<ul id="toc-Juergen_Schmidt's_script-sublist" class="vector-toc-list">
 			</ul>
+		</li>
+		<li id="toc-AUR_package" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#AUR_package">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">1.2.2</span>AUR package</div>
+			</a>
+			
+			<ul id="toc-AUR_package-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
 		</li>
 		<li id="toc-mkinitcpio-chkcryptoboot" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#mkinitcpio-chkcryptoboot">
@@ -547,10 +565,11 @@
 <strong>Warning:</strong> chkboot makes a <code>/boot</code> partition <b>tamper-evident</b>, not <b>tamper-proof</b>. By the time the chkboot script is run, you have already typed your password into a potentially compromised boot loader, kernel, or initrd. If your system fails the chkboot integrity test, no assumptions can be made about the security of your data.</div>
 <p>Referring to an article from the ct-magazine (Issue 3/12, page 146, 01.16.2012, <a rel="nofollow" class="external autonumber" href="https://www.heise.de/ct/inhalt/2012/03/6/">[2]</a>) the following script checks files under <code>/boot</code> for changes of SHA-1 hash, inode, and occupied blocks on the hard drive. It also checks the <a href="../../en/Partitioning.html#Master_Boot_Record" class="mw-redirect" title="Master Boot Record">Master Boot Record</a>. The script cannot prevent certain type of attacks, but a lot are made harder. No configuration of the script itself is stored in unencrypted <code>/boot</code>. With a locked/powered-off encrypted system, this makes it harder for some attackers because it is not apparent that an automatic checksum comparison of the partition is done upon boot. However, an attacker who anticipates these precautions can manipulate the firmware to run their own code on top of your kernel and intercept file system access, e.g. to <code>boot</code>, and present the untampered files. Generally, no security measures below the level of the firmware are able to guarantee trust and tamper evidence.
 </p>
-<p>The script with installation instructions is <a rel="nofollow" class="external text" href="https://ftp.heise.de/pub/ct/listings/1203-146.zip">available</a> (Author: Juergen Schmidt, ju at heisec.de; License: GPLv2). There is also package <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/chkboot/">chkboot</a></span><sup><small>AUR</small></sup> to <a href="../../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a>.
+<p>The script with installation instructions is <a rel="nofollow" class="external text" href="https://ftp.heise.de/pub/ct/listings/1203-146.zip">available</a> (Author: Juergen Schmidt, ju at heisec.de; License: GPLv2). There is also package <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/chkboot/">chkboot</a></span><sup><small>AUR</small></sup> to <a href="../../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a>. The AUR package is recommended, as it has additional helpful scripts.
 </p>
-<p>After installing, <a href="../../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> <code>chkboot.service</code>.
-</p>
+<h4>
+<span id="Juergen_Schmidt.27s_script"></span><span class="mw-headline" id="Juergen_Schmidt's_script">Juergen Schmidt's script</span>
+</h4>
 <p>As <code>/usr/local/bin/chkboot_user.sh</code> needs to be executed right after login, you need to add it to the <a href="../../en/Autostarting.html" class="mw-redirect" title="Autostart">autostart</a> (e.g. under KDE -&gt; <i>System Settings -&gt; Startup and Shutdown -&gt; Autostart</i>; GNOME 3: <i>gnome-session-properties</i>).
 </p>
 <p>With Arch Linux, changes to <code>/boot</code> are pretty frequent, for example by new kernels rolling-in. Therefore it may be helpful to use the scripts with every full system update. One way to do so:
@@ -569,6 +588,13 @@ pacman -Syu
 sudo -u <i>&lt;user&gt;</i> /usr/local/bin/chkboot_user.sh
 echo "Pacman update [3] All done, let us roll on ..."
 </pre>
+<h4><span class="mw-headline" id="AUR_package">AUR package</span></h4>
+<p>After installing, <a href="../../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> <code>chkboot.service</code>.
+</p>
+<p>You may want to add <code>chkboot</code> to the end of your <a href="../../en/Mkinitcpio.html#HOOKS" title="Mkinitcpio">mkinitcpio hooks</a>, so that your chkboot hashes get updated every time mkinitcpio regenerates your initramfs. You can do this by adding <code>chkboot</code> to the end of the <code>HOOKS</code> array in <code>/etc/mkinitcpio.conf</code>.
+</p>
+<p>The AUR package also comes with an <code>chkboot-desktopalert</code> script, which will cause a graphical window to pop up with a warning if <code>/boot</code> changes are detected. You can make use of this script by adding it to the startup scripts of your graphical environment.
+</p>
 <h3><span class="mw-headline" id="mkinitcpio-chkcryptoboot">mkinitcpio-chkcryptoboot</span></h3>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> This hook does <b>not</b> encrypt <a href="../../en/GRUB.html" title="GRUB">GRUB</a>'s core (MBR) code or EFI stub, nor does it protect against situations where an attacker is able to modify the behaviour of the boot loader to compromise the kernel and/or initramfs at run-time.</div>
@@ -629,7 +655,7 @@ Please type uppercase yes to continue:
 <h2>
 <span id="Remote_unlocking_of_root_.28or_other.29_partition"></span><span class="mw-headline" id="Remote_unlocking_of_root_(or_other)_partition">Remote unlocking of root (or other) partition</span>
 </h2>
-<p>Imagine a system with one or more LUKS encrypted partitions (root or others) or volumes and you need to unlock these partitions/volumes during startup. In this case you need to be able to log in from remote and provide a password during an early boot phase. This can be achieved by using one or more <a href="../../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a> hook(s) that configure a network interface and start some kind of SSH server. Some packages listed below contribute various <a href="../../en/Mkinitcpio.html#Build_hooks" title="Mkinitcpio">mkinitcpio build hooks</a> to ease the configuration.
+<p>Imagine a system with one or more LUKS encrypted partitions (root or others) or volumes and you need to unlock these partitions/volumes during startup. In this case you need to be able to log in remotely and provide a password at the early boot phase. This can be achieved by using one or more <a href="../../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a> hook(s) that configure a network interface and start some kind of SSH server. Some packages listed below contribute various <a href="../../en/Mkinitcpio.html#Build_hooks" title="Mkinitcpio">mkinitcpio build hooks</a> to ease the configuration. The following tutorials add a remote unlocking method in addition to the existing local console password prompt.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> 
@@ -668,7 +694,7 @@ Please type uppercase yes to continue:
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> As of version 0.0.4 of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mkinitcpio-netconf">mkinitcpio-netconf</a></span>, you can nest multiple <code>ip=</code> parameters in order to configure multiple interfaces. You cannot mix it with <code>ip=dhcp</code> (<code>ip=:::::eth0:dhcp</code>) alone. An interface needs to be specified.<pre>ip=ip=192.168.1.1:::::eth0:none:ip=172.16.1.1:::::eth1:none</pre>
 </div>If using DHCP, consider adding the <code>netconf_timeout=</code> kernel parameter, to prevent netconf from trying to obtain an IP forever. For a detailed description of the <code>ip=</code> parameter, have a look at the <a href="../../en/Mkinitcpio.html#Using_net" title="Mkinitcpio">according mkinitcpio section</a>. When finished, update the configuration of your <a href="../../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a>.</li>
-<li>Finally, restart the remote system and try to <a href="../../en/OpenSSH.html#Client_usage" title="OpenSSH">ssh to it</a>, <b>explicitly stating the "root" username</b> (even if the root account is disabled on the machine, this root user is used only in the initrd for the purpose of unlocking the remote system). If you are using the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mkinitcpio-dropbear">mkinitcpio-dropbear</a></span> package and you also have the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=openssh">openssh</a></span> package installed, then you most probably will not get any warnings before logging in, because it convert and use the same host keys openssh uses (except Ed25519 keys, as dropbear does not support them). In case you are using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mkinitcpio-tinyssh">mkinitcpio-tinyssh</a></span>, a script <code>tinyssh-convert</code> is bundled, so you can use the same keys as your <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=openssh">openssh</a></span> installation (currently only Ed25519 keys). It may be required to manually copy the host key, via <code>tinyssh-convert</code>, to <code>/etc/tinyssh/sshkeydir</code>. In either case, you should have run <a href="../../en/OpenSSH.html#Daemon_management" title="OpenSSH">the ssh daemon</a> at least once, using the provided systemd units, so the keys can be generated first. After rebooting the machine, you should be prompted for the passphrase to unlock the root device. The system will complete its boot process and you can then ssh to it <a href="../../en/OpenSSH.html#Client_usage" title="OpenSSH">as you normally would</a> (with the remote user of your choice).</li>
+<li>Finally, restart the remote system and try to <a href="../../en/OpenSSH.html#Client_usage" title="OpenSSH">ssh to it</a>, <b>explicitly stating the "root" username</b> (even if the root account is disabled on the machine, this root user is used only in the initrd for the purpose of unlocking the remote system). If you are using the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mkinitcpio-dropbear">mkinitcpio-dropbear</a></span> package and you also have the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=openssh">openssh</a></span> package installed, then you will probably not get any warnings before logging in, because it converts and uses the same host keys openssh uses (except Ed25519 keys, as dropbear does not support them). In the case you are using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mkinitcpio-tinyssh">mkinitcpio-tinyssh</a></span>, a script <code>tinyssh-convert</code> is bundled, so you can use the same keys as your <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=openssh">openssh</a></span> installation (currently only Ed25519 keys). It may be required to manually copy the host key, via <code>tinyssh-convert</code>, to <code>/etc/tinyssh/sshkeydir</code>. In either case, you should have run <a href="../../en/OpenSSH.html#Daemon_management" title="OpenSSH">the ssh daemon</a> at least once, using the provided systemd units, so the keys can be generated first. After rebooting the machine and connecting via ssh, you should be prompted for the passphrase to unlock the device, after which the system will complete its boot process and you can then ssh to it <a href="../../en/OpenSSH.html#Client_usage" title="OpenSSH">as you normally would</a> (with the remote user of your choice).</li>
 </ol>
 <h4><span class="mw-headline" id="Enabling_Wi-Fi">Enabling Wi-Fi</span></h4>
 <p>The <code>netconf</code> hook is normally used with an Ethernet connection. In case you want to setup a computer with wireless only, and unlock it via Wi-Fi, you can use a predefined hook or create a custom hook to connect to a Wi-Fi network before the <code>netconf</code> hook is run.
@@ -723,7 +749,13 @@ Please type uppercase yes to continue:
 <p>When building the initramfs with <code>mkinitcpio</code> this setup copies the already existing configuration of <a href="../../en/Systemd-networkd.html" title="Systemd-networkd">systemd-networkd</a> from the main system and also tries to copy / convert existing SSH server keys from an existing TinySSH or OpenSSH installation. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=tinyssh">tinyssh</a></span> needs to be installed (but not necessarily enabled) on the main system. There are additional configuration parameters in case <a href="../../en/Systemd-networkd.html" title="Systemd-networkd">systemd-networkd</a> is not used by the main system. See the <a rel="nofollow" class="external text" href="https://github.com/wolegis/mkinitcpio-systemd-extras/wiki">documentation</a> of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/mkinitcpio-systemd-extras/">mkinitcpio-systemd-extras</a></span><sup><small>AUR</small></sup> for further details.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> This section used to mention <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mkinitcpio-systemd-tool">mkinitcpio-systemd-tool</a></span> as another alternative to achieve remote login and LUKS unlocking during early startup. The approach is completely different as it requires only one additional hook <code>systemd-tool</code> and all further setup is done in special <code>[X-SystemdTool]</code> sections in systemd service files. Unfortunately, documentation about this approach and how to use the tool itself is very limited.</div>
+<strong>Note:</strong> 
+<ul>
+<li>
+<i>Predictable network interface names</i> such as <code>enp2s0</code> are not present during initramfs phase by default, so many <a href="../../en/Systemd-networkd.html" title="Systemd-networkd">systemd-networkd</a> configuration files will not work during initramfs phase. See the <a rel="nofollow" class="external text" href="https://github.com/wolegis/mkinitcpio-systemd-extras/wiki/Networking#predictable-network-interface-names">mkinitcpio-systemd-extras wiki</a> for workarounds.</li>
+<li>This section used to mention <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mkinitcpio-systemd-tool">mkinitcpio-systemd-tool</a></span> as another alternative to achieve remote login and LUKS unlocking during early startup. The approach is completely different as it requires only one additional hook <code>systemd-tool</code> and all further setup is done in special <code>[X-SystemdTool]</code> sections in systemd service files. Unfortunately, documentation about this approach and how to use the tool itself is very limited.</li>
+</ul>
+</div>
 <h3>
 <span id="systemd_based_initramfs_.28built_with_dracut.29"></span><span class="mw-headline" id="systemd_based_initramfs_(built_with_dracut)">systemd based initramfs (built with dracut)</span>
 </h3>
@@ -858,9 +890,11 @@ Please type uppercase yes to continue:
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Flags:          no-read-workqueue no-write-workqueue
 </pre>
 <h2><span class="mw-headline" id="The_encrypt_hook_and_multiple_disks">The encrypt hook and multiple disks</span></h2>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> This section only concerns unlocking in early userspace (in the initramfs phase). For unlocking devices in late userspace (after switch root), see <a href="../../en/Dm-crypt/System_configuration.html#Unlocking_in_late_userspace" title="Dm-crypt/System configuration">dm-crypt/System configuration#Unlocking in late userspace</a>.</div>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> <code>sd-encrypt</code> hook supports unlocking multiple devices. They can be specified on the kernel command line or in <code>/etc/crypttab.initramfs</code>. See <a href="../../en/Dm-crypt/System_configuration.html#Using_systemd-cryptsetup-generator" title="Dm-crypt/System configuration">dm-crypt/System configuration#Using systemd-cryptsetup-generator</a>.</div>
-<p>The <code>encrypt</code> hook only allows for a <b>single</b> <code>cryptdevice=</code> entry (<a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/23182">FS#23182</a>). In system setups with multiple drives this may be limiting, because <i>dm-crypt</i> has no feature to exceed the physical device. For example, take "LVM on LUKS":  The entire LVM exists inside a LUKS mapper.  This is perfectly fine for a single-drive system, since there is only one device to decrypt. But what happens when you want to increase the size of the LVM? You cannot, at least not without modifying the <code>encrypt</code> hook.
+<p>The <code>encrypt</code> hook only allows for a <b>single</b> <code>cryptdevice=</code> entry (<a rel="nofollow" class="external text" href="https://gitlab.archlinux.org/archlinux/mkinitcpio/mkinitcpio/-/issues/231">archlinux/mkinitcpio/mkinitcpio#231</a>). In system setups with multiple drives this may be limiting, because <i>dm-crypt</i> has no feature to exceed the physical device. For example, take "LVM on LUKS":  The entire LVM exists inside a LUKS mapper.  This is perfectly fine for a single-drive system, since there is only one device to decrypt. But what happens when you want to increase the size of the LVM? You cannot, at least not without modifying the <code>encrypt</code> hook.
 </p>
 <p>The following sections briefly show alternatives to overcome the limitation. The first deals with how to expand a <a href="../../en/Dm-crypt/Encrypting_an_entire_system.html#LUKS_on_LVM" title="Dm-crypt/Encrypting an entire system">LUKS on LVM</a> setup to a new disk. The second with modifying the <code>encrypt</code> hook to unlock multiple disks in LUKS setups without LVM.
 </p>
@@ -940,7 +974,7 @@ Third, the new disk/partition is attached to the existing LVM volume group, e.g.
 <h2><span class="mw-headline" id="Encrypted_system_using_a_detached_LUKS_header">Encrypted system using a detached LUKS header</span></h2>
 <p>This example follows the same setup as in <a href="../../en/Dm-crypt/Encrypting_an_entire_system.html#Plain_dm-crypt" title="Dm-crypt/Encrypting an entire system">dm-crypt/Encrypting an entire system#Plain dm-crypt</a>, which should be read first before following this guide.
 </p>
-<p>By using a detached header the encrypted blockdevice itself only carries encrypted data, which gives <a href="https://en.wikipedia.org/wiki/Deniable_encryption" class="extiw" title="wikipedia:Deniable encryption">deniable encryption</a> as long as the existence of a header is unknown to the attackers. It is similar to using <a href="../../en/Dm-crypt/Encrypting_an_entire_system.html#Plain_dm-crypt" title="Dm-crypt/Encrypting an entire system">plain dm-crypt</a>, but with the LUKS advantages such as multiple passphrases for the masterkey and key derivation. Further, using a detached header offers a form of two factor authentication with an easier setup than <a href="#Using_GPG,_LUKS,_or_OpenSSL_Encrypted_Keyfiles">using GPG or OpenSSL encrypted keyfiles</a>, while still having a built-in password prompt for multiple retries. See <a href="../../en/Data-at-rest_encryption.html#Cryptographic_metadata" title="Data-at-rest encryption">Data-at-rest encryption#Cryptographic metadata</a> for more information.
+<p>By using a detached header the encrypted blockdevice itself only carries encrypted data, which gives <a href="https://en.wikipedia.org/wiki/Deniable_encryption" class="extiw" title="wikipedia:Deniable encryption">deniable encryption</a> as long as the existence of a header is unknown to the attackers. It is similar to using <a href="../../en/Dm-crypt/Encrypting_an_entire_system.html#Plain_dm-crypt" title="Dm-crypt/Encrypting an entire system">plain dm-crypt</a>, but with the LUKS advantages such as multiple passphrases for the masterkey and key derivation. Further, using a detached header offers a form of two factor authentication with an easier setup than <a href="#Using_GPG,_LUKS,_or_OpenSSL_encrypted_keyfiles">using GPG or OpenSSL encrypted keyfiles</a>, while still having a built-in password prompt for multiple retries. See <a href="../../en/Data-at-rest_encryption.html#Cryptographic_metadata" title="Data-at-rest encryption">Data-at-rest encryption#Cryptographic metadata</a> for more information.
 </p>
 <p>See <a href="../../en/Dm-crypt/Device_encryption.html#Encryption_options_for_LUKS_mode" title="Dm-crypt/Device encryption">dm-crypt/Device encryption#Encryption options for LUKS mode</a> for encryption options before performing the first step to setup the encrypted system partition and creating a header file to use with <code>cryptsetup</code>:
 </p>
@@ -996,7 +1030,7 @@ HOOKS=(base <b>systemd</b> autodetect microcode modconf kms <b>keyboard</b> <b>s
 </div>
 <h3><span class="mw-headline" id="Modifying_encrypt_hook">Modifying encrypt hook</span></h3>
 <p>This method shows how to modify the <code>encrypt</code> hook in order to use a detached LUKS header.
-Now the <code>encrypt</code> hook has to be modified to let <code>cryptsetup</code> use the separate header (<a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/42851">FS#42851</a>; base source and idea for these changes <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?pid=1076346#p1076346">published on the BBS</a>). Make a copy so it is not overwritten on a <a href="../../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a> update:
+Now the <code>encrypt</code> hook has to be modified to let <code>cryptsetup</code> use the separate header (<a rel="nofollow" class="external text" href="https://gitlab.archlinux.org/archlinux/mkinitcpio/mkinitcpio/-/issues/234">archlinux/mkinitcpio/mkinitcpio#234</a>; base source and idea for these changes <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?pid=1076346#p1076346">published on the BBS</a>). Make a copy so it is not overwritten on a <a href="../../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a> update:
 </p>
 <pre># cp /usr/lib/initcpio/hooks/encrypt /etc/initcpio/hooks/encrypt2
 # cp /usr/lib/initcpio/install/encrypt /etc/initcpio/install/encrypt2
@@ -1049,7 +1083,7 @@ HOOKS=(base udev autodetect microcode modconf kms <b>keyboard</b> <b>keymap</b> 
 <span id="Encrypted_.2Fboot_and_a_detached_LUKS_header_on_USB"></span><span class="mw-headline" id="Encrypted_/boot_and_a_detached_LUKS_header_on_USB">Encrypted /boot and a detached LUKS header on USB</span>
 </h2>
 <div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../../File:View-refresh-red.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is out of date.</b></p>
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../../File:Tango-edit-cut.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is being considered for removal.</b></p>
 <div>
 <b>Reason:</b> This scenario was based on <a rel="nofollow" class="external autonumber" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/Encrypting_an_entire_system&amp;oldid=562642#Encrypted_boot_partition_(GRUB)">[6]</a>, whose structure was then changed with <a rel="nofollow" class="external autonumber" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/Encrypting_an_entire_system&amp;diff=next&amp;oldid=562642">[7]</a>. (Discuss in <a href="../../en/Talk:Dm-crypt/Specialties.html#Encrypted_/boot_and_a_detached_LUKS_header_on_USB" title="Talk:Dm-crypt/Specialties">Talk:Dm-crypt/Specialties#Encrypted /boot and a detached LUKS header on USB</a>)</div>
 </div>
@@ -1075,7 +1109,7 @@ HOOKS=(base udev autodetect microcode modconf kms <b>keyboard</b> <b>keymap</b> 
 <p><a href="../../en/Dm-crypt/Encrypting_an_entire_system.html#Preparing_the_boot_partition" title="Dm-crypt/Encrypting an entire system">Prepare the boot partition</a> but do not <code>mount</code> any partition yet and <a href="../../en/EFI_system_partition.html#Format_the_partition" title="EFI system partition">Format the EFI system partition</a>.
 </p>
 <pre># mount /dev/mapper/cryptboot /mnt
-# dd if=/dev/urandom of=/mnt/key.img bs=<i>filesize</i> count=1
+# dd if=/dev/urandom of=/mnt/key.img bs=<i>filesize</i> count=1 iflag=fullblock
 # cryptsetup luksFormat /mnt/key.img
 # cryptsetup open /mnt/key.img lukskey
 </pre>
@@ -1177,7 +1211,7 @@ HOOKS=(base udev autodetect microcode modconf kms keyboard keymap consolefont bl
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
 <li><a href="../../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
-<li><a href="../../en/Category:Pages_or_sections_flagged_with_Template:Out_of_date.html" title="Category:Pages or sections flagged with Template:Out of date">Pages or sections flagged with Template:Out of date</a></li>
+<li><a href="../../en/Category:Sections_flagged_with_Template:Remove.html" title="Category:Sections flagged with Template:Remove">Sections flagged with Template:Remove</a></li>
 <li><a href="../../en/Category:Pages_or_sections_flagged_with_Template:Merge.html" title="Category:Pages or sections flagged with Template:Merge">Pages or sections flagged with Template:Merge</a></li>
 </ul>
 </div>
@@ -1190,8 +1224,8 @@ HOOKS=(base udev autodetect microcode modconf kms keyboard keymap consolefont bl
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/Specialties&amp;oldid=812786">https://wiki.archlinux.org/index.php?title=Dm-crypt/Specialties&amp;oldid=812786</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 23 July 2024, at 08:57.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/Specialties&amp;oldid=819749">https://wiki.archlinux.org/index.php?title=Dm-crypt/Specialties&amp;oldid=819749</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 28 October 2024, at 10:51.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

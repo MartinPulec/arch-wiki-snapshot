@@ -5,7 +5,7 @@
 <title>Power management (Português)/Suspend and hibernate (Português) - ArchWiki</title>
 <link rel="stylesheet" href="../../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -124,25 +124,34 @@
 		</li>
 	</ul>
 		</li>
-		<li id="toc-Preservando_arquivo_swap_para_hibernação_com_zram" class="vector-toc-list-item vector-toc-level-3">
+	</ul>
+		</li>
+		<li id="toc-Preservando_arquivo_swap_para_hibernação_com_zram" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Preservando_arquivo_swap_para_hiberna%C3%A7%C3%A3o_com_zram">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.3.2</span>Preservando arquivo swap para hibernação com zram</div>
+				<span class="vector-toc-numb">4.4</span>Preservando arquivo swap para hibernação com zram</div>
 			</a>
 			
 			<ul id="toc-Preservando_arquivo_swap_para_hibernação_com_zram-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Hibernação_em_volume_LVM_de_provisionamento_fino" class="vector-toc-list-item vector-toc-level-3">
+		<li id="toc-Hibernação_em_volume_LVM_de_provisionamento_fino" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Hiberna%C3%A7%C3%A3o_em_volume_LVM_de_provisionamento_fino">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.3.3</span>Hibernação em volume LVM de provisionamento fino</div>
+				<span class="vector-toc-numb">4.5</span>Hibernação em volume LVM de provisionamento fino</div>
 			</a>
 			
 			<ul id="toc-Hibernação_em_volume_LVM_de_provisionamento_fino-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-	</ul>
+		<li id="toc-Desabilitando_a_escritura_em_disco_(writeback)_do_zswap_para_que_o_espaço_swap_seja_usado_somente_ao_hibernar" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Desabilitando_a_escritura_em_disco_(writeback)_do_zswap_para_que_o_espa%C3%A7o_swap_seja_usado_somente_ao_hibernar">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">4.6</span>Desabilitando a escritura em disco (writeback) do zswap para que o espaço swap seja usado somente ao hibernar</div>
+			</a>
+			
+			<ul id="toc-Desabilitando_a_escritura_em_disco_(writeback)_do_zswap_para_que_o_espaço_swap_seja_usado_somente_ao_hibernar-sublist" class="vector-toc-list">
+			</ul>
 		</li>
 	</ul>
 	</li>
@@ -403,7 +412,7 @@
 					<div id="mw-content-text" class="mw-body-content">
 <div class="mw-content-ltr mw-parser-output" lang="pt" dir="ltr">
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Status de tradução:</strong> Esse artigo é uma tradução de <a href="../../en/Power_management/Suspend_and_hibernate.html" title="Power management/Suspend and hibernate">Power management/Suspend and hibernate</a>. Data da última tradução: 2024-07-11. Você pode ajudar a sincronizar a tradução, se houver <a rel="nofollow" class="external text" href="https://wiki.archlinux.org/index.php?title=Power_management/Suspend_and_hibernate&amp;diff=0&amp;oldid=812250">alterações</a> na versão em inglês.</div>
+<strong>Status de tradução:</strong> Esse artigo é uma tradução de <a href="../../en/Power_management/Suspend_and_hibernate.html" title="Power management/Suspend and hibernate">Power management/Suspend and hibernate</a>. Data da última tradução: 2024-10-10. Você pode ajudar a sincronizar a tradução, se houver <a rel="nofollow" class="external text" href="https://wiki.archlinux.org/index.php?title=Power_management/Suspend_and_hibernate&amp;diff=0&amp;oldid=817773">alterações</a> na versão em inglês.</div>
 <div class="archwiki-template-meta-related-articles">
 <p>Artigos relacionados</p>
 <ul>
@@ -466,12 +475,42 @@ para efetuar suspensão/hibernação e formas de executar trabalho extra de prep
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> S0ix deveria supostamente fornecer economias de energia idênticas ou melhores do que o estado S3. Veja as postagens em inglês antigas do blog da Intel: <a rel="nofollow" class="external text" href="https://web.archive.org/web/20230614200816/https://01.org/blogs/qwang59/2018/how-achieve-s0ix-states-linux">Como alcançar os estados S0ix no Linux</a>, <a rel="nofollow" class="external text" href="https://web.archive.org/web/20230614200306/https://01.org/blogs/qwang59/2020/linux-s0ix-troubleshooting">Solução de problemas S0ix no Linux</a> e <a rel="nofollow" class="external text" href="https://web.archive.org/web/20230503102522/https://01.org/blogs/thac0/2019/idling-efficiently-linux-case-study">Eficiência do modo ocioso no Linux: Um estudo de caso</a> para verificar a possibilidade de fazer funcionar adequadamente. Usuários em sistemas sob uso de Intel podem usar <a rel="nofollow" class="external text" href="https://github.com/intel/S0ixSelftestTool">S0ixSelftestTool</a>.</div>
-<p>Execute o seguinte comando para ver todos os métodos de suspensão que o hardware notifica ter suporte (o respectivo  método é sinalizado dentro dos colchetes) <a rel="nofollow" class="external autonumber" href="https://docs.kernel.org/admin-guide/pm/sleep-states.html#basic-sysfs-interfaces-for-system-suspend-and-hibernation">[1]</a>:
+<p>Execute o seguinte comando para ver todos os métodos de suspensão que o hardware notifica ter suporte (o atual método em uso é sinalizado dentro dos colchetes) <a rel="nofollow" class="external autonumber" href="https://docs.kernel.org/admin-guide/pm/sleep-states.html#basic-sysfs-interfaces-for-system-suspend-and-hibernation">[1]</a>:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ cat /sys/power/mem_sleep</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[s2idle] shallow deep
 </pre>
-<p>Se o seu hardware não notificar o status de sono <code>deep</code>, verifique primeiro se a sua UEFI possui alguma configuração de estados de sono; geralmente em <i>"Power"</i> ou <i>"Sleep state"</i>, ou nomes semelhantes; pelas opções nomeadas como <i>"Windows 10"</i>, <i>"Windows and Linux"</i> ou <i>"S3/Modern standby support"</i> para S0ix, e <i>"Legacy"</i>, <i>"Linux"</i>, <i>"Linux S3"</i> ou <i>"S3 enabled"</i> para estados de sono S3. Se ainda assim não houver correspondências, você pode manter o uso de <code>s2idle</code>. Considere usar <a href="#Hiberna%C3%A7%C3%A3o">hibernação</a> ou tente corrigir as tabelas <a href="../../en/DSDT.html" title="DSDT">DSDT</a> (ou procure uma versão com <i>patch</i> online).
+<table class="wikitable sortable">
+<caption>Estados de sono suportados em mem_sleep
+</caption>
+<tbody>
+<tr>
+<th>string de mem_sleep</th>
+<th>Estado de sono
+</th>
+</tr>
+<tr>
+<td>s2idle</td>
+<td>
+<p><a rel="nofollow" class="external text" href="https://docs.kernel.org/admin-guide/pm/sleep-states.html#suspend-to-idle">suspender para ocioso</a>
+</p>
+</td>
+</tr>
+<tr>
+<td>shallow</td>
+<td>
+<a rel="nofollow" class="external text" href="https://docs.kernel.org/admin-guide/pm/sleep-states.html#standby">suspensão em espera</a>
+</td>
+</tr>
+<tr>
+<td>deep</td>
+<td>
+<a rel="nofollow" class="external text" href="https://docs.kernel.org/admin-guide/pm/sleep-states.html#suspend-to-ram">suspender para RAM</a>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Se o seu hardware não notificar o status de sono <code>deep</code>, verifique primeiro se a sua UEFI possui alguma configuração de estados de sono; geralmente em <i>"Power"</i> ou <i>"Sleep state"</i>, ou nomes semelhantes pelas opções nomeadas como <i>"Windows 10"</i>, <i>"Windows and Linux"</i> ou <i>"S3/Modern standby support"</i> para S0ix; e <i>"Legacy"</i>, <i>"Linux"</i>, <i>"Linux S3"</i> ou <i>"S3 enabled"</i> para estados de sono S3. Se ainda assim não houver correspondências, você pode manter o uso de <code>s2idle</code>. Considere usar <a href="#Hiberna%C3%A7%C3%A3o">hibernação</a> ou tente corrigir as tabelas <a href="../../en/DSDT.html" title="DSDT">DSDT</a> (ou procure uma versão com <i>patch</i> online).
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Nota:</strong> A última solução acima pode causar problemas. Por conta que fabricantes pararam de corrigir bugs com o estado S3 do ACPI desde o momento que tais fabricantes regularizaram a escolha do sistema operacional Windows, e os mesmos são encorajados a usar "Modern standby" por padrão; se caso o sistema de fábrica foi propositalmente não informado, então provavelmente o hardware está de alguma forma com defeito.</div>
@@ -588,12 +627,12 @@ File size of /swapfile is 4294967296 (1048576 blocks of 4096 bytes)
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Nota:</strong> Em blocos de dispositivos <i>stacked</i> (em camadas), como no caso de um armazenamento criptografado (LUKS), em RAID ou em LVM, o parâmetro <code>resume</code> deve apontar para o dispositivo desbloqueado/mapeado que contém o sistema de arquivos com o arquivo swap.
 </div>
-<h4>
+<h3>
 <span id="Preservando_arquivo_swap_para_hiberna.C3.A7.C3.A3o_com_zram"></span><span class="mw-headline" id="Preservando_arquivo_swap_para_hibernação_com_zram">Preservando arquivo swap para hibernação com zram</span>
-</h4>
+</h3>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Dica:</strong> Ao invés do setup a seguir, que envolve múltiplos espaços swap, <a href="../../pt/Zswap.html" title="Zswap (Português)">Zswap</a> pode ser usado para estabelecer um comportamento similar.</div>
-<p>É possível resolver o problema de hibernação com compressão em RAM (zram) ao gerenciar dois ou mais espaços swap ao mesmo tempo. <a href="../../pt/Systemd.html" title="Systemd (Português)">systemd</a> sempre irá ignorar dispositivos de bloco zram antes de acionar a hibernação, portanto manter os dois espaços ativados deve funcionar sem mais intervenções.
+<strong>Dica:</strong> Ao invés do setup a seguir, que envolve múltiplos espaços swap, <a href="#Desabilitando_a_escritura_em_disco_(writeback)_do_zswap_para_que_o_espa%C3%A7o_swap_seja_usado_somente_ao_hibernar">zswap pode ser usado</a> para estabelecer um comportamento similar.</div>
+<p>É possível resolver o problema de hibernação com compressão em RAM (zram) ao gerenciar dois ou mais espaços swap ao mesmo tempo. <a href="../../pt/Systemd.html" title="Systemd (Português)">systemd</a> sempre irá ignorar dispositivos de bloco zram antes de acionar a hibernação <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/16708#issuecomment-1632592375">[5]</a>, portanto manter os dois espaços ativados deve funcionar sem mais intervenções.
 </p>
 <p>Depois de <a href="#Adquirindo_o_offset_de_um_arquivo_swap">configurado o arquivo swap</a>, siga a página do <a href="../../en/Zram.html" title="Zram">zram</a>. Garanta que o zram tenha a <b>maior prioridade de swap</b> (por exemplo, <code>pri=100</code>).
 </p>
@@ -607,9 +646,9 @@ File size of /swapfile is 4294967296 (1048576 blocks of 4096 bytes)
 <li>Leia sobre o <a rel="nofollow" class="external text" href="https://www.kernel.org/doc/gorman/html/understand/understand014.html">Gerenciamento de Swap na documentação do kernel</a> e o <a rel="nofollow" class="external text" href="https://chrisdown.name/2018/01/02/in-defence-of-swap.html">artigo do Chris Down - Em defesa ao swap: equívocos comuns</a> para mais detalhes.</li>
 </ul>
 </div>
-<h4>
+<h3>
 <span id="Hiberna.C3.A7.C3.A3o_em_volume_LVM_de_provisionamento_fino"></span><span class="mw-headline" id="Hibernação_em_volume_LVM_de_provisionamento_fino">Hibernação em volume LVM de provisionamento fino</span>
-</h4>
+</h3>
 <p>A hibernação dentro de um volume <a href="../../pt/LVM.html" title="LVM (Português)">LVM</a> de provisionamento fino é possível, mas é necessário ter certeza que o volume está totalmente alocado. Se caso não estiver, retornar o sistema por este volume falhará, veja em <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/50703">FS#50703</a>.
 </p>
 <p>Você pode alocar por completo o volume LVM ao simplesmente encher o mesmo com diversos zeros. Como por exemplo:
@@ -626,6 +665,18 @@ File size of /swapfile is 4294967296 (1048576 blocks of 4096 bytes)
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Atenção:</strong> Não use <a href="../../en/Solid_state_drive.html#TRIM" class="mw-redirect" title="TRIM">TRIM</a> em volumes de provisionamento fino que são designados para hibernação, isto é, não use <code>discard</code> em <code>/etc/fstab</code> e não atribua a opção <code>-d</code>/<code>--discard</code> em <i>swapon</i>. Caso contrário o espaço usado será desalocado.</div>
+<h3>
+<span id="Desabilitando_a_escritura_em_disco_.28writeback.29_do_zswap_para_que_o_espa.C3.A7o_swap_seja_usado_somente_ao_hibernar"></span><span class="mw-headline" id="Desabilitando_a_escritura_em_disco_(writeback)_do_zswap_para_que_o_espaço_swap_seja_usado_somente_ao_hibernar">Desabilitando a escritura em disco (writeback) do zswap para que o espaço swap seja usado somente ao hibernar</span>
+</h3>
+<p>Na versão 6.8 do Linux, o <a href="../../pt/Zswap.html" title="Zswap (Português)">zswap</a> recebeu <a rel="nofollow" class="external text" href="https://git.kernel.org/linus/501a06fe8e4c185bbda371b8cedbdf1b23a633d8">a opção de desabilitar o writeback de acordo com o cgroup</a> quando usada a configuração de unit do systemd <code>MemoryZSwapWriteback</code> (veja <span class="plainlinks archwiki-template-man" title="$ man 5 systemd.resource-control"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd.resource-control.5#Memory_Accounting_and_Control">systemd.resource-control(5) § Memory Accounting and Control</a></span>) em todos os tipos de unit que a definição seja possível; a mesma desabilitará completamente a gravação em disco do zswap e permitirá usar o zswap efetivamente como zram, com o benefício adicional de suporte a hibernação.
+</p>
+<p>Para evitar a criação manual de doze arquivos drop-in, de nível superior e por tipo (com os tipos de unit para o sistema e usuário: <code>scope</code>, <code>service</code>, <code>slice</code>, <code>socket</code>, <code>mount</code>, <code>swap</code>), <a href="../../pt/Help:Reading.html#Instala%C3%A7%C3%A3o_de_pacotes" class="mw-redirect" title="Instale">instale</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zswap-disable-writeback/">zswap-disable-writeback</a></span><sup><small>AUR</small></sup>. Após a instalação reinicie o sistema para que as mudanças tenham efeito.
+</p>
+<p>Tente realizar tarefas intensivas de uso de memória para confirmar que o zswap não está escrevendo nada para o disco.
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># cat /sys/kernel/debug/zswap/written_back_pages</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">0
+</pre>
 <h2><span class="mw-headline" id="Hooks_de_sono">Hooks de sono</span></h2>
 <h3>
 <span id="Units_do_systemd_customiz.C3.A1veis"></span><span class="mw-headline" id="Units_do_systemd_customizáveis">Units do systemd customizáveis</span>
@@ -766,7 +817,7 @@ AllowSuspendThenHibernate=no</pre>
 <p>Muitos sistemas com base na Intel possuem o suporte para IRST no firmware, todavia estes sistemas requerem uma partição especial ou um SSD (ao invés de um HDD). As implantações OEM do Windows podem já ter uma partição IRST pré-criada, da qual pode ser mantida durante o processo de instalação do Arch Linux (uma melhor opção ao contrário de limpar e reparticionar todo o SSD). A partição deve aparecer como não formatada e com tamanho igual a capacidade de RAM do sistema.
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Atenção:</strong> A partição que pertence a Tecnologia Intel Rapid Start não é criptografada. "A Intel recomenda desabilitar a Tecnologia Intel Rapid Start se você está usando criptografia de disco baseada em software". <a rel="nofollow" class="external autonumber" href="https://www.intel.com/content/www/us/en/support/articles/000024080/technologies.html">[5]</a>
+<strong>Atenção:</strong> A partição que pertence a Tecnologia Intel Rapid Start não é criptografada. "A Intel recomenda desabilitar a Tecnologia Intel Rapid Start se você está usando criptografia de disco baseada em software". <a rel="nofollow" class="external autonumber" href="https://www.intel.com/content/www/us/en/support/articles/000024080/technologies.html">[6]</a>
 </div>
 <p>Se você pretende limpar e reparticionar todo o armazenamento (ou se você já fez isso) e planeja usar a tecnologia, então a partição IRST precisa ser recriada; isto pode ser feito ao definir uma nova partição vazia com o mesmo tamanho da RAM e ao configurar o tipo de partição para <a href="https://en.wikipedia.org/wiki/GUID_Partition_Table#Partition_type_GUIDs" class="extiw" title="wikipedia:GUID Partition Table">GUID</a> <code>D3BFE2DE-3DAF-11DF-BA40-E3A556D89593</code> em caso de uma partição <a href="../../pt/Partitioning.html#Tabela_de_Parti%C3%A7%C3%A3o_GUID" class="mw-redirect" title="Tabela de Partição GUID">GPT</a>, ou para <a href="https://en.wikipedia.org/wiki/pt:Tipo_de_parti%C3%A7%C3%A3o" class="extiw" title="wikipedia:pt:Tipo de partição">ID</a> <code>0x84</code> em caso de uma partição <a href="../../pt/Partitioning.html#Master_Boot_Record" class="mw-redirect" title="Master Boot Record (Português)">MBR</a>. Há também a possibilidade de ser preciso ativar o suporte para IRST nas configurações de firmware do sistema.
 </p>
@@ -795,9 +846,9 @@ AllowSuspendThenHibernate=no</pre>
 </p>
 <p>Mover o driver de vídeo <a href="../../en/ATI.html" title="ATI">ATI</a> para o novo driver <a href="../../en/AMDGPU.html" title="AMDGPU">AMDGPU</a> pode também ajudar a solucionar transtornos com o processo do sistema ao hibernar ou ao acordar, e com isso o processo ser bem sucedido.
 </p>
-<p>Para usuários de <a href="../../pt/NVIDIA.html" title="NVIDIA (Português)">NVIDIA</a>, <a href="../../pt/Kernel_module.html#Adicionar_um_m%C3%B3dulo_em_uma_lista_negra_(Blacklisting)" class="mw-redirect" title="Adicionar à lista negra">adicionar à lista negra</a> o módulo <code>nvidiafb</code> talvez ajude. <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=234646">[6]</a>
+<p>Para usuários de <a href="../../pt/NVIDIA.html" title="NVIDIA (Português)">NVIDIA</a>, <a href="../../pt/Kernel_module.html#Adicionar_um_m%C3%B3dulo_em_uma_lista_negra_(Blacklisting)" class="mw-redirect" title="Adicionar à lista negra">adicionar à lista negra</a> o módulo <code>nvidiafb</code> talvez ajude. <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=234646">[7]</a>
 </p>
-<p>Notebooks/laptops com uma CPU Intel e que carregam o módulo <code>intel_lpss_pci</code> para touchpad podem se deparar com pânicos de kernel ao retornar o sistema (tecla Caps Lock pisca incessantemente) <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=231881">[7]</a>. O módulo precisa ser adicionado ao <a href="../../pt/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs (Português)">initramfs</a> desta forma:
+<p>Notebooks/laptops com uma CPU Intel e que carregam o módulo <code>intel_lpss_pci</code> para touchpad podem se deparar com pânicos de kernel ao retornar o sistema (tecla Caps Lock pisca incessantemente) <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=231881">[8]</a>. O módulo precisa ser adicionado ao <a href="../../pt/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs (Português)">initramfs</a> desta forma:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/mkinitcpio.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">MODULES=(... intel_lpss_pci ...)</pre>
@@ -809,25 +860,12 @@ AllowSuspendThenHibernate=no</pre>
 <h3>
 <span id="Sistema_acorda_instantaneamente_da_suspens.C3.A3o"></span><span class="mw-headline" id="Sistema_acorda_instantaneamente_da_suspensão">Sistema acorda instantaneamente da suspensão</span>
 </h3>
-<p>Veja a página em inglês: <a href="../../en/Power_management/Wakeup_triggers.html#Instantaneous_wakeups_from_suspend" class="mw-redirect" title="Wakeup triggers">Wakeup triggers#Instantaneous wakeups from suspend</a>.
+<p>Veja a página em inglês: <a href="../../en/Power_management/Wakeup_triggers.html#Instantaneous_wakeup_after_suspending" class="mw-redirect" title="Wakeup triggers">Wakeup triggers#Instantaneous wakeup after suspending</a>.
 </p>
-<p>Se você estiver usando a versão 6.1, ou acima, do kernel Linux com uma CPU da AMD, há chance de ocorrer mal funcionamento por conta de <a rel="nofollow" class="external text" href="https://gitlab.freedesktop.org/drm/amd/-/issues/2357">problemas com o controle de protocolo relacionado ao estado de sono S3 no kernel</a>. Uma solução temporária seria desligar o retorno (<i>wakeup</i>) de dispositivos que estejam envolvidos com o i2c. Você pode encontrá-los por:
-</p>
-<pre>$ ls /sys/bus/i2c/devices/*/power/wakeup
-</pre>
-<p>O formato de nome dos dispositivos será algo como <code>i2c-ELAN0679:00</code> ou <code>i2c-MSFT0001:00</code>. Por fim, ajuste para desabilitar e teste se o comando abaixo resulta na suspensão do sistema apropriadamente:
-</p>
-<pre># echo disabled &gt; /sys/bus/i2c/devices/<i>nome_dispositivo</i>/power/wakeup
-# systemctl suspend
-</pre>
-<p>Se funcionar, você pode fazer a configuração persistente ao adicioná-la a uma regra udev:
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/udev/rules.d/99-avoid-i2c-wakeup.rules</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">KERNEL=="<i>nome_dispositivo</i>", SUBSYSTEM=="i2c", ATTR{power/wakeup}="disabled"</pre>
 <h3>
 <span id="Sistema_n.C3.A3o_desliga_quando_em_hiberna.C3.A7.C3.A3o"></span><span class="mw-headline" id="Sistema_não_desliga_quando_em_hibernação">Sistema não desliga quando em hibernação</span>
 </h3>
-<p>Ao hibernar o seu sistema, ele precisa desligar (logo depois de salvo o estado da máquina para o disco). Em alguns firmwares o estado de sono S4 não funciona apropriadamente, por exemplo ao invés do sistema desligar ele pode reiniciar. Se isto ocorrer, é instruído que você defina o <code>HibernateMode</code> para <code>shutdown</code> em <span class="plainlinks archwiki-template-man" title="$ man 5 sleep.conf.d"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/sleep.conf.d.5">sleep.conf.d(5)</a></span>:
+<p>Ao hibernar o seu sistema, ele precisa desligar (logo depois de salvo o estado da máquina para o disco). Em alguns firmwares o estado de sono S4 não funciona apropriadamente, por exemplo ao invés do sistema desligar ele pode reiniciar ou permanecer ligado, mas sem resposta alguma. Se isto ocorrer, é instruído que você defina o <code>HibernateMode</code> para <code>shutdown</code> em <span class="plainlinks archwiki-template-man" title="$ man 5 sleep.conf.d"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/sleep.conf.d.5">sleep.conf.d(5)</a></span>:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/sleep.conf.d/hibernatemode.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Sleep]
@@ -897,7 +935,7 @@ WantedBy=multi-user.target</pre>
 <h3>
 <span id="Suspender_a_partir_da_tecla_Fn_correspondente_em_notebooks.2Flaptops_n.C3.A3o_funciona"></span><span class="mw-headline" id="Suspender_a_partir_da_tecla_Fn_correspondente_em_notebooks/laptops_não_funciona">Suspender a partir da tecla Fn correspondente em notebooks/laptops não funciona</span>
 </h3>
-<p>Se apesar de configurado não funcionar o botão para acionar o evento de sono em <i>logind.conf</i>, e nem mesmo ao pressionar é emitido mensagens em syslog, então provavelmente logind não está monitorando o teclado <a rel="nofollow" class="external autonumber" href="https://lists.freedesktop.org/archives/systemd-devel/2015-February/028325.html">[8]</a>. Para resolver use:
+<p>Se apesar de configurado não funcionar o botão para acionar o evento de sono em <i>logind.conf</i>, e nem mesmo ao pressionar é emitido mensagens em syslog, então provavelmente logind não está monitorando o teclado <a rel="nofollow" class="external autonumber" href="https://lists.freedesktop.org/archives/systemd-devel/2015-February/028325.html">[9]</a>. Para resolver use:
 </p>
 <pre># journalctl --grep="Watching system buttons"
 </pre>
@@ -913,7 +951,7 @@ May 25 21:28:19 vmarch.lan systemd-logind[210]: Watching system buttons on /dev/
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">...
 /dev/input/by-id/usb-SIGMACHIP_USB_Keyboard-event-kbd -&gt; <b>../event6</b>
 ...</pre>
-<p>Agora obtenha o <code>ATTRS{name}</code>, parte do dispositivo pai do teclado <a rel="nofollow" class="external autonumber" href="https://systemd-devel.freedesktop.narkive.com/Rbi3rjNN/patch-1-2-logind-add-support-for-tps65217-power-button">[9]</a>. Como um exemplo, na listagem acima o dispositivo está com o evento da entrada como <code>/event6</code>, o mesmo pode ser usado para buscar o nome do respectivo atributo:
+<p>Agora obtenha o <code>ATTRS{name}</code>, parte do dispositivo pai do teclado <a rel="nofollow" class="external autonumber" href="https://systemd-devel.freedesktop.narkive.com/Rbi3rjNN/patch-1-2-logind-add-support-for-tps65217-power-button">[10]</a>. Como um exemplo, na listagem acima o dispositivo está com o evento da entrada como <code>/event6</code>, o mesmo pode ser usado para buscar o nome do respectivo atributo:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># udevadm info -a /dev/input/<b>event6</b></pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">...
@@ -931,7 +969,7 @@ LABEL="power_switch_my_end"</pre>
 <h3>
 <span id="Sistema_congela_por_60_segundos_e_acorda_de_novo_ou_.C3.A9_irresponsivo_ap.C3.B3s_acordar"></span><span class="mw-headline" id="Sistema_congela_por_60_segundos_e_acorda_de_novo_ou_é_irresponsivo_após_acordar">Sistema congela por 60 segundos e acorda de novo ou é irresponsivo após acordar</span>
 </h3>
-<p>Desde a versão 256 do systemd, o mesmo congela <code>user.slice</code> antes de dormir. Esse processo pode falhar devido a bugs no kernel, ocorre em particular quando o KVM está em uso. <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/33083">[10]</a><a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/33626">[11]</a> 
+<p>Desde a versão 256 do systemd, o mesmo congela <code>user.slice</code> antes de dormir. Esse processo pode falhar devido a bugs no kernel, ocorre em particular quando o KVM está em uso. <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/33083">[11]</a><a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/33626">[12]</a> 
 </p>
 <p>Os logs irão conter avisos sobre a falha antes do sistema adormecer: <code>Failed to freeze unit 'user.slice'</code>. Quando tal problema acontece, tentar fazer o login (ao iniciar outra sessão) poderá falhar com a mensagem: <code>pam_systemd(<i>process</i>:session): Failed to create session: Job 9876 for unit 'session-6.scope' failed with 'frozen'</code>.
 </p>
@@ -952,8 +990,8 @@ Environment=SYSTEMD_SLEEP_FREEZE_USER_SESSIONS=false</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Power_management_(Portugu%C3%AAs)/Suspend_and_hibernate_(Portugu%C3%AAs)&amp;oldid=812255">https://wiki.archlinux.org/index.php?title=Power_management_(Português)/Suspend_and_hibernate_(Português)&amp;oldid=812255</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 11 July 2024, at 14:57.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Power_management_(Portugu%C3%AAs)/Suspend_and_hibernate_(Portugu%C3%AAs)&amp;oldid=818067">https://wiki.archlinux.org/index.php?title=Power_management_(Português)/Suspend_and_hibernate_(Português)&amp;oldid=818067</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 10 October 2024, at 17:46.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

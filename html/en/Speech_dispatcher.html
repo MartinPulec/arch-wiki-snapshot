@@ -5,7 +5,7 @@
 <title>Speech dispatcher - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -79,6 +79,15 @@
 			</a>
 			
 			<ul id="toc-Festival_specific-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Piper_specific" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Piper_specific">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">2.3</span>Piper specific</div>
+			</a>
+			
+			<ul id="toc-Piper_specific-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -236,9 +245,11 @@
 </p>
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Installation">Installation</span></h2>
-<p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=speech-dispatcher">speech-dispatcher</a></span> package. If you wish to allow <a href="../en/Festival.html" title="Festival">Festival</a> to interact with it then you should also install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/festival-freebsoft-utils/">festival-freebsoft-utils</a></span><sup><small>AUR</small></sup> as well. 
+<p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=speech-dispatcher">speech-dispatcher</a></span> package. Next, install one of several supported speech synthesizers.
 </p>
-<p><a rel="nofollow" class="external text" href="https://github.com/Elleo/pied">Pied</a> (which can be installed via <a href="../en/Flatpak.html" title="Flatpak">Flatpak</a>) uses <a rel="nofollow" class="external text" href="https://github.com/rhasspy/piper">Piper</a> (a neural text to speech system) as a speech dispatcher. Pied is a great alternative if Festival seems too robotic.
+<p>To use <a href="../en/Festival.html" title="Festival">Festival</a>, install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/festival-freebsoft-utils/">festival-freebsoft-utils</a></span><sup><small>AUR</small></sup>. Follow configuration instructions in the dedicated section below.
+</p>
+<p>To use a modern neural text to speech system <a rel="nofollow" class="external text" href="https://github.com/rhasspy/piper">Piper</a>, install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/piper-tts-bin/">piper-tts-bin</a></span><sup><small>AUR</small></sup> and one of the voice packages for your language, e.g. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/piper-voices-en-us/">piper-voices-en-us</a></span><sup><small>AUR</small></sup>. Configure speech dispatcher to use Piper as described in the dedicated section below. Alternatively to the above AUR packages, Piper along with voices and the speech dispatcher configuration may be installed using <a rel="nofollow" class="external text" href="https://github.com/Elleo/pied">Pied</a>, an automated graphical installer distributed via <a href="../en/Flatpak.html" title="Flatpak">Flatpak</a>.
 </p>
 <h2><span class="mw-headline" id="Configuration">Configuration</span></h2>
 <p>The main configuration file is located at <code>/etc/speech-dispatcher/speechd.conf</code> however speech-dispatcher is usually run on a per user basis to allow for multiple users to have differing preferences. User configuration files are stored at <code>~/.config/speech-dispatcher/</code>. There is also support to allow different speech synthesis engine clients to have their own configurations too.
@@ -276,11 +287,30 @@
 ...</pre>
 <p>Then save the file.
 </p>
+<h3><span class="mw-headline" id="Piper_specific">Piper specific</span></h3>
+<p>Speech dispatcher supports Piper only through a generic interface module that interacts through a custom shell command. An audio player is necessary for this. For Pulseaudio, install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mpv">mpv</a></span>; for ALSA, use <code>aplay</code> from <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=alsa-utils">alsa-utils</a></span>.
+</p>
+<p>In your user's speech-dispatcher configuration file (see earlier section for how to create it), add the module and configuration file for Piper:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.config/speech-dispatcher/speechd.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">AddModule "piper-tts-generic" "sd_generic" "piper-tts-generic.conf"</pre>
+<p>Create the following module configuration file for Piper. In the shell command, edit the path to the model for your desired voice among those in <code>/usr/share/piper-voices/</code>, and the audio player appropriate for your audio back-end:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.config/speech-dispatcher/modules/piper-tts-generic.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">GenericExecuteSynth "export XDATA=\'$DATA\'; echo \"$XDATA\" | sed -z 's/\\n/ /g' | piper-tts -q -m \"/usr/share/piper-voices/en/en_US/ryan/high/en_US-ryan-high.onnx\" -s 21 -f - | mpv --volume=80 --no-terminal --keep-open=no -"
+
+AddVoice "en-US" "MALE1"   "en_US-ryan-high"</pre>
+<p>The shell command needs to filter out the newlines, since <code>piper-tts</code> exits on newline. To accomplish this, the input text, which speech-dispatcher substitutes into the shell command as a literal string in place of the <code>$DATA</code> placeholder string, is first assigned to an environment variable, the contents of the variable is then piped into <code>sed</code> for substitution of the newline character with a space.
+</p>
 <h2><span class="mw-headline" id="Usage">Usage</span></h2>
 <p>Using speech-dispatcher directly is not a common scenario as its intended to provide an access layer to other speech synthesis engines, that said you can interact with it directly by using the included <code>spd-say</code> binary as follows:
 </p>
 <pre>$ spd-say "Arch Linux is the best"
 </pre>
+<p>The Firefox browser is one of the applications that supports speech-dispatcher. Switch to reader view (Ctrl-Alt-R) and a button for narration (headphones icon) should be visible in the small menu. You may need to restart Firefox whenever speech-dispatcher daemon is started or restarted.
+</p>
+<p>The Okular PDF viewer also supports speech-dispatcher. Select text in "Text Selection" mode, right-click it, and choose "Speak Text", or choose "Speak Current Page" in the Tools menu. You may need to restart Okular whenever speech-dispatcher daemon is started or restarted.
+</p>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
 <h3><span class="mw-headline" id="Logs">Logs</span></h3>
 <p>Speech-dispatcher writes very little to the system journal, however it does write useful information to its own logs.  You can find the location of these in the output of this command:
@@ -352,8 +382,8 @@
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Speech_dispatcher&amp;oldid=810142">https://wiki.archlinux.org/index.php?title=Speech_dispatcher&amp;oldid=810142</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 8 June 2024, at 04:50.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Speech_dispatcher&amp;oldid=817658">https://wiki.archlinux.org/index.php?title=Speech_dispatcher&amp;oldid=817658</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 2 October 2024, at 05:15.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -5,7 +5,7 @@
 <title>RAID - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -439,14 +439,32 @@
 			<ul id="toc-Track_IO_with_iostat-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Email_notifications" class="vector-toc-list-item vector-toc-level-2">
+		<li id="toc-mdadm_via_systemd" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#mdadm_via_systemd">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">7.4</span>mdadm via systemd</div>
+			</a>
+			
+			<ul id="toc-mdadm_via_systemd-sublist" class="vector-toc-list">
+				<li id="toc-Email_notifications" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Email_notifications">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">7.4</span>Email notifications</div>
+				<span class="vector-toc-numb">7.4.1</span>Email notifications</div>
 			</a>
 			
 			<ul id="toc-Email_notifications-sublist" class="vector-toc-list">
 			</ul>
+		</li>
+		<li id="toc-Program_notifications" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Program_notifications">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">7.4.2</span>Program notifications</div>
+			</a>
+			
+			<ul id="toc-Program_notifications-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
 		</li>
 	</ul>
 	</li>
@@ -732,7 +750,7 @@
 <dl>
 <dt>LINEAR</dt>
 <dd>
-<b>LINEAR</b> allowed to map two or more devices into a single device, without parallel accesses like <b>RAID0</b> but allowing to fully use disks from different sizes. However, it was deprecated in 2021 and removed from the Linux kernel (the <code>linear.ko</code> module) in 2023 (see <a rel="nofollow" class="external text" href="https://github.com/torvalds/linux/commit/849d18e27be9a1253f2318cb4549cc857219d991">commit 849d18e</a>). To create a pseudo RAID using this mode without <i>mdadm</i>, one can either use the low-level <span class="plainlinks archwiki-template-man" title="$ man 8 dmsetup"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/dmsetup.8">dmsetup(8)</a></span> utility, the high-level <a href="../en/LVM.html" class="mw-redirect" title="Logical Volume Manager">LVM</a> framework or the <a href="../en/Btrfs.html" title="Btrfs">Btrfs</a> filesystem.</dd>
+<b>LINEAR</b> allowed to map two or more devices into a single device, without parallel accesses like <b>RAID0</b> but allowing to fully use disks from different sizes. However, it was deprecated in 2021 and removed from the Linux kernel (the <code>linear.ko</code> module) in 2023 (see <a rel="nofollow" class="external text" href="https://github.com/torvalds/linux/commit/849d18e27be9a1253f2318cb4549cc857219d991">commit 849d18e</a>). To create a pseudo RAID using this mode without <i>mdadm</i>, one can either use the low-level <span class="plainlinks archwiki-template-man" title="$ man 8 dmsetup"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/dmsetup.8">dmsetup(8)</a></span> utility, the high-level <a href="../en/LVM.html" title="LVM">LVM</a> framework or the <a href="../en/Btrfs.html" title="Btrfs">Btrfs</a> filesystem.</dd>
 </dl>
 <h2><span class="mw-headline" id="Implementation">Implementation</span></h2>
 <p>The RAID devices can be managed in different ways:
@@ -1045,7 +1063,7 @@ Consistency Policy : none
 </p>
 <p>To initiate a data scrub:
 </p>
-<pre># echo check &gt; /sys/block/md0/md/sync_action
+<pre># echo check &gt; /sys/block/mdX/md/sync_action
 </pre>
 <p>The check operation scans the drives for bad sectors and automatically repairs them. If it finds good sectors that contain bad data (i.e. a mismatch, the data in a sector does not agree with what the data from another disk indicates that it should be, for example the parity block + the other data blocks would cause us to think that this data block is incorrect), then no action is taken, but the event is logged (see below). This "do nothing" allows admins to inspect the data in the sector and the data that would be produced by rebuilding the sectors from redundant information and pick the correct data to keep.
 </p>
@@ -1236,11 +1254,12 @@ md0: [UU]
 <pre># iostat -dmy 1 /dev/md0
 # iostat -dmy 1 # all
 </pre>
-<h3><span class="mw-headline" id="Email_notifications">Email notifications</span></h3>
-<p><i>mdadm</i> provides the <a href="../en/Systemd.html" title="Systemd">systemd</a> service <code>mdmonitor.service</code> which can be useful for monitoring the health of your raid arrays and notifying you via email if anything goes wrong.
+<h3><span class="mw-headline" id="mdadm_via_systemd">mdadm via systemd</span></h3>
+<p><i>mdadm</i> provides the <a href="../en/Systemd.html" title="Systemd">systemd</a> service <code>mdmonitor.service</code> which can be useful for monitoring the health of your raid arrays and notifying you if anything goes wrong.
 </p>
-<p>This service is special in that it cannot be manually activated like a regular service; <i>mdadm</i> will take care of activating it via udev upon assembling your arrays on system startup, but it will <b>only</b> do so if an email address has been configured for its notifications (see below).
+<p>This service is special in that it cannot be manually activated like a regular service; <i>mdadm</i> will take care of activating it via udev upon assembling your arrays on system startup, but it will <b>only</b> do so if an email address and/or program has been configured for its notifications (see below).
 </p>
+<h4><span class="mw-headline" id="Email_notifications">Email notifications</span></h4>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> Failure to configure an email address will result in the monitoring service silently failing to start.</div>
 <div class="archwiki-template-box archwiki-template-box-note">
@@ -1254,6 +1273,15 @@ md0: [UU]
 <pre># mdadm --monitor --scan --oneshot --test
 </pre>
 <p>If the test is successful and the email is delivered, then you are done; the next time your arrays are reassembled, <code>mdmonitor.service</code> will begin monitoring them for errors.
+</p>
+<h4><span class="mw-headline" id="Program_notifications">Program notifications</span></h4>
+<p>Like Email notification above, edit <code>/etc/mdadm.conf</code> and edit the line:
+</p>
+<pre>PROGRAM /usr/sbin/handle-mdadm-events
+</pre>
+<p>The argument for PROGRAM is the script you want to run for any event. Which then interact with proper network monitoring agents. Or even IM clients or push notification services like ntfy.sh for home users.
+</p>
+<p>Test in the same way as for email notification above.
 </p>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
 <p>If you are getting error when you reboot about "invalid raid superblock magic" and you have additional hard drives other than the ones you installed to, check that your hard drive order is correct. During installation, your RAID devices may be hdd, hde and hdf, but during boot they may be hda, hdb and hdc. Adjust your kernel line accordingly. This is what happened to me anyway.
@@ -1311,7 +1339,7 @@ md0: [UU]
 <li>
 <a rel="nofollow" class="external text" href="https://www.thomas-krenn.com/en/wiki/Linux_Software_RAID">Linux Software RAID</a> (thomas-krenn.com)</li>
 <li>
-<a rel="nofollow" class="external text" href="https://raid.wiki.kernel.org/index.php/Linux_Raid">Linux RAID wiki entry</a> on The Linux Kernel Archives</li>
+<a rel="nofollow" class="external text" href="https://raid.wiki.kernel.org/index.php/Linux_Raid">Linux RAID wiki entry</a><sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-10-12 ⓘ]</sup> on The Linux Kernel Archives</li>
 <li><a rel="nofollow" class="external text" href="https://raid.wiki.kernel.org/index.php/Write-intent_bitmap">How Bitmaps Work</a></li>
 <li>
 <a rel="nofollow" class="external text" href="https://docs.redhat.com/docs/en-US/Red_Hat_Enterprise_Linux/6/html/Storage_Administration_Guide/ch-raid.html">Chapter 15: Redundant Array of Independent Disks (RAID)</a><sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-07-30 ⓘ]</sup> of Red Hat Enterprise Linux 6 Documentation</li>
@@ -1360,8 +1388,8 @@ md0: [UU]
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=RAID&amp;oldid=813449">https://wiki.archlinux.org/index.php?title=RAID&amp;oldid=813449</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 30 July 2024, at 16:26.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=RAID&amp;oldid=819546">https://wiki.archlinux.org/index.php?title=RAID&amp;oldid=819546</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 24 October 2024, at 15:05.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

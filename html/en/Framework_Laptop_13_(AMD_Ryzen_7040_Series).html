@@ -5,7 +5,7 @@
 <title>Framework Laptop 13 (AMD Ryzen 7040 Series) - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -242,8 +242,14 @@
 </td>
 </tr>
 <tr>
-<td>Webcam</td>
+<td>Webcam (1st Gen)</td>
 <td><code>0bda:5634</code></td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes
+</td>
+</tr>
+<tr>
+<td>Webcam (2nd Gen)</td>
+<td><code>32ac:001c</code></td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes
 </td>
 </tr>
@@ -283,14 +289,22 @@
 <h2><span class="mw-headline" id="Installation">Installation</span></h2>
 <p>It is highly recommended to use the latest stable kernel (<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span>) as <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-lts">linux-lts</a></span> does not yet include patches for the Phoenix APU and Zen 4 platform that improve stability, power efficiency and performance.
 </p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> Ensure you have <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-firmware">linux-firmware</a></span> installed, as pointed out by <a href="../en/Installation_guide.html#Install_essential_packages" title="Installation guide">Installation guide#Install essential packages</a> before reporting hardware issues on the Arch bug tracker or Framework Community boards. It is an optional dependency of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span> and does not automatically get installed as part of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=base">base</a></span>. Without it, much of the hardware will be detected but may not be fully functional. You will see firmware loading issues in the <a href="../en/Systemd/Journal.html" class="mw-redirect" title="Journal">journal</a>.</div>
 <h2><span class="mw-headline" id="Display">Display</span></h2>
-<p>The matte display module is manufactured by <a href="https://en.wikipedia.org/wiki/BOE_Technology" class="extiw" title="wikipedia:BOE Technology">BOE</a> and is uncalibrated from factory, giving a suboptimal default sRGB coverage. It is thus recommended to apply <a rel="nofollow" class="external text" href="https://www.notebookcheck.net/uploads/tx_nbc2/BOE_CQ_______NE135FBM_N41_03.icm">this</a> <a href="../en/ICC_profiles.html" title="ICC profiles">ICC profile</a> if you have this display in order to have better color reproduction. 
+<p>The Ryzen 7040 Series can be configured with one of two different displays.
+</p>
+<p>The default 2256x1504 resolution display has 400nit brightness and 60Hz refresh rate. The matte display module is manufactured by <a href="https://en.wikipedia.org/wiki/BOE_Technology" class="extiw" title="wikipedia:BOE Technology">BOE</a> and is uncalibrated from factory, giving a suboptimal default sRGB coverage. It is thus recommended to apply <a rel="nofollow" class="external text" href="https://www.notebookcheck.net/uploads/tx_nbc2/BOE_CQ_______NE135FBM_N41_03.icm">this</a> <a href="../en/ICC_profiles.html" title="ICC profiles">ICC profile</a> if you have this display in order to have better color reproduction. 
+</p>
+<p>The newer 2880x1920 resolution display, better known as the 2.8k display module, has &gt;500nit brightness and 120Hz refresh rate. This display can be identified by the rounded top corners. The 2.8k display resolution at 256 DPI is perfect for 2x scaling factor as many desktop environments under Linux currently struggle with fractional scaling. <a rel="nofollow" class="external text" href="https://www.notebookcheck.net/uploads/tx_nbc2/BOE0CB4.icm">This</a> <a href="../en/ICC_profiles.html" title="ICC profiles">ICC profile</a> is available to improve color reproduction.
 </p>
 <h2><span class="mw-headline" id="Speakers">Speakers</span></h2>
-<p>By default, the speakers do not sound very balanced (due to downward firing speakers), so you may want to use an equalizer to fix this. One way is to install <a href="../en/PipeWire.html#EasyEffects" class="mw-redirect" title="EasyEffects">EasyEffects</a> and use a preset such as <a rel="nofollow" class="external text" href="https://community.frame.work/t/guide-yet-another-easyeffects-profile/40509">this</a> by cab.
+<p>By default, the speakers do not sound very balanced due to the downward firing speakers, so you may want to use an equalizer to fix this. The recommended method is to install <a href="../en/PipeWire.html#EasyEffects" class="mw-redirect" title="EasyEffects">EasyEffects</a> and use the official preset found <a rel="nofollow" class="external text" href="https://github.com/FrameworkComputer/linux-docs/blob/main/easy-effects/fw13-easy-effects.json">here</a>.
+</p>
+<p>Alternatively, you can use user-created profiles such as <a rel="nofollow" class="external text" href="https://github.com/cab404/framework-dsp">this one</a> created by cab404.
 </p>
 <h2><span class="mw-headline" id="Power_management">Power management</span></h2>
-<p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=power-profiles-daemon">power-profiles-daemon</a></span> should be installed and <a href="../en/Help:Reading.html#Control_of_systemd_units" title="Help:Reading">enabled</a> to be able to control power states. AMD and Framework do not recommend the use of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=tlp">tlp</a></span> - see <a rel="nofollow" class="external autonumber" href="https://knowledgebase.frame.work/en_us/optimizing-ubuntu-battery-life-Sye_48Lg3">[1]</a> <a rel="nofollow" class="external autonumber" href="https://community.frame.work/t/tracking-ppd-v-tlp-for-amd-ryzen-7040/39423/9">[2]</a>.
+<p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=power-profiles-daemon">power-profiles-daemon</a></span> should be installed and <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enabled">enabled</a> to be able to control power states. AMD and Framework do not recommend the use of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=tlp">tlp</a></span> - see <a rel="nofollow" class="external autonumber" href="https://knowledgebase.frame.work/en_us/optimizing-ubuntu-battery-life-Sye_48Lg3">[1]</a> <a rel="nofollow" class="external autonumber" href="https://community.frame.work/t/tracking-ppd-v-tlp-for-amd-ryzen-7040/39423/9">[2]</a>.
 </p>
 <h2><span class="mw-headline" id="Wi-Fi">Wi-Fi</span></h2>
 <p>You will be limited to 802.11n (Wi-Fi 4) and 2.4GHz bands if you do not configure the <a href="../en/Network_configuration/Wireless.html#Respecting_the_regulatory_domain" title="Network configuration/Wireless">regulatory domain</a>.
@@ -302,7 +316,7 @@
 You will need to upgrade the fingerprint reader firmware following the article on the <a rel="nofollow" class="external text" href="https://knowledgebase.frame.work/en_us/updating-fingerprint-reader-firmware-on-linux-for-13th-gen-and-amd-ryzen-7040-series-laptops-HJrvxv_za">Framework knowledgebase</a> if your reader isn't recognised.
 </p>
 <h2><span class="mw-headline" id="Ambient_light_sensor">Ambient light sensor</span></h2>
-<p>Install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=iio-sensor-proxy">iio-sensor-proxy</a></span> to enable automatic brightness in Gnome.
+<p>Install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=iio-sensor-proxy">iio-sensor-proxy</a></span> to enable automatic brightness in Gnome. Other desktop environments are unsupported at this time.
 </p>
 <h2><span class="mw-headline" id="Firmware">Firmware</span></h2>
 <p><a href="../en/Fwupd.html" title="Fwupd">fwupd</a> is support is offered by Framework. It is highly recommended to upgrade to BIOS 3.05 for maximum compatibility. Full instructions, changelogs, known issues and EFI shell updaters can be found in the <a rel="nofollow" class="external text" href="https://knowledgebase.frame.work/en_us/framework-laptop-13-bios-and-driver-releases-amd-ryzen-7040-series-r1rXGVL16#lvfs">Framework knowlegebase</a>.
@@ -311,6 +325,7 @@ You will need to upgrade the fingerprint reader firmware following the article o
 </p>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul>
+<li><a href="../en/Laptop/Framework.html" title="Laptop/Framework">ArchWiki vendor page</a></li>
 <li><a rel="nofollow" class="external text" href="https://knowledgebase.frame.work/categories/framework-laptop-13-amd-ryzen-7040-series-r1GBOV3c3">AMD Ryzen 7040 Series Knowlegebase</a></li>
 <li><a rel="nofollow" class="external text" href="https://community.frame.work/c/framework-laptop/linux/91">Framework Linux forum</a></li>
 </ul>
@@ -331,8 +346,8 @@ You will need to upgrade the fingerprint reader firmware following the article o
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Framework_Laptop_13_(AMD_Ryzen_7040_Series)&amp;oldid=811806">https://wiki.archlinux.org/index.php?title=Framework_Laptop_13_(AMD_Ryzen_7040_Series)&amp;oldid=811806</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 2 July 2024, at 23:31.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Framework_Laptop_13_(AMD_Ryzen_7040_Series)&amp;oldid=818781">https://wiki.archlinux.org/index.php?title=Framework_Laptop_13_(AMD_Ryzen_7040_Series)&amp;oldid=818781</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 13 October 2024, at 05:23.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

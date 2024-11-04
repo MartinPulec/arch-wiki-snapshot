@@ -5,7 +5,7 @@
 <title>MATLAB - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -86,6 +86,15 @@
 			</a>
 			
 			<ul id="toc-Desktop_entry-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Running_on_Wayland" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Running_on_Wayland">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">2.2.2</span>Running on Wayland</div>
+			</a>
+			
+			<ul id="toc-Running_on_Wayland-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -478,6 +487,15 @@
 			<ul id="toc-Desktop_Error_with_text_not_rendering-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Simulink_on_KDE_Dark_Theme_has_inappriopriate_color_scheme" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Simulink_on_KDE_Dark_Theme_has_inappriopriate_color_scheme">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">4.32</span>Simulink on KDE Dark Theme has inappriopriate color scheme</div>
+			</a>
+			
+			<ul id="toc-Simulink_on_KDE_Dark_Theme_has_inappriopriate_color_scheme-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-MATLAB_in_a_systemd-nspawn" class="vector-toc-list-item vector-toc-level-1">
@@ -619,6 +637,8 @@ Arch Linux is not officially supported.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> If the installation crashes with <code>Failed to launch web window with error: Unable to launch the MATLABWindow application.</code>, see <a href="#Unable_to_launch_the_MATLABWindow_application">#Unable to launch the MATLABWindow application</a> for a workaround.</div>
+<p><br>
+</p>
 <h4><span class="mw-headline" id="Desktop_entry">Desktop entry</span></h4>
 <p>Optionally create a <a href="../en/Desktop_entries.html" class="mw-redirect" title="Desktop entry">desktop entry</a>. The MIME type of MATLAB files is <code>text/x-matlab</code>.
 </p>
@@ -629,6 +649,9 @@ Arch Linux is not officially supported.
 <code>-desktop</code> to run Matlab without a terminal.</li>
 <li>
 <code>-nosplash</code> to prevent the splash screen from showing up.</li>
+<li>
+<code>-useStartupFolderPref</code> to use the folder specified by the <b>Initial working folder</b> preference <a rel="nofollow" class="external autonumber" href="https://it.mathworks.com/help/matlab/matlab_env/matlab-startup-folder.html">[2]</a>
+</li>
 </ul>
 <p>In order for icons to appear correctly <code>StartupWMClass</code> needs to be set in the desktop entry. To find it out start MATLAB, run <code>xprop | grep WM_CLASS</code> and select the MATLAB window.
 </p>
@@ -639,7 +662,7 @@ Arch Linux is not officially supported.
 Type=Application
 Terminal=false
 MimeType=text/x-matlab
-Exec=/usr/local/MATLAB/R20<i>xyz</i>/bin/matlab -desktop
+Exec=/usr/local/MATLAB/R20<i>xyz</i>/bin/matlab -desktop -useStartupFolderPref
 Name=MATLAB
 Icon=matlab
 Categories=Development;Math;Science
@@ -651,6 +674,9 @@ StartupNotify=true</pre>
 </pre>
 <p>One might want to use the system's <code>libstdc++</code>.
 </p>
+<h4><span class="mw-headline" id="Running_on_Wayland">Running on Wayland</span></h4>
+<p>To make MATLAB run on Wayland, set the <a href="../en/Environment_variables.html" class="mw-redirect" title="Environment variable">environment variable</a> <code>QT_QPA_PLATFORM=xcb</code>.
+</p>
 <h3><span class="mw-headline" id="Installing_from_the_AUR_package">Installing from the AUR package</span></h3>
 <p>The <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/matlab/">matlab</a></span><sup><small>AUR</small></sup> package is designed to allow MATLAB to be integrated into and managed by Arch. The advantage of the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/matlab/">matlab</a></span><sup><small>AUR</small></sup> package is that it manages dependencies and some of the nuances of the installation process. Note however, that the package does not contain the installation files, and you are expected to place them in the cloned package folder yourself. It can be problematic to build the package using <a href="../en/AUR_helpers.html" title="AUR helpers">AUR helpers</a>, so you are expected to do so manually. You can obtain the actual MATLAB software using the installer from <a rel="nofollow" class="external text" href="https://www.mathworks.com">the MathWorks website</a>.
 </p>
@@ -658,11 +684,9 @@ StartupNotify=true</pre>
 <strong>Warning:</strong> The EULA for the proprietary MATLAB software is restrictive and it prohibits distribution and modification of the installation files. The installation method described in this section should only be performed on the system on which the software is going to be installed and the package should be deleted from the installation location and the <a href="../en/Pacman.html" title="Pacman">pacman</a> cache following installation. Redistributing the built package is a violation of the MATLAB EULA.</div>
 <ul>
 <li>Clone the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/matlab/">matlab</a></span><sup><small>AUR</small></sup> package and <code>cd</code> into it.</li>
-<li>Download the zip file containing the MATLAB installer from MathWorks into the current directory. Extract the zip to the <code>matlab</code> subdirectory:</li>
+<li>Download the zip file containing the MATLAB installer from MathWorks into the current directory.</li>
+<li>Run the extracted installer with:</li>
 </ul>
-<pre>$ bsdtar xC matlab -f matlab_<i>XXXXX</i>_glnxa64.zip
-</pre>
-<ul><li>Run the extracted installer with:</li></ul>
 <pre>$ ./matlab/install
 </pre>
 <ul>
@@ -842,7 +866,7 @@ dlopen: cannot load any more object with static TLS
 <li>
 <a rel="nofollow" class="external text" href="https://www.mathworks.com/support/bugreports/1003952">1003952</a> for which workarounds exist</li>
 </ul>
-<p>A more general solution of recompiling <code>glibc</code> has also been suggested. <a rel="nofollow" class="external autonumber" href="https://stackoverflow.com/a/19468365">[2]</a>
+<p>A more general solution of recompiling <code>glibc</code> has also been suggested. <a rel="nofollow" class="external autonumber" href="https://stackoverflow.com/a/19468365">[3]</a>
 </p>
 <h3>
 <span id="Blank.2Fgrey_UI_when_using_WM_.28non-reparenting_window_manager.29"></span><span class="mw-headline" id="Blank/grey_UI_when_using_WM_(non-reparenting_window_manager)">Blank/grey UI when using WM (non-reparenting window manager)</span>
@@ -853,7 +877,7 @@ dlopen: cannot load any more object with static TLS
 <p>If you notice that the menus or the input fields are corrupted or not appearing correctly then you can try to activate the <i>"Use antialiasing to smooth desktop fonts"</i> option in Matlab preferences, it seems to solve the problem. Go to <i>Preferences &gt; Matlab &gt; Fonts</i> and activate it. You will need to restart Matlab in order to take effect.
 </p>
 <h3><span class="mw-headline" id="Installation_dependencies_missing">Installation dependencies missing</span></h3>
-<p>Matlab might complain that it cannot find a package. Look at the package name and install it with <a href="../en/Pacman.html" title="Pacman">Pacman</a>, or in the case of x86_64 there are some libraries only in <a href="../en/Arch_User_Repository.html" class="mw-redirect" title="AUR">AUR</a>. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/matlab/">matlab</a></span><sup><small>AUR</small></sup> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/matlab-dummy/">matlab-dummy</a></span><sup><small>AUR</small></sup><sup>[<a href="../en/Help:Procedures.html#Fix_broken_package_links" title="Help:Procedures">broken link</a>: package not found]</sup> packages contain a list of up-to-date dependencies for the newest Matlab version.
+<p>Matlab might complain that it cannot find a package. Look at the package name and install it with <a href="../en/Pacman.html" title="Pacman">Pacman</a>, or in the case of x86_64 there are some libraries only in <a href="../en/Arch_User_Repository.html" class="mw-redirect" title="AUR">AUR</a>. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/matlab/">matlab</a></span><sup><small>AUR</small></sup> contains a list of up-to-date dependencies for the newest Matlab version.
 </p>
 <p>See also <a href="#Unable_to_launch_the_MATLABWindow_application">#Unable to launch the MATLABWindow application</a>.
 </p>
@@ -881,7 +905,7 @@ Would you like to retry installing <i>package_name</i>? If you press No, the ins
 </p>
 <pre>opengl('save','software')
 </pre>
-<p>See <a rel="nofollow" class="external autonumber" href="https://bugzilla.redhat.com/show_bug.cgi?id=1357571">[3]</a> and <a rel="nofollow" class="external autonumber" href="https://bugs.freedesktop.org/show_bug.cgi?id=96671">[4]</a> for more.
+<p>See <a rel="nofollow" class="external autonumber" href="https://bugzilla.redhat.com/show_bug.cgi?id=1357571">[4]</a> and <a rel="nofollow" class="external autonumber" href="https://bugs.freedesktop.org/show_bug.cgi?id=96671">[5]</a><sup title="Last check status: SSL error">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-10-12 ⓘ]</sup> for more.
 </p>
 <h3><span class="mw-headline" id="LiveScript_errors">LiveScript errors</span></h3>
 <p>If you get the error when attempting to load or create a LiveScript:
@@ -1058,7 +1082,7 @@ MATLABWindow and MATLAB's webwindow infrastructure is based on Chromium Embedded
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"> $ ./bin/glnxa64/MATLABWindow </pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">bin/glnxa64/MATLABWindow: symbol lookup error: /usr/lib/libcairo.so.2: undefined symbol: FT_Get_Color_Glyph_Layer
 </pre>
-<p><code>FT_Get_Color_Glyph_Layer</code> is a symbol of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=freetype2">freetype2</a></span>, which indicates a library incompatibility between the MATLAB application and the Arch Linux packages. <a rel="nofollow" class="external autonumber" href="https://ww2.mathworks.cn/matlabcentral/answers/364551-why-is-matlab-unable-to-run-the-matlabwindow-application-on-linux">[5]</a>
+<p><code>FT_Get_Color_Glyph_Layer</code> is a symbol of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=freetype2">freetype2</a></span>, which indicates a library incompatibility between the MATLAB application and the Arch Linux packages. <a rel="nofollow" class="external autonumber" href="https://ww2.mathworks.cn/matlabcentral/answers/364551-why-is-matlab-unable-to-run-the-matlabwindow-application-on-linux">[6]</a>
 </p>
 <p>To fix this, put aside MATLAB's <code>libfreetype.so*</code>.
 </p>
@@ -1107,7 +1131,7 @@ $ xhost -SI:localuser:root
 <p>See <a href="#Unable_to_launch_the_MATLABWindow_application">#Unable to launch the MATLABWindow application</a>.
 </p>
 <h3><span class="mw-headline" id="Calls_to_mex_fail">Calls to mex fail</span></h3>
-<p>If calls from MATLAB or Simulink to mex (e.g. rapid accelerator) fail with the error <code>*.mexa64 is not a MEX file</code>, even though the resulting file is usable, it may help to edit <code></code> in either <code>matlab/bin/</code> or <code>~/.matlab7rc.sh</code> by changing the <code>LDPATH_PREFIX</code> variable from its empty default: <a rel="nofollow" class="external autonumber" href="https://github.com/alecjacobson/matlab/blob/883d417a99fcb8ead89387cee243e51a92864019/bin/.matlab7rc.sh#L170">[6]</a>
+<p>If calls from MATLAB or Simulink to mex (e.g. rapid accelerator) fail with the error <code>*.mexa64 is not a MEX file</code>, even though the resulting file is usable, it may help to edit <code></code> in either <code>matlab/bin/</code> or <code>~/.matlab7rc.sh</code> by changing the <code>LDPATH_PREFIX</code> variable from its empty default: <a rel="nofollow" class="external autonumber" href="https://github.com/alecjacobson/matlab/blob/883d417a99fcb8ead89387cee243e51a92864019/bin/.matlab7rc.sh#L170">[7]</a>
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">matlab/bin/.matlab7rc.sh (or ~/.matlab7rc.sh)</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">...
@@ -1134,7 +1158,7 @@ $ xhost -SI:localuser:root
 See <a rel="nofollow" class="external text" href="https://www.mathworks.com/matlabcentral/answers/358233-matlab-python-interface-broken?s_tid=email_ans_new_ans_ans_h#answer_283353">this support answer</a>.
 </p>
 <h3><span class="mw-headline" id="Settings_not_persisting_between_MATLAB_restarts">Settings not persisting between MATLAB restarts</span></h3>
-<p>In some cases on recent Arch systems matlab is unable to export <code>.mlsettings</code> files, preventing toolbox and some matlab settings from being saved to disk and persisted. These cases come from matlab trying to hard link new files from <code>/tmp</code> directly to the preferences directory (usually <code>~/.matlab/release</code> where <code>release</code> is the matlab version, e.g. <code>R2021b</code>). As a workaround, run matlab with the <code>$TMPDIR</code> environment variable set to a folder on the same file system as the preferences directory. <a rel="nofollow" class="external autonumber" href="https://www.mathworks.com/matlabcentral/answers/1777865-matlab-preferences-not-being-saved-across-sessions">[7]</a>
+<p>In some cases on recent Arch systems matlab is unable to export <code>.mlsettings</code> files, preventing toolbox and some matlab settings from being saved to disk and persisted. These cases come from matlab trying to hard link new files from <code>/tmp</code> directly to the preferences directory (usually <code>~/.matlab/release</code> where <code>release</code> is the matlab version, e.g. <code>R2021b</code>). As a workaround, run matlab with the <code>$TMPDIR</code> environment variable set to a folder on the same file system as the preferences directory. <a rel="nofollow" class="external autonumber" href="https://www.mathworks.com/matlabcentral/answers/1777865-matlab-preferences-not-being-saved-across-sessions">[8]</a>
 </p>
 <h3>
 <span id=".22Unable_to_open_this_file_in_the_current_system_configuration.22"></span><span class="mw-headline" id='"Unable_to_open_this_file_in_the_current_system_configuration"'>"Unable to open this file in the current system configuration"</span>
@@ -1216,6 +1240,12 @@ at com.mathworks.mde.cmdwin.XCmdWndView.&lt;clinit&gt;(XCmdWndView.java:329)
 ... 43 more</pre>
 <p>The error is related to missing fonts and can be fixed installing from the AUR the package ttf-ms-fonts
 </p>
+<h3><span class="mw-headline" id="Simulink_on_KDE_Dark_Theme_has_inappriopriate_color_scheme">Simulink on KDE Dark Theme has inappriopriate color scheme</span></h3>
+<p>When running Simulink module, the workspace window may render some dark border causing text and icons in corners not visible at all in some scenarios. According to <a rel="nofollow" class="external text" href="https://www.mathworks.com/matlabcentral/answers/1811255-r2022b-simulink-is-unusable-on-dark-themed-kde">the potential solution</a> it can be fixed by setting <code>XDG_CURRENT_DESKTOP</code> and <code>GTK_THEME</code> environment variables with
+</p>
+<pre>export XDG_CURRENT_DESKTOP=GNOME
+export GTK_THEME=Adwaita:light
+</pre>
 <h2><span class="mw-headline" id="MATLAB_in_a_systemd-nspawn">MATLAB in a systemd-nspawn</span></h2>
 <p>MATLAB can be run within a systemd-nspawn container to maintain a static system and avoid the library issues that often plague matlab installs after significant updates to libraries in Arch. Refer to <a href="../en/Systemd-nspawn.html" title="Systemd-nspawn">Systemd-nspawn</a> for detailed information on setting up such containers.
 </p>
@@ -1264,7 +1294,6 @@ logout
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li>
 <li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li>
-<li><a href="../en/Category:Pages_with_broken_package_links.html" title="Category:Pages with broken package links">Pages with broken package links</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
 </ul>
 </div>
@@ -1277,8 +1306,8 @@ logout
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=MATLAB&amp;oldid=811292">https://wiki.archlinux.org/index.php?title=MATLAB&amp;oldid=811292</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 26 June 2024, at 17:20.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=MATLAB&amp;oldid=818559">https://wiki.archlinux.org/index.php?title=MATLAB&amp;oldid=818559</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 12 October 2024, at 15:57.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

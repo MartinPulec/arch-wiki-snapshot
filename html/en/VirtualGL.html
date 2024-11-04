@@ -5,7 +5,7 @@
 <title>VirtualGL - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -371,10 +371,10 @@
 <div>
 <b>Reason:</b> <span style="color:red;">please use the first argument of the template to provide a brief explanation.</span> (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:VirtualGL.html">Talk:VirtualGL</a>)</div>
 </div>
-<pre style="white-space: pre !important; font-variant-ligatures: no-common-ligatures;">  server:                                              client:
+<pre style="white-space: pre !important; font-family:'DejaVu Sans Mono',monospace,monospace; font-variant-ligatures: no-common-ligatures;">  server:                                              client:
  ······································               ·················
  : ┌───────────┐ X11 commands         :               : ┌───────────┐ :
- : │application│━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━▶│X server 2)│ :
+ : │application│━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━▶│X server 2)│ :
  : │           │        ┌───────────┐ :               : │           │ :
  : │           │        │X server 1)│ :               : ├┈┈┈┈┈┈┈┈┈╮ │ :
  : │ ╭┈┈┈┈┈┈┈┈┈┤ OpenGL │ ╭┈┈┈┈┈┈┈┈┈┤ : image stream  : │VirtualGL┊ │ :
@@ -424,7 +424,7 @@ $ vglconnect -s user@server  <i># both X11 traffic and VGL image stream encrypte
 <div>
 <b>Reason:</b> <span style="color:red;">please use the first argument of the template to provide a brief explanation.</span> (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:VirtualGL.html">Talk:VirtualGL</a>)</div>
 </div>
-<pre style="white-space: pre !important; font-variant-ligatures: no-common-ligatures;">  server:                                                              client:
+<pre style="white-space: pre !important; font-family:'DejaVu Sans Mono',monospace,monospace; font-variant-ligatures: no-common-ligatures;">  server:                                                              client:
  ······················································               ················
  : ┌───────────┐ X11 commands         ┌─────────────┐ : image stream  : ┌──────────┐ :
  : │application│━━━━━━━━━━━━━━━━━━━━━▶│VNC server 2)│━━━━━━━━━━━━━━━━━━▶│VNC viewer│ :
@@ -603,22 +603,20 @@ $ chmod u+s /usr/lib32/lib{rr,dl}faker.so  # for the multilib versions provided 
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/lightdm/lightdm.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">...
 [Seat:*]
-display-setup-script=/usr/bin/vglgenkey
-</pre>
+display-setup-script=/usr/bin/vglgenkey</pre>
 <p>Changing it to
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/lightdm/lightdm.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">...
 [Seat:seat0]
-display-setup-script=/usr/bin/vglgenkey
-</pre>
+display-setup-script=/usr/bin/vglgenkey</pre>
 <p>so it only runs on the first X server fixed my problem.
 </p>
 <h3><span class="mw-headline" id="vglrun_fails_with_ERROR:_VirtualGL_attempted_to_load_the_real_glXCreatePbuffer_function_and_got_the_fake_one_instead.">vglrun fails with ERROR: VirtualGL attempted to load the real glXCreatePbuffer function and got the fake one instead.</span></h3>
 <p>This means that VirtualGL is trying to load a function from the wrong library. You can specify which OpenGL library to use by setting <code>LD_PRELOAD</code> to the path of the library. <code>/usr/lib/libGL.so</code> appears to work for 64-bit applications. Keep in mind that 32-bit applications (like Steam or Wine) will require 32-bit OpenGL. If you need to use both 32-bit and 64-bit libraries, you can load them both with <code>LD_PRELOAD="/path/to/libGL.so /path/to/lib32/libGL.so"</code>.
 </p>
 <h3><span class="mw-headline" id="All_applications_run_with_1_frame_per_second">All applications run with 1 frame per second</span></h3>
-<p>If you use newer Nvidia drivers (e.g., version 440) you might be affected by a screen locking problem, which will reduce the framerate to approx. 1 frame per second according to the <a rel="nofollow" class="external text" href="https://groups.google.com/d/msg/virtualgl-users/d8k1ujwKJXo/2faAa9yNAQAJ">VirtualGL mailing list</a>. Instead of downgrading the Nvidia driver one workaround is to set <code>HardDPMS</code> to <code>false</code> in your X server configuration (see <a href="../en/NVIDIA/Troubleshooting.html#Driver_415:_HardDPMS" title="NVIDIA/Troubleshooting">NVIDIA/Troubleshooting#Driver 415: HardDPMS</a> for details).
+<p>If you use newer NVIDIA drivers (e.g., version 440) you might be affected by a screen locking problem, which will reduce the framerate to approx. 1 frame per second according to the <a rel="nofollow" class="external text" href="https://groups.google.com/d/msg/virtualgl-users/d8k1ujwKJXo/2faAa9yNAQAJ">VirtualGL mailing list</a>. Instead of downgrading the NVIDIA driver one workaround is to set <code>HardDPMS</code> to <code>false</code> in your X server configuration (see <a href="../en/NVIDIA/Troubleshooting.html#HardDPMS" title="NVIDIA/Troubleshooting">NVIDIA/Troubleshooting#HardDPMS</a> for details).
 </p>
 <h3>
 <span id="rendering_glitches.2C_unusually_poor_performance.2C_or_application_errors"></span><span class="mw-headline" id="rendering_glitches,_unusually_poor_performance,_or_application_errors">rendering glitches, unusually poor performance, or application errors</span>
@@ -665,8 +663,8 @@ VGL_SYNC=1  # use VNC with this one, it is very slow with X11 forwarding
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=VirtualGL&amp;oldid=795957">https://wiki.archlinux.org/index.php?title=VirtualGL&amp;oldid=795957</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 3 January 2024, at 18:49.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=VirtualGL&amp;oldid=819679">https://wiki.archlinux.org/index.php?title=VirtualGL&amp;oldid=819679</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 27 October 2024, at 07:14.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

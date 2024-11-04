@@ -5,7 +5,7 @@
 <title>Microcode - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -42,13 +42,13 @@
 				<div class="vector-toc-text">Beginning</div>
 			</a>
 		</li>
-		<li id="toc-Install_microcode_package" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
-		<a class="vector-toc-link" href="#Install_microcode_package">
+		<li id="toc-Installation" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#Installation">
 			<div class="vector-toc-text">
-			<span class="vector-toc-numb">1</span>Install microcode package</div>
+			<span class="vector-toc-numb">1</span>Installation</div>
 		</a>
 		
-		<ul id="toc-Install_microcode_package-sublist" class="vector-toc-list">
+		<ul id="toc-Installation-sublist" class="vector-toc-list">
 		</ul>
 	</li>
 	<li id="toc-Loading_microcode" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
@@ -339,20 +339,14 @@
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
 <div>
-<b>Reason:</b> 
-<ul>
-<li>Needs to be updated to reflect that late loading on AMD is considered supported and <a rel="nofollow" class="external text" href="https://lore.kernel.org/lkml/20230411125056.2333-1-bp@alien8.de/">no longer taints the kernel</a>.</li>
-<li>Changes for the <a rel="nofollow" class="external text" href="https://www.phoronix.com/news/Linux-6.7-x86-Microcode">6.7 release</a> of the kernel might also fit here.</li>
-<li>Hook migration to remove initrd now that <a rel="nofollow" class="external text" href="https://archlinux.org/news/mkinitcpio-hook-migration-and-early-microcode/">mkinitcpio can include microcode in initramfs</a>.</li>
-</ul>
- (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Microcode.html">Talk:Microcode</a>)</div>
+<b>Reason:</b> Hook migration to remove initrd now that <a rel="nofollow" class="external text" href="https://archlinux.org/news/mkinitcpio-hook-migration-and-early-microcode/">mkinitcpio can include microcode in initramfs</a>. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Microcode.html">Talk:Microcode</a>)</div>
 </div>
 <p>Processor manufacturers release stability and security updates to the processor <a href="https://en.wikipedia.org/wiki/Microcode" class="extiw" title="wikipedia:Microcode">microcode</a>. These updates provide bug fixes that can be critical to the stability of your system. Without them, you may experience spurious crashes or unexpected system halts that can be difficult to track down.
 </p>
 <p>All users with an AMD or Intel CPU should install the microcode updates to ensure system stability. In virtual machines and containers, the microcode updates belongs on the host, not in the guest system.
 </p>
 <meta property="mw:PageProp/toc">
-<h2><span class="mw-headline" id="Install_microcode_package">Install microcode package</span></h2>
+<h2><span class="mw-headline" id="Installation">Installation</span></h2>
 <p>To acquire updated microcode, depending on the processor, <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> one of the following packages:
 </p>
 <ul>
@@ -361,7 +355,7 @@
 <li>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=intel-ucode">intel-ucode</a></span> for Intel processors.</li>
 </ul>
-<p>For most users this is the only thing necessary. The microcode will be loaded automatically at boot time.
+<p><a href="../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a> and <a href="../en/Dracut.html" title="Dracut">dracut</a> generate <a href="#Microcode_initramfs_packed_together_with_the_main_initramfs_in_one_file">combined initramfs files</a> by default. The microcode will be loaded automatically at boot time. <a href="../en/Booster.html" title="Booster">Booster</a> does <a rel="nofollow" class="external text" href="https://github.com/anatol/booster/issues/40">not support</a> generating combined initramfs, see the needed boot loader configuration at <a href="#Microcode_in_a_separate_initramfs_file">#Microcode in a separate initramfs file</a>. 
 </p>
 <h2><span class="mw-headline" id="Loading_microcode">Loading microcode</span></h2>
 <p>Microcode updates are usually shipped with the motherboard's firmware and applied during firmware initialization. Since OEMs might not release firmware updates in a timely fashion and old systems do not get new firmware updates at all, the ability to apply CPU microcode updates during boot was added to the Linux kernel. <a rel="nofollow" class="external text" href="https://docs.kernel.org/arch/x86/microcode.html">The Linux microcode loader</a> supports three loading methods:
@@ -372,7 +366,7 @@
 <li>
 <b>Early loading</b> updates the microcode very early during boot, before the initramfs stage, and is preferred over late loading. This is mandatory for CPUs with severe hardware bugs, like the Intel Haswell and Broadwell processor families.</li>
 <li>
-<b>Late loading</b> (<a rel="nofollow" class="external text" href="https://docs.kernel.org/arch/x86/microcode.html#why-is-late-loading-dangerous">dangerous</a>) updates the microcode after booting which could be too late since the CPU might have already tried to use a faulty instruction. Even if already using early loading, late loading can still be used to apply a newer microcode update without needing to reboot.</li>
+<b>Late loading</b> (Which <a rel="nofollow" class="external text" href="https://github.com/torvalds/linux/commit/9407bda845dd19756e276d4f3abc15a20777ba45">may</a> be <a rel="nofollow" class="external text" href="https://docs.kernel.org/arch/x86/microcode.html#why-is-late-loading-dangerous">dangerous</a>) updates the microcode after booting which could be too late since the CPU might have already tried to use a faulty instruction. Even if already using early loading, late loading can still be used to apply a newer microcode update without needing to reboot.</li>
 </ol>
 <h3><span class="mw-headline" id="Early_loading">Early loading</span></h3>
 <p>If not compiled into the kernel, microcode must be loaded by the early loader.
@@ -394,8 +388,8 @@ CONFIG_MICROCODE_AMD=y
 <h4><span class="mw-headline" id="Microcode_initramfs_packed_together_with_the_main_initramfs_in_one_file">Microcode initramfs packed together with the main initramfs in one file</span></h4>
 <p>The uncompressed microcode CPIO can be <a rel="nofollow" class="external text" href="https://docs.kernel.org/arch/x86/microcode.html#early-load-microcode">prepended into the initramfs</a> and used as a single initramfs file. This method is preferred over <a href="#Microcode_in_a_separate_initramfs_file">#Microcode in a separate initramfs file</a> since no additional boot parameter configuration is necessary.
 </p>
-<p><a href="../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a> and <a href="../en/Dracut.html" title="Dracut">dracut</a> support generating such combined initramfs files and do so by default. <a href="../en/Booster.html" title="Booster">Booster</a> <a rel="nofollow" class="external text" href="https://github.com/anatol/booster/issues/40">does not support generating combined initramfs</a>.
-</p>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong> You can optionally add <code>boot/*-ucode.img</code> to <a href="../en/Pacman.html#Skip_files_from_being_installed_to_system" class="mw-redirect" title="NoExtract">NoExtract</a> in <code>/etc/pacman.conf</code>, since the microcode files will be picked up directly from <code>/usr/lib/firmware/*-ucode/</code>.</div>
 <h5><span class="mw-headline" id="mkinitcpio">mkinitcpio</span></h5>
 <p>For <a href="../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a> to generate an initramfs file that includes microcode, make sure <code>microcode</code> is in the <code>HOOKS</code> array in <code>/etc/mkinitcpio.conf</code>. 
 </p>
@@ -407,11 +401,8 @@ CONFIG_MICROCODE_AMD=y
 </pre>
 <p>You can verify the initramfs includes the microcode update files with <span class="plainlinks archwiki-template-man" title="$ man 1 lsinitcpio"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/lsinitcpio.1">lsinitcpio(1)</a></span>. E.g.:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># lsinitcpio --early /boot/initramfs-linux.img</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">early_cpio
-kernel/
-kernel/x86/
-kernel/x86/microcode/
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># lsinitcpio --early /boot/initramfs-linux.img | grep microcode </pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">kernel/x86/microcode/
 kernel/x86/microcode/AuthenticAMD.bin
 </pre>
 <h5><span class="mw-headline" id="dracut">dracut</span></h5>
@@ -484,20 +475,20 @@ and add an <code>initrd=</code> option for the microcode image as the first <cod
 <p><a href="../en/LILO.html" title="LILO">LILO</a> and potentially other old boot loaders do not support multiple initrd images. Follow the <a href="#Microcode_initramfs_packed_together_with_the_main_initramfs_in_one_file">#Microcode initramfs packed together with the main initramfs in one file</a> method instead.
 </p>
 <h5><span class="mw-headline" id="Limine">Limine</span></h5>
-<p>For <a href="../en/Limine.html" title="Limine">Limine</a> you will just need to add the path to the microcode through the <code>MODULE_PATH</code> option in your <a href="../en/Limine.html#Configuration" title="Limine">limine.cfg</a> file. Here is an example:
+<p>For <a href="../en/Limine.html" title="Limine">Limine</a> you will just need to add the path to the microcode through the <code>MODULE_PATH</code> option in your <a href="../en/Limine.html#Configuration" title="Limine">limine.conf</a> file. Here is an example:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">limine.cfg</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">DEFAULT_ENTRY=1
-TIMEOUT=3
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">limine.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">default_entry: 1
+timeout: 3
 
-:Arch
-    COMMENT=Arch Linux
+/Arch
+    comment: Arch Linux
 
-    PROTOCOL=linux
-    KERNEL_PATH=boot:///vmlinuz-linux
-    CMDLINE=root=UUID=c0748521-eca9-4f38-989c-43811b6e39a1 rw loglevel=3
-    <b>MODULE_PATH=boot:///<i>cpu_manufacturer-ucode</i>.img</b>
-    MODULE_PATH=boot:///initramfs-linux.img</pre>
+    protocol: linux
+    kernel_path: boot():/vmlinuz-linux
+    kernel_cmdline: root=UUID=c0748521-eca9-4f38-989c-43811b6e39a1 rw loglevel=3
+    <b>module_path: boot():/<i>cpu_manufacturer-ucode</i>.img</b>
+    module_path: boot():/initramfs-linux.img</pre>
 <h3><span class="mw-headline" id="Late_loading">Late loading</span></h3>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> Late microcode loading is considered dangerous, using it on Linux 5.19 and later will taint the kernel.<a rel="nofollow" class="external autonumber" href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=9784edd73a08ea08d0ce5606e1f0f729df688c59">[1]</a>
@@ -597,8 +588,8 @@ kernel: microcode: Updated early from: 0x0000000e
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Microcode&amp;oldid=813625">https://wiki.archlinux.org/index.php?title=Microcode&amp;oldid=813625</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 31 July 2024, at 18:26.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Microcode&amp;oldid=819837">https://wiki.archlinux.org/index.php?title=Microcode&amp;oldid=819837</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 29 October 2024, at 14:22.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

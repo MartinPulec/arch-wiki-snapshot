@@ -5,7 +5,7 @@
 <title>HP Spectre x360 15-df1010na - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -177,6 +177,11 @@
 					
 					<div id="mw-content-text" class="mw-body-content">
 <div class="mw-content-ltr mw-parser-output" lang="en" dir="ltr">
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-clear.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section does not follow the <a href="../en/Help:Laptop_page_guidelines.html" title="Help:Laptop page guidelines">Laptop page guidelines</a>.</b></p>
+<div>
+<b>Reason:</b> Missing an Accessibility and "Function keys" section. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:HP_Spectre_x360_15-df1010na.html">Talk:HP Spectre x360 15-df1010na</a>)</div>
+</div>
 <table class="wikitable" style="float: right;">
 
 <tbody>
@@ -297,27 +302,15 @@ An alternative solution to saving power would be using <a href="../en/Power_mana
 </p>
 <h3><span class="mw-headline" id="ACPI_override_to_support_S3_sleep">ACPI override to support S3 sleep</span></h3>
 <div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-clear.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs language, wiki syntax or style improvements. See <a href="../en/Help:Style.html" title="Help:Style">Help:Style</a> for reference.</b></p>
-<div>
-<b>Reason:</b> Duplicates <a href="../en/DSDT.html" title="DSDT">DSDT</a>. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:HP_Spectre_x360_15-df1010na.html">Talk:HP Spectre x360 15-df1010na</a>)</div>
-</div>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
 <div>
 <b>Reason:</b> Resuming from suspend with this method is unreliable and will usually leave you needing to reboot. The methods outlined in <a href="../en/Power_management/Suspend_and_hibernate.html#Troubleshooting" title="Power management/Suspend and hibernate">Power management/Suspend and hibernate#Troubleshooting</a> do not seem to solve this. If you find a solution please update this page. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:HP_Spectre_x360_15-df1010na.html">Talk:HP Spectre x360 15-df1010na</a>)</div>
 </div>
 <p>See <a href="../en/Power_management/Suspend_and_hibernate.html#Changing_suspend_method" title="Power management/Suspend and hibernate">Power management/Suspend and hibernate#Changing suspend method</a> for the general context in which this workaround fits.
 </p>
-<div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=acpica">acpica</a></span> contains both iasl and acpidump.</div>
-<p>Extract and disassemble the DSDT tables:
+<p>Extract and disassemble the <a href="../en/DSDT.html" title="DSDT">DSDT</a> tables. You then need to modify the <code>dsdt.dsl</code> file.
 </p>
-<pre># mkdir /tmp/acpi_patch &amp;&amp; cd /tmp/acpi_patch
-# acpidump -b # extract current DSDT tables
-# iasl -d dsdt.dat # disassemble to dsdt.dsl
-</pre>
-<p>You now need to modify the file <code>dsdt.dsl</code> using a text editor.
-Find the section which begins with <code>DefinitionBlock ("", "DSDT", 2, "HPQOEM", "863E    ",</code>
+<p>Find the section which begins with <code>DefinitionBlock ("", "DSDT", 2, "HPQOEM", "863E    ",</code>
 and increment the final number (remember to increment it as hex).
 </p>
 <p>For example:
@@ -332,39 +325,29 @@ and increment the final number (remember to increment it as hex).
 <code>// _S0_: S0 System State</code> and <code>// _S4_: S4 System State</code>.
 This should end up as follows:
 </p>
-<pre>   Name (_S0, Package (0x04)  // _S0_: S0 System State
-   {
-       Zero, 
-       Zero, 
-       Zero, 
-       Zero
-   })
-   Name (_S3, Package(0x04) //  _S3_: S3 System State
-   {
-       0x03,
-       0x03,
-       Zero,
-       Zero
-   })
-   Name (_S4, Package (0x04)  // _S4_: S4 System State
-   {
-       0x06, 
-       Zero, 
-       Zero, 
-       Zero
-   })
+<pre>    Name (_S0, Package (0x04)  // _S0_: S0 System State
+    {
+        Zero, 
+        Zero, 
+        Zero, 
+        Zero
+    })
+    Name (_S3, Package(0x04) //  _S3_: S3 System State
+    {
+        0x03,
+        0x03,
+        Zero,
+        Zero
+    })
+    Name (_S4, Package (0x04)  // _S4_: S4 System State
+    {
+        0x06, 
+        Zero, 
+        Zero, 
+        Zero
+    })
 </pre>
-<p>You then need to recompile the DSDT tables and create a cpio override archive:
-</p>
-<pre># iasl -tc dsdt.dsl # recompile
-# mkdir -p kernel/firmware/acpi
-# cp dsdt.aml kernel/firmware/acpi
-# find kernel | cpio -H newc --create &gt; /boot/acpi_override
-</pre>
-<p>Then add the cpio override to the boot options.
-For example, with systemd-boot you can add <code>initrd /acpi_override</code> above the line with
-<code>initrd /initramfs-linux.img</code> in your entry config (e.g. /boot/loader/entries/arch.conf).
-For more info see <a href="../en/DSDT.html#Using_modified_code" title="DSDT">DSDT#Using modified code</a>.
+<p>You then need to recompile the DSDT tables and create a cpio override archive, as explained in <a href="../en/DSDT.html#Using_modified_code" title="DSDT">DSDT#Using modified code</a>.
 </p>
 </div>
 </div>
@@ -373,8 +356,8 @@ For more info see <a href="../en/DSDT.html#Using_modified_code" title="DSDT">DSD
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:HP.html" title="Category:HP">HP</a></li></ul>
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Laptop_style.html" title="Category:Pages or sections flagged with Template:Laptop style">Pages or sections flagged with Template:Laptop style</a></li>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
 </ul>
 </div>
 </div>
@@ -386,8 +369,8 @@ For more info see <a href="../en/DSDT.html#Using_modified_code" title="DSDT">DSD
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=HP_Spectre_x360_15-df1010na&amp;oldid=769899">https://wiki.archlinux.org/index.php?title=HP_Spectre_x360_15-df1010na&amp;oldid=769899</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 3 March 2023, at 12:13.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=HP_Spectre_x360_15-df1010na&amp;oldid=816739">https://wiki.archlinux.org/index.php?title=HP_Spectre_x360_15-df1010na&amp;oldid=816739</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 17 September 2024, at 15:41.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

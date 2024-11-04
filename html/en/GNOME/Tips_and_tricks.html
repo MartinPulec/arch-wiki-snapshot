@@ -5,7 +5,7 @@
 <title>GNOME/Tips and tricks - ArchWiki</title>
 <link rel="stylesheet" href="../../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -406,6 +406,15 @@
 		</a>
 		
 		<ul id="toc-Image_Viewer-sublist" class="vector-toc-list">
+		</ul>
+	</li>
+	<li id="toc-Dconf_(gsettings)_database_stored_as_a_text-based_file" class="vector-toc-list-item vector-toc-level-1">
+		<a class="vector-toc-link" href="#Dconf_(gsettings)_database_stored_as_a_text-based_file">
+			<div class="vector-toc-text">
+			<span class="vector-toc-numb">26</span>Dconf (gsettings) database stored as a text-based file</div>
+		</a>
+		
+		<ul id="toc-Dconf_(gsettings)_database_stored_as_a_text-based_file-sublist" class="vector-toc-list">
 		</ul>
 	</li>
 </ul>
@@ -830,9 +839,13 @@ Actions=new-window;new-private-window;</pre>
 <h2>
 <span id="Increase_volume_above_and_beyond_100.25"></span><span class="mw-headline" id="Increase_volume_above_and_beyond_100%">Increase volume above and beyond 100%</span>
 </h2>
-<p>Install the extension <a rel="nofollow" class="external text" href="https://extensions.gnome.org/extension/858/volume-mixer/">volume mixer</a>. Then use the mouse to scroll above the volume icon in the top panel to increase the volume above and beyond 100%.
+<p>You can allow over-amplification by running the command below: 
 </p>
-<p>Alternatively, open GNOME Tweaks and toggle <i>General &gt; Over-Amplification</i>.
+<pre>$ gsettings set org.gnome.desktop.sound allow-volume-above-100-percent true
+</pre>
+<p>Alternatively, install the extension <a rel="nofollow" class="external text" href="https://extensions.gnome.org/extension/858/volume-mixer/">volume mixer</a>. Then use the mouse to scroll above the volume icon in the top panel to increase the volume above and beyond 100%.
+</p>
+<p>Or, open GNOME Tweaks and toggle <i>General &gt; Over-Amplification</i>.
 </p>
 <h2><span class="mw-headline" id="Adjust_volume_in_smaller_steps">Adjust volume in smaller steps</span></h2>
 <p>By default, pressing the keyboard's volume keys adjusts the volume by 6%. If smaller steps are desired, holding <code>Shift</code> while pressing the volume keys adjusts the volume in 2% steps.
@@ -882,6 +895,24 @@ $ gsettings set org.gnome.desktop.wm.keybindings switch-applications-backward "[
 <h2><span class="mw-headline" id="Image_Viewer">Image Viewer</span></h2>
 <p><a href="../../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=libheif">libheif</a></span> to add support for HEIC image file format install `libheif`.  Image Viewer uses `gdk-pixbuf2` library which lists `libheif` as one of the optional dependencies.
 </p>
+<h2>
+<span id="Dconf_.28gsettings.29_database_stored_as_a_text-based_file"></span><span class="mw-headline" id="Dconf_(gsettings)_database_stored_as_a_text-based_file">Dconf (gsettings) database stored as a text-based file</span>
+</h2>
+<p>By default, dconf stores its configuration in a binary database blob located at <code>$XDG_CONFIG_HOME/dconf/user</code>. A <i>dconf profile</i> configuration may override this default if your home directories are stored in NFS, you keep dotfiles in version control, or other reasons. See <span class="plainlinks archwiki-template-man" title="$ man 7 dconf"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/dconf.7#PROFILES">dconf(7) § PROFILES</a></span> for details on creating and using profiles. 
+</p>
+<p>Before changing the system-wide default, dump each user's existing dconf database to a text-based <i>keyfile</i> named <code>user.txt</code>. It does not appear to be possible to use a different extension. Assuming the default for <code>XDG_CONFIG_HOME</code>, that may be done with this command:
+</p>
+<pre>$ dconf dump / &gt; ~/.config/dconf/user.txt
+</pre>
+<p>Once done, create the default dconf profile as root.
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/dconf/profile/user</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">service-db:keyfile/user
+</pre>
+<p>Log out and back in again and verify that changing dconf settings alters the text-based <code>user.txt</code> but not the old binary <code>user</code> file before deleting the binary database.
+</p>
+<p>This setting should incur some minimal extra resource usage. Dconf still uses a binary database in the temporary <code>XDG_RUNTIME_DIR</code> directory, but it must recreate it at desktop startup. It must also keep <code>user.txt</code> up to date, and monitor the text file for changes as well.
+</p>
 </div>
 </div>
 					<div id="catlinks" class="catlinks" data-mw="interface">
@@ -902,8 +933,8 @@ $ gsettings set org.gnome.desktop.wm.keybindings switch-applications-backward "[
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GNOME/Tips_and_tricks&amp;oldid=804783">https://wiki.archlinux.org/index.php?title=GNOME/Tips_and_tricks&amp;oldid=804783</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 28 March 2024, at 09:58.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GNOME/Tips_and_tricks&amp;oldid=817164">https://wiki.archlinux.org/index.php?title=GNOME/Tips_and_tricks&amp;oldid=817164</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 24 September 2024, at 14:31.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

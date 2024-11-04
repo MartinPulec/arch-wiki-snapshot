@@ -5,7 +5,7 @@
 <title>NetworkManager - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -1192,7 +1192,7 @@ MY-HOME-WIFI-5G     92a0f7b3-2eba-49ab-a899-24d83978f308  wifi       --
 <h3><span class="mw-headline" id="nm-applet">nm-applet</span></h3>
 <p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=network-manager-applet">network-manager-applet</a></span> is a GTK 3 front-end which works under Xorg environments with a systray.
 </p>
-<p>To store connection secrets install and configure an application which implements the <a rel="nofollow" class="external text" href="https://specifications.freedesktop.org/secret-service/latest/">Secret Service D-Bus API</a> such as <a href="../en/GNOME/Keyring.html" title="GNOME/Keyring">GNOME/Keyring</a>, <a href="../en/KDE_Wallet.html" title="KDE Wallet">KDE Wallet</a>, or <a href="../en/KeePass.html" class="mw-redirect" title="KeePassXC">KeePassXC</a>.
+<p>To store connection secrets install and configure an application which implements the <a rel="nofollow" class="external text" href="https://specifications.freedesktop.org/secret-service-spec/latest/">Secret Service D-Bus API</a> such as <a href="../en/GNOME/Keyring.html" title="GNOME/Keyring">GNOME/Keyring</a>, <a href="../en/KDE_Wallet.html" title="KDE Wallet">KDE Wallet</a>, or <a href="../en/KeePass.html" class="mw-redirect" title="KeePassXC">KeePassXC</a>.
 </p>
 <p>Be aware that after enabling the tick-box option <code>Make available to other users</code> for a connection, NetworkManager stores the password in plain-text, though the respective file is accessible only to root (or other users via <code>nm-applet</code>). See <a href="#Encrypted_Wi-Fi_passwords">#Encrypted Wi-Fi passwords</a>.
 </p>
@@ -1229,7 +1229,7 @@ killall nm-applet
 <h3><span class="mw-headline" id="switchboard">switchboard</span></h3>
 <p>Pantheon's <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=switchboard">switchboard</a></span> offers a desktop environment-agnostic way to configure NetworkManager when combined with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=switchboard-plug-network">switchboard-plug-network</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nm-connection-editor">nm-connection-editor</a></span>. It can be ran with the following command:
 </p>
-<pre>$ io.elementary.switchboard
+<pre>$ io.elementary.settings
 </pre>
 <h2><span class="mw-headline" id="Configuration">Configuration</span></h2>
 <p>NetworkManager will require some additional steps to be able run properly. Make sure you have configured <code>/etc/hosts</code> as described in <a href="../en/Network_configuration.html#Set_the_hostname" title="Network configuration">Network configuration#Set the hostname</a> section.
@@ -1272,12 +1272,11 @@ ExecStart=/usr/bin/nm-online -q
 </pre> All users in the <code>network</code> group will be able to add and remove networks without a password (which means you do not have to run a Polkit authentication agent, so this option will also work in SSH sessions).</li>
 </ol>
 <h3><span class="mw-headline" id="Proxy_settings">Proxy settings</span></h3>
-<p>NetworkManager does not directly handle proxy settings, but if you are using <a href="../en/GNOME.html" title="GNOME">GNOME</a> or <a href="../en/KDE.html" title="KDE">KDE</a>, you could use <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/proxydriver/">proxydriver</a></span><sup><small>AUR</small></sup> which handles proxy settings using NetworkManager's information.
+<p>NetworkManager does support some proxy settings. While they can not be directly modified using <i>nmtui</i>, <i>nm-applet</i> and <i>nmcli</i> support those.
+See the proxy settings in <span class="plainlinks archwiki-template-man" title="$ man 5 nm-settings-nmcli"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/nm-settings-nmcli.5">nm-settings-nmcli(5)</a></span>.
 </p>
-<p>In order for <i>proxydriver</i> to be able to change the proxy settings, you would need to execute this command, as part of the GNOME startup process (see <a href="../en/GNOME.html#Autostart" title="GNOME">GNOME#Autostart</a>).
+<p>Additionally, custom proxy commands can always be run using dispatcher scripts, see <a href="#Dispatcher_examples">#Dispatcher examples</a>.
 </p>
-<pre>$ xhost +si:localuser:<i>username</i>
-</pre>
 <p>See also <a href="../en/Proxy_server.html" class="mw-redirect" title="Proxy settings">Proxy settings</a>.
 </p>
 <h3><span class="mw-headline" id="Checking_connectivity">Checking connectivity</span></h3>
@@ -1357,9 +1356,11 @@ case "$2" in
     ;;
 esac
 </pre>
-<p>Make the script <a href="../en/Help:Reading.html#Make_executable" class="mw-redirect" title="Executable">executable</a>.
+<p>Make the script <a href="../en/Help:Reading.html#Make_executable" class="mw-redirect" title="Executable">executable</a>. But that script assumes you use X and simply opens http page. It might not work for everyone.
 </p>
 <p>You will need to <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Restart">restart</a> <code>NetworkManager.service</code> or reboot for this to start working. Once you do, the dispatcher script should open a login window once it detects you are behind a captive portal.
+</p>
+<p>Simple solution is <a rel="nofollow" class="external text" href="https://github.com/Seme4eg/captive-portal-sh">captive-portal-sh</a> - shell script that obtains captive portal URL and opens it in your default browser (for Wayland users only).
 </p>
 <p>Another solution is <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/captive-browser-git/">captive-browser-git</a></span><sup><small>AUR</small></sup> based on Google Chrome.
 </p>
@@ -1591,7 +1592,7 @@ if [[ $iface != lo &amp;&amp; $action == up ]]; then
     fi
 fi
 </pre>
-<p>Chance the condition <code>$iface != lo</code> to match a specific interface if desired.
+<p>Change the condition <code>$iface != lo</code> to match a specific interface if desired.
 </p>
 <h4><span class="mw-headline" id="Mount_remote_directory_with_sshfs">Mount remote directory with sshfs</span></h4>
 <p>As the script is run in a very restrictive environment, you have to export <code>SSH_AUTH_SOCK</code> in order to connect to your SSH agent. There are different ways to accomplish this, see <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?pid=1042030#p1042030">this message</a> for more information. The example below works with <a href="../en/GNOME/Keyring.html" class="mw-redirect" title="GNOME Keyring">GNOME Keyring</a>, and will ask you for the password if not unlocked already. In case NetworkManager connects automatically on login, it is likely <i>gnome-keyring</i> has not yet started and the export will fail (hence the sleep). The <code>UUID</code> to match can be found with the command <code>nmcli connection status</code> or <code>nmcli connection list</code>.     
@@ -2054,7 +2055,7 @@ ipv6.dhcp-duid=stable-uuid</pre>
 <li>Consider <a rel="nofollow" class="external text" href="https://gitlab.freedesktop.org/NetworkManager/NetworkManager/-/issues?scope=all&amp;utf8=%E2%9C%93&amp;state=opened&amp;search=iwd">existing issues</a> before switching to <i>iwd</i>.</li>
 </ul>
 </div>
-<p>To enable the <a rel="nofollow" class="external text" href="https://iwd.wiki.kernel.org/networkmanager">experimental iwd backend</a>, first <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=iwd">iwd</a></span> and then create the following configuration file:
+<p>To enable the <a rel="nofollow" class="external text" href="https://archive.kernel.org/oldwiki/iwd.wiki.kernel.org/networkmanager.html">experimental iwd backend</a>, first <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=iwd">iwd</a></span> and then create the following configuration file:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/NetworkManager/conf.d/wifi_backend.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[device]
@@ -2062,9 +2063,9 @@ wifi.backend=iwd</pre>
 <p>Alternatively, you can install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/networkmanager-iwd/">networkmanager-iwd</a></span><sup><small>AUR</small></sup>, a modified package configured to build <i>NetworkManager</i> working exclusively with <i>iwd</i>, with the main difference being that <i>iwd</i> is required and <i>wpa_supplicant</i> can be uninstalled after building.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> You may need to <a rel="nofollow" class="external text" href="https://iwd.wiki.kernel.org/networkmanager#converting_network_profiles">convert existing NetworkManager network profiles</a> after switching to <i>iwd</i>.</div>
+<strong>Note:</strong> You may need to <a rel="nofollow" class="external text" href="https://archive.kernel.org/oldwiki/iwd.wiki.kernel.org/networkmanager.html#converting_network_profiles">convert existing NetworkManager network profiles</a> after switching to <i>iwd</i>.</div>
 <h3><span class="mw-headline" id="Running_in_a_network_namespace">Running in a network namespace</span></h3>
-<p>If you would like to run NetworkManager inside a network namespace (e.g., to manage a specific device which should be use by selected applications), bring the device down before moving it to the namespace:
+<p>If you would like to run NetworkManager inside a network namespace (e.g., to manage a specific device which should be used by selected applications), bring the device down before moving it to the namespace:
 </p>
 <pre>$ ip link set dev <i>MY_DEVICE</i> down
 $ ip link set dev <i>MY_DEVICE</i> netns <i>MY_NAMESPACE</i>
@@ -2374,8 +2375,8 @@ wpa_supplicant[3320]: wlp3s0: CTRL-EVENT-EAP-FAILURE EAP authentication failed
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=NetworkManager&amp;oldid=812610">https://wiki.archlinux.org/index.php?title=NetworkManager&amp;oldid=812610</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 18 July 2024, at 10:29.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=NetworkManager&amp;oldid=819142">https://wiki.archlinux.org/index.php?title=NetworkManager&amp;oldid=819142</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 18 October 2024, at 00:49.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

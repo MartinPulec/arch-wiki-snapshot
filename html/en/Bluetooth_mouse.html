@@ -5,7 +5,7 @@
 <title>Bluetooth mouse - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -334,19 +334,21 @@ Timeout=216
 <p>If the above is unhelpful, the issue may be in the device timeout settings. Edit/create the file <code>/etc/bluetooth/input.conf</code> and apply the following changes:
 </p>
 <pre># Configuration file for the input service
-# This section contains options which are not specific to any
+</pre>
+<pre># This section contains options which are not specific to any
 # particular interface
 [General]
 
-# Set idle timeout (in minutes) before the connection will
-# be disconnect (defaults to 0 for no timeout)
+# Set idle timeout (in seconds) before the connection will be disconnect and
+# the input device is removed.
+# Defaults: 0 (disabled)
 IdleTimeout=0
 
-#Enable HID protocol handling in userspace input profile
-#Defaults to false(hidp handled in hidp kernel module)
+# Enable HID protocol handling in userspace input profile
+# Defaults to true (Use UHID instead of kernel HIDP)
 UserspaceHID=true
 </pre>
-<p>These changes will prevent device timeout in order to remain connected. The second setting enables userspace HID handling for bluetooth devices. Restart <code>bluetooth.service</code> to test changes. You also may need a reboot and to re-pair the device.
+<p>These changes will prevent device timeout in order to remain connected. The second setting enables userspace HID handling for Bluetooth devices. However, both should be set this way by default. Restart <code>bluetooth.service</code> to test changes. You also may need a reboot and to re-pair the device.
 </p>
 <h3><span class="mw-headline" id="Kensington_Expert_Wireless_Trackball_problems">Kensington Expert Wireless Trackball problems</span></h3>
 <p>The Kensington Expert Wireless Trackball has default polling rates in the 200ms range, which make it laggy. To fix that, add or modify the <code>[ConnectionParameters]</code> section in <code>/var/lib/bluetooth/<i>mac-of-your-adapter</i>/<i>mac-of-your-mouse</i>/info</code> (adapt the path according to your mouse bluetooth address) as shown above, especially lower the latency to a small number or even <code>0</code>.
@@ -401,8 +403,8 @@ First of all open a terminal and run <code>bluetoothctl</code>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Bluetooth_mouse&amp;oldid=800255">https://wiki.archlinux.org/index.php?title=Bluetooth_mouse&amp;oldid=800255</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 11 February 2024, at 18:35.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Bluetooth_mouse&amp;oldid=817023">https://wiki.archlinux.org/index.php?title=Bluetooth_mouse&amp;oldid=817023</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 21 September 2024, at 19:47.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

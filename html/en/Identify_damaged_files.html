@@ -5,7 +5,7 @@
 <title>Identify damaged files - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -407,7 +407,7 @@
 </p>
 <h3><span class="mw-headline" id="ReiserFS_and_Reiser4">ReiserFS and Reiser4</span></h3>
 <h4><span class="mw-headline" id="Debug_the_filesystem_3">Debug the filesystem</span></h4>
-<p>The <i>debugreiserfs</i> command will give you access to all the low level structures within any ReiserFS/<a href="../en/Reiser4.html" title="Reiser4">Reiser4</a> filesystem. 
+<p>The <i>debugreiserfs</i> command will give you access to all the low level structures within any ReiserFS/Reiser4 filesystem. 
 </p>
 <p>The first thing we want to do is get the block size from the filesystem in question. Just run:
 </p>
@@ -425,7 +425,8 @@
 <p>Now the entire point of running this program (for the purpose of this article) is to get the <i>inode</i> number. Before continuing to debug it, unmount the partition. Then, run the command:
 </p>
 <h4><span class="mw-headline" id="Find_damaged_files_4">Find damaged files</span></h4>
-<ol><li>debugreiserfs -1 <i>blocknumber</i> /dev/sdxy</li></ol>
+<pre># debugreiserfs -1 <i>blocknumber</i> /dev/sd<i>xy</i>
+</pre>
 <p>This will return the information for what reiser filesystems refer to as a "leaf node". If you see a line stating <code>Looks like unformatted</code> then likely this means that the bad block belongs to free space and nothing important was damaged. If that line is absent and there is more output but no filenames then it likely means damage was done to a filesystem structure (at which point it might be a good idea to run at least a read-only fsck to see what is going on).
 </p>
 <p>If you see a <code>Name</code> column with filenames returned under it then it is possible any of these could be damaged (note: there may or may not be a way to more precisely narrow down the exact file damaged). The inode number(s) for listed file(s) seems to be the second number within square brackets listed under the <code>Object key</code> column (this is solely for informational purposes since we already have the filenames).
@@ -538,8 +539,8 @@ $ sync</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Identify_damaged_files&amp;oldid=798119">https://wiki.archlinux.org/index.php?title=Identify_damaged_files&amp;oldid=798119</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 24 January 2024, at 20:49.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Identify_damaged_files&amp;oldid=817787">https://wiki.archlinux.org/index.php?title=Identify_damaged_files&amp;oldid=817787</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 4 October 2024, at 08:37.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

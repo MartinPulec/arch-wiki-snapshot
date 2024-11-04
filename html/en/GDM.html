@@ -5,7 +5,7 @@
 <title>GDM - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -735,8 +735,12 @@ toolkit-accessibility='<i>boolean</i>'</pre>
 </p>
 <pre>[gdm]$ dbus-launch gsettings set org.gnome.settings-daemon.plugins.color night-light-enabled true</pre>
 <h3><span class="mw-headline" id="Keyboard_layout">Keyboard layout</span></h3>
-<p>The system keyboard layout will be applied to GDM. You can use <code>localectl set-x11-keymap</code> to specify the keyboard layout. See <a href="../en/Xorg/Keyboard_configuration.html#Setting_keyboard_layout" class="mw-redirect" title="Keyboard configuration in Xorg">Keyboard configuration in Xorg#Setting keyboard layout</a> for details.
+<p>GDM requires the <code>XKBLAYOUT</code> parameter to be set in <code>/etc/vconsole.conf</code>; without it it defaults to a standard <code>us</code> (qwerty) layout, <i>i.e</i> it will not honor the value set in <code>KEYMAP</code>.
 </p>
+<p>One generally applicable way to do so is to use <code>localectl --no-convert set-x11-keymap [keymap]</code>: see <a href="../en/Xorg/Keyboard_configuration.html#Setting_keyboard_layout" class="mw-redirect" title="Keyboard configuration in Xorg">Keyboard configuration in Xorg#Setting keyboard layout</a> for details.
+</p>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning:</strong> Using <code>localectl set-x11-keymap</code> without <code>--no-convert</code> will also change the value of <code>KEYMAP=</code>, which may result in an unbootable system if <a href="../en/Dm-crypt/Encrypting_an_entire_system.html" title="Dm-crypt/Encrypting an entire system">encrypting an entire system</a> with a passphrase containing accented characters. See <a rel="nofollow" class="external text" href="https://github.com/systemd/systemd/issues/34967">systemd issue #34967</a>.</div>
 <h3><span class="mw-headline" id="Change_the_language">Change the language</span></h3>
 <p>The system language will be applied to GDM. If a system has multiple users, it is possible to set a language for GDM different to the system language. In this case, firstly ensure that <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=gnome-control-center">gnome-control-center</a></span> is installed. Then, start <i>gnome-control-center</i> and choose <i>Region &amp; Language</i>. In the header bar, check the <i>Login Screen</i> toggle button. Finally, click on <i>Language</i> and choose your language from the list. You will be prompted for your root password. Note that the <i>Login Screen</i> button will not be visible in the header bar unless multiple users are present on the system <a rel="nofollow" class="external autonumber" href="https://bugzilla.gnome.org/show_bug.cgi?id=741500">[5]</a>.
 </p>
@@ -1038,8 +1042,8 @@ systemd[1022]: org.gnome.Shell@wayland.service: Control process exited, code=exi
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GDM&amp;oldid=813227">https://wiki.archlinux.org/index.php?title=GDM&amp;oldid=813227</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 30 July 2024, at 03:18.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GDM&amp;oldid=819935">https://wiki.archlinux.org/index.php?title=GDM&amp;oldid=819935</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 31 October 2024, at 15:45.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

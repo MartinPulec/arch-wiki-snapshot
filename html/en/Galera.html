@@ -5,7 +5,7 @@
 <title>Galera - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -158,29 +158,29 @@
 </p>
 <p>On each node edit <code>/etc/my.cnf.d/server.cnf</code> and update the <code>wsrep_cluster_address</code> variable so it contains the list of all nodes in the cluster:
 </p>
-<pre>wsrep_cluster_address="gcomm://192.168.1.4,192.168.1.5,192.168.1.6"
-</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/my.cnf.d/server.cnf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">wsrep_cluster_address="gcomm://192.168.1.4,192.168.1.5,192.168.1.6"</pre>
 <p>Change the variables <code>wsrep_node_address</code> and <code>wsrep_node_name</code> to the IP address/hostname and name (this does not need to be unique) for each node, e.g.:
 </p>
-<pre>wsrep_node_address='192.168.1.4'
-wsrep_node_name='node1'
-</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/my.cnf.d/server.cnf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">wsrep_node_address='192.168.1.4'
+wsrep_node_name='node1'</pre>
 <p>The <code>wsrep_cluster_name</code> variable should contain the same name for all cluster nodes:
 </p>
-<pre>wsrep_cluster_name='my_galera_cluster'
-</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/my.cnf.d/server.cnf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">wsrep_cluster_name='my_galera_cluster'</pre>
 <p>Also, set <code>wsrep_sst_method</code> to the desired state snapshot transfer method, the preferred one is rsync.
 </p>
-<pre>wsrep_sst_method=rsync
-</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/my.cnf.d/server.cnf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">wsrep_sst_method=rsync</pre>
 <p>Make sure you also set the following options:
 </p>
-<pre>wsrep_on=ON
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/my.cnf.d/server.cnf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">wsrep_on=ON
 wsrep_provider=/usr/lib/galera/libgalera_smm.so
 default_storage_engine=InnoDB
 innodb_autoinc_lock_mode=2
-binlog_format=row
-</pre>
+binlog_format=row</pre>
 <p>When you have finished with <code>/etc/my.cnf.d/server.cnf</code>, bootstrap the mysqld service on the first node (ONLY on the first node):
 </p>
 <pre># galera_new_cluster
@@ -189,14 +189,10 @@ binlog_format=row
 </p>
 <pre>$ mysql -p -u root
 </pre>
-<p>Check the status of the cluster:
+<p>Check the status of the cluster, this will show you wsrep-related status variables:
 </p>
-<pre>mysql&gt; SHOW STATUS LIKE 'wsrep_%';
-</pre>
-<p>This will show you wsrep-related status variables:
-</p>
-<pre>...
-| wsrep_local_state          | 4                                    |
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">mysql&gt; SHOW STATUS LIKE 'wsrep_%';</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">| wsrep_local_state          | 4                                    |
 | wsrep_local_state_comment  | Synced                               |
 | wsrep_cert_index_size      | 0                                    |
 | wsrep_causal_reads         | 0                                    |
@@ -208,9 +204,8 @@ binlog_format=row
 | wsrep_connected            | ON                                   |
 | wsrep_local_index          | 0                                    |
 | wsrep_provider_name        | Galera                               |
-...
 </pre>
-<p>If you use xtrabackup or mysqldump SST method, you will need to create a MySQL user for sst transfers.
+<p>If you use the xtrabackup or mysqldump SST method, you will need to create a MySQL user for sst transfers.
 </p>
 <p>Once you configured the first node, you should be able to <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start">start</a> <code>mysqld.service</code>.
 </p>
@@ -219,13 +214,19 @@ binlog_format=row
 <li><a rel="nofollow" class="external text" href="http://www.codership.com/wiki/doku.php?id=galera_wiki">Galera Wiki</a></li>
 <li><a rel="nofollow" class="external text" href="https://www.percona.com/doc/percona-xtradb-cluster/index.html">Percona XtraDB Cluster's documentation</a></li>
 <li><a rel="nofollow" class="external text" href="https://severalnines.com/blog/updated-how-bootstrap-mysql-or-mariadb-galera-cluster">How to Bootstrap MySQL or MariaDB Galera Cluster</a></li>
-<li><a rel="nofollow" class="external text" href="https://www.symmcom.com/docs/how-tos/databases/how-to-recover-mariadb-galera-cluster-after-partial-or-full-crash">How To Recover MariaDB Galera Cluster After Partial or Full Crash</a></li>
+<li>
+<a rel="nofollow" class="external text" href="https://www.symmcom.com/docs/how-tos/databases/how-to-recover-mariadb-galera-cluster-after-partial-or-full-crash">How To Recover MariaDB Galera Cluster After Partial or Full Crash</a><sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-10-12 ⓘ]</sup>
+</li>
 </ul>
 </div>
 </div>
-					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
+					<div id="catlinks" class="catlinks" data-mw="interface">
+<div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Database_management_systems.html" title="Category:Database management systems">Database management systems</a></li></ul>
-</div></div>
+</div>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li></ul>
+</div>
+</div>
 				</div>
 			</main>
 			
@@ -234,8 +235,8 @@ binlog_format=row
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Galera&amp;oldid=710144">https://wiki.archlinux.org/index.php?title=Galera&amp;oldid=710144</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 14 January 2022, at 20:15.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Galera&amp;oldid=819966">https://wiki.archlinux.org/index.php?title=Galera&amp;oldid=819966</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 1 November 2024, at 08:27.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

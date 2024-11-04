@@ -5,7 +5,7 @@
 <title>PulseAudio - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -944,9 +944,8 @@
 </caption>
 <tbody><tr>
 <td>flat-volumes</td>
-<td>
-<code>flat-volumes</code> scales the device-volume with the volume of the "loudest" application. For example, raising the VoIP call volume will raise the hardware volume and adjust the music-player volume so it stays where it was, without having to lower the volume of the music-player manually. Defaults to <code>yes</code> upstream, but to <code>no</code> within Arch. <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> The default behavior upstream can sometimes be confusing and some applications, unaware of this feature, can set their volume to 100% at startup, potentially blowing your speakers or your ears. This is why Arch defaults to the classic (ALSA) behavior by setting this to <code>no</code>.</div>
+<td>If set to <code>yes</code>, scales the device-volume with the volume of the "loudest" application. For example, raising the VoIP call volume will raise the hardware volume and adjust the music-player volume so it stays where it was, without having to lower the volume of the music-player manually. Defaults to <code>no</code>. <div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> When enabled, this can sometimes be confusing and some applications, unaware of this feature, can set their volume to 100% at startup, potentially blowing your speakers or your ears.</div>
 </td>
 </tr></tbody>
 <caption>
@@ -1001,7 +1000,7 @@
 <caption>
 </caption>
 <tbody><tr>
-<td>default-channels</td>
+<td>default-sample-channels</td>
 <td>The default number of channels when not specified. Usually do not need any change as you can configure more channels on per-module basis.
 </td>
 </tr></tbody>
@@ -1781,11 +1780,6 @@ fi
 </ol>
 <p>Create the service <code>pulseaudio.service</code> in <code>/etc/systemd/system</code> containing the following:
 </p>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
-<div>
-<b>Reason:</b> The service runs as <code>root</code>, not as the <code>pulse</code> user. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:PulseAudio.html">Talk:PulseAudio</a>)</div>
-</div>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/pulseaudio.service</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Unit]
 Description=Sound Service
@@ -1798,10 +1792,10 @@ Restart=always
  
 [Install]
 WantedBy=default.target</pre>
-<p>Then <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> <code>pulseaudio.service</code> at the system level. You will also need to disable the user-level PulseAudio service across the whole system:
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong> When PulseAudio starts in the system mode, it will change its user and group from <code>root</code> to <code>pulse</code>.<a rel="nofollow" class="external autonumber" href="https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/User/SystemWide/">[16]</a> The user and group name is <a rel="nofollow" class="external text" href="https://github.com/pulseaudio/pulseaudio/blob/7f4d7fcf5f6407913e50604c6195d0d5356195b1/meson_options.txt#L12">hard-coded</a>: starting the service as pulse user does not work and PulseAudio complains that it is not root.</div>
+<p>Then <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> <code>pulseaudio.service</code> at the system level. You will also need to disable the user-level PulseAudio service across the whole system by <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Mask">masking</a> the <code>pulseaudio.socket</code> with the <code>--global</code> flag.
 </p>
-<pre># systemctl --global mask pulseaudio.socket
-</pre>
 <p>This is necessary even if you are accessing the system over SSH, to make sure the user-level PulseAudio service will never start.
 </p>
 <h3><span class="mw-headline" id="Selecting_the_Server">Selecting the Server</span></h3>
@@ -1813,7 +1807,7 @@ WantedBy=default.target</pre>
 </p>
 <pre>default-server = <i>server-hostname-or-ip</i>
 </pre>
-<p>It is also possible to specify multiple servers separated by spaces which are subsequently tried by PulseAudio<a rel="nofollow" class="external autonumber" href="https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/User/ServerStrings/">[16]</a>:
+<p>It is also possible to specify multiple servers separated by spaces which are subsequently tried by PulseAudio<a rel="nofollow" class="external autonumber" href="https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/User/ServerStrings/">[17]</a>:
 </p>
 <pre>default-server = <i>server1</i> <i>backup</i>
 </pre>
@@ -1957,7 +1951,6 @@ fi
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
 <li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Merge.html" title="Category:Pages or sections flagged with Template:Merge">Pages or sections flagged with Template:Merge</a></li>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
 </ul>
 </div>
 </div>
@@ -1969,8 +1962,8 @@ fi
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PulseAudio&amp;oldid=812047">https://wiki.archlinux.org/index.php?title=PulseAudio&amp;oldid=812047</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 7 July 2024, at 08:20.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PulseAudio&amp;oldid=819748">https://wiki.archlinux.org/index.php?title=PulseAudio&amp;oldid=819748</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 28 October 2024, at 08:58.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

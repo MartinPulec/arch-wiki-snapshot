@@ -5,7 +5,7 @@
 <title>dm-crypt/System configuration - ArchWiki</title>
 <link rel="stylesheet" href="../../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -475,8 +475,6 @@ HOOKS=(base <b>systemd</b> autodetect microcode modconf kms keyboard <b>sd-vcons
 <h3><span class="mw-headline" id="Kernel_parameters">Kernel parameters</span></h3>
 <p>The <a href="../../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a> you need to specify depend on whether the <code>encrypt</code> hook or the <code>sd-encrypt</code> hook is being used. <code>root</code> and <code>resume</code> are specified the same way for both.
 </p>
-<div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> The specification of these parameters can be omitted when using the <code>sd-encrypt</code> hook and <a href="../../en/Systemd.html#GPT_partition_automounting" title="Systemd">GPT partition automounting</a>. See <a href="../../en/Dm-crypt/Encrypting_an_entire_system.html#Configuring_the_boot_loader" title="Dm-crypt/Encrypting an entire system">LUKS on a partition</a>.</div>
 <h4><span class="mw-headline" id="root">root</span></h4>
 <p>The <code>root=</code> parameter specifies the <code><i>device</i></code> of the actual (decrypted) root file system:
 </p>
@@ -488,7 +486,12 @@ HOOKS=(base <b>systemd</b> autodetect microcode modconf kms keyboard <b>sd-vcons
 <li>If the root file system is contained in a logical volume of a fully <a href="../../en/Dm-crypt/Encrypting_an_entire_system.html#LVM_on_LUKS" class="mw-redirect" title="Encrypted LVM">encrypted LVM</a>, the device mapper for it will be in the general form of <code>root=/dev/<i>volumegroup</i>/<i>logicalvolume</i></code>.</li>
 </ul>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> When using <a href="../../en/GRUB.html" title="GRUB">GRUB</a> and generating <code>grub.cfg</code> with <i>grub-mkconfig</i>, the <code>root=</code> parameter does not need to be specified manually. <i>grub-mkconfig</i> will determine the correct UUID of the decrypted root filesystem and add it to <code>grub.cfg</code> automatically.</div>
+<strong>Tip:</strong> 
+<ul>
+<li>The specification of the <code>root=</code> parameter can be omitted when using the <code>sd-encrypt</code> hook and <a href="../../en/Systemd.html#GPT_partition_automounting" title="Systemd">GPT partition automounting</a>. See <a href="../../en/Dm-crypt/Encrypting_an_entire_system.html#Configuring_the_boot_loader" title="Dm-crypt/Encrypting an entire system">LUKS on a partition</a>.</li>
+<li>When using <a href="../../en/GRUB.html" title="GRUB">GRUB</a> and generating <code>grub.cfg</code> with <i>grub-mkconfig</i>, the <code>root=</code> parameter does not need to be specified manually. <i>grub-mkconfig</i> will determine the correct UUID of the decrypted root filesystem and add it to <code>grub.cfg</code> automatically.</li>
+</ul>
+</div>
 <h4><span class="mw-headline" id="resume">resume</span></h4>
 <pre>resume=<i>device</i>
 </pre>
@@ -779,7 +782,7 @@ myvolume	/dev/sdX	none	tpm2-device=auto</pre>
 <p>If the <a href="../../en/Dm-crypt/Device_encryption.html#Keyfiles" title="Dm-crypt/Device encryption">keyfile</a> for a secondary file system is itself stored inside an encrypted root, it is safe while the system is powered off and can be sourced to automatically unlock the mount during with boot via <a href="#crypttab">crypttab</a>. For example, unlock a crypt specified by <a href="../../en/Persistent_block_device_naming.html#by-uuid" class="mw-redirect" title="UUID">UUID</a>:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/crypttab</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">home-crypt    UUID=<i>UUID-identifier</i>    /etc/cryptsetup-keys.d/home-crypt.key</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">home-crypt    UUID=<i>XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX</i>    /etc/cryptsetup-keys.d/home-crypt.key</pre>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> 
 <ul>
@@ -860,8 +863,8 @@ myvolume	/dev/sdX	none	tpm2-device=auto</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/System_configuration&amp;oldid=811543">https://wiki.archlinux.org/index.php?title=Dm-crypt/System_configuration&amp;oldid=811543</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 29 June 2024, at 12:01.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/System_configuration&amp;oldid=817811">https://wiki.archlinux.org/index.php?title=Dm-crypt/System_configuration&amp;oldid=817811</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 5 October 2024, at 09:16.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

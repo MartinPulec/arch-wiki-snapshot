@@ -5,7 +5,7 @@
 <title>rxvt-unicode - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -298,6 +298,15 @@
 			<ul id="toc-Very_long_lines_cause_slowdown-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-No_bold_text_in_Midnight_Commander" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#No_bold_text_in_Midnight_Commander">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">4.7</span>No bold text in Midnight Commander</div>
+			</a>
+			
+			<ul id="toc-No_bold_text_in_Midnight_Commander-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1">
@@ -498,7 +507,7 @@
 <code>lines-rewrap.patch</code>
 </td>
 <td>
-<dl><dd>solves the <a href="#Wrong_shell_prompt_placement_after_upgrade_to_9.31">#Wrong shell prompt placement after upgrade to 9.31</a> problem</dd></dl>
+<dl><dd>solves the <a href="#Wrong_shell_prompt_placement_after_upgrading_to_9.31">#Wrong shell prompt placement after upgrading to 9.31</a> problem</dd></dl>
 </td>
 </tr>
 <tr>
@@ -568,7 +577,7 @@
 <code>starttop.patch</code>
 </td>
 <td>
-<dl><dd>commenting out line <i>397</i> of <code>screen.C</code> — one of the approaches to the <a href="#Wrong_shell_prompt_placement_after_upgrade_to_9.31">#Wrong shell prompt placement after upgrade to 9.31</a> problem</dd></dl>
+<dl><dd>commenting out line <i>397</i> of <code>screen.C</code> — one of the approaches to the <a href="#Wrong_shell_prompt_placement_after_upgrading_to_9.31">#Wrong shell prompt placement after upgrading to 9.31</a> problem</dd></dl>
 </td>
 </tr>
 </tbody>
@@ -766,9 +775,9 @@ URxvt.matcher.button: 1
 <pre>URxvt.keysym.C-Delete: perl:matcher:last
 URxvt.keysym.M-Delete: perl:matcher:list
 </pre>
-<p>Matching links can be colored with a chosen foreground or background <a href="#Colors">color</a>, for example blue:
+<p>Matching links can be colored with a chosen foreground or background color (see <span class="plainlinks archwiki-template-man" title="$ man 1 urxvt"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/urxvt.1#COLOURS_AND_GRAPHICS">urxvt(1) § COLOURS AND GRAPHICS</a></span>), for example blue:
 </p>
-<pre>URxvt.matcher.rend.0: Uline Bold fg5
+<pre>URxvt.matcher.rend.0: Uline Bold fg4
 </pre>
 <p>Alternatively, use <code>colorUL</code> for a #RRGGBB color. This will however color all underlined text, instead of only link matches:
 </p>
@@ -964,6 +973,19 @@ xmodmap ~/.Xmodmap
 <li>Edit <code>~/.urxvt/ext/matcher</code>, and find the <code>my ($self, $row) = @_;</code> line in the <code>on_line_update</code> sub. It should be line 270.</li>
 <li>After that line, insert the line <code>return () if $row &lt; -100;</code>. This disables URL matching on any line that starts more than 100 rows behind the top of the terminal.</li>
 </ol>
+<h3><span class="mw-headline" id="No_bold_text_in_Midnight_Commander">No bold text in Midnight Commander</span></h3>
+<p>If started under <i>rxvt-unicode</i> with the default <code>TERM</code> setting, text that is usually bold in many other terminals will not appear so. The root of the issue is because <i>xterm</i> couples bright text color with the bold attribute (thus, bright colors will always appear as bold in <i>xterm</i>).
+</p>
+<p><i>rxvt-unicode</i> does not have this limitation, which <a href="https://en.wikipedia.org/wiki/S-Lang" class="extiw" title="wikipedia:S-Lang">S-Lang</a> (the library <i>Midnight Commander</i> uses for text display by default) honors. Because <i>S-Lang</i> can decouple the bold attribute from bright colors on <i>rxvt-unicode</i>, <i>Midnight Commander</i> would need to explicitly specify the bold attribute as appropriate, <a rel="nofollow" class="external text" href="https://bugzilla.redhat.com/show_bug.cgi?id=474108#c3">which it does not</a>.
+</p>
+<p>The solution is to configure <i>Midnight Commander</i> to explicitly use bold colors as desired, e.g. by editing the default skin as follows:
+</p>
+<pre>$ mkdir ~/.local/share/mc/skins 
+$ cp /usr/share/mc/skins/default.ini ~/.local/share/mc/skins/
+$ sed -i -E 's/^(.* = (gray|brightred|brightgreen|yellow|brightblue|brightmagenta|brightcyan|white);.*)$/\0;bold/' ~/.local/share/mc/skins/default.ini
+</pre>
+<p>The above will create a copy of the <i>default</i> skin, but with all bright colors having an explicit bold attribute added.
+</p>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul>
 <li>
@@ -994,8 +1016,8 @@ xmodmap ~/.Xmodmap
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Rxvt-unicode&amp;oldid=810806">https://wiki.archlinux.org/index.php?title=Rxvt-unicode&amp;oldid=810806</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 18 June 2024, at 11:48.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Rxvt-unicode&amp;oldid=818892">https://wiki.archlinux.org/index.php?title=Rxvt-unicode&amp;oldid=818892</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 13 October 2024, at 08:52.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

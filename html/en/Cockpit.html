@@ -5,7 +5,7 @@
 <title>Cockpit - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -188,8 +188,6 @@
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=cockpit-machines">cockpit-machines</a></span> for managing virtual machines using <a href="../en/Libvirt.html" title="Libvirt">libvirt</a>
 </li>
 <li>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=cockpit-pcp">cockpit-pcp</a></span> for reading PCP metrics and loading PCP archives</li>
-<li>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=cockpit-podman">cockpit-podman</a></span> for managing <a href="../en/Podman.html" title="Podman">Podman</a> containers (replaces the deprecated cockpit-docker)</li>
 <li>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=cockpit-storaged">cockpit-storaged</a></span> for configuring and monitoring storage, disks and mounts on the system.</li>
@@ -201,6 +199,8 @@
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=firewalld">firewalld</a></span> for managing the Firewall using the Cockpit in Networking.</li>
 <li>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=udisks2">udisks2</a></span> for managing Storage.</li>
+<li>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pcp">pcp</a></span> for reading PCP metrics and loading PCP archives.</li>
 </ul>
 <h2><span class="mw-headline" id="Usage">Usage</span></h2>
 <p><a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start/enable">Start/enable</a> the <code>cockpit.socket</code> unit to start Cockpit <a rel="nofollow" class="external autonumber" href="https://cockpit-project.org/running.html#archlinux">[1]</a>.
@@ -224,31 +224,20 @@ FreeBind=yes</pre>
 <p>See <a rel="nofollow" class="external text" href="https://cockpit-project.org/guide/latest/listen">the page in the official docs</a> for more information.
 </p>
 <h3><span class="mw-headline" id="Hide_login_MOTD">Hide login MOTD</span></h3>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
-<div>
-<b>Reason:</b> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=cockpit">cockpit</a></span> ships with <code>/etc/motd.d/cockpit</code> instead of <code>/usr/lib/motd.d/cockpit</code> so symlinking <code>/etc/motd.d/cockpit</code> to <code>/dev/null</code> will not help. pacman will simply replace the symlink with the file when the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=cockpit">cockpit</a></span> package is upgraded. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Cockpit.html">Talk:Cockpit</a>)</div>
-</div>
-<p>By default, Cockpit shows a MOTD on either TTY login or SSH. <span class="plainlinks archwiki-template-man" title="$ man 8 pam_motd"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/pam_motd.8">pam_motd(8)</a></span> recommends creating a symbolic link to hide these messages, so future Cockpit updates do not override this.
+<p>By default, Cockpit shows a MOTD on either TTY login or SSH. <span class="plainlinks archwiki-template-man" title="$ man 8 pam_motd"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/pam_motd.8">pam_motd(8)</a></span> recommends creating a symbolic link to hide these messages, but simply removing the files will also work: 
 </p>
-<p>This can be done via: 
+<pre># rm /etc/motd.d/cockpit /etc/issue.d/cockpit.issue
+</pre>
+<p>To avoid pacman re-creating the original files when <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=cockpit">cockpit</a></span> is upgraded, create a <a href="../en/Pacman.html#Skip_files_from_being_installed_to_system" class="mw-redirect" title="NoExtract">NoExtract</a> rule.
 </p>
-<pre># ln -sfn /dev/null /etc/motd.d/cockpit
-</pre>
-<pre># ln -sfn /dev/null /etc/issue.d/cockpit.issue
-</pre>
 </div>
 </div>
-					<div id="catlinks" class="catlinks" data-mw="interface">
-<div id="mw-normal-catlinks" class="mw-normal-catlinks">
+					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Categories</a>: <ul>
 <li><a href="../en/Category:System_administration.html" title="Category:System administration">System administration</a></li>
 <li><a href="../en/Category:Web_admin_interfaces.html" title="Category:Web admin interfaces">Web admin interfaces</a></li>
 </ul>
-</div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li></ul>
-</div>
-</div>
+</div></div>
 				</div>
 			</main>
 			
@@ -257,8 +246,8 @@ FreeBind=yes</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Cockpit&amp;oldid=806244">https://wiki.archlinux.org/index.php?title=Cockpit&amp;oldid=806244</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 17 April 2024, at 09:26.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Cockpit&amp;oldid=819810">https://wiki.archlinux.org/index.php?title=Cockpit&amp;oldid=819810</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 29 October 2024, at 10:31.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

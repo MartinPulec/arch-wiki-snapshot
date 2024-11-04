@@ -5,7 +5,7 @@
 <title>Btrfs - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -556,6 +556,15 @@
 			<ul id="toc-Constant_drive_activity-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Device_total_bytes_should_be_at_most_X_but_found_Y" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Device_total_bytes_should_be_at_most_X_but_found_Y">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">7.6</span>Device total_bytes should be at most X but found Y</div>
+			</a>
+			
+			<ul id="toc-Device_total_bytes_should_be_at_most_X_but_found_Y-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1">
@@ -1038,7 +1047,7 @@ To show usage and limits for a given path within a file system, use
 <h3><span class="mw-headline" id="Deduplication">Deduplication</span></h3>
 <p>Using copy-on-write, Btrfs is able to copy files or whole subvolumes without actually copying the data. However, whenever a file is altered, a new <i>proper</i> copy is created. Deduplication takes this a step further by actively identifying blocks of data which share common sequences and combining them into an extent with the same copy-on-write semantics.
 </p>
-<p>Tools dedicated to deduplicate a Btrfs formatted partition include <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=duperemove">duperemove</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=bees">bees</a></span>. One may also want to merely deduplicate data on a file based level instead using e.g. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=rmlint">rmlint</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/jdupes/">jdupes</a></span><sup><small>AUR</small></sup> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/dduper-git/">dduper-git</a></span><sup><small>AUR</small></sup>. For an overview of available features of those programs and additional information, have a look at the <a rel="nofollow" class="external text" href="https://btrfs.readthedocs.io/en/latest/Deduplication.html">upstream Wiki entry</a>.
+<p>Tools dedicated to deduplicate a Btrfs formatted partition include <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=duperemove">duperemove</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=bees">bees</a></span>. One may also want to merely deduplicate data on a file based level instead using e.g. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=rmlint">rmlint</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=rdfind">rdfind</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/jdupes/">jdupes</a></span><sup><small>AUR</small></sup> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/dduper-git/">dduper-git</a></span><sup><small>AUR</small></sup>. For an overview of available features of those programs and additional information, have a look at the <a rel="nofollow" class="external text" href="https://btrfs.readthedocs.io/en/latest/Deduplication.html">upstream Wiki entry</a>.
 </p>
 <h3><span class="mw-headline" id="Resizing">Resizing</span></h3>
 <div class="archwiki-template-box archwiki-template-box-warning">
@@ -1254,6 +1263,17 @@ You are now being dropped into an emergency shell.
 </pre>
 <p>Alternatively, one can disable asynchronous discard altogether by mounting using the <code>nodiscard</code> mount option in <a href="../en/Fstab.html" title="Fstab">fstab</a>, and instead use <a href="../en/Solid_state_drive.html#Periodic_TRIM" title="Solid state drive">Periodic TRIM</a>.
 </p>
+<h3><span class="mw-headline" id="Device_total_bytes_should_be_at_most_X_but_found_Y">Device total_bytes should be at most X but found Y</span></h3>
+<p>If a drive has been moved from another computer or the order of devices has changed, and the difference in sizes reported is tiny (at most megabytes), it is possible <a href="https://en.wikipedia.org/wiki/Host_protected_area" class="extiw" title="wikipedia:Host protected area">HPA (Host Protected Area)</a> is in effect.
+</p>
+<p>To verify if HPA is enabled, use <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=hdparm">hdparm</a></span>:
+</p>
+<pre># hdparm -N DEVICE
+</pre>
+<p>The output provides two numbers: the number of visible sectors and the actual number of sectors. If they differ, HPA is enabled.
+</p>
+<p>If motherboard sets this forcefully and the firmware provides no option to turn that off, the only option is to shrink the affected file system.  This is most easily done one the original computer, or on any machine that does not apply HPA.
+</p>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul>
 <li>
@@ -1308,8 +1328,8 @@ You are now being dropped into an emergency shell.
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Btrfs&amp;oldid=811537">https://wiki.archlinux.org/index.php?title=Btrfs&amp;oldid=811537</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 29 June 2024, at 08:50.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Btrfs&amp;oldid=818743">https://wiki.archlinux.org/index.php?title=Btrfs&amp;oldid=818743</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 12 October 2024, at 19:04.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

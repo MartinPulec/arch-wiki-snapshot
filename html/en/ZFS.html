@@ -5,7 +5,7 @@
 <title>ZFS - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -104,13 +104,13 @@
 			</button>
 		
 		<ul id="toc-Configuration-sublist" class="vector-toc-list">
-			<li id="toc-Automatic_Start" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Automatic_Start">
+			<li id="toc-Automatic_start" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Automatic_start">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">3.1</span>Automatic Start</div>
+				<span class="vector-toc-numb">3.1</span>Automatic start</div>
 			</a>
 			
-			<ul id="toc-Automatic_Start-sublist" class="vector-toc-list">
+			<ul id="toc-Automatic_start-sublist" class="vector-toc-list">
 				<li id="toc-Using_zfs-mount.service" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Using_zfs-mount.service">
 				<div class="vector-toc-text">
@@ -308,7 +308,34 @@
 			</a>
 			
 			<ul id="toc-Unlock_at_login_time:_PAM-sublist" class="vector-toc-list">
+				<li id="toc-SSH" class="vector-toc-list-item vector-toc-level-4">
+			<a class="vector-toc-link" href="#SSH">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">5.1.2.1</span>SSH</div>
+			</a>
+			
+			<ul id="toc-SSH-sublist" class="vector-toc-list">
+				<li id="toc-SSH_Key_&amp;_Password_when_required" class="vector-toc-list-item vector-toc-level-5">
+			<a class="vector-toc-link" href="#SSH_Key_&amp;_Password_when_required">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">5.1.2.1.1</span>SSH Key &amp; Password when required</div>
+			</a>
+			
+			<ul id="toc-SSH_Key_&amp;_Password_when_required-sublist" class="vector-toc-list">
 			</ul>
+		</li>
+		<li id="toc-SSH_Key_&amp;_Password" class="vector-toc-list-item vector-toc-level-5">
+			<a class="vector-toc-link" href="#SSH_Key_&amp;_Password">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">5.1.2.1.2</span>SSH Key &amp; Password</div>
+			</a>
+			
+			<ul id="toc-SSH_Key_&amp;_Password-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+		</li>
+	</ul>
 		</li>
 	</ul>
 		</li>
@@ -831,13 +858,13 @@
 		</li>
 	</ul>
 		</li>
-		<li id="toc-Enabling_bclone_support_(cp_--reflink)" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Enabling_bclone_support_(cp_--reflink)">
+		<li id="toc-Enabling_bclone_support" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Enabling_bclone_support">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">8.10</span>Enabling bclone support (<i>cp --reflink</i>)</div>
+				<span class="vector-toc-numb">8.10</span>Enabling bclone support</div>
 			</a>
 			
-			<ul id="toc-Enabling_bclone_support_(cp_--reflink)-sublist" class="vector-toc-list">
+			<ul id="toc-Enabling_bclone_support-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -978,12 +1005,14 @@ Features of ZFS include: pooled storage (integrated volume management – zpool)
 <p>Users can make use of <a href="../en/Dynamic_Kernel_Module_Support.html" title="Dynamic Kernel Module Support">Dynamic Kernel Module Support</a> (DKMS) to rebuild the ZFS modules automatically.
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> Occasionally, the dkms package might not compile against the newest kernel packages in Arch. Using the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-lts">linux-lts</a></span> <a href="../en/Kernel.html" title="Kernel">kernel</a> may provide better compatibility with out-of-tree kernel modules.</div>
+<strong>Warning:</strong> Occasionally, the dkms package might not compile against the newest kernel packages in Arch. Using the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-lts">linux-lts</a></span> <a href="../en/Kernel.html" title="Kernel">kernel</a> may provide better compatibility with out-of-tree kernel modules, otherwise <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zfs-dkms-staging-git/">zfs-dkms-staging-git</a></span><sup><small>AUR</small></sup> backports compatibility patches and fixes for the latest kernel package in Arch on top of the stable zfs branch </div>
 <p>Install from the <a href="../en/Unofficial_user_repositories.html#archzfs" title="Unofficial user repositories">archzfs</a> repository or alternatively the <a href="../en/Arch_User_Repository.html" title="Arch User Repository">Arch User Repository</a>:
 </p>
 <ul>
 <li>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zfs-dkms/">zfs-dkms</a></span><sup><small>AUR</small></sup> for versions with dynamic kernel module support.</li>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zfs-dkms/">zfs-dkms</a></span><sup><small>AUR</small></sup> for stable releases with dynamic kernel module support (might not work with the latest stable kernels so it is advised to use the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-lts">linux-lts</a></span> <a href="../en/Kernel.html" title="Kernel">kernel</a> instead).</li>
+<li>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zfs-dkms-staging-git/">zfs-dkms-staging-git</a></span><sup><small>AUR</small></sup> to get the latest fixes in the zfs stable branch plus backported support for the newest kernel packages in Arch.</li>
 <li>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zfs-dkms-git/">zfs-dkms-git</a></span><sup><small>AUR</small></sup> for development releases for versions with dynamic kernel module support.</li>
 </ul>
@@ -1000,27 +1029,33 @@ Features of ZFS include: pooled storage (integrated volume management – zpool)
 <h2><span class="mw-headline" id="Configuration">Configuration</span></h2>
 <p>ZFS is considered a "zero administration" filesystem by its creators; therefore, configuring ZFS is very straight forward. Configuration is done primarily with two commands: <code>zfs</code> and <code>zpool</code>.
 </p>
-<h3><span class="mw-headline" id="Automatic_Start">Automatic Start</span></h3>
-<p>For ZFS to live by its "zero administration" namesake, <code>zfs-import-cache.service</code> must be enabled to import the pools and <code>zfs-mount.service</code> must be enabled to mount the filesystems available in the pools. A benefit to this is that it is not necessary to mount ZFS filesystems in <code>/etc/fstab</code>. <code>zfs-import-cache.service</code> imports the zfs pools reading the file <code>/etc/zfs/zpool.cache</code>.
+<h3><span class="mw-headline" id="Automatic_start">Automatic start</span></h3>
+<p>For ZFS to live by its "zero administration" namesake, you probably want the pools to be automatically imported at boot time.
 </p>
-<p>For each <a href="#Importing_a_pool_created_by_id">imported pool</a> you want automatically imported by <code>zfs-import-cache.service</code> execute:
+<p>To do so, <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a><a rel="nofollow" class="external autonumber" href="https://github.com/archzfs/archzfs/issues/72">[2]</a>: 
 </p>
-<pre># zpool set cachefile=/etc/zfs/zpool.cache &lt;pool&gt;
+<ul>
+<li>
+<code>zfs.target</code> as the overarching reference point for other units to depend on,</li>
+<li>
+<code>zfs-import.target</code> as it provides the proper ordering<a rel="nofollow" class="external autonumber" href="https://github.com/openzfs/zfs/pull/6822">[3]</a>,</li>
+<li>
+<code>zfs-import-cache.service</code> to import the pools.</li>
+</ul>
+<p><code>zfs-import-cache.service</code> imports the zfs pools by reading the file <code>/etc/zfs/zpool.cache</code>. For each <a href="#Importing_a_pool_created_by_id">imported pool</a> you want automatically imported by <code>zfs-import-cache.service</code>, execute:
+</p>
+<pre># zpool set cachefile=/etc/zfs/zpool.cache <i>pool</i>
 </pre>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> Beginning with <a rel="nofollow" class="external text" href="https://github.com/openzfs/zfs/releases/tag/zfs-0.6.5.8">OpenZFS version 0.6.5.8</a> the ZFS service unit files have been changed so that you need to explicitly enable any ZFS services you want to run. See <a rel="nofollow" class="external text" href="https://github.com/archzfs/archzfs/issues/72">ArchZFS issue 72</a> for more information.</div>
-<p><a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">Enable</a> the relevant service (<code>zfs-import-cache.service</code>) and targets (<code>zfs.target</code> and <code>zfs-import.target</code>) so the pools are automatically imported at boot time:
-</p>
-<p>To mount the ZFS filesystems, you have 2 choices:
+<p>To actually mount the ZFS filesystems (without listing the ZFS filesystems in <code>/etc/fstab</code>), you have 2 choices:
 </p>
 <ul>
 <li>Enable the <a href="#Using_zfs-mount.service">zfs-mount.service</a>
 </li>
-<li>Using <a href="#Using_zfs-mount-generator">zfs-mount-generator</a>
+<li>Use <a href="#Using_zfs-mount-generator">zfs-mount-generator</a>
 </li>
 </ul>
 <h4><span class="mw-headline" id="Using_zfs-mount.service">Using zfs-mount.service</span></h4>
-<p>In order to mount ZFS filesystems automatically on boot you need to <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> <code>zfs-mount.service</code> and <code>zfs.target</code>.
+<p>In order to mount ZFS filesystems automatically on boot you need to <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> <code>zfs-mount.service</code>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> 
@@ -1043,7 +1078,7 @@ Features of ZFS include: pooled storage (integrated volume management – zpool)
 <li>Check the contents of <code>/etc/zfs/zfs-list.cache/&lt;pool-name&gt;</code>. If it is empty, make sure that the <code>zfs-zed.service</code> is running and just change the canmount property of any of your ZFS filesystem by running: <pre>zfs set canmount=off zroot/fs1</pre> This change causes ZFS to raise an event which is captured by ZED, which in turn runs the ZEDLET to update the file in <code>/etc/zfs/zfs-list.cache</code>. If the file in <code>/etc/zfs/zfs-list.cache</code> is updated, you can set the <code>canmount</code> property of the filesystem back by running: <pre>zfs set canmount=on zroot/fs1</pre>
 </li>
 </ol>
-<p>You need to add a file in <code>/etc/zfs/zfs-list.cache</code> for each ZFS pool in your system. Make sure the pools are imported by enabling <code>zfs-import-cache.service</code> and <code>zfs-import.target</code> as <a href="#Automatic_Start">explained above</a>.
+<p>You need to add a file in <code>/etc/zfs/zfs-list.cache</code> for each ZFS pool in your system. Make sure the <a href="#Automatic_start">required units and targets</a> are enabled.
 </p>
 <h2><span class="mw-headline" id="Storage_pools">Storage pools</span></h2>
 <p>It is not necessary to partition the drives before creating the ZFS filesystem. It is recommended to point ZFS at an entire disk (ie. <code>/dev/sdx</code> rather than <code>/dev/sdx1</code>), which will <a rel="nofollow" class="external text" href="https://www.reddit.com/r/zfs/comments/667na0/zfs_on_raw_or_gpt/dgh0l9t/">automatically create a GPT (GUID Partition Table)</a> and add an 8 MB reserved partition at the end of the disk for legacy bootloaders. However, you can specify a partition or a file within an existing filesystem, if you wish to create multiple volumes with different redundancy properties.
@@ -1051,9 +1086,9 @@ Features of ZFS include: pooled storage (integrated volume management – zpool)
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> If some or all device have been used in a software RAID set it is paramount to <a href="../en/RAID.html#Prepare_the_devices" class="mw-redirect" title="Mdadm">erase any old RAID configuration information</a>.</div>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> For <a href="../en/Advanced_Format.html" title="Advanced Format">Advanced Format</a> Disks with 4KB sector size, an ashift of 12 is recommended for best performance. Advanced Format disks emulate a sector size of 512 bytes for compatibility with legacy systems, this causes ZFS to sometimes use an ashift option number that is not ideal. Once the pool has been created, the only way to change the ashift option is to recreate the pool. Using an ashift of 12 would also decrease available capacity. See the OpenZFS FAQ: <a rel="nofollow" class="external text" href="https://openzfs.github.io/openzfs-docs/Project%20and%20Community/FAQ.html#performance-considerations">Performance Considerations</a>, <a rel="nofollow" class="external text" href="https://openzfs.github.io/openzfs-docs/Project%20and%20Community/FAQ.html#advanced-format-disks">Advanced Format Disks</a>, and <a rel="nofollow" class="external text" href="https://web.archive.org/web/20170913063528/https://wiki.illumos.org/display/illumos/ZFS+and+Advanced+Format+disks">ZFS and Advanced Format disks</a>.</div>
+<strong>Warning:</strong> For <a href="../en/Advanced_Format.html" title="Advanced Format">Advanced Format</a> disks with 4 KiB sector size, an <code>ashift</code> of <code>12</code> is recommended for best performance. Advanced Format disks emulate a sector size of 512 bytes for compatibility with legacy systems, this causes ZFS to sometimes use an <code>ashift</code> option number that is not ideal. Once the pool has been created, the only way to change the <code>ashift</code> option is to recreate the pool. Using an <code>ashift</code> of <code>12</code> would also decrease available capacity. See the OpenZFS FAQ: <a rel="nofollow" class="external text" href="https://openzfs.github.io/openzfs-docs/Project%20and%20Community/FAQ.html#performance-considerations">Performance Considerations</a>, <a rel="nofollow" class="external text" href="https://openzfs.github.io/openzfs-docs/Project%20and%20Community/FAQ.html#advanced-format-disks">Advanced Format Disks</a>, and <a rel="nofollow" class="external text" href="https://web.archive.org/web/20170913063528/https://wiki.illumos.org/display/illumos/ZFS+and+Advanced+Format+disks">ZFS and Advanced Format disks</a>.</div>
 <h3><span class="mw-headline" id="Identify_disks">Identify disks</span></h3>
-<p>OpenZFS recommends using device IDs when creating ZFS storage pools of less than 10 devices<a rel="nofollow" class="external autonumber" href="https://openzfs.github.io/openzfs-docs/Project%20and%20Community/FAQ.html#selecting-dev-names-when-creating-a-pool-linux">[2]</a>. Use <a href="../en/Persistent_block_device_naming.html#by-id_and_by-path" title="Persistent block device naming">Persistent block device naming#by-id and by-path</a> to identify the list of drives to be used for ZFS pool. 
+<p>OpenZFS recommends using device IDs when creating ZFS storage pools of less than 10 devices<a rel="nofollow" class="external autonumber" href="https://openzfs.github.io/openzfs-docs/Project%20and%20Community/FAQ.html#selecting-dev-names-when-creating-a-pool-linux">[4]</a>. Use <a href="../en/Persistent_block_device_naming.html#by-id_and_by-path" title="Persistent block device naming">Persistent block device naming#by-id and by-path</a> to identify the list of drives to be used for ZFS pool. 
 </p>
 <p>The disk IDs should look similar to the following:
 </p>
@@ -1304,7 +1339,7 @@ action: Enable all features using 'zpool upgrade'. Once this is done, the pool m
 </pre>
 <p>To use a key instead of using a passphrase:
 </p>
-<pre># dd if=/dev/random of=/path/to/key bs=1 count=32
+<pre># dd if=/dev/random of=/path/to/key bs=32 count=1 iflag=fullblock
 # zfs create -o encryption=on -o keyformat=raw -o keylocation=file:///path/to/key &lt;nameofzpool&gt;/&lt;nameofdataset&gt;
 </pre>
 <p>The easy way to make a key in human-readable form (<code>keyformat=hex</code>):
@@ -1374,6 +1409,11 @@ WantedBy=zfs-mount.service</pre>
 <p><a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable/start">Enable/start</a> <code>zfs-load-key.service</code>.
 </p>
 <h4><span class="mw-headline" id="Unlock_at_login_time:_PAM">Unlock at login time: PAM</span></h4>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-clear.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs language, wiki syntax or style improvements. See <a href="../en/Help:Style.html" title="Help:Style">Help:Style</a> for reference.</b></p>
+<div>
+<b>Reason:</b> Missing prompts in front of commands. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:ZFS.html">Talk:ZFS</a>)</div>
+</div>
 <p>If you are not encrypting the root volume, but only the home volume or a user-specific volume, another idea is to <a rel="nofollow" class="external text" href="https://blog.trifork.com/2020/05/22/linux-homedir-encryption/">wait until login to decrypt it</a>.  The advantages of this method are that the system boots uninterrupted, and that when the user logs in, the same password can be used both to authenticate and to decrypt the home volume, so that the password is only entered once.
 </p>
 <p>First set the mountpoint to legacy to avoid having it mounted by <code>zfs mount -a</code>:
@@ -1383,31 +1423,115 @@ WantedBy=zfs-mount.service</pre>
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/fstab</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">zroot/data/home         /home           zfs             rw,xattr,posixacl,noauto        0 0</pre>
+<p>Alternatively, you can keep using ZFS mounts if you use both:
+</p>
+<pre>zfs set canmount=noauto zroot/data/home
+zfs set org.openzfs.systemd:ignore=on zroot/data/home</pre>
+<p>The first will stop ZFS automatically mounting it, and the second systemd, but you will still be able to manually (or through the following scripts) mount it. If you have child datasets, <code>org.openzfs.systemd:ignore=on</code> will be inherited, but you will need to set <code>canmount=noauto</code> on each as it is not inheritable, otherwise they will try to mount without a mountpoint.
+</p>
 <p>On a single-user system, with only one <code>/home</code> volume having the same encryption password as the user's password, it can be decrypted at login as follows: first create <code>/usr/local/bin/mount-zfs-homedir</code>
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/usr/local/bin/mount-zfs-homedir</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">#!/bin/bash
-
-# simplified from <a rel="nofollow" class="external free" href="https://talldanestale.dk/2020/04/06/zfs-and-homedir-encryption/">https://talldanestale.dk/2020/04/06/zfs-and-homedir-encryption/</a>
-
 set -eu
 
-# Password is given to us via stdin, save it in a variable for later
-PASS=$(cat -)
+# $PAM_USER will be the username of the user, you can use it for per-user home volumes.
+HOME_VOLUME="zroot/data/home" 
 
-VOLNAME="zroot/data/home"
+if [ "$(zfs get keystatus "${HOME_VOLUME}" -Ho value)" != "available" ]; then
+  PASSWORD=$(cat -)
+  zfs load-key "${HOME_VOLUME}" &lt;&lt;&lt; "$PASSWORD" || continue
+fi
 
-# Unlock and mount the volume
-zfs load-key "$VOLNAME" &lt;&lt;&lt; "$PASS" || continue
-zfs mount "$VOLNAME" || true # ignore errors</pre>
-<p>do not forget <code>chmod a+x /usr/local/bin/mount-zfs-homedir</code>; then get PAM to run it by adding the following line to /etc/pam.d/system-auth:
+# This will also mount any child datasets, unless they use a different key.
+echo "$(zfs list -rHo name,keystatus,mounted "${HOME_VOLUME}")" | while IFS=$'\t' read -r NAME KEYSTATUS MOUNTED; do
+  if [ "${MOUNTED}" != "yes" ] &amp;&amp; [ "${KEYSTATUS}" == "available" ]; then
+    zfs mount "${NAME}" || true
+  fi
+done</pre>
+<p>do not forget to make it <a href="../en/Help:Reading.html#Make_executable" class="mw-redirect" title="Executable">executable</a>; then get PAM to run it by adding the following line to /etc/pam.d/system-auth:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pam.d/system-auth</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">auth       optional                    pam_exec.so          expose_authtok /usr/local/bin/mount-zfs-homedir
 </pre>
-<p>Now it will transparently decrypt and mount the /home volume when you log in anywhere: on the console, via ssh, etc.  A caveat is that since your <code>~/.ssh</code> directory is not mounted, if you log in via ssh, you must use the default password authentication the first time rather than relying on <code>~/.ssh/authorized_keys</code>.
+<p>Now it will transparently decrypt and mount the /home volume when you log in anywhere: on the console, via ssh, etc.
 </p>
-<p>If you want to have separate volumes for each user, each encrypted with the user's password, try the <a rel="nofollow" class="external text" href="https://blog.trifork.com/2020/05/22/linux-homedir-encryption/">linked method</a>.
+<h5><span class="mw-headline" id="SSH">SSH</span></h5>
+<p>A caveat is that since your <code>~/.ssh</code> directory is not mounted, if you log in via ssh, you must use  password authentication the first time rather than relying on <code>~/.ssh/authorized_keys</code>.
+</p>
+<p>If you do not wish to enable (insecure) password authentication, you can instead move <code>~/.ssh/authorized_keys</code> to a new location. Make <code>/etc/ssh/user_config/</code> and inside it a folder for each user, owned by that user and with <code>700</code> permissions. Then move each user's <code>authorized_keys</code> into their respective folders, and edit the system sshd configuration:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/ssh/sshd_config</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">AuthorizedKeysFile /etc/ssh/user_config/%u/authorized_keys</pre>
+<p>Then <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Restart">restart</a> <code>sshd.service</code>. You can also optionally make a link for each user from <code>~/.ssh/authorized_keys</code> to the new location so users can still edit it as they are used to.
+</p>
+<p>This will let you log in, but your home partition will not be mounted, and you will need to do so manually. There are multiple options to work around this:
+</p>
+<h6>
+<span id="SSH_Key_.26_Password_when_required"></span><span class="mw-headline" id="SSH_Key_&amp;_Password_when_required">SSH Key &amp; Password when required</span>
+</h6>
+<p>It is possible to set up PAM to only prompt for a password via SSH when it is necessary to decrypt your home partition. You will need to enable both <code>publickey</code> and <code>keyboard-interactive</code> authentication methods:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/ssh/sshd_config</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">PubkeyAuthentication yes
+KbdInteractiveAuthentication yes
+AuthenticationMethods publickey,keyboard-interactive
+
+## Example of excluding a certain user who does not have an encrypted home directory.
+#Match User nohome
+#  KbdInteractiveAuthentication no
+#  AuthenticationMethods publickey</pre>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning:</strong> Note the comma in <code>AuthenticationMethods publickey,keyboard-interactive</code>, this means that you need to do <i>both</i> authentication methods to log in with SSH. The very similar <code>AuthenticationMethods publickey keyboard-interactive</code> means you can do <b>either</b> to log in, which would let someone bypass your public key auth.</div>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> You may ask why <code>keyboard-interactive</code> and not <code>password</code>? <code>password</code> is done client-side, so even if the auth is skipped, the user is still prompted and the password is just thrown away. With <code>keyboard-interactive</code> the user does not get prompted at all when we skip it.</div> 
+<p>This will mean it asks for the password after validating the key, but using PAM we can stop it asking for the password when not needed. We make a script that will fail when the key is not available to us:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/usr/local/bin/require-encrypted-homedir</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">#!/bin/bash
+set -eu
+
+HOME_VOLUME="zroot/data/home" # You can use $PAM_USER to use the username in the volume for a per-user solution.
+
+if [ "$(zfs get keystatus "${HOME_VOLUME}" -Ho value)" != "available" ]; then
+  exit 27 # PAM_TRY_AGAIN
+elif [[ "${SSH_AUTH_INFO_0:-""}" =~ ^"publickey " ]]; then
+  exit 0
+else
+  # If this happens, it implies a configuration error: either you are allowing auth without a public 
+  # key, or have enabled this in a non-SSH PAM service. Both are dangerous and this should block it, 
+  # but if you see it, fix your configuration.
+  exit 3 # PAM_SERVICE_ERR
+fi</pre>
+<p>And make it <a href="../en/Help:Reading.html#Make_executable" class="mw-redirect" title="Executable">executable</a>.
+</p>
+<p>Now we want to configure PAM to call this, and skip asking for the password if the script succeeds because we already have the key available. Add this line above the existing auth line(s) you want to skip (all of them unless you have something else set up) for the SSH service:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pam.d/sshd</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">auth sufficient pam_exec.so /usr/local/bin/require-encrypted-homedir</pre>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning:</strong> This is for <code>/etc/pam.d/sshd</code> <b>not</b> <code>/etc/pam.d/system-auth</code> as above. You do not want local users without a public key to be able to skip the password. There a safeguard in the script against this, but still best to be careful.</div>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> When using private keys, the auth step is skipped in PAM as the private key authentication is handled entirely by <code>sshd</code>. This means that the script we are adding here will never be run for private keys and they cannot be skipped, however, we still do a check for defence-in-depth to try and ensure a key has been checked.</div> 
+<p>With this, you will be prompted for a password only when the key is not loaded.
+</p>
+<h6>
+<span id="SSH_Key_.26_Password"></span><span class="mw-headline" id="SSH_Key_&amp;_Password">SSH Key &amp; Password</span>
+</h6>
+<p>A simpler option is to just enable both methods, meaning your key still gets checked, but then you have to type the password too, which will decrypt your home partition.
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/ssh/sshd_config</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">PubkeyAuthentication yes
+PasswordAuthentication yes
+AuthenticationMethods publickey,password</pre>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning:</strong> Note the comma in <code>AuthenticationMethods publickey,password</code>, this means that you need to do <i>both</i> authentication methods to log in with SSH. The very similar <code>AuthenticationMethods publickey password</code> means you can do <b>either</b> to log in, which would let someone bypass your public key auth.</div>
+<p>This works (and will not let anyone authenticate with <i>just</i> a password), but has the downside of requiring your password every time.
+</p>
+<p>You can also specify something like:
+</p>
+<pre>AuthenticationMethods publickey password,publickey</pre>
+<p>This allows clients to either use either just a public key, or one and a password. Which the client will do will be based on the <code>PreferredAuthentications</code> option. <code>-o PreferredAuthentications=password,publickey</code> will ask for the password, while <code>-o PreferredAuthentications=publickey</code> will not. This is more manual than automated fallback, but has less moving parts, and avoids asking you every time if you prefer <code>publickey</code> by default (you can use <a href="../en/OpenSSH.html#Configuration" title="OpenSSH">host-specific options</a> on clients to simplify setting these options).
 </p>
 <h3><span class="mw-headline" id="Swap_volume">Swap volume</span></h3>
 <div class="archwiki-template-box archwiki-template-box-warning">
@@ -1445,9 +1569,9 @@ zfs mount "$VOLNAME" || true # ignore errors</pre>
 <pre># zfs set acltype=posixacl &lt;nameofzpool&gt;/&lt;nameofdataset&gt;
 # zfs set xattr=sa &lt;nameofzpool&gt;/&lt;nameofdataset&gt;
 </pre>
-<p>Setting <code>xattr</code> is recommended for performance reasons <a rel="nofollow" class="external autonumber" href="https://github.com/openzfs/zfs/issues/170#issuecomment-27348094">[3]</a>.
+<p>Setting <code>xattr</code> is recommended for performance reasons <a rel="nofollow" class="external autonumber" href="https://github.com/openzfs/zfs/issues/170#issuecomment-27348094">[5]</a>.
 </p>
-<p>It may be preferable to enable ACL on the zpool as datasets will inherit the ACL parameters. Setting <code>aclinherit=passthrough</code> may be wanted as the default mode is <code>restricted</code> <a rel="nofollow" class="external autonumber" href="https://docs.oracle.com/cd/E19120-01/open.solaris/817-2271/gbaaz/index.html">[4]</a>; however, it is worth noting that <code>aclinherit</code> does not affect POSIX ACLs <a rel="nofollow" class="external autonumber" href="https://askubuntu.com/questions/342553/activate-acl-for-zfs-pool-ubuntu-13-04#comment1220577_392008">[5]</a>:
+<p>It may be preferable to enable ACL on the zpool as datasets will inherit the ACL parameters. Setting <code>aclinherit=passthrough</code> may be wanted as the default mode is <code>restricted</code> <a rel="nofollow" class="external autonumber" href="https://docs.oracle.com/cd/E19120-01/open.solaris/817-2271/gbaaz/index.html">[6]</a>; however, it is worth noting that <code>aclinherit</code> does not affect POSIX ACLs <a rel="nofollow" class="external autonumber" href="https://askubuntu.com/questions/342553/activate-acl-for-zfs-pool-ubuntu-13-04#comment1220577_392008">[7]</a>:
 </p>
 <pre># zfs set aclinherit=passthrough &lt;nameofzpool&gt;
 # zfs set acltype=posixacl &lt;nameofzpool&gt;
@@ -1509,11 +1633,11 @@ zfs mount "$VOLNAME" || true # ignore errors</pre>
 <p>Below are examples of common scenarios:
 </p>
 <h4><span class="mw-headline" id="Basic_ZFS_Send">Basic ZFS Send</span></h4>
-<p>First, let's create a snapshot of some ZFS filesystem:
+<p>First, create a snapshot of some ZFS filesystem:
 </p>
 <pre># zfs snapshot zpool0/archive/books@snap
 </pre>
-<p>Now let's send the snapshot to a new location on a different zpool 
+<p>Now send the snapshot to a new location on a different zpool:
 </p>
 <pre># zfs send -v zpool0/archive/books@snap | zfs recv zpool4/library
 </pre>
@@ -1522,7 +1646,7 @@ zfs mount "$VOLNAME" || true # ignore errors</pre>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong>  See <a rel="nofollow" class="external text" href="https://openzfs.github.io/openzfs-docs/man/8/zfs-send.8.html">man zfs-send</a> and <a rel="nofollow" class="external text" href="https://openzfs.github.io/openzfs-docs/man/8/zfs-recv.8.html">man zfs-recv</a> for details on flags.</div>
 <h5><span class="mw-headline" id="To_and_from_files">To and from files</span></h5>
-<p>First, let's create a snapshot of some ZFS filesystem:
+<p>First, create a snapshot of some ZFS filesystem:
 </p>
 <pre># zfs snapshot zpool0/archive/books@snap
 </pre>
@@ -1531,13 +1655,13 @@ zfs mount "$VOLNAME" || true # ignore errors</pre>
 <pre># zfs send zpool0/archive/books@snap &gt; /tmp/mybooks.gz
 </pre>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong>  Make sure to run <code>zfs send</code> with <code>-w</code> flag if you wish to preserve encryption during the send.</div>
+<strong>Warning:</strong> Make sure to run <code>zfs send</code> with <code>-w</code> flag if you wish to preserve encryption during the send.</div>
 <p>Now restore the snapshot from the file:
 </p>
 <pre># gzcat /tmp/mybooks.gz | zfs recv -F zpool0/archive/books
 </pre>
 <h4><span class="mw-headline" id="Send_over_ssh">Send over ssh</span></h4>
-<p>First, let's create a snapshot of some ZFS filesystem:
+<p>First, create a snapshot of some ZFS filesystem:
 </p>
 <pre># zfs snapshot zpool1/filestore@snap
 </pre>
@@ -1551,7 +1675,7 @@ zfs mount "$VOLNAME" || true # ignore errors</pre>
 <p>You may wish update a previously sent ZFS filesystem without retransmitting all of the data over again. 
 Alternatively, it may be necessary to keep a filesystem online during a lengthy transfer and it is now time to send writes that were made since the initial snapshot.
 </p>
-<p>First, let's create a snapshot of some ZFS filesystem:
+<p>First, create a snapshot of some ZFS filesystem:
 </p>
 <pre># zfs snapshot zpool1/filestore@initial
 </pre>
@@ -1754,7 +1878,7 @@ WantedBy=multi-user.target</pre>
 </p>
 <pre># zpool add &lt;pool&gt; cache &lt;device-id&gt;
 </pre>
-<p>L2ARC is only a read cache, so redundancy is unnecessary. Since <a rel="nofollow" class="external text" href="https://github.com/openzfs/zfs/releases/tag/zfs-2.0.0">ZFS version 2.0.0</a>, L2ARC is persisted across reboots.<a rel="nofollow" class="external autonumber" href="https://github.com/openzfs/zfs/pull/9582">[6]</a>
+<p>L2ARC is only a read cache, so redundancy is unnecessary. Since <a rel="nofollow" class="external text" href="https://github.com/openzfs/zfs/releases/tag/zfs-2.0.0">ZFS version 2.0.0</a>, L2ARC is persisted across reboots.<a rel="nofollow" class="external autonumber" href="https://github.com/openzfs/zfs/pull/9582">[8]</a>
 </p>
 <p>L2ARC is generally only useful in workloads where the amount of hot data is <b>bigger</b> than system memory, but small enough to fit into L2ARC. The L2ARC is indexed by the ARC in system memory, consuming 70 bytes per record (default 128KiB). Thus, the equation for RAM usage is:
 </p>
@@ -1773,7 +1897,7 @@ WantedBy=multi-user.target</pre>
 <h3>
 <span id="I.2FO_Scheduler"></span><span class="mw-headline" id="I/O_Scheduler">I/O Scheduler</span>
 </h3>
-<p>While ZFS is expected to work well with modern schedulers including, <code>mq-deadline</code>, and <code>none</code>, experimenting with <a href="../en/Improving_performance.html#Changing_I/O_scheduler" title="Improving performance">manually setting</a> the I/O scheduler on ZFS disks may yield performance gains. The ZFS recomendation is "[...] users leave the default scheduler <a rel="nofollow" class="external text" href="https://github.com/openzfs/zfs/issues/9778#issuecomment-569347505">“unless you’re encountering a specific problem, or have clearly measured a performance improvement for your workload”</a>"<a rel="nofollow" class="external autonumber" href="https://openzfs.github.io/openzfs-docs/Performance%20and%20Tuning/Module%20Parameters.html#zfs-vdev-scheduler">[7]</a>
+<p>While ZFS is expected to work well with modern schedulers including, <code>mq-deadline</code>, and <code>none</code>, experimenting with <a href="../en/Improving_performance.html#Changing_I/O_scheduler" title="Improving performance">manually setting</a> the I/O scheduler on ZFS disks may yield performance gains. The ZFS recomendation is "[...] users leave the default scheduler <a rel="nofollow" class="external text" href="https://github.com/openzfs/zfs/issues/9778#issuecomment-569347505">“unless you’re encountering a specific problem, or have clearly measured a performance improvement for your workload”</a>"<a rel="nofollow" class="external autonumber" href="https://openzfs.github.io/openzfs-docs/Performance%20and%20Tuning/Module%20Parameters.html#zfs-vdev-scheduler">[9]</a>
 </p>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
 <h3><span class="mw-headline" id="Creating_a_zpool_fails">Creating a zpool fails</span></h3>
@@ -1782,7 +1906,7 @@ WantedBy=multi-user.target</pre>
 <pre># the kernel failed to rescan the partition table: 16
 # cannot label 'sdc': try using parted(8) and then provide a specific slice: -1
 </pre>
-<p>One reason this can occur is because ZFS expects pool creation to take less than 1 second<a rel="nofollow" class="external autonumber" href="https://github.com/openzfs/zfs/issues/2582">[8]</a><a rel="nofollow" class="external autonumber" href="https://github.com/openzfs/zfs/issues/1646">[9]</a>. This is a reasonable assumption under ordinary conditions, but in many situations it may take longer. Each drive will need to be cleared again before another attempt can be made.
+<p>One reason this can occur is because ZFS expects pool creation to take less than 1 second<a rel="nofollow" class="external autonumber" href="https://github.com/openzfs/zfs/issues/2582">[10]</a><a rel="nofollow" class="external autonumber" href="https://github.com/openzfs/zfs/issues/1646">[11]</a>. This is a reasonable assumption under ordinary conditions, but in many situations it may take longer. Each drive will need to be cleared again before another attempt can be made.
 </p>
 <pre># parted /dev/sda rm 1
 # parted /dev/sda rm 1
@@ -1893,7 +2017,7 @@ One cause for creation slowdown can be slow burst read writes on a drive. By rea
 </pre>
 <p>ZFS uses the ashift option to adjust for physical block size. When replacing the faulted disk, ZFS is attempting to use <code>ashift=12</code>, but the faulted disk is using a different ashift (probably <code>ashift=9</code>) and this causes the resulting error. 
 </p>
-<p>For Advanced Format Disks with 4KB blocksize, an ashift of 12 is recommended for best performance. See <a rel="nofollow" class="external text" href="https://openzfs.github.io/openzfs-docs/Project%20and%20Community/FAQ.html#performance-considerations">OpenZFS FAQ: Performance Considerations</a> and <a rel="nofollow" class="external text" href="https://web.archive.org/web/20170913063528/https://wiki.illumos.org/display/illumos/ZFS+and+Advanced+Format+disks">ZFS and Advanced Format disks</a>.
+<p>For Advanced Format disks with 4 KiB block size, an <code>ashift</code> of <code>12</code> is recommended for best performance. See <a rel="nofollow" class="external text" href="https://openzfs.github.io/openzfs-docs/Project%20and%20Community/FAQ.html#performance-considerations">OpenZFS FAQ: Performance Considerations</a> and <a rel="nofollow" class="external text" href="https://web.archive.org/web/20170913063528/https://wiki.illumos.org/display/illumos/ZFS+and+Advanced+Format+disks">ZFS and Advanced Format disks</a>.
 </p>
 <p>Use zdb to find the ashift of the zpool: <code>zdb </code>, then use the <code>-o</code> argument to set the ashift of the replacement drive:
 </p>
@@ -2079,7 +2203,7 @@ SMB1 disabled -- no workgroup available
 <pre># zfs get sharesmb
 </pre>
 <h3><span class="mw-headline" id="Encryption_in_ZFS_using_dm-crypt">Encryption in ZFS using dm-crypt</span></h3>
-<p>Before <a rel="nofollow" class="external text" href="https://github.com/openzfs/zfs/releases/tag/zfs-0.8.0">OpenZFS version 0.8.0</a>, ZFS did not support encryption directly (See <a href="#Native_encryption">#Native encryption</a>). Instead, zpools can be created on <a href="../en/Dm-crypt.html" title="Dm-crypt">dm-crypt</a> block devices. Since the zpool is created on the plain-text abstraction, it is possible to have the data encrypted while having all the advantages of ZFS like deduplication, compression, and data robustness. Furthermore, utilizing dm-crypt will encrypt the zpools metadata, which the native encryption can inherently not provide.<a rel="nofollow" class="external autonumber" href="https://openzfs.github.io/openzfs-docs/man/8/zfs-change-key.8.html#Encryption">[10]</a>
+<p>Before <a rel="nofollow" class="external text" href="https://github.com/openzfs/zfs/releases/tag/zfs-0.8.0">OpenZFS version 0.8.0</a>, ZFS did not support encryption directly (See <a href="#Native_encryption">#Native encryption</a>). Instead, zpools can be created on <a href="../en/Dm-crypt.html" title="Dm-crypt">dm-crypt</a> block devices. Since the zpool is created on the plain-text abstraction, it is possible to have the data encrypted while having all the advantages of ZFS like deduplication, compression, and data robustness. Furthermore, utilizing dm-crypt will encrypt the zpools metadata, which the native encryption can inherently not provide.<a rel="nofollow" class="external autonumber" href="https://openzfs.github.io/openzfs-docs/man/8/zfs-change-key.8.html#Encryption">[12]</a>
 </p>
 <p>dm-crypt, possibly via LUKS, creates devices in <code>/dev/mapper</code> and their name is fixed. So you just need to change <code>zpool create</code> commands to point to that names. The idea is configuring the system to create the <code>/dev/mapper</code> block devices and import the zpools from there. Since zpools can be created in multiple devices (raid, mirroring, striping, ...), it is important all the devices are encrypted otherwise the protection might be partially lost.
 </p>
@@ -2240,7 +2364,7 @@ SMB1 disabled -- no workgroup available
 <h4>
 <span id="Unlocking_from_a_Windows_machine_using_PuTTY.2FPlink"></span><span class="mw-headline" id="Unlocking_from_a_Windows_machine_using_PuTTY/Plink">Unlocking from a Windows machine using PuTTY/Plink</span>
 </h4>
-<p>First, we need to use <code>puttygen.exe</code> to import and convert the OpenSSH key generated earlier into PuTTY's <i>.ppk</i> private key format. Let us call it <code>zfs_unlock.ppk</code> for this example.
+<p>First, we need to use <code>puttygen.exe</code> to import and convert the OpenSSH key generated earlier into PuTTY's <i>.ppk</i> private key format. We will call it <code>zfs_unlock.ppk</code> for this example.
 </p>
 <p>The mkinitcpio-netconf process above does not setup a shell (nor do we need need one). However, because there is no shell, PuTTY will immediately close after a successful connection. This can be disabled in the PuTTY SSH configuration (<i>Connection &gt; SSH &gt; [X] Do not start a shell or command at all</i>), but it still does not allow us to see stdout or enter the encryption passphrase. Instead, we use <code>plink.exe</code> with the following parameters:
 </p>
@@ -2248,10 +2372,8 @@ SMB1 disabled -- no workgroup available
 </pre>
 <p>The plink command can be put into a batch script for ease of use.
 </p>
-<h3>
-<span id="Enabling_bclone_support_.28cp_--reflink.29"></span><span class="mw-headline" id="Enabling_bclone_support_(cp_--reflink)">Enabling bclone support (<i>cp --reflink</i>)</span>
-</h3>
-<p>First it is necessary to upgrade the <i>feature flags</i> if coming from a version prior to 2.2.2 to enable bclone, this will allow the pool to have support for this feature. This is done with <code>zpool upgrade</code>, if the status of the pool show this is possible.
+<h3><span class="mw-headline" id="Enabling_bclone_support">Enabling bclone support</span></h3>
+<p>To use <code>cp --reflink</code> and other commands needing bclone support, it is necessary to upgrade the <i>feature flags</i> if coming from a version prior to 2.2.2. This will allow the pool to have support for bclone. This is done with <code>zpool upgrade</code>, if the status of the pool show this is possible.
 </p>
 <p>It is also required to enable a module parameter, otherwise userspace apps will not be able to use this feature. You can do this by putting this into <code>/etc/modprobe.d/zfs.conf</code>:
 </p>
@@ -2297,8 +2419,8 @@ SMB1 disabled -- no workgroup available
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=ZFS&amp;oldid=813223">https://wiki.archlinux.org/index.php?title=ZFS&amp;oldid=813223</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 29 July 2024, at 20:57.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=ZFS&amp;oldid=819101">https://wiki.archlinux.org/index.php?title=ZFS&amp;oldid=819101</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 17 October 2024, at 07:10.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

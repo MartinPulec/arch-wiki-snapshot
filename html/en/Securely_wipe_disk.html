@@ -5,7 +5,7 @@
 <title>Securely wipe disk - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -227,10 +227,28 @@
 			<ul id="toc-dd-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-cp" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#cp">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">6.3</span>cp</div>
+			</a>
+			
+			<ul id="toc-cp-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-pv" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#pv">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">6.4</span>pv</div>
+			</a>
+			
+			<ul id="toc-pv-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 		<li id="toc-wipe" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#wipe">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">6.3</span>wipe</div>
+				<span class="vector-toc-numb">6.5</span>wipe</div>
 			</a>
 			
 			<ul id="toc-wipe-sublist" class="vector-toc-list">
@@ -239,7 +257,7 @@
 		<li id="toc-shred" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#shred">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">6.4</span>shred</div>
+				<span class="vector-toc-numb">6.6</span>shred</div>
 			</a>
 			
 			<ul id="toc-shred-sublist" class="vector-toc-list">
@@ -248,7 +266,7 @@
 		<li id="toc-scrub" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#scrub">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">6.5</span>scrub</div>
+				<span class="vector-toc-numb">6.7</span>scrub</div>
 			</a>
 			
 			<ul id="toc-scrub-sublist" class="vector-toc-list">
@@ -257,7 +275,7 @@
 		<li id="toc-badblocks" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#badblocks">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">6.6</span>badblocks</div>
+				<span class="vector-toc-numb">6.8</span>badblocks</div>
 			</a>
 			
 			<ul id="toc-badblocks-sublist" class="vector-toc-list">
@@ -266,7 +284,7 @@
 		<li id="toc-hdparm" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#hdparm">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">6.7</span>hdparm</div>
+				<span class="vector-toc-numb">6.9</span>hdparm</div>
 			</a>
 			
 			<ul id="toc-hdparm-sublist" class="vector-toc-list">
@@ -275,7 +293,7 @@
 		<li id="toc-blkdiscard" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#blkdiscard">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">6.8</span>blkdiscard</div>
+				<span class="vector-toc-numb">6.10</span>blkdiscard</div>
 			</a>
 			
 			<ul id="toc-blkdiscard-sublist" class="vector-toc-list">
@@ -570,21 +588,11 @@ Device     Boot      Start        End         Sectors     Size  Id Type
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># xz -z0 /dev/zero -c &gt; /dev/sd<i>XY</i></pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">xz: (stdout): Write error: No space left on device
 </pre>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># dd if=/dev/zero &gt; /dev/sd<i>XY</i></pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># dd if=/dev/zero status=progress &gt; /dev/sd<i>XY</i></pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">dd: writing to ‘standard output’: No space left on device
 20481+0 records in
 20480+0 records out
 10485760 bytes (10 MB, 10 MiB) copied, 2.29914 s, 4.6 MB/s</pre>
-<p>The file copy command <code>cp</code> can also be used to rewrite the device, because it ignores the type of the destination:
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># cp /dev/zero /dev/sd<i>XY</i></pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"> cp: error writing ‘/dev/sd<i>XY</i>’: No space left on device
- cp: failed to extend ‘/dev/sd<i>XY</i>’: No space left on device
-</pre>
-<p>To display progress status and metrics you can use <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pv">pv</a></span>:
-</p>
-<pre># pv --progress --timer --eta --rate --bytes --stop-at-size -s "$(blockdev --getsize64 /dev/sd<i>XY</i> )" /dev/zero &gt; /dev/sd"XY"
-</pre>
 <h3><span class="mw-headline" id="dd">dd</span></h3>
 <p>See also <a href="../en/Dd.html" title="Dd">dd</a> and <a href="../en/Securely_wipe_disk/Tips_and_tricks.html#Wipe_a_single_file" title="Securely wipe disk/Tips and tricks">Securely wipe disk/Tips and tricks#Wipe a single file</a>.
 </p>
@@ -596,7 +604,7 @@ Device     Boot      Start        End         Sectors     Size  Id Type
 </pre>
 <p>Or the <a href="https://en.wikipedia.org/wiki//dev/random" class="extiw" title="wikipedia:/dev/random">/dev/urandom</a> stream:
 </p>
-<pre># dd if=/dev/urandom of=/dev/sd<i>X</i> bs=4096 status=progress
+<pre># dd if=/dev/urandom of=/dev/sd<i>X</i> bs=4096 iflag=fullblock status=progress
 </pre>
 <p>The process is finished when dd reports <code>No space left on device</code> and returns control back:
 </p>
@@ -615,6 +623,18 @@ Device     Boot      Start        End         Sectors     Size  Id Type
 <li>
 <a href="../en/Dm-crypt/Drive_preparation.html#dm-crypt_specific_methods" title="Dm-crypt/Drive preparation">Dm-crypt/Drive preparation#dm-crypt specific methods</a> which uses dm-crypt.</li>
 </ul>
+<h3><span class="mw-headline" id="cp">cp</span></h3>
+<p>The file copy command <span class="plainlinks archwiki-template-man" title="$ man 1 cp"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/cp.1">cp(1)</a></span> can also be used to rewrite the device, because it ignores the type of the destination:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># cp /dev/zero /dev/sd<i>XY</i></pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"> cp: error writing ‘/dev/sd<i>XY</i>’: No space left on device
+ cp: failed to extend ‘/dev/sd<i>XY</i>’: No space left on device
+</pre>
+<h3><span class="mw-headline" id="pv">pv</span></h3>
+<p>Using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pv">pv</a></span> will show a progress bar, the time spent and the estimated time till completion. Pass the <a href="#Select_a_data_source">selected data source</a> to <span class="plainlinks archwiki-template-man" title="$ man 1 pv"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/pv.1">pv(1)</a></span> and use the <code>-o</code>/<code>--output</code> option to specify the disk which will be written to. For example, to fill the disk <code>/dev/sd<i>X</i></code> with <code>/dev/zero</code>:
+</p>
+<pre># pv /dev/zero -o /dev/sd<i>X</i>
+</pre>
 <h3><span class="mw-headline" id="wipe">wipe</span></h3>
 <p>A program specialized on wiping files. It is available as part of the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=wipe">wipe</a></span> package. To make a quick wipe of a destination, you can use something like:
 </p>
@@ -687,8 +707,8 @@ Device     Boot      Start        End         Sectors     Size  Id Type
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Securely_wipe_disk&amp;oldid=813156">https://wiki.archlinux.org/index.php?title=Securely_wipe_disk&amp;oldid=813156</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 29 July 2024, at 06:35.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Securely_wipe_disk&amp;oldid=815704">https://wiki.archlinux.org/index.php?title=Securely_wipe_disk&amp;oldid=815704</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 1 September 2024, at 11:54.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

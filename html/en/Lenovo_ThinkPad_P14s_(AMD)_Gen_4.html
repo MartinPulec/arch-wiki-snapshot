@@ -5,7 +5,7 @@
 <title>Lenovo ThinkPad P14s (AMD) Gen 4 - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -294,7 +294,7 @@
 <tr>
 <td>Wifi</td>
 <td><code>17cb:1103</code></td>
-<td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;">Wakes up sleep
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes
 </td>
 </tr>
 <tr>
@@ -394,19 +394,16 @@
 <p>Speakers work out of the box. However, they will not have the same sound quality as on Windows due to the missing Dolby Atmos Convolver. The quality can be improved by using <a href="../en/PipeWire.html#EasyEffects" class="mw-redirect" title="EasyEffects">EasyEffects</a> with a convolver effect (and possibly others) - see <a rel="nofollow" class="external text" href="https://github.com/m4tx/thinkpad-p14s-g4-linux/#sound">here</a> for an example preset for this laptop.
 </p>
 <h2><span class="mw-headline" id="WiFi">WiFi</span></h2>
-<p>A specific ath11k firmware version for the hardware in this laptop <a rel="nofollow" class="external text" href="https://bugzilla.kernel.org/show_bug.cgi?id=217239">causes</a> suspend during lid close to immediately wake from sleep.
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
+<div>
+<b>Reason:</b> Should clarify after which version of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-firmware">linux-firmware</a></span> the fix is shipped or if the fix requires a newer kernel too. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Lenovo_ThinkPad_P14s_(AMD)_Gen_4.html">Talk:Lenovo ThinkPad P14s (AMD) Gen 4</a>)</div>
+</div>
+<p>Starting with kernel v6.10, <a rel="nofollow" class="external text" href="https://bugzilla.kernel.org/show_bug.cgi?id=214649">remaining bugs with the ath11k firmware have been fixed</a>.
 </p>
-<p>This can be tested physically by closing the lid, and noting if the LED on the lid flickers and remains solid (meaning the device is not sleeping), or flashes periodically (meaning the device is sleeping). If the LED remains solid with the lid closed, suspend is not working properly, and your laptop will drain battery while closed.
+<p>However, this patch was found to cause issues with suspend, and was <a rel="nofollow" class="external text" href="https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/drivers/net/wireless/ath/ath11k/ahb.c?h=linux-6.10.y&amp;id=436dd444d8b206bf34a2a35e1e04552c2ba326e9">reverted in 6.10.10</a> as well as <a rel="nofollow" class="external text" href="https://github.com/torvalds/linux/commit/2f833e8948d6c88a3a257d4e426c9897b4907d5a">6.11</a>.
 </p>
-<p>To check if you have the bad firmware version, you can check the kernel logs for this firmware version:
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ journalctl -k --grep "ath11k_pci" | grep fw_version</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">ath11k_pci 0000:02:00.0: fw_version 0x110b196e fw_build_timestamp 2022-12-22 12:54 fw_build_id <b>WLAN.HSP.1.1-03125-QCAHSPSWPL_V1_V2_SILICONZ_LITE-3.6510.23</b></pre>
-<p>Both 3.6510.23 and 3.6510.36 have the issue.
-</p>
-<p>Various workarounds are possible, including using <a href="../en/Network_configuration/Wireless.html#Rfkill_caveat" class="mw-redirect" title="Rfkill">rfkill</a> or <a href="../en/Kernel_module.html" class="mw-redirect" title="Modprobe">modprobe</a> to disable or remove the WiFi kernel module during suspend to prevent the issue. See <a href="../en/Lenovo_ThinkPad_T14s_(AMD)_Gen_3.html#Network_/_WiFi" title="Lenovo ThinkPad T14s (AMD) Gen 3">Lenovo ThinkPad T14s (AMD) Gen 3#Network / WiFi</a> for one such solution.
-</p>
-<p>It is also possible to downgrade to 3.6510.16 by replacing the firmware files in-place. See <a rel="nofollow" class="external text" href="https://bugzilla.kernel.org/show_bug.cgi?id=217239#c1">this comment</a> for details. To avoid having to repeat these steps manually after each update of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-firmware">linux-firmware</a></span>, use the <code>NoExtract</code> array in <code>pacman.conf</code> with a wildcard to block their installation, but keep regularly checking the issue thread to see if the fix has been merged upstream. See <a href="../en/Pacman.html#Skip_files_from_being_installed_to_system" title="Pacman">pacman#Skip files from being installed to system</a>.
+<p>Previously, specific ath11k firmware versions <a rel="nofollow" class="external text" href="https://bugzilla.kernel.org/show_bug.cgi?id=217239">caused</a> suspend during lid close to immediately wake from sleep.
 </p>
 <h2><span class="mw-headline" id="Smartcard_reader">Smartcard reader</span></h2>
 <p>Seems to work and read cards. Follow instructions from <a href="../en/Smartcards.html" title="Smartcards">smartcards</a>.
@@ -738,9 +735,13 @@ It conflicts with <a href="../en/TLP.html" title="TLP">TLP</a> and the reasons f
 </ul>
 </div>
 </div>
-					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
+					<div id="catlinks" class="catlinks" data-mw="interface">
+<div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Lenovo.html" title="Category:Lenovo">Lenovo</a></li></ul>
-</div></div>
+</div>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li></ul>
+</div>
+</div>
 				</div>
 			</main>
 			
@@ -749,8 +750,8 @@ It conflicts with <a href="../en/TLP.html" title="TLP">TLP</a> and the reasons f
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Lenovo_ThinkPad_P14s_(AMD)_Gen_4&amp;oldid=806379">https://wiki.archlinux.org/index.php?title=Lenovo_ThinkPad_P14s_(AMD)_Gen_4&amp;oldid=806379</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 18 April 2024, at 16:35.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Lenovo_ThinkPad_P14s_(AMD)_Gen_4&amp;oldid=818960">https://wiki.archlinux.org/index.php?title=Lenovo_ThinkPad_P14s_(AMD)_Gen_4&amp;oldid=818960</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 14 October 2024, at 07:05.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

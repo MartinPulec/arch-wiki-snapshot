@@ -5,7 +5,7 @@
 <title>fscrypt - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -175,8 +175,22 @@
 			<span class="vector-toc-numb">7</span>Troubleshooting</div>
 		</a>
 		
+			<button aria-controls="toc-Troubleshooting-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon vector-icon--x-small mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle Troubleshooting subsection</span>
+			</button>
+		
 		<ul id="toc-Troubleshooting-sublist" class="vector-toc-list">
-		</ul>
+			<li id="toc-ext4:_Encrypted_files_outside_fscrypt_encrypted_directory" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#ext4:_Encrypted_files_outside_fscrypt_encrypted_directory">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">7.1</span>ext4: Encrypted files outside fscrypt encrypted directory</div>
+			</a>
+			
+			<ul id="toc-ext4:_Encrypted_files_outside_fscrypt_encrypted_directory-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
 	</li>
 	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
 		<a class="vector-toc-link" href="#See_also">
@@ -271,7 +285,7 @@
 <li><a href="../en/F2FS.html" title="F2FS">F2FS</a></li>
 </ul>
 </div>
-<p><b>fscrypt</b> is a tool for managing the native file encryption support of the <a href="../en/Ext4.html" title="Ext4">ext4</a>, <a href="../en/F2FS.html" title="F2FS">F2FS</a>, and <a href="https://en.wikipedia.org/wiki/UBIFS" class="extiw" title="wikipedia:UBIFS">UBIFS</a> <a href="../en/File_systems.html" title="File systems">file systems</a>.
+<p><a rel="nofollow" class="external text" href="https://github.com/google/fscrypt">fscrypt</a> is a tool for managing the native file encryption support of the <a href="../en/Ext4.html" title="Ext4">ext4</a>, <a href="../en/F2FS.html" title="F2FS">F2FS</a>, <a href="https://en.wikipedia.org/wiki/UBIFS" class="extiw" title="wikipedia:UBIFS">UBIFS</a>, <a href="https://en.wikipedia.org/wiki/CephFS" class="extiw" title="wikipedia:CephFS">CephFS</a> and <a href="https://en.wikipedia.org/wiki/Lustre_(file_system)" class="extiw" title="wikipedia:Lustre (file system)">Lustre</a> <a href="../en/File_systems.html" title="File systems">file systems</a>.
 </p>
 <p>The <a rel="nofollow" class="external text" href="https://docs.kernel.org/filesystems/fscrypt.html">underlying encryption mechanism in the kernel</a>, which is integrated into the above file systems, is also sometimes called "fscrypt". To avoid ambiguity, this article calls the kernel feature "Linux native file encryption". With Linux native file encryption, different directories can use different encryption keys. In an encrypted directory, all file contents, filenames, and symlinks are encrypted. All subdirectories are encrypted too. Non-filename metadata, such as timestamps, the sizes and number of files, and extended attributes, is not encrypted.
 </p>
@@ -301,7 +315,7 @@
 </div>
 <h2><span class="mw-headline" id="Preparations">Preparations</span></h2>
 <h3><span class="mw-headline" id="Kernel">Kernel</span></h3>
-<p>All <a href="../en/Kernel.html#Officially_supported_kernels" title="Kernel">officially supported kernels</a> support native file encryption on ext4, F2FS, and UBIFS.
+<p>All <a href="../en/Kernel.html#Officially_supported_kernels" title="Kernel">officially supported kernels</a> support native file encryption on ext4, F2FS, UBIFS and CephFS.
 </p>
 <p>Users of custom kernels, make sure <code>CONFIG_FS_ENCRYPTION=y</code> is set.
 </p>
@@ -400,7 +414,7 @@ $ cp -a -T <i>old_dir</i> <i>new_dir</i>
 $ find <i>old_dir</i> -type f -print0 | xargs -0 shred -n1 --remove=unlink
 $ rm -rf <i>old_dir</i>
 </pre>
-Beware that the original unencrypted files may still be forensically recoverable from disk even after being shredded and deleted, especially if using an SSD. It is better to encrypt data from the start.</div>
+Beware of moving files (command <i>mv</i>), instead of copying, because the unencrypted files will be easily recoverable. In some cases they may even be forensically recoverable from disk after being shredded and deleted, especially if using an SSD. It is better to encrypt data from the start.</div>
 <h2>
 <span id="Lock.2Funlock_a_directory"></span><span class="mw-headline" id="Lock/unlock_a_directory">Lock/unlock a directory</span>
 </h2>
@@ -489,6 +503,11 @@ WantedBy=shutdown.target</pre>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
 <p>See <a rel="nofollow" class="external free" href="https://github.com/google/fscrypt/blob/master/README.md#troubleshooting">https://github.com/google/fscrypt/blob/master/README.md#troubleshooting</a> for solutions to some common problems and also the <a rel="nofollow" class="external text" href="https://github.com/google/fscrypt/issues">open issues on Github</a>.
 </p>
+<h3><span class="mw-headline" id="ext4:_Encrypted_files_outside_fscrypt_encrypted_directory">ext4: Encrypted files outside fscrypt encrypted directory</span></h3>
+<p>Encrypted regular files from an unlocked fscrypt can be moved into an unencrypted directory. While possible, it is not well supported, normally not desired and could led to later issues: It may not be noticed by the user, unless the according protector is locked or worse: deleted. <a rel="nofollow" class="external free" href="https://github.com/google/fscrypt/issues/393">https://github.com/google/fscrypt/issues/393</a>
+</p>
+<p>If you want to decrypt files permanently, copy them from the unlocked fscrypt directory into a regular unencrypted directory.<a rel="nofollow" class="external autonumber" href="https://github.com/google/fscrypt/issues/393#issuecomment-1843936402">[1]</a>
+</p>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul>
 <li><a rel="nofollow" class="external text" href="https://github.com/google/fscrypt/blob/master/README.md">Documentation for the fscrypt tool</a></li>
@@ -512,8 +531,8 @@ WantedBy=shutdown.target</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Fscrypt&amp;oldid=812633">https://wiki.archlinux.org/index.php?title=Fscrypt&amp;oldid=812633</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 19 July 2024, at 09:59.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Fscrypt&amp;oldid=819903">https://wiki.archlinux.org/index.php?title=Fscrypt&amp;oldid=819903</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 30 October 2024, at 18:07.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

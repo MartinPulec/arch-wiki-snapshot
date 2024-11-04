@@ -5,7 +5,7 @@
 <title>dm-crypt/Encrypting an entire system - ArchWiki</title>
 <link rel="stylesheet" href="../../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -641,7 +641,7 @@ The following are examples of common scenarios of full system encryption with <i
 </p>
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Overview">Overview</span></h2>
-<p>Securing a root file system is where <i>dm-crypt</i> excels, feature and performance-wise. Unlike selectively encrypting non-root file systems, an encrypted root file system can conceal information such as which programs are installed, the usernames of all user accounts, and common data-leakage vectors such as <a href="../../en/Locate.html" class="mw-redirect" title="Mlocate">mlocate</a> and <code>/var/log/</code>. Furthermore, an encrypted root file system makes tampering with the system far more difficult, as everything except the <a href="../../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> and (usually) the kernel is encrypted.
+<p>Securing a root file system is where <i>dm-crypt</i> excels, feature and performance-wise. Unlike selectively encrypting non-root file systems, an encrypted root file system can conceal information such as which programs are installed, the usernames of all user accounts, and common data-leakage vectors such as <a href="../../en/Locate.html" title="Locate">locate</a> and <code>/var/log/</code>. Furthermore, an encrypted root file system makes tampering with the system far more difficult, as everything except the <a href="../../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> and (usually) the kernel is encrypted.
 </p>
 <p>All scenarios illustrated in the following share these advantages, other pros and cons differentiating them are summarized below:
 </p>
@@ -786,7 +786,8 @@ The following are examples of common scenarios of full system encryption with <i
 <li>Same disadvantages as the scenario the installation is based on (LVM on LUKS for this particular example)</li>
 <li>More complicated configuration</li>
 <li>Not supported by other boot loaders</li>
-<li>GRUB takes a long time to unlock LUKS, thus slowing down boot</li>
+<li>
+<a href="../../en/GRUB/Tips_and_tricks.html#Speeding_up_LUKS_decryption_in_GRUB" title="GRUB/Tips and tricks">GRUB takes a long time to unlock LUKS</a>, thus slowing down boot</li>
 </ul>
 </td>
 </tr>
@@ -815,15 +816,15 @@ The following are examples of common scenarios of full system encryption with <i
 <strong>Warning:</strong> 
 <ul>
 <li>In any scenario, never use file system repair software such as <a href="../../en/Fsck.html" title="Fsck">fsck</a> directly on an encrypted volume, or it will destroy any means to recover the key used to decrypt your files. Such tools must be used on the decrypted (opened) device instead.</li>
-<li>GRUB's support for LUKS2 is limited; see <a href="../../en/GRUB.html#Encrypted_/boot" title="GRUB">GRUB#Encrypted /boot</a> for details. Use LUKS2 with PBKDF2 (<code>cryptsetup luksFormat --pbkdf pbkdf2</code>) for partitions that GRUB will need to unlock.</li>
 <li>The Argon2 key derivation function has a high RAM usage per design, defaulting to 1 GiB per encrypted mapper. Machines with low RAM and/or multiple LUKS2 partitions unlocked in parallel may error on boot. See the <code>--pbkdf-memory</code> option to control memory usage.<a rel="nofollow" class="external autonumber" href="https://gitlab.com/cryptsetup/cryptsetup/issues/372">[1]</a>
 </li>
+<li>GRUB's support for LUKS2 is limited; see <a href="../../en/GRUB.html#Encrypted_/boot" title="GRUB">GRUB#Encrypted /boot</a> for details. Use LUKS2 with PBKDF2 (<code>cryptsetup luksFormat --pbkdf pbkdf2</code>) for partitions that GRUB will need to unlock.</li>
 </ul>
 </div>
 <h2><span class="mw-headline" id="LUKS_on_a_partition">LUKS on a partition</span></h2>
 <p>This example covers a full system encryption with <i>dm-crypt</i> + LUKS in a simple partition layout:
 </p>
-<pre style="white-space: pre !important; font-variant-ligatures: no-common-ligatures;">+-----------------------+------------------------+-----------------------+
+<pre style="white-space: pre !important; font-family:'DejaVu Sans Mono',monospace,monospace; font-variant-ligatures: no-common-ligatures;">+-----------------------+------------------------+-----------------------+
 | Boot partition        | LUKS encrypted root    | Optional free space   |
 |                       | partition              | for additional        |
 |                       |                        | partitions to be set  |
@@ -927,7 +928,7 @@ The following are examples of common scenarios of full system encryption with <i
 </div>
 <p>In this example, partitions are created respecting <a href="../../en/Systemd.html#GPT_partition_automounting" title="Systemd">systemd#GPT partition automounting</a>, there is no need for an fstab or crypttab file.
 </p>
-<pre style="white-space: pre !important; font-variant-ligatures: no-common-ligatures;">+-----------------------+---------------------------------+
+<pre style="white-space: pre !important; font-family:'DejaVu Sans Mono',monospace,monospace; font-variant-ligatures: no-common-ligatures;">+-----------------------+---------------------------------+
 | EFI system partition  | LUKS encrypted root partition   |
 |                       |                                 |
 |                       |                                 |
@@ -1018,7 +1019,7 @@ The following are examples of common scenarios of full system encryption with <i
 </p>
 <p>The disk layout in this example is:
 </p>
-<pre style="white-space: pre !important; font-variant-ligatures: no-common-ligatures;">+-----------------------------------------------------------------------+ +----------------+
+<pre style="white-space: pre !important; font-family:'DejaVu Sans Mono',monospace,monospace; font-variant-ligatures: no-common-ligatures;">+-----------------------------------------------------------------------+ +----------------+
 | Logical volume 1      | Logical volume 2      | Logical volume 3      | | Boot partition |
 |                       |                       |                       | |                |
 | [SWAP]                | /                     | /home                 | | /boot          |
@@ -1075,9 +1076,9 @@ The following are examples of common scenarios of full system encryption with <i
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> If a logical volume will be formatted with <a href="../../en/Ext4.html" title="Ext4">ext4</a>, leave at least 256 MiB free space in the volume group to allow using <span class="plainlinks archwiki-template-man" title="$ man 8 e2scrub"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/e2scrub.8">e2scrub(8)</a></span>. After creating the last volume with <code>-l 100%FREE</code>, this can be accomplished by reducing its size with <code>lvreduce -L -256M MyVolGroup/home</code>.</div>
-<pre># lvcreate -L 4G MyVolGroup -n swap
-# lvcreate -L 32G MyVolGroup -n root
-# lvcreate -l 100%FREE MyVolGroup -n home
+<pre># lvcreate -L 4G -n swap MyVolGroup
+# lvcreate -L 32G -n root MyVolGroup
+# lvcreate -l 100%FREE -n home MyVolGroup
 </pre>
 <p><a href="../../en/File_systems.html#Create_a_file_system" class="mw-redirect" title="Format">Format</a> your file systems on each logical volume. For example, using <a href="../../en/Ext4.html" title="Ext4">Ext4</a> for the root and home volumes:
 </p>
@@ -1115,7 +1116,7 @@ The following are examples of common scenarios of full system encryption with <i
 </p>
 <pre>HOOKS=(base <b>udev</b> autodetect microcode modconf kms <b>keyboard</b> <b>keymap</b> <b>consolefont</b> block <b>encrypt</b> <b>lvm2</b> filesystems fsck)
 </pre>
-<p>If using a systemd-based initramfs, instead add the <code>keyboard</code>, <code>sd-encrypt</code> and <code>lvm2</code> hooks. if you use a non-US console keymap or a non-default console font, additionally add the <code>sd-vconsole</code> hook.
+<p>If using a systemd-based initramfs, instead add the <code>keyboard</code>, <code>sd-encrypt</code> and <code>lvm2</code> hooks. If you use a non-US console keymap or a non-default console font, additionally add the <code>sd-vconsole</code> hook.
 </p>
 <pre>HOOKS=(base <b>systemd</b> autodetect microcode modconf kms <b>keyboard</b> <b>sd-vconsole</b> block <b>sd-encrypt</b> <b>lvm2</b> filesystems fsck)
 </pre>
@@ -1161,7 +1162,7 @@ The following are examples of common scenarios of full system encryption with <i
 <h3><span class="mw-headline" id="Preparing_the_disk_4">Preparing the disk</span></h3>
 <p>Partitioning scheme:
 </p>
-<pre style="white-space: pre !important; font-variant-ligatures: no-common-ligatures;">+----------------+-------------------------------------------------------------------------------------------------+
+<pre style="white-space: pre !important; font-family:'DejaVu Sans Mono',monospace,monospace; font-variant-ligatures: no-common-ligatures;">+----------------+-------------------------------------------------------------------------------------------------+
 | Boot partition | dm-crypt plain encrypted volume | LUKS encrypted volume         | LUKS encrypted volume         |
 |                |                                 |                               |                               |
 | /boot          | [SWAP]                          | /                             | /home                         |
@@ -1251,9 +1252,7 @@ UUID=<i>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</i> /boot ext4   defaults  0 2
 <p>Since this scenario uses LVM as the primary and dm-crypt as secondary mapper, each encrypted logical volume requires its own encryption. Yet, unlike the temporary file systems configured with volatile encryption above, the logical volume for <code>/home</code> should of course be persistent. The following assumes you have rebooted into the installed system, otherwise you have to adjust paths.
 To save on entering a second passphrase at boot, a <a href="../../en/Dm-crypt/Device_encryption.html#Keyfiles" title="Dm-crypt/Device encryption">keyfile</a> is created:
 </p>
-<pre># mkdir -m 700 /etc/cryptsetup-keys.d
-# dd bs=512 count=4 if=/dev/random of=/etc/cryptsetup-keys.d/home.key iflag=fullblock
-# chmod 600 /etc/cryptsetup-keys.d/home.key
+<pre># dd bs=512 count=4 if=/dev/random iflag=fullblock | install -m 0600 /dev/stdin /etc/cryptsetup-keys.d/home.key
 </pre>
 <p>The logical volume is encrypted with it:
 </p>
@@ -1288,7 +1287,7 @@ To save on entering a second passphrase at boot, a <a href="../../en/Dm-crypt/De
 /dev/sdb = second SSD
 /dev/sdc = HDD
 </pre>
-<pre style="white-space: pre !important; font-variant-ligatures: no-common-ligatures;">+---------------------+---------------------------+---------------------------+ +---------------------+---------------------------+---------------------------+ +---------------------------+
+<pre style="white-space: pre !important; font-family:'DejaVu Sans Mono',monospace,monospace; font-variant-ligatures: no-common-ligatures;">+---------------------+---------------------------+---------------------------+ +---------------------+---------------------------+---------------------------+ +---------------------------+
 | BIOS boot partition | EFI system partition      | LUKS encrypted volume     | | BIOS boot partition | EFI system partition      | LUKS encrypted volume     | | LUKS encrypted volume     |
 |                     |                           |                           | |                     |                           |                           | |                           |
 |                     | /efi                      | /                         | |                     | /efi                      | /                         | | /data                     |
@@ -1339,9 +1338,9 @@ To save on entering a second passphrase at boot, a <a href="../../en/Dm-crypt/De
 <h3><span class="mw-headline" id="Preparing_the_block_devices">Preparing the block devices</span></h3>
 <p>As explained in <a href="../../en/Dm-crypt/Drive_preparation.html" title="Dm-crypt/Drive preparation">dm-crypt/Drive preparation</a>, the devices are wiped with random data utilizing <code>/dev/zero</code> and a crypt device with a random key. Alternatively, you could use <code>dd</code> with <code>/dev/random</code> or <code>/dev/urandom</code>, though it will be much slower.
 </p>
-<pre># cryptsetup open --type plain --sector-size 4096 --key-file /dev/random /dev/md/root container
-# dd if=/dev/zero of=/dev/mapper/container bs=1M status=progress
-# cryptsetup close container
+<pre># cryptsetup open --type plain --sector-size 4096 --key-file /dev/urandom /dev/md/root to_be_wiped
+# dd if=/dev/zero of=/dev/mapper/to_be_wiped bs=1M status=progress
+# cryptsetup close to_be_wiped
 </pre>
 <p>And repeat above for the HDD (<code>/dev/sdc1</code> in this example).
 </p>
@@ -1427,7 +1426,7 @@ HOOKS=(base udev autodetect microcode modconf kms <b>keyboard</b> <b>keymap</b> 
 <h2><span class="mw-headline" id="Plain_dm-crypt">Plain dm-crypt</span></h2>
 <p>Contrary to LUKS, dm-crypt <i>plain</i> mode does not require a header on the encrypted device: this scenario exploits this feature to set up a system on an unpartitioned, encrypted disk that will be indistinguishable from a disk filled with random data, which could allow <a href="https://en.wikipedia.org/wiki/Deniable_encryption" class="extiw" title="wikipedia:Deniable encryption">deniable encryption</a>. See also <a href="https://en.wikipedia.org/wiki/Disk_encryption#Full_disk_encryption" class="extiw" title="wikipedia:Disk encryption">wikipedia:Disk encryption#Full disk encryption</a>.
 </p>
-<p>Note that if full-disk encryption is not required, the methods using LUKS described in the sections above are better options for both system encryption and encrypted partitions. LUKS features like key management with multiple passphrases/key-files or re-encrypting a device in-place are unavailable with <i>plain</i> mode.
+<p>Note that if full disk encryption is not required, the methods using LUKS described in the sections above are better options for both system encryption and encrypted partitions. LUKS features like key management with multiple passphrases/key-files or re-encrypting a device in-place are unavailable with <i>plain</i> mode.
 </p>
 <p><i>Plain</i> dm-crypt encryption can be more resilient to damage than LUKS, because it does not rely on an encryption master-key which can be a single-point of failure if damaged. However, using <i>plain</i> mode also requires more manual configuration of encryption options to achieve the same cryptographic strength. See also <a href="../../en/Data-at-rest_encryption.html#Cryptographic_metadata" title="Data-at-rest encryption">Data-at-rest encryption#Cryptographic metadata</a>. Using <i>plain</i> mode could also be considered if concerned with the problems explained in <a href="../../en/Dm-crypt/Specialties.html#Discard/TRIM_support_for_solid_state_drives_(SSD)" title="Dm-crypt/Specialties">dm-crypt/Specialties#Discard/TRIM support for solid state drives (SSD)</a>.
 </p>
@@ -1448,7 +1447,7 @@ HOOKS=(base udev autodetect microcode modconf kms <b>keyboard</b> <b>keymap</b> 
 </ul>
 <p>The disk layout is:
 </p>
-<pre style="white-space: pre !important; font-variant-ligatures: no-common-ligatures;">+----------------------+----------------------+----------------------+ +----------------+ +----------------+
+<pre style="white-space: pre !important; font-family:'DejaVu Sans Mono',monospace,monospace; font-variant-ligatures: no-common-ligatures;">+----------------------+----------------------+----------------------+ +----------------+ +----------------+
 | Logical volume 1     | Logical volume 2     | Logical volume 3     | | Boot device    | | Encryption key |
 |                      |                      |                      | |                | | file storage   |
 | /                    | [SWAP]               | /home                | | /boot          | | (unpartitioned |
@@ -1489,7 +1488,12 @@ HOOKS=(base udev autodetect microcode modconf kms <b>keyboard</b> <b>keymap</b> 
 <pre># fdisk -l
 </pre>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> A simpler alternative to using LVM, advocated in the cryptsetup FAQ for cases where LVM is not necessary, is to just create a file system on the entirety of the mapped dm-crypt device.</div>
+<strong>Tip:</strong> 
+<ul>
+<li>A simpler alternative to using LVM, advocated in the cryptsetup FAQ for cases where LVM is not necessary, is to just create a file system on the entirety of the mapped dm-crypt device.</li>
+<li>If a logical volume will be formatted with <a href="../../en/Ext4.html" title="Ext4">ext4</a>, leave at least 256 MiB free space in the volume group to allow using <span class="plainlinks archwiki-template-man" title="$ man 8 e2scrub"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/e2scrub.8">e2scrub(8)</a></span>. After creating the last volume with <code>-l 100%FREE</code>, this can be accomplished by reducing its size with <code>lvreduce -L -256M MyVolGroup/home</code>.</li>
+</ul>
+</div>
 <p>Next, we setup <a href="../../en/LVM.html" title="LVM">LVM</a> logical volumes on the mapped device. See <a href="../../en/Install_Arch_Linux_on_LVM.html" title="Install Arch Linux on LVM">Install Arch Linux on LVM</a> for further details:
 </p>
 <pre># pvcreate /dev/mapper/cryptlvm
@@ -1508,7 +1512,7 @@ HOOKS=(base udev autodetect microcode modconf kms <b>keyboard</b> <b>keymap</b> 
 # swapon /dev/MyVolGroup/swap
 </pre>
 <h3><span class="mw-headline" id="Preparing_the_boot_partition_4">Preparing the boot partition</span></h3>
-<p>The <code>/boot</code> partition can be installed on the standard vfat partition of a USB stick, if required. But if manual partitioning is needed, then a small 1 GiB partition is all that is required. Create the partition using a <a href="../../en/Partitioning.html#Partitioning_tools" title="Partitioning">partitioning tool</a> of your choice.
+<p>The <code>/boot</code> partition can be a typical FAT32 formatted partition on a USB stick, if required. But if manual partitioning is needed, then a small 1 GiB partition is all that is required. Create the partition using a <a href="../../en/Partitioning.html#Partitioning_tools" title="Partitioning">partitioning tool</a> of your choice.
 </p>
 <p>Create a <a href="../../en/File_systems.html" class="mw-redirect" title="File system">file system</a> on the partition intended for <code>/boot</code>:
 </p>
@@ -1559,7 +1563,7 @@ UUID=<i>XXXX-XXXX</i> /boot vfat <b>noauto</b>,rw,noatime 0 2</pre>
 </p>
 <p>The disk layout in this example is:
 </p>
-<pre style="white-space: pre !important; font-variant-ligatures: no-common-ligatures;">+---------------------+----------------------+----------------------+----------------------+----------------------+
+<pre style="white-space: pre !important; font-family:'DejaVu Sans Mono',monospace,monospace; font-variant-ligatures: no-common-ligatures;">+---------------------+----------------------+----------------------+----------------------+----------------------+
 | BIOS boot partition | EFI system partition | Logical volume 1     | Logical volume 2     | Logical volume 3     |
 |                     |                      |                      |                      |                      |
 |                     | /efi                 | /                    | [SWAP]               | /home                |
@@ -1628,6 +1632,8 @@ sda                   8:0      0   200G  0 disk
     ├─MyVolGroup-root 254:2    0    32G  0 lvm   /mnt
     └─MyVolGroup-home 254:3    0    60G  0 lvm   /mnt/home
 </pre>
+<p>Now at this point resume the common <a href="../../en/Installation_guide.html#Installation" title="Installation guide">Installation guide#Installation</a> steps. Return to this page to customize the <a href="../../en/Installation_guide.html#Initramfs" title="Installation guide">Initramfs</a> and <a href="../../en/Installation_guide.html#Boot_loader" title="Installation guide">Boot loader</a> steps.
+</p>
 <h3><span class="mw-headline" id="Configuring_mkinitcpio_6">Configuring mkinitcpio</span></h3>
 <p>Make sure the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lvm2">lvm2</a></span> package is <a href="../../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">installed</a>.
 </p>
@@ -1682,9 +1688,7 @@ sda                   8:0      0   200G  0 disk
 </p>
 <p>First create a keyfile and add it as LUKS key:
 </p>
-<pre># mkdir -m 700 /etc/cryptsetup-keys.d
-# dd bs=512 count=4 if=/dev/random of=/etc/cryptsetup-keys.d/cryptlvm.key iflag=fullblock
-# chmod 600 /etc/cryptsetup-keys.d/cryptlvm.key
+<pre># dd bs=512 count=4 if=/dev/random iflag=fullblock | install -m 0600 /dev/stdin /etc/cryptsetup-keys.d/cryptlvm.key
 # cryptsetup -v luksAddKey /dev/sda3 /etc/cryptsetup-keys.d/cryptlvm.key
 </pre>
 <p>Add the keyfile to the initramfs image:
@@ -1767,8 +1771,8 @@ normal</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/Encrypting_an_entire_system&amp;oldid=812936">https://wiki.archlinux.org/index.php?title=Dm-crypt/Encrypting_an_entire_system&amp;oldid=812936</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 28 July 2024, at 08:53.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/Encrypting_an_entire_system&amp;oldid=817789">https://wiki.archlinux.org/index.php?title=Dm-crypt/Encrypting_an_entire_system&amp;oldid=817789</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 4 October 2024, at 14:41.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

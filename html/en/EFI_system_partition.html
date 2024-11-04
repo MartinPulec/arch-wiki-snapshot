@@ -5,7 +5,7 @@
 <title>EFI system partition - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -512,7 +512,7 @@ nls_ascii
 <strong>Note:</strong> 
 <ul>
 <li>
-<code>/efi</code> is a replacement<a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/pull/3757#issuecomment-234290236">[6]</a> for the historical and now discouraged ESP mountpoint <code>/boot/efi</code>.</li>
+<code>/efi</code> is a replacement<a rel="nofollow" class="external autonumber" href="https://uapi-group.org/specifications/specs/boot_loader_specification/#mount-points">[6]</a><a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/pull/3757#issuecomment-234290236">[7]</a> for the historical and now discouraged ESP mountpoint <code>/boot/efi</code>.</li>
 <li>The <code>/efi</code> directory is not available by default, you will need to first <a href="../en/Help:Reading.html#Append,_add,_create,_edit" class="mw-redirect" title="Create">create</a> it before mounting the ESP to it.</li>
 </ul>
 </div>
@@ -532,7 +532,7 @@ nls_ascii
 <p>Instead of mounting the ESP itself to <code>/boot</code>, you can mount a directory of the ESP to <code>/boot</code> using a bind <a href="../en/File_systems.html#Mount_a_file_system" class="mw-redirect" title="Mount">mount</a> (see <span class="plainlinks archwiki-template-man" title="$ man 8 mount"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/mount.8">mount(8)</a></span>). This allows <a href="../en/Pacman.html" title="Pacman">pacman</a> to update the kernel directly while keeping the ESP organized to your liking.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> This requires a <a href="../en/FAT.html#Kernel_configuration" title="FAT">kernel</a> and <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> compatible with FAT32. This is not an issue for a regular Arch install, but could be problematic for other distributions (namely those that require symlinks in <code>/boot/</code>). See the forum post <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?pid=1331867#p1331867">[7]</a>.</div>
+<strong>Note:</strong> This requires a <a href="../en/FAT.html#Kernel_configuration" title="FAT">kernel</a> and <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> compatible with FAT32. This is not an issue for a regular Arch install, but could be problematic for other distributions (namely those that require symlinks in <code>/boot/</code>). See the forum post <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?pid=1331867#p1331867">[8]</a>.</div>
 <p>Just like in <a href="#Alternative_mount_points">#Alternative mount points</a>, copy all boot files to a directory on your ESP, but mount the ESP <b>outside</b> <code>/boot</code>. Then bind mount the directory:
 </p>
 <pre># mount --bind <i>esp</i>/EFI/arch /boot
@@ -700,9 +700,9 @@ exit 0</pre>
 <p>In such cases, it may be a good idea to create a new, larger EFI system partition to prevent running out of space on it.
 </p>
 <h4><span class="mw-headline" id="Free_up_space_for_a_new_partition_in_Windows">Free up space for a new partition in Windows</span></h4>
-<p>In Windows, partitions can be either managed graphically with Disk Management (<code>diskmgmr.msc</code>) or from the command line with the <code>diskpart.exe</code> utility.
+<p>In Windows, partitions can be either managed graphically with Disk Management (<code>diskmgmt.msc</code>) or from the command line with the <code>diskpart.exe</code> utility.
 </p>
-<p>Run <code>diskmgmr.msc</code> as Administrator.
+<p>Run <code>diskmgmt.msc</code> as Administrator.
 </p>
 <ol>
 <li>Right click on the "(C:)" partition (the only one of the default Windows-created partitions which can be resized online) and select <i>Shrink Volume...</i>.</li>
@@ -819,7 +819,7 @@ Device       Start       End   Sectors  Size Type
 </p>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
 <h3><span class="mw-headline" id="ESP_on_software_RAID1">ESP on software RAID1</span></h3>
-<p>It is possible to make the ESP part of a RAID1 array, but doing so brings the risk of data corruption, and further considerations need to be taken when creating the ESP. See <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?pid=1398710#p1398710">[8]</a> and <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?pid=1390741#p1390741">[9]</a> for details and <a rel="nofollow" class="external text" href="https://outflux.net/blog/archives/2018/04/19/uefi-booting-and-raid1/">UEFI booting and RAID1</a> for an in-depth guide with a solution.
+<p>It is possible to make the ESP part of a RAID1 array, but doing so brings the risk of data corruption, and further considerations need to be taken when creating the ESP. See <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?pid=1398710#p1398710">[9]</a> and <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?pid=1390741#p1390741">[10]</a> for details and <a rel="nofollow" class="external text" href="https://outflux.net/blog/archives/2018/04/19/uefi-booting-and-raid1/">UEFI booting and RAID1</a> for an in-depth guide with a solution.
 </p>
 <p>The key part is to use <code>--metadata 1.0</code> in order to keep the RAID metadata at the end of the partition, otherwise the firmware will not be able to access it:
 </p>
@@ -848,8 +848,8 @@ Device       Start       End   Sectors  Size Type
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=EFI_system_partition&amp;oldid=811269">https://wiki.archlinux.org/index.php?title=EFI_system_partition&amp;oldid=811269</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 26 June 2024, at 07:53.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=EFI_system_partition&amp;oldid=815933">https://wiki.archlinux.org/index.php?title=EFI_system_partition&amp;oldid=815933</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 6 September 2024, at 09:33.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

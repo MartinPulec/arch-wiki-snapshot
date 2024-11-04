@@ -5,7 +5,7 @@
 <title>Data-at-rest encryption (Português) - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -322,7 +322,7 @@
 				
 				<li class="interlanguage-link interwiki-en mw-list-item"><a href="../en/Data-at-rest_encryption.html" title="Data-at-rest encryption – English" lang="en" hreflang="en" class="interlanguage-link-target"><span>English</span></a></li>
 <li class="interlanguage-link interwiki-es mw-list-item"><a href="../es/Data-at-rest_encryption.html" title="Data-at-rest encryption – español" lang="es" hreflang="es" class="interlanguage-link-target"><span>Español</span></a></li>
-<li class="interlanguage-link interwiki-ja mw-list-item"><a href="https://wiki.archlinux.jp/index.php/%E3%83%87%E3%82%A3%E3%82%B9%E3%82%AF%E6%9A%97%E5%8F%B7%E5%8C%96" title="ディスク暗号化 – 日本語" lang="ja" hreflang="ja" class="interlanguage-link-target"><span>日本語</span></a></li>
+<li class="interlanguage-link interwiki-ja mw-list-item"><a href="https://wiki.archlinux.jp/index.php/%E4%BF%9D%E5%AD%98%E3%83%87%E3%83%BC%E3%82%BF%E6%9A%97%E5%8F%B7%E5%8C%96" title="保存データ暗号化 – 日本語" lang="ja" hreflang="ja" class="interlanguage-link-target"><span>日本語</span></a></li>
 <li class="interlanguage-link interwiki-ru mw-list-item"><a href="../ru/Data-at-rest_encryption.html" title="Data-at-rest encryption – русский" lang="ru" hreflang="ru" class="interlanguage-link-target"><span>Русский</span></a></li>
 <li class="interlanguage-link interwiki-zh-hans mw-list-item"><a href="https://wiki.archlinuxcn.org/wiki/Data-at-rest_encryption" title="Data-at-rest encryption – 中文（简体）" lang="zh-Hans" hreflang="zh-Hans" class="interlanguage-link-target"><span>中文（简体）</span></a></li>
 			</ul>
@@ -423,7 +423,7 @@ Em sistemas de operacionais modernos, muitos processos podem fazer cache e guard
 <ul><li>(soluções potenciais: evite tais programas; monte <code>/tmp</code> dentro de um <a href="../en/Tmpfs.html" class="mw-redirect" title="Ramdisk">ramdisk</a>)</li></ul>
 </li>
 <li>
-<code>/var</code> (arquivos de log e bancos de dados e semelhantes; por exemplo, <a href="../pt/Mlocate.html" title="Mlocate (Português)">mlocate</a> guarda um índice de todos os arquivos em <code>/var/lib/mlocate/mlocate.db</code>)</li>
+<code>/var</code> (arquivos de log e bancos de dados e semelhantes; por exemplo, <a href="../pt/Locate.html" title="Locate (Português)">locate</a> guarda um índice de todos os arquivos em <code>/var/lib/plocate/plocate.db</code>)</li>
 </ul></dd></dl>
 <p>A solução é criptografar ambos o sistema e dados do usuário, prevenindo acesso físico não autorizado de dados privados. No entanto, isto vem com a desvantagem de abrir partes criptografadas do disco durante a inicialização. Outro benefício é que isto complica a instalação de malware como <a href="https://en.wikipedia.org/wiki/Keystroke_logging" class="extiw" title="wikipedia:Keystroke logging">keyloggers</a> ou rootkits para alguém com acesso físico.
 </p>
@@ -1546,7 +1546,7 @@ Para satisfazer esse objetivo, limpar o disco com bytes randômicos de alta qual
 </p>
 <p>Quando o sistema operacional ou um programa pede um certo fragmento de dados do dispositivo de bloco/arquivo, todos os setores (ou setor) que possuem os dados serão lidos do disco, descriptografados, e temporariamente guardados na memória:
 </p>
-<pre style="white-space: pre !important; font-variant-ligatures: no-common-ligatures;">           ╔═══════╗
+<pre style="white-space: pre !important; font-family:'DejaVu Sans Mono',monospace,monospace; font-variant-ligatures: no-common-ligatures;">           ╔═══════╗
   setor 1  ║"???.."║
            ╠═══════╣         ╭┈┈┈┈┈╮
   setor 2  ║"???.."║         ┊chave┊
@@ -1592,7 +1592,7 @@ Para satisfazer esse objetivo, limpar o disco com bytes randômicos de alta qual
 </p>
 <p>Uma configuração comum é aplicar a chamada "key stretching"(alongamento de chave) para a senha (com a "key derivation function"), e usar a chave resultante para descriptografar a chave mestre (que previamente foi guardada em forma criptografada):
 </p>
-<pre style="white-space: pre !important; font-variant-ligatures: no-common-ligatures;"> ╭┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈╮                                ╭┈┈┈┈┈┈┈┈┈┈┈╮
+<pre style="white-space: pre !important; font-family:'DejaVu Sans Mono',monospace,monospace; font-variant-ligatures: no-common-ligatures;"> ╭┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈╮                                ╭┈┈┈┈┈┈┈┈┈┈┈╮
  ┊senha de montagem ┊━━━━━⎛função de derivação ⎞━━━▶┊   chave   ┊
  ╰┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈╯ ,───⎝ de chave           ⎠     ╰┈┈┈┈┈┬┈┈┈┈┈╯
  ╭──────╮            ╱                                     │
@@ -1616,7 +1616,7 @@ Também é utilizado o aglomerado de dados, chamado "<b>salt</b>", como um argum
 <p>Apesar que normalmente não é usada para des-/criptografar os dados do disco diretamente.
 Por exemplo, no caso da encriptação empilhada no sistema de arquivos, cada arquivo pode ser automaticamente atribuído para sua própria chave de encriptação. Quando o arquivo é lido/modificado, esta primeiro precisa ser descriptografada usando a chave mestre, antes que esta possa ser usada para de-/criptografar o conteúdo do arquivo:
 </p>
-<pre style="white-space: pre !important; font-variant-ligatures: no-common-ligatures;">                                     ╭┈┈┈┈┈┈┈┈┈┈┈┈╮
+<pre style="white-space: pre !important; font-family:'DejaVu Sans Mono',monospace,monospace; font-variant-ligatures: no-common-ligatures;">                                     ╭┈┈┈┈┈┈┈┈┈┈┈┈╮
                                      ┊chave mestre┊
    arquivo no disco:                 ╰┈┈┈┈┈┬┈┈┈┈┈┈╯
   ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐              │
@@ -1717,7 +1717,7 @@ Por exemplo, no caso da encriptação empilhada no sistema de arquivos, cada arq
 </p>
 <p>O modo de operação mais básico (e comum) usado em prática é o "<i>cipher-block chaining (CBC)</i>". Antes da encriptação de um setor com este modo, cada bloco de dados plaintext é combinado em uma forma matemática com o ciphertext do bloco anterior. Para o primeiro bloco, já que este não tem um ciphertext anterior, um especial bloco de dados pré-gerado guardado junto com os metadados criptográficos, e chamado de "<b>initialization vector (IV)</b>"(vetor de inicialização), é usado:
 </p>
-<pre style="white-space: pre !important; font-variant-ligatures: no-common-ligatures;">                                   ╭──────────────╮
+<pre style="white-space: pre !important; font-family:'DejaVu Sans Mono',monospace,monospace; font-variant-ligatures: no-common-ligatures;">                                   ╭──────────────╮
                                    │vetor de      │
                                    │inicialização │
                                    ╰────────┬─────╯
@@ -1821,8 +1821,8 @@ Alguns também podem garantir autentificação dos dados criptografados (exemplo
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Data-at-rest_encryption_(Portugu%C3%AAs)&amp;oldid=813286">https://wiki.archlinux.org/index.php?title=Data-at-rest_encryption_(Português)&amp;oldid=813286</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 30 July 2024, at 06:03.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Data-at-rest_encryption_(Portugu%C3%AAs)&amp;oldid=816241">https://wiki.archlinux.org/index.php?title=Data-at-rest_encryption_(Português)&amp;oldid=816241</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 11 September 2024, at 08:40.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

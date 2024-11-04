@@ -5,7 +5,7 @@
 <title>SANE - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -357,7 +357,7 @@
 <p>Many frontends exist for SANE, a non-exhaustive list of which can be found on the <a rel="nofollow" class="external text" href="http://www.sane-project.org/sane-frontends.html">SANE project website</a>.
 </p>
 <ul><li>
-<b><a href="https://en.wikipedia.org/wiki/Simple_Scan" class="extiw" title="wikipedia:Simple Scan">Simple Scan</a></b> — Simplified GUI that is intended to be easier to use and better integrated into the <a href="../en/GNOME.html" title="GNOME">GNOME</a> desktop than XSane. Part of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/groups/x86_64/gnome/">gnome</a></span>.</li></ul>
+<b><a href="https://en.wikipedia.org/wiki/Simple_Scan" class="extiw" title="wikipedia:Simple Scan">GNOME Document Scanner</a></b> — Simplified GUI that is intended to be easier to use and better integrated into the <a href="../en/GNOME.html" title="GNOME">GNOME</a> desktop than XSane. Part of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/groups/x86_64/gnome/">gnome</a></span>.</li></ul>
 <dl><dd>
 <a rel="nofollow" class="external free" href="https://apps.gnome.org/SimpleScan/">https://apps.gnome.org/SimpleScan/</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=simple-scan">simple-scan</a></span>
 </dd></dl>
@@ -374,7 +374,7 @@
 <ul><li>
 <b><a href="https://en.wikipedia.org/wiki/Scanner_Access_Now_Easy#XSane" class="extiw" title="wikipedia:Scanner Access Now Easy">XSane</a></b> — Full-featured GTK-based frontend, looking a bit old but providing extended functionalities.</li></ul>
 <dl><dd>
-<a rel="nofollow" class="external free" href="http://www.xsane.org/">http://www.xsane.org/</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xsane">xsane</a></span>
+<a rel="nofollow" class="external free" href="http://www.xsane.org/">http://www.xsane.org/</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/xsane/">xsane</a></span><sup><small>AUR</small></sup>
 </dd></dl>
 <ul><li>
 <b>Scantailor</b> — A scanning application that works with projects and allow live editing during the scanning process.</li></ul>
@@ -508,7 +508,7 @@ stratus
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">#epson2
 epson
 </pre>
-<p>It may also be possible that the independent <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/iscan/">iscan</a></span><sup><small>AUR</small></sup> <code>epkowa</code> backend interferes with your <code>snapscan</code> backend (epson scanners). You may get this error right after using the <code>scanimage -L</code> command. Starting the scanner app (like <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xsane">xsane</a></span>) twice can also solve the problem. Otherwise check your <code>/etc/sane.d/epkowa.conf</code> for wrong configurations or remove the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/iscan/">iscan</a></span><sup><small>AUR</small></sup> package.
+<p>It may also be possible that the independent <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/iscan/">iscan</a></span><sup><small>AUR</small></sup> <code>epkowa</code> backend interferes with your <code>snapscan</code> backend (epson scanners). You may get this error right after using the <code>scanimage -L</code> command. Starting the scanner app (like <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/xsane/">xsane</a></span><sup><small>AUR</small></sup>) twice can also solve the problem. Otherwise check your <code>/etc/sane.d/epkowa.conf</code> for wrong configurations or remove the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/iscan/">iscan</a></span><sup><small>AUR</small></sup> package.
 </p>
 <h4>
 <span id="Communication_via_xHCI_not_working_.28older_scanner_models.29"></span><span class="mw-headline" id="Communication_via_xHCI_not_working_(older_scanner_models)">Communication via xHCI not working (older scanner models)</span>
@@ -539,6 +539,8 @@ device `v4l:/dev/video0' is a Noname Logitech Webcam C925e virtual device
 device `escl:http://192.168.1.2:80' is a Brother DCP-L2550DW series adf,platen scanner
 </pre>
 <p>The parts between the <code>`</code> and the <code>:</code> in the output indicate the driver for the device. For example, if only want to use the Brother scanner and not the <a href="../en/Webcam_setup.html" class="mw-redirect" title="Webcam">webcam</a> or the generic scanner driver, you can comment out everything but the <code>brother4</code> driver in <code>/etc/sane.d/dll.conf</code>.
+</p>
+<p>Another reason for slow startup issues might be in the driver-specific configuration file at <code>/etc/sane.d/<i>backend-name</i>.conf</code>; as an example, it has been reported that commenting out <code>net autodiscovery</code> in <code>/etc/sane.d/epson2.conf</code> solves these slow startup issues for Epson scanners using USB.
 </p>
 <h3><span class="mw-headline" id="Device_busy">Device busy</span></h3>
 <div class="noprint archwiki-template-message">
@@ -644,8 +646,8 @@ usb 0x03f0 0x2504
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=SANE&amp;oldid=813459">https://wiki.archlinux.org/index.php?title=SANE&amp;oldid=813459</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 30 July 2024, at 16:29.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=SANE&amp;oldid=818908">https://wiki.archlinux.org/index.php?title=SANE&amp;oldid=818908</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 13 October 2024, at 11:32.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

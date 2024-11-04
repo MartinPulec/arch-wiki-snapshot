@@ -5,7 +5,7 @@
 <title>Kdump - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -113,6 +113,15 @@
 			</a>
 			
 			<ul id="toc-Saving_the_crashed_kernel_memory-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Early_kdump_using_mkinitcpio" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Early_kdump_using_mkinitcpio">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">1.2.6</span>Early kdump using mkinitcpio</div>
+			</a>
+			
+			<ul id="toc-Early_kdump_using_mkinitcpio-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -225,6 +234,9 @@
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Alternatives_to_setup_kdump">Alternatives to setup kdump</span></h2>
 <h3><span class="mw-headline" id="The_automatic_way:_kdumpst">The automatic way: kdumpst</span></h3>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> kdumpst implicitly depends on GRUB and does not work with other boot loaders, see <a rel="nofollow" class="external free" href="https://gitlab.freedesktop.org/gpiccoli/kdumpst/-/issues/21">https://gitlab.freedesktop.org/gpiccoli/kdumpst/-/issues/21</a>
+</div>
 <p>The <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/kdumpst/">kdumpst</a></span><sup><small>AUR</small></sup> tool is an automatic way for loading kdump. It's highly customizable - it defaults to another method of log collecting (called pstore), but can be easily set to use kdump (a matter of setting <code>USE_PSTORE_RAM=0</code> on <code>/usr/share/kdumpst.d/00-default</code>. The tool also fallbacks to kdump in case pstore RAM region isn't available.
 </p>
 <p>After installing kdumpst, one can check the journal and the following message means kdump is loaded: <code>kdumpst: panic kexec loaded successfully</code>. If a kernel crash happens, the kdump will be collected and in the subsequent boot, a message indicates the success of the operation: <code>kdumpst: logs saved in "/var/crash/kdumpst/logs"</code>. In that folder, the user will find a lightweight zip blob, that included a dmesg plus some extra data. The vmcore itself is saved on <code>/var/crash/kdumpst/crash</code>. For questions/issues, the #kdump IRC channel at OFTC could be used, or open issues in the kdumpst repository.
@@ -273,7 +285,7 @@ CONFIG_PROC_VMCORE=y</pre>
 </p>
 <p>Depending on the machine and how the kdump kernel was built, something from <i>128M</i> to <i>256M</i> is usually enough - it worth trying after setting everything to check if it succeeds. Note that the reserved memory is unavailable to the system kernel.
 </p>
-<p>Reboot into your system kernel.  To make sure that the kernel is booted with correct options please check the <code>/proc/cmdline</code> file and look the file <code>/sys/kernel/kexec_crash_size</code> to see if the memory was indeed pre-reserved (sometimes it's possible , though rare, that such memory reservation fails - if it happens, check the <code>dmesg</code> to get more information).
+<p>Reboot into your system kernel.  To make sure that the kernel is booted with correct options please check the files <code>/proc/cmdline</code> and <code>/sys/kernel/kexec_crash_size</code> to see if the memory was indeed pre-reserved (sometimes it's possible , though rare, that such memory reservation fails - if it happens, check the <code>dmesg</code> to get more information).
 </p>
 <p>Next you need to tell <a href="../en/Kexec.html" title="Kexec">Kexec</a> that you want to use your kdump kernel. Specify your kernel, initramfs file, root device and other parameters if needed:
 </p>
@@ -320,6 +332,10 @@ If you want to test crash then you can use <i>sysrq</i> for this. </p>
 </p>
 <pre># makedumpfile -z -d 31 /proc/vmcore /root/vmcore.crashdump_compressed
 </pre>
+<p>You can also save out the dmesg log from the crashed kernel using this command:
+</p>
+<pre># makedumpfile --dump-dmesg /proc/vmcore /root/vmcore.dmesg
+</pre>
 <p>The following systemd service can be used to automatically save the crash dumps and reboot into the system kernel again:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/kdump-save.service</pre>
@@ -354,6 +370,55 @@ ExecStop=/usr/bin/kexec -p -u
 [Install]
 WantedBy=multi-user.target
 </pre>
+<h4><span class="mw-headline" id="Early_kdump_using_mkinitcpio">Early kdump using mkinitcpio</span></h4>
+<p>You might encounter a situation where the kernel crashes before the systemd service can be started.  In this case, it might be helpful to run kexec as a mkinitcpio hook rather than a service.
+</p>
+<p>First make a copy of your initramfs.  This will be used to run the crash kernel.
+</p>
+<pre># sudo cp /boot/initramfs-linux.img /boot/initramfs-linux-crash.img
+</pre>
+<p>Next, create the mkinitcpio install file.  This builds allows us to build the main initramfs with a copy of the crash initramfs for the crash kernel and the 
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/initcpio/install/kdump</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">build() {
+        add_binary kexec
+        add_file /boot/initramfs-linux-crash.img /crash/initramfs.img
+        add_file /boot/vmlinuz-linux /crash/vmlinuz
+        add_runscript
+}
+
+help() {
+        cat &lt;&lt;HELPEOF
+Installs the crash kernel on boot
+HELPEOF
+}
+</pre>
+<p>Next, make the mkinitcpio hook file.  This runs kexec as an earlyhook, hopefully before anything in the kernel can crash.  An important note here is that we run the kernel in emergency mode, because running the kernel in rescue or normal might might just lead to another the same crash happening in the crash kernel.
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/initcpio/hook/kdump</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">run_earlyhook() {
+	msg 'Loading crash kernel..'
+	if [ -e /crash/vmlinuz ]; then
+		if [ -e /crash/initramfs.img ]; then
+			kexec -p /crash/vmlinuz --initrd=/crash/initramfs.img --append="root=[root-device] irqpoll nr_cpus=1 reset_devices emergency"
+		else
+			msg 'No initramfs found'
+		fi
+	else
+		msg 'No vmlinuz found'
+	fi
+}
+</pre>
+<p>Now run mkinitcpio with the new hook
+</p>
+<pre># sudo mkinitcpio -A kdump
+</pre>
+<p>When the crash happens, you'll be loaded into emergency kernel mode.  After entering your password, you'll be at a terminal.  The first thing you'll need to do is make your root filesystem writable.
+</p>
+<pre>$ mount -o remount, rw /
+</pre>
+<p>Now you can save the dump using makedumpfile (see <a href="#Saving_the_crashed_kernel_memory">#Saving the crashed kernel memory</a>)
+</p>
 <h2><span class="mw-headline" id="Analyzing_the_kernel_core_dump">Analyzing the kernel core dump</span></h2>
 <p>The best way for studying the saved kernel core dump involves tools aimed specifically at that. The most common alternative is the gdb-based <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=crash">crash</a></span>. Run <i>crash</i> as in
 </p>
@@ -363,7 +428,7 @@ WantedBy=multi-user.target
 </p>
 <p>Follow <i>man crash</i> or <a rel="nofollow" class="external autonumber" href="https://crash-utility.github.io/crash_whitepaper.html">[1]</a> for more information about debugging practices.
 </p>
-<p>Another recent alternative is <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/drgn/">drgn</a></span><sup><small>AUR</small></sup>, a python-based and fully scriptable tool to extract information from the vmcore.
+<p>Another recent alternative is <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=drgn">drgn</a></span>, a python-based and fully scriptable tool to extract information from the vmcore.
 </p>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul>
@@ -394,8 +459,8 @@ WantedBy=multi-user.target
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Kdump&amp;oldid=798831">https://wiki.archlinux.org/index.php?title=Kdump&amp;oldid=798831</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 29 January 2024, at 09:44.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Kdump&amp;oldid=818145">https://wiki.archlinux.org/index.php?title=Kdump&amp;oldid=818145</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 12 October 2024, at 06:20.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

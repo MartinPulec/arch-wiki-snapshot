@@ -5,7 +5,7 @@
 <title>GRUB - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -700,6 +700,15 @@
 			<ul id="toc-GRUB_is_installed_but_the_menu_is_not_shown_at_boot-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id='toc-GRUB_is_installed,_but_receive_"ERROR_CODE_1962_-_No_operating_system_found"_message_on_older_Lenovo_machines' class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href='#GRUB_is_installed,_but_receive_"ERROR_CODE_1962_-_No_operating_system_found"_message_on_older_Lenovo_machines'>
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">7.16</span>GRUB is installed, but receive "ERROR CODE 1962 - No operating system found" message on older Lenovo machines</div>
+			</a>
+			
+			<ul id='toc-GRUB_is_installed,_but_receive_"ERROR_CODE_1962_-_No_operating_system_found"_message_on_older_Lenovo_machines-sublist' class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1">
@@ -1059,14 +1068,12 @@ If you execute a UEFI update, this update might delete the existing UEFI boot en
 <p>For Windows installed in BIOS mode, mount the Windows <i>system partition</i> (its <a href="../en/Persistent_block_device_naming.html#by-label" title="Persistent block device naming">file system label</a> should be <code>System Reserved</code> or <code>SYSTEM</code>). Run <code>os-prober</code> as root to detect and generate an entry for it.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> For Windows installed in BIOS mode:
-<ul><li>NTFS partitions may not always be detected when mounted with the default Linux drivers. If GRUB is not detecting it, try installing <a href="../en/NTFS-3G.html" title="NTFS-3G">NTFS-3G</a> and remounting.</li></ul>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:View-refresh-red.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is out of date.</b></p>
-<div>
-<b>Reason:</b> Since Windows 7, <code>bootmgr</code> is placed in the <a href="https://en.wikipedia.org/wiki/System_partition_and_boot_partition#Microsoft_definition" class="extiw" title="wikipedia:System partition and boot partition">system partition</a> which is not encrypted. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:GRUB.html">Talk:GRUB</a>)</div>
-</div>
-<ul><li>Encrypted Windows partitions may need to be decrypted before mounting. For BitLocker, this can be done with <a href="../en/Dm-crypt/Device_encryption.html#Cryptsetup_usage" class="mw-redirect" title="Cryptsetup">cryptsetup</a> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/dislocker/">dislocker</a></span><sup><small>AUR</small></sup>. This should be sufficient for <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=os-prober">os-prober</a></span> to add the correct entry.</li></ul>
+<strong>Note:</strong> 
+<ul>
+<li>
+<code>os-prober</code> might try to <code>grub-mount</code> a partition to probe whether the requisite <code>.efi</code> file exists. You need to install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=fuse3">fuse3</a></span> to make <code>grub-mount</code> work properly. Otherwise, you may fail to detect a Windows system.</li>
+<li>NTFS partitions may not always be detected when mounted with the default Linux drivers. If GRUB is not detecting it, try installing <a href="../en/NTFS-3G.html" title="NTFS-3G">NTFS-3G</a> and remounting.</li>
+</ul>
 </div>
 <h4><span class="mw-headline" id="Additional_arguments">Additional arguments</span></h4>
 <p>To pass custom additional arguments to the Linux image, you can set the <code>GRUB_CMDLINE_LINUX</code> + <code>GRUB_CMDLINE_LINUX_DEFAULT</code> variables in <code>/etc/default/grub</code>. The two are appended to each other and passed to kernel when generating regular boot entries. For the <i>recovery</i> boot entry, only <code>GRUB_CMDLINE_LINUX</code> is used in the generation.
@@ -1679,6 +1686,11 @@ grub rescue&gt; normal
 </p>
 <p>If it does not work, there may be incompatibility problems with the graphical terminal. Set <code>GRUB_TERMINAL_OUTPUT</code> to <code>console</code> in <code>/etc/default/grub</code> to disable the GRUB graphical terminal.
 </p>
+<h3>
+<span id="GRUB_is_installed.2C_but_receive_.22ERROR_CODE_1962_-_No_operating_system_found.22_message_on_older_Lenovo_machines"></span><span class="mw-headline" id='GRUB_is_installed,_but_receive_"ERROR_CODE_1962_-_No_operating_system_found"_message_on_older_Lenovo_machines'>GRUB is installed, but receive "ERROR CODE 1962 - No operating system found" message on older Lenovo machines</span>
+</h3>
+<p>See <a rel="nofollow" class="external text" href="https://www.reddit.com/r/ManjaroLinux/comments/e682d6/fixing_lenovos_error_code_1962_by_spoofing_the/">Fixing Lenovo’s ERROR CODE 1962 by spoofing the EFI boot entries</a>.
+</p>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul>
 <li><a href="https://en.wikipedia.org/wiki/GNU_GRUB" class="extiw" title="wikipedia:GNU GRUB">Wikipedia:GNU GRUB</a></li>
@@ -1698,7 +1710,6 @@ grub rescue&gt; normal
 </ul>
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Out_of_date.html" title="Category:Pages or sections flagged with Template:Out of date">Pages or sections flagged with Template:Out of date</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Merge.html" title="Category:Pages or sections flagged with Template:Merge">Pages or sections flagged with Template:Merge</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
 <li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li>
@@ -1713,8 +1724,8 @@ grub rescue&gt; normal
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GRUB&amp;oldid=812848">https://wiki.archlinux.org/index.php?title=GRUB&amp;oldid=812848</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 25 July 2024, at 00:35.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GRUB&amp;oldid=819479">https://wiki.archlinux.org/index.php?title=GRUB&amp;oldid=819479</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 23 October 2024, at 12:15.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

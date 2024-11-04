@@ -5,7 +5,7 @@
 <title>ATI - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -604,8 +604,6 @@ Option "ColorTiling2D" "on"
   Option "ColorTiling2D" "on"
 EndSection
 </pre>
-<div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/driconf/">driconf</a></span><sup><small>AUR</small></sup> is a tool which allows several settings to be modified: vsync, anisotropic filtering, texture compression, etc. Using this tool it is also possible to "disable Low Impact fallback" needed by some programs (e.g. Google Earth).</div>
 <h3><span class="mw-headline" id="Kernel_parameters">Kernel parameters</span></h3>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> You may want to debug the new parameters with <code>systool</code> as stated in <a href="../en/Kernel_module.html#Obtaining_information" class="mw-redirect" title="Kernel modules">Kernel modules#Obtaining information</a>.</div>
@@ -705,7 +703,7 @@ EndSection
 </pre>
 <h4><span class="mw-headline" id="Commandline_tools">Commandline tools</span></h4>
 <ul><li>
-<a rel="nofollow" class="external text" href="https://github.com/superjamie/snippets/blob/master/radcard">radcard</a> - A script to get and set DPM power states and levels</li></ul>
+<a rel="nofollow" class="external text" href="https://github.com/superjamie/snippets/blob/master/radcard">radcard</a><sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-10-12 ⓘ]</sup> - A script to get and set DPM power states and levels</li></ul>
 <h3><span class="mw-headline" id="Old_methods">Old methods</span></h3>
 <h4><span class="mw-headline" id="Dynamic_frequency_switching">Dynamic frequency switching</span></h4>
 <p>This method dynamically changes the frequency depending on GPU load, so performance is ramped up when running GPU intensive applications, and ramped down when the GPU is idle. The re-clocking is attempted during vertical blanking periods, but due to the timing of the re-clocking functions, does not always complete in the blanking period, which can lead to flicker in the display. Due to this, dynamic power management only works when a single head is active.
@@ -748,15 +746,6 @@ EndSection
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/udev/rules.d/30-radeon-pm.rules</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">KERNEL=="dri/card0", SUBSYSTEM=="drm", DRIVERS=="radeon", ATTR{device/power_dpm_force_performance_level}="high"</pre>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
-<div>
-<b>Reason:</b> The command always returns the same thing for <code>/sys/class/drm/card0</code> (or nothing when the device does not exist). What is the point of the following check? (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:ATI.html">Talk:ATI</a>)</div>
-</div>
-<p>To determine the <code>KERNEL</code> name, execute:
-</p>
-<pre>$ udevadm info --attribute-walk /sys/class/drm/card0 | grep "KERNEL="
-</pre>
 <h3><span class="mw-headline" id="Other_notes">Other notes</span></h3>
 <p>To view the speed that the GPU is running at, perform the following command and you will get something like this output:
 </p>
@@ -834,21 +823,6 @@ S-video disconnected (normal left inverted right x axis y axis)
 </p>
 <pre>"video=9-pin DIN-1:1024x768-24@60e"
 </pre>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
-<div>
-<b>Reason:</b> Is the following still applicable in 2024? The two boot loaders chosen as examples are ancient. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:ATI.html">Talk:ATI</a>)</div>
-</div>
-<p>Current mkinitcpio implementation also requires <code>#</code> in front. For example:
-</p>
-<pre>root=/dev/disk/by-uuid/d950a14f-fc0c-451d-b0d4-f95c2adefee3 ro quiet radeon.modeset=1 security=none # video=DVI-I-1:1280x1024-24@60e "video=9-pin DIN-1:1024x768-24@60e"
-</pre>
-<ul>
-<li>
-<a href="../en/GRUB_Legacy.html" title="GRUB Legacy">GRUB Legacy</a> can pass such command line as is.</li>
-<li>
-<a href="../en/LILO.html" title="LILO">LILO</a> needs backslashes for doublequotes (append <code># \"video=9-pin DIN-1:1024x768-24@60e\"</code>)</li>
-</ul>
 <p>You can get list of your video outputs with following command:
 </p>
 <pre>$ ls -1 /sys/class/drm/ | grep -E '^card[[:digit:]]+-' | cut -d- -f2-</pre>
@@ -952,7 +926,7 @@ EndSection
 <ul>
 <li>Try adding <code>pci=nomsi</code> to your boot loader <a href="../en/Kernel_parameters.html" title="Kernel parameters">Kernel parameters</a>.</li>
 <li>If this does not work, you can try adding <code>noapic</code> instead of <code>pci=nomsi</code>.</li>
-<li>If none of the above work, then you can try running <code>vblank_mode=0 glxgears</code> or <code>vblank_mode=1 glxgears</code> to see which one works for you, then install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/driconf/">driconf</a></span><sup><small>AUR</small></sup> and set that option in <code>~/.drirc</code>.</li>
+<li>If none of the above work, then you can try running <code>vblank_mode=0 glxgears</code> or <code>vblank_mode=1 glxgears</code> to see which one works for you, then <a href="#Turn_vsync_off">set the option permanently</a>.</li>
 </ul>
 <h3><span class="mw-headline" id="Cursor_corruption_after_coming_out_of_sleep">Cursor corruption after coming out of sleep</span></h3>
 <p>If the cursor becomes corrupted (e.g. repeating itself vertically after the monitor(s) comes out of sleep) set <code>"SWCursor" "True"</code> in the <code>"OutputClass"</code> section of the <code>/etc/X11/xorg.conf.d/20-radeon.conf</code> configuration file.
@@ -963,7 +937,7 @@ EndSection
 <h3>
 <span id="R9-390_Poor_Performance_and.2For_Instability"></span><span class="mw-headline" id="R9-390_Poor_Performance_and/or_Instability">R9-390 Poor Performance and/or Instability</span>
 </h3>
-<p>Firmware issues with R9-390 series cards include poor performance and crashes (frequently caused by gaming or using Google Maps) possibly related DPM. Comment 115 of this bug <a rel="nofollow" class="external text" href="https://bugs.freedesktop.org/show_bug.cgi?id=91880">report</a> includes instructions for a fix.
+<p>Firmware issues with R9-390 series cards include poor performance and crashes (frequently caused by gaming or using Google Maps) possibly related DPM. There has been a <a rel="nofollow" class="external text" href="https://gitlab.freedesktop.org/mesa/mesa/-/issues/1222#note_240698">comment</a> on a bug report with instructions for a fix.
 </p>
 <h3>
 <span id="QHD_.2F_UHD_.2F_4k_support_over_HDMI_for_older_Radeon_cards"></span><span class="mw-headline" id="QHD_/_UHD_/_4k_support_over_HDMI_for_older_Radeon_cards">QHD / UHD / 4k support over HDMI for older Radeon cards</span>
@@ -995,7 +969,7 @@ EndSection
 <li><a href="../en/Category:X_server.html" title="Category:X server">X server</a></li>
 </ul>
 </div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li></ul>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li></ul>
 </div>
 </div>
 				</div>
@@ -1006,8 +980,8 @@ EndSection
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=ATI&amp;oldid=796357">https://wiki.archlinux.org/index.php?title=ATI&amp;oldid=796357</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 7 January 2024, at 19:02.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=ATI&amp;oldid=818571">https://wiki.archlinux.org/index.php?title=ATI&amp;oldid=818571</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 12 October 2024, at 16:24.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

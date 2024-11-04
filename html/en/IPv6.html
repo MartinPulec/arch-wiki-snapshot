@@ -5,7 +5,7 @@
 <title>IPv6 - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -154,6 +154,15 @@
 			<ul id="toc-NetworkManager_2-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-systemd-networkd_2" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#systemd-networkd_2">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">4.2</span>systemd-networkd</div>
+			</a>
+			
+			<ul id="toc-systemd-networkd_2-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-Static_address" class="vector-toc-list-item vector-toc-level-1">
@@ -204,13 +213,13 @@
 			<ul id="toc-With_WIDE-DHCPv6-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-systemd-networkd_2" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#systemd-networkd_2">
+		<li id="toc-systemd-networkd_3" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#systemd-networkd_3">
 				<div class="vector-toc-text">
 				<span class="vector-toc-numb">7.3</span>systemd-networkd</div>
 			</a>
 			
-			<ul id="toc-systemd-networkd_2-sublist" class="vector-toc-list">
+			<ul id="toc-systemd-networkd_3-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 		<li id="toc-Other_clients" class="vector-toc-list-item vector-toc-level-2">
@@ -275,7 +284,25 @@
 			</a>
 			
 			<ul id="toc-Disable_functionality-sublist" class="vector-toc-list">
+				<li id="toc-sysctl" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#sysctl">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">10.1.1</span>sysctl</div>
+			</a>
+			
+			<ul id="toc-sysctl-sublist" class="vector-toc-list">
 			</ul>
+		</li>
+		<li id="toc-systemd_unit" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#systemd_unit">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">10.1.2</span>systemd unit</div>
+			</a>
+			
+			<ul id="toc-systemd_unit-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
 		</li>
 		<li id="toc-Other_programs" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Other_programs">
@@ -340,13 +367,13 @@
 		</li>
 	</ul>
 		</li>
-		<li id="toc-systemd-networkd_3" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#systemd-networkd_3">
+		<li id="toc-systemd-networkd_4" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#systemd-networkd_4">
 				<div class="vector-toc-text">
 				<span class="vector-toc-numb">10.3</span>systemd-networkd</div>
 			</a>
 			
-			<ul id="toc-systemd-networkd_3-sublist" class="vector-toc-list">
+			<ul id="toc-systemd-networkd_4-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -453,7 +480,7 @@
 </div>
 <p>In Arch Linux, <a href="https://en.wikipedia.org/wiki/IPv6" class="extiw" title="wikipedia:IPv6">IPv6</a> is enabled by default.
 </p>
-<p>The <a rel="nofollow" class="external text" href="https://tldp.org/HOWTO/Linux+IPv6-HOWTO/index.html">tldp Linux+IPv6-HOWTO</a> article is older, and less maintained. Yet it attempts to cover many topics that are mentioned in this article, starts from the basics, and advances in a slower pace. It also has many command line examples. Beginners might want to read or skim it before reading this wiki article.
+<p>The <a rel="nofollow" class="external text" href="https://tldp.org/HOWTO/Linux+IPv6-HOWTO/index.html">tldp Linux+IPv6-HOWTO</a><sup title="Last check status: 403">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-10-12 ⓘ]</sup> article is older, and less maintained. Yet it attempts to cover many topics that are mentioned in this article, starts from the basics, and advances in a slower pace. It also has many command line examples. Beginners might want to read or skim it before reading this wiki article.
 </p>
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Neighbor_discovery">Neighbor discovery</span></h2>
@@ -639,6 +666,19 @@ net.ipv6.conf.wlan0.addr_gen_mode = 2
 <h3><span class="mw-headline" id="NetworkManager_2">NetworkManager</span></h3>
 <p>The above settings are not honored by NetworkManager, but NetworkManager uses stable private addresses by default.<a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/NetworkManager/NetworkManager/-/blob/nm-1-12/NEWS#L367-369">[2]</a><a rel="nofollow" class="external autonumber" href="https://bugzilla.redhat.com/show_bug.cgi?id=1279242#c15">[3]</a>
 </p>
+<h3><span class="mw-headline" id="systemd-networkd_2">systemd-networkd</span></h3>
+<p>The above settings are not honored by <a href="../en/Systemd-networkd.html" title="Systemd-networkd">systemd-networkd</a>. To ensure stable private addresses are always used, you can set:
+</p>
+<pre>[IPv6AcceptRA]
+Token=prefixstable
+</pre>
+<p>The above tells <i>systemd-networkd</i> to use a secret derived from the machine ID. You can also specify a secret yourself or even apply the setting to only specific prefixes appearing in Router Advertisement messages. See <span class="plainlinks archwiki-template-man" title="$ man 5 systemd.network"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd.network.5">systemd.network(5)</a></span> for details. 
+</p>
+<p>You can also generate stable private link-local addresses if desired:
+</p>
+<pre>[Network]
+IPv6LinkLocalAddressGenerationMode=stable-privacy
+</pre>
 <h2><span class="mw-headline" id="Static_address">Static address</span></h2>
 <p>Sometimes, using a static address can improve security. For example, if your local router uses Neighbor Discovery or <i>radvd</i> (<a href="https://tools.ietf.org/html/rfc2461" class="extiw" title="rfc:2461">RFC 2461</a>), your interface will automatically be assigned an address based on its MAC address (using IPv6's Stateless Autoconfiguration). This may be less than ideal for security since it allows a system to be tracked even if the network portion of the IP address changes.
 </p>
@@ -691,13 +731,16 @@ waitip 6
 # Uncomment this line if you are running dhcpcd for IPv6 only.
 #ipv6only
 
-# use the interface connected to WAN
+# The following applies to the interface WAN.
 interface WAN
-ipv6rs
-iaid 1
-# use the interface connected to your LAN
-ia_pd 1 LAN
-#ia_pd 1/::/64 LAN/0/64
+    ipv6rs
+    # Assign WAN the iaid 1.
+    iaid 1
+    # Assign a Normal Address to the interface with iaid 1 (i.e. WAN).
+    ia_na 1
+    # Delegate a prefix with wan interface iaid 1 (i.e. WAN) and lan interface LAN.
+    ia_pd 1 LAN
+    #ia_pd 1/::/64 LAN/0/64
 </pre>
 <p>This configuration will ask for a prefix from WAN interface (<code>WAN</code>) and delegate it to the internal interface (<code>LAN</code>).
 In the event that a <code>/64</code> range is issued, you will need to use the 2nd <code>ia_pd instruction</code> that is commented out instead.
@@ -729,7 +772,7 @@ id-assoc pd 0 {
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> Read <span class="plainlinks archwiki-template-man" title="$ man 8 dhcp6c">dhcp6c(8)</span> and <span class="plainlinks archwiki-template-man" title="$ man 5 dhcp6c.conf">dhcp6c.conf(5)</span> for more information.</div>
-<h3><span class="mw-headline" id="systemd-networkd_2">systemd-networkd</span></h3>
+<h3><span class="mw-headline" id="systemd-networkd_3">systemd-networkd</span></h3>
 <p>Configure both your upstream (wan) and downstream (lan) interface. This will enable DHCPv6-PD on the interface where the DHCPv6 client is running. The delegated prefixes are distributed by IPv6 Router Advertisement on the downstream network.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/network/wan.network</pre>
@@ -789,22 +832,17 @@ IPv6AcceptRA=true</pre>
 <h2><span class="mw-headline" id="Disable_IPv6">Disable IPv6</span></h2>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> The Arch kernel has IPv6 support built in directly, therefore a module cannot be blacklisted.</div>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
-<div>
-<b>Reason:</b> Add reasons why users may want to disable IPv6, such as low-quality DNS servers or firewall rules (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:IPv6.html">Talk:IPv6</a>)</div>
-</div>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
-<div>
-<b>Reason:</b> Add drawbacks of disabling IPv6, like degraded performance behind CGN, worse performance in p2p/webrtc based applications and games (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:IPv6.html">Talk:IPv6</a>)</div>
-</div>
+<p>For some ISPs<a rel="nofollow" class="external autonumber" href="https://www.reddit.com/r/archlinux/comments/1fplbpk/pacman_package_download_extremely_slow/">[4]</a><a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=290671">[5]</a>, the IPv6 traffic is slower than the IPv4 one: if you can confirm with certainty you are affected by such issues, disabling IPv6 may speed up your network speeds. 
+</p>
+<p>This should not be done blindly: for most users, IPv4-only networking will degrade performance behind <a href="https://en.wikipedia.org/wiki/Carrier-grade_NAT" class="extiw" title="wikipedia:Carrier-grade NAT">Carrier-grade NAT</a> and hamper their usage of P2P or WebRTC applications (e.g. some games). Instead, configuring <a href="#Prefer_IPv4_over_IPv6">IPv4 to be preferred over IPv6</a> is the best of both worlds.
+</p>
 <h3><span class="mw-headline" id="Disable_functionality">Disable functionality</span></h3>
 <p>Adding <code>ipv6.disable=1</code> to the kernel line disables the whole <a rel="nofollow" class="external text" href="https://docs.kernel.org/networking/ipv6.html">IPv6 stack</a>, which is likely what you want if you are experiencing issues. See <a href="../en/Kernel_parameters.html" title="Kernel parameters">Kernel parameters</a> for more information.
 </p>
 <p>Alternatively, adding <code>ipv6.disable_ipv6=1</code> instead will keep the IPv6 stack functional but will not assign IPv6 addresses to any of your network devices.
 </p>
-<p>One can also avoid assigning IPv6 addresses to all or specific network interfaces by adding the following <a href="../en/Sysctl.html" title="Sysctl">sysctl</a> configuration to <code>/etc/sysctl.d/40-ipv6.conf</code>:
+<h4><span class="mw-headline" id="sysctl">sysctl</span></h4>
+<p>One can disable the IPv6 stack for all or specific network interfaces by adding the following <a href="../en/Sysctl.html" title="Sysctl">sysctl</a> configuration to <code>/etc/sysctl.d/40-ipv6.conf</code>:
 </p>
 <pre># Disable IPv6
 net.ipv6.conf.all.disable_ipv6 = 1
@@ -812,12 +850,42 @@ net.ipv6.conf.<i>nic0</i>.disable_ipv6 = 1
 ...
 net.ipv6.conf.<i>nicN</i>.disable_ipv6 = 1
 </pre>
-<p><a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Restart">Restart</a> the <code>systemd-sysctl.service</code> unit to apply the configuration changes.
+<p>This however only works, if one <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Restart">restarts</a> the <code>systemd-sysctl.service</code> after boot, since <code>systemd-sysctl.service</code> starts before the network interfaces are completely configured. On boot one can only set the configuration for <code>lo</code>, <code>default</code> and <code>all</code>, because they are an internal part of the IPv6 stack.
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> If the IPv6 stack is not disabled, it is also possible to disable IPv6 for interfaces at runtime to test configuration changes. Executing <code># sysctl -w net.ipv6.conf.all.disable_ipv6=1</code> drops assigned IPv6 addresses plus its routes, and can be reversed.</div>
+<strong>Tip:</strong> If the IPv6 stack is not entirely disabled, it is also possible to disable IPv6 for interfaces at runtime to test configuration changes. Executing <code># sysctl -w net.ipv6.conf.all.disable_ipv6=1</code> drops assigned IPv6 addresses plus its routes on all network interfaces, and can be reversed.</div>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> If disabling IPv6 via <i>sysctl</i>, you should comment out the IPv6 hosts in your <code>/etc/hosts</code>. Otherwise there could be some connection errors because hosts are resolved to their IPv6 address which is not reachable.</div>
+<strong>Note:</strong> 
+<ul>
+<li>Most network managers (<i>netplan</i>, <a href="../en/Systemd-networkd.html" title="Systemd-networkd">systemd-networkd</a>, <a href="../en/NetworkManager.html" title="NetworkManager">NetworkManager</a>, etc.) set the IPv6 stack status of configured network interfaces depending on their own configuration, ignoring the configuration set in <code>net.ipv6.conf.default.disable_ipv6</code>.</li>
+<li>If disabling IPv6 via <i>sysctl</i>, you should comment out the IPv6 hosts in your <code>/etc/hosts</code>. Otherwise there could be some connection errors because hosts are resolved to their IPv6 address which is not reachable.</li>
+</ul>
+</div>
+<h4><span class="mw-headline" id="systemd_unit">systemd unit</span></h4>
+<p>If one wants to disable the IPv6 stack for all network interfaces on boot, with the ability to easily enable IPv6 later, a systemd unit which runs after the network manager is necessary.
+</p>
+<p>A unit for <a href="../en/Systemd-networkd.html" title="Systemd-networkd">systemd-networkd</a> would look like this:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/enforce_disable_ipv6.service</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Unit]
+Description=enforce default disable_ipv6
+AssertPathExists=/proc/sys/net/ipv6/conf/all/disable_ipv6
+AssertPathExists=/proc/sys/net/ipv6/conf/default/disable_ipv6
+After=systemd-networkd.service
+PartOf=systemd-networkd.service
+
+[Service]
+Type=oneshot
+ExecStart=-/usr/bin/cp --no-preserve=all -T /proc/sys/net/ipv6/conf/default/disable_ipv6 /proc/sys/net/ipv6/conf/all/disable_ipv6
+
+[Install]
+WantedBy=systemd-networkd.service</pre>
+<p>After enabling this unit, any start or restart of <a href="../en/Systemd-networkd.html" title="Systemd-networkd">systemd-networkd</a> will enforce the <code>default</code> value of the IPv6 stack status on all network interfaces.
+</p>
+<p>The <code>default</code> value can be set on boot with <a href="#sysctl">#sysctl</a>.
+</p>
+<p>To adjust this unit for other network manager one needs to replace all occurrences of <code>systemd-networkd.service</code> with the configuration unit of their network manager.
+</p>
 <h3><span class="mw-headline" id="Other_programs">Other programs</span></h3>
 <p>Disabling IPv6 functionality in the kernel does not prevent other programs from trying to use IPv6. In most cases, this is completely harmless, but if you find yourself having issues with that program, you should consult the program's manual pages for a way to disable that functionality.
 </p>
@@ -878,7 +946,7 @@ ExecStart=/usr/bin/ntpd -4 -g -u ntp:ntp
 </pre>
 <p>Per <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/59806">FS#59806</a>, only the "2." ntp.org pools serve IPv6. So to prevent this remove <code>2.arch.pool.ntp.org</code> and <code>2.pool.ntp.org</code> from the NTP and FallbackNTP entries in <code>/etc/systemd/timesyncd.conf</code> file.
 </p>
-<h3><span class="mw-headline" id="systemd-networkd_3">systemd-networkd</span></h3>
+<h3><span class="mw-headline" id="systemd-networkd_4">systemd-networkd</span></h3>
 <p><i>networkd</i> supports disabling IPv6 on a per-interface basis. When a network unit's <code>[Network]</code> section has either <code>LinkLocalAddressing=ipv4</code> or <code>LinkLocalAddressing=no</code>, networkd will not try to configure IPv6 on the matching interfaces.
 </p>
 <p>Note however that even when using the above option, <i>networkd</i> will still be expecting to receive router advertisements if IPv6 is not disabled globally. If IPv6 traffic is not being received by the interface (e.g. due to <i>sysctl</i> or <i>ip6tables</i> settings), it will remain in the configuring state and potentially cause timeouts for services waiting for the network to be fully configured. To avoid this, the <code>IPv6AcceptRA=no</code> option should also be set in the <code>[Network]</code> section.
@@ -900,7 +968,7 @@ precedence ::ffff:0:0/96  100
 <li>
 <a rel="nofollow" class="external text" href="https://mirrors.deepspace6.net/howtos/Linux+IPv6-HOWTO.html#AEN520">IPv6 prefixes</a> — a summary of prefix types</li>
 <li>
-<a rel="nofollow" class="external text" href="https://tldp.org/HOWTO/Linux+IPv6-HOWTO/ch11s02.html">net.ipv6 options</a> — documentation of kernel parameters</li>
+<a rel="nofollow" class="external text" href="https://tldp.org/HOWTO/Linux+IPv6-HOWTO/ch11s02.html">net.ipv6 options</a><sup title="Last check status: 403">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-10-12 ⓘ]</sup> — documentation of kernel parameters</li>
 </ul>
 </div>
 </div>
@@ -909,6 +977,7 @@ precedence ::ffff:0:0/96  100
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Networking.html" title="Category:Networking">Networking</a></li></ul>
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
+<li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
 </ul>
@@ -922,8 +991,8 @@ precedence ::ffff:0:0/96  100
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=IPv6&amp;oldid=806423">https://wiki.archlinux.org/index.php?title=IPv6&amp;oldid=806423</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 19 April 2024, at 10:17.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=IPv6&amp;oldid=819226">https://wiki.archlinux.org/index.php?title=IPv6&amp;oldid=819226</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 19 October 2024, at 16:19.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

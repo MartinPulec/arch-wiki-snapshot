@@ -5,7 +5,7 @@
 <title>systemd-networkd - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -183,10 +183,19 @@
 			<ul id="toc-[Route]-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-[RoutingPolicyRule]" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#[RoutingPolicyRule]">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">2.1.6</span>[RoutingPolicyRule]</div>
+			</a>
+			
+			<ul id="toc-[RoutingPolicyRule]-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 		<li id="toc-[DHCPv4]" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#[DHCPv4]">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">2.1.6</span>[DHCPv4]</div>
+				<span class="vector-toc-numb">2.1.7</span>[DHCPv4]</div>
 			</a>
 			
 			<ul id="toc-[DHCPv4]-sublist" class="vector-toc-list">
@@ -195,7 +204,7 @@
 		<li id="toc-[DHCPServer]" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#[DHCPServer]">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">2.1.7</span>[DHCPServer]</div>
+				<span class="vector-toc-numb">2.1.8</span>[DHCPServer]</div>
 			</a>
 			
 			<ul id="toc-[DHCPServer]-sublist" class="vector-toc-list">
@@ -868,14 +877,59 @@ RouteMetric=600</pre>
 </h4>
 <ul>
 <li>
-<code>Gateway=</code> this option is <b>mandatory</b> unless DHCP is used</li>
+<code>Gateway=</code> this option is <b>mandatory</b> unless direct routing or DHCP is used</li>
 <li>
 <code>Destination=</code> the destination prefix of the route, possibly followed by a slash and the prefix length</li>
+<li>
+<code>Metrics=</code> the priority of this route</li>
+<li>
+<code>Type=</code> the type for the route</li>
+<li>
+<code>Table=</code> the table identifier for the route</li>
+<li>
+<code>GatewayOnLink=</code> if set to <code>yes</code>, the kernel does not have to check if the gateway is reachable directly by the current machine (i.e., attached to the local network). Can be used to solve some routing issues.</li>
 </ul>
 <p>If <code>Destination</code> is not present in <code>[Route]</code> section, this section is treated as a default route.
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> Put the <code>Address=</code> and <code>Gateway=</code> keys in the <code>[Network]</code> section as a short-hand if <code>[Address]</code> section contains only an <code>Address</code> key and <code>[Route]</code> section contains only a <code>Gateway</code> key.</div>
+<h4>
+<span id=".5BRoutingPolicyRule.5D"></span><span class="mw-headline" id="[RoutingPolicyRule]">[RoutingPolicyRule]</span>
+</h4>
+<p>Standard routing algorithms usually take in account only the destination address when they have to choose to which gateway send a packet. But for more complex networks this is not enough.
+</p>
+<p>The <code>[RoutingPolicyRule]</code> section allows you to specify additional rules that are applied only to those packages that match the specified conditions.
+</p>
+<p>Here a non-exhaustive list of these matches:
+</p>
+<ul>
+<li>
+<code>TypeOfService=</code> (matches) the Type of Service of the packet as an integer in the range <code>0..255</code>;</li>
+<li>
+<code>From=</code> the source address prefix;</li>
+<li>
+<code>To=</code> the destination address prefix;</li>
+<li>
+<code>FirewallMark=</code> the iptables firewall mark value;</li>
+<li>
+<code>IncomingInterface=</code> the incoming device;</li>
+<li>
+<code>OutgoingInterface=</code> the outgoing device;</li>
+</ul>
+<p>Other options:
+</p>
+<ul>
+<li>
+<code>Type=</code> the Routing Policy Database rule type;</li>
+<li>
+<code>Table=</code> the routing table to use if the packet matches the rule;</li>
+<li>
+<code>Priority=</code> the priority of this rule. Rules are evaluated in increasing order of priority, therefore lower priority rules are applied before others;</li>
+<li>
+<code>InvertRule=</code> if set to <code>true</code> then the rule is inverted, that is it is applied to every package that doesn't satisfy at least one of the matches;</li>
+<li>
+<code>SuppressPrefixLength=</code> the rule is suppressed if the prefix length is equal or less than the specified value;</li>
+</ul>
 <h4>
 <span id=".5BDHCPv4.5D"></span><span class="mw-headline" id="[DHCPv4]">[DHCPv4]</span>
 </h4>
@@ -1381,8 +1435,8 @@ UseRoutes=false</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Systemd-networkd&amp;oldid=812229">https://wiki.archlinux.org/index.php?title=Systemd-networkd&amp;oldid=812229</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 10 July 2024, at 17:55.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Systemd-networkd&amp;oldid=819933">https://wiki.archlinux.org/index.php?title=Systemd-networkd&amp;oldid=819933</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 31 October 2024, at 14:36.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -5,7 +5,7 @@
 <title>Lenovo ThinkPad T14s (AMD) Gen 3 - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -214,10 +214,33 @@
 		<ul id="toc-Function_keys-sublist" class="vector-toc-list">
 		</ul>
 	</li>
+	<li id="toc-Troubleshooting" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#Troubleshooting">
+			<div class="vector-toc-text">
+			<span class="vector-toc-numb">13</span>Troubleshooting</div>
+		</a>
+		
+			<button aria-controls="toc-Troubleshooting-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon vector-icon--x-small mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle Troubleshooting subsection</span>
+			</button>
+		
+		<ul id="toc-Troubleshooting-sublist" class="vector-toc-list">
+			<li id="toc-Laptop_cannot_suspend/reboot/shutdown" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Laptop_cannot_suspend/reboot/shutdown">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">13.1</span>Laptop cannot suspend/reboot/shutdown</div>
+			</a>
+			
+			<ul id="toc-Laptop_cannot_suspend/reboot/shutdown-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+	</li>
 	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
 		<a class="vector-toc-link" href="#See_also">
 			<div class="vector-toc-text">
-			<span class="vector-toc-numb">13</span>See also</div>
+			<span class="vector-toc-numb">14</span>See also</div>
 		</a>
 		
 		<ul id="toc-See_also-sublist" class="vector-toc-list">
@@ -363,6 +386,9 @@
 [Hardware Error]: IPID: 0x0000009600050f00, Syndrome: 0x000001ff0a240700
 ...
 </pre>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning:</strong>  The UEFI firmware 0.1.40 has been reported to cause troubles on this Thinkpad. See <a href="#Laptop_cannot_suspend/reboot/shutdown">#Laptop cannot suspend/reboot/shutdown</a>
+</div>
 <h2><span class="mw-headline" id="CPU">CPU</span></h2>
 <p>There are a number of frequency-scaling issues surrounding ACPI-cpufreq causing the internal GPU to reset at seemingly random times. This can be fixed by using "amd_pstate" (see below). GPU resets are infrequent, but should be considered prior to purchase of laptop if intending to stick with the ACPI-cpufreq performance scaling driver. The resets cause the screen to turn black, forcing the user to either reboot or relogin via a <a href="../en/Display_manager.html" class="mw-redirect" title="Login manager">login manager</a>. Switching to a <a href="../en/Linux_console.html" title="Linux console">TTY</a> during a GPU reset is sometimes possible.
 </p>
@@ -471,8 +497,11 @@ WantedBy=suspend.target</pre>
 <p>Works fine. If you face wifi issues after hibernation see: Network / WiFi
 </p>
 <h3><span class="mw-headline" id="Battery_thresholds">Battery thresholds</span></h3>
-<p>Battery charge thresholds can be correctly set with <a href="../en/TLP.html" title="TLP">TLP</a> or within <a href="../en/KDE.html" title="KDE">KDE</a> / <a href="../en/GNOME.html" title="GNOME">GNOME</a> power management.
+<p>Battery charge thresholds can be correctly set with <a href="../en/TLP.html" title="TLP">TLP</a>, within <a href="../en/KDE.html" title="KDE">KDE</a> / <a href="../en/GNOME.html" title="GNOME">GNOME</a> power management or from the command line:
 </p>
+<pre># echo 75 &gt; /sys/class/power_supply/BAT0/charge_start_threshold
+# echo 80 &gt; /sys/class/power_supply/BAT0/charge_stop_threshold
+</pre>
 <h3><span class="mw-headline" id="AMD_P-State_EPP">AMD P-State EPP</span></h3>
 <p>Use <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=power-profiles-daemon">power-profiles-daemon</a></span> or this udev rule + script to apply different AMD P-State EPP states depending on whether the laptop is running on battery or charger.
 </p>
@@ -766,6 +795,37 @@ It conflicts with <a href="../en/TLP.html" title="TLP">TLP</a> and the reasons f
 <li>The key is visible to <code>xev</code> and similar tools.</li>
 <li>The physical key has a symbol on it, which describes its function.</li>
 </ol>
+<h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
+<h3>
+<span id="Laptop_cannot_suspend.2Freboot.2Fshutdown"></span><span class="mw-headline" id="Laptop_cannot_suspend/reboot/shutdown">Laptop cannot suspend/reboot/shutdown</span>
+</h3>
+<p>If your laptop cannot suspend, reboot or even shutdown, it might be due to the UEFI Firmware 0.1.40, released on May 5th, 2024.
+This firmware has been reported to cause several issues such as (and possibly not limited to):
+</p>
+<ol>
+<li>Laptop cannot suspend/reboot/shutdown;</li>
+<li>TLP and <code>fwupdmgr</code> services cannot start;</li>
+<li>Regenerating the <code>initramfs</code> is not possible, as the <code>mkinitcpio</code> autodetect hook hangs indefinitely.</li>
+</ol>
+<p>All these issues might be related to the malfunctioning of the <a rel="nofollow" class="external text" href="https://docs.kernel.org/hid/amd-sfh-hid.html">AMD Sensor Fusion HUB device</a>.
+Running <code>dmesg</code> will reveal similar errors:
+</p>
+<pre>[    5.547449] BUG: unable to handle page fault for address: 000000010000003a
+[    5.547474] #PF: supervisor read access in kernel mode
+[    5.547486] #PF: error_code(0x0000) - not-present page
+[    5.547497] PGD 0 P4D 0 
+[    5.547509] Oops: Oops: 0000 [#1] PREEMPT SMP NOPTI
+[    5.547522] CPU: 13 PID: 466 Comm: (udev-worker) Not tainted 6.10.2-arch1-2 #1 
+[    5.547557] RIP: 0010:amd_sfh_get_report+0x1c/0x110 [amd_sfh]
+...
+[    5.557018] CR2: 000000010000003a
+[    5.557524] ---[ end trace 0000000000000000 ]---
+</pre>
+<p>To solve this issue, <a href="../en/Kernel_module.html#Blacklisting" class="mw-redirect" title="Blacklist">blacklist</a> the <code>amd_sfh</code> kernel module. 
+Notice that, since you cannot rebuild the <code>initramfs</code>, you should first blacklist the 
+module  from your boot loader, and later make it permanent.
+See also <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?id=288482">here</a> and <a rel="nofollow" class="external text" href="https://forums.lenovo.com/t5/Other-Linux-Discussions/Latest-bios-update-breaks-Archlinux-on-Thinkpad-T14s-GEN-3-AMD/m-p/5326186">here</a>.
+</p>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul><li><a href="../en/Lenovo_ThinkPad_T14_(AMD)_Gen_3.html" title="Lenovo ThinkPad T14 (AMD) Gen 3">Lenovo ThinkPad T14 (AMD) Gen 3</a></li></ul>
 </div>
@@ -781,8 +841,8 @@ It conflicts with <a href="../en/TLP.html" title="TLP">TLP</a> and the reasons f
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Lenovo_ThinkPad_T14s_(AMD)_Gen_3&amp;oldid=803032">https://wiki.archlinux.org/index.php?title=Lenovo_ThinkPad_T14s_(AMD)_Gen_3&amp;oldid=803032</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 12 March 2024, at 16:22.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Lenovo_ThinkPad_T14s_(AMD)_Gen_3&amp;oldid=818813">https://wiki.archlinux.org/index.php?title=Lenovo_ThinkPad_T14s_(AMD)_Gen_3&amp;oldid=818813</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 13 October 2024, at 05:55.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

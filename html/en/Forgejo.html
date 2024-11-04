@@ -5,7 +5,7 @@
 <title>Forgejo - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -194,13 +194,13 @@
 			<ul id="toc-Enable_Dark_Theme-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Customize_the_appearance_of_Gitea" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Customize_the_appearance_of_Gitea">
+		<li id="toc-Customize_the_appearance_of_Forgejo" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Customize_the_appearance_of_Forgejo">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.6</span>Customize the appearance of Gitea</div>
+				<span class="vector-toc-numb">4.6</span>Customize the appearance of Forgejo</div>
 			</a>
 			
-			<ul id="toc-Customize_the_appearance_of_Gitea-sublist" class="vector-toc-list">
+			<ul id="toc-Customize_the_appearance_of_Forgejo-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 		<li id="toc-Configure_reverse_proxy" class="vector-toc-list-item vector-toc-level-2">
@@ -373,12 +373,6 @@
 <h2><span class="mw-headline" id="Configuration">Configuration</span></h2>
 <p>The user configuration file is located at <code>/etc/forgejo/app.ini</code>.
 </p>
-<p>You will need to change the permissions of of the folder as well as the app.ini file:
-</p>
-<pre># chown root:forgejo /etc/forgejo
-# chown root:forgejo /etc/forgejo/app.ini
-# chmod g+w /etc/forgejo/app.ini
-</pre>
 <p>See the <a rel="nofollow" class="external text" href="https://forgejo.org/docs/latest/admin/config-cheat-sheet/">Forgejo docs</a> for more configuration examples.
 </p>
 <p>If you are migrating from Gitea see the <a rel="nofollow" class="external text" href="https://forgejo.org/docs/latest/admin/installation/#migration-from-gitea">migration guide</a> for Forgejo
@@ -512,7 +506,7 @@ PASSWD   = <b>password</b></pre>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/forgejo/app.ini</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">SSH_DOMAIN                 = git.domain.tld</pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong>  If you set the <code>PROTOCOL</code> to be <code>unix</code>, then you need to unset <code>LOCAL_ROOT_URL</code> or set it to <code>http://unix/</code>. See this <a rel="nofollow" class="external text" href="https://github.com/go-gitea/gitea/issues/3741#issuecomment-377334757">comment</a>
+<strong>Note:</strong>  If you set the <code>PROTOCOL</code> to be <code>http+unix</code>, then you need to unset <code>LOCAL_ROOT_URL</code> or set it to <code>http://unix/</code>. See this <a rel="nofollow" class="external text" href="https://github.com/go-gitea/gitea/issues/3741#issuecomment-377334757">comment</a>
 </div>
 <h4><span class="mw-headline" id="Configure_SSH">Configure SSH</span></h4>
 <p>By default, Forgejo will run as the user <code>forgejo</code>; this account will also be used for ssh repository access. For ssh access to work, you have to enable PAM. Alternatively, you might have to unlock service account.
@@ -544,7 +538,7 @@ PrivateUsers=false</pre>
 <h3><span class="mw-headline" id="Enable_Dark_Theme">Enable Dark Theme</span></h3>
 <p>In the <i>ui</i> section, you can set the <code>DEFAULT_THEME</code> to <code>arc-green</code> for making the web interface use a dark background.
 </p>
-<h3><span class="mw-headline" id="Customize_the_appearance_of_Gitea">Customize the appearance of Gitea</span></h3>
+<h3><span class="mw-headline" id="Customize_the_appearance_of_Forgejo">Customize the appearance of Forgejo</span></h3>
 <p>See the Forgejo docs<a rel="nofollow" class="external autonumber" href="https://forgejo.org/docs/latest/developer/customization/">[1]</a> for more detail.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
@@ -562,7 +556,7 @@ The default templates can be found in the <a rel="nofollow" class="external text
 <p>For additional information and examples, see the Reverse Proxies section on the Forgejo documentation website <a rel="nofollow" class="external autonumber" href="https://forgejo.org/docs/latest/admin/reverse-proxy/">[2]</a>.
 </p>
 <h4><span class="mw-headline" id="nginx">nginx</span></h4>
-<p>The following is an example of using <a href="../en/Nginx.html#Managing_server_entries" title="Nginx">nginx</a> as reverse proxy for Gitea over unix socket (you need to <a href="../en/Transport_Layer_Security.html#Obtaining_a_certificate" title="Transport Layer Security">provide the SSL certificate</a>):
+<p>The following is an example of using <a href="../en/Nginx.html#Managing_server_entries" title="Nginx">nginx</a> as reverse proxy for Forgejo over unix socket (you need to <a href="../en/Transport_Layer_Security.html#Obtaining_a_certificate" title="Transport Layer Security">provide the SSL certificate</a>):
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/nginx/servers-available/forgejo.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">server {
@@ -586,7 +580,7 @@ The default templates can be found in the <a rel="nofollow" class="external text
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/forgejo/app.ini</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[server]
-PROTOCOL                   = unix
+PROTOCOL                   = http+unix
 DOMAIN                     = git.domain.tld
 ROOT_URL                   = https://git.domain.tld
 HTTP_ADDR                  = /run/forgejo/forgejo.socket
@@ -599,7 +593,7 @@ COOKIE_SECURE              = true
 <strong>Note:</strong> You do not need to activate any SSL certificate options in <code>/etc/forgejo/app.ini</code>.</div>
 <h4><span class="mw-headline" id="Apache_HTTP_Server">Apache HTTP Server</span></h4>
 <p>The following is an example of using the <a href="../en/Apache_HTTP_Server.html" title="Apache HTTP Server">Apache HTTP Server</a> as reverse proxy for Forgejo over unix socket.
-To forward <code>domain.tld</code> to the gitea server, use
+To forward <code>domain.tld</code> to the Forgejo server, use
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/httpd/conf/httpd.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">ProxyPreserveHost On
@@ -610,15 +604,15 @@ ProxypassReverse / unix:/run/forgejo/forgejo.socket|http://domain.tld nocanon
 </pre>
 <p>where <code>domain.tld</code> should be replaced by your domain name (this entry is only passed as a header to the proxy, and does not seem to matter for this setup).
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/gitea/app.ini</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/forgejo/app.ini</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[server]
-PROTOCOL                   = unix
+PROTOCOL                   = http+unix
 DOMAIN                     = domain.tld
 ROOT_URL                   = https://domain.tld
 HTTP_ADDR                  = /run/forgejo/forgejo.socket
 LOCAL_ROOT_URL             =
 </pre>
-<p>To forward a subpath such as <code>domain.tld/git</code> to the gitea server, use
+<p>To forward a subpath such as <code>domain.tld/git</code> to the Forgejo server, use
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/httpd/conf/httpd.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">&lt;Proxy *&gt;
@@ -631,7 +625,7 @@ ProxypassReverse /git unix:/run/forgejo/forgejo.socket|http://domain.tld nocanon
 </pre>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/forgejo/app.ini</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[server]
-PROTOCOL                   = unix
+PROTOCOL                   = http+unix
 DOMAIN                     = domain.tld
 ROOT_URL                   = https://git.domain.tld
 HTTP_ADDR                  = /run/forgejo/forgejo.socket
@@ -675,8 +669,8 @@ Sep 04 04:44:32 (forgejo)[30727]: forgejo.service: Changing to the requested wor
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Forgejo&amp;oldid=803314">https://wiki.archlinux.org/index.php?title=Forgejo&amp;oldid=803314</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 15 March 2024, at 17:42.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Forgejo&amp;oldid=816552">https://wiki.archlinux.org/index.php?title=Forgejo&amp;oldid=816552</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 15 September 2024, at 14:06.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

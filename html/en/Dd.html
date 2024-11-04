@@ -5,7 +5,7 @@
 <title>dd - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -373,8 +373,6 @@
 </p>
 <p>If you are positive that your disk does not contain any errors, you could proceed using a larger block size, which will increase the speed of your copying several fold. For example, changing bs from 512 to 64K changed copying speed from 35 MB/s to 120 MB/s on a simple Celeron 2.7 GHz system. But keep in mind that read errors on the source disk will end up as <i>block errors</i> on the destination disk, i.e. a single 512-byte read error will mess up the whole 64 KiB output block.
 </p>
-<div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> If you would like to view <i>dd</i> progressing, use the <code>status=progress</code> option. See <span class="plainlinks archwiki-template-man" title="$ man 1 dd"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/dd.1">dd(1)</a></span> for details.</div>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> 
 <ul>
@@ -391,32 +389,35 @@
 </p>
 <p>Then mount the external hard drive and backup the drive:
 </p>
-<pre># dd if=/dev/sda conv=sync,noerror bs=64K | gzip -c  &gt; <i>/path/to/backup.img.gz</i>
+<pre># dd if=/dev/sda conv=sync,noerror bs=64M status=progress | lz4 -z  &gt; <i>/path/to/backup.img.lz4</i>
 </pre>
 <p>If necessary (e.g. when the resulting files will be stored on a <a href="../en/FAT.html" class="mw-redirect" title="FAT32">FAT32</a> file system), split the disk image into multiple parts (see also <span class="plainlinks archwiki-template-man" title="$ man 1 split"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/split.1">split(1)</a></span>):
 </p>
-<pre># dd if=/dev/sda conv=sync,noerror bs=64K | gzip -c | split -a3 -b2G - <i>/path/to/backup.img.gz</i>
+<pre># dd if=/dev/sda conv=sync,noerror bs=64M status=progress | lz4 -z | split -a3 -b2G - <i>/path/to/backup.img.lz4</i>
 </pre>
 <p>If there is not enough disk space locally, you may send the image through <i>ssh</i>:
 </p>
-<pre># dd if=/dev/sda conv=sync,noerror bs=64K | gzip -c | ssh user@local dd of=backup.img.gz
+<pre># dd if=/dev/sda conv=sync,noerror bs=64M status=progress | lz4 -z | ssh user@local dd of=backup.img.lz4
 </pre>
 <p>Finally, save extra information about the drive geometry necessary in order to interpret the partition table stored within the image. The most important of which is the sector size.
 </p>
 <pre># fdisk -l /dev/sda &gt; <i>/path/to/list_fdisk.info</i>
 </pre>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> You may wish to use a block size (<code>bs=</code>) that is equal to the amount of cache on the HD you are backing up. For example, <code>bs=8M</code> works for an 8 MiB cache. The 64 KiB mentioned in this article is better than the default <code>bs=512</code> bytes, but it will run faster with a larger <code>bs=</code>.</div>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> <i>gzip</i> is only able to compress data using a single CPU core, which leads to a data throughput considerably lower than the write speeds on modern storage. In order to leverage multicore compression and create a disk image more quickly, one could for instance install the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pigz">pigz</a></span> package, and simply replace the <code>gzip -c</code> command above with <code>pigz -c</code>. For large disks, this can potentially save hours. You can also try other compression algorithms such as <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=zstd">zstd</a></span>.</div>
+<strong>Tip:</strong> 
+<ul>
+<li>You may wish to use a block size (<code>bs=</code>) that is equal to the amount of cache on the HDD you are backing up. For example, <code>bs=512M</code> works for an 512 MiB cache. The 64 MiB mentioned in this article is better than the default <code>bs=512</code> bytes, but it may run faster with a larger <code>bs=</code>.</li>
+<li>The above examples use <span class="plainlinks archwiki-template-man" title="$ man 1 lz4"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/lz4.1">lz4(1)</a></span> which uses multiple cores for compression, but you can exchange it for <a href="../en/Archiving_and_compression.html#Compression_only" title="Archiving and compression">any other compression program</a>.</li>
+</ul>
+</div>
 <h3><span class="mw-headline" id="Restore_system">Restore system</span></h3>
 <p>To restore your system:
 </p>
-<pre># gunzip -c <i>/path/to/backup.img.gz</i> | dd of=/dev/sda
+<pre># lz4 -d <i>/path/to/backup.img.lz4</i> | dd of=/dev/sda status=progress
 </pre>
 <p>When the image has been split, use the following instead:
 </p>
-<pre># cat <i>/path/to/backup.img.gz*</i> | gunzip -c | dd of=/dev/sda
+<pre># cat <i>/path/to/backup.img.lz4*</i> | lz4 -d | dd of=/dev/sda status=progress
 </pre>
 <h2><span class="mw-headline" id="Backup_and_restore_MBR">Backup and restore MBR</span></h2>
 <p>Before making changes to a disk, you may want to backup the partition table and partition scheme of the drive. You can also use a backup to copy the same partition layout to numerous drives.
@@ -514,8 +515,8 @@ Some programs may seek/truncate on input/output file descriptor by themselves ev
 <strong>Tip:</strong> For this specific scenario, a more practical choice is <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=file">file</a></span>.</div>
 <p>To read the filesystem <a rel="nofollow" class="external text" href="https://wiki.osdev.org/FAT#FAT_32_2">volume label of an VFAT</a> image file, which should be in total length of 11 bytes that padded by ASCII spaces, with an offset of <code>0x047</code>:
 </p>
-<pre>$ truncate -s <i>33M</i> empty-hole.img
-$ mkfs.vfat -F32 -n LabelMe empty-hole.img
+<pre>$ truncate -s 36M empty-hole.img
+$ mkfs.fat -F 32 -n LabelMe empty-hole.img
 </pre>
 <pre>$ dd iflag=skip_bytes,count_bytes count=11 skip=$((0x047)) if=empty-hole.img | sed -e 's% *$%%'
 </pre>
@@ -607,24 +608,22 @@ $ exec 9&lt;&amp;-</pre>
 <strong>Tip:</strong> <i>To write the content of a file to block device (with progress indicator)</i>, a suggested alternative is <span class="plainlinks archwiki-template-man" title="$ man 1 dd_rescue"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/dd_rescue.1#W">dd_rescue(1) § W</a></span>. It is capable to avoid unnecessary writing in case of overwriting the old version of image on device with a newer version.</div>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
 <h3><span class="mw-headline" id="Partial_read:_copied_data_is_smaller_than_requested">Partial read: copied data is smaller than requested</span></h3>
-<p>Files created with <i>dd</i> can end up with a smaller size than requested if a full input block is not available for the moment, as <a rel="nofollow" class="external text" href="https://www.gnu.org/software/coreutils/manual/html_node/dd-invocation.html#dd-invocation">per documentaion</a>:
+<p>Files created with <i>dd</i> can end up with a smaller size than requested if a full input block is not available for the moment, as <a rel="nofollow" class="external text" href="https://www.gnu.org/software/coreutils/manual/html_node/dd-invocation.html#dd-invocation">per documentation</a>:
 </p>
-<dl><dd>
-<i>In addition, if no data-transforming <code>conv</code> operand </i>(i.e. option as in this wiki article)<i> is specified, input is copied to the output as soon as it is read, even if it is smaller than the block size.</i>
-</dd></dl>
+<dl><dd>In addition, if no data-transforming <code>conv</code> operand <i>[i.e. option as in this wiki article]</i> is specified, input is copied to the output as soon as it is read, even if it is smaller than the block size.</dd></dl>
 <p>On Linux, the underlying <span class="plainlinks archwiki-template-man" title="$ man 2 read"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/read.2">read(2)</a></span> system call may returns early (i.e. <i>partial read</i>) when reading from a <span class="plainlinks archwiki-template-man" title="$ man 7 pipe"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/pipe.7">pipe(7)</a></span>, or when reading a device file like <code>/dev/urandom</code> and <code>/dev/random</code> (e.g. due to <a rel="nofollow" class="external text" href="https://unix.stackexchange.com/a/178957#178957">hardcoded limitation of underlying kernel device driver</a>) Which make the total size of copied data smaller than expected when <code>bs</code> in conjunction of <code>count=<i>n</i></code> option is used, where <code><i>n</i></code> limited the maximum number of (<i>potential partial</i>) input block(s) to copy to output.
 </p>
 <p>It is possible, but not guaranteed, that <i>dd</i> will warn you about such kind of issue:
 </p>
 <pre>dd: warning: partial read (<i>X</i> bytes); suggest iflag=fullblock
 </pre>
-<p>The solution is to do as the warning says, add <code>iflag=fullblock</code> option in addition to the input file option to the <i>dd</i> command. For example, to create a new file filled up with random data in total length of 40 megabytes:
+<p>The solution is to do as the warning says, add <code>iflag=fullblock</code> option in addition to the input file option to the <i>dd</i> command. For example, to create a new file filled up with random data in total length of 40 mebibytes:
 </p>
 <pre>$ dd if=/dev/urandom of=new-file-filled-by-urandom.bin bs=40M count=1 iflag=fullblock
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> When reading from a pipe or a special device file like we just mentioned below to copy a portion of file in a fixed length with <code>count=<i>n</i></code> option being specified, it is suggested to, or always strongly recommended to add the <code>iflag=fullblock</code> option to the <i>dd</i> command if in case of <a href="../en/Securely_wipe_disk.html" title="Securely wipe disk">wiping</a> a <a href="#Remove_bootloader">portion of device</a> or <a href="../en/Securely_wipe_disk/Tips_and_tricks.html#Wipe_a_single_file" title="Securely wipe disk/Tips and tricks">file</a>.</div>
-<p>When reading from a pipe, <a rel="nofollow" class="external text" href="https://unix.stackexchange.com/questions/556016/cat-dd-pipe-causes-partial-reads-without-iflag-fullblock-why-truncated-to-128">an alternative</a> to <code>iflag=fullblock</code> is to limit <code>bs</code> to the <code>PIPE_BUF</code> constant value as defined in <a rel="nofollow" class="external text" href="https://elixir.bootlin.com/linux/latest/A/ident/PIPE_BUF"><code>linux/limits.h</code></a> to make the <span class="plainlinks archwiki-template-man" title="$ man 7 pipe"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/pipe.7">pipe(7)</a></span> I/O atomic.  For example, to prepare a text file filled up will random alphanumeric string in total length of 5 megabytes:
+<p>When reading from a pipe, <a rel="nofollow" class="external text" href="https://unix.stackexchange.com/questions/556016/cat-dd-pipe-causes-partial-reads-without-iflag-fullblock-why-truncated-to-128">an alternative</a> to <code>iflag=fullblock</code> is to limit <code>bs</code> to the <code>PIPE_BUF</code> constant value as defined in <a rel="nofollow" class="external text" href="https://elixir.bootlin.com/linux/latest/A/ident/PIPE_BUF">linux/limits.h</a> to make the <span class="plainlinks archwiki-template-man" title="$ man 7 pipe"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/pipe.7">pipe(7)</a></span> I/O atomic.  For example, to prepare a text file filled up will random alphanumeric string in total length of 5 mebibytes:
 </p>
 <pre>$ LC_ALL=C tr -dc '[:alnum:]' &lt;/dev/urandom | dd of=passtext-5m.txt bs=<b>4k</b> count=1280
 </pre>
@@ -672,8 +671,8 @@ $ exec 9&lt;&amp;-</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dd&amp;oldid=812065">https://wiki.archlinux.org/index.php?title=Dd&amp;oldid=812065</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 8 July 2024, at 03:42.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dd&amp;oldid=814614">https://wiki.archlinux.org/index.php?title=Dd&amp;oldid=814614</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 16 August 2024, at 17:07.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

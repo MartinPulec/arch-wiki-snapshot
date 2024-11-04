@@ -5,7 +5,7 @@
 <title>Lenovo ThinkPad P16s (AMD) Gen 2 - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -151,7 +151,7 @@
 <p>The mic mute LED on key <code>F4</code> likes to be permanently on. Installing <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=alsa-firmware">alsa-firmware</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sof-firmware">sof-firmware</a></span> resolves this. Still, check the actual mic setting before saying something embarrassing into a voice chat.
 </p>
 <h2><span class="mw-headline" id="Hang_on_resume">Hang on resume</span></h2>
-<p>While fixed in firmware for the T14s models, the T16s still needs a workaround for an issue with the <code>ath11k_pci</code> module that occurs when resuming from either suspend or hibernation. Unloading the module prior to suspend/hibernate and loading it again on resume resolves the issue. You should also restart your network manager to avoid issues after resuming.
+<p>While fixed in firmware for the T14s models, the P16s (and P16v) still needs a workaround for an issue with the <code>ath11k_pci</code> module that occurs when resuming from either suspend or hibernation. Unloading the module prior to suspend/hibernate and loading it again on resume resolves the issue. You should also restart your network manager to avoid issues after resuming.
 </p>
 <p>Put this executable script at the path <code>/usr/lib/systemd/system-sleep/ath11k_pci</code>, and adjust if you use a different network manager than <a href="../en/Systemd-networkd.html" title="Systemd-networkd">systemd-networkd</a> or <a href="../en/NetworkManager.html" title="NetworkManager">NetworkManager</a>:
 </p>
@@ -168,7 +168,7 @@ start_systemd_networkd() {
 
 case $1 in
 	pre) /usr/bin/systemctl stop NetworkManager.service systemd-networkd.service systemd-networkd.socket; /usr/bin/modprobe -r ath11k_pci ;;
-	post) start_nm; start_systemd_network; /usr/bin/modprobe ath11k_pci || exit 0 ;;
+	post) start_nm; start_systemd_networkd; /usr/bin/modprobe ath11k_pci || exit 0 ;;
 esac
 </pre>
 </div>
@@ -188,8 +188,8 @@ esac
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Lenovo_ThinkPad_P16s_(AMD)_Gen_2&amp;oldid=793244">https://wiki.archlinux.org/index.php?title=Lenovo_ThinkPad_P16s_(AMD)_Gen_2&amp;oldid=793244</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 25 November 2023, at 13:44.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Lenovo_ThinkPad_P16s_(AMD)_Gen_2&amp;oldid=819846">https://wiki.archlinux.org/index.php?title=Lenovo_ThinkPad_P16s_(AMD)_Gen_2&amp;oldid=819846</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 29 October 2024, at 18:29.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

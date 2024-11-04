@@ -5,7 +5,7 @@
 <title>WireGuard - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -692,7 +692,7 @@ $ wg genpsk &gt; peer_A-peer_C.psk
 $ wg genpsk &gt; peer_B-peer_C.psk
 </pre>
 <h4><span class="mw-headline" id="Vanity_keys">Vanity keys</span></h4>
-<p>Currently, WireGuard does not support comments or attaching human-memorable names to keys.  This makes identifying the key's owner difficult particularly when multiple keys are in use.  One solution is to generate a public key that contains some familiar characters (perhaps the first few letters of the owner's name or of the hostname etc.), <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=wireguard-vanity-address">wireguard-vanity-address</a></span> does this.
+<p>Currently, WireGuard does not support comments or attaching human-memorable names to keys.  This makes identifying the key's owner difficult particularly when multiple keys are in use.  One solution is to generate a public key that contains some familiar characters (perhaps the first few letters of the owner's name or of the hostname etc.), <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=wireguard-vanity-address">wireguard-vanity-address</a></span>, or alternatively <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/wicuvanity/">wicuvanity</a></span><sup><small>AUR</small></sup> do this.
 </p>
 <p>For example:
 </p>
@@ -709,10 +709,10 @@ private UDWG4VWI+RzAGzNSnlC+0X4d3nk9goWPs/NRC5tX524=  public 9lESlieIFOlJFV6dG7O
 <p>Manual setup is accomplished by using <span class="plainlinks archwiki-template-man" title="$ man 8 ip"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/ip.8">ip(8)</a></span> and <span class="plainlinks archwiki-template-man" title="$ man 8 wg"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/wg.8">wg(8)</a></span>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> These examples use the pre-shared keys which were introduced as <i>optional</i> in <a href="#Key_generation">#Key generation</a>. If not using them, simply ignore corresponding parts in the commands.</div>
+<strong>Note:</strong> These examples use the pre-shared keys which were introduced as <i>optional</i> in <a href="#Key_generation">#Key generation</a>. If not using them, simply ignore the corresponding parts in the commands.</div>
 <p><b>Peer A setup:</b>
 </p>
-<p>In this example peer A will listen on UDP port 51871 and will accept connection from peer B and C.
+<p>In this example, peer A will listen on UDP port 51871 and will accept connection from peers B and C.
 </p>
 <pre># ip link add dev wg0 type wireguard
 # ip addr add 10.0.0.1/24 dev wg0
@@ -1069,7 +1069,7 @@ Name=wg0
 Address=10.0.0.3/24
 Address=fdc9:281f:04d7:9ee9::3/64</pre>
 <h4><span class="mw-headline" id="systemd-networkd:_routing_all_traffic_over_WireGuard">systemd-networkd: routing all traffic over WireGuard</span></h4>
-<p>In this example Peer B connects to peer A with public IP address. Peer B routes all its traffic over WireGuard tunnel and uses Peer A for handling DNS requests.
+<p>In this example, Peer B connects to Peer A with a public IP address. Peer B routes all its traffic over the WireGuard tunnel and uses Peer A for handling DNS requests.
 </p>
 <p><b>Peer A setup</b>
 </p>
@@ -1161,7 +1161,7 @@ Priority=9
 ...</pre>
 <p><b>Route for specific user</b>
 </p>
-<p>It may be desirable to route WAN traffic over the tunnel only for a specific user, for example the <a href="../en/Transmission.html" title="Transmission">transmission</a> user in order to use the tunnel for torrent traffic.
+<p>It may be desirable to route WAN traffic over the tunnel only for a specific user, for example, the <a href="../en/Transmission.html" title="Transmission">transmission</a> user in order to use the tunnel for torrent traffic.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/network/99-wg0.network</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">...
@@ -1261,7 +1261,7 @@ Endpoint = peer-a.example:51871
 PublicKey = <i>PEER_B_PUBLIC_KEY</i>
 AllowedIPs = 10.0.0.2/32
 Endpoint = peer-b.example:51902</pre>
-<p>Then start and/or enable wg0 interface on every participating peer as needed, i.e.
+<p>Then start and/or enable the wg0 interface on every participating peer as needed, i.e.
 </p>
 <pre># netctl start wg0
 </pre>
@@ -1451,7 +1451,7 @@ PresharedKey = <i>PRE-SHARED_KEY</i>
 AllowedIPs = 10.200.200.3/32</pre>
 <p>Additional peers ("clients") can be listed in the same format as needed. Each peer requires the <code>PublicKey</code> to be set. However, specifying <code>PresharedKey</code> is optional.
 </p>
-<p>Notice that the <code>Address</code> has a netmask of <code>/24</code> and the clients on <code>AllowedIPs</code> <code>/32</code>. The clients only use their IP and the server only sends back their respective address.
+<p>Notice that the <code>Address</code> has a netmask of <code>/24</code> and the clients on <code>AllowedIPs</code> <code>/32</code>. The clients only use their IP and the server only sends back their respective addresses.
 </p>
 <p>The interface can be managed manually using <span class="plainlinks archwiki-template-man" title="$ man 8 wg-quick"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/wg-quick.8">wg-quick(8)</a></span> or using a <a href="../en/Systemd.html" title="Systemd">systemd</a> service managed via <span class="plainlinks archwiki-template-man" title="$ man 1 systemctl"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemctl.1">systemctl(1)</a></span>.
 </p>
@@ -1621,7 +1621,11 @@ ExecStart=/bin/sh -c 'for i in /etc/wireguard/*.conf; do /usr/share/wireguard-to
 <h3>
 <span id="Workaround_for_some_public_WiFi.2Fnetworks_seemingly_blocking_WireGuard_connections"></span><span class="mw-headline" id="Workaround_for_some_public_WiFi/networks_seemingly_blocking_WireGuard_connections">Workaround for some public WiFi/networks seemingly blocking WireGuard connections</span>
 </h3>
-<p>Some public WiFi/networks actively block Wireguard's handshake thus preventing the initial connection.  This strategy works for blocking <i>new</i> WireGuard connections but it is harmless to <i>existing</i> connections.  Therefore, to use WireGuard on such a network, simply connect to the WireGuard peer before joining the public WiFi (for example using cellular) thus allowing the handshake to take place before the active blocking can occur.
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> This workaround will only be an option if a cellular connection is available on the device.</div>
+<p>Some WiFi networks can be configured to actively identify and block Wireguard's handshake thus preventing the initial connection and preventing the establishment of the secure tunnel.
+</p>
+<p>This strategy works for blocking <i>new</i> WireGuard connections but it is useless against <i>existing</i> connections.  Therefore, to use WireGuard on such a network, simply connect to the WireGuard peer over cellular before joining the WiFi network thus allowing the handshake to take place before the active blocking can occur.  WireGuard will keep this tunnel open as the devices transitions from cellular to WiFi,
 </p>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
 <h3><span class="mw-headline" id="Routes_are_periodically_reset">Routes are periodically reset</span></h3>
@@ -1651,6 +1655,17 @@ MTU = 1420
 PrivateKey = <i>PEER_FOO_PRIVATE_KEY</i>
 DNS = 10.200.200.1</pre>
 <p>Depending on your network, a lower MTU value can also make your WireGuard connection work.
+</p>
+<p>In certain cases larger MTU values can lead to unstable or intermittent connection because of unreliable <a rel="nofollow" class="external text" href="https://tldp.org/HOWTO/Adv-Routing-HOWTO/lartc.cookbook.mtu-mss.html">Path MTU discovery (PMTU)</a> along the route. Which may lead to situations where ICMP Ping works because of it's low packet size but most of TCP connections fail because of full MTU size utilization.
+</p>
+<p>It's worth checking link's MTU size on both Peers and other routers involved to determine the minimum value.
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># ip link show</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">5: wg0: &lt;POINTOPOINT,NOARP,UP,LOWER_UP&gt; <b>mtu 1400</b> qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+link/none</pre>
+<p>Another option is falling back to MTU of 1280 and finding appropriate value for given path with a trial/error approach. 
+</p>
+<p>MTU of 1420 and above can lead to partially broken links which could be interpreted as a firewall or routing issue instead of actual MTU size.
 </p>
 <h3><span class="mw-headline" id="Key_is_not_the_correct_length_or_format">Key is not the correct length or format</span></h3>
 <p>To avoid the following error, put the key value in the configuration file and not the path to the key file.
@@ -1700,7 +1715,7 @@ esac</pre>
 <p>If not already running, start and enable <code>NetworkManager-dispatcher.service</code>. Also make sure that NetworkManager is not managing routes for <code>wg0</code>, see <a href="#Routes_are_periodically_reset">#Routes are periodically reset</a>.
 </p>
 <h3><span class="mw-headline" id="Connection_lost_after_sleep_using_systemd-networkd">Connection lost after sleep using systemd-networkd</span></h3>
-<p><a href="../en/Systemd.html" title="Systemd">systemd</a> version 253 introduced a change in how network interfaces are reconfigured when resuming from a suspended state<a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/commit/a39a9ac8065c29330207838b70fe388bde2bc254">[8]</a>. In doing so, network connections managed by <a href="../en/Systemd-networkd.html" title="Systemd-networkd">systemd-networkd</a> will lose connection to the wireguard interface.  Unless a kill switch is configured, this risks exposing the public IP address after resuming from suspend. To fix this, uncomment and change the value to <code>no</code> for <code>ManageForeignRoutingPolicyRules</code> in <code>/etc/systemd/networkd.conf</code>. <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/26665#issuecomment-1454353725">[9]</a>
+<p><a href="../en/Systemd.html" title="Systemd">systemd</a> version 253 introduced a change in how network interfaces are reconfigured when resuming from a suspended state<a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/commit/a39a9ac8065c29330207838b70fe388bde2bc254">[8]</a>. In doing so, network connections managed by <a href="../en/Systemd-networkd.html" title="Systemd-networkd">systemd-networkd</a> will lose connection to the wireguard interface.  Unless a kill switch is configured, this risks exposing the public IP address after resuming from suspension. To fix this, uncomment and change the value to <code>no</code> for <code>ManageForeignRoutingPolicyRules</code> in <code>/etc/systemd/networkd.conf</code>. <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/26665#issuecomment-1454353725">[9]</a>
 </p>
 <p>Review the <a href="../en/Systemd-networkd.html" title="Systemd-networkd">systemd-networkd</a> page in full to become informed of any other potential side effects of this change, if any.
 </p>
@@ -1734,8 +1749,8 @@ esac</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=WireGuard&amp;oldid=813439">https://wiki.archlinux.org/index.php?title=WireGuard&amp;oldid=813439</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 30 July 2024, at 15:38.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=WireGuard&amp;oldid=819850">https://wiki.archlinux.org/index.php?title=WireGuard&amp;oldid=819850</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 29 October 2024, at 22:18.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

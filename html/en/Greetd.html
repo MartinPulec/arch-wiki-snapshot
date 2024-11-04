@@ -5,7 +5,7 @@
 <title>greetd - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -181,6 +181,33 @@
 			</a>
 			
 			<ul id="toc-Using_Hyprland-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+		</li>
+		<li id="toc-nwg-hello" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#nwg-hello">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.8</span>nwg-hello</div>
+			</a>
+			
+			<ul id="toc-nwg-hello-sublist" class="vector-toc-list">
+				<li id="toc-Using_Sway_2" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Using_Sway_2">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.8.1</span>Using Sway</div>
+			</a>
+			
+			<ul id="toc-Using_Sway_2-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Using_Hyprland_2" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Using_Hyprland_2">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.8.2</span>Using Hyprland</div>
+			</a>
+			
+			<ul id="toc-Using_Hyprland_2-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -391,6 +418,11 @@
 <dl><dd>
 <a rel="nofollow" class="external free" href="https://gitlab.com/marcusbritanicus/QtGreet">https://gitlab.com/marcusbritanicus/QtGreet</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/greetd-qtgreet/">greetd-qtgreet</a></span><sup><small>AUR</small></sup>
 </dd></dl>
+<ul><li>
+<b>nwg-hello</b> — GTK3-based greeter for greetd written in python.</li></ul>
+<dl><dd>
+<a rel="nofollow" class="external free" href="https://github.com/nwg-piotr/nwg-hello">https://github.com/nwg-piotr/nwg-hello</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nwg-hello">nwg-hello</a></span>
+</dd></dl>
 <h2><span class="mw-headline" id="Starting_greetd">Starting greetd</span></h2>
 <p><a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">Enable</a> <code>greetd.service</code> so greetd will be started at boot.
 </p>
@@ -534,6 +566,29 @@ command = "Hyprland --config /etc/greetd/hyprland.conf"
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/greetd/hyprland.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">exec-once = qtgreet; hyprctl dispatch exit
 </pre>
+<h3><span class="mw-headline" id="nwg-hello">nwg-hello</span></h3>
+<p>In order to use nwg-hello, you either need <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sway">sway</a></span> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=hyprland">hyprland</a></span>.
+</p>
+<h4><span class="mw-headline" id="Using_Sway_2">Using Sway</span></h4>
+<p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sway">sway</a></span> and set the <code>command</code> option as follows:
+</p>
+<pre>...
+[default_session]
+command = "sway -c /etc/nwg-hello/sway-config"
+...
+</pre>
+<p>The Sway configuration file referred to is included with nwg-hello.
+</p>
+<h4><span class="mw-headline" id="Using_Hyprland_2">Using Hyprland</span></h4>
+<p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=hyprland">hyprland</a></span> and set the <code>command</code> option as follows:
+</p>
+<pre>...
+[default_session]
+command = "Hyprland -c /etc/nwg-hello/hyprland.conf"
+...
+</pre>
+<p>The Hyprland configuration file referred to is included with nwg-hello.
+</p>
 <h2><span class="mw-headline" id="Tips_and_tricks">Tips and tricks</span></h2>
 <h3><span class="mw-headline" id="Enabling_autologin">Enabling autologin</span></h3>
 <p>If you want a user to be logged in automatically, an <code>initial_session</code> section must be defined in <code>/etc/greetd/config.toml</code>:
@@ -632,8 +687,8 @@ command = "/usr/local/bin/greetd-startup.sh"
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Greetd&amp;oldid=812782">https://wiki.archlinux.org/index.php?title=Greetd&amp;oldid=812782</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 23 July 2024, at 07:26.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Greetd&amp;oldid=818796">https://wiki.archlinux.org/index.php?title=Greetd&amp;oldid=818796</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 13 October 2024, at 05:30.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

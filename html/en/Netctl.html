@@ -5,7 +5,7 @@
 <title>netctl - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -655,7 +655,7 @@ Key=\"64cf3ced850ecef39197bb7b7b301fc39437a6aa6c6a599d0534b16af578e04a</pre>
 <p>The <i>pre-shared key</i> (psk) now needs to replace the plain text passphrase of the <code>Key</code> variable in the profile.
 </p>
 <h3><span class="mw-headline" id="Using_an_experimental_GUI">Using an experimental GUI</span></h3>
-<p>If you want a graphical user interface to manage <i>netctl</i> and your connections and you are not afraid of highly experimental unofficial packages, there are some options available. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/netctl-gui/">netctl-gui</a></span><sup><small>AUR</small></sup> provides a Qt-based graphical interface, DBus daemon and KDE widget. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/netmenu/">netmenu</a></span><sup><small>AUR</small></sup> uses <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dmenu">dmenu</a></span> as its graphical interface, and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/gnome-shell-extension-netctl-auto-gnome-git/">gnome-shell-extension-netctl-auto-gnome-git</a></span><sup><small>AUR</small></sup><sup>[<a href="../en/Help:Procedures.html#Fix_broken_package_links" title="Help:Procedures">broken link</a>: package not found]</sup> is a gnome shell extension.
+<p>If you want a graphical user interface to manage <i>netctl</i> and your connections and you are not afraid of highly experimental unofficial packages, there are some options available. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/netctl-gui/">netctl-gui</a></span><sup><small>AUR</small></sup> provides a Qt-based graphical interface, DBus daemon and KDE widget. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/netmenu/">netmenu</a></span><sup><small>AUR</small></sup> uses <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dmenu">dmenu</a></span> as its graphical interface.
 </p>
 <p>There is also an application that displays desktop notifications on profile changes and shows a tray icon: <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/netctl-tray/">netctl-tray</a></span><sup><small>AUR</small></sup>.
 </p>
@@ -729,33 +729,6 @@ update_config=1</pre>
 </p>
 <p>You can try now to reboot your machine and see if your configuration worked.
 </p>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> If you get this error on boot bonding:
-<pre>wlan0 is up - this may be due to an out of date ifenslave
-</pre>
-<p>Then this is happening because the <i>wpa_supplicant</i> is being run before the <code>failover</code> netctl profile. This happens because <a href="../en/Systemd.html" title="Systemd">systemd</a> runs everything in parallel, unless told otherwise. <i>ifenslave</i> need all the interfaces to be down before bonding them to the <code>bond0</code> interface. And, since the <i>wpa_supplicant</i> need to put the interface up to be able to scan for networks, this might cause the interface to not be enslaved and your bonding to only have the wired interface.
-</p>
-<p>If this is your case, then you will need to setup a custom dependency on the <code>wpa_supplicant@wlan0</code> service in relation with the <code>netctl@failover</code> profile. More specifically, the <i>wpa_supplicant</i> must be started <b>after</b> the netctl profile. To accomplish this, create a custom dependency file based on the instructions provided here: <a href="../en/Systemd.html#Handling_dependencies" title="Systemd">systemd#Handling dependencies</a>
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/wpa_supplicant@wlan0.service.d/customdependency.conf</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Unit]
-After=netctl@failover.service</pre>
-<p>After that you can try to reboot your system again and see if it works. You can check the status of your bonding by checking <a href="../en/Systemd/Journal.html" class="mw-redirect" title="Journalctl">journalctl</a> for the <code>netctl@failover.service</code> unit.
-</p>
-<p>And by checking:
-</p>
-<pre># ip link
-</pre>
-<p>You should see something like this:
-</p>
-<pre>1: eth0: &lt;BROADCAST,MULTICAST,SLAVE,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast master bond0 state UP mode DEFAULT group default qlen 1000
-    link/ether xx:xx:xx:xx:xx:xx brd ff:ff:ff:ff:ff:ff
-2: wlan0: &lt;BROADCAST,MULTICAST,SLAVE,UP,LOWER_UP&gt; mtu 1500 qdisc mq master bond0 state UP mode DORMANT group default qlen 1000
-    link/ether xx:xx:xx:xx:xx:xx brd ff:ff:ff:ff:ff:ff
-3: bond0: &lt;BROADCAST,MULTICAST,MASTER,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP mode DEFAULT group default 
-    link/ether xx:xx:xx:xx:xx:xx brd ff:ff:ff:ff:ff:ff
-</pre>
-</div>
 <p>Now, you can test your failover setup, by initiating a big download. Unplug your wired interface. Your download should keep going over the wireless interface. Then, plug your wired interface again and it should keep working. You can debug by checking <a href="../en/Systemd/Journal.html" class="mw-redirect" title="Journalctl">journalctl</a> for the <code>netctl@failover.service</code> and <code>wpa_supplicant@wlan0.service</code> units.
 </p>
 <h3><span class="mw-headline" id="Using_any_interface">Using any interface</span></h3>
@@ -900,7 +873,7 @@ TimeoutCarrier=300
 </pre>
 <h3><span class="mw-headline" id="Problems_with_netctl-auto_on_resume">Problems with netctl-auto on resume</span></h3>
 <p>Sometimes <i>netctl-auto</i> fails to reconnect when the system resumes from suspend, hibernate or hybrid-sleep. An easy solution is to restart the service for <i>netctl-auto</i>. 
-This can be automated with an additional service like the following (<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/netctl-auto-resume/">netctl-auto-resume</a></span><sup><small>AUR</small></sup><sup>[<a href="../en/Help:Procedures.html#Fix_broken_package_links" title="Help:Procedures">broken link</a>: package not found]</sup>):
+This can be automated with an additional service like the following:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/netctl-auto-resume@.service</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Unit]
@@ -992,10 +965,7 @@ ExecDownPre="some command ; "$ExecDownPre
 <li><a href="../en/Category:Commands.html" title="Category:Commands">Commands</a></li>
 </ul>
 </div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
-<li><a href="../en/Category:Pages_with_broken_package_links.html" title="Category:Pages with broken package links">Pages with broken package links</a></li>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
-</ul>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li></ul>
 </div>
 </div>
 				</div>
@@ -1006,8 +976,8 @@ ExecDownPre="some command ; "$ExecDownPre
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Netctl&amp;oldid=801616">https://wiki.archlinux.org/index.php?title=Netctl&amp;oldid=801616</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 28 February 2024, at 21:35.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Netctl&amp;oldid=817575">https://wiki.archlinux.org/index.php?title=Netctl&amp;oldid=817575</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 30 September 2024, at 11:43.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

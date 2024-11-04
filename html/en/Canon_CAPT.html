@@ -5,7 +5,7 @@
 <title>Canon CAPT - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -131,6 +131,15 @@
 			<ul id="toc-Conflict_with_CUPS-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Collisions_with_other_printers" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Collisions_with_other_printers">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">4.2</span>Collisions with other printers</div>
+			</a>
+			
+			<ul id="toc-Collisions_with_other_printers-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 </ul>
@@ -241,7 +250,7 @@ It depends on 32-bit library packages and requires <a href="../en/Official_repos
 </p>
 <pre># ccpdadmin -p <i>queue_name</i> -o <i>printer_address</i>
 </pre>
-<p>For example, for a USB printer:
+<p>For example, for a USB printer (in case of multiple USB-connected printers, read <a href="#Collisions_with_other_printers">#Collisions with other printers</a>):
 </p>
 <pre># ccpdadmin -p LBP6310 -o /dev/usb/lp0
 </pre>
@@ -320,7 +329,18 @@ Match Group capt
 </pre>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
 <h3><span class="mw-headline" id="Conflict_with_CUPS">Conflict with CUPS</span></h3>
-<p>To prevent CUPS from accessing our CAPT-only printer (and confusing the firmware with multiple setup requests over USB), a list of unsupported VID/PID pairs may be added into <code>/usr/share/cups/usb/</code>. See the issue on GitHub: <a rel="nofollow" class="external text" href="https://github.com/OpenPrinting/cups/issues/80">Cups attempts to probe, configure unsupported Canon CAPT USB printers</a>.
+<p>To prevent CUPS from accessing our CAPT-only printer (and confusing the firmware with multiple setup requests over USB), a list of unsupported VID/PID pairs may be added into <code>/usr/share/cups/usb/</code>. A new file (e. g. <code>capt-printers.usb-quirks</code>) may be created to prevent the list from getting overwritten by CUPS updates. See the issue on GitHub: <a rel="nofollow" class="external text" href="https://github.com/OpenPrinting/cups/issues/80">Cups attempts to probe, configure unsupported Canon CAPT USB printers</a>.
+</p>
+<h3><span class="mw-headline" id="Collisions_with_other_printers">Collisions with other printers</span></h3>
+<p>Other printers connected to the computer may create their own <i>/dev/usb/lpN</i> entries, possibly even before your Canon printer is enumerated and initialized, causing CAPT to access devices it shouldn't be touching. A symlink to the USB device can be created automatically by <a href="../en/Udev.html" title="Udev">Udev</a> based on the USB VID/PID and (optionally) the serial number reported in <code>dmesg</code>.
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/udev/rules.d/50-canon.rules</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">SUBSYSTEMS=="usb", ATTRS{idVendor}=="04a9", ATTRS{idProduct}=="271c", ATTRS{serial}=="0000A2BARL02", SYMLINK+="usb/lbp7010c"</pre>
+<p>Then, add the symlinked path to CCPD:
+</p>
+<pre># ccpdadmin -p LBP7010C -o /dev/usb/lbp7010c
+</pre>
+<p>Source: <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?id=204625">Arch Forums: "/dev/usb/lp1" is used instead of "/dev/usb/lp0" for printers</a>
 </p>
 </div>
 </div>
@@ -335,8 +355,8 @@ Match Group capt
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Canon_CAPT&amp;oldid=781132">https://wiki.archlinux.org/index.php?title=Canon_CAPT&amp;oldid=781132</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 15 June 2023, at 13:10.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Canon_CAPT&amp;oldid=818993">https://wiki.archlinux.org/index.php?title=Canon_CAPT&amp;oldid=818993</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 14 October 2024, at 15:03.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

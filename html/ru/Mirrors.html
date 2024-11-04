@@ -5,7 +5,7 @@
 <title>Mirrors (Русский) - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -144,8 +144,31 @@
 			<span class="vector-toc-numb">4</span>Решение проблем</div>
 		</a>
 		
+			<button aria-controls="toc-Решение_проблем-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon vector-icon--x-small mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle Решение проблем subsection</span>
+			</button>
+		
 		<ul id="toc-Решение_проблем-sublist" class="vector-toc-list">
-		</ul>
+			<li id="toc-Отсутствие_зеркал" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9E%D1%82%D1%81%D1%83%D1%82%D1%81%D1%82%D0%B2%D0%B8%D0%B5_%D0%B7%D0%B5%D1%80%D0%BA%D0%B0%D0%BB">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">4.1</span>Отсутствие зеркал</div>
+			</a>
+			
+			<ul id="toc-Отсутствие_зеркал-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Проблемы_с_зеркалами" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9F%D1%80%D0%BE%D0%B1%D0%BB%D0%B5%D0%BC%D1%8B_%D1%81_%D0%B7%D0%B5%D1%80%D0%BA%D0%B0%D0%BB%D0%B0%D0%BC%D0%B8">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">4.2</span>Проблемы с зеркалами</div>
+			</a>
+			
+			<ul id="toc-Проблемы_с_зеркалами-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
 	</li>
 	<li id="toc-Смотрите_также" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
 		<a class="vector-toc-link" href="#%D0%A1%D0%BC%D0%BE%D1%82%D1%80%D0%B8%D1%82%D0%B5_%D1%82%D0%B0%D0%BA%D0%B6%D0%B5">
@@ -268,9 +291,10 @@
 </p>
 <p>Например:
 </p>
-<pre># Any
-# Server = http://mirrors.kernel.org/archlinux/$repo/os/$arch
-<b>Server = https://mirrors.kernel.org/archlinux/$repo/os/$arch</b>
+<pre>## Worldwide
+#Server = https://geo.mirror.pkgbuild.com/$repo/os/$arch
+#Server = http://mirror.rackspace.com/archlinux/$repo/os/$arch
+<b>Server = https://mirror.rackspace.com/archlinux/$repo/os/$arch</b>
 </pre>
 <p>См. <a href="#%D0%A1%D0%BE%D1%80%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0_%D0%B7%D0%B5%D1%80%D0%BA%D0%B0%D0%BB">#Сортировка зеркал</a> для получения информации об утилитах по выбору зеркал.
 </p>
@@ -281,21 +305,21 @@
 <li>HTTP-зеркала быстрее FTP-зеркал из-за <a href="https://en.wikipedia.org/wiki/ru:%D0%9F%D0%BE%D1%81%D1%82%D0%BE%D1%8F%D0%BD%D0%BD%D0%BE%D0%B5_HTTP-%D1%81%D0%BE%D0%B5%D0%B4%D0%B8%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5" class="extiw" title="wikipedia:ru:Постоянное HTTP-соединение">постоянного HTTP-соединения</a> — в случае с FTP, необходимо устанавливать новое соединение с сервером при каждом запросе <i>pacman</i> на скачивание, что приводит к небольшим задержкам.</li>
 </ul>
 </div>
-<p>Также можно указать зеркала в <code>/etc/pacman.conf</code>. В случае с репозиторием <i>[core]</i>, по умолчанию это выглядит следующим образом:
+<p>Также можно указать зеркала в <code>/etc/pacman.conf</code>. В случае с репозиторием <i>core</i>, по умолчанию это выглядит следующим образом:
 </p>
 <pre>[core]
 Include = /etc/pacman.d/mirrorlist
 </pre>
-<p>Например, если необходимо по умолчанию использовать зеркало <i>HostEurope</i>, укажите его перед строкой <code>Include</code>:
+<p>Чтобы использовать зеркало <i>kernel.org</i> как зеркало по умолчанию, добавьте зеркало перед строкой <code>Include</code>:
 </p>
 <pre>[core]
-<b>Server = http://ftp.hosteurope.de/mirror/ftp.archlinux.org/core/os/$arch</b>
+<b>Server = https://mirrors.kernel.org/archlinux/$repo/os/$arch</b>
 Include = /etc/pacman.d/mirrorlist
 </pre>
-<p>Теперь pacman будет первым делом пытаться соединиться с этим зеркалом. Аналогично можно сделать и для остальных репозиториев: <i>[core-testing]</i>, <i>[extra]</i>,  и <i>[extra-testing]</i>.
+<p>Теперь pacman будет первым делом пытаться соединиться с этим зеркалом. Аналогично можно сделать и для остальных репозиториев: <i>core-testing</i>, <i>extra</i>,  и <i>extra-testing</i>.
 </p>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Примечание:</strong> Если вы указываете зеркала напрямую в <code>pacman.conf</code>, следует использовать одно и то же зеркало для всех репозиториев. В противном случае можно столкнуться с тем, что будут установлены несовместимые версии пакетов, например, linux из <i>[core]</i> и более старые модули ядра из <i>[extra]</i>.</div>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Важно:</strong> Если вы указываете зеркала напрямую в <code>pacman.conf</code>, следует использовать одно и то же зеркало для всех репозиториев. В противном случае это приведет к <a href="../ru/System_maintenance.html#%D0%A7%D0%B0%D1%81%D1%82%D0%B8%D1%87%D0%BD%D1%8B%D0%B5_%D0%BE%D0%B1%D0%BD%D0%BE%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D1%8F_%D0%BD%D0%B5_%D0%BF%D0%BE%D0%B4%D0%B4%D0%B5%D1%80%D0%B6%D0%B8%D0%B2%D0%B0%D1%8E%D1%82%D1%81%D1%8F" title="System maintenance (Русский)">частичному обновлению</a>, поскольку могут быть установлены пакеты, несовместимые друг с другом, например <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span> из <i>core</i> и более старый модуль ядра из <i>extra</i>.</div>
 <h3>
 <span id=".D0.9F.D1.80.D0.B8.D0.BD.D1.83.D0.B4.D0.B8.D1.82.D0.B5.D0.BB.D1.8C.D0.BD.D0.BE.D0.B5_.D0.BE.D0.B1.D0.BD.D0.BE.D0.B2.D0.BB.D0.B5.D0.BD.D0.B8.D0.B5_.D1.81.D0.BF.D0.B8.D1.81.D0.BA.D0.B0_.D0.BF.D0.B0.D0.BA.D0.B5.D1.82.D0.BE.D0.B2_pacman"></span><span class="mw-headline" id="Принудительное_обновление_списка_пакетов_pacman">Принудительное обновление списка пакетов pacman</span>
 </h3>
@@ -305,15 +329,16 @@ Include = /etc/pacman.d/mirrorlist
 </p>
 <pre># pacman -Syyu
 </pre>
-<div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Совет:</strong> Указание двух аргументов <code>--refresh</code>/<code>-y</code> заставляет pacman обновить списки пакетов, даже если они уже считаются актуальными. Запуск <code>pacman -Syyu</code> — излишняя трата ресурсов в большинстве случае, но иногда позволяет исправить проблемы, возникающие при смене неисправного зеркала на исправное. См. также 
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Примечание:</strong> Указание двух аргументов <code>--refresh</code>/<code>-y</code> заставляет pacman обновить списки пакетов, даже если они уже считаются актуальными. Запуск <code>pacman -Syyu</code> — излишняя трата ресурсов в большинстве случае, но иногда позволяет исправить проблемы, возникающие при смене неисправного зеркала на исправное. См. также 
 <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?id=163124">Is -Syy safe?</a>.</div>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Важно:</strong> В большинстве случаев, при принудительном обновлении базы данных pacman, необходимо также принудительно откатить "слишком новые" пакеты, чтобы их версии соответствовали версиям на новом зеркале. Это предотвращает проблемы, приводящие к частичному обновлению системы.</div>
+<strong>Важно:</strong> В большинстве случаев при принудительном обновлении базы данных pacman необходимо принудительно обновить все потенциально "слишком новые пакеты", чтобы они соответствовали версиям, предлагаемым новым зеркалом. Это предотвратит проблемы, когда пакеты обновляются непоследовательно, что приводит к неполному обновлению.
 <pre># pacman -Syyuu
 </pre>
-<p>Также данная процедура необязательна при использовании временных отметок (timestamps) для обеспечения обновления зеркал.
+<p>Это не обязательно при использовании <a rel="nofollow" class="external text" href="https://archlinux.org/mirrors/status/#successful">успешно синхронизированных зеркал</a> или проверке временной метки файла <code>lastsync</code> чтобы убедиться в актуальности списков пакетов.
 </p>
+</div>
 <h2>
 <span id=".D0.A1.D0.BE.D1.80.D1.82.D0.B8.D1.80.D0.BE.D0.B2.D0.BA.D0.B0_.D0.B7.D0.B5.D1.80.D0.BA.D0.B0.D0.BB"></span><span class="mw-headline" id="Сортировка_зеркал">Сортировка зеркал</span>
 </h2>
@@ -331,7 +356,7 @@ Include = /etc/pacman.d/mirrorlist
 </h4>
 <p>Пакет <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pacman-contrib">pacman-contrib</a></span> предоставляет Bash-скрипт <code>/usr/bin/rankmirrors</code>, который можно использовать для ранжирования зеркал в соответствии со скоростями подключения и нахождения наиболее быстрых местных зеркал.
 </p>
-<p>Создайте резервную копию текущего файл <code>/etc/pacman.d/mirrorlist</code>:
+<p>Создайте резервную копию текущего файла <code>/etc/pacman.d/mirrorlist</code>:
 </p>
 <pre># cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.backup
 </pre>
@@ -353,10 +378,10 @@ Include = /etc/pacman.d/mirrorlist
 </h4>
 <p>Воспользуйтесь <i>Pacman Mirrorlist Generator</i>, чтобы получить список актуальных зеркал определённых стран и отсортировать его с помощью <i>rankmirrors</i>. Команда ниже скачивает актуальный список зеркал во Франции и Великобритании, использующих протокол <i>https</i>, после чего удаляет комментарии, ранжирует сервера и выводит 5 наиболее быстрых из них.
 </p>
-<pre>$ curl -s "https://archlinux.org/mirrorlist/?country=FR&amp;country=GB&amp;protocol=https&amp;use_mirror_status=on" | sed -e 's/^#Server/Server/' -e '/^#/d' | rankmirrors -n 5 -
+<pre>$ curl -s "<a rel="nofollow" class="external free" href="https://archlinux.org/mirrorlist/?country=FR&amp;country=GB&amp;protocol=https&amp;use_mirror_status=on">https://archlinux.org/mirrorlist/?country=FR&amp;country=GB&amp;protocol=https&amp;use_mirror_status=on</a>" | sed -e 's/^#Server/Server/' -e '/^#/d' | rankmirrors -n 5 -
 </pre>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Совет:</strong> Данные действия можно также выполнить интерактивно на странице <code>https://archlinux.org/mirrorlist</code> с помощью любого текстового браузера, например, <span class="plainlinks archwiki-template-man" title="$ man 1 elinks"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/elinks.1">elinks(1)</a></span>.</div>
+<strong>Совет:</strong> Данные действия можно также выполнить интерактивно на странице <code><a rel="nofollow" class="external free" href="https://archlinux.org/mirrorlist">https://archlinux.org/mirrorlist</a></code> с помощью любого текстового браузера, например, <span class="plainlinks archwiki-template-man" title="$ man 1 elinks"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/elinks.1">elinks(1)</a></span>.</div>
 <p>Существующие инструменты:
 </p>
 <ul><li>
@@ -369,16 +394,34 @@ Include = /etc/pacman.d/mirrorlist
 </h3>
 <p>Официальный <a rel="nofollow" class="external text" href="https://archlinux.org/mirrorlist/">Pacman Mirrorlist Generator</a> предоставляет возможность легко получить ранжированный список зеркал. Весь процесс сортировки происходит на одном сервере с учётом различных факторов, что значительно снижает нагрузку на зеркала и клиентов в сравнении с ранжированием с каждого отдельного клиента.
 </p>
-<p>Другая популярная альтернатива:
+<p>Другие популярные альтернативы:
 </p>
-<p><b><a href="../ru/Reflector.html" title="Reflector (Русский)">Reflector</a></b> — получает последний список зеркал со страницы <a rel="nofollow" class="external text" href="https://archlinux.org/mirrors/status/">MirrorStatus</a>, фильтрует их, сортирует по скорости и перезаписывает <code>/etc/pacman.d/mirrorlist</code>
-</p>
+<ul><li>
+<b><a href="../ru/Reflector.html" title="Reflector (Русский)">Reflector</a></b> — получает последний список зеркал со страницы <a rel="nofollow" class="external text" href="https://archlinux.org/mirrors/status/">MirrorStatus</a>, фильтрует их, сортирует по скорости и перезаписывает <code>/etc/pacman.d/mirrorlist</code>. Обеспечивает автоматизацию обновления списка зеркал при помощи демона systemd и таймера.</li></ul>
 <dl><dd>
 <a rel="nofollow" class="external free" href="https://xyne.dev/projects/reflector/">https://xyne.dev/projects/reflector/</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=reflector">reflector</a></span>
+</dd></dl>
+<ul><li>
+<b>mirro-rs</b> — Менеджер зеркал Arch Linux с текстовым интерфейсом.</li></ul>
+<dl><dd>
+<a rel="nofollow" class="external free" href="https://github.com/rtkay123/mirro-rs">https://github.com/rtkay123/mirro-rs</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mirro-rs">mirro-rs</a></span>
+</dd></dl>
+<ul><li>
+<b>rate-mirrors</b> — Удобный для повседневного использования инструмент ранжирования зеркал на стороне клиента с поддержкой географических карт.</li></ul>
+<dl><dd>
+<a rel="nofollow" class="external free" href="https://github.com/westandskif/rate-mirrors">https://github.com/westandskif/rate-mirrors</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/rate-mirrors/">rate-mirrors</a></span><sup><small>AUR</small></sup>
+</dd></dl>
+<ul><li>
+<b>shiny-mirrors</b> — Альтернатива reflector, написанная на Rust.</li></ul>
+<dl><dd>
+<a rel="nofollow" class="external free" href="https://gitlab.com/Arisa_Snowbell/shiny-mirrors">https://gitlab.com/Arisa_Snowbell/shiny-mirrors</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/shiny-mirrors/">shiny-mirrors</a></span><sup><small>AUR</small></sup>
 </dd></dl>
 <h2>
 <span id=".D0.A0.D0.B5.D1.88.D0.B5.D0.BD.D0.B8.D0.B5_.D0.BF.D1.80.D0.BE.D0.B1.D0.BB.D0.B5.D0.BC"></span><span class="mw-headline" id="Решение_проблем">Решение проблем</span>
 </h2>
+<h3>
+<span id=".D0.9E.D1.82.D1.81.D1.83.D1.82.D1.81.D1.82.D0.B2.D0.B8.D0.B5_.D0.B7.D0.B5.D1.80.D0.BA.D0.B0.D0.BB"></span><span class="mw-headline" id="Отсутствие_зеркал">Отсутствие зеркал</span>
+</h3>
 <p>Если вы столкнулись со следующей ошибкой:
 </p>
 <pre>error: config file /etc/pacman.d/mirrorlist could not be read: No such file or directory
@@ -387,10 +430,15 @@ Include = /etc/pacman.d/mirrorlist
 </p>
 <pre># curl -o /etc/pacman.d/mirrorlist https://archlinux.org/mirrorlist/all/
 </pre>
-<p>Раскомментируйте предпочитаемые зеркала, как описано выше, после чего выполните следующую команду:
+<p>Раскомментируйте предпочитаемые зеркала, как описано в <a href="#%D0%92%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%BD%D0%B8%D0%B5_%D0%BE%D0%BF%D1%80%D0%B5%D0%B4%D0%B5%D0%BB%D1%91%D0%BD%D0%BD%D0%BE%D0%B3%D0%BE_%D0%B7%D0%B5%D1%80%D0%BA%D0%B0%D0%BB%D0%B0">#Включение определённого зеркала</a>, после чего выполните следующую команду:
 </p>
 <pre># pacman -Syu pacman-mirrorlist
 </pre>
+<h3>
+<span id=".D0.9F.D1.80.D0.BE.D0.B1.D0.BB.D0.B5.D0.BC.D1.8B_.D1.81_.D0.B7.D0.B5.D1.80.D0.BA.D0.B0.D0.BB.D0.B0.D0.BC.D0.B8"></span><span class="mw-headline" id="Проблемы_с_зеркалами">Проблемы с зеркалами</span>
+</h3>
+<p>Если вы уверены, что зеркало работает неправильно и это не отражается на <a rel="nofollow" class="external text" href="https://archlinux.org/mirrors/status/">странице статуса зеркал</a>, смените зеркало и  <a href="../en/Bug_reporting_guidelines.html#Opening_a_bug" title="Bug reporting guidelines">создайте багрепорт</a>. Для зеркал багрепорт следует открыть в <a rel="nofollow" class="external text" href="https://gitlab.archlinux.org/archlinux/arch-mirrors/-/issues">проекте arch-mirrors Arch Linux GitLab</a>. Вы также можете отправить письмо по адресу  <a rel="nofollow" class="external text" href="mailto:mirrors@archlinux.org">mirrors@archlinux.org</a>.
+</p>
 <h2>
 <span id=".D0.A1.D0.BC.D0.BE.D1.82.D1.80.D0.B8.D1.82.D0.B5_.D1.82.D0.B0.D0.BA.D0.B6.D0.B5"></span><span class="mw-headline" id="Смотрите_также">Смотрите также</span>
 </h2>
@@ -412,8 +460,8 @@ Include = /etc/pacman.d/mirrorlist
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Mirrors_(%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9)&amp;oldid=800775">https://wiki.archlinux.org/index.php?title=Mirrors_(Русский)&amp;oldid=800775</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 19 February 2024, at 09:17.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Mirrors_(%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9)&amp;oldid=818836">https://wiki.archlinux.org/index.php?title=Mirrors_(Русский)&amp;oldid=818836</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 13 October 2024, at 06:15.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

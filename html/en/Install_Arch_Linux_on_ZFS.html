@@ -5,7 +5,7 @@
 <title>Install Arch Linux on ZFS - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -204,13 +204,13 @@
 			</button>
 		
 		<ul id="toc-Install_and_configure_the_boot_loader-sublist" class="vector-toc-list">
-			<li id="toc-Using_EFISTUB" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Using_EFISTUB">
+			<li id="toc-Using_an_EFI_boot_stub" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Using_an_EFI_boot_stub">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">6.1</span>Using EFISTUB</div>
+				<span class="vector-toc-numb">6.1</span>Using an EFI boot stub</div>
 			</a>
 			
-			<ul id="toc-Using_EFISTUB-sublist" class="vector-toc-list">
+			<ul id="toc-Using_an_EFI_boot_stub-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 		<li id="toc-Using_an_unified_kernel_image" class="vector-toc-list-item vector-toc-level-2">
@@ -562,8 +562,6 @@
 <p>If you have opted for a boot partition as well as any other non-ZFS system partitions then format them. Do not do anything to the Solaris partition nor to the BIOS boot partition. ZFS will manage the first, and your boot loader the second.
 </p>
 <h2><span class="mw-headline" id="Setup_the_ZFS_filesystem">Setup the ZFS filesystem</span></h2>
-<div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> Do not use '-' in the names of your datasets. (<a rel="nofollow" class="external text" href="https://github.com/zfsonlinux/zfs/commit/c39b2786ac98ab87d6dda00aa83b399ed175055a">see this "feature"</a>)</div>
 <p>First, make sure the ZFS modules are loaded,
 </p>
 <pre># modprobe zfs
@@ -605,6 +603,9 @@
              -O keyformat=passphrase   \
              -O keylocation=prompt     \
              zroot /dev/disk/by-id/<i>id-to-partition-partx</i></pre>
+<p>The options after <code>-O</code> control ZFS behavior. 
+A detailed explanation of them can be found in the <span class="plainlinks archwiki-template-man" title="$ man 7 zfsprops"><a rel="nofollow" class="external text" href="https://openzfs.github.io/openzfs-docs/man/master/7/zfsprops.7.html">zfsprops(7)</a></span> man page.
+</p>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> 
 <ul>
@@ -780,8 +781,8 @@
 </p>
 <p>Considering the above, configuring your boot loader should be quite straightforward. Here are some examples, but this list is by no means conclusive.
 </p>
-<h3><span class="mw-headline" id="Using_EFISTUB">Using EFISTUB</span></h3>
-<p>For <a href="../en/EFISTUB.html" title="EFISTUB">EFISTUB</a>, you can manually add an entry to your UEFI boot menu:
+<h3><span class="mw-headline" id="Using_an_EFI_boot_stub">Using an EFI boot stub</span></h3>
+<p>For an <a href="../en/EFI_boot_stub.html" title="EFI boot stub">EFI boot stub</a>, you can manually add an entry to your UEFI boot menu:
 </p>
 <pre># efibootmgr --create --disk <i>your_esp_disk</i> --part <i>your_esp_partition_number</i> --label "Arch Linux (ZFS)" --loader /vmlinuz-linux --unicode 'zfs=zroot/ROOT/default rw initrd=\initramfs-linux.img'
 </pre>
@@ -947,14 +948,11 @@ linux   /vmlinuz-linux
 initrd  /initramfs-linux.img
 options zfs=zroot/ROOT/default rw</pre>
 <h3><span class="mw-headline" id="Using_rEFInd">Using rEFInd</span></h3>
-<p>To use an <a href="../en/EFISTUB.html" title="EFISTUB">EFISTUB</a> and <a href="../en/REFInd.html" title="REFInd">rEFInd</a> for the UEFI boot loader, the kernel parameters in <code>refind_linux.conf</code> for ZFS should include <code>zfs=bootfs</code> or <code>zfs=zroot</code> so the system can boot from ZFS. The <code>root</code> and <code>rootfstype</code> parameters are not needed.
+<p>To use an <a href="../en/EFI_boot_stub.html" title="EFI boot stub">EFI boot stub</a> and <a href="../en/REFInd.html" title="REFInd">rEFInd</a> for the UEFI boot loader, the kernel parameters in <code>refind_linux.conf</code> for ZFS should include <code>zfs=bootfs</code> or <code>zfs=zroot</code> so the system can boot from ZFS. The <code>root</code> and <code>rootfstype</code> parameters are not needed.
 </p>
 <h3><span class="mw-headline" id="Using_ZFSBootMenu">Using ZFSBootMenu</span></h3>
-<p>Install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zfsbootmenu/">zfsbootmenu</a></span><sup><small>AUR</small></sup>. 
+<p>Install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zfsbootmenu/">zfsbootmenu</a></span><sup><small>AUR</small></sup>.
 </p>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> Compiling with an <a href="../en/AUR_helpers.html" class="mw-redirect" title="AUR helper">AUR helper</a> (or <a href="../en/Makepkg.html" title="Makepkg">makepkg</a> if building from the directory in which the PKGBUILD was cloned from the AUR) requires a <a rel="nofollow" class="external text" href="https://github.com/zbm-dev/zfsbootmenu/commit/dae859df631bf994fb412e2b6d46b1179e02e2a5">patch</a>.<a rel="nofollow" class="external autonumber" href="https://github.com/zbm-dev/zfsbootmenu/issues/588#issuecomment-1925849117">[1]</a>
-</div>
 <h4><span class="mw-headline" id="For_UEFI">For UEFI</span></h4>
 <p>Install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=efibootmgr">efibootmgr</a></span>. When using ZFSBootMenu you need to have your <code>/boot</code> directory located on your root filesystem. See <a rel="nofollow" class="external text" href="https://docs.zfsbootmenu.org/en/latest/guides/general/bootenvs-and-you.html">Boot Environments and You: A Primer</a> and <a rel="nofollow" class="external text" href="https://docs.zfsbootmenu.org/en/latest/general/uefi-booting.html">UEFI Booting</a> for further information.
 </p>
@@ -1194,8 +1192,8 @@ LABEL zfsbootmenu-backup
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Install_Arch_Linux_on_ZFS&amp;oldid=808825">https://wiki.archlinux.org/index.php?title=Install_Arch_Linux_on_ZFS&amp;oldid=808825</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 20 May 2024, at 10:32.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Install_Arch_Linux_on_ZFS&amp;oldid=819181">https://wiki.archlinux.org/index.php?title=Install_Arch_Linux_on_ZFS&amp;oldid=819181</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 19 October 2024, at 12:13.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

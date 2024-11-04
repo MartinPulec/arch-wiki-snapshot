@@ -5,7 +5,7 @@
 <title>iwd - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -228,6 +228,15 @@
 			<ul id="toc-Other_cases-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Embedded_certificates" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Embedded_certificates">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.2.7</span>Embedded certificates</div>
+			</a>
+			
+			<ul id="toc-Embedded_certificates-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 		</li>
 	</ul>
@@ -391,6 +400,15 @@
 			</a>
 			
 			<ul id="toc-iwd_keeps_roaming-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Hostname_not_sent_in_DHCP_request" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Hostname_not_sent_in_DHCP_request">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">5.8</span>Hostname not sent in DHCP request</div>
+			</a>
+			
+			<ul id="toc-Hostname_not_sent_in_DHCP_request-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -641,6 +659,7 @@
 <ul>
 <li>AwesomeWM</li>
 <li>i3bar</li>
+<li><a href="../en/Stalonetray.html" title="Stalonetray">stalonetray</a></li>
 </ul>
 <h4><span class="mw-headline" id="Autostart">Autostart</span></h4>
 <p>The most common use case for iwgtk is to start the indicator daemon every time you log into your desktop. If your desktop environment supports the <a href="../en/XDG_Autostart.html" title="XDG Autostart">XDG Autostart</a> standard, this should happen automatically due to the <code>iwgtk-indicator.desktop</code> file which is placed in <code>/etc/xdg/autostart/</code> by the AUR package.
@@ -703,7 +722,7 @@ EAP-PEAP-Phase2-Password=hunter2
 
 [Settings]
 AutoConnect=true</pre>
-<p>MsCHAPv2 passwords can also be stored as a encrypted hash. The correct md4 hash can be calculated with:
+<p>MsCHAPv2 passwords can also be stored as an encrypted hash. The correct md4 hash can be calculated with:
 </p>
 <pre>$ iconv -t utf16le | openssl md4 -provider legacy
 </pre>
@@ -731,6 +750,8 @@ AutoConnect=true</pre>
 </p>
 <p>As with the other enterprise methods you need to know the CA cert your organization uses (<code>cacert.pem</code>), which is used to prove to your device it is connecting to the right place. You also need to have the client certificate, which represents you and will be uploaded on each connection (<code>client-cert.pem</code>), and the private key that goes with it (<code>client-key.pem</code>), which is used to prove you own that client certificate.
 </p>
+<p>You can either provide a path to the required certificate or you can <a href="#Embedded_certificates">embed them inside your configuration</a>.
+</p>
 <p>When you have collected the credentials, put this in your <code>/var/lib/iwd/<i>essid</i>.8021x</code> file:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/var/lib/iwd/<i>essid</i>.8021x</pre>
@@ -746,7 +767,9 @@ EAP-TLS-ClientKey=/path/to/client-key.pem
 [Settings]
 AutoConnect=true</pre>
 <h4><span class="mw-headline" id="eduroam">eduroam</span></h4>
-<p>eduroam offers a <a rel="nofollow" class="external text" href="https://cat.eduroam.org/">configuration assistant tool (CAT)</a>, which unfortunately does not support iwd. However, the installer, which you can download by clicking on the download button then selecting your university, is just a Python script. It is easy to extract the necessary configuration options, including the certificate and server domain mask. Also, some institutions are upgrading to EAP-TLS, and outsourcing the generation of <code>client-cert.pem</code> to <a rel="nofollow" class="external text" href="https://www.securew2.com/">SecureW2</a>, in which case you will need to use their tool as well to generate a client cert.
+<p>eduroam offers a <a rel="nofollow" class="external text" href="https://cat.eduroam.org/">configuration assistant tool (CAT)</a>, which <a rel="nofollow" class="external text" href="https://github.com/GEANT/CAT/pull/207">supports iwd</a>. If your organisation has a profile within the CAT, getting connected to eduroam can be done by downloading the Linux script and running it using <a href="../en/Python.html" title="Python">python</a>. If your organisation does not support CAT, you will have to create the configuration file manually using parameters provided to you by the administrators (the below table can be helpful in doing so).
+</p>
+<p>If for whatever reason the script does not work, it is easy to extract the necessary configuration options manually, including the certificate and server domain mask. Additionally, some institutions are upgrading to EAP-TLS, and outsourcing the generation of <code>client-cert.pem</code> to <a rel="nofollow" class="external text" href="https://www.securew2.com/">SecureW2</a>, in which case you will need to use their tool as well to generate a client cert.
 </p>
 <p>The following table contains a mapping of iwd configuration options to eduroam CAT install script variables.
 </p>
@@ -776,7 +799,7 @@ AutoConnect=true</pre>
 </tr>
 <tr>
 <td><code>EAP-<i>method</i>-CACert</code></td>
-<td>the content of <code>Config.CA</code> or an absolute path to a <i>.pem</i> file containing <code>Config.CA</code>
+<td>the content of <code>Config.CA</code>, an absolute path to a <i>.pem</i> file containing <code>Config.CA</code> or an <a href="#Embedded_certificates">embedded certificate</a>.
 </td>
 </tr>
 <tr>
@@ -811,11 +834,29 @@ AutoConnect=true</pre>
 <h4><span class="mw-headline" id="Other_cases">Other cases</span></h4>
 <p>More example tests can be <a rel="nofollow" class="external text" href="https://git.kernel.org/pub/scm/network/wireless/iwd.git/tree/autotests">found in the test cases</a> of the upstream repository.
 </p>
+<h4><span class="mw-headline" id="Embedded_certificates">Embedded certificates</span></h4>
+<p>Instead of including an absolute path to a PEM file (for certificates and keys), the PEM itself can be included inside the network configuration file.
+</p>
+<p>An embedded PEM can appear anywhere in the settings file using the following format:
+</p>
+<pre>[@pem@<i>my_ca_cert</i>]
+----- BEGIN CERTIFICATE -----
+<i>PEM data</i>
+----- END CERTIFICATE -----
+</pre>
+<p>where <i>my_ca_cert</i> is any name you can use to identify the certificate inside the configuration file.
+</p>
+<p>Then the embedded certificate can be used anywhere in the settings file a certificate path is required by prefixing the value with <code>embed:</code>
+</p>
+<pre>EAP-TTLS-CACert=embed:<i>my_ca_cert</i>
+</pre>
+<p>This  is not limited to CA certificates either. Client certificates, client keys (encrypted or not), and certificate chains can be included.
+</p>
 <h2><span class="mw-headline" id="Optional_configuration">Optional configuration</span></h2>
 <p>File <code>/etc/iwd/main.conf</code> can be used for main configuration. See <span class="plainlinks archwiki-template-man" title="$ man 5 iwd.config"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/iwd.config.5">iwd.config(5)</a></span>.
 </p>
 <h3><span class="mw-headline" id="Disable_auto-connect_for_a_particular_network">Disable auto-connect for a particular network</span></h3>
-<p>Create / edit file <code>/var/lib/iwd/<i>network</i>.<i>type</i></code>. Add the following section to it:
+<p><a href="../en/Help:Reading.html#Append,_add,_create,_edit" class="mw-redirect" title="Create">Create</a> / <a href="../en/Help:Reading.html#Append,_add,_create,_edit" class="mw-redirect" title="Textedit">edit</a> file <code>/var/lib/iwd/<i>network</i>.<i>type</i></code>. Add the following section to it:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/var/lib/iwd/spaceship.psk (for example)</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Settings]
@@ -908,7 +949,7 @@ NameResolvingService=resolvconf</pre>
 <div>
 <b>Reason:</b> Encrypted network profiles may not work in certain setups. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Iwd.html">Talk:Iwd</a>)</div>
 </div>
-<p>By default, iwd stores network credentials to the system unencrypted. Since iwd version 1.25, iwd provides experimental support for creating <a rel="nofollow" class="external text" href="https://iwd.wiki.kernel.org/profile_encryption">encrypted profiles</a> for systems using systemd. 
+<p>By default, iwd stores network credentials to the system unencrypted. Since iwd version 1.25, iwd provides experimental support for creating <a rel="nofollow" class="external text" href="https://archive.kernel.org/oldwiki/iwd.wiki.kernel.org/profile_encryption.html">encrypted profiles</a> for systems using systemd. 
 </p>
 <p>First, create an encrypted credential. The following example uses <a href="../en/Systemd-creds.html" title="Systemd-creds">systemd-creds</a> and creates an encrypted credential called <i>iwd-secret</i> that is bound to the system's <a href="../en/Trusted_Platform_Module.html" title="Trusted Platform Module">Trusted Platform Module</a> which will be used to create encrypted profiles:
 </p>
@@ -958,7 +999,7 @@ Type=wlan
 
 [Link]
 NamePolicy=keep kernel</pre>
-<p>As a result the wireless link name <code>wlan#</code> is kept after boot. This resolved a race condition between <i>iwd</i> and <a href="../en/Udev.html" title="Udev">udev</a> on interface renaming as explained in <a rel="nofollow" class="external text" href="https://iwd.wiki.kernel.org/interface_lifecycle#udev_interface_renaming">iwd udev interface renaming</a>.
+<p>As a result the wireless link name <code>wlan#</code> is kept after boot. This resolved a race condition between <i>iwd</i> and <a href="../en/Udev.html" title="Udev">udev</a> on interface renaming as explained in <a rel="nofollow" class="external text" href="https://archive.kernel.org/oldwiki/iwd.wiki.kernel.org/interface_lifecycle.html#udev_interface_renaming">iwd udev interface renaming</a>.
 </p>
 <p>If this results in issues try masking it with:
 </p>
@@ -1001,15 +1042,22 @@ EnableNetworkConfiguration=True</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[General]
 RoamThreshold=-75
 RoamThreshold5G=-80</pre>
+<h3><span class="mw-headline" id="Hostname_not_sent_in_DHCP_request">Hostname not sent in DHCP request</span></h3>
+<p>Set <code>SendHostname</code> in the network's configuration file, not in <code>/etc/iwd/main.conf</code>.
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/var/lib/iwd/SomeNetwork.psk</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">...
+[IPv4]
+SendHostname=true</pre>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul>
-<li><a rel="nofollow" class="external text" href="https://iwd.wiki.kernel.org/gettingstarted">Getting Started with iwd</a></li>
-<li><a rel="nofollow" class="external text" href="https://iwd.wiki.kernel.org/networkconfigurationsettings">Network Configuration Settings</a></li>
+<li><a rel="nofollow" class="external text" href="https://archive.kernel.org/oldwiki/iwd.wiki.kernel.org/gettingstarted.html">Getting Started with iwd</a></li>
+<li><a rel="nofollow" class="external text" href="https://archive.kernel.org/oldwiki/iwd.wiki.kernel.org/networkconfigurationsettings.html">Network Configuration Settings</a></li>
 <li><a rel="nofollow" class="external text" href="https://git.kernel.org/pub/scm/network/wireless/iwd.git/tree/autotests">More Examples for WPA Enterprise</a></li>
 <li><a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?id=237074">The IWD thread on the Arch Linux Forums</a></li>
 <li><a rel="nofollow" class="external text" href="https://www.youtube.com/watch?v=F2Q86cphKDo">2017 Update on new WiFi daemon for Linux by Marcel Holtmann - YouTube</a></li>
 <li><a rel="nofollow" class="external text" href="https://www.youtube.com/watch?v=QIqT2obSPDk">The New Wi-Fi Experience for Linux - Marcel Holtmann, Intel - YouTube</a></li>
-<li><a rel="nofollow" class="external text" href="https://iwd.wiki.kernel.org/ap_mode">How to set up a simple access point with iwd</a></li>
+<li><a rel="nofollow" class="external text" href="https://archive.kernel.org/oldwiki/iwd.wiki.kernel.org/ap_mode.html">How to set up a simple access point with iwd</a></li>
 </ul>
 </div>
 </div>
@@ -1031,8 +1079,8 @@ RoamThreshold5G=-80</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Iwd&amp;oldid=813606">https://wiki.archlinux.org/index.php?title=Iwd&amp;oldid=813606</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 31 July 2024, at 12:52.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Iwd&amp;oldid=819924">https://wiki.archlinux.org/index.php?title=Iwd&amp;oldid=819924</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 31 October 2024, at 06:48.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -5,7 +5,7 @@
 <title>Bluetooth keyboard - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -81,13 +81,13 @@
 			<ul id="toc-Bluetooth_controller_is_not_visible_in_bluetoothctl-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Bluetooth_keyboard_still_does_not_work" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Bluetooth_keyboard_still_does_not_work">
+		<li id="toc-Bluetooth_keyboard_does_not_work" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Bluetooth_keyboard_does_not_work">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">2.3</span>Bluetooth keyboard still does not work</div>
+				<span class="vector-toc-numb">2.3</span>Bluetooth keyboard does not work</div>
 			</a>
 			
-			<ul id="toc-Bluetooth_keyboard_still_does_not_work-sublist" class="vector-toc-list">
+			<ul id="toc-Bluetooth_keyboard_does_not_work-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 		<li id="toc-Error:_hci0_ACL_packet_for_unknown_connection_handle_4" class="vector-toc-list-item vector-toc-level-2">
@@ -97,6 +97,15 @@
 			</a>
 			
 			<ul id="toc-Error:_hci0_ACL_packet_for_unknown_connection_handle_4-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Alt_and_Super_are_swapped" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Alt_and_Super_are_swapped">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">2.5</span>Alt and Super are swapped</div>
+			</a>
+			
+			<ul id="toc-Alt_and_Super_are_swapped-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -278,27 +287,31 @@ Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
 <p>Now the external device (i.e. keyboard) and the USB Bluetooth dongle are paired permanently, unless you break the pairing intentionally.
 </p>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
-<h3><span class="mw-headline" id="Bluetooth_controller_does_not_show_up_in_lsusb">Bluetooth controller does not show up in <code>lsusb</code></span></h3>
-<ul>
-<li>Load generic Bluetooth driver: <pre># modprobe btusb</pre>
-</li>
-<li>Is it an USB adapter or integral to the system? Use <code>lspci</code> for integral adapters</li>
-</ul>
-<h3><span class="mw-headline" id="Bluetooth_controller_is_not_visible_in_bluetoothctl">Bluetooth controller is not visible in <code>bluetoothctl</code></span></h3>
-<ul>
-<li>Check the <code>bluetooth.service</code> <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Unit status">unit status</a>.</li>
-<li>Check: You run the command with superuser privileges using <code>su</code> or <code>sudo</code>. Otherwise you have blue <i>[bluetooth]#</i> prompt and get the following message when powering on the controller:<pre>[bluetooth]# power on
-No default controller available</pre>
-</li>
-</ul>
-<h3><span class="mw-headline" id="Bluetooth_keyboard_still_does_not_work">Bluetooth keyboard still does not work</span></h3>
-<ul>
-<li>Check: Does it have power?</li>
-<li>Check: Did it connect to the Bluetooth controller? If not, try with another controller or your smart phone.</li>
-</ul>
+<h3><span class="mw-headline" id="Bluetooth_controller_does_not_show_up_in_lsusb">Bluetooth controller does not show up in lsusb</span></h3>
+<p>Manually load the generic Bluetooth driver: 
+</p>
+<pre># modprobe btusb
+</pre>
+<p>For integrated Bluetooth controller, some are not internally wired through USB, and only appear using <i>lspci</i>.
+</p>
+<h3><span class="mw-headline" id="Bluetooth_controller_is_not_visible_in_bluetoothctl">Bluetooth controller is not visible in bluetoothctl</span></h3>
+<p>Check the <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Unit status">unit status</a> of <code>bluetooth.service</code>. 
+</p>
+<p>If the <code>[bluetooth]#</code> prompt is blue and you get <code>No default controller available</code> message when powering on the controller with <code>power on</code>, run <i>bluetoothctl</i> <a href="../en/List_of_applications/Security.html#Privilege_elevation" title="List of applications/Security">as root</a>.
+</p>
+<h3><span class="mw-headline" id="Bluetooth_keyboard_does_not_work">Bluetooth keyboard does not work</span></h3>
+<p>Start with basic troubleshooting steps : does the device have power; if so, did it connect to the Bluetooth controller? If not, try with another controller or your smartphone to confirm where the issue lies.
+</p>
 <h3><span class="mw-headline" id="Error:_hci0_ACL_packet_for_unknown_connection_handle_4">Error: hci0 ACL packet for unknown connection handle 4</span></h3>
-<ul><li>Try a reset with <code>hciconfig hci0 reset</code>
-</li></ul>
+<p>Try a reset with <code>hciconfig hci0 reset</code>
+</p>
+<h3><span class="mw-headline" id="Alt_and_Super_are_swapped">Alt and Super are swapped</span></h3>
+<p>Some keyboards have separate macOS and Windows mode. When the keyboard is connected or when modes change, the Apple mode may activate. Remove the <code>hid_apple</code> <a href="../en/Kernel_module.html" title="Kernel module">kernel module</a> and re-connect the keyboard: 
+</p>
+<pre># rmmod hid_apple
+</pre>
+<p>If this works, <a href="../en/Kernel_module.html#Blacklisting" class="mw-redirect" title="Blacklist">blacklist</a> the module to have a permanent solution.
+</p>
 <h2><span class="mw-headline" id="Xorg">Xorg</span></h2>
 <p>Device should be added as <code>/dev/input/event*</code> and your Xorg should add it automatically if you did not disable such feature.
 </p>
@@ -322,8 +335,8 @@ No default controller available</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Bluetooth_keyboard&amp;oldid=754446">https://wiki.archlinux.org/index.php?title=Bluetooth_keyboard&amp;oldid=754446</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 22 October 2022, at 12:53.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Bluetooth_keyboard&amp;oldid=815659">https://wiki.archlinux.org/index.php?title=Bluetooth_keyboard&amp;oldid=815659</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 31 August 2024, at 16:48.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

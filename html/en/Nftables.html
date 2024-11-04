@@ -5,7 +5,7 @@
 <title>nftables - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -434,6 +434,15 @@
 			<ul id="toc-Logging_traffic-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Using_iptables-nft" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Using_iptables-nft">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">5.5</span>Using iptables-nft</div>
+			</a>
+			
+			<ul id="toc-Using_iptables-nft-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-Troubleshooting" class="vector-toc-list-item vector-toc-level-1">
@@ -566,7 +575,7 @@ The kernel provides a netlink configuration interface, as well as run-time rule-
 <h2><span class="mw-headline" id="Installation">Installation</span></h2>
 <p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> the userspace utilities package <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nftables">nftables</a></span> or the git version <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/nftables-git/">nftables-git</a></span><sup><small>AUR</small></sup>.
 </p>
-<p>Alternatively, <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=iptables-nft">iptables-nft</a></span>, which includes <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nftables">nftables</a></span> as a dependency, will automatically uninstall <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=iptables">iptables</a></span> (an indirect dependency of the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=base">base</a></span> <a href="../en/Meta_package_and_package_group.html#Difference_between_meta_package_and_package_group" class="mw-redirect" title="Meta package">meta package</a>) and prevent conflicts between <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=iptables">iptables</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nftables">nftables</a></span> when used together.
+<p>Alternatively, <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=iptables-nft">iptables-nft</a></span>, which includes <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nftables">nftables</a></span> as a dependency, will automatically uninstall <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=iptables">iptables</a></span> (an indirect dependency of the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=base">base</a></span> <a href="../en/Meta_package_and_package_group.html#Difference_between_meta_package_and_package_group" class="mw-redirect" title="Meta package">meta package</a>) and prevent conflicts between <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=iptables">iptables</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nftables">nftables</a></span> when used together. See <a href="#Using_iptables-nft">#Using iptables-nft</a> for details.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=iptables-nft">iptables-nft</a></span> works by providing implementations of the <code>iptables</code> commands that actually create and act on the <code>nftables</code> rules. However, rules created using the old <code>iptables-legacy</code> tools are separate objects, and <code>iptables-nft</code> will warn you if they are present.</div>
@@ -1292,6 +1301,28 @@ table inet my_table {
 </pre>
 <p>See <a rel="nofollow" class="external text" href="https://wiki.nftables.org/wiki-nftables/index.php/Logging_traffic">nftables wiki</a> for details.
 </p>
+<h3><span class="mw-headline" id="Using_iptables-nft">Using iptables-nft</span></h3>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
+<div>
+<b>Reason:</b> nftables warns if there are legacy iptables objects loaded, so it is not "perfectly workable to use legacy iptables <i>and</i> nftables at the same time". (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Nftables.html">Talk:Nftables</a>)</div>
+</div>
+<p>The older iptables language remains quite dominant in Linux documentation, and quite a few things still depend on iptables to run (such as Docker's networking). Although it's also perfectly workable to use legacy iptables <i>and</i> nftables at the same time, using iptables-nft's translation is preferred because:
+</p>
+<ul>
+<li>It puts everything in the same place, using the newer, more efficient, non-locking framework.</li>
+<li>It checks for conflicts.</li>
+</ul>
+<p>There are two ways to use the old iptables language with nftables:
+</p>
+<ul><li>
+<code>iptables-translate</code> and <code>iptables-restore-translate</code> (plus vice versa for <code>ip6tables</code>, <code>ebtables</code>, etc.) take iptable language and output nft language. They do <i>not</i> change running nft settings. See <span class="plainlinks archwiki-template-man" title="$ man 8 xtables-translate"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/xtables-translate.8">xtables-translate(8)</a></span>.</li></ul>
+<dl><dd>For configuration you want to maintain later on, it's a good idea to use the <code>-translate</code> tool and integrate the result code into your existing rules. For example, if you find something useful in <a href="../en/Simple_stateful_firewall.html" title="Simple stateful firewall">simple stateful firewall</a> or the wider Internet, you can translate them to put into your nft config.</dd></dl>
+<ul><li>
+<code>iptables</code> and <code>iptables-restore</code> (again vice versa for <code>ip6tables</code> etc.) uses the above translation <i>and</i> put them into the running nft settings. It also offers statistics like regular iptables does. See <span class="plainlinks archwiki-template-man" title="$ man 8 xtables-nft"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/xtables-nft.8">xtables-nft(8)</a></span>.</li></ul>
+<dl><dd>Those commands work reasonably well given what they have to work with. They should "just work" with simple usage, but occasionally you will need to step in and debug.</dd></dl>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> The translator covers a large portion, but not all, of the iptables language. Some iptables rules work in conjunction and the translator needs context to properly translate, so do not panic if some lines translate into nothing.</div>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
 <h3><span class="mw-headline" id="Working_with_Docker">Working with Docker</span></h3>
 <div class="archwiki-template-box archwiki-template-box-note">
@@ -1356,7 +1387,10 @@ ExecStartPre=ip route add default via 10.0.0.1 dev eth0</pre>
 <div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Firewalls.html" title="Category:Firewalls">Firewalls</a></li></ul>
 </div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li></ul>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
+</ul>
 </div>
 </div>
 				</div>
@@ -1367,8 +1401,8 @@ ExecStartPre=ip route add default via 10.0.0.1 dev eth0</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Nftables&amp;oldid=810530">https://wiki.archlinux.org/index.php?title=Nftables&amp;oldid=810530</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 14 June 2024, at 14:32.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Nftables&amp;oldid=818208">https://wiki.archlinux.org/index.php?title=Nftables&amp;oldid=818208</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 12 October 2024, at 08:12.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

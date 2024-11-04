@@ -5,7 +5,7 @@
 <title>Apache HTTP Server - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -538,8 +538,10 @@ Include conf/vhosts/domainname2.dom
 <h4><span class="mw-headline" id="Using_libphp">Using libphp</span></h4>
 <p>This method is probably the easiest, but is also the least scalable: it is suitable for a light request load. It also requires you to change the mpm module, which may cause problems with other extensions (e.g. it is not compatible with <a href="#HTTP/2">#HTTP/2</a>).
 </p>
-<p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=php-apache">php-apache</a></span>.
+<p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=php-apache">php-apache</a></span>. 
 </p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> If you are using pinned old versions of PHP from AUR, then you should install corresponding pinned version of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=php-apache">php-apache</a></span>, i.e. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/php56-apache/">php56-apache</a></span><sup><small>AUR</small></sup> for <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/php56/">php56</a></span><sup><small>AUR</small></sup>.</div> 
 <p>In <code>/etc/httpd/conf/httpd.conf</code>, comment the line:
 </p>
 <pre>#LoadModule mpm_event_module modules/mod_mpm_event.so
@@ -567,6 +569,11 @@ AddHandler php-script .php
 </pre>
 <p>then <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Restart">restart</a> <code>httpd.service</code>.
 </p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> For AUR pinned version of PHP, substitue <code>php_module</code>, <code>libphp.so</code> and <code>php_module.conf</code> above accordingly. For example, <code>php5_module</code>, <code>libphp56.so</code> and <code>php56-module.conf</code> for <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/php56-apache/">php56-apache</a></span><sup><small>AUR</small></sup>. 
+<p><br>
+</p>
+If you are unsure of the correct substitution, use <code>pacman -Ql phpXX-apache</code> to list the correct substitutions of <code>libphp.so</code> and <code>php_module.conf</code>, then use <code>nm /usr/lib/httpd/modules/libphpXX.so </code> to find the correct substitution of <code>php_module</code>.</div>
 <h4><span class="mw-headline" id="Using_apache2-mpm-worker_and_mod_fcgid">Using apache2-mpm-worker and mod_fcgid</span></h4>
 <p>This method provides improved performance and memory usage when serving multiple requests.  
 </p>
@@ -798,8 +805,8 @@ Listen [::]:80
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Apache_HTTP_Server&amp;oldid=799086">https://wiki.archlinux.org/index.php?title=Apache_HTTP_Server&amp;oldid=799086</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 1 February 2024, at 17:58.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Apache_HTTP_Server&amp;oldid=817188">https://wiki.archlinux.org/index.php?title=Apache_HTTP_Server&amp;oldid=817188</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 25 September 2024, at 11:40.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -5,7 +5,7 @@
 <title>Smokeping - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -102,7 +102,16 @@
 			</a>
 			
 			<ul id="toc-Setup_the_rest_of_the_system-sublist" class="vector-toc-list">
+				<li id="toc-Notes_on_Smokeping_in_Master_Slave_configuration" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Notes_on_Smokeping_in_Master_Slave_configuration">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">2.2.1</span>Notes on Smokeping in Master Slave configuration</div>
+			</a>
+			
+			<ul id="toc-Notes_on_Smokeping_in_Master_Slave_configuration-sublist" class="vector-toc-list">
 			</ul>
+		</li>
+	</ul>
 		</li>
 		<li id="toc-Start_and_enable_daemon" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Start_and_enable_daemon">
@@ -423,7 +432,7 @@ mailhost  = your.smtp.server.bla                      # your mail server
 sendmail  = /bin/false                                # where the sendmail program is
 imgcache  = /srv/smokeping/imgcache                   # filesystem directory where we store files
 imgurl    = imgcache                                  # URL directory to find them
-datadir   = /srv/smokeping/data                       # where we share data between the daemon and webapp
+datadir   = /srv/smokeping/data                       # where we share data between the daemon &amp; webapp
 piddir    = /var/run                                  # filesystem directory to store PID file
 cgiurl    = http://localhost/smokeping/smokeping.fcgi  # exterior URL
 smokemail = /etc/smokeping/smokemail   
@@ -501,6 +510,8 @@ range = 10h
 width = 600
 height = 200
 unison_tolerance = 2
+nodata_color = ffb0b0
+loss_background = yes
 
 "Last 3 Hours"    3h
 "Last 30 Hours"   30h
@@ -563,6 +574,52 @@ host = /targets/CloudflareDNS /targets/GoogleDNS
 </p>
 <pre># chmod a+rx /etc/smokeping
 # chmod a+r /etc/smokeping/config
+</pre>
+<h4><span class="mw-headline" id="Notes_on_Smokeping_in_Master_Slave_configuration">Notes on Smokeping in Master Slave configuration</span></h4>
+<p>A master-slave has one additional wrinkle, though the principles are the same.
+For slaves, smokeping IS NOT writing the data to the RRD files - they're getting pushed there by the web-server. So, in master-slave mode you need to be sure that the user your web-server is running as [<code>nginx</code> running as user <code>http</code>] also has WRITE permissions to the RRD files (under <code>/srv/smokeping/data</code>).
+</p>
+<p>When running Smokeping in <a rel="nofollow" class="external text" href="https://github.com/oetiker/SmokePing/blob/master/doc/smokeping_master_slave.pod">Master / Slave</a> mode, the master has effective permissions of the user the smokeping slave runs as. Do NOT run slaves as root. Read the <a rel="nofollow" class="external text" href="https://man.archlinux.org/man/smokeping_master_slave.7#SECURITY_CONSIDERATIONS">security considerations</a> first.
+</p>
+<p>The <a rel="nofollow" class="external text" href="https://github.com/oetiker/SmokePing/wiki/FAQ#master-slave-setups">Smokeping FAQ</a> on their wiki details the complex permission requirements. If your master slave config is still not working, use <code>setfacl</code> to provide the minimum required permissions:
+</p>
+<pre>On the master, give both `http` and `smokeping` full access (rwx) to `/srv/smokeping/*`
+# setfacl -R -m u:http:rwx /srv/smokeping
+# setfacl -R -m u:smokeping:rwx /srv/smokeping
+
+Set specific read permissions for files inside `/etc/smokeping`
+# setfacl -m u:http:r /etc/smokeping/smokeping_secrets
+# setfacl -m u:smokeping:r /etc/smokeping/config /etc/smokeping/smokeping_secrets
+</pre>
+<p>Slaves require no config file, they pull their config from the master, and just need to read <code>/etc/smokeping/smokeping_secrets</code>: 
+</p>
+<pre># /usr/bin/smokeping --master-url=https://smokeping.site/smokeping.fcgi
+# setfacl -m u:http:r /etc/smokeping/smokeping_secrets
+</pre>
+<p>A sample slave's systemd unit:
+</p>
+<pre>[Unit]
+Description=Smokeping Slave: my.slave.net
+Documentation=man:smokeping_master_slave(7)
+
+[Service]
+ExecStart=/usr/sbin/smokeping \
+  --master-url=https://smokeping.site/smokeping.fcgi \
+  --cache-dir=/var/lib/smokeping \
+  --shared-secret=/etc/smokeping/smokeping_secrets \
+  --pid-dir=/run/smokeping \
+  --slave-name=my.slave.net 
+# The --slave-name should be an exact match to both the master's config and smokeping_secrets
+  
+ExecReload=/bin/kill -HUP $MAINPID  
+
+[Service]
+Type=forking
+RuntimeDirectory=smokeping
+PIDFile=/run/smokeping/smokeping.pid
+User=smokeping
+Group=smokeping
+Restart=on-failure
 </pre>
 <h3><span class="mw-headline" id="Start_and_enable_daemon">Start and enable daemon</span></h3>
 <p><a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start">Start</a> and enable <code>smokeping.service</code>. Then check that it is running.
@@ -715,6 +772,8 @@ fastcgi.server = (
        root /srv/http/smokeping/;
        index smokeping.fcgi;
        gzip off;
+       access_log /var/log/nginx_smokeping.log combined;
+       error_log /var/log/nginx_smokeping.log;
        location ~ \.fcgi$ {
            fastcgi_intercept_errors on;
            include /etc/nginx/fastcgi_params;
@@ -730,7 +789,11 @@ fastcgi.server = (
 <p>Verify that your configuration is fine via <code>nginx -t</code> as the root user and reload the configuration via <code>nginx -s reload</code> as the root user.
 </p>
 <h2><span class="mw-headline" id="Advanced_Configuration">Advanced Configuration</span></h2>
-<p>Smokeping is a powerful tool that can be configured in many ways. You can setup many different types of probes. You can setup slave smokeping servers that can send their statistics and show you probes from other servers. You can also create your custom probes in perl. These options are currently not covered by this guide, please consult the documentation on the <a rel="nofollow" class="external text" href="https://oss.oetiker.ch/smokeping/index.en.html">Smokeping website</a> instead. Also see - <a rel="nofollow" class="external free" href="https://github.com/oetiker/SmokePing/wiki/FAQ">https://github.com/oetiker/SmokePing/wiki/FAQ</a>
+<p>Smokeping is a powerful tool that can be configured in many ways. You can setup many different types of probes. You can setup slave smokeping servers that can send their statistics and show you probes from other servers.
+</p>
+<p>You can also create your custom probes in perl, see some third-party probes <a rel="nofollow" class="external text" href="https://github.com/oetiker/SmokePing/wiki/Third-party-probes">on their wiki</a>. These options are currently not covered by this guide, please consult the documentation on the <a rel="nofollow" class="external text" href="https://oss.oetiker.ch/smokeping/doc/smokeping_extend.en.html">Smokeping website</a> instead.
+</p>
+<p>Also see - <a rel="nofollow" class="external free" href="https://github.com/oetiker/SmokePing/wiki/FAQ">https://github.com/oetiker/SmokePing/wiki/FAQ</a>
 </p>
 <h2><span class="mw-headline" id="Notes">Notes</span></h2>
 <h3>
@@ -751,8 +814,8 @@ fastcgi.server = (
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Smokeping&amp;oldid=800018">https://wiki.archlinux.org/index.php?title=Smokeping&amp;oldid=800018</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 8 February 2024, at 16:05.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Smokeping&amp;oldid=816371">https://wiki.archlinux.org/index.php?title=Smokeping&amp;oldid=816371</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 12 September 2024, at 23:21.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

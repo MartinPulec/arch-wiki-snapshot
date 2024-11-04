@@ -5,7 +5,7 @@
 <title>Backlight - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -391,12 +391,12 @@
 <div class="mw-content-ltr mw-parser-output" lang="en" dir="ltr">
 <p>Screen brightness might be tricky to control. On some machines physical hardware switches are missing and software solutions may not work well. However, it is generally possible to find a functional method for a given hardware. This article aims to summarize all possible ways to adjust the backlight.
 </p>
-<p>There are many ways to control brightness of a monitor, laptop or integrated panel (such as the iMac). According to <a rel="nofollow" class="external text" href="https://bugs.launchpad.net/ubuntu/+source/xserver-xorg-video-intel/+bug/397617">these</a> <a rel="nofollow" class="external text" href="https://lore.kernel.org/patchwork/patch/528936/#708706">discussions</a> and this <a rel="nofollow" class="external text" href="https://wiki.ubuntu.com/Kernel/Debugging/Backlight">wiki page</a> the control method can be divided into these categories:
+<p>There are many ways to control brightness of a monitor, laptop or integrated panel (such as the iMac). According to <a rel="nofollow" class="external text" href="https://bugs.launchpad.net/ubuntu/+source/xserver-xorg-video-intel/+bug/397617">these</a> <a rel="nofollow" class="external text" href="https://lore.kernel.org/patchwork/patch/528936/#708706">discussions</a><sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-10-12 ⓘ]</sup> and this <a rel="nofollow" class="external text" href="https://wiki.ubuntu.com/Kernel/Debugging/Backlight">wiki page</a> the control method can be divided into these categories:
 </p>
 <ul>
 <li>brightness is controlled by vendor-specified hotkey and there is no interface for the OS to adjust the brightness.</li>
 <li>brightness is controlled by either the <a href="#ACPI">ACPI</a>, graphic or platform driver. In this case, backlight control is exposed to the user through <code>/sys/class/backlight</code> which can be used by user-space <a href="#Backlight_utilities">backlight utilities</a>.</li>
-<li>brightness is controlled by writing into a graphic card register through <a href="#setpci">setpci</a>.</li>
+<li>brightness is controlled by writing into a graphics card register through <a href="#setpci">setpci</a>.</li>
 </ul>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> Since OLED screens have no backlight, brightness cannot be controlled by changing backlight power on laptops equipped with an OLED screen. In this case, perceived screen brightness can be adjusted with a PWM control (not implemented in the Linux kernel) or via <a href="#Color_correction">software color correction</a>.</div>
@@ -463,9 +463,9 @@ SUBSYSTEM=="backlight", ACTION=="add", KERNEL=="acpi_video0", ATTR{brightness}="
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> To set the backlight depending on power state, see <a href="../en/Power_management.html#Using_a_script_and_an_udev_rule" title="Power management">Power management#Using a script and an udev rule</a> and use your favourite <a href="#Backlight_utilities">backlight utility</a> in the script.</div>
 <h3><span class="mw-headline" id="setpci">setpci</span></h3>
-<p>In some cases (e.g. Intel Mobile 945GME <a rel="nofollow" class="external autonumber" href="https://bugs.launchpad.net/ubuntu/+source/xserver-xorg-video-intel/+bug/397617">[1]</a>), it is possible to set the register of the graphic card to adjust the backlight. It means you adjust the backlight by manipulating the hardware directly, which can be risky and generally is not a good idea. Not all of the graphic cards support this method.
+<p>In some cases (e.g. Intel Mobile 945GME <a rel="nofollow" class="external autonumber" href="https://bugs.launchpad.net/ubuntu/+source/xserver-xorg-video-intel/+bug/397617">[1]</a>), it is possible to set the register of the graphics card to adjust the backlight. It means you adjust the backlight by manipulating the hardware directly, which can be risky and generally is not a good idea. Not all of the graphics cards support this method.
 </p>
-<p>When using this method, you need to use <code>lspci</code> first to find out where your graphic card is.
+<p>When using this method, you need to use <code>lspci</code> first to find out where your graphics card is.
 </p>
 <pre># setpci -s 00:02.0 F4.B=0
 </pre>
@@ -832,7 +832,7 @@ EndSection</pre>
 <strong>Note:</strong> Using this with an iGPU+dGPU setup can cause unpredictable screen update lag and/or flickering in user interface items inside apps that are offloaded to the dGPU. Only use this if all else fails.</div>
 <p>See <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/27677">FS#27677</a> and <a rel="nofollow" class="external free" href="https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=651741">https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=651741</a> for details.
 </p>
-<p>If you have enabled <a href="../en/Intel_graphics.html#Fastboot" title="Intel graphics">Intel Fastboot</a> you might also get the <code>No outputs have backlight property</code> error. In this case, trying the above method may cause Xorg to crash on start up. You should disable it to fix the issue. It is <a rel="nofollow" class="external text" href="https://bugs.freedesktop.org/show_bug.cgi?id=108225">known</a> to cause issues with brightness control.
+<p>If you have enabled <a href="../en/Intel_graphics.html#Fastboot" title="Intel graphics">Intel Fastboot</a> you might also get the <code>No outputs have backlight property</code> error. In this case, trying the above method may cause Xorg to crash on start up. You should disable it to fix the issue. It is <a rel="nofollow" class="external text" href="https://bugs.freedesktop.org/show_bug.cgi?id=108225">known</a><sup title="Last check status: SSL error">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-10-12 ⓘ]</sup> to cause issues with brightness control.
 </p>
 <h3><span class="mw-headline" id="light">light</span></h3>
 <div class="archwiki-template-box archwiki-template-box-note">
@@ -909,12 +909,7 @@ $ gdbus call --session --dest org.gnome.SettingsDaemon.Power --object-path /org/
 <a rel="nofollow" class="external free" href="https://xorg.freedesktop.org/">https://xorg.freedesktop.org/</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xorg-xgamma">xorg-xgamma</a></span>
 </dd></dl>
 <h3><span class="mw-headline" id="Wayland">Wayland</span></h3>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:View-refresh-red.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is out of date.</b></p>
-<div>
-<b>Reason:</b> Package removed because upstream abandoned this one commit fork.<a rel="nofollow" class="external autonumber" href="https://lists.archlinux.org/archives/list/aur-requests@lists.archlinux.org/message/F3NY3DH3ETK4LLAFPYHUEPH5RZPXGAT2/">[7]</a> Maybe list a patch here? (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Backlight.html">Talk:Backlight</a>)</div>
-</div>
-<p><a href="../en/Redshift.html" title="Redshift">Redshift</a> does not support Wayland (without a patch or fork like <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/redshift-wayland-git/">redshift-wayland-git</a></span><sup><small>AUR</small></sup><sup>[<a href="../en/Help:Procedures.html#Fix_broken_package_links" title="Help:Procedures">broken link</a>: package not found]</sup>). But it is possible to apply the desired temperature in <a href="../en/Getty.html" class="mw-redirect" title="Tty">tty</a> before starting a compositor. For example:
+<p><a href="../en/Redshift.html" title="Redshift">Redshift</a> does not support Wayland (although a <a rel="nofollow" class="external text" href="https://github.com/jonls/redshift/compare/master...minus7:redshift:wayland">patchset</a> exists). But it is possible to apply the desired temperature in <a href="../en/Getty.html" class="mw-redirect" title="Tty">tty</a> before starting a compositor. For example:
 </p>
 <pre>$ redshift -m drm -PO 3000
 </pre>
@@ -926,7 +921,7 @@ $ gdbus call --session --dest org.gnome.SettingsDaemon.Power --object-path /org/
 <li>On Sway and other wlroots-based compositors, as well as Orbital, Redshift fork <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=gammastep">gammastep</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/clight/">clight</a></span><sup><small>AUR</small></sup>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/wlsunset-git/">wlsunset-git</a></span><sup><small>AUR</small></sup>, or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/wl-gammarelay/">wl-gammarelay</a></span><sup><small>AUR</small></sup> can be used.</li>
 </ul>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> KDE does not have a working night color mode with Wayland on <a href="../en/NVIDIA.html" title="NVIDIA">NVIDIA</a> GPUs, due to NVIDIA’s drivers not supporting some gamma LUT (Look-Up Table) features. See the <a rel="nofollow" class="external text" href="https://github.com/NVIDIA/open-gpu-kernel-modules/issues/162">issue 162</a> on NVIDIA’s opensource driver GitHub and <a rel="nofollow" class="external text" href="https://pointieststick.com/2023/05/26/this-week-in-kde-night-color-on-wayland-with-nvidia/">this news</a> to see KDE devs’ attempts to make it work.</div>
+<strong>Note:</strong> KDE does not have a working night color mode with Wayland on <a href="../en/NVIDIA.html" title="NVIDIA">NVIDIA</a> GPUs, due to NVIDIA’s drivers not supporting some gamma LUT (Look-Up Table) features. See the <a rel="nofollow" class="external text" href="https://github.com/NVIDIA/open-gpu-kernel-modules/issues/162">issue 162</a> on NVIDIA’s opensource driver GitHub and <a rel="nofollow" class="external text" href="https://pointieststick.com/2023/05/26/this-week-in-kde-night-color-on-wayland-with-nvidia/">this news</a> to see KDE developers attempts to make it work.</div>
 <h3><span class="mw-headline" id="Xorg:_adjust_perceived_brightness_with_xrandr">Xorg: adjust perceived brightness with xrandr</span></h3>
 <p><a href="../en/Xrandr.html" title="Xrandr">xrandr</a> may be used to adjust the perceived brightness.
 </p>
@@ -999,7 +994,7 @@ $ gdbus call --session --dest org.gnome.SettingsDaemon.Power --object-path /org/
 <h3>
 <span id="Unable_to_control_eDP_Panel_brightness_.28Intel_i915_only.29"></span><span class="mw-headline" id="Unable_to_control_eDP_Panel_brightness_(Intel_i915_only)">Unable to control eDP Panel brightness (Intel i915 only)</span>
 </h3>
-<p>Embedded Display Port (eDP) v1.2 introduced a new display panel control protocol for backlight and other controls that works through the AUX channel <a rel="nofollow" class="external autonumber" href="https://www.vesa.org/wp-content/uploads/2010/12/DisplayPort-DevCon-Presentation-eDP-Dec-2010-v3.pdf">[8]</a>
+<p>Embedded Display Port (eDP) v1.2 introduced a new display panel control protocol for backlight and other controls that works through the AUX channel <a rel="nofollow" class="external autonumber" href="https://www.vesa.org/wp-content/uploads/2010/12/DisplayPort-DevCon-Presentation-eDP-Dec-2010-v3.pdf">[7]</a>
 </p>
 <p>By default the i915 driver tries to use PWM to control backlight brightness, which might not work.
 </p>
@@ -1138,11 +1133,10 @@ SUBSYSTEM=="backlight", ENV{ID_BACKLIGHT_CLAMP}="0"</pre>
 </ul>
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
+<li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Merge.html" title="Category:Pages or sections flagged with Template:Merge">Pages or sections flagged with Template:Merge</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Out_of_date.html" title="Category:Pages or sections flagged with Template:Out of date">Pages or sections flagged with Template:Out of date</a></li>
-<li><a href="../en/Category:Pages_with_broken_package_links.html" title="Category:Pages with broken package links">Pages with broken package links</a></li>
 </ul>
 </div>
 </div>
@@ -1154,8 +1148,8 @@ SUBSYSTEM=="backlight", ENV{ID_BACKLIGHT_CLAMP}="0"</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Backlight&amp;oldid=811983">https://wiki.archlinux.org/index.php?title=Backlight&amp;oldid=811983</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 5 July 2024, at 17:31.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Backlight&amp;oldid=818313">https://wiki.archlinux.org/index.php?title=Backlight&amp;oldid=818313</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 12 October 2024, at 11:57.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

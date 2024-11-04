@@ -5,7 +5,7 @@
 <title>Arduino - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -460,12 +460,16 @@ To fix the installation you can follow <a rel="nofollow" class="external text" h
 <p>You might need to install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=perl-archive-zip">perl-archive-zip</a></span> or you will get an error about missing crc32.
 </p>
 <h2><span class="mw-headline" id="Configuration">Configuration</span></h2>
-<p>To interface over USB an interfacing chip is used on the Arduino. Genuine boards will typically use an ATmegaxU2, which registers itself as an ACM device. On Linux the <code>cdc_acm</code> <a href="../en/Kernel_module.html" class="mw-redirect" title="Kernel modules">module</a> is used. Hence, when connected, the Arduino will show up as <code>/dev/ttyACMx</code>.
+<p>Most Arduino boards have a USB port which can be used for establishing a serial connection. This serial connection allows the user to program the board. The main microcontroller of most Arduinos, however, does not have a USB interface built-in. Hence, the board is usually equipped with a USB to serial chip in between the main microcontroller and the USB port.
 </p>
-<p>Non-genuine Arduino boards typically cheap out on the interfacing chip, typically using one from the Chinese CH34x family. The CH34x does not implement the aforementioned standard and exposes itself as a proprietary UART over USB device. Here the <code>ch341</code> <a href="../en/Kernel_module.html" class="mw-redirect" title="Kernel modules">module</a> is used, making such Arduinos show up as <code>/dev/ttyUSBx</code>. This naming pattern may be customized by <a href="#Consistent_naming_of_Arduino_devices">altering udev rules</a>.
+<p>To achieve the serial interface over USB, most genuine Arduino boards are equipped with another ATmega microcontroller (e.g. ATmega16U2) or an FTDI USB UART converter (e.g. FT232RL). Both of these chips register themselves over USB as an ACM device, and as such, Linux will use the <code>cdc_acm</code> <a href="../en/Kernel_module.html" class="mw-redirect" title="Kernel modules">module</a>. The Arduino will then show up as <code>/dev/ttyACMx</code>.
+</p>
+<p>Non-genuine Arduino boards cheap out on the interfacing chip. They are typically equipped with a Chinese CH340 or a counterfeit of the aforementioned models. The CH340 exposes itself as a proprietary UART over USB device. Here the <code>ch341</code> <a href="../en/Kernel_module.html" class="mw-redirect" title="Kernel modules">module</a> is used, making such Arduinos show up as <code>/dev/ttyUSBx</code>. This naming pattern may be customized by <a href="#Consistent_naming_of_Arduino_devices">altering udev rules</a>.
+</p>
+<p>Some boards may be equipped with a main microcontroller which does expose a native USB interface itself. Whether the board has a dedicated interface chip or not, genuine boards will come out of the factory with a proper bootloader pre-installed. Such bootloaders automatically establish a serial interface over USB once they are connected.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> Remember to keep any serial monitoring programs closed during uploading code in order to free the serial port for the programmer.</div>
+<strong>Note:</strong>  Some boards, notably the Pro Mini, do not expose USB at all and must be programmed with additional hardware.</div>
 <h3><span class="mw-headline" id="Accessing_serial">Accessing serial</span></h3>
 <p>For the boards that expose a UART over USB, it is  necessary to allow read/write access to the serial port to users<a rel="nofollow" class="external autonumber" href="https://arduino.stackexchange.com/a/21219">[1]</a>. As explained in <a href="../en/Udev.html#Allowing_regular_users_to_use_devices" title="Udev">Udev#Allowing regular users to use devices</a>, create a file containing: 
 </p>
@@ -473,6 +477,8 @@ To fix the installation you can follow <a rel="nofollow" class="external text" h
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">SUBSYSTEMS=="usb-serial", TAG+="uaccess"</pre>
 <p><a href="../en/Udev.html#Loading_new_rules" title="Udev">Reload the udev rules</a> and replug the Arduino device. Before uploading to the Arduino, be sure to set the correct serial port, board, and processor from the Tools menu in 1.x and the Select board option (located at the top of the IDE) in 2.x.
 </p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> Remember to keep any serial monitoring programs closed during uploading code in order to free the serial port for the programmer.</div>
 <h2><span class="mw-headline" id="stty">stty</span></h2>
 <p>Preparing:
 </p>
@@ -654,19 +660,12 @@ ch341-uart ttyUSB0: ch341-uart converter now disconnected from ttyUSB0
 <p>Then you may need to uninstall the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=brltty">brltty</a></span> package. See <a rel="nofollow" class="external autonumber" href="https://forum.manjaro.org/t/cant-connect-serial-port-error-ch341-uart-disconnected-from-ttyusb0/87208">[4]</a> for more details.
 </p>
 <h3><span class="mw-headline" id="Failure_to_upload_with_Nano_RP2040_Connect">Failure to upload with Nano RP2040 Connect</span></h3>
-<p>If your upload fails with
+<p>If your upload fails with:
 </p>
 <pre>Failed uploading: uploading error: exit status 1
 </pre>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
-<div>
-<b>Reason:</b> Do not suggest to run arbitrary script, at least explain what it does. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Arduino.html">Talk:Arduino</a>)</div>
-</div>
-<p>Try running the following script to setup Raspberry Pi RP2040 bootloader mode udev rules.
+<p>you have skipped <a href="#Accessing_serial">#Accessing serial</a>: follow its directions to allow read/write access to the serial port to users.
 </p>
-<pre># ~/.arduino15/packages/arduino/hardware/mbed_nano/3.5.1/post_install.sh
-</pre>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul>
 <li><a rel="nofollow" class="external text" href="https://www.arduino.cc/">Official website</a></li>
@@ -685,7 +684,6 @@ ch341-uart ttyUSB0: ch341-uart converter now disconnected from ttyUSB0
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
 <li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Out_of_date.html" title="Category:Pages or sections flagged with Template:Out of date">Pages or sections flagged with Template:Out of date</a></li>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
 </ul>
 </div>
 </div>
@@ -697,8 +695,8 @@ ch341-uart ttyUSB0: ch341-uart converter now disconnected from ttyUSB0
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Arduino&amp;oldid=812403">https://wiki.archlinux.org/index.php?title=Arduino&amp;oldid=812403</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 14 July 2024, at 00:53.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Arduino&amp;oldid=817817">https://wiki.archlinux.org/index.php?title=Arduino&amp;oldid=817817</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 5 October 2024, at 11:29.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

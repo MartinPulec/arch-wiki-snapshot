@@ -5,7 +5,7 @@
 <title>Bcachefs - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -149,6 +149,51 @@
 			<ul id="toc-Replication-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Compression" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Compression">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.5</span>Compression</div>
+			</a>
+			
+			<ul id="toc-Compression-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Subvolumes" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Subvolumes">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.6</span>Subvolumes</div>
+			</a>
+			
+			<ul id="toc-Subvolumes-sublist" class="vector-toc-list">
+				<li id="toc-Creating_a_subvolume" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Creating_a_subvolume">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.6.1</span>Creating a subvolume</div>
+			</a>
+			
+			<ul id="toc-Creating_a_subvolume-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Deleting_a_subvolume" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Deleting_a_subvolume">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.6.2</span>Deleting a subvolume</div>
+			</a>
+			
+			<ul id="toc-Deleting_a_subvolume-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Creating_a_snapshot_of_an_existing_subvolume" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Creating_a_snapshot_of_an_existing_subvolume">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.6.3</span>Creating a snapshot of an existing subvolume</div>
+			</a>
+			
+			<ul id="toc-Creating_a_snapshot_of_an_existing_subvolume-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-Tips_and_tricks" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
@@ -170,6 +215,15 @@
 			</a>
 			
 			<ul id="toc-Flag_Ordering-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Setting_replicas_after_format" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Setting_replicas_after_format">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">4.2</span>Setting replicas after format</div>
+			</a>
+			
+			<ul id="toc-Setting_replicas_after_format-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -204,13 +258,13 @@
 			<ul id="toc-swapfile_contains_holes_or_other_unsupported_extents.-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Multi_Device_fstab" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Multi_Device_fstab">
+		<li id="toc-Multi-device_fstab" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Multi-device_fstab">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">5.3</span>Multi Device fstab</div>
+				<span class="vector-toc-numb">5.3</span>Multi-device fstab</div>
 			</a>
 			
-			<ul id="toc-Multi_Device_fstab-sublist" class="vector-toc-list">
+			<ul id="toc-Multi-device_fstab-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 		<li id="toc-Mounting_an_encrypted_device_errors" class="vector-toc-list-item vector-toc-level-2">
@@ -376,7 +430,15 @@ which is displayed by <code>bcachefs format</code> on filesystem creation.
 <div>
 <b>Reason:</b> Missing details on which options should be used (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Bcachefs.html">Talk:Bcachefs</a>)</div>
 </div>
-<p>Most options can be set at either during <code>bcachefs format</code>, at mount time (<code>mount -o option=value</code>), or through sysfs (<code>echo X &gt; /sys/fs/bcachefs/<i>UUID</i>/options/<i>option</i></code>). Setting the option during format or changing it through sysfs saves it in the filesystem's superblock, making it the default for those drives. Mount options override those defaults.
+<p>Most options can be set
+</p>
+<ul>
+<li>during <code>bcachefs format</code>,</li>
+<li>after format with <code>bcachefs set-fs-option</code>,</li>
+<li>at mount time with <code>mount -o <i>option=value</i></code>,</li>
+<li>or through sysfs, for example, <code>echo <i>X</i> &gt; /sys/fs/bcachefs/<i>UUID</i>/options/<i>option</i></code>.</li>
+</ul>
+<p>Mount options override those set by the other methods, which save them to the filesystem's superblock.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> The filesystem must be mounted for sysfs to be available. All operations except fsck are possible on a live filesystem.</div>
@@ -504,6 +566,33 @@ which is displayed by <code>bcachefs format</code> on filesystem creation.
 <p>The distinction between <code>--[meta]data_replicas_required</code> and <code>--[meta]data_replicas</code> is important, as the replicas required value sets the floor for the number of replicas that will be written immediately, whereas the replicas value sets the target number of replicas that will eventually be written.
 </p>
 </div>
+<h3><span class="mw-headline" id="Compression">Compression</span></h3>
+<p>Compression is set with the <code>--compression=</code> option. It is also possible to set the compression level. As an example to set zstd compression level 5, you can use <code>--compression=zstd:5</code>.
+</p>
+<h3><span class="mw-headline" id="Subvolumes">Subvolumes</span></h3>
+<p>Bcachefs supports subvolumes and snapshots with a similar userspace interface as <a href="../en/Btrfs.html#Subvolumes" title="Btrfs">Btrfs</a>. A new subvolume may be created empty, or it may be created as a snapshot of another subvolume. Snapshots are writeable and may be snapshot-ted again, creating a tree of snapshots.
+</p>
+<p>Snapshots are very cheap to create: they’re not based on cloning of COW btrees as with <a href="../en/Btrfs.html#Subvolumes" title="Btrfs">Btrfs</a>, but instead are based on versioning of individual keys in the btrees. Many thousands or millions of snapshots can be created, with the only limitation being disk space.
+</p>
+<h4><span class="mw-headline" id="Creating_a_subvolume">Creating a subvolume</span></h4>
+<p>To create a new, empty subvolume:
+</p>
+<pre># bcachefs subvolume create <i>/path/to/subvolume</i>
+</pre>
+<h4><span class="mw-headline" id="Deleting_a_subvolume">Deleting a subvolume</span></h4>
+<p>To delete an existing subvolume or snapshot:
+</p>
+<pre># bcachefs subvolume delete <i>/path/to/subvolume</i>
+</pre>
+<h4><span class="mw-headline" id="Creating_a_snapshot_of_an_existing_subvolume">Creating a snapshot of an existing subvolume</span></h4>
+<p>To create a snapshot of an existing subvolume:
+</p>
+<pre># bcachefs subvolume snapshot <i>/path/to/source</i> <i>/path/to/dest</i>
+</pre>
+<p>A subvolume can also be deleting with a normal rmdir after deleting all the contents, as with <code>rm -rf</code>.
+</p>
+<p>Features including recursive snapshot creation and a method for recursively listing subvolume are still to be implemented.
+</p>
 <h2><span class="mw-headline" id="Tips_and_tricks">Tips and tricks</span></h2>
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
@@ -528,6 +617,15 @@ which is displayed by <code>bcachefs format</code> on filesystem creation.
     --promote_target=ssd \
     --background_target=hdd
 </pre>
+<h3><span class="mw-headline" id="Setting_replicas_after_format">Setting replicas after format</span></h3>
+<p>It is possible to set replica count after format using <code>set-fs-option</code>.
+</p>
+<pre># bcachefs set-fs-option --metadata_replicas=<i>2</i> --data_replicas=<i>2</i> /dev/sd<i>X</i>
+</pre>
+<p>Afterwards you'll need to tell bcachefs to ensure that all files have a replica with:
+</p>
+<pre># bcachefs data rereplicate /mnt
+</pre>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
 <h3><span class="mw-headline" id="32-bit_programs_cannot_see_directory_contents">32-bit programs cannot see directory contents</span></h3>
 <p>Some 32-bit programs may fail to retrieve contents of directories in Bcachefs, due to incompatibility of data returned by the filesystem when a <span class="plainlinks archwiki-template-man" title="$ man 3 readdir"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/readdir.3">readdir(3)</a></span> syscall is performed. <a rel="nofollow" class="external autonumber" href="https://github.com/koverstreet/bcachefs/issues/650">[2]</a>
@@ -537,15 +635,15 @@ which is displayed by <code>bcachefs format</code> on filesystem creation.
 <h3><span class="mw-headline" id="swapfile_contains_holes_or_other_unsupported_extents.">swapfile contains holes or other unsupported extents.</span></h3>
 <p>Bcachefs does not currently support <a rel="nofollow" class="external text" href="https://github.com/koverstreet/bcachefs/issues/368">swapfiles</a>.
 </p>
-<h3><span class="mw-headline" id="Multi_Device_fstab">Multi Device fstab</span></h3>
-<p>There is currently <a rel="nofollow" class="external text" href="https://github.com/systemd/systemd/issues/8234">a bug in systemd</a> that does not make it possible for it to mount a multi-device bcachefs filesystem at boot using devices separated by colons in fstab. It will work when doing mount -a, but will not mount at boot. However since bcachefs-tools version 1.7.0 it is possible to mount a multi-device array using one device node; this allows the use of the normal <code>UUID=</code> specifier.
+<h3><span class="mw-headline" id="Multi-device_fstab">Multi-device fstab</span></h3>
+<p>There is currently <a rel="nofollow" class="external text" href="https://github.com/systemd/systemd/issues/8234">a bug in systemd</a> that does not make it possible for it to mount a multi-device bcachefs filesystem at boot using devices separated by colons in <a href="../en/Fstab.html" title="Fstab">fstab</a>. It will work when doing <code>mount -a</code>, but will not mount at boot. However since <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=bcachefs-tools">bcachefs-tools</a></span> version 1.7.0 it is possible to mount a multi-device array using one device node; this allows the use of the normal <a href="../en/Persistent_block_device_naming.html#by-uuid" class="mw-redirect" title="UUID">UUID</a> specifier.
 </p>
 <pre># UUID=10176fc9-c4fa-4a30-9fd0-a756d861c4cd     /mnt   bcachefs defaults,nofail 0 0
 </pre>
 <p>The filesystem UUID / External UUID can be found by either using:
 </p>
-<pre># bcachefs fs usage
-# bcachefs show-super device
+<pre># bcachefs fs usage /mnt
+# bcachefs show-super /dev/sdXY
 </pre>
 <h3><span class="mw-headline" id="Mounting_an_encrypted_device_errors">Mounting an encrypted device errors</span></h3>
 <p>When the mounting of a device created with the <code>--encrypted</code> option fails after <code>bcachefs unlock /dev/sd<i>XY</i></code> with
@@ -587,8 +685,8 @@ Enter passphrase:
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Bcachefs&amp;oldid=810447">https://wiki.archlinux.org/index.php?title=Bcachefs&amp;oldid=810447</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 13 June 2024, at 15:28.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Bcachefs&amp;oldid=819939">https://wiki.archlinux.org/index.php?title=Bcachefs&amp;oldid=819939</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 31 October 2024, at 18:18.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

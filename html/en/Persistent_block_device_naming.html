@@ -5,7 +5,7 @@
 <title>Persistent block device naming - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -106,15 +106,6 @@
 			</a>
 			
 			<ul id="toc-by-partuuid-sublist" class="vector-toc-list">
-			</ul>
-		</li>
-		<li id="toc-Static_device_names_with_udev" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Static_device_names_with_udev">
-				<div class="vector-toc-text">
-				<span class="vector-toc-numb">1.6</span>Static device names with udev</div>
-			</a>
-			
-			<ul id="toc-Static_device_names_with_udev-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -248,12 +239,12 @@
 </div>
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Persistent_naming_methods">Persistent naming methods</span></h2>
-<p>There are four different schemes for persistent naming: <a href="#by-label">by-label</a>, <a href="#by-uuid">by-uuid</a>, <a href="#by-id_and_by-path">by-id and by-path</a>. For those using disks with <a href="../en/Partitioning.html#GUID_Partition_Table" class="mw-redirect" title="GUID Partition Table">GUID Partition Table (GPT)</a>, two additional schemes can be used <a href="#by-partlabel">by-partlabel</a> and <a href="#by-partuuid">by-partuuid</a>. You can also use <a href="../en/Udev.html#Setting_static_device_names" title="Udev">static device names by using Udev</a>.
+<p>There are four different schemes used for persistent naming by <a href="../en/Udev.html" title="Udev">udev</a> (through <code>60-persistent-storage.rules</code>): <a href="#by-label">by-label</a>, <a href="#by-uuid">by-uuid</a>, <a href="#by-id_and_by-path">by-id and by-path</a>. For those using disks with <a href="../en/Partitioning.html#GUID_Partition_Table" class="mw-redirect" title="GUID Partition Table">GUID Partition Table (GPT)</a>, two additional schemes can be used <a href="#by-partlabel">by-partlabel</a> and <a href="#by-partuuid">by-partuuid</a>. 
 </p>
 <p>The directories in <code>/dev/disk/</code> are created and destroyed dynamically, depending on whether there are devices in them.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> Beware that <a href="../en/Disk_cloning.html" title="Disk cloning">Disk cloning</a> creates two different disks with the same name.</div>
+<strong>Note:</strong> Beware that <a href="../en/Disk_cloning.html" title="Disk cloning">disk cloning</a> creates two different disks with the same name.</div>
 <p>The following sections describe what the different persistent naming methods are and how they are used.
 </p>
 <p>The <a href="../en/Device_file.html#lsblk" class="mw-redirect" title="Lsblk">lsblk</a> command can be used for viewing graphically the first persistent schemes:
@@ -288,36 +279,13 @@ lrwxrwxrwx 1 root root 10 May 27 23:31 Arch\x20Linux -&gt; ../../sda2
 <p>Most file systems support setting the label upon file system creation, see the <a href="../en/Man_page.html" title="Man page">man page</a> of the relevant <code>mkfs.*</code> utility. For some file systems it is also possible to change the labels. Following are some methods for changing labels on common file systems:
 </p>
 <dl>
-<dt>swap</dt>
-<dd>
-<code>swaplabel -L "<i>new label</i>" /dev/<i>XXX</i></code> using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=util-linux">util-linux</a></span>
-</dd>
-<dt>ext2/3/4</dt>
-<dd>
-<code>e2label /dev/<i>XXX</i> "<i>new label</i>"</code> using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=e2fsprogs">e2fsprogs</a></span>
-</dd>
 <dt>btrfs</dt>
 <dd>
 <code>btrfs filesystem label /dev/<i>XXX</i> "<i>new label</i>"</code> (use the mountpoint of the device if already mounted) using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=btrfs-progs">btrfs-progs</a></span>
 </dd>
-<dt>reiserfs</dt>
+<dt>crypto_LUKS (LUKS2 only)</dt>
 <dd>
-<code>reiserfstune -l "<i>new label</i>" /dev/<i>XXX</i></code> using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=reiserfsprogs">reiserfsprogs</a></span>
-</dd>
-<dt>jfs</dt>
-<dd>
-<code>jfs_tune -L "<i>new label</i>" /dev/<i>XXX</i></code> using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=jfsutils">jfsutils</a></span>
-</dd>
-<dt>xfs</dt>
-<dd>
-<code>xfs_admin -L "<i>new label</i>" /dev/<i>XXX</i></code> (use the mountpoint of the device if already mounted) using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xfsprogs">xfsprogs</a></span>
-</dd>
-<dt>fat/vfat</dt>
-<dd>
-<code>fatlabel /dev/<i>XXX</i> "<i>new label</i>"</code> using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dosfstools">dosfstools</a></span>
-</dd>
-<dd>
-<code>mlabel -i /dev/<i>XXX</i> ::"<i>new label</i>"</code> using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mtools">mtools</a></span>
+<code>cryptsetup config --label="<i>new label</i>" /dev/<i>XXX</i></code> using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=cryptsetup">cryptsetup</a></span>
 </dd>
 <dt>exfat</dt>
 <dd>
@@ -326,17 +294,40 @@ lrwxrwxrwx 1 root root 10 May 27 23:31 Arch\x20Linux -&gt; ../../sda2
 <dd>
 <code>exfatlabel /dev/<i>XXX</i> "<i>new label</i>"</code> using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=exfatprogs">exfatprogs</a></span> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=exfat-utils">exfat-utils</a></span>
 </dd>
+<dt>ext2/3/4</dt>
+<dd>
+<code>e2label /dev/<i>XXX</i> "<i>new label</i>"</code> using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=e2fsprogs">e2fsprogs</a></span>
+</dd>
+<dt>fat/vfat</dt>
+<dd>
+<code>fatlabel /dev/<i>XXX</i> "<i>new label</i>"</code> using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dosfstools">dosfstools</a></span>
+</dd>
+<dd>
+<code>mlabel -i /dev/<i>XXX</i> ::"<i>new label</i>"</code> using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mtools">mtools</a></span>
+</dd>
+<dt>jfs</dt>
+<dd>
+<code>jfs_tune -L "<i>new label</i>" /dev/<i>XXX</i></code> using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=jfsutils">jfsutils</a></span>
+</dd>
 <dt>ntfs</dt>
 <dd>
 <code>ntfslabel /dev/<i>XXX</i> "<i>new label</i>"</code> using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=ntfs-3g">ntfs-3g</a></span>
+</dd>
+<dt>reiserfs</dt>
+<dd>
+<code>reiserfstune -l "<i>new label</i>" /dev/<i>XXX</i></code> using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=reiserfsprogs">reiserfsprogs</a></span>
+</dd>
+<dt>swap</dt>
+<dd>
+<code>swaplabel -L "<i>new label</i>" /dev/<i>XXX</i></code> using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=util-linux">util-linux</a></span>
 </dd>
 <dt>udf</dt>
 <dd>
 <code>udflabel /dev/<i>XXX</i> "<i>new label</i>"</code> using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=udftools">udftools</a></span>
 </dd>
-<dt>crypto_LUKS (LUKS2 only)</dt>
+<dt>xfs</dt>
 <dd>
-<code>cryptsetup config --label="<i>new label</i>" /dev/<i>XXX</i></code> using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=cryptsetup">cryptsetup</a></span>
+<code>xfs_admin -L "<i>new label</i>" /dev/<i>XXX</i></code> (use the mountpoint of the device if already mounted) using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xfsprogs">xfsprogs</a></span>
 </dd>
 </dl>
 <p>The label of a device can be obtained with <i>lsblk</i>:
@@ -525,9 +516,6 @@ lrwxrwxrwx 1 root root 10 May 27 23:31 d0d0d110-0a71-4ed6-936a-304969ea36af -&gt
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># blkid -s PARTUUID -o value /dev/sda1</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">d0d0d110-0a71-4ed6-936a-304969ea36af
 </pre>
-<h3><span class="mw-headline" id="Static_device_names_with_udev">Static device names with udev</span></h3>
-<p>See <a href="../en/Udev.html#Setting_static_device_names" title="Udev">udev#Setting static device names</a>.
-</p>
 <h2><span class="mw-headline" id="Using_persistent_naming">Using persistent naming</span></h2>
 <p>There are various applications that can be configured using persistent naming. Following are some examples of how to configure them.
 </p>
@@ -581,8 +569,8 @@ lrwxrwxrwx 1 root root 10 May 27 23:31 d0d0d110-0a71-4ed6-936a-304969ea36af -&gt
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Persistent_block_device_naming&amp;oldid=811515">https://wiki.archlinux.org/index.php?title=Persistent_block_device_naming&amp;oldid=811515</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 29 June 2024, at 07:39.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Persistent_block_device_naming&amp;oldid=819687">https://wiki.archlinux.org/index.php?title=Persistent_block_device_naming&amp;oldid=819687</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 27 October 2024, at 08:10.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

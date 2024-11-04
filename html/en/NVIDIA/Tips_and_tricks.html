@@ -5,7 +5,7 @@
 <title>NVIDIA/Tips and tricks - ArchWiki</title>
 <link rel="stylesheet" href="../../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -520,7 +520,7 @@ GPU 00000000:01:00.0
 </ul>
 <p>To enable multiple features, add the <i>Coolbits</i> values together. For example, to enable overclocking and overvoltage of Fermi cores, set <code>Option "Coolbits" "24"</code>.
 </p>
-<p>The documentation of <i>Coolbits</i> can be found in <code>/usr/share/doc/nvidia/html/xconfigoptions.html</code> and <a rel="nofollow" class="external text" href="https://download.nvidia.com/XFree86/Linux-x86_64/545.29.06/README/xconfigoptions.html#Coolbits">here</a>.
+<p>The documentation of <i>Coolbits</i> can be found in <code>/usr/share/doc/nvidia/html/xconfigoptions.html</code> and <a rel="nofollow" class="external text" href="https://download.nvidia.com/XFree86/Linux-x86_64/560.35.03/README/xconfigoptions.html#Coolbits">here</a>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> An alternative is to edit and reflash the GPU BIOS either under DOS (preferred), or within a Win32 environment by way of <a rel="nofollow" class="external text" href="https://www.techpowerup.com/download/nvidia-nvflash/">nvflash</a> and <a rel="nofollow" class="external text" href="https://www.guru3d.com/files-details/nvidia-bios-editor-download-nibitor.html">NiBiTor 6.0</a>. The advantage of BIOS flashing is that not only can voltage limits be raised, but stability is generally improved over software overclocking methods such as Coolbits. <a rel="nofollow" class="external text" href="https://ivanvojtko.blogspot.sk/2014/03/how-to-overclock-geforce-460gtx-fermi.html">Fermi BIOS modification tutorial</a>
@@ -654,24 +654,17 @@ $ nvidia-xconfig --cool-bits=4
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">options nvidia NVreg_RegistryDwords="OverrideMaxPerf=0x1"</pre>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> As per <a href="../../en/Kernel_module.html#Using_files_in_/etc/modprobe.d/" title="Kernel module">Kernel module#Using files in /etc/modprobe.d/</a>, you will need to <a href="../../en/Mkinitcpio.html#Image_creation_and_activation" class="mw-redirect" title="Regenerate the initramfs">regenerate the initramfs</a> if using <a href="../../en/NVIDIA.html#DRM_kernel_mode_setting" title="NVIDIA">early KMS</a>.</div>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../../File:Merge-arrows-2.svg" decoding="async" width="36" height="40" class="mw-file-element"></span></span><b>This article or section is a candidate for merging with <a href="../../en/NVIDIA.html#DRM_kernel_mode_setting" title="NVIDIA">NVIDIA#DRM kernel mode setting</a>.</b></p>
-<div>
-<b>Notes:</b> The following is unrelated to the rest of this section and is described on the main <a href="../../en/NVIDIA.html" title="NVIDIA">NVIDIA</a> page. (Discuss in <a rel="nofollow" class="external text" href="../../en/Talk:NVIDIA/Tips_and_tricks.html">Talk:NVIDIA/Tips and tricks</a>)</div>
-</div>
-<p>To enable modesetting and avoid conficts with the <code>simpledrm</code> driver, the following option has to be added to the kernel command line in your boot files. Note that this specific parameter will have not have the correct effect if set in a file under <code>/etc/modprobe.d</code>, even if it's included in the initramfs. See <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/73720">FS#73720</a>.
-</p>
-<pre>nvidia_drm.modeset=1
-</pre>
 <h2><span class="mw-headline" id="Preserve_video_memory_after_suspend">Preserve video memory after suspend</span></h2>
 <p>By default the NVIDIA Linux drivers save and restore only essential video memory allocations on system suspend and resume. Quoting NVIDIA: 
 </p>
 <dl><dd>The resulting loss of video memory contents is partially compensated for by the user-space NVIDIA drivers, and by some applications, but can lead to failures such as rendering corruption and application crashes upon exit from power management cycles.</dd></dl>
 <p>The "still experimental" interface enables saving all video memory (given enough space on disk or RAM). 
 </p>
-<p>To save and restore all video memory contents, use the <code>NVreg_PreserveVideoMemoryAllocations=1</code> <a href="../../en/Kernel_module.html#Setting_module_options" class="mw-redirect" title="Kernel module parameter">kernel module parameter</a> for the <code>nvidia</code> kernel module and <a href="../../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> <code>nvidia-suspend.service</code>, <code>nvidia-hibernate.service</code>, and <code>nvidia-resume.service</code>.
+<p>To save and restore all video memory contents, <code>NVreg_PreserveVideoMemoryAllocations=1</code> <a href="../../en/Kernel_module.html#Setting_module_options" class="mw-redirect" title="Kernel module parameter">kernel module parameter</a> for the <code>nvidia</code> kernel module needs to be set. While NVIDIA does not set this by default, Arch Linux does for the supported drivers.
 </p>
-<p>See <a rel="nofollow" class="external text" href="https://download.nvidia.com/XFree86/Linux-x86_64/545.29.06/README/powermanagement.html">NVIDIA's documentation</a> for more details.
+<p>You also need to have the services <code>nvidia-suspend.service</code>, <code>nvidia-hibernate.service</code>, and <code>nvidia-resume.service</code> <a href="../../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enabled">enabled</a>. Arch Linux enables them by default on supported drivers, as per upstream requirements.
+</p>
+<p>See <a rel="nofollow" class="external text" href="https://download.nvidia.com/XFree86/Linux-x86_64/560.35.03/README/powermanagement.html">NVIDIA's documentation</a> for more details.
 </p>
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
@@ -682,10 +675,9 @@ $ nvidia-xconfig --cool-bits=4
 <strong>Note:</strong> 
 <ul>
 <li>As per <a href="../../en/Kernel_module.html#Using_files_in_/etc/modprobe.d/" title="Kernel module">Kernel module#Using files in /etc/modprobe.d/</a>, you will need to <a href="../../en/Mkinitcpio.html#Image_creation_and_activation" class="mw-redirect" title="Regenerate the initramfs">regenerate the initramfs</a> if using <a href="../../en/NVIDIA.html#DRM_kernel_mode_setting" title="NVIDIA">early KMS</a>.</li>
-<li>The video memory contents are saved by default to <code>/tmp</code>, which is a <a href="../../en/Tmpfs.html" title="Tmpfs">tmpfs</a>. <a rel="nofollow" class="external text" href="https://download.nvidia.com/XFree86/Linux-x86_64/545.29.06/README/powermanagement.html#PreserveAllVide719f0">NVIDIA recommends</a> using an other filesystem to achieve the best performance. This is also required if the size is not sufficient for the amount of memory: point to a different location with the <code>NVreg_TemporaryFilePath</code> kernel module parameter for the <code>nvidia</code> kernel module, (e.g. <code>nvidia.NVreg_TemporaryFilePath=/var/tmp</code>).</li>
+<li>The video memory contents are by upstream default saved to <code>/tmp</code>, which is a <a href="../../en/Tmpfs.html" title="Tmpfs">tmpfs</a>. <a rel="nofollow" class="external text" href="https://download.nvidia.com/XFree86/Linux-x86_64/560.35.03/README/powermanagement.html#PreserveAllVide719f0">NVIDIA recommends</a> using an other filesystem to achieve the best performance. This is also required if the size is not sufficient for the amount of memory. Arch Linux thus sets <code>nvidia.NVreg_TemporaryFilePath=/var/tmp</code> by default on supported drivers.</li>
 <li>The chosen file system containing the file needs to support unnamed temporary files (e.g. ext4 or XFS) and have sufficient capacity for storing the video memory allocations (i.e. at least 5 percent more than the sum of the memory capacities of all NVIDIA GPUs). Use the command <code>nvidia-smi --query-gpu=memory.total --format=csv,noheader,nounits</code> to list the memory capacities of all GPUs in the system.</li>
-<li>
-<code>nvidia-resume.service</code> is optional, as its functionality is also provided by a <span class="plainlinks archwiki-template-man" title="$ man 8 systemd-sleep"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-sleep.8">systemd-sleep(8)</a></span> hook (<code>/usr/lib/systemd/system-sleep/nvidia</code>) and the latter is invoked automatically. Note that <a rel="nofollow" class="external text" href="https://gitlab.gnome.org/GNOME/gdm/-/issues/784">GDM with Wayland</a> however explicitly requires <code>nvidia-resume.service</code> to be enabled.</li>
+<li>While <code>nvidia-resume.service</code> is marked as required by NVIDIA, it can be optional, as its functionality is also provided by a <span class="plainlinks archwiki-template-man" title="$ man 8 systemd-sleep"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-sleep.8">systemd-sleep(8)</a></span> hook (<code>/usr/lib/systemd/system-sleep/nvidia</code>) and the latter is invoked automatically. Note that <a rel="nofollow" class="external text" href="https://gitlab.gnome.org/GNOME/gdm/-/issues/784">GDM with Wayland</a> however explicitly requires <code>nvidia-resume.service</code> to be enabled.</li>
 </ul>
 </div>
 <h2><span class="mw-headline" id="Driver_persistence">Driver persistence</span></h2>
@@ -711,7 +703,6 @@ $ nvidia-xconfig --cool-bits=4
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
 <li><a href="../../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li>
-<li><a href="../../en/Category:Pages_or_sections_flagged_with_Template:Merge.html" title="Category:Pages or sections flagged with Template:Merge">Pages or sections flagged with Template:Merge</a></li>
 <li><a href="../../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
 </ul>
 </div>
@@ -724,8 +715,8 @@ $ nvidia-xconfig --cool-bits=4
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=NVIDIA/Tips_and_tricks&amp;oldid=812035">https://wiki.archlinux.org/index.php?title=NVIDIA/Tips_and_tricks&amp;oldid=812035</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 6 July 2024, at 21:40.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=NVIDIA/Tips_and_tricks&amp;oldid=819073">https://wiki.archlinux.org/index.php?title=NVIDIA/Tips_and_tricks&amp;oldid=819073</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 16 October 2024, at 10:15.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -5,7 +5,7 @@
 <title>Data-at-rest encryption - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -312,7 +312,7 @@
 			<ul class="vector-menu-content-list">
 				
 				<li class="interlanguage-link interwiki-es mw-list-item"><a href="../es/Data-at-rest_encryption.html" title="Data-at-rest encryption – español" lang="es" hreflang="es" class="interlanguage-link-target"><span>Español</span></a></li>
-<li class="interlanguage-link interwiki-ja mw-list-item"><a href="https://wiki.archlinux.jp/index.php/%E3%83%87%E3%82%A3%E3%82%B9%E3%82%AF%E6%9A%97%E5%8F%B7%E5%8C%96" title="ディスク暗号化 – 日本語" lang="ja" hreflang="ja" class="interlanguage-link-target"><span>日本語</span></a></li>
+<li class="interlanguage-link interwiki-ja mw-list-item"><a href="https://wiki.archlinux.jp/index.php/%E4%BF%9D%E5%AD%98%E3%83%87%E3%83%BC%E3%82%BF%E6%9A%97%E5%8F%B7%E5%8C%96" title="保存データ暗号化 – 日本語" lang="ja" hreflang="ja" class="interlanguage-link-target"><span>日本語</span></a></li>
 <li class="interlanguage-link interwiki-pt mw-list-item"><a href="../pt/Data-at-rest_encryption.html" title="Data-at-rest encryption – português" lang="pt" hreflang="pt" class="interlanguage-link-target"><span>Português</span></a></li>
 <li class="interlanguage-link interwiki-ru mw-list-item"><a href="../ru/Data-at-rest_encryption.html" title="Data-at-rest encryption – русский" lang="ru" hreflang="ru" class="interlanguage-link-target"><span>Русский</span></a></li>
 <li class="interlanguage-link interwiki-zh-hans mw-list-item"><a href="https://wiki.archlinuxcn.org/wiki/Data-at-rest_encryption" title="Data-at-rest encryption – 中文（简体）" lang="zh-Hans" hreflang="zh-Hans" class="interlanguage-link-target"><span>中文（简体）</span></a></li>
@@ -413,7 +413,7 @@ In modern computer systems, there are many background processes that may cache a
 <ul><li>(potential remedies: avoid such applications; mount <code>/tmp</code> inside a <a href="../en/Tmpfs.html" class="mw-redirect" title="Ramdisk">ramdisk</a>)</li></ul>
 </li>
 <li>
-<code>/var</code> (log files and databases and such; for example, <a href="../en/Locate.html" class="mw-redirect" title="Mlocate">mlocate</a> stores an index of all file names in <code>/var/lib/mlocate/mlocate.db</code>)</li>
+<code>/var</code> (log files and databases and such; for example, <a href="../en/Locate.html" title="Locate">locate</a> stores an index of all file names in <code>/var/lib/plocate/plocate.db</code>)</li>
 </ul></dd></dl>
 <p>The solution is to encrypt both system and user data, preventing unauthorized physical access to private data that may be cached by the system. This however comes with the disadvantage that unlocking of the encrypted parts of the disk has to happen at boot time. Another benefit of system data encryption is that it complicates the installation of malware like <a href="https://en.wikipedia.org/wiki/Keystroke_logging" class="extiw" title="wikipedia:Keystroke logging">keyloggers</a> or rootkits for someone with physical access.
 </p>
@@ -1446,7 +1446,7 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </p>
 <p>Whenever the operating system or an application requests a certain fragment of data from the blockdevice/file, the whole sector (or sectors) that contains the data will be read from disk, decrypted on-the-fly, and temporarily stored in memory:
 </p>
-<pre style="white-space: pre !important; font-variant-ligatures: no-common-ligatures;">           ╔═══════╗
+<pre style="white-space: pre !important; font-family:'DejaVu Sans Mono',monospace,monospace; font-variant-ligatures: no-common-ligatures;">           ╔═══════╗
   sector 1 ║"???.."║
            ╠═══════╣         ╭┈┈┈┈┈╮
   sector 2 ║"???.."║         ┊ key ┊
@@ -1491,7 +1491,7 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </p>
 <p>A common setup is to apply so-called "key stretching" to the passphrase (via a "key derivation function"), and use the resulting enhanced passphrase as the mount key for decrypting the actual master key (which has been previously stored in encrypted form):
 </p>
-<pre style="white-space: pre !important; font-variant-ligatures: no-common-ligatures;"> ╭┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈╮                         ╭┈┈┈┈┈┈┈┈┈┈┈╮
+<pre style="white-space: pre !important; font-family:'DejaVu Sans Mono',monospace,monospace; font-variant-ligatures: no-common-ligatures;"> ╭┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈╮                         ╭┈┈┈┈┈┈┈┈┈┈┈╮
  ┊ mount passphrase ┊━━━━⎛key derivation⎞━━━━▶┊ mount key ┊
  ╰┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈╯ ,──⎝   function   ⎠     ╰┈┈┈┈┈┬┈┈┈┈┈╯
  ╭──────╮            ╱                              │
@@ -1515,7 +1515,7 @@ It also takes an additional blob of data, the so-called "<b>salt</b>", as an arg
 <p>It is usually not used for de/encrypting the disk data directly, though.
 For example, in the case of stacked filesystem encryption, each file can be automatically assigned its own encryption key. Whenever the file is to be read/modified, this file key first needs to be decrypted using the main key, before it can itself be used to de/encrypt the file contents:
 </p>
-<pre style="white-space: pre !important; font-variant-ligatures: no-common-ligatures;">                           ╭┈┈┈┈┈┈┈┈┈┈┈┈╮
+<pre style="white-space: pre !important; font-family:'DejaVu Sans Mono',monospace,monospace; font-variant-ligatures: no-common-ligatures;">                           ╭┈┈┈┈┈┈┈┈┈┈┈┈╮
                            ┊ master key ┊
    file on disk:           ╰┈┈┈┈┈┬┈┈┈┈┈┈╯
   ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐        │
@@ -1614,7 +1614,7 @@ For example, in the case of stacked filesystem encryption, each file can be auto
 </p>
 <p>The most basic (and common) mode of operation used in practice is "<i>cipher-block chaining (CBC)</i>". When encrypting a sector with this mode, each block of plaintext data is combined in a mathematical way with the ciphertext of the previous block, before encrypting it using the cipher. For the first block, since it has no previous ciphertext to use, a special pre-generated data block stored with the sector's cryptographic metadata and called an "<b>initialization vector (IV)</b>" is used:
 </p>
-<pre style="white-space: pre !important; font-variant-ligatures: no-common-ligatures;">                                   ╭──────────────╮
+<pre style="white-space: pre !important; font-family:'DejaVu Sans Mono',monospace,monospace; font-variant-ligatures: no-common-ligatures;">                                   ╭──────────────╮
                                    │initialization│
                                    │vector        │
                                    ╰────────┬─────╯
@@ -1707,8 +1707,8 @@ Some can also additionally guarantee authenticity of the encrypted data (i.e. co
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Data-at-rest_encryption&amp;oldid=813284">https://wiki.archlinux.org/index.php?title=Data-at-rest_encryption&amp;oldid=813284</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 30 July 2024, at 06:03.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Data-at-rest_encryption&amp;oldid=819182">https://wiki.archlinux.org/index.php?title=Data-at-rest_encryption&amp;oldid=819182</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 19 October 2024, at 12:33.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -5,7 +5,7 @@
 <title>Incus - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -86,22 +86,31 @@
 			<ul id="toc-Unprivileged_containers-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Configure_Incus" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Configure_Incus">
-				<div class="vector-toc-text">
-				<span class="vector-toc-numb">2.2</span>Configure Incus</div>
-			</a>
-			
-			<ul id="toc-Configure_Incus-sublist" class="vector-toc-list">
-			</ul>
-		</li>
 		<li id="toc-Accessing_Incus_as_an_unprivileged_user" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Accessing_Incus_as_an_unprivileged_user">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">2.3</span>Accessing Incus as an unprivileged user</div>
+				<span class="vector-toc-numb">2.2</span>Accessing Incus as an unprivileged user</div>
 			</a>
 			
 			<ul id="toc-Accessing_Incus_as_an_unprivileged_user-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Initialize_Incus_config" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Initialize_Incus_config">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">2.3</span>Initialize Incus config</div>
+			</a>
+			
+			<ul id="toc-Initialize_Incus_config-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Adding_a_Web-UI" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Adding_a_Web-UI">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">2.4</span>Adding a Web-UI</div>
+			</a>
+			
+			<ul id="toc-Adding_a_Web-UI-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -357,49 +366,58 @@
 </pre>
 <h2><span class="mw-headline" id="Configuration">Configuration</span></h2>
 <h3><span class="mw-headline" id="Unprivileged_containers">Unprivileged containers</span></h3>
-<p>It is recommended to use unprivileged containers (See <a href="../en/Linux_Containers.html#Privileged_or_unprivileged_containers" title="Linux Containers">Linux Containers#Privileged or unprivileged containers</a> for an explanation of the difference).
+<p>Incus launches <a rel="nofollow" class="external text" href="https://linuxcontainers.org/incus/docs/main/explanation/security/#container-security">unprivileged containers  by default</a> (see <a href="../en/Linux_Containers.html#Privileged_or_unprivileged_containers" title="Linux Containers">Linux Containers#Privileged or unprivileged containers</a> for an explanation of the difference).
 </p>
-<p>For this, modify both <code>/etc/subuid</code> and <code>/etc/subgid</code> (if these files are not present, create them) to contain the mapping to the containerized uid/gid pairs for each user who shall be able to run the containers. The example below is simply for the root user (and systemd system unit):
+<p>For this to work, you need to setup an appropriate range of sub{u,g}ids for the <b>root</b> user<a rel="nofollow" class="external autonumber" href="https://linuxcontainers.org/incus/docs/main/installing/#machine-setup">[1]</a>: unlike <i>e.g.</i> <a href="../en/Podman.html" title="Podman">podman</a>, Incus uses a daemon that needs to run as root.<a rel="nofollow" class="external autonumber" href="https://discuss.linuxcontainers.org/t/incus-no-uid-gid-allocation-configured/19002/13">[2]</a>
 </p>
-<p>You can either use <code>usermod</code> as follows:
+<p>Verify the content of both <code>/etc/subuid</code> and <code>/etc/subgid</code>, and if needed add a <a rel="nofollow" class="external text" href="https://linuxcontainers.org/incus/docs/main/installing/#machine-setup">contiguous range of at least 10M UID/GID</a> for the root user:
 </p>
-<p><code>usermod -v 1000000-1000999999 -w 1000000-1000999999 root</code>
-</p>
-<p>Or modify the above mentioned files directly as follows:
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/subuid</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">root:1000000:1000000000
+<pre># usermod -v 1000000-1000999999 -w 1000000-1000999999 root
 </pre>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/subgid</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">root:1000000:1000000000
-</pre>
-<p>Now, every container will be started <code>unprivileged</code> by default.
+<p>Then <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Restart">restart</a> <code>incus</code>.
 </p>
 <p>For the alternative, see <a href="../en/LXD.html#Privileged_containers" title="LXD">LXD#Privileged containers</a>.
 </p>
-<h3><span class="mw-headline" id="Configure_Incus">Configure Incus</span></h3>
-<p>On the first start, Incus needs to be configured.
-</p>
-<p>Run as root:
-</p>
-<pre># incus admin init
-</pre>
-<p>This will start an interactive configuration guide in the terminal, that covers different topics like storages, networks etc. <br>
-You can find an overview in the official <a rel="nofollow" class="external text" href="https://linuxcontainers.org/incus/docs/main/tutorial/first_steps/">Getting Started Guide</a>.
-</p>
 <h3><span class="mw-headline" id="Accessing_Incus_as_an_unprivileged_user">Accessing Incus as an unprivileged user</span></h3>
-<p>Incus defines two user groups:
+<p>From the <a rel="nofollow" class="external text" href="https://linuxcontainers.org/incus/docs/main/tutorial/first_steps/#install-and-initialize-incus">official documentation</a>:
+</p>
+<p>"Access to Incus is controlled through two groups:
 </p>
 <ul>
 <li>
-<code>incus</code> "allows basic user access, no configuration and all actions restricted to a per-user project."</li>
+<code>incus</code> allows basic user access, no configuration and all actions restricted to a per-user project.</li>
 <li>
-<code>incus-admin</code> "allows full control over Incus."</li>
+<code>incus-admin</code> allows full control over Incus."</li>
 </ul>
-<p>To control Incus without having to run all commands as root, <a href="../en/Users_and_groups.html#Group_management" title="Users and groups">add your user</a> to these groups.
+<p>To have a normal user capable of launching and operating instances, <a href="../en/Users_and_groups.html#Group_management" title="Users and groups">add the user</a> to the <code>incus</code> group. 
+</p>
+<p>To give a normal user full control over Incus without having to use <a href="../en/Sudo.html" title="Sudo">sudo</a>, <a href="../en/Users_and_groups.html#Group_management" title="Users and groups">add the user</a> to <code>incus-admin</code> (not recommended).
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> Anyone added to the <code>incus-admin</code> group is root equivalent. For more information, see <a rel="nofollow" class="external autonumber" href="https://github.com/lxc/incus#security">[1]</a> and <a rel="nofollow" class="external autonumber" href="https://bugs.launchpad.net/ubuntu/+source/lxd/+bug/1829071">[2]</a>.</div>
+<strong>Warning:</strong> Anyone added to the <code>incus-admin</code> group is root equivalent. For more information, see <a rel="nofollow" class="external autonumber" href="https://github.com/lxc/incus#security">[3]</a> and <a rel="nofollow" class="external autonumber" href="https://bugs.launchpad.net/ubuntu/+source/lxd/+bug/1829071">[4]</a>.</div>
+<h3><span class="mw-headline" id="Initialize_Incus_config">Initialize Incus config</span></h3>
+<p>Before it can be used, Incus' config needs to be initialized:
+</p>
+<pre>$ incus admin init
+</pre>
+<p>From the <a rel="nofollow" class="external text" href="https://linuxcontainers.org/incus/docs/main/howto/initialize/#interactive-configuration">official documentation</a>:
+</p>
+<dl><dd>"<i>For simple configurations, you can run this command as a normal user. However, some more advanced operations during the initialization process (for example, joining an existing cluster) require root privileges. In this case, run the command with sudo or as root."</i>
+</dd></dl>
+<p>This will start an interactive configuration guide in the terminal, that covers different topics like storages, networks etc. <br>
+You can find an overview in the official <a rel="nofollow" class="external text" href="https://linuxcontainers.org/incus/docs/main/tutorial/first_steps/">Getting Started Guide</a>.
+</p>
+<h3><span class="mw-headline" id="Adding_a_Web-UI">Adding a Web-UI</span></h3>
+<p>The <a rel="nofollow" class="external text" href="https://github.com/canonical/lxd-ui">lxd-ui</a> browser frontend has been patched to fit Incus. These patches are found in the debian packge source. <a rel="nofollow" class="external autonumber" href="https://github.com/zabbly/incus/tree/daily/patches">[5]</a>
+</p>
+<p>To make use of this UI install the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/incus-ui/">incus-ui</a></span><sup><small>AUR</small></sup> package.
+</p>
+<p>Then set the address and port for the webserver:
+</p>
+<pre>$ incus config set core.https_address=127.0.0.1:8443
+</pre>
+<p>And <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Restart">restart</a> Incus.
+</p>
 <h2><span class="mw-headline" id="Usage">Usage</span></h2>
 <h3><span class="mw-headline" id="Overview_of_commands">Overview of commands</span></h3>
 <p>You can get an overview of all available commands by typing:
@@ -407,18 +425,18 @@ You can find an overview in the official <a rel="nofollow" class="external text"
 <pre>$ incus
 </pre>
 <h3><span class="mw-headline" id="Create_a_container">Create a container</span></h3>
-<p>You can create a container with <code>incus launch</code>, for example:
-</p>
-<pre>$ incus launch ubuntu:20.04
-</pre>
 <p>Container are based on images, that are downloaded from image servers or remote LXD servers.
 </p>
 <p>You can see the list of already added servers with:
 </p>
 <pre>$ incus remote list
 </pre>
-<p>You can list all images on a server with <code>incus image list</code>, for example:
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> An image server can be referred to by using the name displayed in the <code>NAME</code> column on the left, <i>e.g.</i> <code>images</code> in the following examples.</div>
+<p>You can list all images on a server with <code>incus image list &lt;server-name&gt;:</code>, for example:
 </p>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong> It is recommended to pipe the output of the following command through a pager like <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=less">less</a></span> due the high number of images available.</div>
 <pre>$ incus image list images:
 </pre>
 <p>This will show you all images on one of the default servers: <a rel="nofollow" class="external text" href="https://images.linuxcontainers.org">images.linuxcontainers.org</a>
@@ -431,14 +449,16 @@ You can find an overview in the official <a rel="nofollow" class="external text"
 </p>
 <pre>$ incus launch servername:imagename
 </pre>
-<p>For example:
+<p>For example to create a randomly named container instance from the Ubuntu Noble image from the default server:
 </p>
-<pre>$ incus launch images:centos/8/amd64 centos
+<pre>$ incus launch images:ubuntu/noble
 </pre>
-<p>To create an amd64 Arch container:
+<p>To specify a name for the instance simply add it afterwards, <i>e.g.</i>:
 </p>
 <pre>$ incus launch images:archlinux/current/amd64 arch
 </pre>
+<p>will create an amd64 Arch container named <code>arch</code>.
+</p>
 <h2><span class="mw-headline" id="Tips_and_tricks">Tips and tricks</span></h2>
 <h3><span class="mw-headline" id="Access_the_containers_by_name_on_the_host">Access the containers by name on the host</span></h3>
 <p>This assumes that you are using the default bridge that it is named <code>incusbr0</code> and that you are using <a href="../en/Systemd-resolved.html" title="Systemd-resolved">systemd-resolved</a>.
@@ -479,7 +499,7 @@ ExecStartPost=/bin/sh -c 'systemd-resolve --interface incusbr0 --set-domain "~in
 </p>
 <p>Incus implements a server-client paradigm. It simply means that operations are done by <code>incusd</code> acting as the <a rel="nofollow" class="external text" href="https://linuxcontainers.org/incus/docs/main/server">Incus server</a> — usually running in the background, unless invoked from an interactive shell. And <code>incus</code> commandline interface is used to communicate with Incus server acting as the <a rel="nofollow" class="external text" href="https://linuxcontainers.org/incus/docs/main/client">Incus client</a>.
 </p>
-<p>That makes <code>incusd</code>, typically started as a service, not inheriting shell's environment variables of the client. But respecting variables of the environment that it's invoked from, instead.<a rel="nofollow" class="external autonumber" href="https://linuxcontainers.org/incus/docs/main/environment">[3]</a> In Arch Linux, Incus server is started by systemd.
+<p>That makes <code>incusd</code>, typically started as a service, not inheriting shell's environment variables of the client. But respecting variables of the environment that it's invoked from, instead.<a rel="nofollow" class="external autonumber" href="https://linuxcontainers.org/incus/docs/main/environment">[6]</a> In Arch Linux, Incus server is started by systemd.
 </p>
 <p>There can be many workarounds to this difficulty, following exist some examples. See Incus's <a rel="nofollow" class="external text" href="https://github.com/lxc/incus/issues/574">issue#574</a> for more information.
 </p>
@@ -547,8 +567,8 @@ Environment=<i>ALL</i>_PROXY="socks://<i>proxy_server_address</i>:<i>port</i>/"
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Incus&amp;oldid=810707">https://wiki.archlinux.org/index.php?title=Incus&amp;oldid=810707</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 17 June 2024, at 05:40.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Incus&amp;oldid=815640">https://wiki.archlinux.org/index.php?title=Incus&amp;oldid=815640</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 31 August 2024, at 08:26.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

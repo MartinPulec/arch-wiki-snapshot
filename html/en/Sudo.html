@@ -5,7 +5,7 @@
 <title>Sudo - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -289,6 +289,24 @@
 			<ul id="toc-Using_U2F-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Write_to_protected_files" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Write_to_protected_files">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">4.16</span>Write to protected files</div>
+			</a>
+			
+			<ul id="toc-Write_to_protected_files-sublist" class="vector-toc-list">
+				<li id="toc-In_Vim" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#In_Vim">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">4.16.1</span>In Vim</div>
+			</a>
+			
+			<ul id="toc-In_Vim-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-Troubleshooting" class="vector-toc-list-item vector-toc-level-1">
@@ -415,7 +433,7 @@
 </p>
 <p>Sudo is an alternative to <a href="../en/Su.html" title="Su">su</a> for running commands as root. Unlike <a href="../en/Su.html" title="Su">su</a>, which launches a root shell that allows all further commands root access, sudo instead grants temporary privilege elevation to a single command. By enabling root privileges only when needed, sudo usage reduces the likelihood that a typo or a bug in an invoked command will ruin the system.
 </p>
-<p>Sudo can also be used to run commands as other users; additionally, sudo logs all commands and failed access attempts for security auditing.
+<p>Sudo can also be used to run commands as other users; additionally, sudo logs all commands and failed access attempts to the <a href="../en/Systemd/Journal.html" class="mw-redirect" title="Journal">journal</a> for security auditing.
 </p>
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Installation">Installation</span></h2>
@@ -568,19 +586,7 @@ Defaults      editor=/usr/bin/rnano, !env_editor
 </p>
 <pre>Defaults timestamp_timeout=10
 </pre>
-<p>If you are using a lot of sudo commands on a row, it is more logical to refresh the timeout every time you use sudo than
-to increase <code>timestamp_timeout</code>. Refreshing the timeout can be done with <code>sudo -v</code> (whereas <code>sudo -K</code> revokes immediately).
-</p>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
-<div>
-<b>Reason:</b> Default <code>sudo</code> usage already refreshes timeout. (Discuss in <a href='../en/Talk:Sudo.html#Remove_alias_recommendation_in_"Reduce_the_number_of_times_you_have_to_type_a_password"?' title="Talk:Sudo">Talk:Sudo#Remove alias recommendation in "Reduce the number of times you have to type a password"?</a>)</div>
-</div>
-<p>You might want to automate this by adding the following to your <a href="../en/Environment_variables.html#Using_shell_initialization_files" title="Environment variables">shell initialization files</a>:
-</p>
-<pre>alias sudo='sudo -v; sudo '
-</pre>
-<p>It is also possible to use a bash function; for more details see <a rel="nofollow" class="external text" href="https://unix.stackexchange.com/questions/584725/expand-certain-aliases-from-within-sudo-bash-function">stackexchange</a>.
+<p>If you are using sudo commands in a long script and you do not want to wait for user input when the timeout expires, it is possible to refresh the timeout by separately running <code>sudo -v</code> in a loop (whereas <code>sudo -K</code> revokes it immediately).
 </p>
 <h3><span class="mw-headline" id="Environment_variables">Environment variables</span></h3>
 <p>If you have a lot of environment variables, or you export your proxy settings via <code>export http_proxy="..."</code>, when using sudo these variables do not get passed to the root account unless you run sudo with the <code>-E</code>/<code>--preserve-env</code> option.
@@ -889,6 +895,27 @@ $ sudo -i -u admin
 </p>
 <p>See <a href="../en/Universal_2nd_Factor.html#Passwordless_sudo" title="Universal 2nd Factor">Universal 2nd Factor#Passwordless sudo</a>.
 </p>
+<h3><span class="mw-headline" id="Write_to_protected_files">Write to protected files</span></h3>
+<p>When using sudo, you may want to write to protected files. Using <a href="../en/Core_utilities.html#Nonessentials" class="mw-redirect" title="Tee">tee</a> allows such a separation:
+</p>
+<pre>$ <i>input stream</i> | sudo tee <i>--option</i> <i>protected_file_1 protected_file_2...</i>
+</pre>
+<p>when a simple <code>&gt;</code>/<code>&gt;&gt;</code> would not have worked.
+</p>
+<h4><span class="mw-headline" id="In_Vim">In Vim</span></h4>
+<p>A similar concept is useful when you forgot to start <a href="../en/Vim.html" title="Vim">Vim</a> with sudo when editing a file owned by an other user. In this case you can do the following inside <a href="../en/Vim.html" title="Vim">Vim</a> to save the file:
+</p>
+<pre>:w !sudo tee %
+</pre>
+<p>You can add this to your <code>~/.vimrc</code> to make this trick easy-to-use with <code>:w!!</code> mapping in command mode:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.vimrc</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">" Allow saving of files as sudo when I forgot to start vim using sudo
+ cmap w!! w !sudo tee &gt; /dev/null %</pre>
+<p>The <code>&gt; /dev/null</code> part explicitly throws away the standard output since we do not need to pass anything to another piped command.
+</p>
+<p>More detailed explanation of how and why this works can be found in <a rel="nofollow" class="external text" href="https://stackoverflow.com/questions/2600783/how-does-the-vim-write-with-sudo-trick-work">How does the vim “write with sudo” trick work?</a> article on StackOverflow.
+</p>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
 <h3><span class="mw-headline" id="SSH_problem_without_TTY">SSH problem without TTY</span></h3>
 <div class="noprint archwiki-template-message">
@@ -941,8 +968,8 @@ Defaults umask_override
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Sudo&amp;oldid=811791">https://wiki.archlinux.org/index.php?title=Sudo&amp;oldid=811791</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 2 July 2024, at 19:34.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Sudo&amp;oldid=817877">https://wiki.archlinux.org/index.php?title=Sudo&amp;oldid=817877</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 6 October 2024, at 09:55.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

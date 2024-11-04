@@ -5,7 +5,7 @@
 <title>Router - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -42,13 +42,13 @@
 				<div class="vector-toc-text">Beginning</div>
 			</a>
 		</li>
-		<li id="toc-Hardware_Requirements" class="vector-toc-list-item vector-toc-level-1">
-		<a class="vector-toc-link" href="#Hardware_Requirements">
+		<li id="toc-Hardware_requirements" class="vector-toc-list-item vector-toc-level-1">
+		<a class="vector-toc-link" href="#Hardware_requirements">
 			<div class="vector-toc-text">
-			<span class="vector-toc-numb">1</span>Hardware Requirements</div>
+			<span class="vector-toc-numb">1</span>Hardware requirements</div>
 		</a>
 		
-		<ul id="toc-Hardware_Requirements-sublist" class="vector-toc-list">
+		<ul id="toc-Hardware_requirements-sublist" class="vector-toc-list">
 		</ul>
 	</li>
 	<li id="toc-Network_interface_configuration" class="vector-toc-list-item vector-toc-level-1">
@@ -418,9 +418,9 @@
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> Throughout the article, <b>intern0</b> and <b>extern0</b> are used as names for the network interfaces. The reasoning is further explained in <a href="#Persistent_interface_naming">#Persistent interface naming</a>.</div>
 <meta property="mw:PageProp/toc">
-<h2><span class="mw-headline" id="Hardware_Requirements">Hardware Requirements</span></h2>
+<h2><span class="mw-headline" id="Hardware_requirements">Hardware requirements</span></h2>
 <ul>
-<li>At least 1 GB of hard drive space. The base install will take up around 500MB of space and if you want to use a caching web proxy, you will need to reserve space for the cache as well.</li>
+<li>See <a href="../en/Partitioning.html#Partition_scheme" title="Partitioning">Partitioning#Partition scheme</a> for advice on the minimum required disk space.</li>
 <li>At least two physical network interfaces: a gateway connects two networks with each other (actually a router can be made using a single physical interface that underlays two <a href="../en/VLAN.html" title="VLAN">VLAN</a> interfaces and is connected to a VLAN-aware switch, so-called router-on-a-stick configuration, but it is not covered in this article). You will need to be able to connect those networks to the same physical computer. One interface must connect to the external network, while the other connects to the internal network.</li>
 <li>A hub, switch or UTP cable: You need a way to connect the other computers to the gateway</li>
 </ul>
@@ -447,12 +447,12 @@ However you might want to rename your interfaces e.g. in order to highlight thei
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Description='Public Interface.'
 Interface=extern0
 Connection=ethernet
-IP='dhcp'</pre>
+IP=dhcp</pre>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/netctl/intern0-profile</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Description='Private Interface'
 Interface=intern0
 Connection=ethernet
-IP='static'
+IP=static
 Address=('10.0.0.1/24')</pre>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> The example configuration above assumes a full subnet. If you are building the gateway for a small amount of people, you will want to change the <a href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing" class="extiw" title="wikipedia:Classless Inter-Domain Routing">CIDR</a> suffix to accommodate a smaller range. For example <code>/27</code> will give you <code>10.0.0.1</code> to <code>10.0.0.30</code>. There are many CIDR calculators, online and offline, for example <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sipcalc">sipcalc</a></span>.</div>
@@ -533,6 +533,19 @@ Address=('10.0.0.1/24')</pre>
 <td>REST, RADIUS, NETCONF</td>
 <td>File, MySQL, PostgreSQL, Cassandra</td>
 <td>Also DNS. Supersedes dhcpd.
+</td>
+</tr>
+<tr>
+<td>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/pi-hole-ftl/">pi-hole-ftl</a></span><sup><small>AUR</small></sup>
+</td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
+<td><a href="../en/Pi-hole.html#Web_interface" title="Pi-hole">Pi-hole#Web interface</a></td>
+<td>?</td>
+<td>SQLite</td>
+<td>Component of the <a href="../en/Pi-hole.html" title="Pi-hole">Pi-hole</a> project. Fork of dnsmasq.
 </td>
 </tr>
 <tr>
@@ -696,8 +709,8 @@ dhcp-range=10.0.0.2,10.0.0.255,255.255.255.0,1h # defines a DHCP-range for the L
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Router&amp;oldid=804856">https://wiki.archlinux.org/index.php?title=Router&amp;oldid=804856</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 29 March 2024, at 09:35.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Router&amp;oldid=815710">https://wiki.archlinux.org/index.php?title=Router&amp;oldid=815710</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 1 September 2024, at 14:26.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

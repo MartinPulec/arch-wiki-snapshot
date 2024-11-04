@@ -5,7 +5,7 @@
 <title>Patching packages - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -159,7 +159,7 @@
 <li><a href="../en/Creating_packages.html" title="Creating packages">Creating packages</a></li>
 </ul>
 </div>
-<p>This article covers how to create and how to apply patches to packages in the <a href="../en/Arch_build_system.html" title="Arch build system">Arch build system</a> (<i>ABS</i>).
+<p>This article covers how to create and how to apply patches to packages in the <a href="../en/Arch_build_system.html" title="Arch build system">Arch build system</a> (ABS).
 </p>
 <p>A <a href="https://en.wikipedia.org/wiki/Patch_(computing)" class="extiw" title="wikipedia:Patch (computing)">patch</a> describes a set of line changes for one or multiple files. Patches are typically used to automate the changing of source code.
 </p>
@@ -167,11 +167,11 @@
 <h2><span class="mw-headline" id="Creating_patches">Creating patches</span></h2>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> If you only need to change one or two lines, you might want to use <a href="../en/Core_utilities.html#Essentials" class="mw-redirect" title="Sed">sed</a> instead.</div>
-<p>The <i>diff</i> tool compares files line by line. If you save its output you have a patch, e.g. <code>diff --unified --recursive --text foo bar &gt; foobar.patch</code> (which can be shortened to <code>diff -ura</code>). If you pass directories <i>diff</i> will compare the files they contain.
+<p>The <a href="https://en.wikipedia.org/wiki/diff" class="extiw" title="wikipedia:diff">diff</a> tool compares files line by line. If you save its output you have a patch, e.g. <code>diff --unified --recursive --text foo bar &gt; foobar.patch</code> (which can be shortened to <code>diff -ura</code>). If you pass directories <i>diff</i> will compare the files they contain.
 </p>
 <ol>
 <li>Delete the <code>src</code> directory if you have already built the package.</li>
-<li>Run <code>makepkg --nobuild</code>/<code>makepkg -n</code> which will download and extract the source files, specified in <code>PKGBUILD</code>, but not build them. If the system you are making the patch on does not have the required dependencies, you may have to run <code>makepkg --nobuild --nodeps</code>/<code>makepkg -nd</code> instead.</li>
+<li>Run <code>makepkg --nobuild</code>/<code>makepkg -o</code> which will download and extract the source files, specified in <code>PKGBUILD</code>, but not build them. If the system you are making the patch on does not have the required dependencies, you may have to run <code>makepkg --nobuild --nodeps</code>/<code>makepkg -od</code> instead.</li>
 <li>Create two copies of the extracted directory in the <code>src</code> directory, one as a pristine copy and one for your altered version. We will call them <code>package.orig</code> and <code>package.new</code>.</li>
 <li>Make your changes in the <code>package.new</code> directory.</li>
 <li>Run <code>diff -ura package.orig package.new --color</code> and check if the patch looks good.</li>
@@ -207,7 +207,7 @@
     patch -d $pkgname-$pkgver -Np1 -i ../eject.patch
 }
 </pre>
-<p>Run <code>makepkg</code> (from the terminal now). If all goes well, the patch will be automatically applied, and your new package will contain whatever changes were included in the patch.  If not, you may have to experiment with the <code>--strip</code>/<code>-p</code> option of patch. While experimenting, you might find <code>--dry-run</code>, <code>--reverse</code> or <code>--verbose</code> options usable. Read <span class="plainlinks archwiki-template-man" title="$ man 1 patch"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/patch.1">patch(1)</a></span> for more information.
+<p>Run <code>makepkg</code> from the terminal now. If all goes well, the patch will be automatically applied, and your new package will contain whatever changes were included in the patch.  If not, you may have to experiment with the <code>--strip</code>/<code>-p</code> option of patch. While experimenting, you might find <code>--dry-run</code>, <code>--reverse</code> or <code>--verbose</code> options usable. Read <span class="plainlinks archwiki-template-man" title="$ man 1 patch"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/patch.1">patch(1)</a></span> for more information.
 </p>
 <p>Basically it works as follows. If the diff file was created to apply patches to files in <code>myversion/</code>, the diff files will be applied to <code>myversion/file</code>. You are running it from within the <code>yourversion/</code> directory (because you would cd into that directory in the <code>PKGBUILD</code>), so when patch applies the file, you want it to apply it to the file <code>file</code>, taking off the <code>myversion/</code> part. <code>-p1</code> does this, by removing one directory from the path. However, if the developer patched in <code>myfiles/myversion</code>, you need to remove two directories, so you use <code>-p2</code>.
 </p>
@@ -234,8 +234,8 @@
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Patching_packages&amp;oldid=813588">https://wiki.archlinux.org/index.php?title=Patching_packages&amp;oldid=813588</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 31 July 2024, at 07:45.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Patching_packages&amp;oldid=814381">https://wiki.archlinux.org/index.php?title=Patching_packages&amp;oldid=814381</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 12 August 2024, at 08:35.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -5,7 +5,7 @@
 <title>doas (Русский) - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.1">
+<meta name="generator" content="MediaWiki 1.42.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -219,10 +219,12 @@
 </p>
 <pre>$ doas pacman -Syu
 </pre>
-<p>Запуск интерактивной облочки root:
+<p>Запуск интерактивной оболочки от имени другого пользователя (если не указан <code>-u <i>user</i></code> по умолчанию root):
 </p>
-<pre>$ doas -s
+<pre>$ doas -su <i>user</i>
 </pre>
+<p>Вход от имени другого пользователя требуется для некоторых команд, смотрите <a href="../en/Sudo.html#Login_shell" title="Sudo">Sudo#Login shell</a>.
+</p>
 <p>Смотрите <span class="plainlinks archwiki-template-man" title="$ man 1 doas"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/doas.1">doas(1)</a></span> для более подробной информации.
 </p>
 <h2>
@@ -233,11 +235,17 @@
 <p>Чтобы разрешить членам группы <a href="../ru/Users_and_groups.html#%D0%A1%D0%BF%D0%B8%D1%81%D0%BE%D0%BA_%D0%B3%D1%80%D1%83%D0%BF%D0%BF" title="Users and groups (Русский)">wheel</a> выполнять команды от имени других пользователей, создайте файл настроек со следующим содержимым:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/doas.conf</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">permit :wheel
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">	
+permit setenv {PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin} :wheel
 
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Примечание:</strong> В конце файла обязательно должна быть пустая строка.</div>
+<strong>Примечание:</strong> 
+<ul>
+<li>В конце файла обязательно должна быть пустая строка.</li>
+<li>Параметр <code>setenv</code> позволяет обойти <a rel="nofollow" class="external text" href="https://github.com/Duncaen/OpenDoas/issues/117">issue</a>, возникающую из-за происхождения OpenDoas BSD, где дополнительные системные пакеты хранятся в <code>/usr/local/bin</code>. В Linux <code>/usr/local/bin</code> обычно используется для переопределения исполняемых файлов, поэтому он стоит перед <code>/usr/bin</code>, который содержит исполняемые файлы из пакетов.</li>
+</ul>
+</div>
 <p>Владелец и группа файла <code>/etc/doas.conf</code> должны быть <code>0</code>, права доступа к файлу должны быть установлены на <code>0400</code>:
 </p>
 <pre># chown -c root:root /etc/doas.conf
@@ -245,7 +253,7 @@
 </pre>
 <p>Для проверки синтаксиса файла <code>/etc/doas.conf</code> выполните команду:
 </p>
-<pre># doas -C /etc/doas.conf &amp;&amp; echo "config ok" || echo "config error" 
+<pre># if doas -C /etc/doas.conf; then echo "config ok"; else echo "config error"; fi
 </pre>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Важно:</strong> В файле <code>/etc/doas.conf</code> не должно быть синтаксических ошибок!</div>
@@ -254,10 +262,12 @@
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/doas.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">permit nopass :plugdev as root cmd /usr/bin/smartctl
 </pre>
-<p>Базовый синтаксис файла <code>/etc/doas.conf</code> такой:
+<p>Базовый синтаксис файла <code>/etc/doas.conf</code> выглядит так:
 </p>
 <pre>permit|deny [опции] личность [as цель] [cmd команда [аргументы ...]]
 </pre>
+<p>Последнее совпадающее правило определяет выполняемое действие, поэтому правила должны быть упорядочены соответствующим образом.
+</p>
 <p>Смотрите <span class="plainlinks archwiki-template-man" title="$ man 5 doas.conf"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/doas.conf.5">doas.conf(5)</a></span> для более подробной информации.
 </p>
 <h2>
@@ -266,13 +276,15 @@
 <h3>
 <span id=".D0.97.D0.B0.D0.BF.D0.BE.D0.BC.D0.B8.D0.BD.D0.B0.D0.BD.D0.B8.D0.B5"></span><span class="mw-headline" id="Запоминание">Запоминание</span>
 </h3>
-<p><i>doas</i> имеет функцию запоминания: после успешной аутентификации пользователя не запрашивать пароль снова в течение некоторого времени. По умолчанию она отключена, включить её можно с помощью опции <code>persist</code>:
+<p><i>doas</i> имеет функцию запоминания: после успешной аутентификации пользователя в течение некоторого времени ему больше не будет предлагаться вводить пароль. По умолчанию она отключена, включить её можно с помощью опции <code>persist</code>:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/doas.conf</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">permit persist :wheel
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">permit <b>persist</b> setenv {PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin} :wheel
 </pre>
+<p>Выполнение <code>doas -L</code> очищает сохраненную аутентификацию до истечения автоматического таймаута.
+</p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Примечание:</strong> Функция persist отключена по умолчанию и потому, что она является новой и потенциально опасной. В оригинальном <i>doas</i> для установки и сброса таймаутов используется API ядра. Этот API специфичен для OpenBSD, и его аналогов в других операционных системах нет. В качестве обходного пути функция persist реализована с использованием timestamp-файлов аналогично <i>sudo</i>.</div>
+<strong>Примечание:</strong> Функция persist отключена по умолчанию, поскольку она является новой и потенциально опасной. В оригинальном <i>doas</i> для установки и сброса таймаутов используется API ядра. Этот API специфичен для OpenBSD, и его аналогов в других операционных системах нет. В качестве обходного пути функция persist реализована с использованием timestamp-файлов аналогично <i>sudo</i>.</div>
 <h3>
 <span id=".D0.9F.D0.BB.D0.B0.D0.B2.D0.BD.D1.8B.D0.B9_.D0.BF.D0.B5.D1.80.D0.B5.D1.85.D0.BE.D0.B4_.D0.BE.D1.82_sudo_.D0.BA_doas"></span><span class="mw-headline" id="Плавный_переход_от_sudo_к_doas">Плавный переход от sudo к doas</span>
 </h3>
@@ -285,6 +297,8 @@ alias sudoedit='doas rnano'
 </p>
 <pre># ln -s $(which doas) /usr/bin/sudo
 </pre>
+<p>Другой способ - установить <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/doas-sudo-shim/">doas-sudo-shim</a></span><sup><small>AUR</small></sup>, который эмулирует несколько вариантов sudo.
+</p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Примечание:</strong> По умолчанию <i>sudo</i> сохраняет некоторые переменные окружения, а <i>doas</i> — нет, в частности, XAUTHORITY, LANG и LC_ALL. Это означает, что вы не сможете запустить графические приложения под X или получить доступ к локали пользователя без дополнительной настройки. Например, чтобы разрешить членам группы <i>wheel</i> запускать графические приложения и получать доступ к локали пользователя, используйте опцию setenv:
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/doas.conf</pre>
@@ -298,6 +312,12 @@ alias sudoedit='doas rnano'
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.bashrc</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">complete -cf doas
+</pre>
+<p>Если установлен <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=bash-completion">bash-completion</a></span>, то вместо этого можно использовать следующее, чтобы обеспечить дополнительное автодополнение для требуемой команды:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.bashrc</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">	
+complete -F _command doas
 </pre>
 </div>
 </div>
@@ -315,8 +335,8 @@ alias sudoedit='doas rnano'
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Doas_(%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9)&amp;oldid=765099">https://wiki.archlinux.org/index.php?title=Doas_(Русский)&amp;oldid=765099</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 26 January 2023, at 09:08.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Doas_(%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9)&amp;oldid=819327">https://wiki.archlinux.org/index.php?title=Doas_(Русский)&amp;oldid=819327</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 20 October 2024, at 18:51.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>
