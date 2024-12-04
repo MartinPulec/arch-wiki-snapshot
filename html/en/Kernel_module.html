@@ -290,9 +290,9 @@
 <p>Related articles</p>
 <ul>
 <li><a href="../en/General_troubleshooting.html#Boot_problems" class="mw-redirect" title="Boot debugging">Boot debugging</a></li>
+<li><a href="../en/Compile_kernel_module.html" title="Compile kernel module">Compile kernel module</a></li>
 <li><a href="../en/Kernel.html" title="Kernel">Kernel</a></li>
 <li><a href="../en/Kernel_parameters.html" title="Kernel parameters">Kernel parameters</a></li>
-<li><a href="../en/Compile_kernel_module.html" title="Compile kernel module">Compile kernel module</a></li>
 </ul>
 </div>
 <p><a href="https://en.wikipedia.org/wiki/Loadable_kernel_module" class="extiw" title="wikipedia:Loadable kernel module">Kernel modules</a> are pieces of code that can be loaded and unloaded into the kernel upon demand. They extend the functionality of the kernel without the need to reboot the system. 
@@ -306,7 +306,7 @@
 <p>Modules are stored in <code>/usr/lib/modules/<i>kernel_release</i></code>. You can use the command <code>uname -r</code> to get your current kernel release version.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> Module names often use underscores (<code>_</code>) or dashes (<code>-</code>); however, those symbols are interchangeable when using the <code>modprobe</code> command and in configuration files in <code>/etc/modprobe.d/</code>.</div>
+<strong>Note:</strong> Module names often use underscores (<code>_</code>) or dashes (<code>-</code>); however, those symbols are interchangeable when using the <i>modprobe</i> command and in configuration files in <code>/etc/modprobe.d/</code> (automatic conversion to underscores is performed, see <span class="plainlinks archwiki-template-man" title="$ man 8 modprobe"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/modprobe.8#DESCRIPTION">modprobe(8) § DESCRIPTION</a></span> and <span class="plainlinks archwiki-template-man" title="$ man 5 modprobe.d"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/modprobe.d.5#DESCRIPTION">modprobe.d(5) § DESCRIPTION</a></span>).</div>
 <p>To show what kernel modules are currently loaded:
 </p>
 <pre>$ lsmod
@@ -403,9 +403,14 @@ virtio_net
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># On ThinkPads, this lets the 'thinkfan' daemon control fan speed
 options thinkpad_acpi fan_control=1</pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> If any of the affected modules is loaded from the initramfs, then you will need to add the appropriate <i>.conf</i> file to <code>FILES</code> in <a href="../en/Mkinitcpio.html#Configuration" class="mw-redirect" title="Mkinitcpio.conf">mkinitcpio.conf</a> or use the <code>modconf</code> <a href="../en/Mkinitcpio.html#HOOKS" class="mw-redirect" title="Mkinitcpio.conf">hook</a>, then <a href="../en/Mkinitcpio.html#Image_creation_and_activation" class="mw-redirect" title="Regenerate the initramfs">regenerate the initramfs</a> to include the <i>.conf</i> file. To see the contents of the default initramfs use <a href="../en/Mkinitcpio.html#Extracting_the_image" title="Mkinitcpio">lsinitcpio</a>.</div>
+<strong>Note:</strong> 
+<ul>
+<li>If any of the affected modules is loaded from the initramfs, then you will need to add the appropriate <i>.conf</i> file to <code>FILES</code> in <a href="../en/Mkinitcpio.html#Configuration" class="mw-redirect" title="Mkinitcpio.conf">mkinitcpio.conf</a> or use the <code>modconf</code> <a href="../en/Mkinitcpio.html#HOOKS" class="mw-redirect" title="Mkinitcpio.conf">hook</a>, then <a href="../en/Mkinitcpio.html#Image_creation_and_activation" class="mw-redirect" title="Regenerate the initramfs">regenerate the initramfs</a> to include the <i>.conf</i> file. To see the contents of the default initramfs use <a href="../en/Mkinitcpio.html#Extracting_the_image" title="Mkinitcpio">lsinitcpio</a>.</li>
+<li>All options for a given module must be defined in a single line. New <code>options</code> line with the same module name replaces the previous one.</li>
+</ul>
+</div>
 <h3><span class="mw-headline" id="Using_kernel_command_line">Using kernel command line</span></h3>
-<p>You can also pass options to the module using the kernel command line. This is the only working option for modules built into the kernel. For all common boot loaders, the following syntax is correct:
+<p>You can also pass options to the module using the kernel command line. This is the only working option for modules built into the kernel. For all common <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loaders</a>, the following syntax is correct:
 </p>
 <pre><i>module_name.parameter_name=parameter_value</i>
 </pre>
@@ -413,13 +418,13 @@ options thinkpad_acpi fan_control=1</pre>
 </p>
 <pre>thinkpad_acpi.fan_control=1
 </pre>
-<p>Simply add this to your boot loader's kernel-line, as described in <a href="../en/Kernel_parameters.html" title="Kernel parameters">Kernel parameters</a>.
+<p>Simply add this to the appropriate line in your boot loader configuration, as described in <a href="../en/Kernel_parameters.html#Configuration" title="Kernel parameters">Kernel parameters#Configuration</a>.
 </p>
 <h2><span class="mw-headline" id="Aliasing">Aliasing</span></h2>
 <p>Aliases are alternate names for a module. For example: <code>alias my-mod really_long_modulename</code> means you can use <code>modprobe my-mod</code> instead of <code>modprobe really_long_modulename</code>. You can also use shell-style wildcards, so <code>alias my-mod* really_long_modulename</code> means that <code>modprobe my-mod-something</code> has the same effect. Create an alias:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/modprobe.d/myalias.conf</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">alias mymod really_long_module_name
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">alias my-mod really_long_module_name
 </pre>
 <p>Some modules have aliases which are used to automatically load them when they are needed by an application. Disabling these aliases can prevent automatic loading but will still allow the modules to be manually loaded.
 </p>
@@ -499,8 +504,8 @@ install <i>module_name</i> /bin/true
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Kernel_module&amp;oldid=803682">https://wiki.archlinux.org/index.php?title=Kernel_module&amp;oldid=803682</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 17 March 2024, at 01:56.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Kernel_module&amp;oldid=822020">https://wiki.archlinux.org/index.php?title=Kernel_module&amp;oldid=822020</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 2 December 2024, at 20:29.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

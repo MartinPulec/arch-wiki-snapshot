@@ -88,13 +88,13 @@
 			<ul id="toc-Create_separate_volume-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Systemd_Service" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Systemd_Service">
+		<li id="toc-Systemd_service" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Systemd_service">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">3.1.2</span>Systemd Service</div>
+				<span class="vector-toc-numb">3.1.2</span>Systemd service</div>
 			</a>
 			
-			<ul id="toc-Systemd_Service-sublist" class="vector-toc-list">
+			<ul id="toc-Systemd_service-sublist" class="vector-toc-list">
 				<li id="toc-Configuring_resource_constraints" class="vector-toc-list-item vector-toc-level-4">
 			<a class="vector-toc-link" href="#Configuring_resource_constraints">
 				<div class="vector-toc-text">
@@ -205,16 +205,39 @@
 			<ul id="toc-Append-only_script-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Restoring_Backup_Data" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Restoring_Backup_Data">
+		<li id="toc-Restoring_backup_data" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Restoring_backup_data">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">3.2.4</span>Restoring Backup Data</div>
+				<span class="vector-toc-numb">3.2.4</span>Restoring backup data</div>
 			</a>
 			
-			<ul id="toc-Restoring_Backup_Data-sublist" class="vector-toc-list">
+			<ul id="toc-Restoring_backup_data-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
+		</li>
+	</ul>
+	</li>
+	<li id="toc-Tips_and_tricks" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#Tips_and_tricks">
+			<div class="vector-toc-text">
+			<span class="vector-toc-numb">4</span>Tips and tricks</div>
+		</a>
+		
+			<button aria-controls="toc-Tips_and_tricks-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon vector-icon--x-small mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle Tips and tricks subsection</span>
+			</button>
+		
+		<ul id="toc-Tips_and_tricks-sublist" class="vector-toc-list">
+			<li id="toc-Password_with_token_as_second_factor" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Password_with_token_as_second_factor">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">4.1</span>Password with token as second factor</div>
+			</a>
+			
+			<ul id="toc-Password_with_token_as_second_factor-sublist" class="vector-toc-list">
+			</ul>
 		</li>
 	</ul>
 	</li>
@@ -300,7 +323,7 @@
 <li><a href="../en/File_recovery.html" title="File recovery">File recovery</a></li>
 </ul>
 </div>
-<p>This page discusses the restic<a rel="nofollow" class="external autonumber" href="https://restic.readthedocs.io/en/latest/">[1]</a> backup tool, provides a 'quick start' guide, and suggests best practices in the context of Arch Linux.
+<p>This page discusses the <a rel="nofollow" class="external text" href="https://github.com/restic/restic">restic</a> backup tool, provides a 'quick start' guide, and suggests best practices in the context of Arch Linux.
 </p>
 <p>Restic's main features and benefits are: 
 </p>
@@ -318,30 +341,32 @@
 </p>
 <pre>$ restic init --repo <i>/path/to/backup/directory/</i>
 </pre>
-<p>See official tutorial<a rel="nofollow" class="external autonumber" href="https://restic.readthedocs.io/en/latest/010_introduction.html">[2]</a>.
+<p>See the <a rel="nofollow" class="external text" href="https://restic.readthedocs.io/en/stable/010_introduction.html">official tutorial</a>.
 </p>
 <h2><span class="mw-headline" id="Security">Security</span></h2>
-<p>Restic uses symmetric encryption for repositories. This introduces some issues with scheduled backups<a rel="nofollow" class="external autonumber" href="https://github.com/restic/restic/issues/533">[3]</a><a rel="nofollow" class="external autonumber" href="https://github.com/restic/restic/issues/2666">[4]</a>, as the key would generally have to be stored in plain text for an automated process to be able to create the backup.
+<p>Restic uses symmetric encryption for repositories. This introduces some issues with scheduled backups<a rel="nofollow" class="external autonumber" href="https://github.com/restic/restic/issues/533">[1]</a><a rel="nofollow" class="external autonumber" href="https://github.com/restic/restic/issues/2666">[2]</a>, as the key would generally have to be stored in plain text for an automated process to be able to create the backup. Ideally there would be asymmetric encryption that allows to create snapshots with a public key (used in an automated script by restic) yet only decrypt the snapshot with a private key, but this is not supported.
 </p>
-<p>Restic does support the idea of a script to fetch the password (<code>--password-command</code> option), e.g. from a key vault of some sort. But to be able to unlock the key vault or secret store you would also likely have to hard-code credentials somewhere. Ideally there would be asymmetric encryption that allows to create snapshots with a public key (used in an automated script by restic) yet only decrypt the snapshot with a private key, but this is not supported.
+<p>As an advantage of restic's symmetric encryption, it features <span class="plainlinks archwiki-template-man" title="$ man 1 restic-key"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/restic-key.1">restic-key(1)</a></span> commands to manage multiple keys for a repository. Hence, it is possible to add a primary key and secondary keys. Further, the <code>--password-command</code> option can be used to fetch a key from a vault. In combination it is possible to safeguard a primary key and use a secondary key:
+</p>
+<ul>
+<li>for an <a href="#Remote_append-only_backup_repository">append-only</a> backup repository,</li>
+<li>securing it via a vault like <a href="../en/Systemd-creds.html" title="Systemd-creds">systemd-creds</a>, or with a <a href="#Password_with_token_as_second_factor">second-factor token</a>.</li>
+</ul>
+<p>The above methods can be configured both for a system (root) and a regular user, limiting the risk associated with plaintext password credentials for the backup repository.
 </p>
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
 <div>
 <b>Reason:</b> 
-<ul>
-<li>Mention restic key management</li>
-<li>If a second-factor like a FIDO key is mentioned, it is more secure to use its secrets directly as a restic key, e.g. a FIDO2 resident-key setup for restic or (simpler) HMAC-SHA challenge-response to use directly or to unlock a password-store and retrieve the restic secret (e.g. with keepassxc-cli, pass) at runtime.</li>
-</ul>
+<p>Mention TLS features
+</p>
  (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Restic.html">Talk:Restic</a>)</div>
 </div>
-<p>If the system/data partitions to be backed up are not <a href="../en/Data-at-rest_encryption.html" title="Data-at-rest encryption">encrypted at rest</a>, you may work around exposing the plain text repository password by storing it in a file on a <a href="../en/Dm-crypt.html" class="mw-redirect" title="LUKS">LUKS</a> encrypted volume. The volume would be decrypted on boot using a passphrase or FIDO key (see <a href="../en/Universal_2nd_Factor.html" title="Universal 2nd Factor">Universal 2nd Factor</a>) such as <a href="../en/YubiKey.html" title="YubiKey">YubiKey</a> provided by the user. You can configure it in crypttab (see <a href="../en/Dm-crypt.html" title="Dm-crypt">dm-crypt</a>) and <a href="../en/Fstab.html" title="Fstab">fstab</a>. 
-</p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> Restic repositories (backups) do not need to be encrypted with LUKS. Restic encrypts data by default.</div>
 <h2><span class="mw-headline" id="Scheduling">Scheduling</span></h2>
 <h3><span class="mw-headline" id="Systemd_timers">Systemd timers</span></h3>
-<p>Unlike other tools like timeshift<a rel="nofollow" class="external autonumber" href="https://github.com/teejee2008/timeshift">[5]</a>, restic does not include a scheduling capability. You are expected to either use <a href="../en/Cron.html" title="Cron">cron</a> or <a href="../en/Systemd/Timers.html" class="mw-redirect" title="Systemd timer">systemd timers</a>.
+<p>Unlike other tools like timeshift<a rel="nofollow" class="external autonumber" href="https://github.com/teejee2008/timeshift">[3]</a>, restic does not include a scheduling capability. You are expected to either use <a href="../en/Cron.html" title="Cron">cron</a> or <a href="../en/Systemd/Timers.html" class="mw-redirect" title="Systemd timer">systemd timers</a>.
 </p>
 <p>You can use a ready project like <a rel="nofollow" class="external text" href="https://github.com/erikw/restic-automatic-backup-scheduler">restic-automatic-backup-scheduler</a> or follow this example that creates local (full) system backups and should be run as the <a href="../en/Users_and_groups.html#Overview" class="mw-redirect" title="Root user">root user</a>.
 </p>
@@ -354,7 +379,7 @@
 </p>
 <p>Of course, you need space for any additional incremental changes in the future so it is a good idea to create a volume with 2 or even 3 times the size of the data being backed up. E.g. if <code>/</code> takes up <code>55G</code> then you can create <code>/mnt/restic</code> with <code>110G</code>.
 </p>
-<h4><span class="mw-headline" id="Systemd_Service">Systemd Service</span></h4>
+<h4><span class="mw-headline" id="Systemd_service">Systemd service</span></h4>
 <p>You will need a service unit. <a href="../en/Help:Reading.html#Append,_add,_create,_edit" class="mw-redirect" title="Create">Create</a> one:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/restic-backup.service</pre>
@@ -368,7 +393,7 @@ ExecStart=systemd-inhibit /usr/local/bin/restic-backup</pre>
 <h5><span class="mw-headline" id="Configuring_resource_constraints">Configuring resource constraints</span></h5>
 <p>Using systemd gives you the option to put resource constraints on the backup process. E.g. you can limit the amount of memory and / or CPU. This is something you would configure in the systemd service unit. See <span class="plainlinks archwiki-template-man" title="$ man 5 systemd.resource-control"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd.resource-control.5">systemd.resource-control(5)</a></span>.
 </p>
-<p>Another way to constrain the resources used by restic is to use the <code>GOMAXPROCS</code> environment variable as described in the <a rel="nofollow" class="external text" href="https://restic.readthedocs.io/en/latest/047_tuning_backup_parameters.html#cpu-usage">official documentation</a>.
+<p>Another way to constrain the resources used by restic is to use the <code>GOMAXPROCS</code> environment variable as described in the <a rel="nofollow" class="external text" href="https://restic.readthedocs.io/en/stable/047_tuning_backup_parameters.html#cpu-usage">official documentation</a>.
 </p>
 <h4><span class="mw-headline" id="Systemd_timer">Systemd timer</span></h4>
 <p>You will also need a timer unit (this one runs every 15 min):
@@ -418,7 +443,7 @@ echo VerySecurePassword123
 # chmod 700 /usr/local/bin/get-restic-password
 </pre>
 <h5><span class="mw-headline" id="Compression">Compression</span></h5>
-<p>You might want to consider <a rel="nofollow" class="external text" href="https://restic.readthedocs.io/en/latest/047_tuning_backup_parameters.html#compression">enabling compression in restic</a> to save space if you are backing up data that is not already compressed (like large text files).
+<p>You might want to consider <a rel="nofollow" class="external text" href="https://restic.readthedocs.io/en/stable/047_tuning_backup_parameters.html#compression">enabling compression in restic</a> to save space if you are backing up data that is not already compressed (like large text files).
 </p>
 <h5><span class="mw-headline" id="Snapshot_retention">Snapshot retention</span></h5>
 <p>Adjust the <code>restic forget --prune --keep-hourly 24 --keep-daily 30 --keep-monthly 6 --keep-weekly 4 --keep-yearly 3</code> values in the script above if wanted.
@@ -426,7 +451,7 @@ echo VerySecurePassword123
 <h5><span class="mw-headline" id="Configuring_niceness">Configuring niceness</span></h5>
 <p>You may also wish to tweak niceness of the backup process. If you are running backups often you will likely want to reduce the resource usage to prevent it from affecting interactive use. However, you should check how long the backups are taking and make sure they are not overlapping (i.e. a new backup being started when the previous one has not finished).
 </p>
-<p>You can do that with <span class="plainlinks archwiki-template-man" title="$ man 1 nice"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/nice.1">nice(1)</a></span>. You may want to adjust the backup scrip by adding nice to the beginning of the resource intensive commands e.g.:
+<p>You can do that with <span class="plainlinks archwiki-template-man" title="$ man 1 nice"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/nice.1">nice(1)</a></span>. You may want to adjust the backup script by adding nice to the beginning of the resource intensive commands e.g.:
 </p>
 <pre># nice -n 19 restic backup ...
 # nice -n 19 restic check ...
@@ -478,6 +503,8 @@ echo VerySecurePassword123
 <h3><span class="mw-headline" id="Remote_append-only_backup_repository">Remote append-only backup repository</span></h3>
 <p>As with most backup solutions, restic backups can usually be modified by the user that executes the backup. This makes the backup data vulnerable to manipulation and threats like ransomware. While the above example runs the backup as root and thereby prevents trivial modification by local unprivileged users, a compromise of the system will allow malware to delete/overwrite the backup data as well, even if that data is in a remote repository (since the local user authenticates to the remote repository). In order to setup a secure backup solution that cannot be modified, restic can be used in combination with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=rclone">rclone</a></span> to make use of its append-only feature run on a restricted remote system.
 </p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> Be aware also an append-only repository can be vulnerable, for example if an attacker can manipulate a backup schedule or system date. Restic <a rel="nofollow" class="external text" href="https://restic.readthedocs.io/en/stable/060_forget.html#security-considerations-in-append-only-mode">advises to use</a> special use of its <code>--keep-within</code> option with a backup retention policy.</div>
 <h4>
 <span id="Setup_restricted_.27rclone_serve.27_over_ssh"></span><span class="mw-headline" id="Setup_restricted_'rclone_serve'_over_ssh">Setup restricted 'rclone serve' over ssh</span>
 </h4>
@@ -525,9 +552,38 @@ restic -o "${RCLONE_EXEC}" unlock
 restic -o "${RCLONE_EXEC}" backup ${DATA_PATH} --exclude-file="$HOME/.local/scripts/excludes" --tag scheduled
 restic -o "${RCLONE_EXEC}" check --with-cache --read-data-subset=5G
 </pre>
-<h4><span class="mw-headline" id="Restoring_Backup_Data">Restoring Backup Data</span></h4>
+<h4><span class="mw-headline" id="Restoring_backup_data">Restoring backup data</span></h4>
 <pre>restic -o rclone.program='ssh myuser@backup.tld forced-command' -r rclone: restore latest --target /tmp/restoredData
 </pre>
+<h2><span class="mw-headline" id="Tips_and_tricks">Tips and tricks</span></h2>
+<h3><span class="mw-headline" id="Password_with_token_as_second_factor">Password with token as second factor</span></h3>
+<p>The following employs a <a href="../en/Universal_2nd_Factor.html" title="Universal 2nd Factor">Universal 2nd Factor</a> token, a <a href="../en/YubiKey.html" class="mw-redirect" title="Yubikey">Yubikey</a> in this example, to derive a password used to unlock a restic repository with its <code>--password-command</code> option. A prerequisite is an already set up <a href="../en/YubiKey.html#Challenge-response" title="YubiKey">challenge-response</a> slot, since it can be used for multiple purposes.
+</p>
+<p>First, a random user key is generated and fed into the token's challenge-response function to obtain its token-unique hash:
+</p>
+<pre>$ dd if=/dev/urandom of=/home/<i>username</i>/<i>resticblob</i> bs=512 count=1
+$ chmod 400 /home/<i>username</i>/<i>resticblob</i>
+$ ykchalresp -2 -i/home/<i>username</i>/<i>resticblob</i>
+71832e30cf9d5adb8672154d7a83fa1684f544d3
+</pre>
+<p>Second, the hash is copy-pasted to be added as a user access key to the restic repository.
+</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> You <b>must not</b> save the static hash anywhere, its purpose is to unlock the repository when the token is available. To access the repository without the token, you can rely on the repository password used to add the new key.</div>
+<pre>$ restic -r /home/<i>username</i>/<i>restic</i>/ key add
+enter password for repository: 
+repository 045a06ef opened (version 2, compression level auto)
+enter new password: 
+enter password again: 
+saved new key with ID 1991e876106f203c245e45a401b59dedec4aae6656f89152b66eca180385c1b
+</pre>
+<p>Now, the token can be used to access the repository transparently:
+</p>
+<pre>$ restic -r /home/<i>username</i>/<i>restic</i> unlock --password-command "ykchalresp -2 -i/home/<i>username</i>/<i>resticblob</i>"
+repository 045a06ef opened (version 2, compression level auto)
+</pre>
+<p>Note for the non-interactive use this method requires a token configuration without user-presence (touch) verification for the challenge-response method and some tokens do not allow to configure the feature. The same restriction applies for other methods, unless the <code>--password-command</code> option is used to execute a shell script to prepare its output accordingly. Also possible is to use the <code>--password-file</code> option, see <a rel="nofollow" class="external text" href="https://github.com/restic/restic/issues/2309#issuecomment-502348451">for example</a>.
+</p>
 </div>
 </div>
 					<div id="catlinks" class="catlinks" data-mw="interface">
@@ -545,8 +601,8 @@ restic -o "${RCLONE_EXEC}" check --with-cache --read-data-subset=5G
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Restic&amp;oldid=819682">https://wiki.archlinux.org/index.php?title=Restic&amp;oldid=819682</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 27 October 2024, at 07:15.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Restic&amp;oldid=821949">https://wiki.archlinux.org/index.php?title=Restic&amp;oldid=821949</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 1 December 2024, at 18:19.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

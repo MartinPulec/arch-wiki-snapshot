@@ -190,10 +190,19 @@
 			</button>
 		
 		<ul id="toc-Booting-sublist" class="vector-toc-list">
-			<li id="toc-systemd-boot" class="vector-toc-list-item vector-toc-level-2">
+			<li id="toc-Limine" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Limine">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.1</span>Limine</div>
+			</a>
+			
+			<ul id="toc-Limine-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-systemd-boot" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#systemd-boot">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">3.1</span>systemd-boot</div>
+				<span class="vector-toc-numb">3.2</span>systemd-boot</div>
 			</a>
 			
 			<ul id="toc-systemd-boot-sublist" class="vector-toc-list">
@@ -202,7 +211,7 @@
 		<li id="toc-rEFInd" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#rEFInd">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">3.2</span>rEFInd</div>
+				<span class="vector-toc-numb">3.3</span>rEFInd</div>
 			</a>
 			
 			<ul id="toc-rEFInd-sublist" class="vector-toc-list">
@@ -211,7 +220,7 @@
 		<li id="toc-GRUB" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#GRUB">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">3.3</span>GRUB</div>
+				<span class="vector-toc-numb">3.4</span>GRUB</div>
 			</a>
 			
 			<ul id="toc-GRUB-sublist" class="vector-toc-list">
@@ -220,7 +229,7 @@
 		<li id="toc-Directly_from_UEFI" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Directly_from_UEFI">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">3.4</span>Directly from UEFI</div>
+				<span class="vector-toc-numb">3.5</span>Directly from UEFI</div>
 			</a>
 			
 			<ul id="toc-Directly_from_UEFI-sublist" class="vector-toc-list">
@@ -530,6 +539,36 @@ done</pre>
 <h2><span class="mw-headline" id="Booting">Booting</span></h2>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> When <a href="../en/Unified_Extensible_Firmware_Interface/Secure_Boot.html" class="mw-redirect" title="Secure Boot">Secure Boot</a> is active, unified kernel images with an embedded <code>.cmdline</code> ignore all command line options passed to them (either using a boot entry or interactively). When Secure Boot is not active, the options passed via the command line override the embedded <code>.cmdline</code>.</div>
+<h3><span class="mw-headline" id="Limine">Limine</span></h3>
+<p><a href="../en/Limine.html" title="Limine">Limine</a> does not automatically detect unified kernel images (UKIs). However, <code>limine.conf</code> can be manually configured to load them.
+</p>
+<p><br>
+<b>Example 1: Booting a UKI from the default EFI system partition</b>
+</p>
+<p>If a UKI file is stored in <code><i>esp</i>/EFI/Linux/</code>, add the following configuration to <code>limine.conf</code>:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">limine.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">/Arch Linux
+  protocol: efi_chainload
+  image_path: boot():/EFI/Linux/arch-linux.efi</pre>
+<p><br>
+<b>Example 2: Booting a UKI from another EFI partition</b>
+</p>
+<p>If a UKI file is located on a different EFI partition on another disk, use <code>uuid(<i>partition UUID</i>)</code> instead.
+</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> The partition UUID is <b>not</b> the filesystem UUID. To find the partition UUID as <code>PARTUUID</code>, use:
+<pre>$ lsblk -o NAME,FSTYPE,PARTUUID,PARTTYPENAME,MOUNTPOINT,SIZE,LABEL
+</pre>
+</div>
+<p><br>
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">limine.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">/Arch Linux
+  protocol: efi_chainload
+  image_path: uuid(<i>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</i>):/EFI/Linux/arch-linux.efi</pre>
+<p>For more details about supported paths and configuration options, see the <a rel="nofollow" class="external text" href="https://github.com/limine-bootloader/limine/blob/v8.x/CONFIG.md#Paths">Limine Paths documentation</a>.
+</p>
 <h3><span class="mw-headline" id="systemd-boot">systemd-boot</span></h3>
 <p><a href="../en/Systemd-boot.html#Unified_kernel_images" title="Systemd-boot">systemd-boot</a> searches in <code><i>esp</i>/EFI/Linux/</code> for unified kernel images, and there is no further configuration needed. See <span class="plainlinks archwiki-template-man" title="$ man 7 sd-boot"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/sd-boot.7#FILES">sd-boot(7) § FILES</a></span>
 </p>
@@ -575,8 +614,8 @@ done</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Unified_kernel_image&amp;oldid=819642">https://wiki.archlinux.org/index.php?title=Unified_kernel_image&amp;oldid=819642</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 26 October 2024, at 08:06.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Unified_kernel_image&amp;oldid=821467">https://wiki.archlinux.org/index.php?title=Unified_kernel_image&amp;oldid=821467</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 26 November 2024, at 11:31.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

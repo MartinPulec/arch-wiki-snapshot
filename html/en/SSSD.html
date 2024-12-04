@@ -216,15 +216,36 @@ session   required  pam_sss.so</pre>
 <p>Now specify <code>sssd</code> as the PAM service name in your software's configuration.
 </p>
 <h4><span class="mw-headline" id="Run_SSSD_as_root">Run SSSD as root</span></h4>
-<p>SSSD 2.10 and above runs as a non-root user by default, but here it needs to run as root in order to access <code>/etc/shadow</code>. <a href="../en/Systemd.html#Replacement_unit_files" class="mw-redirect" title="Override the unit">Override the unit</a> <code>sssd.service</code>:
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
+<div>
+<b>Reason:</b> If an override is always needed, it requires further packaging changes. If not, a procedure to know when to interfere with packaging. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:SSSD.html">Talk:SSSD</a>)</div>
+</div>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> See <a rel="nofollow" class="external text" href="https://gitlab.archlinux.org/archlinux/packaging/packages/sssd//-/issues/5">archlinux/packaging/packages/sssd/#5</a> for negative impacts of overriding.</div>
+<p>SSSD 2.10 and above runs as a non-root user by default, but here it needs to run as root in order to access <code>/etc/shadow</code>. <a href="../en/Systemd.html#Replacement_unit_files" class="mw-redirect" title="Override the unit">Override the unit</a> <code>sssd.service</code> exactly like this:
 </p>
 <pre>[Service]
-ExecStartPre=
+Environment=DEBUG_LOGGER=--logger=files
+EnvironmentFile=-/etc/sysconfig/sssd
+ExecStartPre=+-/bin/chown -f root:sssd /etc/sssd
+ExecStartPre=+-/bin/chown -f root:sssd /etc/sssd/sssd.conf
+ExecStartPre=+-/bin/chown -f -R root:sssd /etc/sssd/conf.d
+ExecStartPre=+-/bin/chown -f -R root:sssd /etc/sssd/pki
+ExecStartPre=+-/bin/sh -c "/bin/chown -f root:sssd /var/lib/sss/db/*.ldb"
+ExecStartPre=+-/bin/sh -c "/bin/chown -f root:sssd /var/lib/sss/gpo_cache/*"
+ExecStartPre=+-/bin/sh -c "/bin/chown -f root:sssd /var/log/sssd/*.log"
+ExecStart=/usr/bin/sssd -i ${DEBUG_LOGGER}
+Type=notify
+NotifyAccess=main
+Restart=on-abnormal
+CapabilityBoundingSet= CAP_CHOWN CAP_DAC_OVERRIDE CAP_SETGID CAP_SETUID CAP_DAC_READ_SEARCH 
+#SecureBits=noroot noroot-locked
 User=root
-Group=root
-SupplementaryGroups=sssd
-</pre>
-<p>Note that SSSD wants its files like <code>/var/log/sssd</code> to have the same owner as the user running SSSD, so you may need to <code>chown</code> those files to be root-owned. Additionally, delete and add <code>/usr/lib/tmpfiles.d/sssd-perms.conf</code> to <a href="../en/Pacman.html#Skip_files_from_being_installed_to_system" class="mw-redirect" title="NoExtract">NoExtract</a> in <code>/etc/pacman.conf</code> to prevent systemd-tmpfiles from reverting the permissions of SSSD files.
+Group=sssd
+# If service configured to be run under "root", uncomment "SupplementaryGroups"
+#SupplementaryGroups=sssd</pre>
+<p>Note that SSSD wants its files like <code>/var/log/sssd</code> and <code>/etc/sssd</code> to have the same owner as the user running SSSD, so you have to <code>chown</code> those files to be root-owned. Additionally, delete and add <code>/usr/lib/tmpfiles.d/sssd-perms.conf</code> to <code>NoExtract</code> in <code>/etc/pacman.conf</code> to prevent systemd-tmpfiles from reverting the permissions of SSSD files.
 </p>
 <p>Finally, <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable/start">enable/start</a> <code>sssd.service</code>.
 </p>
@@ -245,9 +266,13 @@ account     required      pam_permit.so</pre>
 <ul><li><a rel="nofollow" class="external text" href="https://sssd.io/">Official website</a></li></ul>
 </div>
 </div>
-					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
+					<div id="catlinks" class="catlinks" data-mw="interface">
+<div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Authentication.html" title="Category:Authentication">Authentication</a></li></ul>
-</div></div>
+</div>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li></ul>
+</div>
+</div>
 				</div>
 			</main>
 			
@@ -256,8 +281,8 @@ account     required      pam_permit.so</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=SSSD&amp;oldid=819809">https://wiki.archlinux.org/index.php?title=SSSD&amp;oldid=819809</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 29 October 2024, at 10:31.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=SSSD&amp;oldid=821737">https://wiki.archlinux.org/index.php?title=SSSD&amp;oldid=821737</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 29 November 2024, at 20:16.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

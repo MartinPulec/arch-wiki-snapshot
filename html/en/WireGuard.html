@@ -1646,7 +1646,9 @@ unmanaged-devices=type:wireguard</pre>
 <p>Users of <a href="../en/NetworkManager.html" title="NetworkManager">NetworkManager</a> should know that it does not use resolvconf by default.  It is recommended to use <a href="../en/Systemd-resolved.html" title="Systemd-resolved">systemd-resolved</a>.  If this is undesirable, <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=openresolv">openresolv</a></span> and configure NetworkManager to use it: <a href="../en/NetworkManager.html#Use_openresolv" title="NetworkManager">NetworkManager#Use openresolv</a>.
 </p>
 <h3><span class="mw-headline" id="Adjusting_the_MTU_value">Adjusting the MTU value</span></h3>
-<p>Due to too low MTU (lower than 1280), wg-quick may have failed to create the WireGuard interface. This can be solved by setting the MTU value in WireGuard configuration in Interface section on client.
+<p>A default Wireguard maximum transmission unit (MTU) value is <code>1420</code>.
+</p>
+<p>Due to a too low MTU (lower than <code>1280</code>), wg-quick may have failed to create the WireGuard interface. This can be solved by setting the MTU value in WireGuard configuration in Interface section on client.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">foo.config</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Interface]
@@ -1656,16 +1658,16 @@ PrivateKey = <i>PEER_FOO_PRIVATE_KEY</i>
 DNS = 10.200.200.1</pre>
 <p>Depending on your network, a lower MTU value can also make your WireGuard connection work.
 </p>
-<p>In certain cases larger MTU values can lead to unstable or intermittent connection because of unreliable <a rel="nofollow" class="external text" href="https://tldp.org/HOWTO/Adv-Routing-HOWTO/lartc.cookbook.mtu-mss.html">Path MTU discovery (PMTU)</a> along the route. Which may lead to situations where ICMP Ping works because of it's low packet size but most of TCP connections fail because of full MTU size utilization.
+<p>In certain cases larger MTU values can lead to unstable or intermittent connection because of unreliable <a rel="nofollow" class="external text" href="https://tldp.org/HOWTO/Adv-Routing-HOWTO/lartc.cookbook.mtu-mss.html">Path MTU discovery (PMTU)</a> along the route. Which may lead to situations where ICMP ping works because of its low packet size, but most of TCP connections fail because of full MTU size utilization. For example, an IPv6 connection has a higher packet overhead than IPv4, hence fragmentation may occur earlier with the same MTU value.
 </p>
-<p>It's worth checking link's MTU size on both Peers and other routers involved to determine the minimum value.
+<p>It is worth checking the links MTU size on both peers and other routers involved to determine the minimum value.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># ip link show</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">5: wg0: &lt;POINTOPOINT,NOARP,UP,LOWER_UP&gt; <b>mtu 1400</b> qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
 link/none</pre>
-<p>Another option is falling back to MTU of 1280 and finding appropriate value for given path with a trial/error approach. 
+<p>Another option is falling back to a MTU of <code>1280</code> and finding appropriate value for given path with a trial/error approach. 
 </p>
-<p>MTU of 1420 and above can lead to partially broken links which could be interpreted as a firewall or routing issue instead of actual MTU size.
+<p>An MTU of <code>1420</code> and above can lead to partially broken links which could be interpreted as a firewall or routing issue instead of actual MTU size.
 </p>
 <h3><span class="mw-headline" id="Key_is_not_the_correct_length_or_format">Key is not the correct length or format</span></h3>
 <p>To avoid the following error, put the key value in the configuration file and not the path to the key file.
@@ -1749,8 +1751,8 @@ esac</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=WireGuard&amp;oldid=819850">https://wiki.archlinux.org/index.php?title=WireGuard&amp;oldid=819850</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 29 October 2024, at 22:18.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=WireGuard&amp;oldid=820039">https://wiki.archlinux.org/index.php?title=WireGuard&amp;oldid=820039</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 2 November 2024, at 17:41.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

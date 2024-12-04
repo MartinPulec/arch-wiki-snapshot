@@ -316,7 +316,7 @@
 </p>
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Installation">Installation</span></h2>
-<p>When booting into the Arch Linux ISO, press the <code>e</code> key to edit the chosen boot option and add the <code>amdgpu.dcdebugmask=0x600</code> kernel parameter to prevent freezing during installation. This will not be needed after installing, as long as you install both <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/linux-mainline-um5606/">linux-mainline-um5606</a></span><sup><small>AUR</small></sup> and either <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/linux-firmware-amd-staging-um5606-git/">linux-firmware-amd-staging-um5606-git</a></span><sup><small>AUR</small></sup> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/linux-firmware-git/">linux-firmware-git</a></span><sup><small>AUR</small></sup> afterwards.
+<p>When booting into the Arch Linux ISO, press the <code>e</code> key to edit the chosen boot option and add the <code>amdgpu.dcdebugmask=0x600</code> kernel parameter to prevent freezing during installation. This will not be needed after installing, as long as you install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/linux-mainline-um5606/">linux-mainline-um5606</a></span><sup><small>AUR</small></sup> afterwards. However, if you still have problems, it's advised to keep the kernel parameter.
 </p>
 <p>If you're using <a href="../en/KDE.html" title="KDE">KDE</a>, you need to run <code>systemctl edit --user plasma-kwin_wayland.service</code> and add this to the configuration:
 </p>
@@ -332,38 +332,7 @@ Environment="KWIN_DRM_DISABLE_TRIPLE_BUFFERING=1"</pre>
 <p>There is an important UEFI update that has been posted on ASUS's website -- to apply it, download the "BIOS for ASUS EZ Flash Utility" (<i>not "for Windows"</i>) file, extract the contents to a FAT32 formatted USB drive, reboot and go into the firmware setup, and then go into the "EZ Flash" menu. The update can be found here: <a rel="nofollow" class="external autonumber" href="https://www.asus.com/us/laptops/for-home/zenbook/asus-zenbook-s-16-um5606/helpdesk_bios?model2Name=UM5606WA">[1]</a>
 </p>
 <h2><span class="mw-headline" id="Audio">Audio</span></h2>
-<p>Out of the box, only the tweeters are used, making the audio soft and tinny. However, this is relatively simple to fix with <a href="../en/PipeWire.html" title="PipeWire">PipeWire</a> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pipewire-pulse">pipewire-pulse</a></span>.
-</p>
-<p><a href="../en/Help:Reading.html#Append,_add,_create,_edit" class="mw-redirect" title="Create">Create</a> this pipewire-pulse configuration file:
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pipewire/pipewire-pulse.conf.d/99-speaker-routing.conf</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># Pipewire thinks tweeters are 4.0 fronts and woofers are 4.0 rears; upmix.
-context.modules = [
-    {   name = libpipewire-module-loopback
-        args = {
-            node.description = "Stereo to 4.0 upmix"
-            audio.position = [ FL FR ]
-            capture.props = {
-                node.name = "sink.upmix_4_0"
-                media.class = "Audio/Sink"
-            }
-            playback.props = {
-                node.name = "playback.upmix-4.0"
-                audio.position = [ FL FR RL RR]
-                target.object = "alsa_output.pci-0000_c4_00.6.analog-surround-40"
-                stream.dont-remix = true
-                node.passive = true
-                channelmix.upmix = true
-                channelmix.upmix-method = simple
-            }
-        }
-    }
-]</pre>
-<p>Then, <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Restart">restart</a> the <code>pipewire.service</code> and <code>pipewire-pulse.service</code> <a href="../en/Systemd/User.html" class="mw-redirect" title="User unit">user units</a>.
-</p>
-<p>Lastly, open <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/pwvucontrol/">pwvucontrol</a></span><sup><small>AUR</small></sup> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pavucontrol">pavucontrol</a></span> and switch your output "on" to <code>Stereo to 4.0 upmix</code>.
-</p>
-<p>You can also set Pipewire to to output 4.0 by default, so in rare event an application is surround sound aware, it will output native 4.0 sound. This can be done by selecting the <code>Analog Surround 4.0 Output + Analog Stereo Input</code> profile for <code>Family 17h/19h HD Controller.</code>
+<p>Currently <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/linux-mainline-um5606/">linux-mainline-um5606</a></span><sup><small>AUR</small></sup> is needed to get audio fully working without sounding tinny.
 </p>
 <h2><span class="mw-headline" id="Bluetooth">Bluetooth</span></h2>
 <p>Linux ≥6.12 (rc1) is needed to get Bluetooth working. The aptX HD, LDAC, SBC-XQ codecs over Bluetooth have been tested for and work for wireless headphones.
@@ -384,10 +353,36 @@ name = "eDP-1"
 path = "/sys/class/backlight/amdgpu_bl1"
 capturer = "none"</pre>
 <h2><span class="mw-headline" id="Power_management">Power management</span></h2>
-<p>Install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/linux-mainline-um5606/">linux-mainline-um5606</a></span><sup><small>AUR</small></sup> and either <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/linux-firmware-amd-staging-um5606-git/">linux-firmware-amd-staging-um5606-git</a></span><sup><small>AUR</small></sup> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/linux-firmware-git/">linux-firmware-git</a></span><sup><small>AUR</small></sup> to alleviate most power management problems, including high power usage during suspend and random freezing/hanging. 
+<p>Install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/linux-mainline-um5606/">linux-mainline-um5606</a></span><sup><small>AUR</small></sup> to alleviate most power management problems, including high power usage during suspend and random freezing/hanging. 
 </p>
-<p>There is currently known a problem when waking up from suspend (s2idle) that the screen will freeze for about 10 seconds. This issue is currently being investigated here: <a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/drm/amd/-/issues/3545#note_2540477">[2]</a>
+<p>There is currently known a problem when waking up from suspend (s2idle) that the screen will freeze for about 10 seconds. This problem is currently caused by the <code>mt7925e</code> kernel module failing to properly re-initialize the MT7925 wireless card after resuming. It's still unclear whether the root cause lies in the firmware or the kernel module code. 
 </p>
+<p>However, as a temporary workaround, you can unbind the device from the driver before suspending and later rebind it after resuming. This can be achieved using the following two systemd service units:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">unbind-wifi-before-suspend.service</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Unit]
+Description=Unbind Wi-Fi PCI device before suspend
+Before=suspend.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -c "echo "0000:c3:00.0" &gt; /sys/bus/pci/drivers/mt7925e/unbind"
+RemainAfterExit=false
+
+[Install]
+WantedBy=sleep.target</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">bind-wifi-after-resume.service</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Unit]
+Description=Bind Wi-Fi PCI device after resume
+After=suspend.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -c "echo "0000:c3:00.0" &gt; /sys/bus/pci/drivers/mt7925e/bind"
+RemainAfterExit=false
+
+[Install]
+WantedBy=suspend.target</pre>
 <h2><span class="mw-headline" id="Keyboard">Keyboard</span></h2>
 <h3><span class="mw-headline" id="Backlight">Backlight</span></h3>
 <p>Linux ≥6.12 (rc1) is needed to make keyboard backlight control work.
@@ -546,8 +541,8 @@ capturer = "none"</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=ASUS_Zenbook_UM5606&amp;oldid=817922">https://wiki.archlinux.org/index.php?title=ASUS_Zenbook_UM5606&amp;oldid=817922</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 7 October 2024, at 15:25.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=ASUS_Zenbook_UM5606&amp;oldid=821669">https://wiki.archlinux.org/index.php?title=ASUS_Zenbook_UM5606&amp;oldid=821669</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 29 November 2024, at 00:29.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

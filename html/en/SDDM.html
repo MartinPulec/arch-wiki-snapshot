@@ -509,13 +509,12 @@ User=john
 Session=plasma</pre>
 <p>This configuration causes a KDE Plasma session to be started for user <code>john</code> when the system is booted. Available session types can be found in <code>/usr/share/xsessions/</code> for X and in <code>/usr/share/wayland-sessions/</code> for Wayland.
 </p>
-<p>An option to autologin into KDE Plasma while simultaneously locking the session is not available <a rel="nofollow" class="external autonumber" href="https://github.com/sddm/sddm/issues/306">[1]</a>
+<p>To autologin into KDE Plasma while simultaneously locking the session (e.g. to allow autostarted apps to warm up), create a systemd user unit <a href="../en/Systemd.html#Drop-in_files" title="Systemd">drop in</a> to pass <code>--lockscreen</code> in <code>plasma-ksmserver.service</code>:
 </p>
-<p>You can add a script that activates the screensaver of Plasma to the autostart as a workaround:
-</p>
-<pre>#!/bin/sh
-/usr/bin/dbus-send --session --type=method_call --dest=org.freedesktop.ScreenSaver /ScreenSaver org.freedesktop.ScreenSaver.Lock &amp;
-</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.config/systemd/user/plasma-ksmserver.service.d/override.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Service]
+ExecStart=
+ExecStart=/usr/bin/ksmserver --lockscreen</pre>
 <h3><span class="mw-headline" id="Passwordless_login">Passwordless login</span></h3>
 <p>It is possible to configure SDDM to allow logging into some accounts without a password. This differs from automatic login in that the user still has to choose which account to log into, and it differs from simply setting the account password to the empty string in that it only allows interactive users to log in (and not, for example, remote users logged in via <a href="../en/Secure_Shell.html" class="mw-redirect" title="SSH">SSH</a>).
 </p>
@@ -616,7 +615,7 @@ $ getfacl ~/.face.icon
 <p>See <a href="../en/Xrandr.html#Configuration" title="Xrandr">Xrandr#Configuration</a>.
 </p>
 <h3><span class="mw-headline" id="DPI_settings">DPI settings</span></h3>
-<p>Sometimes it is useful to set up the correct monitor's PPI settings on a "Display Manager" level.<a rel="nofollow" class="external autonumber" href="https://github.com/sddm/sddm/blob/master/README.md#custom-dpi">[2]</a> To do so you need to add to <code>ServerArguments</code> the parameter <code>-dpi <i>your_dpi</i></code> at the end of the string. For example:
+<p>Sometimes it is useful to set up the correct monitor's PPI settings on a "Display Manager" level.<a rel="nofollow" class="external autonumber" href="https://github.com/sddm/sddm/blob/master/README.md#custom-dpi">[1]</a> To do so you need to add to <code>ServerArguments</code> the parameter <code>-dpi <i>your_dpi</i></code> at the end of the string. For example:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/sddm.conf.d/dpi.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[X11]
@@ -632,7 +631,7 @@ EnableHiDPI=true
 
 [X11]
 EnableHiDPI=true</pre>
-<p>When using Wayland, the HiDPI scaling depends on the greeter used.<a rel="nofollow" class="external autonumber" href="https://github.com/sddm/sddm/issues/1704">[3]</a> For instance, when using a Qt-based greeter such as Breeze, add the following configuration:
+<p>When using Wayland, the HiDPI scaling depends on the greeter used.<a rel="nofollow" class="external autonumber" href="https://github.com/sddm/sddm/issues/1704">[2]</a> For instance, when using a Qt-based greeter such as Breeze, add the following configuration:
 </p>
 <pre>[General]
 GreeterEnvironment=QT_SCREEN_SCALE_FACTORS=2,QT_FONT_DPI=192</pre>
@@ -672,7 +671,7 @@ auth 			sufficient  	pam_fprintd.so</pre>
 <h3><span class="mw-headline" id="Rootless">Rootless</span></h3>
 <p>Traditionally, the <a href="../en/Xorg.html" class="mw-redirect" title="X11">X11</a> display server has been run with root privileges by default. This rootful mode allows X11 to have unrestricted access to system resources, which was necessary for its operation in environments where direct hardware access and management were common. However, with the increasing emphasis on security in modern computing environments, efforts have been made to transition to rootless modes, which is also why <a href="../en/Wayland.html" title="Wayland">Wayland</a> by default runs in rootless mode.
 </p>
-<p>Starting unprivileged X11 (and Wayland) sessions has been supported since <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sddm">sddm</a></span> 0.20.0.<a rel="nofollow" class="external autonumber" href="https://github.com/sddm/sddm/blob/v0.20.0/ChangeLog">[4]</a>
+<p>Starting unprivileged X11 (and Wayland) sessions has been supported since <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sddm">sddm</a></span> 0.20.0.<a rel="nofollow" class="external autonumber" href="https://github.com/sddm/sddm/blob/v0.20.0/ChangeLog">[3]</a>
 </p>
 <p>To enable rootless mode: create a new configuration file under <code>/etc/sddm.conf.d/</code>, name it something meaningful, and add the following to it, replacing <code>x11-user</code> with <code>wayland</code> if necessary.
 </p>
@@ -693,7 +692,7 @@ DisplayServer=x11-user</pre>
 <span id="KDE_Plasma_.2F_KWin"></span><span class="mw-headline" id="KDE_Plasma_/_KWin">KDE Plasma / KWin</span>
 </h4>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> By default, KWin starts up with global shortcuts enabled. This could be dangerous for a login screen, since it becomes possible to bypass the login prompt using default key bindings. Specifying <code>--no-global-shortcuts</code> fixes this.<a rel="nofollow" class="external autonumber" href="https://invent.kde.org/plasma/plasma-workspace/-/commit/7e4159e46f816dc65ac62eae37b15c882f0c8064">[5]</a>
+<strong>Warning:</strong> By default, KWin starts up with global shortcuts enabled. This could be dangerous for a login screen, since it becomes possible to bypass the login prompt using default key bindings. Specifying <code>--no-global-shortcuts</code> fixes this.<a rel="nofollow" class="external autonumber" href="https://invent.kde.org/plasma/plasma-workspace/-/commit/7e4159e46f816dc65ac62eae37b15c882f0c8064">[4]</a>
 </div>
 <p>Adding the following lines to your configuration file sets the Wayland compositor to KWin and enables the <a rel="nofollow" class="external text" href="https://wayland.app/protocols/wlr-layer-shell-unstable-v1">wlr_layer_shell</a> Wayland protocol extension. This  requires <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=layer-shell-qt">layer-shell-qt</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=layer-shell-qt5">layer-shell-qt5</a></span> for SDDM themes using Qt6 and Qt5, respectively.
 </p>
@@ -766,10 +765,10 @@ DisableAvatarsThreshold=7 # set the threshold for the number of users. Avatars a
 </p>
 <p>An alternative way of setting the keyboard layout that will only set it in SDDM and not subsequent sessions is to invoke a <i>setxkbmap</i> command in the startup script of SDDM, located at <code>/usr/share/sddm/scripts/Xsetup</code>. See <a href="../en/Xorg/Keyboard_configuration.html#Using_setxkbmap" title="Xorg/Keyboard configuration">Xorg/Keyboard configuration#Using setxkbmap</a> for examples.
 </p>
-<p>SDDM may also incorrectly display the layout as US but will immediately change to the correct layout after you start typing your password <a rel="nofollow" class="external autonumber" href="https://github.com/sddm/sddm/issues/202#issuecomment-76001543">[6]</a>. This seems to not be a bug in SDDM but in <a href="../en/Xorg.html" class="mw-redirect" title="X server">X server</a>.<a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/xorg/xserver/-/issues/257">[7]</a>
+<p>SDDM may also incorrectly display the layout as US but will immediately change to the correct layout after you start typing your password <a rel="nofollow" class="external autonumber" href="https://github.com/sddm/sddm/issues/202#issuecomment-76001543">[5]</a>. This seems to not be a bug in SDDM but in <a href="../en/Xorg.html" class="mw-redirect" title="X server">X server</a>.<a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/xorg/xserver/-/issues/257">[6]</a>
 </p>
 <h3><span class="mw-headline" id="Screen_resolution_is_too_low">Screen resolution is too low</span></h3>
-<p>Issue may be caused by HiDPI usage for monitors with corrupted <a href="https://en.wikipedia.org/wiki/Extended_Display_Identification_Data" class="extiw" title="wikipedia:Extended Display Identification Data">EDID</a> <a rel="nofollow" class="external autonumber" href="https://github.com/sddm/sddm/issues/692">[8]</a>. If you have <a href="#Enable_HiDPI">enabled HiDPI</a>, try to disable it.
+<p>Issue may be caused by HiDPI usage for monitors with corrupted <a href="https://en.wikipedia.org/wiki/Extended_Display_Identification_Data" class="extiw" title="wikipedia:Extended Display Identification Data">EDID</a> <a rel="nofollow" class="external autonumber" href="https://github.com/sddm/sddm/issues/692">[7]</a>. If you have <a href="#Enable_HiDPI">enabled HiDPI</a>, try to disable it.
 </p>
 <p>If even the above fails, you can try setting your screen size in a Xorg configuration file:
 </p>
@@ -789,7 +788,7 @@ EnableAvatars=false</pre>
 <h3>
 <span id="X_authority_.28aka_MIT-MAGIC-COOKIE.29_file"></span><span class="mw-headline" id="X_authority_(aka_MIT-MAGIC-COOKIE)_file">X authority (aka MIT-MAGIC-COOKIE) file</span>
 </h3>
-<p>SDDM uses a random fresh UUID for the auth file as described in details at <a rel="nofollow" class="external autonumber" href="https://github.com/sddm/sddm/issues/622">[9]</a>. So in order to find that file one may use a script:
+<p>SDDM uses a random fresh UUID for the auth file as described in details at <a rel="nofollow" class="external autonumber" href="https://github.com/sddm/sddm/issues/622">[8]</a>. So in order to find that file one may use a script:
 </p>
 <pre># find /var/run/sddm/ -type f
 </pre>
@@ -850,8 +849,8 @@ xrandr --output DP-2 --left-of DP-4 --rotate left --noprimary</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=SDDM&amp;oldid=819425">https://wiki.archlinux.org/index.php?title=SDDM&amp;oldid=819425</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 22 October 2024, at 15:12.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=SDDM&amp;oldid=821896">https://wiki.archlinux.org/index.php?title=SDDM&amp;oldid=821896</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 1 December 2024, at 02:50.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

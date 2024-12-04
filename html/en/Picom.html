@@ -257,6 +257,15 @@
 			<ul id="toc-Disable_window_fade_in_and_fade_out_effect_when_switching_between_workspaces-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Switching_windows_occasionally_results_in_strange_window_transparency_issues" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Switching_windows_occasionally_results_in_strange_window_transparency_issues">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">6.16</span>Switching windows occasionally results in strange window transparency issues</div>
+			</a>
+			
+			<ul id="toc-Switching_windows_occasionally_results_in_strange_window_transparency_issues-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
@@ -376,10 +385,14 @@ utility       = { shadow = false; };
 <h3><span class="mw-headline" id="Opacity">Opacity</span></h3>
 <p>To set opacity (in effect transparency) for focused and unfocused windows (for example terminal emulators), add the following to your <code>picom.conf</code>:
 </p>
-<pre>opacity-rule = [
-  "90:class_g = 'URxvt' &amp;&amp; focused",
-  "60:class_g = 'URxvt' &amp;&amp; !focused"
-];
+<pre>rules: ({
+  match = "class_g = 'URxvt' &amp;&amp; focused";
+  opacity = 0.9;
+}, {
+  match = "(class_g = 'URxvt' || class_g = 'Alacritty')"
+          " &amp;&amp; !focused";
+  opacity = 0.6;
+})
 </pre>
 <p>See also <a href="#Tabbed_windows_(shadows_and_transparency)">#Tabbed windows (shadows and transparency)</a>.
 </p>
@@ -450,7 +463,7 @@ vec4 window_shader() {
 <pre>$ picom --backend glx --window-shader-fg /path/to/shader/file.glsl
 </pre>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
-<p>Recent versions of picom had some problem with DRI2 acceleration and exhibited severe flickering when DRI2 is in use (<a rel="nofollow" class="external text" href="https://github.com/yshui/picom/issues/47">picom bug</a>, <a rel="nofollow" class="external text" href="https://bugs.freedesktop.org/show_bug.cgi?id=108651">mesa bug</a><sup title="Last check status: SSL error">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-10-12 ⓘ]</sup>).  This has been worked around and reported to be working, but may still affect some users.  DRI3 is unaffected by this particular issue.
+<p>Recent versions of picom had some problem with DRI2 acceleration and exhibited severe flickering when DRI2 is in use (<a rel="nofollow" class="external text" href="https://github.com/yshui/picom/issues/47">picom bug</a>, <a rel="nofollow" class="external text" href="https://bugs.freedesktop.org/show_bug.cgi?id=108651">mesa bug</a>).  This has been worked around and reported to be working, but may still affect some users.  DRI3 is unaffected by this particular issue.
 </p>
 <p>The use of compositing effects may on occasion cause issues such as visual glitches when not configured correctly for use with other applications and programs.
 </p>
@@ -632,20 +645,19 @@ blur-background-exclude = [
 <h3><span class="mw-headline" id="Disable_window_fade_in_and_fade_out_effect_when_switching_between_workspaces">Disable window fade in and fade out effect when switching between workspaces</span></h3>
 <p>Adding <code>--fade-in-step=1 --fade-out-step=1 --fade-delta=0</code> flag can disable the fade in and fade out effect when switching to a new workspace. <a rel="nofollow" class="external autonumber" href="https://github.com/yshui/picom/issues/354#issuecomment-835809210">[10]</a>
 </p>
+<h3><span class="mw-headline" id="Switching_windows_occasionally_results_in_strange_window_transparency_issues">Switching windows occasionally results in strange window transparency issues</span></h3>
+<p>This issue can happen after setting opacity in <code>picom.conf</code>. Setting <code>use-damage = false</code> in <code>picom.conf</code> would fix this issue.
+</p>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul><li><a rel="nofollow" class="external text" href="https://ubuntuforums.org/showthread.php?t=2144468&amp;p=12644745#post12644745">Howto: Using Compton for tear-free compositing on XFCE or LXDE</a></li></ul>
 </div>
 </div>
-					<div id="catlinks" class="catlinks" data-mw="interface">
-<div id="mw-normal-catlinks" class="mw-normal-catlinks">
+					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Categories</a>: <ul>
 <li><a href="../en/Category:X_server.html" title="Category:X server">X server</a></li>
 <li><a href="../en/Category:Eye_candy.html" title="Category:Eye candy">Eye candy</a></li>
 </ul>
-</div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li></ul>
-</div>
-</div>
+</div></div>
 				</div>
 			</main>
 			
@@ -654,8 +666,8 @@ blur-background-exclude = [
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Picom&amp;oldid=818590">https://wiki.archlinux.org/index.php?title=Picom&amp;oldid=818590</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 12 October 2024, at 16:43.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Picom&amp;oldid=821308">https://wiki.archlinux.org/index.php?title=Picom&amp;oldid=821308</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 24 November 2024, at 08:59.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

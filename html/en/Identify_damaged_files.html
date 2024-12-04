@@ -126,13 +126,13 @@
 		</li>
 	</ul>
 		</li>
-		<li id="toc-ReiserFS_and_Reiser4" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#ReiserFS_and_Reiser4">
+		<li id="toc-XFS" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#XFS">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">1.4</span>ReiserFS and Reiser4</div>
+				<span class="vector-toc-numb">1.4</span>XFS</div>
 			</a>
 			
-			<ul id="toc-ReiserFS_and_Reiser4-sublist" class="vector-toc-list">
+			<ul id="toc-XFS-sublist" class="vector-toc-list">
 				<li id="toc-Debug_the_filesystem_3" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Debug_the_filesystem_3">
 				<div class="vector-toc-text">
@@ -149,33 +149,6 @@
 			</a>
 			
 			<ul id="toc-Find_damaged_files_4-sublist" class="vector-toc-list">
-			</ul>
-		</li>
-	</ul>
-		</li>
-		<li id="toc-XFS" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#XFS">
-				<div class="vector-toc-text">
-				<span class="vector-toc-numb">1.5</span>XFS</div>
-			</a>
-			
-			<ul id="toc-XFS-sublist" class="vector-toc-list">
-				<li id="toc-Debug_the_filesystem_4" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Debug_the_filesystem_4">
-				<div class="vector-toc-text">
-				<span class="vector-toc-numb">1.5.1</span>Debug the filesystem</div>
-			</a>
-			
-			<ul id="toc-Debug_the_filesystem_4-sublist" class="vector-toc-list">
-			</ul>
-		</li>
-		<li id="toc-Find_damaged_files_5" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Find_damaged_files_5">
-				<div class="vector-toc-text">
-				<span class="vector-toc-numb">1.5.2</span>Find damaged files</div>
-			</a>
-			
-			<ul id="toc-Find_damaged_files_5-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -290,12 +263,16 @@
 <p>Unlike other filesystem types, <a href="../en/Btrfs.html" title="Btrfs">btrfs</a> has native support for reporting on damaged files. When scrubbing a partition, <i>btrfs</i> reads all data and metadata blocks and verifies checksums. It automatically repairs corrupted blocks if there is a correct copy available in a RAID configuration. <i>btrfs</i> also reports any unreadable sector along with the affected file via system log.
 </p>
 <h4><span class="mw-headline" id="Find_damaged_files">Find damaged files</span></h4>
-<p>First of all, let us <a href="../en/Btrfs.html#Scrub" title="Btrfs">scrub</a> the damaged partition:
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong> <a href="../en/Btrfs.html#Automatic_notifications" title="Btrfs"> Btrfs desktop notifications</a> help you quickly detect and respond to any file damage.</div>
+<p>First of all, <a href="../en/Btrfs.html#Scrub" title="Btrfs">scrub</a> the damaged partition:
 </p>
-<pre># btrfs scrub start -Bd /dev/sdxy</pre>
+<pre># btrfs scrub start -Bd /dev/<i>sdxy</i>
+</pre>
 <p>The same partition can be scrubbed when mounted by providing its mount point:
 </p>
-<pre># btrfs scrub start -Bd /mnt/point</pre>
+<pre># btrfs scrub start -Bd <i>/mnt/point</i>
+</pre>
 <p>Scrub reports can be retrieved as many times as need with the <code>status</code> subcommand:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># btrfs scrub status /mnt/point</pre>
@@ -312,7 +289,7 @@
 <b>Reason:</b> Is the sector still included? (Discuss in <a href="../en/Talk:Identify_damaged_files.html#Btrfs_section_may_need_updating" title="Talk:Identify damaged files">Talk:Identify damaged files#Btrfs section may need updating</a>)</div>
 </div>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># journalctl --output=cat --grep='BTRFS .* i/o error' | sort | uniq | less</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Jan 16 23:14:19 my_server kernel: BTRFS: i/o error at logical 398602014720 on dev /dev/sdxy, sector <b>4621320</b>, root 5, inode 23839, offset 4378624, length 4096, links 1 (path: <b>my/damaged/file</b>)</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Jan 16 23:14:19 my_server kernel: BTRFS: i/o error at logical 398602014720 on dev /dev/sdxy, sector <b>4621320</b>, root 5, inode 23839, offset 4378624, length 4096, links 1 (path: <i>my/damaged/file</i>)</pre>
 <p>The output above reveals that sector <code>4621320</code> could not be read and it contains data for file <code>my/damaged/file</code>. The sector number can be directly used with <a href="../en/Hdparm.html" title="Hdparm">hdparm</a> when reallocating (see <a href="#Force_the_disk_to_reallocate_bad_block">#Force the disk to reallocate bad block</a>).
 </p>
 <h3>
@@ -405,38 +382,8 @@
 </pre>
 <p>Substitute <code>/</code> for the mountpoint of the filesystem that the <i>inode</i> belongs to. If you search root and have more than one filesystem mounted you can find multiple files with the same <i>inode</i> number on different filesystems, plus <a href="../en/Core_utilities.html#Essentials" class="mw-redirect" title="Find">find</a> will take significantly longer. Remember, an <i>inode</i> is only unique to the filesystem that it is in.
 </p>
-<h3><span class="mw-headline" id="ReiserFS_and_Reiser4">ReiserFS and Reiser4</span></h3>
-<h4><span class="mw-headline" id="Debug_the_filesystem_3">Debug the filesystem</span></h4>
-<p>The <i>debugreiserfs</i> command will give you access to all the low level structures within any ReiserFS/Reiser4 filesystem. 
-</p>
-<p>The first thing we want to do is get the block size from the filesystem in question. Just run:
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># debugreiserfs /dev/sdxy | grep '^Blocksize'</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"><b>Blocksize: 4096</b>
-</pre>
-<p>In this case 4096 is the block size being used (it appears to be the default).
-</p>
-<p>If you did not run <a href="../en/Badblocks.html" title="Badblocks">badblocks</a> using the block size that your filesystem is using then you will need to convert your block number(s) to match it (remember to use the block number(s) relative to the partition they are on).
-</p>
-<p>i.e. block number 100 with a block size of 1024 bytes becomes block number 25 at 4096 bytes. The formula is:
-</p>
-<pre>(original block number) / ((filesystem block size) / (badblocks block size))
-</pre>
-<p>Now the entire point of running this program (for the purpose of this article) is to get the <i>inode</i> number. Before continuing to debug it, unmount the partition. Then, run the command:
-</p>
-<h4><span class="mw-headline" id="Find_damaged_files_4">Find damaged files</span></h4>
-<pre># debugreiserfs -1 <i>blocknumber</i> /dev/sd<i>xy</i>
-</pre>
-<p>This will return the information for what reiser filesystems refer to as a "leaf node". If you see a line stating <code>Looks like unformatted</code> then likely this means that the bad block belongs to free space and nothing important was damaged. If that line is absent and there is more output but no filenames then it likely means damage was done to a filesystem structure (at which point it might be a good idea to run at least a read-only fsck to see what is going on).
-</p>
-<p>If you see a <code>Name</code> column with filenames returned under it then it is possible any of these could be damaged (note: there may or may not be a way to more precisely narrow down the exact file damaged). The inode number(s) for listed file(s) seems to be the second number within square brackets listed under the <code>Object key</code> column (this is solely for informational purposes since we already have the filenames).
-</p>
-<p>Realistically if you do have a damaged block then you will likely receive an Input/Output error. In this case you can try mounting the bad partition and then running this command on the mount point (per the smartmontools guide):
-</p>
-<pre># tar -cO /mydir | cat &gt;/dev/null
-</pre>
 <h3><span class="mw-headline" id="XFS">XFS</span></h3>
-<h4><span class="mw-headline" id="Debug_the_filesystem_4">Debug the filesystem</span></h4>
+<h4><span class="mw-headline" id="Debug_the_filesystem_3">Debug the filesystem</span></h4>
 <p>The <i>xfs_info</i> command will give you basic information about an <a href="../en/XFS.html" title="XFS">XFS</a> formatted partition and the <i>xfs_db</i> command will give you access to all the low level structures within any <a href="../en/XFS.html" title="XFS">XFS</a> filesystem.
 </p>
 <p>The first thing we want to do is get the block size from the filesystem in question. Just run:
@@ -467,7 +414,7 @@ log      =internal               <b>bsize=4096</b>   blocks=855, version=2</pre>
 </p>
 <p>If instead you do not get an inode number in your output but do see the word <i>free</i> then likely this means that the bad block belongs to free space and nothing important was damaged.
 </p>
-<h4><span class="mw-headline" id="Find_damaged_files_5">Find damaged files</span></h4>
+<h4><span class="mw-headline" id="Find_damaged_files_4">Find damaged files</span></h4>
 <p>Finally to find the damaged file you can simply use the gnu <a href="../en/Core_utilities.html#Essentials" class="mw-redirect" title="Find">find</a> utility. Mount your filesystem and run:
 </p>
 <pre># find / -inum <i>inodenumber</i>
@@ -539,8 +486,8 @@ $ sync</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Identify_damaged_files&amp;oldid=817787">https://wiki.archlinux.org/index.php?title=Identify_damaged_files&amp;oldid=817787</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 4 October 2024, at 08:37.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Identify_damaged_files&amp;oldid=821332">https://wiki.archlinux.org/index.php?title=Identify_damaged_files&amp;oldid=821332</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 24 November 2024, at 13:51.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

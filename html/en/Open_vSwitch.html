@@ -186,7 +186,7 @@
 <div>
 <b>Reason:</b> This article need better explanation and expansion. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Open_vSwitch.html">Talk:Open vSwitch</a>)</div>
 </div>
-<p>Open vSwitch (OVS) is a multilayer software switch. It is designed to enable massive network automation through programmatic extension, while still supporting standard management interfaces and protocols. Open vSwitch is well suited to function as a virtual switch in environments with virtual machines.
+<p><a rel="nofollow" class="external text" href="https://www.openvswitch.org/">Open vSwitch (OVS)</a> is a multilayer software switch. It is designed to enable massive network automation through programmatic extension, while still supporting standard management interfaces and protocols. Open vSwitch is well suited to function as a virtual switch in environments with virtual machines.
 </p>
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Installation">Installation</span></h2>
@@ -198,13 +198,13 @@
 <p><code>ovs-vswitchd.service</code> will also start the <code>ovsdb-server.service</code> which is used for saving the OVS configuration in a database for persistent settings across reboots.
 </p>
 <h3><span class="mw-headline" id="Create_a_Bridge">Create a Bridge</span></h3>
-<pre>$ ovs-vsctl add-br mybridge
+<pre># ovs-vsctl add-br mybridge
 </pre>
 <p>Most commands can be reversed with replacing add with del, for example del-br.
 </p>
 <p>Print the newly created bridge with one port with an interface named <i>mybridge</i>.
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ ovs-vsctl show</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># ovs-vsctl show</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">e4e95383-2d81-45bd-b411-d289b11405b2
     Bridge mybridge
         Port mybridge
@@ -224,19 +224,19 @@
 </pre>
 <p>Disable any running automated config, Either
 </p>
-<pre>$ dhcpcd -k eno1<i> # if dhcpcd is running</i>
-$ systemctl stop systemd-networkd.service # for systemd-networkd
-$ ip addr del 192.168.1.10/24 dev eno1 #  also remove the current ip configuration
+<pre># dhcpcd -k eno1<i> # if dhcpcd is running</i>
+# systemctl stop systemd-networkd.service # for systemd-networkd
+# ip addr del 192.168.1.10/24 dev eno1 #  also remove the current ip configuration
 </pre>
 <p>Add physical interface to mybridge:
 </p>
-<pre>$ ovs-vsctl add-port mybridge eno1
+<pre># ovs-vsctl add-port mybridge eno1
 </pre>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> This will loose connectivity on this adapter, ensure you have another way to reach your system.</div>
 <p>Print the current setup:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ ovs-vsctl show</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># ovs-vsctl show</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">e4e95383-2d81-45bd-b411-d289b11405b2
     Bridge mybridge
         Port mybridge
@@ -247,7 +247,7 @@ $ ip addr del 192.168.1.10/24 dev eno1 #  also remove the current ip configurati
 </pre>
 <p>Test the config:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ dhcpcd mybridge
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># dhcpcd mybridge
 $ ip addr</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">2: eno1: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc fq_codel master ovs-system state UP group default qlen 1000
     link/ether 52:54:00:91:11:95 brd ff:ff:ff:ff:ff:ff
@@ -263,45 +263,54 @@ $ ip addr</pre>
        valid_lft forever preferred_lft forever
 </pre>
 <h3><span class="mw-headline" id="Make_changes_persistent_over_reboots">Make changes persistent over reboots</span></h3>
-<p>Open vSwitch will automatically apply any changes made with ovs-commands. But to get it working we need to change some things with systemd-networkd:
+<p>Open vSwitch will automatically apply any changes made with ovs-commands. But to get it working we need to change some things with <a href="../en/Systemd-networkd.html" title="Systemd-networkd">systemd-networkd</a>.
 </p>
 <p>First, remove any old configuration for eno1 and bring the interface up during boot. We will also run DHCP on <i>mybridge</i> with the following config:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/network/<i>eno1</i>.network</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Match]
-Name=eno1</pre>
+Name=eno1
+
+[Link]
+RequiredForOnline=carrier
+
+[Network]
+IPv6AcceptRA=false
+LinkLocalAddressing=no
+MulticastDNS=false
+LLMNR=false</pre>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/network/<i>mybridge</i>.network</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Match]
 Name=mybridge
 
+[Link]
+RequiredForOnline=routable
+
 [Network]
-DHCP=ipv4</pre>
+DHCP=yes</pre>
 <h2><span class="mw-headline" id="Vlans">Vlans</span></h2>
 <p>Setup trunk with vlan 10 + 20 plus tag untagged traffic to vlan 1 through the physical port:
 </p>
-<pre>$ ovs-vsctl set port eno1 vlan_mode=native-untagged
-$ ovs-vsctl set port eno1 tag=1 # tag untagged vlan 1
-$ ovs-vsctl set port eno1 trunks=10,20 # allow tagged vlans 10 and 20
+<pre># ovs-vsctl set port eno1 vlan_mode=native-untagged
+# ovs-vsctl set port eno1 tag=1 # tag untagged vlan 1
+# ovs-vsctl set port eno1 trunks=10,20 # allow tagged vlans 10 and 20
 </pre>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> 
-<p>Do multiple actions in one command with -- as seperator, For example, the above is same as : <br>
-<code>$ ovs-vsctl set port eno1 vlan_mode=native-untagged -- set port eno1 tag=1 -- set port eno1 trunks=10,20</code>
-</p>
+<strong>Tip:</strong> Do multiple actions in one command with -- as seperator, For example, the above is same as: <pre># ovs-vsctl set port eno1 vlan_mode=native-untagged -- set port eno1 tag=1 -- set port eno1 trunks=10,20</pre>
 </div>
 <p>Create a new vport1, type internal for use on the host system with vlan 10:
 </p>
-<pre>$ ovs-vsctl add-port mybridge vport1 tag=10 -- set Interface vport1 type=internal
-$ dhcpcd vport1 # to test it out!
+<pre># ovs-vsctl add-port mybridge vport1 tag=10 -- set Interface vport1 type=internal
+# dhcpcd vport1 # to test it out!
 </pre>
 <h2><span class="mw-headline" id="Virtual_ports">Virtual ports</span></h2>
 <p>ip_forward is needed for virtual ports and support for vm's:
 </p>
-<pre>$ echo 1 &gt; /proc/sys/net/ipv4/ip_forward
+<pre># echo 1 &gt; /proc/sys/net/ipv4/ip_forward
 </pre>
 <p>Manually create a tuntap interface:
 </p>
-<pre>$ ip tuntap add mode tap vport2
+<pre># ip tuntap add mode tap vport2
 </pre>
 <p>To make both the above changes persistent across reboots:
 </p>
@@ -313,12 +322,13 @@ Name=vport2
 Kind=tap</pre>
 <p>Create a new port and tag it vlan 20:
 </p>
-<pre>$ ovs-vsctl add-port mybridge vport2 -- set port vport2 tag=20
+<pre># ovs-vsctl add-port mybridge vport2 -- set port vport2 tag=20
 </pre>
 <p>vport2 can now be used in <a href="../en/Libvirt.html" title="Libvirt">libvirt</a>.
 </p>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul>
+<li><a href="https://en.wikipedia.org/wiki/Open_vSwitch" class="extiw" title="wikipedia:Open vSwitch">Wikipedia:Open vSwitch</a></li>
 <li><a rel="nofollow" class="external text" href="https://docs.openvswitch.org/">Official Open vSwitch web site</a></li>
 <li><a rel="nofollow" class="external text" href="https://docs.openvswitch.org/en/latest/intro/">Official documentation</a></li>
 </ul>
@@ -342,8 +352,8 @@ Kind=tap</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Open_vSwitch&amp;oldid=779356">https://wiki.archlinux.org/index.php?title=Open_vSwitch&amp;oldid=779356</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 22 May 2023, at 07:44.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Open_vSwitch&amp;oldid=820063">https://wiki.archlinux.org/index.php?title=Open_vSwitch&amp;oldid=820063</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 3 November 2024, at 09:44.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

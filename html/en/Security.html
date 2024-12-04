@@ -1200,7 +1200,7 @@ password required pam_unix.so use_authtok sha512 shadow</pre>
 </p>
 <ul>
 <li>
-<code>/boot</code>: The <a href="../en/Partitioning.html#/boot" title="Partitioning">boot directory</a>, which includes the <a href="../en/Kernel.html" class="mw-redirect" title="Vmlinuz">vmlinuz</a> and <a href="../en/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs">initramfs</a> images.</li>
+<code>/boot</code>: The <a href="../en/Partitioning.html#/boot" title="Partitioning">boot directory</a>, which may include traditional <a href="../en/Kernel.html" class="mw-redirect" title="Vmlinuz">vmlinuz</a> and <a href="../en/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs">initramfs</a> images, or a <a href="../en/Unified_kernel_image.html" title="Unified kernel image">Unified kernel image</a>. Note that safe permissions are used by default when using <a href="../en/Systemd.html#GPT_partition_automounting" title="Systemd">Systemd#GPT partition automounting</a>.</li>
 <li>
 <code>/etc/nftables.conf</code>: The <a href="../en/Nftables.html" title="Nftables">nftables</a> configuration, applicable to <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nftables">nftables</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=iptables-nft">iptables-nft</a></span>.</li>
 <li>
@@ -1552,6 +1552,8 @@ SupplementaryGroups=proc</pre>
 </p>
 <p>Kernel module loading can be restricted by setting the <code>module.sig_enforce=1</code> <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a>. More information can be found in the <a rel="nofollow" class="external text" href="https://docs.kernel.org/admin-guide/module-signing.html">kernel documentation</a>.
 </p>
+<p>Further, unneeded individual modules can be <a href="../en/Kernel_module.html#Blacklisting" class="mw-redirect" title="Blacklist">blacklisted</a>, see <a rel="nofollow" class="external text" href="https://github.com/secureblue/secureblue/blob/live/files/system/etc/modprobe.d/blacklist.conf">secureblue</a> for examples.
+</p>
 <h3><span class="mw-headline" id="Disable_kexec">Disable kexec</span></h3>
 <p>Kexec allows replacing the current running kernel.
 </p>
@@ -1621,7 +1623,7 @@ SupplementaryGroups=proc</pre>
 <li>use the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-hardened">linux-hardened</a></span> kernel which has the safe default, or</li>
 <li>set the <code>kernel.unprivileged_userns_clone</code> <a href="../en/Sysctl.html" title="Sysctl">sysctl</a> to <code>0</code>.</li>
 </ul>
-<p>Note that this can break applications such as <a href="../en/Zoom_Meetings.html" title="Zoom Meetings">Zoom</a>. You will also need to replace <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=bubblewrap">bubblewrap</a></span> with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=bubblewrap-suid">bubblewrap-suid</a></span> if it is installed on your system. See <a href="../en/Bubblewrap.html#Installation" title="Bubblewrap">Bubblewrap#Installation</a>.
+<p>Note that this can break applications such as <a href="../en/Zoom_Meetings.html" title="Zoom Meetings">Zoom</a> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nsjail">nsjail</a></span>. You will also need to replace <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=bubblewrap">bubblewrap</a></span> with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=bubblewrap-suid">bubblewrap-suid</a></span> if it is installed on your system. See <a href="../en/Bubblewrap.html#Installation" title="Bubblewrap">Bubblewrap#Installation</a>.
 </p>
 <h3><span class="mw-headline" id="Firejail">Firejail</span></h3>
 <p><a href="../en/Firejail.html" title="Firejail">Firejail</a> is an easy to use tool for sandboxing applications and servers alike. It was originally created for browsers and internet facing applications, but supports a large number of applications by now. To establish a sandboxed environment with a variety of features, it is installed as a suid binary and builds a sandboxed runtime environment for the target application based on black and white lists.
@@ -1674,7 +1676,7 @@ SupplementaryGroups=proc</pre>
 <p>Kernel parameters which affect networking can be set using <a href="../en/Sysctl.html" title="Sysctl">Sysctl</a>. For how to do this, see <a href="../en/Sysctl.html#TCP/IP_stack_hardening" title="Sysctl">Sysctl#TCP/IP stack hardening</a>.
 </p>
 <h3><span class="mw-headline" id="SSH">SSH</span></h3>
-<p>To mitigate <a href="https://en.wikipedia.org/wiki/Brute-force_attack" class="extiw" title="wikipedia:Brute-force attack">brute-force attacks</a> it is recommended to enforce key-based authentication. For OpenSSH, see <a href="../en/OpenSSH.html#Force_public_key_authentication" title="OpenSSH">OpenSSH#Force public key authentication</a>. Alternatively <a href="../en/Fail2ban.html" title="Fail2ban">Fail2ban</a> or <a href="../en/Sshguard.html" title="Sshguard">Sshguard</a> offer lesser forms of protection by monitoring logs and writing <a href="../en/Category:Firewalls.html" class="mw-redirect" title="Firewall">firewall</a> rules but open up the potential for a denial of service, since an attacker can <a href="https://en.wikipedia.org/wiki/Spoofing_attack#Spoofing_and_TCP.2FIP" class="extiw" title="wikipedia:Spoofing attack">spoof</a> packets as if they came from the administrator after identifying their address. Spoofing IP has lines of defense, such as by <a href="../en/Sysctl.html#Reverse_path_filtering" title="Sysctl">reverse path filtering</a> and <a href="../en/Sysctl.html#Disable_ICMP_redirects" title="Sysctl">disabling ICMP redirects</a>.
+<p>To mitigate <a href="https://en.wikipedia.org/wiki/Brute-force_attack" class="extiw" title="wikipedia:Brute-force attack">brute-force attacks</a> it is recommended to enforce key-based authentication. For OpenSSH see <a href="../en/OpenSSH.html#Protection" title="OpenSSH">OpenSSH#Protection</a> for more recommendations. Alternatively <a href="../en/Fail2ban.html" title="Fail2ban">Fail2ban</a> or <a href="../en/Sshguard.html" title="Sshguard">Sshguard</a> offer lesser forms of protection by monitoring logs and writing <a href="../en/Category:Firewalls.html" class="mw-redirect" title="Firewall">firewall</a> rules but open up the potential for a denial of service, since an attacker can <a href="https://en.wikipedia.org/wiki/Spoofing_attack#Spoofing_and_TCP.2FIP" class="extiw" title="wikipedia:Spoofing attack">spoof</a> packets as if they came from the administrator after identifying their address. Spoofing IP has lines of defense, such as by <a href="../en/Sysctl.html#Reverse_path_filtering" title="Sysctl">reverse path filtering</a> and <a href="../en/Sysctl.html#Disable_ICMP_redirects" title="Sysctl">disabling ICMP redirects</a>.
 </p>
 <p>You may want to harden authentication even more by using two-factor authentication. <a href="../en/Google_Authenticator.html" title="Google Authenticator">Google Authenticator</a> provides a two-step authentication procedure using one-time passcodes (OTP).
 </p>
@@ -1749,7 +1751,9 @@ esac
 <p>Note that this will not work if there is some command running in the shell (eg.: an SSH session or other shell without <code>TMOUT</code> support). But if you are using VC mostly for restarting frozen GDM/Xorg as root, then this is very useful.
 </p>
 <h3><span class="mw-headline" id="Protect_against_rogue_USB_devices">Protect against rogue USB devices</span></h3>
-<p>Install <a href="../en/USBGuard.html" title="USBGuard">USBGuard</a>, which is a software framework that  helps to protect your computer against rogue USB devices (a.k.a. <a rel="nofollow" class="external text" href="https://opensource.srlabs.de/projects/badusb">BadUSB</a>, <a rel="nofollow" class="external text" href="https://github.com/samyk/poisontap">PoisonTap</a> or <a rel="nofollow" class="external text" href="https://lanturtle.com/">LanTurtle</a>) by implementing basic whitelisting and blacklisting capabilities based on device attributes.
+<p>The kernel has <a rel="nofollow" class="external text" href="https://docs.kernel.org/usb/authorization.html">settings to deactivate</a> USB ports to protect your computer against rogue USB devices (a.k.a. <a rel="nofollow" class="external text" href="https://opensource.srlabs.de/projects/badusb">BadUSB</a>, <a rel="nofollow" class="external text" href="https://github.com/samyk/poisontap">PoisonTap</a> or <a rel="nofollow" class="external text" href="https://lanturtle.com/">LanTurtle</a>). They can be set at runtime and automated via <a href="../en/Sysctl.html" title="Sysctl">sysctl</a>.
+</p>
+<p>For more control install <a href="../en/USBGuard.html" title="USBGuard">USBGuard</a>, which is a software framework implementing basic whitelisting and blacklisting capabilities based on device attributes.
 </p>
 <h3><span class="mw-headline" id="Volatile_data_collection">Volatile data collection</span></h3>
 <p>A computer that is powered on may be vulnerable to <a rel="nofollow" class="external text" href="https://web.archive.org/web/20210420075636/https://fedvte.usalearning.gov/courses/CSI/course/videos/pdf/CSI_D01_S05_T01_STEP.pdf">volatile data collection</a>. It is a best practice to turn a computer completely off at times it is not necessary for it to be on, or if the computer's physical security is temporarily compromised (e.g. when passing through a security checkpoint).
@@ -1932,8 +1936,8 @@ esac
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Security&amp;oldid=817319">https://wiki.archlinux.org/index.php?title=Security&amp;oldid=817319</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 27 September 2024, at 03:34.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Security&amp;oldid=821470">https://wiki.archlinux.org/index.php?title=Security&amp;oldid=821470</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 26 November 2024, at 12:57.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

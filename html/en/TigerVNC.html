@@ -358,6 +358,15 @@
 			<ul id="toc-Desktop_environment_is_displaying_only_boxes_for_font-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-VNC_server_terminates_immediately_while_using_xfce4_session" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#VNC_server_terminates_immediately_while_using_xfce4_session">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">9.7</span>VNC server terminates immediately while using xfce4 session</div>
+			</a>
+			
+			<ul id="toc-VNC_server_terminates_immediately_while_using_xfce4_session-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1">
@@ -485,7 +494,7 @@ alwaysshared</pre>
 <strong>Note:</strong> 
 <ul>
 <li>Direct calls to <code>/usr/bin/vncserver</code> are not supported as they will not establish a proper session scope. The <i>systemd</i> service is the only supported method of using TigerVNC. See: <a rel="nofollow" class="external text" href="https://github.com/TigerVNC/tigervnc/issues/1096">Issue #1096</a>.</li>
-<li>Remove drop-in service files created for earlier versions of TigerVNC before starting <i>vncserver</i>. Prior versions required drop-in service files for each display, e.g. for display :1 <code>/etc/systemd/system/vncserver@:1.service</code>. <i>vncserver</i> will fail to start if the old drop-in file is present when you attempt to start with the new templated service file.</li>
+<li>Remove drop-in service files created for earlier versions of TigerVNC before starting <i>vncserver</i>. Prior versions required drop-in service files for each display, e.g. for display :1 <code>/etc/systemd/system/vncserver@:1.service</code>. <i>vncserver</i> will fail to start if the old drop-in file is present when started with the new templated service file.</li>
 </ul>
 </div>
 <h2><span class="mw-headline" id="Expose_the_local_display_directly">Expose the local display directly</span></h2>
@@ -525,7 +534,7 @@ x0vncserver -rfbauth $XDG_CONFIG_HOME/tigervnc/passwd &amp;
 </pre>
 <h3><span class="mw-headline" id="With_systemd">With systemd</span></h3>
 <h4><span class="mw-headline" id="With_a_system_service">With a system service</span></h4>
-<p>This option will allow the users to access the current display, including the login screen provided by your display manager.
+<p>This option will allow the users to access the current display, including the login screen provided by the display manager.
 </p>
 <p>The service will be relaunched automatically every time an user logs off of their session.
 </p>
@@ -568,7 +577,7 @@ ExecStart=/usr/bin/x0vncserver -rfbauth %h/.vnc/passwd
 WantedBy=default.target</pre>
 <p>The <code>ExecStartPre</code> line waits for Xorg to be started by <code>${USER}</code>. 
 </p>
-<p>To login with your username and password, replace <code>ExecStart</code> by <code>/usr/bin/x0vncserver -PAMService=login -PlainUsers=${USER} -SecurityTypes=TLSPlain</code>.
+<p>To login with a specific username and password, replace <code>ExecStart</code> by <code>/usr/bin/x0vncserver -PAMService=login -PlainUsers=${USER} -SecurityTypes=TLSPlain</code>.
 </p>
 <p><a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start/enable">Start/enable</a> the <code>x0vncserver.service</code> <a href="../en/Systemd/User.html" class="mw-redirect" title="User unit">user unit</a>.
 </p>
@@ -607,7 +616,7 @@ vncconfig -nowin &amp;
 </pre>
 <h2><span class="mw-headline" id="Connecting_to_vncserver">Connecting to vncserver</span></h2>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> The default's TigerVNC security method is not secure. It lacks identity verification and will not prevent man-in-the-middle attack during the connection setup. Make sure you understand the security settings of your server and do not connect insecurely to a vncserver outside of a trusted LAN.</div>
+<strong>Warning:</strong> The default's TigerVNC security method is not secure. It lacks identity verification and will not prevent man-in-the-middle attack during the connection setup. Take care to understand the security settings of the server and do not connect insecurely to a vncserver outside of a trusted LAN.</div>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> By default, TigerVNC uses the <i>TLSVnc</i> authentication/encryption method unless specifically instructed via the <code>SecurityTypes</code> parameter. With <i>TLSVnc</i>, there is standard VNC authentication and traffic is encrypted with GNUTLS but the identity of the server is not verified. TigerVNC supports alternative security schemes such as <i>X509Vnc</i> that combines standard VNC authentication with GNUTLS encryption and server identification; this is the recommended mode for a secure connection.
 When <code>SecurityTypes</code> on the server is set to a non-encrypted option as high-priority (such as <i>None</i>, <i>VncAuth</i>, <i>Plain</i>, <i>TLSNone</i>, <i>TLSPlain</i>, <i>X509None</i>, <i>X509Plain</i>), which is ill-advised, then it is not possible to use encryption. When running <i>vncviewer</i>, it is safer to explicitly set <code>SecurityTypes</code> and not accept any unencrypted traffic. Any other mode is to be used only when <a href="#Accessing_vncserver_via_SSH_tunnels">#Accessing vncserver via SSH tunnels</a>. </div>
@@ -720,7 +729,7 @@ Port: 5901
 <p>This can be done through vnc client's menu. By default, vnc client's mkey is <code>F8</code>.
 </p>
 <h3><span class="mw-headline" id="Workaround_for_mouse_back_and_forward_buttons_not_working">Workaround for mouse back and forward buttons not working</span></h3>
-<p>The VNC protocol currently only uses 7 mouse buttons (left, middle, right, scroll up, scroll down, scroll left, scroll right) which means if your mouse has a back and a forward button, these are not usable and input will be ignored.
+<p>The VNC protocol currently only uses 7 mouse buttons (left, middle, right, scroll up, scroll down, scroll left, scroll right) which means if the mouse has a back and a forward button, these are not usable and input will be ignored.
 </p>
 <p><a rel="nofollow" class="external text" href="https://www.bedroomlan.org/projects/evrouter/">evrouter</a> can be used to work around this limitation by sending keyboard key presses when clicking the mouse back/forward buttons. Optionally, xte found in <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xautomation">xautomation</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xbindkeys">xbindkeys</a></span> can be used on the server to map the keyboard key presses back to mouse button clicks if needed.
 </p>
@@ -780,7 +789,7 @@ Port: 5901
 <h3><span class="mw-headline" id="Empty_black_window_with_mouse_cursor_or_xinit:_connection_to_X_server_lost">Empty black window with mouse cursor or xinit: connection to X server lost</span></h3>
 <p>Verify that the user is not logged into a physical X session, unless this option was configured with <code>x0vncserver</code>. Multiple X sessions for a single user are not supported, see <a rel="nofollow" class="external text" href="https://github.com/TigerVNC/tigervnc/issues/684#issuecomment-494385395">684#issuecomment-494385395</a> and <a rel="nofollow" class="external text" href="https://github.com/TigerVNC/tigervnc/issues/1634">#1634</a>.
 </p>
-<p>Conversely, trying to log into a local X session while a VNC server service is running for that user will likely not work, and you may get stuck on a splash screen when using a desktop environment.
+<p>Conversely, trying to log into a local X session while a VNC server service is running for that user will likely not work, and may get stuck on a splash screen when using a desktop environment.
 </p>
 <h3><span class="mw-headline" id="No_mouse_cursor">No mouse cursor</span></h3>
 <p>If no mouse cursor is visible when using <i>x0vncserver</i>, start <i>vncviewer</i> as follows:
@@ -804,6 +813,19 @@ Port: 5901
 <h3><span class="mw-headline" id="Desktop_environment_is_displaying_only_boxes_for_font">Desktop environment is displaying only boxes for font</span></h3>
 <p>Some <a href="../en/Desktop_environment.html" title="Desktop environment">desktop environments</a> might be missing necessary font to display ASCII characters. <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=ttf-dejavu">ttf-dejavu</a></span>.
 </p>
+<h3><span class="mw-headline" id="VNC_server_terminates_immediately_while_using_xfce4_session">VNC server terminates immediately while using xfce4 session</span></h3>
+<p>Create new .desktop file under /usr/share/xsessions. For example xfce4vnc.desktop:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/usr/share/xsessions/xfce4vnc.desktop</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Desktop Entry]
+Version=1.0
+Name=Xfce4vnc Session
+Exec=dbus-launch startxfce4
+Icon=
+Type=Application
+DesktopNames=XFCE4VNC</pre>
+<p>Make sure <code>Exec</code> key is using <code>dbus-launch</code> to start xfce4 within new session bus instance context. Remember to change <code>session</code> value in <code>$XDG_CONFIG_HOME/tigervnc/config</code> to <code>xfce4vnc</code>.
+</p>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul><li><a rel="nofollow" class="external free" href="https://github.com/TigerVNC/tigervnc">https://github.com/TigerVNC/tigervnc</a></li></ul>
 </div>
@@ -822,8 +844,8 @@ Port: 5901
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=TigerVNC&amp;oldid=816330">https://wiki.archlinux.org/index.php?title=TigerVNC&amp;oldid=816330</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 12 September 2024, at 09:39.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=TigerVNC&amp;oldid=822022">https://wiki.archlinux.org/index.php?title=TigerVNC&amp;oldid=822022</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 2 December 2024, at 20:48.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

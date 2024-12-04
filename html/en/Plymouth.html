@@ -190,10 +190,19 @@
 			<ul id="toc-Missing_BGRT_image-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Removing_text_under_the_password_prompt" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Removing_text_under_the_password_prompt">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">4.6</span>Removing text under the password prompt</div>
+			</a>
+			
+			<ul id="toc-Removing_text_under_the_password_prompt-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 		<li id="toc-Slow_down_boot_to_show_the_full_animation" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Slow_down_boot_to_show_the_full_animation">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.6</span>Slow down boot to show the full animation</div>
+				<span class="vector-toc-numb">4.7</span>Slow down boot to show the full animation</div>
 			</a>
 			
 			<ul id="toc-Slow_down_boot_to_show_the_full_animation-sublist" class="vector-toc-list">
@@ -202,7 +211,7 @@
 		<li id="toc-Using_SimpleDRM" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Using_SimpleDRM">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.7</span>Using SimpleDRM</div>
+				<span class="vector-toc-numb">4.8</span>Using SimpleDRM</div>
 			</a>
 			
 			<ul id="toc-Using_SimpleDRM-sublist" class="vector-toc-list">
@@ -413,19 +422,23 @@
 <li><i>(<b>Text</b>: "Text mode theme with tricolor progress bar")</i></li>
 <li><i>(<b>Details</b>: "Verbose fallback theme")</i></li>
 </ol>
-<p>By default, the <b>fade-in</b> theme is selected. The theme can be changed editing the configuration file, for example:
+<p>Arch sets the default theme to <b>bgrt</b><a rel="nofollow" class="external autonumber" href="https://gitlab.archlinux.org/archlinux/packaging/packages/plymouth/-/blob/12df42855251af1d5f6e380968d3e2b51600c14d/PKGBUILD#L65-66">[1]</a>. This can be confirmed by running:
+</p>
+<pre>$ plymouth-set-default-theme
+</pre>
+<p>The theme can be changed by editing the configuration file:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/plymouth/plymouthd.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Daemon]
-Theme=bgrt</pre>
-<p>or by this command:
+Theme=<i>theme</i></pre>
+<p>or by running:
 </p>
 <pre># plymouth-set-default-theme -R <i>theme</i>
 </pre>
 <p>Every time a theme is changed, the <code>initrd</code> must be rebuilt. The <code>-R</code> option ensures that it is rebuilt (otherwise <a href="../en/Mkinitcpio.html#Image_creation_and_activation" class="mw-redirect" title="Regenerate the initramfs">regenerate the initramfs</a> manually).
 </p>
 <h3><span class="mw-headline" id="Install_new_themes">Install new themes</span></h3>
-<p>You can install other themes from <a href="../en/Arch_User_Repository.html" class="mw-redirect" title="AUR">AUR</a>. <a rel="nofollow" class="external autonumber" href="https://aur.archlinux.org/packages?K=plymouth-theme-">[1]</a>, alternatively 
+<p>You can install other themes from <a href="../en/Arch_User_Repository.html" class="mw-redirect" title="AUR">AUR</a>. <a rel="nofollow" class="external autonumber" href="https://aur.archlinux.org/packages?K=plymouth-theme-">[2]</a>, alternatively 
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=plymouth-kcm">plymouth-kcm</a></span> provides integration into KDE Plasma's settings and offers themes not available on the <a href="../en/Arch_User_Repository.html" class="mw-redirect" title="AUR">AUR</a>.
 </p>
 <p>All currently installed themes can be listed by using this command:
@@ -472,17 +485,12 @@ OnFailure=plymouth-quit.service
 ExecStartPost=-/usr/bin/sleep 30
 ExecStartPost=-/usr/bin/plymouth quit --retain-splash</pre>
 <h3><span class="mw-headline" id="Preview_themes">Preview themes</span></h3>
-<p>Themes can be previewed without rebuilding initrd, press <code>Ctrl+Alt+F6</code> to switch to a text terminal, log in as root and type:
+<p>The currently configured theme can be previewed by running<a rel="nofollow" class="external autonumber" href="https://ubuntuhandbook.org/index.php/2022/10/replace-manufacturer-ubuntu/">[3]</a>:
 </p>
-<pre># plymouthd
-# plymouth --show-splash
+<pre># plymouthd; plymouth --show-splash; sleep 5; plymouth --quit
 </pre>
-<p>To quit the preview, press <code>Ctrl+Alt+F6</code> again and type:
-</p>
-<pre># plymouth --quit
-</pre>
-<p>You can run these commands as root in a running X.Org session too, but the Plymouth window may cover your terminal window and lock itself on top. Have virtual desktops handy.
-</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> The execution as a chained command including a <code>sleep</code> invocation allows to return control to the user after the defined delay; <b>do not remove it</b>.</div>
 <h3><span class="mw-headline" id="Change_background_image">Change background image</span></h3>
 <p>You can add a background image for two-step-based themes (such as spinner and bgrt). Just place your desired image into <code>/usr/share/plymouth/themes/spinner/background-tile.png</code>. Do not forget to regenerate the initrd once the theme changed.
 </p>
@@ -493,6 +501,19 @@ ExecStartPost=-/usr/bin/plymouth quit --retain-splash</pre>
 Alternatively, set the following to keep the firmware background: </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/plymouth/plymouthd.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">UseFirmwareBackground=true</pre> 
+<h3><span class="mw-headline" id="Removing_text_under_the_password_prompt">Removing text under the password prompt</span></h3>
+<p>To remove the text displayed on Plymouth's encryption screen, follow these steps:
+</p>
+<p>1. Delete the label files:
+</p>
+<pre># rm /usr/lib/plymouth/label*
+</pre>
+<p>2. Rebuild the initramfs image using the <a href="../en/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs">initramfs</a> tool.
+</p>
+<p>3. Add the deleted files to <a href="../en/Pacman.html#Skip_files_from_being_installed_to_system" title="Pacman">NoExtract</a> in <a href="../en/Pacman.html#Configuration" class="mw-redirect" title="Pacman.conf">pacman.conf</a> to prevent them from being reinstalled:
+</p>
+<pre>NoExtract = usr/lib/plymouth/label*
+</pre>
 <h3><span class="mw-headline" id="Slow_down_boot_to_show_the_full_animation">Slow down boot to show the full animation</span></h3>
 <p>On systems with a very fast boot time, it might be necessary to add a delay to <code>plymouth-quit.service</code> with a <a href="../en/Systemd.html#Drop-in_files" class="mw-redirect" title="Drop-in snippet">drop-in snippet</a> containing <code>ExecStartPre=/usr/bin/sleep 5</code> if showing the whole animation is desired. See <a rel="nofollow" class="external text" href="https://old.reddit.com/r/archlinux/comments/u5fjbi/how_do_i_make_my_boot_time_slower/">this reddit post</a>.
 </p>
@@ -560,8 +581,8 @@ WantedBy=plymouth-start.service</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Plymouth&amp;oldid=817185">https://wiki.archlinux.org/index.php?title=Plymouth&amp;oldid=817185</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 25 September 2024, at 10:26.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Plymouth&amp;oldid=821101">https://wiki.archlinux.org/index.php?title=Plymouth&amp;oldid=821101</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 21 November 2024, at 08:49.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

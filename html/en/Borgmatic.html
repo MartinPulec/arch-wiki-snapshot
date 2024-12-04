@@ -69,29 +69,6 @@
 		<ul id="toc-Usage-sublist" class="vector-toc-list">
 		</ul>
 	</li>
-	<li id="toc-Tips_and_tricks" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
-		<a class="vector-toc-link" href="#Tips_and_tricks">
-			<div class="vector-toc-text">
-			<span class="vector-toc-numb">4</span>Tips and tricks</div>
-		</a>
-		
-			<button aria-controls="toc-Tips_and_tricks-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
-				<span class="vector-icon vector-icon--x-small mw-ui-icon-wikimedia-expand"></span>
-				<span>Toggle Tips and tricks subsection</span>
-			</button>
-		
-		<ul id="toc-Tips_and_tricks-sublist" class="vector-toc-list">
-			<li id="toc-Using_systemd-creds_to_provide_a_password_for_borgmatic.service" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Using_systemd-creds_to_provide_a_password_for_borgmatic.service">
-				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.1</span>Using systemd-creds to provide a password for borgmatic.service</div>
-			</a>
-			
-			<ul id="toc-Using_systemd-creds_to_provide_a_password_for_borgmatic.service-sublist" class="vector-toc-list">
-			</ul>
-		</li>
-	</ul>
-	</li>
 </ul>
 </div>
 
@@ -167,7 +144,6 @@
 <div class="mw-content-ltr mw-parser-output" lang="en" dir="ltr">
 <p><a rel="nofollow" class="external text" href="https://torsion.org/borgmatic/">borgmatic</a> is a Python-based wrapper script for <a href="../en/Borg_backup.html" title="Borg backup">Borg backup</a>, designed to simplify and automate backups. It aims to provide an easy-to-use and flexible solution for creating backups using <b>borgbackup</b>.
 </p>
-<meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Installation">Installation</span></h2>
 <p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=borgmatic">borgmatic</a></span> package.
 </p>
@@ -204,37 +180,6 @@ Generate successful
 </p>
 <p>Borgmatic also provides systemd system and user units and timers.
 </p>
-<h2><span class="mw-headline" id="Tips_and_tricks">Tips and tricks</span></h2>
-<h3><span class="mw-headline" id="Using_systemd-creds_to_provide_a_password_for_borgmatic.service">Using systemd-creds to provide a password for borgmatic.service</span></h3>
-<p>First, encrypt the password 
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># systemd-ask-password -n | systemd-creds encrypt --name=borgpw -p - -</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">🔐 Password: *******                 
-SetCredentialEncrypted=borgpw: \
-        k6iUCUh0RJCQyvL8k8q1UyAAAAABAAAADAAAABAAAABODbSDtNZ8+PtlN3IAAAAAgAAAA \
-        AAAAAALACMA8AAAACAAAAAAngAgRKW32QRYMvWeTcwb4SbbvK/QDF4tihGlL8OHlLKa86 \
-        AAEHwr8IDsdxBmuRIXWSBGoFu8la+lTclW0/GN3OZwbvfeymJhqSoa3+76kJ1aRumQVul \
-        Wvc9KxykzPhVoqFN3adVujhUkfeUmD/IMwzscsOh0hsOd8d1r2v3K8WyVv9ebk0hS1mVC \
-        UzSTCNMsuKrPF2wXUP2QK5+WIjL1AE4ACAALAAAAEgAgY9RHOefBR+mMgV/Frr+UzQX1S \
-        IsLFItIbfB6Ep76It0AEAAgNyMB30ZJ2HiqikmhgZfvFRZqxNRhXluH/cxMiohBDKRj1E \
-        c558FH6YyBX8Wuv5TNBfVIiwsUi0ht8HoSnvoi3QAAAADffR0SV5WlPlCnJtJrhVnIXp3 \
-        IO36xjF4iBmXjBfjaWhpFJ6yyY0HzHF9O1J7eNgls5aJX6Skh</pre>
-<p>Then, <a href="../en/Systemd.html#Editing_provided_units" class="mw-redirect" title="Edit">edit</a> the provided borgmatic systemd service:
-</p>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> Since <a href="../en/Systemd-creds.html" title="Systemd-creds">systemd-creds</a> provides credentials as files, you have to use <code>BORG_PASSCOMMAND</code> to provide the password</div>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/borgmatic.service.d/credentials.conf</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Service]
-SetCredentialEncrypted=borgpw: \
-        k6iUCUh0RJCQyvL8k8q1UyAAAAABAAAADAAAABAAAABODbSDtNZ8+PtlN3IAAAAAgAAAA \
-        AAAAAALACMA8AAAACAAAAAAngAgRKW32QRYMvWeTcwb4SbbvK/QDF4tihGlL8OHlLKa86 \
-        AAEHwr8IDsdxBmuRIXWSBGoFu8la+lTclW0/GN3OZwbvfeymJhqSoa3+76kJ1aRumQVul \
-        Wvc9KxykzPhVoqFN3adVujhUkfeUmD/IMwzscsOh0hsOd8d1r2v3K8WyVv9ebk0hS1mVC \
-        UzSTCNMsuKrPF2wXUP2QK5+WIjL1AE4ACAALAAAAEgAgY9RHOefBR+mMgV/Frr+UzQX1S \
-        IsLFItIbfB6Ep76It0AEAAgNyMB30ZJ2HiqikmhgZfvFRZqxNRhXluH/cxMiohBDKRj1E \
-        c558FH6YyBX8Wuv5TNBfVIiwsUi0ht8HoSnvoi3QAAAADffR0SV5WlPlCnJtJrhVnIXp3 \
-        IO36xjF4iBmXjBfjaWhpFJ6yyY0HzHF9O1J7eNgls5aJX6Skh
-Environment=BORG_PASSCOMMAND="cat %d/borgpw"</pre>
 </div>
 </div>
 					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
@@ -251,8 +196,8 @@ Environment=BORG_PASSCOMMAND="cat %d/borgpw"</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Borgmatic&amp;oldid=802971">https://wiki.archlinux.org/index.php?title=Borgmatic&amp;oldid=802971</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 11 March 2024, at 17:03.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Borgmatic&amp;oldid=820082">https://wiki.archlinux.org/index.php?title=Borgmatic&amp;oldid=820082</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 4 November 2024, at 00:00.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

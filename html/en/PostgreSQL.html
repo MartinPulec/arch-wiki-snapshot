@@ -386,6 +386,10 @@
 <strong>Note:</strong> Using a locale other than <code>C.UTF-8</code>, <code>C</code>, <code>POSIX</code> or <code>ucs_basic</code> can result in a <a href='#WARNING:_database_"postgres"_has_a_collation_version_mismatch'>collation version mismatch</a> that will require reindexing if the library providing the locale (<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=glibc">glibc</a></span> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=icu">icu</a></span>) gets updated.</div>
 </li>
 <li>If your data directory resides on a file system without data checksumming, you may wish to enable PostgreSQL's built-in <a rel="nofollow" class="external text" href="https://www.postgresql.org/docs/current/checksums.html">checksumming</a> for increased integrity guarantees - add the <code>--data-checksums</code> argument to do so. Read <a href="#Enable_data_checksumming">#Enable data checksumming</a> for more information. (Once the database is up, you can check if it is enabled with <code>[postgres]$ psql --tuples-only -c "SHOW data_checksums"</code>.)</li>
+</ul>
+<dl><dd><div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> The <code>/var/lib/postgres/data/</code> directory has the NO_COW <code>C</code> attribute set. <a rel="nofollow" class="external autonumber" href="https://gitlab.archlinux.org/archlinux/packaging/packages/postgresql/-/blob/main/postgresql.tmpfiles#L3">[2]</a> This <a rel="nofollow" class="external text" href="https://unix.stackexchange.com/a/316797">disables checksumming</a> in <a href="../en/Btrfs.html" title="Btrfs">Btrfs</a>.</div></dd></dl>
+<ul>
 <li>The <i>trust</i> authentication method is used by default, meaning that anyone on the host can connect as any database user. You can use <code>--auth-local=peer --auth-host=scram-sha-256</code> for safer authentication methods.</li>
 <li>The <code>-c</code>/<code>--set</code> option can be used to set any <code>postgresql.conf</code> parameter avoiding the need to manually edit <code>postgresql.conf</code>.</li>
 <li>For more options, see <code>initdb --help</code> and <a rel="nofollow" class="external text" href="https://www.postgresql.org/docs/current/creating-cluster.html">official documentation</a>.</li>
@@ -521,7 +525,7 @@ local   all             postgres                                peer</pre>
 # "local" is for Unix domain socket connections only
 local   all             <i>user</i>                                    scram-sha-256</pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> Changing the authentication method in <code>pg_hba.conf</code> does not update the hashed passwords stored in the database <a rel="nofollow" class="external autonumber" href="https://stackoverflow.com/a/64317399">[2]</a>. To migrate from <code>md5</code> to <code>scram-sha-256</code>, you need to set a new password for each database user.</div>
+<strong>Note:</strong> Changing the authentication method in <code>pg_hba.conf</code> does not update the hashed passwords stored in the database <a rel="nofollow" class="external autonumber" href="https://stackoverflow.com/a/64317399">[3]</a>. To migrate from <code>md5</code> to <code>scram-sha-256</code>, you need to set a new password for each database user.</div>
 <p><a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Restart">Restart</a> <code>postgresql.service</code>, and then re-add each user's password using <code>ALTER USER <i>user</i> WITH ENCRYPTED PASSWORD '<i>password</i>';</code>.
 </p>
 <h3><span class="mw-headline" id="Configure_PostgreSQL_to_be_accessible_exclusively_through_UNIX_Sockets">Configure PostgreSQL to be accessible exclusively through UNIX Sockets</span></h3>
@@ -669,9 +673,14 @@ template1 | postgres | UTF8      | C         | C     |
 <a rel="nofollow" class="external free" href="https://github.com/phppgadmin/phppgadmin">https://github.com/phppgadmin/phppgadmin</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/phppgadmin/">phppgadmin</a></span><sup><small>AUR</small></sup>
 </dd></dl>
 <ul><li>
+<b>pgAdmin-desktop</b> — The desktop user interface for pgAdmin, a comprehensive design and management GUI for PostgreSQL.</li></ul>
+<dl><dd>
+<a rel="nofollow" class="external free" href="https://www.pgadmin.org/">https://www.pgadmin.org/</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/pgadmin4-desktop/">pgadmin4-desktop</a></span><sup><small>AUR</small></sup>
+</dd></dl>
+<ul><li>
 <b>pgAdmin</b> — Comprehensive design and management GUI for PostgreSQL.</li></ul>
 <dl><dd>
-<a rel="nofollow" class="external free" href="https://www.pgadmin.org/">https://www.pgadmin.org/</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/pgadmin3/">pgadmin3</a></span><sup><small>AUR</small></sup><sup>[<a href="../en/Help:Procedures.html#Fix_broken_package_links" title="Help:Procedures">broken link</a>: package not found]</sup> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pgadmin4">pgadmin4</a></span><sup>[<a href="../en/Help:Procedures.html#Fix_broken_package_links" title="Help:Procedures">broken link</a>: package not found]</sup>
+<a rel="nofollow" class="external free" href="https://www.pgadmin.org/">https://www.pgadmin.org/</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pgadmin4">pgadmin4</a></span><sup>[<a href="../en/Help:Procedures.html#Fix_broken_package_links" title="Help:Procedures">broken link</a>: package not found]</sup>
 </dd></dl>
 <ul><li>
 <b>pgModeler</b> — Graphical schema designer for PostgreSQL.</li></ul>
@@ -724,7 +733,7 @@ template1 | postgres | UTF8      | C         | C     |
 <ol>
 <li>While the old database cluster is still online, collect the <code>initdb</code> arguments used to create it. Refer to <a href="#Initial_configuration">#Initial configuration</a> for more information.</li>
 <li>
-<a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Stop">Stop</a> <code>postgresql.service</code>. Check the <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Unit status">unit status</a> to <b>be sure that PostgresSQL was stopped correctly</b>. If it failed, <code>pg_upgrade</code> will fail too.</li>
+<a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Stop">Stop</a> <code>postgresql.service</code>. Check the <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Unit status">unit status</a> to <b>be sure that PostgresSQL was stopped correctly</b>. If it failed, <code>pg_upgrade</code> will fail with <code>The source cluster was not shut down cleanly</code>.</li>
 <li>
 <a href="../en/System_maintenance.html#Upgrading_the_system" class="mw-redirect" title="Upgrade">Upgrade</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=postgresql">postgresql</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=postgresql-libs">postgresql-libs</a></span>, and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=postgresql-old-upgrade">postgresql-old-upgrade</a></span>.</li>
 <li>Make sure that <code>/var/lib/postgres/olddata</code> does not exist. If you did not delete it after a previous upgrade, do it now.</li>
@@ -747,16 +756,6 @@ template1 | postgres | UTF8      | C         | C     |
 <li>Delete the <code>/var/lib/postgres/tmp</code> directory.</li>
 <li>If you use <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/pgbackrest/">pgbackrest</a></span><sup><small>AUR</small></sup>, run the <a rel="nofollow" class="external text" href="https://pgbackrest.org/command.html#command-stanza-upgrade">stanza-upgrade</a> command.</li>
 </ol>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-cut.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is being considered for removal.</b></p>
-<div>
-<b>Reason:</b> This is a useless hand-holding note, the necessary procedure is clearly covered by step 2 above. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:PostgreSQL.html">Talk:PostgreSQL</a>)</div>
-</div>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> If <code>pg_upgrade</code> in step 6 fails with <code>The source cluster was not shut down cleanly</code>, PostgreSQL was not stopped before attempting the upgrade. Stop it, then restart the cluster with old database binaries to recover old cluster files:
-<pre>[postgres]$ /opt/pgsql-<i>PG_VERSION</i>/bin/pg_ctl start -D /var/lib/postgres/olddata &amp;&amp; /opt/pgsql-<i>PG_VERSION</i>/bin/pg_ctl stop -D /var/lib/postgres/olddata
-</pre>
-You can now safely retry the <code>pg_upgrade</code> command. If the upgrade process still fails, shut down any database processes, <a href="../en/Downgrading_packages.html" class="mw-redirect" title="Downgrade">downgrade</a> PostgreSQL packages to their previous versions, recover your previous cluster data from backups and restart the upgrade process.</div>
 <h3><span class="mw-headline" id="Manual_dump_and_reload">Manual dump and reload</span></h3>
 <p>You could also do something like this (after the upgrade and install of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=postgresql-old-upgrade">postgresql-old-upgrade</a></span>).
 </p>
@@ -835,7 +834,6 @@ HINT:  Rebuild all objects in this database that use the default collation and r
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
 <li><a href="../en/Category:Pages_with_broken_package_links.html" title="Category:Pages with broken package links">Pages with broken package links</a></li>
-<li><a href="../en/Category:Sections_flagged_with_Template:Remove.html" title="Category:Sections flagged with Template:Remove">Sections flagged with Template:Remove</a></li>
 </ul>
 </div>
 </div>
@@ -847,8 +845,8 @@ HINT:  Rebuild all objects in this database that use the default collation and r
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PostgreSQL&amp;oldid=815975">https://wiki.archlinux.org/index.php?title=PostgreSQL&amp;oldid=815975</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 7 September 2024, at 08:16.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PostgreSQL&amp;oldid=821750">https://wiki.archlinux.org/index.php?title=PostgreSQL&amp;oldid=821750</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 29 November 2024, at 22:50.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

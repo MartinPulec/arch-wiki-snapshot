@@ -256,7 +256,16 @@
 			</a>
 			
 			<ul id="toc-Suspend/hibernate_does_not_work,_or_does_not_work_consistently-sublist" class="vector-toc-list">
+				<li id="toc-USB_device_errors" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#USB_device_errors">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">7.2.1</span>USB device errors</div>
+			</a>
+			
+			<ul id="toc-USB_device_errors-sublist" class="vector-toc-list">
 			</ul>
+		</li>
+	</ul>
 		</li>
 		<li id="toc-Wake-on-LAN" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Wake-on-LAN">
@@ -629,7 +638,7 @@ File size of /swapfile is 4294967296 (1048576 blocks of 4096 bytes)
 <h3><span class="mw-headline" id="Maintaining_swap_file_for_hibernation_with_zram">Maintaining swap file for hibernation with zram</span></h3>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> Instead of the following setup which involves multiple swap spaces, <a href="#Disable_zswap_writeback_to_use_the_swap_space_only_for_hibernation">zswap can be used</a> to establish a similar behavior.</div>
-<p>It is possible solving the hibernation problem with RAM compression (zram) by maintaining two or more swap spaces at the same time. <a href="../../en/Systemd.html" title="Systemd">systemd</a> will always ignore zram block devices before triggering hibernation <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/16708#issuecomment-1632592375">[7]</a>, therefore keeping both spaces enabled should work without further intervention.
+<p>It is possible to solve the hibernation problem with zram RAM-only swap by maintaining two or more swap spaces at the same time. <a href="../../en/Systemd.html" title="Systemd">systemd</a> will always ignore zram block devices before triggering hibernation <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/16708#issuecomment-1632592375">[7]</a>, therefore keeping both spaces enabled should work without further intervention.
 </p>
 <p>After <a href="#Acquire_swap_file_offset">configured the swap file</a>, follow the <a href="../../en/Zram.html" title="Zram">zram</a> page. Make sure zram has the <b>higher swap priority</b> (e.g. <code>pri=100</code>).
 </p>
@@ -658,7 +667,7 @@ File size of /swapfile is 4294967296 (1048576 blocks of 4096 bytes)
 <p>A fully allocated volume will show up as having 100% data usage.
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> Do not to use <a href="../../en/Solid_state_drive.html#TRIM" class="mw-redirect" title="TRIM">TRIM</a> on thinly-provisioned swap volumes that are used for hibernation, i.e. do not use <code>discard</code> in <code>/etc/fstab</code> and the <code>-d</code>/<code>--discard</code> option of <i>swapon</i>. Otherwise the used space will be deallocated.</div>
+<strong>Warning:</strong> Do not use <a href="../../en/Solid_state_drive.html#TRIM" class="mw-redirect" title="TRIM">TRIM</a> on thinly-provisioned swap volumes that are used for hibernation, i.e. do not use <code>discard</code> in <code>/etc/fstab</code> and the <code>-d</code>/<code>--discard</code> option of <i>swapon</i>. Otherwise the used space will be deallocated.</div>
 <h3><span class="mw-headline" id="Disable_zswap_writeback_to_use_the_swap_space_only_for_hibernation">Disable zswap writeback to use the swap space only for hibernation</span></h3>
 <p>In Linux 6.8, <a href="../../en/Zswap.html" title="Zswap">zswap</a> gained <a rel="nofollow" class="external text" href="https://git.kernel.org/linus/501a06fe8e4c185bbda371b8cedbdf1b23a633d8">a per-cgroup option to disable writeback</a>. By using systemd unit setting <code>MemoryZSwapWriteback</code> (see <span class="plainlinks archwiki-template-man" title="$ man 5 systemd.resource-control"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd.resource-control.5#Memory_Accounting_and_Control">systemd.resource-control(5) § Memory Accounting and Control</a></span>) in all possible unit types, zswap writeback can be effectively disabled entirely. This allows to use zswap just like zram with the added benefit of supporting hibernation.
 </p>
@@ -847,6 +856,19 @@ AllowSuspendThenHibernate=no</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">MODULES=(... intel_lpss_pci ...)</pre>
 <p>Then <a href="../../en/Mkinitcpio.html#Image_creation_and_activation" class="mw-redirect" title="Regenerate the initramfs">regenerate the initramfs</a>.
 </p>
+<h4><span class="mw-headline" id="USB_device_errors">USB device errors</span></h4>
+<p>System may fail to suspend because of a USB device. You might see the following error:
+</p>
+<pre>PM: Some devices failed to suspend, or early wake event detected
+...
+xhci_hcd 0000:02:00.0: PM: failed to suspend async: error -16
+</pre>
+<p><i>lspci</i> may give you more information on the failing device:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ lspci -s 02:00.0</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">02:00.0 USB controller: Advanced Micro Devices, Inc. [AMD] 500 Series Chipset USB 3.1 XHCI Controller</pre>
+<p>Try disconnecting devices on that port.
+</p>
 <h3><span class="mw-headline" id="Wake-on-LAN">Wake-on-LAN</span></h3>
 <p>If <a href="../../en/Wake-on-LAN.html" title="Wake-on-LAN">Wake-on-LAN</a> is active, the network interface card will consume power even if the computer is hibernated.
 </p>
@@ -980,8 +1002,8 @@ Environment=SYSTEMD_SLEEP_FREEZE_USER_SESSIONS=false</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Power_management/Suspend_and_hibernate&amp;oldid=817773">https://wiki.archlinux.org/index.php?title=Power_management/Suspend_and_hibernate&amp;oldid=817773</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 3 October 2024, at 18:15.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Power_management/Suspend_and_hibernate&amp;oldid=821141">https://wiki.archlinux.org/index.php?title=Power_management/Suspend_and_hibernate&amp;oldid=821141</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 21 November 2024, at 18:37.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

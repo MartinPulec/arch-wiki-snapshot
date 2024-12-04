@@ -203,13 +203,13 @@
 			<ul id="toc-Password-related_problems-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Problems_with_eduroam_and_other_MSCHAPv2_connections" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Problems_with_eduroam_and_other_MSCHAPv2_connections">
+		<li id="toc-Problems_with_Eduroam" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Problems_with_Eduroam">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">6.5</span>Problems with eduroam and other MSCHAPv2 connections</div>
+				<span class="vector-toc-numb">6.5</span>Problems with Eduroam</div>
 			</a>
 			
-			<ul id="toc-Problems_with_eduroam_and_other_MSCHAPv2_connections-sublist" class="vector-toc-list">
+			<ul id="toc-Problems_with_Eduroam-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 		<li id="toc-Connections_to_pure_WPA3-SAE_access_points" class="vector-toc-list-item vector-toc-level-2">
@@ -365,7 +365,7 @@ update_config=1</pre>
 </p>
 <pre># wpa_cli
 </pre>
-<p>This will present an interactive prompt (<code>&gt;</code>), which has tab completion and descriptions of completed commands. There is also  an <code>help</code> command.
+<p>This will present an interactive prompt (<code>&gt;</code>), which has tab completion and descriptions of completed commands. There is also a <code>help</code> command.
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> 
@@ -398,8 +398,8 @@ bssid / frequency / signal level / flags / ssid
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> 
 <ul>
-<li>Other networks, or network configurations, can be added. Each network is indexed numerically, so the first network will have index 0.</li>
-<li>If no connection can be established, some information will be printed, and a periodic attempts will be made. As part of the periodic attempts, a user prompt will also be given periodically. Issuing a <code>disable_network 0</code> command will stop the periodic attempts and return to a steady user prompt.</li>
+<li>Multiple network configurations can be added. Each network is indexed numerically, so the first network will have index 0.</li>
+<li>If no connection can be established, some information will be printed, and periodic attempts will be made. As part of the periodic attempts, a user prompt will also be given periodically. Issuing the <code>disable_network 0</code> command will stop the periodic attempts and return to a steady user prompt.</li>
 <li>If a passphrase is given to <code>set_network</code>, the <a href="https://en.wikipedia.org/wiki/Pre-shared_key" class="extiw" title="wikipedia:Pre-shared key">PSK</a> will be computed from the <i>quoted</i> "passphrase" string. Alternatively, you can use the <a href="#Connecting_with_wpa_passphrase">wpa_passphrase</a> command and enter the PSK directly by passing it to <code>psk</code> <i>without</i> quotes.</li>
 </ul>
 </div>
@@ -681,24 +681,12 @@ After=dbus.service</pre>
 </pre>
 <p>In some instances it was found that storing the passphrase cleartext in the <code>psk</code> key of the <code>wpa_supplicant.conf</code> <code>network</code> block gave positive results (see <a rel="nofollow" class="external autonumber" href="https://www.linuxquestions.org/questions/linux-wireless-networking-41/wpa-4-way-handshake-failed-843394/">[2]</a>). However, this approach is rather insecure. Using <code>wpa_cli</code> to create this file instead of manually writing it gives the best results most of the time and therefore is the recommended way to proceed.
 </p>
-<h3><span class="mw-headline" id="Problems_with_eduroam_and_other_MSCHAPv2_connections">Problems with eduroam and other MSCHAPv2 connections</span></h3>
-<p>Ensure that your configuration uses
+<h3><span class="mw-headline" id="Problems_with_Eduroam">Problems with Eduroam</span></h3>
+<p>If the institution the user studies or works at did not upgrade their network tunnel's encryption to at least TLS 1.2 yet and still uses TLS 1.0 or 1.1 for network traffic encryption in their Eduroam Wi-Fi infrastructure, OpenSSL 3.x throws an "unsupported protocol" error and the client machine's Wi-Fi backend (either <a class="mw-selflink selflink">wpa_supplicant</a> or <a href="../en/Iwd.html" title="Iwd">iwd</a>) refuses to establish a connection any further. Fortunately, an easy workaround exists for OpenSSL's TLS 1.0 and 1.1 deprecation without making the client computer's whole Wi-Fi connection stack globally vulnerable to attacks, although it only works with <a href="../en/NetworkManager.html" title="NetworkManager">NetworkManager</a>.
 </p>
-<pre>phase2="auth=MSCHAPV2"
-</pre>
-<p>with a capital "v" (see <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/51358">FS#51358</a>). You could even omit this setting entirely, since MSCHAPV2 is the default.
+<p>Consult <a href='../en/NetworkManager.html#WPA_Enterprise_connections_fail_to_authenticate_with_OpenSSL_"unsupported_protocol"_error' title="NetworkManager">NetworkManager#WPA Enterprise connections fail to authenticate with OpenSSL "unsupported protocol" error</a> for the solution.
 </p>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-clear.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs language, wiki syntax or style improvements. See <a href="../en/Help:Style.html" title="Help:Style">Help:Style</a> for reference.</b></p>
-<div>
-<b>Reason:</b> While related to eduroam, the following paragraph seems like an different issue entirely that should have a separate section. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Wpa_supplicant.html">Talk:Wpa supplicant</a>)</div>
-</div>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
-<div>
-<b>Reason:</b> According to <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?id=286417">BBS#286417</a> the latest issue with eduroam is related to the recent upgrade to OpenSSL 3.1.1, downgrading to a <i>wpa_supplicant</i> version from 2021 seems excessive. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Wpa_supplicant.html">Talk:Wpa supplicant</a>)</div>
-</div> 
-<p>In addition, from version v2.10, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=wpa_supplicant">wpa_supplicant</a></span> relies on <a href="../en/OpenSSL.html" title="OpenSSL">OpenSSL</a> 3 which causes some compatibility issues to connect to eduroam. A workaround consists in <a href="../en/Downgrading_packages.html" class="mw-redirect" title="Downgrading">downgrading</a>  <i>wpa_supplicant</i> to version v2.9 and installing <a href="../en/OpenSSL.html" title="OpenSSL">OpenSSL</a> 1.1 (see <a rel="nofollow" class="external autonumber" href="https://archtemis.readthedocs.io/en/latest/network.html#eduroam">[3]</a>).
+<p>Connman users can visit the <a href="../en/ConnMan.html#Connecting_to_eduroam_(802.1X)" title="ConnMan">ConnMan#Connecting to eduroam (802.1X)</a> article for their own version of the fix.
 </p>
 <h3><span class="mw-headline" id="Connections_to_pure_WPA3-SAE_access_points">Connections to pure WPA3-SAE access points</span></h3>
 <p>Make sure to define the following within the network block of the configuration to enable connections to pure WPA3 access points:
@@ -740,19 +728,12 @@ ieee80211w=2
 </ul>
 </div>
 </div>
-					<div id="catlinks" class="catlinks" data-mw="interface">
-<div id="mw-normal-catlinks" class="mw-normal-catlinks">
+					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Categories</a>: <ul>
 <li><a href="../en/Category:Wireless_networking.html" title="Category:Wireless networking">Wireless networking</a></li>
 <li><a href="../en/Category:Network_configuration.html" title="Category:Network configuration">Network configuration</a></li>
 </ul>
-</div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
-</ul>
-</div>
-</div>
+</div></div>
 				</div>
 			</main>
 			
@@ -761,8 +742,8 @@ ieee80211w=2
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Wpa_supplicant&amp;oldid=819901">https://wiki.archlinux.org/index.php?title=Wpa_supplicant&amp;oldid=819901</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 30 October 2024, at 16:58.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Wpa_supplicant&amp;oldid=821853">https://wiki.archlinux.org/index.php?title=Wpa_supplicant&amp;oldid=821853</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 30 November 2024, at 10:47.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

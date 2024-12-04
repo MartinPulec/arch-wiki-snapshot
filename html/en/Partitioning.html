@@ -440,6 +440,7 @@
 <li><a href="../en/Swap.html" title="Swap">Swap</a></li>
 <li><a href="../en/Arch_boot_process.html" title="Arch boot process">Arch boot process</a></li>
 <li><a href="../en/Unified_Extensible_Firmware_Interface.html" title="Unified Extensible Firmware Interface">Unified Extensible Firmware Interface</a></li>
+<li><a href="../en/Systemd-repart.html" title="Systemd-repart">systemd-repart</a></li>
 </ul>
 </div>
 <p>From <a href="https://en.wikipedia.org/wiki/Disk_partitioning" class="extiw" title="wikipedia:Disk partitioning">Wikipedia</a>:
@@ -562,11 +563,11 @@
 <h3><span class="mw-headline" id="Single_root_partition">Single root partition</span></h3>
 <p>This scheme is the simplest, most flexible and should be enough for most use cases given the increase in storage size of consumer grade devices. A <a href="../en/Swap.html#Swap_file" class="mw-redirect" title="Swap file">swap file</a> can be created and easily resized as needed. It usually makes sense to start by considering a single <code>/</code> partition and then separate out others based on specific use cases like RAID, encryption, a shared media partition, etc… See <a href="#Discrete_partitions">#Discrete partitions</a> for a description of some common to uncommon dedicated partitions.
 </p>
-<p>An bare minimal installation takes around 2 GiB. As examples, a simple server can fit under 4 GiB while a full <a href="../en/KDE.html#Plasma" class="mw-redirect" title="KDE Plasma">KDE Plasma</a> installation uses 10 GiB, but both require frequent <a href="../en/Pacman.html#Cleaning_the_package_cache" title="Pacman">purges of the package cache</a>: therefore, 23–32 GiB is the suggested minimum size for a single root partition. More space may be needed for user files and when using a swap file.
+<p>The suggested minimum size is 23–32 GiB for a single root partition. More space may be needed for user files and when using a swap file. A bare minimal installation requires about 2 GiB. As examples, a simple server can fit under 4 GiB while a full <a href="../en/KDE.html#Plasma" class="mw-redirect" title="KDE Plasma">KDE Plasma</a> installation uses 10 GiB. Both examples require frequent <a href="../en/Pacman.html#Cleaning_the_package_cache" title="Pacman">purges of the package cache</a>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> A separate physical (in the main partition table of the disk, not under LVM, software RAID or in a file system subvolume etc.) <a href="#/boot">/boot partition</a> is needed unless your <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> is capable of accessing the <code>/boot</code> directory that resides in <code>/</code>. That means the boot loader must have support for everything starting from the block devices, stacked block devices (LVM, RAID, dm-crypt, LUKS, etc.) and ending with the file system on which the kernel(s) and initramfs image(s) reside.</div>
-<p>A GPT partition should have the type GUID <code>4F68BCE3-E8CD-4DB1-96E7-FBCAF984B709</code> ("Linux root (x86-64)", "Linux x86-64 root (/)"). An MBR partition should have the default "Linux" type ID <code>83</code>.
+<p>A GPT partition should have the "Linux root (x86-64)" type GUID <code>4F68BCE3-E8CD-4DB1-96E7-FBCAF984B709</code> (<code>8304</code> type for <a href="../en/GPT_fdisk.html" class="mw-redirect" title="Gdisk">gdisk</a>). An MBR partition should have the default "Linux" type ID <code>83</code>.
 </p>
 <h3><span class="mw-headline" id="Discrete_partitions">Discrete partitions</span></h3>
 <p>Separating out a path as a partition allows for the choice of a different filesystem and mount options. In some cases like a media partition, they can also be shared between operating systems.
@@ -584,7 +585,7 @@
 <strong>Warning:</strong> Directories essential for booting (except for <code>/boot</code>) <b>must</b> be on the same partition as <code>/</code> or mounted in early userspace by the <a href="../en/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs">initramfs</a>. These essential directories are: <code>/etc</code> and <code>/usr</code> <a rel="nofollow" class="external autonumber" href="https://systemd.io/SEPARATE_USR_IS_BROKEN/">[2]</a>.</div>
 <p><code>/</code> traditionally contains the <code>/usr</code> directory, which can grow significantly depending upon how much software is installed. 15–20 GiB should be sufficient for most users with modern hard disks. If you plan to store a swap file here and do not plan on using a separate <a href="#/var">/var</a>, you might need a larger partition size (i.e. adding the size of your RAM to be able to hibernate and an additional 8–12 GiB for <code>/var</code>).
 </p>
-<p>A GPT partition should have the type GUID <code>4F68BCE3-E8CD-4DB1-96E7-FBCAF984B709</code> ("Linux root (x86-64)", "Linux x86-64 root (/)"). An MBR partition should have the default "Linux" type ID <code>83</code>.
+<p>A GPT partition should have the "Linux root (x86-64)" type GUID <code>4F68BCE3-E8CD-4DB1-96E7-FBCAF984B709</code> (<code>8304</code> for <a href="../en/GPT_fdisk.html" class="mw-redirect" title="Gdisk">gdisk</a>). An MBR partition should have the default "Linux" type ID <code>83</code>.
 </p>
 <h4>
 <span id=".2Fboot"></span><span class="mw-headline" id="/boot">/boot</span>
@@ -604,7 +605,7 @@
 <strong>Note:</strong> On UEFI systems it is possible to mount the <a href="../en/EFI_system_partition.html" title="EFI system partition">EFI system partition</a> to <code>/boot</code> avoiding the need to create another separate partition. See <a href="../en/EFI_system_partition.html#Mount_the_partition" title="EFI system partition">EFI system partition#Mount the partition</a> for more information.</div>
 <p>When using an EFI system partition as <code>/boot</code>, the requirements are as described in the <a href="../en/EFI_system_partition.html" title="EFI system partition">EFI system partition</a> article—the correct partition type must be set.
 </p>
-<p>In other cases, it is recommended to set the partition type to <a rel="nofollow" class="external text" href="https://uapi-group.org/specifications/specs/boot_loader_specification/#the-partitions">Extended Boot Loader (XBOOTLDR) Partition</a> which is GPT partition type GUID <code>BC13C2FF-59E6-4262-A352-B275FD6F7172</code> (<code>ea00</code> type for <a href="../en/GPT_fdisk.html" class="mw-redirect" title="Gdisk">gdisk</a>) or MBR partition type ID <code>ea</code>.
+<p>In other cases, it is recommended to set the partition type to <a rel="nofollow" class="external text" href="https://uapi-group.org/specifications/specs/boot_loader_specification/#the-partitions">Extended Boot Loader (XBOOTLDR) Partition</a> which is GPT partition type GUID <code>BC13C2FF-59E6-4262-A352-B275FD6F7172</code> (<code>ea00</code> type for <a href="../en/GPT_fdisk.html" class="mw-redirect" title="Gdisk">gdisk</a>, <code>xbootldr</code> type for <a href="../en/Fdisk.html" title="Fdisk">fdisk</a>) or MBR partition type ID <code>ea</code>.
 </p>
 <p>In both cases the suggested size for the partition is 1 GiB, which should give enough space to house multiple kernels. If still in doubt, 4 GiB ought to be enough for anybody.
 </p>
@@ -617,7 +618,7 @@
 </p>
 <p>You should not share home directories between users on different distributions, because they use incompatible software versions and patches. Instead, consider sharing a media partition or at least using different home directories on the same <code>/home</code> partition. The size of this partition varies.
 </p>
-<p>A GPT partition should have the type GUID <code>933AC7E1-2EB4-4F13-B844-0E14E2AEF915</code> ("Linux home", "Linux /home"). An MBR partition should have the default "Linux" type ID <code>83</code>.
+<p>A GPT partition should have the "Linux home" type GUID <code>933AC7E1-2EB4-4F13-B844-0E14E2AEF915</code> (<code>8302</code> type for <a href="../en/GPT_fdisk.html" class="mw-redirect" title="Gdisk">gdisk</a>, <code>home</code> type for <a href="../en/Fdisk.html" title="Fdisk">fdisk</a>). An MBR partition should have the default "Linux" type ID <code>83</code>.
 </p>
 <h4><span class="mw-headline" id="Swap">Swap</span></h4>
 <p>A <a href="../en/Swap.html" title="Swap">swap</a> is a file or partition that provides disk space used as virtual memory. Swap files and swap partitions are equally performant, but swap files are much easier to resize as needed. A swap partition can <i>potentially</i> be shared between operating systems, but not if hibernation is used.
@@ -626,7 +627,7 @@
 </p>
 <p>To use hibernation (a.k.a suspend to disk) it is advised to create the swap partition at the size of RAM. Although the kernel will try to compress the suspend-to-disk image to fit the swap space there is no guarantee it will succeed if the used swap space is significantly smaller than RAM. See <a href="../en/Power_management/Suspend_and_hibernate.html#Hibernation" title="Power management/Suspend and hibernate">Power management/Suspend and hibernate#Hibernation</a> for more information.
 </p>
-<p>A GPT partition should have the type GUID <code>0657FD6D-A4AB-43C4-84E5-0933C84B4F4F</code> ("Linux swap"). An MBR partition should have the type ID <code>82</code> ("Linux swap").
+<p>A GPT partition should have the "Linux swap" type with GUID <code>0657FD6D-A4AB-43C4-84E5-0933C84B4F4F</code> (<code>8200</code> type for <a href="../en/GPT_fdisk.html" class="mw-redirect" title="Gdisk">gdisk</a>, <code>swap</code> type for <a href="../en/Fdisk.html" title="Fdisk">fdisk</a>). An MBR partition should have the "Linux swap" type ID <code>82</code>.
 </p>
 <h4>
 <span id=".2Fdata"></span><span class="mw-headline" id="/data">/data</span>
@@ -654,7 +655,7 @@
 </p>
 <p>8–12 GiB on a desktop system should be sufficient for <code>/var</code>, depending on how much software will be installed. For users of <a href="../en/GDM.html#Wayland_and_the_proprietary_NVIDIA_driver" title="GDM">NVIDIA, Wayland and GDM</a>, consider adding to this partition size as to <a href="../en/NVIDIA/Tips_and_tricks.html#Preserve_video_memory_after_suspend" title="NVIDIA/Tips and tricks">have enough free space to fit your whole video memory</a>.
 </p>
-<p>A GPT partition should have the type GUID <code>4D21B016-B534-45C2-A9FB-5C16E091FD2D</code> ("Linux variable data", "Linux /var"). An MBR partition should have the default "Linux" type ID <code>83</code>.
+<p>A GPT partition should have the "Linux variable data" a.k.a "Linux /var" type GUID <code>4D21B016-B534-45C2-A9FB-5C16E091FD2D</code> (<code>8310</code> type for <a href="../en/GPT_fdisk.html" class="mw-redirect" title="Gdisk">gdisk</a>). An MBR partition should have the default "Linux" type ID <code>83</code>.
 </p>
 <h3><span class="mw-headline" id="Example_layouts">Example layouts</span></h3>
 <div class="noprint archwiki-template-message">
@@ -1072,8 +1073,8 @@ kernel: ahci 0000:00:17.0: Switch your BIOS from RAID to AHCI mode to use them.
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Partitioning&amp;oldid=818586">https://wiki.archlinux.org/index.php?title=Partitioning&amp;oldid=818586</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 12 October 2024, at 16:43.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Partitioning&amp;oldid=821476">https://wiki.archlinux.org/index.php?title=Partitioning&amp;oldid=821476</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 26 November 2024, at 15:06.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

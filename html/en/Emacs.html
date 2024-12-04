@@ -493,6 +493,8 @@
 <li>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=emacs-wayland">emacs-wayland</a></span> - with native compilation and PGTK enabled.</li>
 </ul>
+<p>If you want emacs spell checking to work, also install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=aspell">aspell</a></span> and an aspell language, such as <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=aspell-en">aspell-en</a></span>
+</p>
 <p>Other variants can be searched for, as an example <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/emacs-git/">emacs-git</a></span><sup><small>AUR</small></sup> provides the development branch of GNU Emacs.
 </p>
 <h2><span class="mw-headline" id="Usage">Usage</span></h2>
@@ -538,11 +540,13 @@ Note that some programs such as Mutt or Git (for commit messages) wait for the e
 If your default editor is set to use it, you will have to specify an alternate editor (<i>e.g.</i> <code>emacsclient -a "" -t</code>) for those programs.
 </p>
 <h3><span class="mw-headline" id="As_a_systemd_unit">As a systemd unit</span></h3>
-<p>A systemd unit is included in Emacs 26.1. The unit is installed with Emacs, but it must be <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enabled">enabled</a> as a <a href="../en/Systemd/User.html" class="mw-redirect" title="User unit">user unit</a> (not a system-wide) after installing Emacs. 
+<p>A systemd unit is included in Emacs 26.1. The unit is installed with Emacs, but it must be <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enabled">enabled</a> as a <a href="../en/Systemd/User.html" class="mw-redirect" title="User unit">user unit</a> (not a system-wide) after installing Emacs:
 </p>
+<pre>$ systemctl --user enable --now emacs
+</pre>
 <p>After the service is started, Emacs is ready. 
 </p>
-<p>If you want to be able to start graphical emacs frames through <code>emacsclient</code> on Wayland, a specific <a href="../en/Systemd.html#Drop-in_files" class="mw-redirect" title="Drop-in snippet">drop-in snippet</a> is needed, as shown in <a rel="nofollow" class="external text" href="https://www.emacswiki.org/emacs/EmacsAsDaemon#h5o-17">EmacsWiki</a>.
+<p>If you want to be able to start graphical emacs frames through <code>emacsclient</code> on Wayland, a specific <a href="../en/Systemd.html#Drop-in_files" class="mw-redirect" title="Drop-in snippet">drop-in snippet</a> is needed (unless you are running <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=emacs-wayland">emacs-wayland</a></span>), as shown in <a rel="nofollow" class="external text" href="https://www.emacswiki.org/emacs/EmacsAsDaemon#h5o-17">EmacsWiki</a>.
 </p>
 <p>Note that systemd user units do not inherit environment variables from a login shell (like <code>~/.bash_profile</code>). See <a href="../en/Systemd/User.html#Environment_variables" title="Systemd/User">Systemd/User#Environment variables</a> for more information.
 </p>
@@ -622,25 +626,16 @@ In the above example, we launch a new instance of Emacs. You might want to use e
 <p>See <a rel="nofollow" class="external text" href="https://web.archive.org/web/20090210145607/http://kerneltrap.org/mailarchive/git/2007/7/1/250424">kerneltrap.org</a> and <a rel="nofollow" class="external text" href="https://stackoverflow.com/questions/1817370/using-ediff-as-git-mergetool">stackoverflow</a> for more details on this trick and the Ediff issue.
 </p>
 <h3><span class="mw-headline" id="Using_Caps_Lock_as_Control_key">Using Caps Lock as Control key</span></h3>
-<p>Some users like this behavior to avoid the so-called "emacs pinky". If you want to try it on X, just run 
+<p>Some users like this behavior to avoid the so-called "emacs pinky".  A nice way to achieve this in GUI desktops (Xorg or Wayland), terminals, and even the console is to use <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=keyd">keyd</a></span>.  Install the package and create this config file:
 </p>
-<pre>$ setxkbmap -option 'ctrl:nocaps'
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/keyd/main.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[ids]	
+*
+
+[main]
+capslock = overload(control, noop)
 </pre>
-<p>Alternatively, to <b>swap</b> these keys, run
-</p>
-<pre>$ setxkbmap -option 'ctrl:swapcaps'
-</pre>
-<p>To set this permanently, consider adding it to your <code>.xinitrc</code> file. 
-</p>
-<p>Now, if you ever need to uppercase a region, just use the default <code>C-x C-u</code> keybinding, which calls the <code>upcase-region</code> function.
-</p>
-<p>See <a rel="nofollow" class="external autonumber" href="http://ergoemacs.org/emacs/swap_CapsLock_Ctrl.html">[1]</a> for an alternative approach.
-</p>
-<p>If you are missing your Caps Lock function, map it as both "Shift" at same time.
-</p>
-<pre>$ setxkbmap -option "shift:both_capslock"
-</pre>
-<p>Some desktop environments include graphical tools to simplify keyboard remappings. For example, in <a href="../en/KDE.html#Plasma" class="mw-redirect" title="Plasma">Plasma 5</a> open System Settings and click on Input Devices. Select Keyboard and in the Advanced tab you will find the setting Caps Lock behaviour under which you can select Caps Lock is also a Ctrl.
+<p>Then enable and start the keyd service.
 </p>
 <h3><span class="mw-headline" id="Multiplexing_emacs_and_emacsclient">Multiplexing emacs and emacsclient</span></h3>
 <p>Opening a new file in the same <code>emacs-session</code> requires the use of <code>emacsclient</code>. <code>emacs</code> command can be itself wrapped to do the smarter job to open the file if the session exists.
@@ -789,7 +784,7 @@ to reverse-search a pdf using SyncTeX. Note that the quotes and double-quotes ma
  (add-to-list 'auto-mode-alist '("\\.link\\'" . conf-unix-mode))
 </pre>
 <h3><span class="mw-headline" id="Clipboard_support_for_emacs-nox">Clipboard support for emacs-nox</span></h3>
-<p>To use the <a href="../en/Xorg.html" title="Xorg">Xorg</a> clipboard in emacs-nox, <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xclip">xclip</a></span> and add the following function to <code>~/.emacs</code> <a rel="nofollow" class="external autonumber" href="https://lists.gnu.org/archive/html/help-gnu-emacs/2014-08/msg00189.html">[2]</a>
+<p>To use the <a href="../en/Xorg.html" title="Xorg">Xorg</a> clipboard in emacs-nox, <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xclip">xclip</a></span> and add the following function to <code>~/.emacs</code> <a rel="nofollow" class="external autonumber" href="https://lists.gnu.org/archive/html/help-gnu-emacs/2014-08/msg00189.html">[1]</a>
 </p>
 <pre>;; use xclip to copy/paste in emacs-nox
 (unless window-system
@@ -810,7 +805,7 @@ to reverse-search a pdf using SyncTeX. Note that the quotes and double-quotes ma
 <pre>;; xterm mouse support
 (require 'mouse)
 (xterm-mouse-mode t)</pre>
-<p>See also <a rel="nofollow" class="external text" href="https://www.opensource.apple.com/source/emacs/emacs-51/emacs/lisp/mwheel.el">mwheel.el</a>.
+<p>See also <a rel="nofollow" class="external text" href="https://www.opensource.apple.com/source/emacs/emacs-51/emacs/lisp/mwheel.el">mwheel.el</a><sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-11-05 ⓘ]</sup>.
 </p>
 </div>
 <h2><span class="mw-headline" id="Packages">Packages</span></h2>
@@ -894,7 +889,7 @@ WorkingDirectory=/usr/lib/emacs/28.0.50/x86_64-pc-linux-gnu/
 </p>
 <pre>  (require 'iso-transl)
 </pre>
-<p>And no, it is not a bug, but a feature of new Emacs versions. Reading the subsequent messages about it on the mail list, we found it <a rel="nofollow" class="external autonumber" href="https://lists.gnu.org/archive/html/help-gnu-emacs/2009-05/msg00179.html">[3]</a>:
+<p>And no, it is not a bug, but a feature of new Emacs versions. Reading the subsequent messages about it on the mail list, we found it <a rel="nofollow" class="external autonumber" href="https://lists.gnu.org/archive/html/help-gnu-emacs/2009-05/msg00179.html">[2]</a>:
 </p>
 <dl><dd>It seems that nothing is loaded automatically because there is a choice betwee iso-transl and iso-acc. Both seem to provide an input method with C-x 8 or Alt-&lt;accent&gt; prefix, but what you and I are doing is just pressing a dead key (^, ´, `, ~, ¨) for the accent and then another key to "compose" the accented character. And there is no Alt key used in this! And according to documentation it seems be appropriate for 8-bit encodings, so it should be pretty useless in UTF-8. I reported this bug when it was introduced, but the bug seems to be classified as a feature ... Maybe it's just because the file is auto-loaded though pretty useless.</dd></dl>
 <h3>
@@ -978,7 +973,7 @@ export TERM\=xterm-256color</pre>
 <p>To force Emacs to maximize completely in KDE, click the Emacs icon in the title bar, and select <i>More Actions &gt; Special Window Settings</i>. Then in the <i>Size &amp; Position</i> tab, select <i>Obey geometry restrictions</i>, choose <i>Force</i> in the dropdown menu, and select <i>No</i> from the radio buttons on the right.
 </p>
 <h2><span class="mw-headline" id="Alternatives">Alternatives</span></h2>
-<p>There are numerous "smaller" implementations of Emacs. GNU/Emacs is probably the most popular. Some lightweight Emacs compatible alternatives will be listed here:
+<p>There are numerous "smaller" text editors that are, at least on the surface, similar to GNU Emacs. Here are some of them:
 </p>
 <ul><li>
 <b>mg</b> — Lightweight implementation of Emacs written in C. Note that it does not support UTF-8.</li></ul>
@@ -1016,6 +1011,8 @@ export TERM\=xterm-256color</pre>
 <a rel="nofollow" class="external free" href="https://github.com/jonmacs/jove">https://github.com/jonmacs/jove</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/jove/">jove</a></span><sup><small>AUR</small></sup>
 </dd></dl>
 <h3><span class="mw-headline" id="Emacs_distros">Emacs distros</span></h3>
+<p>An Emacs "distro" is a collection of emacs packages and customizations.  They are are easier to install and use than customizing emacs on your own is (but less custom to you).
+</p>
 <ul>
 <li>
 <a href="../en/Spacemacs.html" title="Spacemacs">Spacemacs</a> - A community-driven Emacs distribution - The best editor is neither Emacs nor Vim, it's Emacs *and* Vim!</li>
@@ -1035,7 +1032,8 @@ export TERM\=xterm-256color</pre>
 <li><a rel="nofollow" class="external text" href="https://www.emacswiki.org/">Emacs Wiki</a></li>
 <li><a rel="nofollow" class="external text" href="https://wikemacs.org">WikEmacs - a more readable, but less complete Emacs wiki</a></li>
 <li><a rel="nofollow" class="external text" href="https://www2.lib.uchicago.edu/keith/tcl-course/emacs-tutorial.html">Useful introduction to Emacs and its shortcuts</a></li>
-<li><a rel="nofollow" class="external text" href="https://web.archive.org/web/20160506064817/https://d0edfcdc0ccc1cd13cdab5eb986fb92e8660dbef.googledrive.com/host/0B6LMD0u8OhYYZEotN2QyR1hwR1k/">The Church of Emacs (via Google drive)</a></li>
+<li>
+<a rel="nofollow" class="external text" href="https://web.archive.org/web/20160506064817/https://d0edfcdc0ccc1cd13cdab5eb986fb92e8660dbef.googledrive.com/host/0B6LMD0u8OhYYZEotN2QyR1hwR1k/">The Church of Emacs (via Google drive)</a> (humor)</li>
 <li><a rel="nofollow" class="external text" href="https://www.gnu.org/software/emacs/refcards/pdf/refcard.pdf">Official reference card</a></li>
 <li>
 <a href="../en/EXWM.html" title="EXWM">EXWM</a>, the Emacs X Window Manager</li>
@@ -1050,7 +1048,10 @@ export TERM\=xterm-256color</pre>
 <li><a href="../en/Category:GNU.html" title="Category:GNU">GNU</a></li>
 </ul>
 </div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Merge.html" title="Category:Pages or sections flagged with Template:Merge">Pages or sections flagged with Template:Merge</a></li></ul>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
+<li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Merge.html" title="Category:Pages or sections flagged with Template:Merge">Pages or sections flagged with Template:Merge</a></li>
+</ul>
 </div>
 </div>
 				</div>
@@ -1061,8 +1062,8 @@ export TERM\=xterm-256color</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Emacs&amp;oldid=816832">https://wiki.archlinux.org/index.php?title=Emacs&amp;oldid=816832</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 20 September 2024, at 18:04.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Emacs&amp;oldid=820530">https://wiki.archlinux.org/index.php?title=Emacs&amp;oldid=820530</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 10 November 2024, at 17:45.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

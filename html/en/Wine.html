@@ -841,11 +841,9 @@ $ WINEPREFIX=~/win64 winecfg
 </p>
 <p>After running such programs, kill all Wine servers and run <code>winecfg</code>. Fonts should be legible now.
 </p>
-<p>If the fonts look somehow smeared, import the following text file into the Wine registry with <a rel="nofollow" class="external text" href="https://gitlab.winehq.org/wine/wine/-/wikis/FAQ#how-do-i-edit-the-wine-registry">regedit</a>:
+<p>If the fonts look somehow smeared, run the following command to change a setting in the Wine registry:
 </p>
-<pre>Windows Registry Editor Version 5.00
-[HKEY_CURRENT_USER\Software\Wine\X11 Driver]
-"ClientSideWithRender"="N"
+<pre>$ wine reg add 'HKEY_CURRENT_USER\Software\Wine\X11 Driver' /v ClientSideWithRender /t REG_SZ /d N
 </pre>
 <p>For high resolution displays, you can adjust dpi values in winecfg.
 </p>
@@ -979,15 +977,13 @@ $ rm ~/.local/share/mime/application/x-wine-extension*
 </p>
 <p>To experiment with the native Wayland driver added in recent Wine versions, you can follow these steps:
 </p>
-<ul><li>import the following text file into the Wine registry with <a rel="nofollow" class="external text" href="https://gitlab.winehq.org/wine/wine/-/wikis/FAQ#how-do-i-edit-the-wine-registry">regedit</a>:</li></ul>
-<pre>Windows Registry Editor Version 5.00
-[HKEY_CURRENT_USER\Software\Wine\Drivers]
-"Graphics"="x11,wayland"
-</pre>
-<ul><li>Bypass the use of Xwayland and force the native Wayland driver by unsetting the <code>DISPLAY</code> <a href="../en/Environment_variables.html" class="mw-redirect" title="Environment variable">environment variable</a>:</li></ul>
-<pre>$ DISPLAY= wine example.exe
-</pre>
-<p>If the second step makes Wine stop working, check to see if your Wine version is built with support for the new Wayland driver. 
+<ul>
+<li>For Wine versions older than 9.22, run the following command to change a setting in the Wine registry: <pre>$ wine reg add 'HKEY_CURRENT_USER\Software\Wine\Drivers' /v Graphics /t REG_SZ /d 'x11,wayland'</pre>
+</li>
+<li>Bypass the use of Xwayland and force the native Wayland driver by unsetting the <code>DISPLAY</code> <a href="../en/Environment_variables.html" class="mw-redirect" title="Environment variable">environment variable</a>: <pre>$ env -u DISPLAY wine example.exe</pre>
+</li>
+</ul>
+<p>If the second step makes Wine stop working, check to see if your Wine version is built with support for the new Wayland driver.
 </p>
 <h3><span class="mw-headline" id="Stop_running_Wine">Stop running Wine</span></h3>
 <p>Stopping started executables, <code>wine</code> with Ctrl+Z or <code>wineconsole</code> with Ctrl+C, might leave processes running in the background. See for example:
@@ -1350,8 +1346,8 @@ $ wine64 regsvr32 /usr/lib/wine/x86_64-windows/wineasio64.dll
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Wine&amp;oldid=819818">https://wiki.archlinux.org/index.php?title=Wine&amp;oldid=819818</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 29 October 2024, at 10:47.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Wine&amp;oldid=821411">https://wiki.archlinux.org/index.php?title=Wine&amp;oldid=821411</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 25 November 2024, at 13:03.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

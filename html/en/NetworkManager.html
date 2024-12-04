@@ -2322,23 +2322,29 @@ activate = 1</pre>
 <h3>
 <span id="WPA_Enterprise_connections_fail_to_authenticate_with_OpenSSL_.22unsupported_protocol.22_error"></span><span class="mw-headline" id='WPA_Enterprise_connections_fail_to_authenticate_with_OpenSSL_"unsupported_protocol"_error'>WPA Enterprise connections fail to authenticate with OpenSSL "unsupported protocol" error</span>
 </h3>
-<p>Since <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=openssl">openssl</a></span> was updated to version 3, "SSL 3, TLS 1.0, TLS 1.1, and DTLS 1.0 only work at security level 0" <a rel="nofollow" class="external text" href="https://www.openssl.org/news/openssl-3.0-notes.html">by default</a>. Attempting to authenticate to a WiFi only supporting lower standards result in the following error in the logs:
+<p>Since <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=openssl">openssl</a></span> was updated to version 3, "SSL 3, TLS 1.0, TLS 1.1, and DTLS 1.0 only work at security level 0" <a rel="nofollow" class="external text" href="https://www.openssl.org/news/openssl-3.0-notes.html">by default</a>. Attempting to authenticate to a Wi-Fi network only supporting older standards results in the following error in the logs:
 </p>
 <pre>wpa_supplicant[3320]: SSL: SSL3 alert: write (local SSL3 detected an error):fatal:protocol version
 wpa_supplicant[3320]: OpenSSL: openssl_handshake - SSL_connect error:0A000102:SSL routines::unsupported protocol
 wpa_supplicant[3320]: wlp3s0: CTRL-EVENT-EAP-FAILURE EAP authentication failed
 </pre>
-<p>The correct approach is to have the WiFi administrator support TLS 1.3 and optionally dropping support for low security standard including TLS 1.0/1.1, DTLS 1.0, SSL 1-3. However, as an immediate work-around, there are multiple ways to allow TLS 1.0 by default. One way would be to manually patch or revert the breaking change in OpenSSL (<a rel="nofollow" class="external autonumber" href="https://github.com/openssl/openssl/commit/7bf2e4d7f0c7ae19b7a8c416910886a7171e9820">[11]</a>). As this also lowers security for all other programs using OpenSSL level 1, it is not recommended. Instead, one can directly set the level used by wpa_supplicant, like described in <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?id=286417#p2104492">BBS#286417</a>. To only change the affected connection, it is possible to set <code>phase1-auth-flags=32</code> in the <code>[802-1x]</code> section of the connection. This may not be possible through GUIs, but it is possible with <i>nmcli</i>.
+<p>The correct approach is to convince the institution's administrator to upgrade the encrypted networking tunnel protocol to TLS 1.3 and optionally drop support for deprecated security standards, including TLS 1.0/1.1, DTLS 1.0 and SSL 1-3. However, as an immediate workaround, there are multiple ways to allow TLS 1.0 and/or 1.1 by default. One way would be to manually patch or revert the breaking changes in OpenSSL (<a rel="nofollow" class="external autonumber" href="https://github.com/openssl/openssl/commit/7bf2e4d7f0c7ae19b7a8c416910886a7171e9820">[11]</a>). As this also lowers security for all other programs using OpenSSL level 1, it is not recommended. Instead, one can directly set the level used by wpa_supplicant, like described in <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?id=286417#p2104492">BBS#286417</a>. To only change the affected connection, it is possible to set <code>phase1-auth-flags=32</code> or <code>phase1-auth-flags=64</code> in the <code>[802-1x]</code> section of the connection's configuration file. This may not be possible through GUIs, but it is possible with <i>nmcli</i>.
 </p>
 <p>Firstly, obtain the name of the WiFi connection with the issue, from the output of the following:
 </p>
 <pre>$ nmcli connection show
 </pre>
-<p>Assuming the connection name is <i>Example WiFi</i>, use <i>nmcli</i> like so:
+<p>Assuming the connection uses TLS 1.0 and its name is <i>Example WiFi</i>, use <i>nmcli</i> like so:
 </p>
-<pre>$ nmcli connection modify Example\ WiFi 802-1x.phase1-auth-flags 32
+<pre>$ nmcli connection modify 'Example WiFi' 802-1x.phase1-auth-flags 32
 </pre>
-<p>The change should instantly be reflected in <code>/etc/NetworkManager/system-connections/Example\ WiFi.nmconnection</code>.
+<p>And for a TLS 1.1 connection, type "64" instead:
+</p>
+<pre>$ nmcli connection modify 'Example WiFi' 802-1x.phase1-auth-flags 64
+</pre>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> The number you type in refers to the number you get from raising 2 to the power of <b>n</b>. Here, <b>n</b> is the index of the network authentication bit octet, read from right to left. Flipping the fifth bit enables TLS 1.0 <b>[log(2) 32]</b> and flipping the sixth bit enables TLS 1.1 <b>[log(2) 64]</b>.</div>
+<p>The change should instantly be reflected in <code>/etc/NetworkManager/system-connections/Example WiFi.nmconnection</code>.
 </p>
 <p>Finally, <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Restart">restart</a> the <code>NetworkManager.service</code> to have the new OpenSSL configuration take effect.
 </p>
@@ -2375,8 +2381,8 @@ wpa_supplicant[3320]: wlp3s0: CTRL-EVENT-EAP-FAILURE EAP authentication failed
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=NetworkManager&amp;oldid=819142">https://wiki.archlinux.org/index.php?title=NetworkManager&amp;oldid=819142</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 18 October 2024, at 00:49.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=NetworkManager&amp;oldid=821996">https://wiki.archlinux.org/index.php?title=NetworkManager&amp;oldid=821996</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 2 December 2024, at 15:48.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -231,13 +231,13 @@
 			<ul id="toc-Enabling_metadata_checksums_in_existing_filesystems-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Enabling_fast_commit_in_existing_filesystems" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Enabling_fast_commit_in_existing_filesystems">
+		<li id="toc-Enabling_fast_commit" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Enabling_fast_commit">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.3</span>Enabling fast_commit in existing filesystems</div>
+				<span class="vector-toc-numb">4.3</span>Enabling fast_commit</div>
 			</a>
 			
-			<ul id="toc-Enabling_fast_commit_in_existing_filesystems-sublist" class="vector-toc-list">
+			<ul id="toc-Enabling_fast_commit-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 		<li id="toc-Enabling_case-insensitive_mode" class="vector-toc-list-item vector-toc-level-2">
@@ -609,14 +609,23 @@ The following <a href="../en/Fstab.html" title="Fstab">fstab</a> illustrates the
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># dumpe2fs -h <i>/dev/path/to/disk</i> | grep features:</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Filesystem features:      has_journal ext_attr resize_inode dir_index filetype extent <b>64bit</b> flex_bg sparse_super large_file huge_file dir_nlink extra_isize <b>metadata_csum</b></pre>
-<h3><span class="mw-headline" id="Enabling_fast_commit_in_existing_filesystems">Enabling fast_commit in existing filesystems</span></h3>
-<p>Starting from the 5.10 kernel, ext4 may have a performance boost by enabling the <code>fast_commit</code> option:   
+<h3><span class="mw-headline" id="Enabling_fast_commit">Enabling fast_commit</span></h3>
+<p>The Ext4 "fast commits" feature introduces a new, lighter-weight journaling method.
+It is expected to significantly increase the performance of the ext4 filesystem, <a rel="nofollow" class="external autonumber" href="https://lwn.net/Articles/842385/">[6]</a>.
+</p>
+<p>To enable on the feature on a new filesystem, include <code>fast_commit</code> in the <code>-O</code> file system options argument.
+</p>
+<p>To enable the feature on an existing file system, run:
 </p>
 <pre># tune2fs -O fast_commit /dev/<i>drivepartition</i>
 </pre>
-<p>To clarify the current configuration or changes:  
+<p>To query the current configuration:
 </p>
 <pre># tune2fs -l /dev/<i>drivepartition</i> | grep features
+</pre>
+<p>To disable the feature on an existing file system, run:
+</p>
+<pre># tune2fs -O '^fast_commit' /dev/<i>drivepartition</i>
 </pre>
 <h3><span class="mw-headline" id="Enabling_case-insensitive_mode">Enabling case-insensitive mode</span></h3>
 <div class="archwiki-template-box archwiki-template-box-warning">
@@ -646,7 +655,7 @@ The following <a href="../en/Fstab.html" title="Fstab">fstab</a> illustrates the
 <a rel="nofollow" class="external text" href="https://ext4.wiki.kernel.org/index.php/Ext4_Disk_Layout">Ext4 Disk Layout</a> described in its wiki</li>
 <li>
 <a rel="nofollow" class="external text" href="https://lwn.net/Articles/639427/">Ext4 Encryption</a> LWN article</li>
-<li>Kernel commits for ext4 encryption <a rel="nofollow" class="external autonumber" href="https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=6162e4b0bedeb3dac2ba0a5e1b1f56db107d97ec">[6]</a> <a rel="nofollow" class="external autonumber" href="https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=8663da2c0919896788321cd8a0016af08588c656">[7]</a>
+<li>Kernel commits for ext4 encryption <a rel="nofollow" class="external autonumber" href="https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=6162e4b0bedeb3dac2ba0a5e1b1f56db107d97ec">[7]</a> <a rel="nofollow" class="external autonumber" href="https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=8663da2c0919896788321cd8a0016af08588c656">[8]</a>
 </li>
 <li><a rel="nofollow" class="external text" href="https://e2fsprogs.sourceforge.net/e2fsprogs-release.html">e2fsprogs Changelog</a></li>
 <li><a rel="nofollow" class="external text" href="https://ext4.wiki.kernel.org/index.php/Ext4_Metadata_Checksums">Ext4 Metadata Checksums</a></li>
@@ -672,8 +681,8 @@ The following <a href="../en/Fstab.html" title="Fstab">fstab</a> illustrates the
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Ext4&amp;oldid=817539">https://wiki.archlinux.org/index.php?title=Ext4&amp;oldid=817539</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 30 September 2024, at 08:56.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Ext4&amp;oldid=822017">https://wiki.archlinux.org/index.php?title=Ext4&amp;oldid=822017</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 2 December 2024, at 19:51.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

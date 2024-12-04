@@ -315,16 +315,14 @@
 </p>
 <p><span class="plainlinks archwiki-template-man" title="$ man 8 udisksd"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/udisksd.8">udisksd(8)</a></span> is started on-demand by <a href="../en/D-Bus.html" title="D-Bus">D-Bus</a> and should not be enabled explicitly. It can be controlled through the command-line with <span class="plainlinks archwiki-template-man" title="$ man 1 udisksctl"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/udisksctl.1">udisksctl(1)</a></span>.
 </p>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> The development of <i>udisks</i> has ceased in favor of <i>udisks2</i> <a rel="nofollow" class="external autonumber" href="https://davidz25.blogspot.be/2012/03/simpler-faster-better.html">[1]</a>.</div>
 <h2><span class="mw-headline" id="Configuration">Configuration</span></h2>
 <h3><span class="mw-headline" id="Permissions">Permissions</span></h3>
 <p>Actions a user can perform using udisks are restricted with <a href="../en/Polkit.html" title="Polkit">polkit</a>. If the <a href="../en/General_troubleshooting.html#Session_permissions" class="mw-redirect" title="Session">user session</a> is not activated or present (for example, when controlling udisks from a <a href="../en/Systemd/User.html" title="Systemd/User">systemd/User</a> service), adjust polkit rules accordingly.
 </p>
-<p>See <a rel="nofollow" class="external free" href="https://github.com/coldfix/udiskie/wiki/Permissions">https://github.com/coldfix/udiskie/wiki/Permissions</a> for common udisks permissions for the <code>storage</code> group, and <a rel="nofollow" class="external autonumber" href="https://gist.github.com/grawity/3886114#file-udisks2-allow-mount-internal-js">[2]</a> for a more restrictive example. If you are using <a href="../en/Dolphin.html" title="Dolphin">Dolphin</a>, you may see <a rel="nofollow" class="external autonumber" href="https://gist.github.com/Scrumplex/8f528c1f63b5f4bfabe14b0804adaba7">[3]</a>.
+<p>See <a rel="nofollow" class="external free" href="https://github.com/coldfix/udiskie/wiki/Permissions">https://github.com/coldfix/udiskie/wiki/Permissions</a> for common udisks permissions for the <code>storage</code> group, and <a rel="nofollow" class="external autonumber" href="https://gist.github.com/grawity/3886114#file-udisks2-allow-mount-internal-js">[1]</a> for a more restrictive example. If you are using <a href="../en/Dolphin.html" title="Dolphin">Dolphin</a>, you may see <a rel="nofollow" class="external autonumber" href="https://gist.github.com/Scrumplex/8f528c1f63b5f4bfabe14b0804adaba7">[2]</a>.
 </p>
 <h3><span class="mw-headline" id="Default_mount_options">Default mount options</span></h3>
-<p>It is possible to define default mount options in <code>/etc/udisks2/mount_options.conf</code>. Create the file if it does not already exist. The built-in defaults and some examples can be seen in <code>/etc/udisks2/mount_options.conf.example</code>.<a rel="nofollow" class="external autonumber" href="https://storaged.org/doc/udisks2-api/latest/mount_options.html">[4]</a> 
+<p>It is possible to define default mount options in <code>/etc/udisks2/mount_options.conf</code>. Create the file if it does not already exist. The built-in defaults and some examples can be seen in <code>/etc/udisks2/mount_options.conf.example</code>.<a rel="nofollow" class="external autonumber" href="https://storaged.org/doc/udisks2-api/latest/mount_options.html">[3]</a> 
 </p>
 <p>The options can target specific filesystem types. For example, mount <a href="../en/Btrfs.html" title="Btrfs">btrfs</a> filesystems with zstd compression enabled:
 </p>
@@ -349,7 +347,7 @@ btrfs_defaults=compress=zstd</pre>
 <p>The automatic mounting of devices is easily achieved with udisks wrappers. See also <a href="../en/List_of_applications/Utilities.html#Mount_tools" title="List of applications/Utilities">List of applications/Utilities#Mount tools</a>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> <a href="../en/Desktop_environment.html" title="Desktop environment">Desktop environments</a>, such as <a href="../en/GNOME.html" title="GNOME">GNOME</a> and <a href="../en/KDE.html" title="KDE">KDE</a> may also provide a udisks wrapper.</div>
+<strong>Note:</strong> <a href="../en/Desktop_environment.html" title="Desktop environment">Desktop environments</a>, such as <a href="../en/GNOME.html" title="GNOME">GNOME</a> and <a href="../en/KDE.html#Plasma" class="mw-redirect" title="Plasma">Plasma</a> may also provide a udisks wrapper.</div>
 <ul><li>
 <b>bashmount</b> — A bash script to mount and manage removable media as a regular user.</li></ul>
 <dl><dd>
@@ -428,7 +426,7 @@ ENV{ID_FS_USAGE}=="filesystem|other|crypto", ENV{UDISKS_FILESYSTEM_SHARED}="1"
 </pre>
 <p>to delete it. Substitute <code>/dev/loop0</code> with the name of the specific loop device.
 </p>
-<p>Loop devices are cheap. Therefore, many loop devices can be created in practice without worrying about a denial of service issue. See <a rel="nofollow" class="external autonumber" href="https://unix.stackexchange.com/questions/554438/what-is-maximum-loop-devices-for-linux-kernel">[5]</a>.
+<p>Loop devices are cheap. Therefore, many loop devices can be created in practice without worrying about a denial of service issue. See <a rel="nofollow" class="external autonumber" href="https://unix.stackexchange.com/questions/554438/what-is-maximum-loop-devices-for-linux-kernel">[4]</a>.
 </p>
 <h3><span class="mw-headline" id="Hide_selected_partitions">Hide selected partitions</span></h3>
 <p>If you wish to prevent certain partitions or drives appearing on the desktop, you can create a <a href="../en/Udev.html#About_udev_rules" class="mw-redirect" title="Udev rule">udev rule</a>, for example <code>/etc/udev/rules.d/10-local.rules</code>:
@@ -467,7 +465,7 @@ StandbyTimeout=240</pre>
 [...]
 </pre>
 <h3><span class="mw-headline" id="Broken_standby_timer">Broken standby timer</span></h3>
-<p>The udisks daemon polls <a href="../en/S.M.A.R.T..html" title="S.M.A.R.T.">S.M.A.R.T.</a> data from drives regularly. Hard drives with a longer standby timeout than the polling interval may fail to enter standby. Drives that are already spun down are usually not affected. There seems no way to disable polling or change the interval as for <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=udisks2">udisks2</a></span> by now. See <a rel="nofollow" class="external autonumber" href="https://bugs.launchpad.net/ubuntu/+source/udisks2/+bug/1281588">[6]</a>, <a rel="nofollow" class="external autonumber" href="https://bugs.freedesktop.org/show_bug.cgi?id=26508">[7]</a><sup title="Last check status: SSL error">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-10-12 ⓘ]</sup>.
+<p>The udisks daemon polls <a href="../en/S.M.A.R.T..html" title="S.M.A.R.T.">S.M.A.R.T.</a> data from drives regularly. Hard drives with a longer standby timeout than the polling interval may fail to enter standby. Drives that are already spun down are usually not affected. There seems no way to disable polling or change the interval as for <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=udisks2">udisks2</a></span> by now. See <a rel="nofollow" class="external autonumber" href="https://bugs.launchpad.net/ubuntu/+source/udisks2/+bug/1281588">[5]</a>, <a rel="nofollow" class="external autonumber" href="https://bugs.freedesktop.org/show_bug.cgi?id=26508">[6]</a>.
 </p>
 <p>However, Standby timeout applied by udisks2 seems to be unaffected. To set standby timeout via udisks, see <a href="#Apply_ATA_settings">#Apply ATA settings</a>.
 </p>
@@ -519,8 +517,8 @@ ntfs:ntfs_defaults=uid=$UID,gid=$GID</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Udisks&amp;oldid=818631">https://wiki.archlinux.org/index.php?title=Udisks&amp;oldid=818631</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 12 October 2024, at 17:01.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Udisks&amp;oldid=820603">https://wiki.archlinux.org/index.php?title=Udisks&amp;oldid=820603</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 12 November 2024, at 15:12.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

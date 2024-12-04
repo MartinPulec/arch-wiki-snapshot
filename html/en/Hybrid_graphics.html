@@ -167,6 +167,15 @@
 			<ul id="toc-The_startup_time_for_certain_applications_is_delayed_by_30_seconds-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-High_power_draw_even_after_disabling_NVIDIA_discrete_GPU" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#High_power_draw_even_after_disabling_NVIDIA_discrete_GPU">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">2.2</span>High power draw even after disabling NVIDIA discrete GPU</div>
+			</a>
+			
+			<ul id="toc-High_power_draw_even_after_disabling_NVIDIA_discrete_GPU-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 </ul>
@@ -368,7 +377,7 @@ w /proc/acpi/call - - - - <i>\\_SB.PCI0.PEG0.PEGP._OFF</i></pre>
 <p>The configuration above will be loaded at boot by systemd. What it does is write the specific OFF signal to the <code>/proc/acpi/call</code> file. Obviously, replace the <code>\_SB.PCI0.PEG0.PEGP._OFF</code> with the one which works on your system (please note that you need to escape the backslash).
 </p>
 <h6><span class="mw-headline" id="After_X_server_initialization">After X server initialization</span></h6>
-<p>On some systems, turning off the discrete GPU before the X server is initialized may hang the system. In such cases, it may be better to disable the GPU after X server initialization, which is possible with some display managers. In <a href="../en/LightDM.html" title="LightDM">LightDM</a>, for instance, the <i>display-setup-script</i> seat configuration parameter could be used to execute a script as root that disables the GPU.
+<p>On some systems, turning off the discrete GPU before the X server is initialized may hang the system. In such cases, it may be better to disable the GPU after X server initialization, which is possible with some display managers. In <a href="../en/LightDM.html" title="LightDM">LightDM</a>, for instance, the <i>display-setup-script</i> seat configuration parameter could be used to execute a script as root that disables the GPU. If you use <a href="../en/SDDM.html" title="SDDM">SDDM</a> then you can add the line <code>echo "\_SB.PCI0.PEG0.PEGP._OFF" &gt; /proc/acpi/call</code> to either <code>/usr/share/sddm/scripts/wayland-session</code> or <code>/usr/share/sddm/scripts/Xsession</code> depending if you use <a href="../en/Wayland.html" title="Wayland">Wayland</a> or <a href="../en/Xorg.html" title="Xorg">Xorg</a>, replacing <code>\_SB.PCI0.PEG0.PEGP._OFF</code> with the one which works on your system.
 </p>
 <h3><span class="mw-headline" id="System76">System76</span></h3>
 <p>Some System76 laptops (like the <a href="../en/System76_Oryx_Pro.html" title="System76 Oryx Pro">Oryx Pro</a>) have their own unique hybrid graphics option.  To make use of it, install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/system76-power/">system76-power</a></span><sup><small>AUR</small></sup>, <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> <code>system76-power.service</code>, and run <code>system76-power graphics hybrid</code>.
@@ -387,6 +396,13 @@ w /proc/acpi/call - - - - <i>\\_SB.PCI0.PEG0.PEGP._OFF</i></pre>
 </p>
 <pre>$ export VK_DRIVER_FILES=
 </pre>
+<h3><span class="mw-headline" id="High_power_draw_even_after_disabling_NVIDIA_discrete_GPU">High power draw even after disabling NVIDIA discrete GPU</span></h3>
+<p>If after disabling the dedicated GPU bus <a href="#Using_acpi_call">#Using acpi_call</a> the power draw is still high, check if the <a href="../en/Nouveau.html" title="Nouveau">nouveau</a> kernel module is loaded with <code>lsmod</code>. If it is not then make sure its installed, that any entries in .conf files that blacklist Nouveau in <code>/etc/modprobe.d/</code> are removed and that the Nouveau kernel module is <a href="../en/Kernel_module.html#Automatic_module_loading" title="Kernel module">automatically loaded</a> at boot. After rebooting the power draw should be lower. 
+</p>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong> See also <a href="../en/Kernel_module.html" title="Kernel module">kernel module</a> for more details about kernel module loading and blacklisting.</div>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> If after rebooting you have issues with brightness control and have multiple directories in <code>/sys/class/backlight</code>, add line <code>acpi_backlight=native</code> to your <a href="../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a>.</div>
 </div>
 </div>
 					<div id="catlinks" class="catlinks" data-mw="interface">
@@ -404,8 +420,8 @@ w /proc/acpi/call - - - - <i>\\_SB.PCI0.PEG0.PEGP._OFF</i></pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Hybrid_graphics&amp;oldid=818801">https://wiki.archlinux.org/index.php?title=Hybrid_graphics&amp;oldid=818801</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 13 October 2024, at 05:31.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Hybrid_graphics&amp;oldid=821873">https://wiki.archlinux.org/index.php?title=Hybrid_graphics&amp;oldid=821873</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 30 November 2024, at 16:27.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

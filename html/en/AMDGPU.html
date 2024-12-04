@@ -614,7 +614,7 @@ This driver supports <a rel="nofollow" class="external text" href="https://www.x
 Owners of unsupported GPUs may use the open source <a href="../en/ATI.html" title="ATI">ATI</a> driver.
 </p>
 <h2><span class="mw-headline" id="Installation">Installation</span></h2>
-<p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mesa">mesa</a></span> package, which provides the DRI driver for 3D acceleration.
+<p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mesa">mesa</a></span> package, which provides both the DRI driver for 3D acceleration and VA-API/VDPAU drivers for <a href="#Video_acceleration">accelerated video decoding</a>.
 </p>
 <ul>
 <li>For 32-bit application support, also install the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lib32-mesa">lib32-mesa</a></span> package from the <a href="../en/Official_repositories.html#multilib" class="mw-redirect" title="Multilib">multilib</a> repository.</li>
@@ -627,8 +627,6 @@ Owners of unsupported GPUs may use the open source <a href="../en/ATI.html" titl
 </ul>
 </li>
 </ul>
-<p>Support for <a href="#Video_acceleration">accelerated video decoding</a> is provided by <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=libva-mesa-driver">libva-mesa-driver</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lib32-libva-mesa-driver">lib32-libva-mesa-driver</a></span> for VA-API and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mesa-vdpau">mesa-vdpau</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lib32-mesa-vdpau">lib32-mesa-vdpau</a></span> packages for VDPAU.
-</p>
 <h3><span class="mw-headline" id="Experimental">Experimental</span></h3>
 <p>It may be worthwhile for some users to use the upstream experimental build of mesa.
 </p>
@@ -646,7 +644,7 @@ Owners of unsupported GPUs may use the open source <a href="../en/ATI.html" titl
 </h3>
 <p>The <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span> package enables AMDGPU support for cards of the Southern Islands (HD 7000 Series, SI, ie. GCN 1) and Sea Islands (HD 8000 Series, CIK, ie. GCN 2). The <code>amdgpu</code> kernel driver needs to be loaded before the <a href="../en/ATI.html" title="ATI">radeon</a> one. You can check which kernel driver is loaded by running <code>lspci -k</code>. It should be like this:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ lspci -k | grep -A 3 -E "(VGA|3D)"</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ lspci -k -d ::03xx</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">01:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI] Curacao PRO [Radeon R7 370 / R9 270/370 OEM]
 	Subsystem: Gigabyte Technology Co., Ltd Device 226c
 	Kernel driver in use: amdgpu
@@ -800,7 +798,7 @@ EndSection</pre>
 <strong>Note:</strong> Setting these options may cause tearing and short-lived artifacts to appear.</div>
 <h2><span class="mw-headline" id="Features">Features</span></h2>
 <h3><span class="mw-headline" id="Video_acceleration">Video acceleration</span></h3>
-<p>See <a href="../en/Hardware_video_acceleration.html" title="Hardware video acceleration">Hardware video acceleration</a>.
+<p>See <a href="../en/Hardware_video_acceleration.html#AMD/ATI" title="Hardware video acceleration">Hardware video acceleration#AMD/ATI</a>.
 </p>
 <h3><span class="mw-headline" id="Monitoring">Monitoring</span></h3>
 <p>Monitoring your GPU is often used to check the temperature and also the P-states of your GPU.
@@ -1048,9 +1046,9 @@ EndSection</pre>
 EndSection
 </pre>
 <h3><span class="mw-headline" id="Screen_artifacts_and_frequency_problem">Screen artifacts and frequency problem</span></h3>
-<p><a href="../en/ATI.html#Dynamic_power_management" title="ATI">Dynamic power management</a> may cause screen artifacts to appear when displaying to monitors at higher frequencies (anything above 60Hz) due to issues in the way GPU clock speeds are managed<a rel="nofollow" class="external autonumber" href="https://bugs.freedesktop.org/show_bug.cgi?id=96868">[1]</a><sup title="Last check status: SSL error">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-10-12 ⓘ]</sup><a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/drm/amd/-/issues/234">[2]</a>.
+<p><a href="../en/ATI.html#Dynamic_power_management" title="ATI">Dynamic power management</a> may cause screen artifacts to appear when displaying to monitors at higher frequencies (anything above 60Hz) due to issues in the way GPU clock speeds are managed<a rel="nofollow" class="external autonumber" href="https://bugs.freedesktop.org/show_bug.cgi?id=96868">[1]</a><a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/drm/amd/-/issues/234">[2]</a>.
 </p>
-<p>A workaround <a rel="nofollow" class="external autonumber" href="https://bugs.freedesktop.org/show_bug.cgi?id=96868#c13">[3]</a><sup title="Last check status: SSL error">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-10-12 ⓘ]</sup> is saving <code>high</code> or <code>low</code> in <code>/sys/class/drm/card0/device/power_dpm_force_performance_level</code>.
+<p>A workaround <a rel="nofollow" class="external autonumber" href="https://bugs.freedesktop.org/show_bug.cgi?id=96868#c13">[3]</a> is saving <code>high</code> or <code>low</code> in <code>/sys/class/drm/card0/device/power_dpm_force_performance_level</code>.
 </p>
 <p>To make it persistent, you may create a <a href="../en/Udev.html" title="Udev">udev</a> rule:
 </p>
@@ -1174,7 +1172,6 @@ blacklist hid_sensor_magn_3d
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Merge.html" title="Category:Pages or sections flagged with Template:Merge">Pages or sections flagged with Template:Merge</a></li>
-<li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
 </ul>
 </div>
@@ -1187,8 +1184,8 @@ blacklist hid_sensor_magn_3d
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=AMDGPU&amp;oldid=819543">https://wiki.archlinux.org/index.php?title=AMDGPU&amp;oldid=819543</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 24 October 2024, at 14:21.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=AMDGPU&amp;oldid=820674">https://wiki.archlinux.org/index.php?title=AMDGPU&amp;oldid=820674</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 14 November 2024, at 06:02.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

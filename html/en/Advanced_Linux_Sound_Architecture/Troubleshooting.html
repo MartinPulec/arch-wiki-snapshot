@@ -552,6 +552,10 @@
 					
 					<div id="mw-content-text" class="mw-body-content">
 <div class="mw-content-ltr mw-parser-output" lang="en" dir="ltr">
+<p>The <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=alsa-utils">alsa-utils</a></span> package contains the <i>alsa-info.sh</i> script, which can be used to gather detailed data on the ALSA state.
+</p>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong> Run <code>alsa-info.sh</code> and share its output if you ask for help.</div>
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Volume">Volume</span></h2>
 <h3><span class="mw-headline" id="No_output">No output</span></h3>
@@ -648,9 +652,9 @@ $ aplay test-mic.wav
 </p>
 <p>For at least some computers, muting a microphone (MM) simply means its input does not go immediately to the speakers. It still receives input.
 </p>
-<p>Many Dell laptops need "-dmic" to be appended to the <i>model</i> <a href="../../en/Kernel_module.html#Setting_module_options" class="mw-redirect" title="Kernel module parameter">kernel module parameter</a>:
+<p>Many Dell laptops need <code>-dmic</code> to be appended to the <code>model</code> <a href="../../en/Kernel_module.html#Setting_module_options" class="mw-redirect" title="Kernel module parameter">kernel module parameter</a>:
 </p>
-<pre>options snd-hda-intel model=<i>dell-m6</i>-dmic
+<pre>options snd_hda_intel model=<i>dell-m6</i><b>-dmic</b>
 </pre>
 <p>Some programs use try to use OSS as the main input software. If you have enabled the <code>snd_pcm_oss</code>, <code>snd_mixer_oss</code> or <code>snd_seq_oss</code> <a href="../../en/Kernel_module.html" class="mw-redirect" title="Kernel modules">kernel modules</a> previously (they are not loaded by default), try unloading them.
 </p>
@@ -692,20 +696,20 @@ pcm.!default
 <h3><span class="mw-headline" id="Internal_microphone_not_working">Internal microphone not working</span></h3>
 <p>First make sure the volume is enabled under the <code>Capture</code> view in <i>alsamixer</i>. In some cases, the "Internal Microphone" is not displayed in the capture list available when pressing F4. If so, specifying the card number given by <code>aplay -l</code> to start <i>alsamixer</i> (for example <code>alsamixer -c 0</code> ) can make it appear. 
 </p>
-<p>If still unsucessful, add the following <a href="../../en/Kernel_module.html#Setting_module_options" class="mw-redirect" title="Kernel module parameter">kernel module parameter</a>:
+<p>If still unsuccessful, add the following <a href="../../en/Kernel_module.html#Setting_module_options" class="mw-redirect" title="Kernel module parameter">kernel module parameter</a>:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/modprobe.d/snd-hda-intel.conf</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">options snd-hda-intel enable_msi=1</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/modprobe.d/snd_hda_intel.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">options snd_hda_intel enable_msi=1</pre>
 <p>Then reload the module:
 </p>
-<pre># rmmod snd-hda-intel &amp;&amp; modprobe snd-hda-intel
+<pre># rmmod snd_hda_intel &amp;&amp; modprobe snd_hda_intel
 </pre>
 <p>Now there should be an additional input under the previously mentioned <code>Capture</code> view.
 </p>
 <h3><span class="mw-headline" id="Crackling_microphone">Crackling microphone</span></h3>
 <p>If you are getting a crackling or popping sound from your microphone that cannot be resolved with ALSA settings or cleaning your microphone jack, try adding the following <a href="../../en/Kernel_module.html#Setting_module_options" class="mw-redirect" title="Kernel module parameter">kernel module parameter</a>:
 </p>
-<pre>options snd-hda-intel model=<i>MODEL</i> position_fix=3</pre>
+<pre>options snd_hda_intel model=<i>MODEL</i> position_fix=3</pre>
 <p>This option will fix crackling on pure ALSA, but will cause issues with PulseAudio. To let PulseAudio use these settings effectively, edit <code>/etc/pulse/default.pa</code> and add the <code>tsched=0</code> parameter to <code>module-udev-detect</code>:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pulse/default.pa</pre>
@@ -728,9 +732,9 @@ $ amixer sset "Mic" mute
 <p>Run <i>alsamixer</i>, and if channels exist for nonexistent output devices then disable them (e.g. <i>alsamixer</i> showing a center speaker but you not having one).
 </p>
 <h3><span class="mw-headline" id="Poor_sound_quality_or_clipping">Poor sound quality or clipping</span></h3>
-<p>If you experience poor sound quality, try setting the PCM volume (in alsamixer) to a level such that gain is 0.
+<p>If you experience poor sound quality, try setting the PCM volume (in <i>alsamixer</i>) to a level such that gain is 0.
 </p>
-<p>If snd-usb-audio driver has been loaded, you could try to enable <code>softvol</code>:
+<p>If <code>snd_usb_audio</code> driver has been loaded, you could try to enable <code>softvol</code>:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/asound.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">pcm.!default {
@@ -873,22 +877,22 @@ Try tweaking the Widget Control section of the PIN nodes, to make microphones IN
 <p>You can also put this command in an enabled <a href="../../en/Systemd.html" title="Systemd">systemd</a> service as it sometimes it may stop working after a reboot.
 </p>
 <h3><span class="mw-headline" id="Conflicting_PC_speaker">Conflicting PC speaker</span></h3>
-<p>If you are sure nothing is muted, that your drivers are installed correctly, and that your volume is right, but you still do not hear anything, then try the following <a href="../../en/Kernel_module.html#Setting_module_options" class="mw-redirect" title="Kernel module parameter">kernel module parameters</a>:
+<p>If you are sure nothing is muted, that your drivers are installed correctly, and that your volume is right, but you still do not hear anything, then try to set the <code>ac97_quirk</code> <a href="../../en/Kernel_module.html#Setting_module_options" class="mw-redirect" title="Kernel module parameter">kernel module parameter</a>:
 </p>
-<pre>options snd-NAME-OF-MODULE ac97_quirk=0
+<pre>options snd_<i>NAME_OF_MODULE</i> ac97_quirk=0
 </pre>
-<p>The above fix has been observed to work with <code>via82xx</code>
+<p>The above fix has been observed to work with <code>snd_via82xx</code>.
 </p>
-<pre>options snd-NAME-OF-MODULE ac97_quirk=1
+<pre>options snd_<i>NAME_OF_MODULE</i> ac97_quirk=1
 </pre>
-<p>The above fix has been reported to work with <code>snd-intel8x0</code>
+<p>The above fix has been reported to work with <code>snd_intel8x0</code>.
 </p>
 <h3><span class="mw-headline" id="HP_TX2500">HP TX2500</span></h3>
 <p>Use these <a href="../../en/Kernel_module.html#Setting_module_options" class="mw-redirect" title="Kernel module parameter">kernel module parameters</a>:
 </p>
-<pre>options snd-cmipci mpu_port=0x330 fm_port=0x388
-options snd-hda-intel index=0 model=toshiba position_fix=1
-options snd-hda-intel model=hp (works for tx2000cto)
+<pre>options snd_cmipci mpu_port=0x330 fm_port=0x388
+options snd_hda_intel index=0 model=toshiba position_fix=1
+options snd_hda_intel model=hp (works for tx2000cto)
 </pre>
 <h3>
 <span id="No_sound_when_S.2FPDIF_video_card_is_installed"></span><span class="mw-headline" id="No_sound_when_S/PDIF_video_card_is_installed">No sound when S/PDIF video card is installed</span>
@@ -909,15 +913,15 @@ options snd-hda-intel model=hp (works for tx2000cto)
 <pre>options snd_hda_intel enable=1,0
 </pre>
 <h3><span class="mw-headline" id="Wrong_sound_card_model_type">Wrong sound card model type</span></h3>
-<p>Although ALSA detects your soundcard through the BIOS, at times ALSA may not be able to recognize your <a rel="nofollow" class="external text" href="https://docs.kernel.org/sound/hd-audio/models.html">model type</a>. The soundcard chip can be found in <code>alsamixer</code> (e.g. ALC662) and the model can be set as <a href="../../en/Kernel_module.html#Setting_module_options" class="mw-redirect" title="Kernel module parameter">kernel module parameters</a>:
+<p>Although ALSA detects your soundcard through the BIOS, at times ALSA may not be able to recognize your <a rel="nofollow" class="external text" href="https://docs.kernel.org/sound/hd-audio/models.html">model type</a>. The sound card chip can be found in <i>alsamixer</i> (e.g. ALC662) and the model can be set as <a href="../../en/Kernel_module.html#Setting_module_options" class="mw-redirect" title="Kernel module parameter">kernel module parameters</a>:
 </p>
-<pre>options snd-hda-intel model=<i>MODEL</i>
+<pre>options snd_hda_intel model=<i>MODEL</i>
 </pre>
 <p>There are other model settings too.  For most cases ALSA defaults will do.  If you want to look at more specific settings for your soundcard take a look at the <a rel="nofollow" class="external text" href="https://bugtrack.alsa-project.org/main/index.php/Matrix:Main">ALSA Soundcard List</a> find your model, then Details, then look at the "Setting up modprobe..." section.  Enter these values in <code>/etc/modprobe.d/modprobe.conf</code>.  For example, for an Intel AC97 audio:
 </p>
 <pre># ALSA portion
 alias char-major-116 snd
-alias snd-card-0 snd-intel8x0
+alias snd-card-0 snd_intel8x0
 # module options should go here
 
 # OSS/Free portion
@@ -925,26 +929,26 @@ alias char-major-14 soundcore
 alias sound-slot-0 snd-card-0
 
 # card #1
-alias sound-service-0-0 snd-mixer-oss
-alias sound-service-0-1 snd-seq-oss
-alias sound-service-0-3 snd-pcm-oss
-alias sound-service-0-8 snd-seq-oss
-alias sound-service-0-12 snd-pcm-oss
+alias sound-service-0-0 snd_mixer_oss
+alias sound-service-0-1 snd_seq_oss
+alias sound-service-0-3 snd_pcm_oss
+alias sound-service-0-8 snd_seq_oss
+alias sound-service-0-12 snd_pcm_oss
 </pre>
 <h3><span class="mw-headline" id="Intel_onboard_sound">Intel onboard sound</span></h3>
 <h4><span class="mw-headline" id="No_sound_with_onboard_Intel_sound_card">No sound with onboard Intel sound card</span></h4>
-<p>There may be a problem with two conflicting modules loaded, namely <code>snd-intel8x0</code> and <code>snd-intel8x0m</code>. In this case, <a href="../../en/Kernel_module.html#Blacklisting" class="mw-redirect" title="Blacklist">blacklist</a> <code>snd-intel8x0m</code>.
+<p>There may be a problem with two conflicting modules loaded, namely <code>snd_intel8x0</code> and <code>snd_intel8x0m</code>. In this case, <a href="../../en/Kernel_module.html#Blacklisting" class="mw-redirect" title="Blacklist">blacklist</a> <code>snd_intel8x0m</code>.
 </p>
-<p><i>Muting</i> the "External Amplifier" in <code>alsamixer</code> or <code>amixer</code> may also help. See <a rel="nofollow" class="external text" href="https://alsa.opensrc.org/Intel8x0#Dell_Inspiron_8600_.28and_probably_others.29">the ALSA wiki</a>.
+<p><i>Muting</i> the "External Amplifier" in <i>alsamixer</i> or <i>amixer</i> may also help. See <a rel="nofollow" class="external text" href="https://alsa.opensrc.org/Intel8x0#Dell_Inspiron_8600_.28and_probably_others.29">the ALSA wiki</a>.
 </p>
 <p>Unmuting the "Mix" setting in the mixer might help, also.
 </p>
 <h4><span class="mw-headline" id="No_headphone_sound_with_onboard_intel_sound_card">No headphone sound with onboard intel sound card</span></h4>
 <p>With some laptops, you may need to add the following <a href="../../en/Kernel_module.html#Setting_module_options" class="mw-redirect" title="Kernel module parameter">kernel module parameter</a>:
 </p>
-<pre>options snd-hda-intel model=<i>model</i>
+<pre>options snd_hda_intel model=<i>MODEL</i>
 </pre>
-<p>Where <i>model</i> is any of the ones listed in the <a rel="nofollow" class="external text" href="https://docs.kernel.org/sound/hd-audio/models.html">kernel documentation</a>, but check that it is the correct version of that document for your kernel version.
+<p>Where <i>MODEL</i> is any of the ones listed in the <a rel="nofollow" class="external text" href="https://docs.kernel.org/sound/hd-audio/models.html">kernel documentation</a>, but check that it is the correct version of that document for your kernel version.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> It may be necessary to put this "options" line below (after) any "alias" lines about your card.</div>
@@ -956,7 +960,7 @@ alias sound-service-0-12 snd-pcm-oss
 </p>
 <p>And also, if you have problems getting beeps to work (pcspkr):
 </p>
-<pre>options snd-hda-intel model=<i>model</i> enable=1 index=0
+<pre>options snd_hda_intel model=<i>MODEL</i> enable=1 index=0
 </pre>
 <h3><span class="mw-headline" id="HDMI">HDMI</span></h3>
 <h4><span class="mw-headline" id="HDMI_Output_does_not_work">HDMI Output does not work</span></h4>
@@ -1054,8 +1058,8 @@ pcm.!remap-surround51 {
 </div>
 <p>On Intel Cannon Lake (eg. HP ZBook 15 G6), the integrated sound chipset requires <a href="../../en/Advanced_Linux_Sound_Architecture.html#ALSA_firmware" class="mw-redirect" title="ALSA firmware">ALSA firmware</a>, and the following <a href="../../en/Kernel_module.html#Setting_module_options" class="mw-redirect" title="Kernel module parameter">kernel module parameters</a> are required:
 </p>
-<pre>options snd-hda-intel dmic_detect=0
-options snd-hda-intel model=laptop-amic enable=yes</pre>
+<pre>options snd_hda_intel dmic_detect=0
+options snd_hda_intel model=laptop-amic enable=yes</pre>
 <p>That should enable both sound and microphone.
 </p>
 <h2><span class="mw-headline" id="Applications">Applications</span></h2>
@@ -1192,8 +1196,8 @@ slave {
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Advanced_Linux_Sound_Architecture/Troubleshooting&amp;oldid=809018">https://wiki.archlinux.org/index.php?title=Advanced_Linux_Sound_Architecture/Troubleshooting&amp;oldid=809018</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 22 May 2024, at 15:33.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Advanced_Linux_Sound_Architecture/Troubleshooting&amp;oldid=822003">https://wiki.archlinux.org/index.php?title=Advanced_Linux_Sound_Architecture/Troubleshooting&amp;oldid=822003</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 2 December 2024, at 17:09.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

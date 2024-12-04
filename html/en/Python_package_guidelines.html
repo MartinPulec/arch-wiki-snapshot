@@ -158,6 +158,15 @@
 			<ul id="toc-Disable_pytest_options-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Fix_reproducibility_issue_with_meson-python" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Fix_reproducibility_issue_with_meson-python">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">6.5</span>Fix reproducibility issue with meson-python</div>
+			</a>
+			
+			<ul id="toc-Fix_reproducibility_issue_with_meson-python-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 </ul>
@@ -310,7 +319,7 @@ Old packages might fail to specify that they use setuptools, and only offer a <c
 <p>A standards based workflow is straightforward: Build a wheel using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=python-build">python-build</a></span> and install it to <code>$pkgdir</code> using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=python-installer">python-installer</a></span>:
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> Besides <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=python-build">python-build</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=python-install">python-install</a></span><sup>[<a href="../en/Help:Procedures.html#Fix_broken_package_links" title="Help:Procedures">broken link</a>: package not found]</sup>, you will also need to add the <a rel="nofollow" class="external text" href="https://packaging.python.org/en/latest/tutorials/packaging-projects/#choosing-a-build-backend">build backend</a> used by the package to <code>makedepends</code>. Check the <code>build-system.build-backend</code> in the project's <code>pyproject.toml</code>. If it is not configured, it defaults to <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=python-setuptools">python-setuptools</a></span>.</div>
+<strong>Note:</strong> Besides <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=python-build">python-build</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=python-installer">python-installer</a></span>, you will also need to add the <a rel="nofollow" class="external text" href="https://packaging.python.org/en/latest/tutorials/packaging-projects/#choosing-a-build-backend">build backend</a> used by the package to <code>makedepends</code>. All build backends that are available in the repo are members of the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/groups/x86_64/python-build-backend/">python-build-backend</a></span> group. Check the <code>build-system.build-backend</code> in the project's <code>pyproject.toml</code> which is applicable for your project. If it is not configured, it defaults to <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=python-setuptools">python-setuptools</a></span>.</div>
 <pre>makedepends=(python-build python-installer python-wheel)
 
 build() {
@@ -445,15 +454,16 @@ To disable pytest options such as <code>addopts</code> it is preferred to use an
 </p>
 <pre>pytest -o addopts=""
 </pre>
+<h3><span class="mw-headline" id="Fix_reproducibility_issue_with_meson-python">Fix reproducibility issue with meson-python</span></h3>
+<p>When using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=meson-python">meson-python</a></span> as a PEP 517 build backend it uses randomized folder paths <a rel="nofollow" class="external text" href="https://github.com/mesonbuild/meson-python/issues/703">that create reproducibility issues</a>. This can be circumvented by hardcoding the used folder with the <code>-Cbuild-dir</code> flag:
+</p>
+<pre>python -m build --wheel --no-isolation -Cbuild-dir=build
+</pre>
 </div>
 </div>
-					<div id="catlinks" class="catlinks" data-mw="interface">
-<div id="mw-normal-catlinks" class="mw-normal-catlinks">
+					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Arch_package_guidelines.html" title="Category:Arch package guidelines">Arch package guidelines</a></li></ul>
-</div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_with_broken_package_links.html" title="Category:Pages with broken package links">Pages with broken package links</a></li></ul>
-</div>
-</div>
+</div></div>
 				</div>
 			</main>
 			
@@ -462,8 +472,8 @@ To disable pytest options such as <code>addopts</code> it is preferred to use an
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Python_package_guidelines&amp;oldid=818156">https://wiki.archlinux.org/index.php?title=Python_package_guidelines&amp;oldid=818156</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 12 October 2024, at 06:21.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Python_package_guidelines&amp;oldid=820356">https://wiki.archlinux.org/index.php?title=Python_package_guidelines&amp;oldid=820356</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 7 November 2024, at 19:05.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

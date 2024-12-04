@@ -478,6 +478,16 @@ ExecStartPost=/usr/bin/notmuch new</pre>
 </p>
 <p>This modification assumes that you have already setup notmuch or mu/mu4e for your user. If the ExecStart command does not execute successfully, the ExecStartPost command will not execute, so be aware of this!
 </p>
+<p>Trigger syncing immediately when making local changes (such as marking messages as read) by watching the <code>.notmuch</code> directory:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.config/systemd/user/mbsync.path</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Path]
+PathChanged=%h/mail/.notmuch
+
+[Install]
+WantedBy=default.target</pre>
+<p>Systemd defaults ensure that the service will not trigger redundantly.
+</p>
 <h4><span class="mw-headline" id="With_imapnotify">With imapnotify</span></h4>
 <p><a href="https://en.wikipedia.org/wiki/IMAP_IDLE" class="extiw" title="wikipedia:IMAP IDLE">IMAP IDLE</a> is a way to get <a href="https://en.wikipedia.org/wiki/Push_Technology" class="extiw" title="wikipedia:Push Technology">push notifications</a> to download new email, rather than polling the server intermittently. This has the advantage of saving bandwidth and delivering your mail as soon as it's available. Isync does not have native IDLE support, but we can use a program like <a rel="nofollow" class="external text" href="https://www.npmjs.com/package/imapnotify">imapnotify</a> to call mbsync when you receive new email. For this example we will use the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=goimapnotify">goimapnotify</a></span> package which is reported to work better with frequent network interruptions. 
 </p>
@@ -779,8 +789,8 @@ the sync.
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Isync&amp;oldid=814258">https://wiki.archlinux.org/index.php?title=Isync&amp;oldid=814258</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 10 August 2024, at 11:23.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Isync&amp;oldid=820400">https://wiki.archlinux.org/index.php?title=Isync&amp;oldid=820400</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 8 November 2024, at 16:31.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

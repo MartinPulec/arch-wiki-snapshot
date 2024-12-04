@@ -122,10 +122,19 @@
 			<ul id="toc-GDM_login-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-SDDM/KDE" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#SDDM/KDE">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">2.5</span>SDDM/KDE</div>
+			</a>
+			
+			<ul id="toc-SDDM/KDE-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 		<li id="toc-Other_authentication_methods" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Other_authentication_methods">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">2.5</span>Other authentication methods</div>
+				<span class="vector-toc-numb">2.6</span>Other authentication methods</div>
 			</a>
 			
 			<ul id="toc-Other_authentication_methods-sublist" class="vector-toc-list">
@@ -134,7 +143,7 @@
 		<li id="toc-Troubleshooting" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Troubleshooting">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">2.6</span>Troubleshooting</div>
+				<span class="vector-toc-numb">2.7</span>Troubleshooting</div>
 			</a>
 			
 			<ul id="toc-Troubleshooting-sublist" class="vector-toc-list">
@@ -324,8 +333,17 @@ $ pamu2fcfg -o pam://<i>hostname</i> -i pam://<i>hostname</i> &gt; ~/.config/Yub
 <strong>Note:</strong> This method will not work with encrypted home partitions because the decryption is not done before the login process completed, so the <code>u2f_keys</code> file is unavailable. In this case use a central mapping file as explained in the <a rel="nofollow" class="external text" href="https://developers.yubico.com/pam-u2f/">official documentation of pam-u2f</a>.</div>
 <p>Some multi-function security keys (ex. Trezor Model T) which can do U2F / PAM may not advertise the feature on system boot which is intentionally out of the CTAP 2.0 specification<a rel="nofollow" class="external autonumber" href="https://github.com/trezor/trezor-firmware/issues/3486">[2]</a>. With multiple U2F keys present, this can result in two-minute long delays when used with GDM as pam-u2f does sequential lookups and will wait for the (Trezor) device to timeout before offering presence / touch with the secondary U2F key <a rel="nofollow" class="external autonumber" href="https://github.com/Yubico/pam-u2f/issues/310">[3]</a>. You could try adding the <code>nodetect</code> option alongside <code>debug</code> and finish any device specific login (ex. screen PIN) before GDM loads.
 </p>
+<h3>
+<span id="SDDM.2FKDE"></span><span class="mw-headline" id="SDDM/KDE">SDDM/KDE</span>
+</h3>
+<p><a href="../en/SDDM.html" title="SDDM">SDDM</a> does not appear to support pam_u2f with initial user login. <a href="../en/SDDM.html#Autologin" title="SDDM">Autologin</a> can be used instead, and then edit <code>/etc/pam.d/kde</code> to just control screen locking.
+</p>
+<p>If you are using a U2F key with biometric authentication (e.g. Yubikey Bio) and want 1FA, use <code>kde-fingerprint</code>, commenting out the pam_fprintd.so line and placing your changes in its place. This avoids an unnecessary "unlock" button that gets displayed after authentication, rather than simply unlocking immediately<a rel="nofollow" class="external autonumber" href="https://www.reddit.com/r/kdeneon/comments/1bgh78z/using_face_login_without_unlock_button_appearing/">[4]</a>.
+</p>
 <h3><span class="mw-headline" id="Other_authentication_methods">Other authentication methods</span></h3>
 <p>Enable the PAM module for other services like explained above. For example, to secure the screensaver of <a href="../en/Cinnamon.html" title="Cinnamon">Cinnamon</a>, edit <code>/etc/pam.d/cinnamon-screensaver</code>.
+</p>
+<p>For <a href="../en/Polkit.html" title="Polkit">Polkit</a>, copy the default configuration at <code>/usr/lib/pam.d/polkit-1</code> to <code>/etc/pam.d/polkit-1</code> and make your changes there.
 </p>
 <h3><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h3>
 <p>If you managed to lock yourself out of the system, boot into recovery mode or from a USB pen drive. Then revert the changes in the PAM configuration and reboot.
@@ -381,8 +399,8 @@ $ pamu2fcfg -o pam://<i>hostname</i> -i pam://<i>hostname</i> &gt; ~/.config/Yub
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Universal_2nd_Factor&amp;oldid=819113">https://wiki.archlinux.org/index.php?title=Universal_2nd_Factor&amp;oldid=819113</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 17 October 2024, at 12:36.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Universal_2nd_Factor&amp;oldid=821898">https://wiki.archlinux.org/index.php?title=Universal_2nd_Factor&amp;oldid=821898</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 1 December 2024, at 03:45.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

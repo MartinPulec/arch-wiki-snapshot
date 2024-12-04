@@ -472,30 +472,28 @@
 <h3><span class="mw-headline" id="An_example_to_illustrate_unprivileged_containers">An example to illustrate unprivileged containers</span></h3>
 <p>To illustrate the power of UID mapping, consider the output below from a running, <i>unprivileged</i> container.  Therein, we see the containerized processes owned by the containerized root user in the output of <code>ps</code>:
 </p>
-<pre>[root@unprivileged_container /]# ps -ef | head -n 5
-UID        PID  PPID  C STIME TTY          TIME CMD
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">[root@unprivileged_container /]# ps -ef | head -n 5</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">UID        PID  PPID  C STIME TTY          TIME CMD
 root         1     0  0 17:49 ?        00:00:00 /sbin/init
 root        14     1  0 17:49 ?        00:00:00 /usr/lib/systemd/systemd-journald
 dbus        25     1  0 17:49 ?        00:00:00 /usr/bin/dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation
-systemd+    26     1  0 17:49 ?        00:00:00 /usr/lib/systemd/systemd-networkd
-</pre>
+systemd+    26     1  0 17:49 ?        00:00:00 /usr/lib/systemd/systemd-networkd</pre>
 <p>On the host, however, those containerized root processes are actually shown to be running as the mapped user (ID&gt;99999), rather than the host's actual root user:
 </p>
-<pre>[root@host /]# lxc-info -Ssip --name sandbox
-State:          RUNNING
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">[root@host /]# lxc-info -Ssip --name sandbox</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">State:          RUNNING
 PID:            26204
 CPU use:        10.51 seconds
 BlkIO use:      244.00 KiB
 Memory use:     13.09 MiB
 KMem use:       7.21 MiB
 </pre>
-<pre>[root@host /]# ps -ef | grep 26204 | head -n 5
-UID        PID  PPID  C STIME TTY          TIME CMD
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">[root@host /]# ps -ef | grep 26204 | head -n 5</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">UID        PID  PPID  C STIME TTY          TIME CMD
 100000   26204 26200  0 12:49 ?        00:00:00 /sbin/init
 100000   26256 26204  0 12:49 ?        00:00:00 /usr/lib/systemd/systemd-journald
 100081   26282 26204  0 12:49 ?        00:00:00 /usr/bin/dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation
-100000   26284 26204  0 12:49 ?        00:00:00 /usr/lib/systemd/systemd-logind
-</pre>
+100000   26284 26204  0 12:49 ?        00:00:00 /usr/lib/systemd/systemd-logind</pre>
 <h2><span class="mw-headline" id="Setup">Setup</span></h2>
 <h3><span class="mw-headline" id="Required_software">Required software</span></h3>
 <p>Installing <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lxc">lxc</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=arch-install-scripts">arch-install-scripts</a></span> will allow the host system to run privileged lxcs.
@@ -692,8 +690,7 @@ COMMIT
 <pre># lxc-create -t download --help
 </pre>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> Users of <a href="../en/Btrfs.html" title="Btrfs">Btrfs</a> can append <code>-B btrfs</code> to create a Btrfs subvolume for storing containerized rootfs. This comes in handy if cloning containers with the help of <code>lxc-clone</code> command. <a href="../en/ZFS.html" title="ZFS">ZFS</a> users may use <code>-B zfs</code>, correspondingly.
-</div>
+<strong>Tip:</strong> Users of <a href="../en/Btrfs.html" title="Btrfs">Btrfs</a> can append <code>-B btrfs</code> to create a Btrfs subvolume for storing containerized rootfs. This comes in handy if cloning containers with the help of <code>lxc-clone</code> command. <a href="../en/ZFS.html" title="ZFS">ZFS</a> users may use <code>-B zfs</code>, correspondingly.</div>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> Users wanting the legacy templates can find them in <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/lxc-templates/">lxc-templates</a></span><sup><small>AUR</small></sup> or alternatively, users can build their own templates with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=distrobuilder">distrobuilder</a></span>.</div>
 <h3><span class="mw-headline" id="Container_configuration">Container configuration</span></h3>
@@ -769,21 +766,21 @@ In addition, add the following line <b>before</b> the above bind mount lines.
 <p>Users can also start/stop LXCs without systemd.
 Start a container:
 </p>
-<pre># lxc-start -n CONTAINER_NAME
+<pre># lxc-start -n <i>CONTAINER_NAME</i>
 </pre>
 <p>Stop a container:
 </p>
-<pre># lxc-stop -n CONTAINER_NAME
+<pre># lxc-stop -n <i>CONTAINER_NAME</i>
 </pre>
 <p>To login into a container:
 </p>
-<pre># lxc-console -n CONTAINER_NAME
+<pre># lxc-console -n <i>CONTAINER_NAME</i>
 </pre>
 <p>Once logged, treat the container like any other linux system, set the root password, create users, install packages, etc.
 </p>
 <p>To attach to a container:
 </p>
-<pre># lxc-attach -n CONTAINER_NAME --clear-env
+<pre># lxc-attach -n <i>CONTAINER_NAME</i> --clear-env
 </pre>
 <p>That works nearly the same as lxc-console, but it causes starts with a root prompt inside the container, bypassing login. Without the <code> --clear-env</code> flag, the host will pass its own environment variables into the container (including <code>$PATH</code>, so some commands will not work when the containers are based on another distribution).
 </p>
@@ -944,8 +941,8 @@ keyctl errno 38</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Linux_Containers&amp;oldid=819820">https://wiki.archlinux.org/index.php?title=Linux_Containers&amp;oldid=819820</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 29 October 2024, at 10:49.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Linux_Containers&amp;oldid=820896">https://wiki.archlinux.org/index.php?title=Linux_Containers&amp;oldid=820896</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 18 November 2024, at 10:09.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>
