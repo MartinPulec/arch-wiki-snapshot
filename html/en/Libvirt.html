@@ -5,7 +5,7 @@
 <title>libvirt - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -664,7 +664,7 @@
 </p>
 <ul>
 <li>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dnsmasq">dnsmasq</a></span> for the <a rel="nofollow" class="external text" href="https://wiki.libvirt.org/VirtualNetworking.html#the-default-configuration">default</a> NAT/DHCP networking. Then set <code>firewall_backend="nftables"</code> option in <code>/etc/libvirt/network.conf</code>.</li>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dnsmasq">dnsmasq</a></span> for the <a rel="nofollow" class="external text" href="https://wiki.libvirt.org/VirtualNetworking.html#the-default-configuration">default</a> NAT/DHCP networking.</li>
 <li>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=openbsd-netcat">openbsd-netcat</a></span> for remote management over <a href="../en/Secure_Shell.html" class="mw-redirect" title="SSH">SSH</a>.</li>
 </ul>
@@ -713,10 +713,24 @@
 <p>A list of libvirt-compatible software can be found <a rel="nofollow" class="external text" href="https://libvirt.org/apps.html">here</a>.
 </p>
 <h2><span class="mw-headline" id="Configuration">Configuration</span></h2>
+<p>Libvirt can manage QEMU virtual machines in two modes, system and session<a rel="nofollow" class="external autonumber" href="https://libvirt.org/drvqemu.html#connections-to-qemu-driver">[1]</a><a rel="nofollow" class="external autonumber" href="https://wiki.libvirt.org/FAQ.html#what-is-the-difference-between-qemu-system-and-qemu-session-which-one-should-i-use">[2]</a>:
+</p>
+<ul>
+<li>
+<b>system</b> URIs connect to the libvirtd daemon running as root which is launched at system startup. Virtual machines created and run using 'system' are usually launched as root, unless configured otherwise (for example in <code>/etc/libvirt/qemu.conf</code>)</li>
+<li>
+<b>session</b> URIs launch a libvirtd instance as your local user, and all VMs are run with local user permissions.</li>
+</ul>
+<p>Regarding their pros and cons:
+</p>
+<ul><li>VM autostart on host boot only works for 'system', and the root libvirtd instance has necessary permissions to use proper networkings via bridges or virtual networks. <code>qemu:///system</code> is generally what tools like virt-manager default to.</li></ul>
+<ul><li>
+<code>qemu:///session</code> has a serious drawback: since the libvirtd instance does not have sufficient privileges, the only out of the box network option is qemu's usermode networking, which has nonobvious limitations, so its usage is discouraged (<a rel="nofollow" class="external text" href="http://people.gnome.org/~markmc/qemu-networking.html">more info on qemu networking options</a> <sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-12-30 ⓘ]</sup>)</li></ul>
+<dl><dd>The benefit of <code>qemu:///session</code> is that permission issues vanish: disk images can easily be stored in $HOME, serial PTYs are owned by the user, etc.</dd></dl>
 <p>For <i><b>system</b></i>-level administration (i.e. global settings and image-<i>volume</i> location), libvirt minimally requires <a href="#Set_up_authentication">setting up authorization</a>, and <a href="#Daemon">starting the daemon</a>.
 </p>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> For user-<i><b>session</b></i> administration, daemon setup and configuration is <i>not</i> required; however, authorization is limited to local abilities; the front-end will launch a local instance of the <b>libvirtd</b> daemon.</div>
+<p>For user-<i><b>session</b></i> administration, daemon setup and configuration is <i>not</i> required; however, authorization is limited to local abilities; the front-end will launch a local instance of the <b>libvirtd</b> daemon.
+</p>
 <h3><span class="mw-headline" id="Set_up_authentication">Set up authentication</span></h3>
 <p>From <a rel="nofollow" class="external text" href="https://libvirt.org/auth.html#ACL_server_config">libvirt: Connection authentication</a>:
 </p>
@@ -779,6 +793,8 @@ polkit.addRule(function(action, subject) {
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> Libvirt is moving from a single monolithic daemon to separate modular daemons, with the intention to remove the monolithic daemon in the future. See <a rel="nofollow" class="external text" href="https://libvirt.org/daemons.html#modular-driver-daemons">Libvirt daemons</a> for more infomation.</div>
 <p><a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start">Start</a> both <code>libvirtd.service</code> and <code>virtlogd.service</code>. Optionally <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> <code>libvirtd.service</code> (which will also enable <code>virtlogd.socket</code> and <code>virtlockd.socket</code> <a href="../en/Systemd.html#Using_units" title="Systemd">units</a>, so there is NO need to also enable <code>virtlogd.service</code>).
+</p>
+<p>Another possibility is to only <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start/enable">start/enable</a> <code>libvirtd.socket</code> and <code>virtlogd.socket</code> for on-demand socket activation.
 </p>
 <h3>
 <span id="Unencrypt_TCP.2FIP_sockets"></span><span class="mw-headline" id="Unencrypt_TCP/IP_sockets">Unencrypt TCP/IP sockets</span>
@@ -1003,8 +1019,12 @@ $ virsh autostart <i>domain</i> --disable
 <strong>Note:</strong> 
 <ul>
 <li>libvirt handles DHCP and DNS with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dnsmasq">dnsmasq</a></span>, launching a separate instance for every virtual network. It also adds iptables rules for proper routing, and enables the <code>ip_forward</code> kernel parameter. This also means that having dnsmasq running on the host system is not necessary to support libvirt requirements (and could interfere with libvirt dnsmasq instances).</li>
-<li>If the default network cannot be started, make sure <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=iptables-nft">iptables-nft</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dnsmasq">dnsmasq</a></span> are installed.</li>
+<li>If the default network cannot be started, make sure <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=iptables-nft">iptables-nft</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dnsmasq">dnsmasq</a></span> are installed, and that the iptables systemd service is enabled:</li>
 </ul>
+<pre>$ systemctl start iptables.service
+$ systemctl enable iptables.service
+$ systemctl restart libvirtd.service
+</pre>
 </div>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> 
@@ -1442,6 +1462,7 @@ If you plan to run the VM in headless mode, consider removing some of the unnece
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Virtualization.html" title="Category:Virtualization">Virtualization</a></li></ul>
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
+<li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Out_of_date.html" title="Category:Pages or sections flagged with Template:Out of date">Pages or sections flagged with Template:Out of date</a></li>
 </ul>
@@ -1455,8 +1476,8 @@ If you plan to run the VM in headless mode, consider removing some of the unnece
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Libvirt&amp;oldid=821319">https://wiki.archlinux.org/index.php?title=Libvirt&amp;oldid=821319</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 24 November 2024, at 12:56.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Libvirt&amp;oldid=824309">https://wiki.archlinux.org/index.php?title=Libvirt&amp;oldid=824309</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 30 December 2024, at 19:38.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

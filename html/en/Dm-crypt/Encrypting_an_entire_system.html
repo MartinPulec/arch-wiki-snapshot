@@ -5,7 +5,7 @@
 <title>dm-crypt/Encrypting an entire system - ArchWiki</title>
 <link rel="stylesheet" href="../../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -681,15 +681,13 @@ The following are examples of common scenarios of full system encryption with <i
 <p>Same advantages as above, and
 </p>
 <ul>
-<li>Secure Boot protects against <a href="https://en.wikipedia.org/wiki/Evil_maid_attack" class="extiw" title="wikipedia:Evil maid attack">Evil maid attacks</a>
+<li>Secure Boot allows protection against <a href="https://en.wikipedia.org/wiki/Evil_maid_attack" class="extiw" title="wikipedia:Evil maid attack">Evil maid attacks</a>
 </li>
 <li>TPM2 prevents the system from being unlocked if Secure Boot is disabled or modified</li>
 </ul>
 </td>
 <td>
-<p>Same disadvantages as above, and
-</p>
-<ul><li>LUKS volume is automatically unlocked (only if the system was not tampered with).</li></ul>
+<ul><li>Same disadvantages as above.</li></ul>
 </td>
 </tr>
 <tr>
@@ -757,7 +755,7 @@ The following are examples of common scenarios of full system encryption with <i
 <td>
 <ul>
 <li>Data resilience for cases where a LUKS header may be damaged</li>
-<li>Allows <a href="https://en.wikipedia.org/wiki/Disk_encryption#Full_disk_encryption" class="extiw" title="wikipedia:Disk encryption">Full Disk Encryption</a>
+<li>Allows <a href="https://en.wikipedia.org/wiki/Deniable_encryption" class="extiw" title="wikipedia:Deniable encryption">deniable encryption</a>
 </li>
 <li>Helps addressing <a href="../../en/Dm-crypt/Specialties.html#Discard/TRIM_support_for_solid_state_drives_(SSD)" title="Dm-crypt/Specialties">problems</a> with SSDs</li>
 </ul>
@@ -766,6 +764,7 @@ The following are examples of common scenarios of full system encryption with <i
 <ul>
 <li>High care to all encryption parameters is required</li>
 <li>Single encryption key and no option to change it</li>
+<li>Very complicated setup for a regular used system</li>
 </ul>
 </td>
 </tr>
@@ -916,23 +915,17 @@ The following are examples of common scenarios of full system encryption with <i
 <h2><span class="mw-headline" id="LUKS_on_a_partition_with_TPM2_and_Secure_Boot">LUKS on a partition with TPM2 and Secure Boot</span></h2>
 <p>This example is similar to <a href="#LUKS_on_a_partition">#LUKS on a partition</a>, but integrates the use of <a href="../../en/Unified_Extensible_Firmware_Interface/Secure_Boot.html" class="mw-redirect" title="Secure Boot">Secure Boot</a> and a <a href="../../en/Trusted_Platform_Module.html" title="Trusted Platform Module">Trusted Platform Module</a> (TPM), enhancing the overall security of the boot process.
 </p>
-<p>In this configuration, only the <a href="../../en/EFI_system_partition.html" title="EFI system partition">EFI system partition</a> remains unencrypted, housing a <a href="../../en/Unified_kernel_image.html" title="Unified kernel image">unified kernel image</a> and <a href="../../en/Systemd-boot.html" title="Systemd-boot">systemd-boot</a>—both signed for use with Secure Boot. The TPM plays a crucial role by monitoring the Secure Boot state. If Secure Boot is disabled or its key databases are tampered with, the encrypted partition will not unlock. This approach is akin to BitLocker on Windows or FileVault on macOS. A recovery-key will also be created to make sure the data remains accessible in case of a problem with the TPM unlocking mechanism (unsigned boot loader or kernel update, firmware update, etc.)
+<p>In this configuration, only the <a href="../../en/EFI_system_partition.html" title="EFI system partition">EFI system partition</a> remains unencrypted, housing a <a href="../../en/Unified_kernel_image.html" title="Unified kernel image">unified kernel image</a> and <a href="../../en/Systemd-boot.html" title="Systemd-boot">systemd-boot</a>—both signed for use with Secure Boot. If Secure Boot is disabled or its key databases are tampered with, the TPM will not release the key to unlock the encrypted partition. This approach is akin to BitLocker on Windows or FileVault on macOS. A recovery-key will also be created to make sure the data remains accessible in case of a problem with the TPM unlocking mechanism (unsigned boot loader or kernel update, firmware update, etc.). Optionally, a TPM pin can be set to be required during boot time to prevent fully automatic unlocking.
 </p>
-<div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> Implementing this method on your root volume means your computer will <b>automatically unlock</b> at boot without requiring an encryption password under specific conditions. However, be cautious of the following risks:
-<ul>
-<li>On systems with multiple users, without additional protection, data is accessible between users.</li>
-<li>Weak user passwords increase the risk of data exposure in case of theft.</li>
-<li>The setup is susceptible to <a href="https://en.wikipedia.org/wiki/Cold_boot_attack" class="extiw" title="wikipedia:Cold boot attack">cold boot attacks</a>, where an attacker, even after a prolonged power-off period, could exploit the automatic loading of the TPM key upon turning on the computer. This is particularly relevant for high-value targets.</li>
-</ul>
-</div>
+<p>Make sure to thoroughly read the discussion and warnings in <a href="../../en/Trusted_Platform_Module.html#LUKS_encryption" title="Trusted Platform Module">Trusted Platform Module#LUKS encryption</a>.
+</p>
 <p>In this example, partitions are created respecting <a href="../../en/Systemd.html#GPT_partition_automounting" title="Systemd">systemd#GPT partition automounting</a>, there is no need for an fstab or crypttab file.
 </p>
 <pre style="white-space: pre !important; font-family:'DejaVu Sans Mono',monospace,monospace; font-variant-ligatures: no-common-ligatures;">+-----------------------+---------------------------------+
 | EFI system partition  | LUKS encrypted root partition   |
 |                       |                                 |
 |                       |                                 |
-| /efi                  | /                               |
+| /boot                 | /                               |
 |                       |                                 |
 |                       | /dev/mapper/root                |
 |                       |---------------------------------|
@@ -946,7 +939,7 @@ The following are examples of common scenarios of full system encryption with <i
 </p>
 <p><a href="../../en/Partitioning.html" class="mw-redirect" title="Partition">Partition</a> the drive with the <a href="../../en/Partitioning.html#GUID_Partition_Table" class="mw-redirect" title="GUID Partition Table">GUID Partition Table</a> (GPT). Then create the needed partitions.
 </p>
-<p>Create an <a href="../../en/EFI_system_partition.html" title="EFI system partition">EFI system partition</a> (<code>/dev/sda1</code> in this example) with an appropriate size. It will later be mounted at <code>/efi</code>.
+<p>Create an <a href="../../en/EFI_system_partition.html" title="EFI system partition">EFI system partition</a> (<code>/dev/sda1</code> in this example) with an appropriate size. It will later be mounted at <code>/boot</code>.
 </p>
 <p>In the remaining space on the drive create a root partition (<code>/dev/sda2</code> in this example) which will be encrypted and later mounted to <code>/</code>. Set its partition type GUID to <code>4F68BCE3-E8CD-4DB1-96E7-FBCAF984B709</code> ("Linux root (x86-64)" in <a href="../../en/Fdisk.html" title="Fdisk">fdisk</a>, <code>8304</code> in <a href="../../en/GPT_fdisk.html" class="mw-redirect" title="Gdisk">gdisk</a>).
 </p>
@@ -971,7 +964,7 @@ The following are examples of common scenarios of full system encryption with <i
 <h3><span class="mw-headline" id="Preparing_the_EFI_system_partition">Preparing the EFI system partition</span></h3>
 <p>Format the newly created EFI system partition as instructed in <a href="../../en/EFI_system_partition.html#Format_the_partition" title="EFI system partition">EFI system partition#Format the partition</a> and mount it afterwards.
 </p>
-<pre># mount --mkdir /dev/sda1 /mnt/efi
+<pre># mount --mkdir /dev/sda1 /mnt/boot
 </pre>
 <p>Continue the installation process until <a href="../../en/Installation_guide.html#Initramfs" title="Installation guide">Installation guide#Initramfs</a>. You can skip <a href="../../en/Installation_guide.html#Fstab" title="Installation guide">Installation guide#Fstab</a>.
 </p>
@@ -982,14 +975,14 @@ The following are examples of common scenarios of full system encryption with <i
 </pre>
 <p>Next, see <a href="../../en/Unified_kernel_image.html#mkinitcpio" title="Unified kernel image">Unified kernel image#mkinitcpio</a> to configure mkinitcpio for <a href="../../en/Unified_kernel_image.html" title="Unified kernel image">Unified kernel images</a>.
 </p>
-<p>Do <b>not</b> regenerate the initramfs <b>yet</b>, as the <code>/efi/EFI/Linux</code> directory needs to be created by the boot loader installer first.
+<p>Do <b>not</b> regenerate the initramfs <b>yet</b>, as the <code>/boot/EFI/Linux</code> directory needs to be created by the boot loader installer first.
 </p>
 <h3><span class="mw-headline" id="Installing_the_boot_loader">Installing the boot loader</span></h3>
 <p>Install <a href="../../en/Systemd-boot.html" title="Systemd-boot">systemd-boot</a> with:
 </p>
 <pre># bootctl install
 </pre>
-<p>The <a href="../../en/Unified_kernel_image.html" title="Unified kernel image">Unified kernel image</a> generated by mkinitcpio will be automatically recognized and does not need an entry in <code>/efi/loader/entries/</code>.
+<p>The <a href="../../en/Unified_kernel_image.html" title="Unified kernel image">Unified kernel image</a> generated by mkinitcpio will be automatically recognized and does not need an entry in <code>/boot/loader/entries/</code>.
 </p>
 <p>See <a href="../../en/Systemd-boot.html#Updating_the_UEFI_boot_manager" title="Systemd-boot">systemd-boot#Updating the UEFI boot manager</a> and <a href="../../en/Systemd-boot.html#Loader_configuration" title="Systemd-boot">systemd-boot#Loader configuration</a> for further configuration.
 </p>
@@ -1007,6 +1000,8 @@ The following are examples of common scenarios of full system encryption with <i
 <pre># systemd-cryptenroll /dev/sda2 --recovery-key
 # systemd-cryptenroll /dev/sda2 --wipe-slot=empty --tpm2-device=auto
 </pre>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong> Add <code>--tpm2-with-pin=yes</code> to require an additional PIN to unlock at boot time.</div>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> 
 <ul>
@@ -1377,11 +1372,6 @@ To save on entering a second passphrase at boot, a <a href="../../en/Dm-crypt/De
 <pre>GRUB_CMDLINE_LINUX="cryptdevice=/dev/md/root:root"
 GRUB_ENABLE_CRYPTODISK=y
 </pre>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../../File:Merge-arrows-2.svg" decoding="async" width="36" height="40" class="mw-file-element"></span></span><b>This article or section is a candidate for merging with <a href="../../en/GRUB.html#Troubleshooting" title="GRUB">GRUB#Troubleshooting</a>.</b></p>
-<div>
-<b>Notes:</b> GRUB troubleshooting issues belong in the <a href="../../en/GRUB.html" title="GRUB">GRUB</a> page. It should be moved there and simply linked from this section. (Discuss in <a rel="nofollow" class="external text" href="../../en/Talk:Dm-crypt/Encrypting_an_entire_system.html">Talk:Dm-crypt/Encrypting an entire system</a>)</div>
-</div>
 <p>If you have a USB keyboard on a newer system either enable legacy USB support in firmware or add the following to <code>/etc/default/grub</code>:
 </p>
 <pre>GRUB_TERMINAL_INPUT="usb_keyboard"
@@ -1426,9 +1416,9 @@ HOOKS=(base udev autodetect microcode modconf kms <b>keyboard</b> <b>keymap</b> 
 <h2><span class="mw-headline" id="Plain_dm-crypt">Plain dm-crypt</span></h2>
 <p>Contrary to LUKS, dm-crypt <i>plain</i> mode does not require a header on the encrypted device: this scenario exploits this feature to set up a system on an unpartitioned, encrypted disk that will be indistinguishable from a disk filled with random data, which could allow <a href="https://en.wikipedia.org/wiki/Deniable_encryption" class="extiw" title="wikipedia:Deniable encryption">deniable encryption</a>. See also <a href="https://en.wikipedia.org/wiki/Disk_encryption#Full_disk_encryption" class="extiw" title="wikipedia:Disk encryption">wikipedia:Disk encryption#Full disk encryption</a>.
 </p>
-<p>Note that if full disk encryption is not required, the methods using LUKS described in the sections above are better options for both system encryption and encrypted partitions. LUKS features like key management with multiple passphrases/key-files or re-encrypting a device in-place are unavailable with <i>plain</i> mode.
+<p>Note that if full disk encryption is not required, the methods using LUKS described in the sections above are better options for both system encryption and encrypted partitions. <a href="../../en/Dm-crypt/Device_encryption.html#Cryptsetup_actions_specific_for_LUKS" title="Dm-crypt/Device encryption">LUKS features</a> like key management with multiple passphrases/key-files, master key backups or re-encrypting a device in-place are unavailable with <i>plain</i> mode.
 </p>
-<p><i>Plain</i> dm-crypt encryption can be more resilient to damage than LUKS, because it does not rely on an encryption master-key which can be a single-point of failure if damaged. However, using <i>plain</i> mode also requires more manual configuration of encryption options to achieve the same cryptographic strength. See also <a href="../../en/Data-at-rest_encryption.html#Cryptographic_metadata" title="Data-at-rest encryption">Data-at-rest encryption#Cryptographic metadata</a>. Using <i>plain</i> mode could also be considered if concerned with the problems explained in <a href="../../en/Dm-crypt/Specialties.html#Discard/TRIM_support_for_solid_state_drives_(SSD)" title="Dm-crypt/Specialties">dm-crypt/Specialties#Discard/TRIM support for solid state drives (SSD)</a>.
+<p><i>Plain</i> dm-crypt encryption can be more resilient to damage than LUKS, because it does not rely on an encryption master-key which can be a single-point of failure if damaged or forcefully destroyed. However, using <i>plain</i> mode also requires more manual configuration of encryption options to achieve the same cryptographic strength. See also <a href="../../en/Data-at-rest_encryption.html#Cryptographic_metadata" title="Data-at-rest encryption">Data-at-rest encryption#Cryptographic metadata</a>. Using <i>plain</i> mode could also be considered if concerned with the problems explained in <a href="../../en/Dm-crypt/Specialties.html#Discard/TRIM_support_for_solid_state_drives_(SSD)" title="Dm-crypt/Specialties">dm-crypt/Specialties#Discard/TRIM support for solid state drives (SSD)</a>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> If headerless encryption is your goal but you are unsure about the lack of key-derivation with <i>plain</i> mode, then two alternatives are:
@@ -1743,7 +1733,7 @@ normal</pre>
 <li>
 <a rel="nofollow" class="external text" href="https://openzfs.github.io/openzfs-docs/Getting%20Started/Arch%20Linux/Root%20on%20ZFS.html">Arch Linux Root on ZFS</a> guide on the OpenZFS page,</li>
 <li>
-<a href="../../en/Install_Arch_Linux_on_ZFS.html#Installation" title="Install Arch Linux on ZFS">Install Arch Linux on ZFS#Installation</a>.</li>
+<a href="../../en/Install_Arch_Linux_on_ZFS.html" title="Install Arch Linux on ZFS">Install Arch Linux on ZFS</a>.</li>
 </ul>
 <p>After the installation, a boot loader can be verified with <a href="../../en/Unified_Extensible_Firmware_Interface/Secure_Boot.html" class="mw-redirect" title="Secure Boot">Secure Boot</a> on UEFI-based systems.
 </p>
@@ -1771,8 +1761,8 @@ normal</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/Encrypting_an_entire_system&amp;oldid=821673">https://wiki.archlinux.org/index.php?title=Dm-crypt/Encrypting_an_entire_system&amp;oldid=821673</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 29 November 2024, at 03:54.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/Encrypting_an_entire_system&amp;oldid=824015">https://wiki.archlinux.org/index.php?title=Dm-crypt/Encrypting_an_entire_system&amp;oldid=824015</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 26 December 2024, at 15:47.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -5,7 +5,7 @@
 <title>QEMU - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -197,7 +197,16 @@
 			</a>
 			
 			<ul id="toc-Booting_in_UEFI_mode-sublist" class="vector-toc-list">
+				<li id="toc-Enabling_Secure_Boot" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Enabling_Secure_Boot">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">4.3.1</span>Enabling Secure Boot</div>
+			</a>
+			
+			<ul id="toc-Enabling_Secure_Boot-sublist" class="vector-toc-list">
 			</ul>
+		</li>
+	</ul>
 		</li>
 		<li id="toc-Trusted_Platform_Module_emulation" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Trusted_Platform_Module_emulation">
@@ -1816,7 +1825,7 @@ $ qemu-system-x86_64 -device qxl,help
 On Intel CPU based systems creating an IOMMU device in a QEMU guest with <code>-device intel-iommu</code> will disable PCI passthrough with an error like: <pre>Device at bus pcie.0 addr 09.0 requires iommu notifier which is currently not supported by intel-iommu emulation</pre> While adding the kernel parameter <code>intel_iommu=on</code> is still needed for remapping IO (e.g. <a href="../en/PCI_passthrough_via_OVMF.html#Isolating_the_GPU" title="PCI passthrough via OVMF">PCI passthrough with vfio-pci</a>), <code>-device intel-iommu</code> should not be set if PCI passthrough is required.
 </div>
 <h3><span class="mw-headline" id="Booting_in_UEFI_mode">Booting in UEFI mode</span></h3>
-<p>The default firmware used by QEMU is <a rel="nofollow" class="external text" href="https://www.coreboot.org/SeaBIOS">SeaBIOS</a>, which is a Legacy BIOS implementation. QEMU uses <code>/usr/share/qemu/bios-256k.bin</code> (provided by the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=seabios">seabios</a></span> package) as a default read-only (ROM) image. You can use the <code>-bios</code> argument to select another firmware file. However, UEFI requires writable memory to work properly, so you need to emulate <a rel="nofollow" class="external text" href="https://wiki.qemu.org/Features/PC_System_Flash">PC System Flash</a> instead.
+<p>The default firmware used by QEMU is <a rel="nofollow" class="external text" href="https://www.seabios.org/SeaBIOS">SeaBIOS</a>, which is a Legacy BIOS implementation. QEMU uses <code>/usr/share/qemu/bios-256k.bin</code> (provided by the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=seabios">seabios</a></span> package) as a default read-only (ROM) image. You can use the <code>-bios</code> argument to select another firmware file. However, UEFI requires writable memory to work properly, so you need to emulate <a rel="nofollow" class="external text" href="https://wiki.qemu.org/Features/PC_System_Flash">PC System Flash</a> instead.
 </p>
 <p><a rel="nofollow" class="external text" href="https://github.com/tianocore/tianocore.github.io/wiki/OVMF">OVMF</a> is a TianoCore project to enable UEFI support for Virtual Machines. It can be <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">installed</a> with the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=edk2-ovmf">edk2-ovmf</a></span> package.
 </p>
@@ -1833,8 +1842,26 @@ On Intel CPU based systems creating an IOMMU device in a QEMU guest with <code>-
 <pre>-drive if=pflash,format=raw,readonly=on,file=/usr/share/edk2/x64/OVMF_CODE.4m.fd \
 -drive if=pflash,format=raw,file=<i>/copy/of/OVMF_VARS.4m.fd</i>
 </pre>
-<p>If secure boot is wanted, use q35 machine type and replace <code>/usr/share/edk2/x64/OVMF_CODE.4m.fd</code> with <code>/usr/share/edk2/x64/OVMF_CODE.secboot.4m.fd</code>.
+<h4><span class="mw-headline" id="Enabling_Secure_Boot">Enabling Secure Boot</span></h4>
+<p>The first requirement to enabling Secure Boot in a VM is to use the <code>q35</code> machine type, and replace <code>/usr/share/edk2/x64/OVMF_CODE.4m.fd</code> with <code>/usr/share/edk2/x64/OVMF_CODE.<b>secboot</b>.4m.fd</code>.
 </p>
+<p>The second requirement is to use an OVMF_VARS file that has Secure Boot keys installed, which is not provided by the upstream project<a rel="nofollow" class="external autonumber" href="https://github.com/tianocore/edk2/blob/47e28a6d449c51f10d89e961c3c1afcfdfd99668/OvmfPkg/README#L137">[1]</a>.
+</p>
+<p>Unlike some other distributions, Arch does not yet provide (as of 2024-12-06) its own <code>/usr/share/edk2/x64/OVMF_VARS.secboot.4m.fd</code> file containing pre-enrolled keys: see <a rel="nofollow" class="external text" href="https://gitlab.archlinux.org/archlinux/packaging/packages/edk2/-/issues/1">archlinux/packaging/packages/edk2#1</a>.
+</p>
+<p>A simple workaround is to use Fedora's version, as mentioned in <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?pid=2212590#p2212590">this forum post</a>:
+</p>
+<ul>
+<li>download a recent <b>noarch</b> RPM of <a rel="nofollow" class="external text" href="https://packages.fedoraproject.org/pkgs/edk2/edk2-ovmf/">Fedora's edk2-ovmf</a> for x86_64 from the <a rel="nofollow" class="external text" href="https://koji.fedoraproject.org/koji/packageinfo?packageID=16183">builds list</a> (<a rel="nofollow" class="external text" href="https://kojipkgs.fedoraproject.org//packages/edk2/20241117/5.fc42/noarch/edk2-ovmf-20241117-5.fc42.noarch.rpm">direct link</a> to latest F42 version as of 2024-12-06)</li>
+<li>extract the archive and convert the desired file to a suitable format<a rel="nofollow" class="external autonumber" href="https://www.spinics.net/linux/fedora/fedora-users/msg521045.html">[2]</a>:</li>
+</ul>
+<dl><dd><pre>$ qemu-img convert -O raw -f qcow2 edk2-ovmf-*.noarch/usr/share/edk2/ovmf/OVMF_VARS_4M.secboot.qcow2 OVMF_VARS_4M.secboot.fd</pre></dd></dl>
+<p>Now you can make copies of the created <code>OVMF_VARS_4M.secboot.fd</code> and use them for your Secure Boot-enabled VMs.
+</p>
+<p>See also <a href="../en/KVM.html#Secure_Boot" title="KVM">KVM#Secure Boot</a> for how to manually enroll keys into a firmware image.
+</p>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong> A more cumbersome, although slightly more "upstream-aligned" workaround to manually enroll keys in a vanilla OVMF_VARS file is described in <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?pid=2212587#p2212587">this forum post</a>.</div>
 <h3><span class="mw-headline" id="Trusted_Platform_Module_emulation">Trusted Platform Module emulation</span></h3>
 <p>QEMU can emulate <a href="../en/Trusted_Platform_Module.html" title="Trusted Platform Module">Trusted Platform Module</a>, which is required by some systems such as Windows 11 (which requires TPM 2.0).
 </p>
@@ -1869,7 +1896,7 @@ It will not be possible for the host OS to access servers running on the guest O
 <span id="QEMU.27s_port_forwarding"></span><span class="mw-headline" id="QEMU's_port_forwarding">QEMU's port forwarding</span>
 </h3>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> QEMU's port forwarding is IPv4-only. IPv6 port forwarding is not implemented and the last patches were proposed in 2018.<a rel="nofollow" class="external autonumber" href="https://lore.kernel.org/qemu-devel/1540512223-21199-1-git-send-email-max7255@yandex-team.ru/T/#u">[1]</a>
+<strong>Note:</strong> QEMU's port forwarding is IPv4-only. IPv6 port forwarding is not implemented and the last patches were proposed in 2018.<a rel="nofollow" class="external autonumber" href="https://lore.kernel.org/qemu-devel/1540512223-21199-1-git-send-email-max7255@yandex-team.ru/T/#u">[3]</a>
 </div>
 <p>QEMU can forward ports from the host to the guest to enable e.g. connecting from the host to an SSH server running on the guest.
 </p>
@@ -1906,7 +1933,7 @@ It will not be possible for the host OS to access servers running on the guest O
 <strong>Note:</strong> 
 <ul>
 <li>If you are using sharing options multiple times like <code>-net user,smb=<i>shared_dir_path1</i> -net user,smb=<i>shared_dir_path2</i></code> or <code>-net user,smb=<i>shared_dir_path1</i>,smb=<i>shared_dir_path2</i></code> then it will share only the last defined one.</li>
-<li>If you cannot access the shared folder and the guest system is Windows, check that the <a rel="nofollow" class="external text" href="http://ecross.mvps.org/howto/enable-netbios-over-tcp-ip-with-windows.htm">NetBIOS protocol is enabled</a><sup title="Last check status: domain name not resolved">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2023-05-06 ⓘ]</sup> and that a firewall does not block <a rel="nofollow" class="external text" href="https://technet.microsoft.com/en-us/library/cc940063.aspx">ports</a> used by the NetBIOS protocol.</li>
+<li>If you cannot access the shared folder and the guest system is Windows, check that the NetBIOS protocol is enabled and that a firewall does not block <a rel="nofollow" class="external text" href="https://technet.microsoft.com/en-us/library/cc940063.aspx">ports</a> used by the NetBIOS protocol.</li>
 <li>If you cannot access the shared folder and the guest system is Windows 10 Enterprise or Education or Windows Server 2016, <a rel="nofollow" class="external text" href="https://support.microsoft.com/en-us/help/4046019">enable guest access</a>.</li>
 <li>If you use <a href="#Tap_networking_with_QEMU">#Tap networking with QEMU</a>, use <code>-device virtio-net,netdev=vmnic -netdev user,id=vmnic,smb=<i>shared_dir_path</i></code> to get SMB.</li>
 </ul>
@@ -2364,7 +2391,7 @@ qemu-system-x86_64 -name "$vm_name" -net nic,macaddr=$(qemu-mac-hasher.py "$vm_n
 </p>
 <pre>-device virtio-net,netdev=network0 -netdev tap,id=network0,ifname=tap0,script=no,downscript=no,vhost=on
 </pre>
-<p>See <a rel="nofollow" class="external autonumber" href="https://web.archive.org/web/20160222161955/http://www.linux-kvm.com:80/content/how-maximize-virtio-net-performance-vhost-net">[2]</a> for more information.
+<p>See <a rel="nofollow" class="external autonumber" href="https://web.archive.org/web/20160222161955/http://www.linux-kvm.com:80/content/how-maximize-virtio-net-performance-vhost-net">[4]</a> for more information.
 </p>
 <h4><span class="mw-headline" id="Host-only_networking">Host-only networking</span></h4>
 <p>If the bridge is given an IP address and traffic destined for it is allowed, but no real interface (e.g. <code>eth0</code>) is connected to the bridge, then the virtual machines will be able to talk to each other and the host system. However, they will not be able to talk to anything on the external network, provided that you do not set up IP masquerading on the physical host. This configuration is called <i>host-only networking</i> by other virtualization software such as <a href="../en/VirtualBox.html" title="VirtualBox">VirtualBox</a>.
@@ -3449,7 +3476,7 @@ One needs to follow the steps described in <a href="#SPICE">#SPICE</a>. A guest 
 </h3>
 <p>Sometimes it is easier to work directly on a disk image instead of the real ARM based device. This can be achieved by mounting an SD card/storage containing the <i>root</i> partition and chrooting into it.
 </p>
-<p>Another use case for an ARM chroot is building ARM packages on an x86_64 machine. Here, the chroot environment can be created from an image tarball from <a rel="nofollow" class="external text" href="https://archlinuxarm.org">Arch Linux ARM</a> - see <a rel="nofollow" class="external autonumber" href="https://nerdstuff.org/posts/2020/2020-003_simplest_way_to_create_an_arm_chroot/">[3]</a> for a detailed description of this approach.
+<p>Another use case for an ARM chroot is building ARM packages on an x86_64 machine. Here, the chroot environment can be created from an image tarball from <a rel="nofollow" class="external text" href="https://archlinuxarm.org">Arch Linux ARM</a> - see <a rel="nofollow" class="external autonumber" href="https://nerdstuff.org/posts/2020/04/25/creating-arm-chroot-in-arch/">[5]</a> for a detailed description of this approach.
 </p>
 <p>Either way, from the chroot it should be possible to run <i>pacman</i> and install more packages, compile large libraries etc. Since the executables are for the ARM architecture, the translation to x86 needs to be performed by <a class="mw-selflink selflink">QEMU</a>.
 </p>
@@ -3638,7 +3665,7 @@ options kvm ignore_msrs=1
 <li>Another possible cause is PS/2 inputs. Switch from PS/2 to Virtio inputs, see <a href="../en/PCI_passthrough_via_OVMF.html#Passing_keyboard/mouse_via_Evdev" title="PCI passthrough via OVMF">PCI passthrough via OVMF#Passing keyboard/mouse via Evdev</a>.</li>
 </ul>
 <h3><span class="mw-headline" id="QXL_video_causes_low_resolution">QXL video causes low resolution</span></h3>
-<p>QEMU 4.1.0 introduced a regression where QXL video can fall back to low resolutions, when being displayed through spice. <a rel="nofollow" class="external autonumber" href="https://bugs.launchpad.net/qemu/+bug/1843151">[4]</a> For example, when KMS starts, text resolution may become as low as 4x10 characters. When trying to increase GUI resolution, it may go to the lowest supported resolution.
+<p>QEMU 4.1.0 introduced a regression where QXL video can fall back to low resolutions, when being displayed through spice. <a rel="nofollow" class="external autonumber" href="https://bugs.launchpad.net/qemu/+bug/1843151">[6]</a> For example, when KMS starts, text resolution may become as low as 4x10 characters. When trying to increase GUI resolution, it may go to the lowest supported resolution.
 </p>
 <p>As a workaround, create your device in this form:
 </p>
@@ -3677,7 +3704,7 @@ sh: can't access tty; job control turned off
 <p>or replace <code>x86_64</code> for your chosen guest architecture.
 </p>
 <h3><span class="mw-headline" id="KDE_with_sddm_does_not_start_spice-vdagent_at_login_automatically">KDE with sddm does not start spice-vdagent at login automatically</span></h3>
-<p>Remove or comment out <code>X-GNOME-Autostart-Phase=WindowManager</code> from <code>/etc/xdg/autostart/spice-vdagent.desktop</code>. <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/18791">[5]</a>
+<p>Remove or comment out <code>X-GNOME-Autostart-Phase=WindowManager</code> from <code>/etc/xdg/autostart/spice-vdagent.desktop</code>. <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/18791">[7]</a>
 </p>
 <h3>
 <span id="Error_starting_domain:_Requested_operation_is_not_valid:_network_.27default.27_is_not_active"></span><span class="mw-headline" id="Error_starting_domain:_Requested_operation_is_not_valid:_network_'default'_is_not_active">Error starting domain: Requested operation is not valid: network 'default' is not active</span>
@@ -3686,7 +3713,7 @@ sh: can't access tty; job control turned off
 </p>
 <pre># virsh net-start default
 </pre>
-<p>For additional troubleshooting steps, see <a rel="nofollow" class="external autonumber" href="https://www.xmodulo.com/network-default-is-not-active.html">[6]</a>.
+<p>For additional troubleshooting steps, see <a rel="nofollow" class="external autonumber" href="https://www.xmodulo.com/network-default-is-not-active.html">[8]</a>.
 </p>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul>
@@ -3702,15 +3729,10 @@ sh: can't access tty; job control turned off
 <li><a rel="nofollow" class="external text" href="https://qemu.weilnetz.de/">QEMU on Windows</a></li>
 <li><a href="https://en.wikipedia.org/wiki/Qemu" class="extiw" title="wikipedia:Qemu">Wikipedia</a></li>
 <li><a href="https://wiki.debian.org/QEMU" class="extiw" title="debian:QEMU">Debian Wiki - QEMU</a></li>
-<li>
-<a rel="nofollow" class="external text" href="https://people.gnome.org/~markmc/qemu-networking.html">QEMU Networking on gnome.org</a><sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2022-09-22 ⓘ]</sup>
-</li>
 <li><a rel="nofollow" class="external text" href="http://bsdwiki.reedmedia.net/wiki/networking_qemu_virtual_bsd_systems.html">Networking QEMU Virtual BSD Systems</a></li>
 <li><a rel="nofollow" class="external text" href="https://www.gnu.org/software/hurd/hurd/running/qemu.html">QEMU on gnu.org</a></li>
 <li><a rel="nofollow" class="external text" href="https://wiki.freebsd.org/qemu">QEMU on FreeBSD as host</a></li>
-<li>
-<a rel="nofollow" class="external text" href="https://doc.opensuse.org/documentation/leap/virtualization/html/book-virt/part-virt-qemu.html">Managing Virtual Machines with QEMU - openSUSE documentation</a><sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-07-30 ⓘ]</sup>
-</li>
+<li><a rel="nofollow" class="external text" href="https://doc.opensuse.org/documentation/leap/virtualization/html/book-virtualization/part-virt-qemu.html">Managing Virtual Machines with QEMU - openSUSE documentation</a></li>
 <li><a rel="nofollow" class="external text" href="https://www.ibm.com/support/knowledgecenter/en/linuxonibm/liaat/liaatkvm.htm">KVM on IBM Knowledge Center</a></li>
 </ul>
 </div>
@@ -3724,7 +3746,6 @@ sh: can't access tty; job control turned off
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
-<li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Out_of_date.html" title="Category:Pages or sections flagged with Template:Out of date">Pages or sections flagged with Template:Out of date</a></li>
@@ -3740,8 +3761,8 @@ sh: can't access tty; job control turned off
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=QEMU&amp;oldid=821644">https://wiki.archlinux.org/index.php?title=QEMU&amp;oldid=821644</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 28 November 2024, at 16:01.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=QEMU&amp;oldid=823526">https://wiki.archlinux.org/index.php?title=QEMU&amp;oldid=823526</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 19 December 2024, at 22:13.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

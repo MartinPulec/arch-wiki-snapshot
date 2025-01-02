@@ -5,7 +5,7 @@
 <title>Trusted Platform Module - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -42,13 +42,13 @@
 				<div class="vector-toc-text">Beginning</div>
 			</a>
 		</li>
-		<li id="toc-Versions" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
-		<a class="vector-toc-link" href="#Versions">
+		<li id="toc-Checking_TPM_support" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#Checking_TPM_support">
 			<div class="vector-toc-text">
-			<span class="vector-toc-numb">1</span>Versions</div>
+			<span class="vector-toc-numb">1</span>Checking TPM support</div>
 		</a>
 		
-		<ul id="toc-Versions-sublist" class="vector-toc-list">
+		<ul id="toc-Checking_TPM_support-sublist" class="vector-toc-list">
 		</ul>
 	</li>
 	<li id="toc-Usage" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
@@ -63,37 +63,19 @@
 			</button>
 		
 		<ul id="toc-Usage-sublist" class="vector-toc-list">
-			<li id="toc-Checking_support" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Checking_support">
+			<li id="toc-LUKS_encryption" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#LUKS_encryption">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">2.1</span>Checking support</div>
+				<span class="vector-toc-numb">2.1</span>LUKS encryption</div>
 			</a>
 			
-			<ul id="toc-Checking_support-sublist" class="vector-toc-list">
+			<ul id="toc-LUKS_encryption-sublist" class="vector-toc-list">
 			</ul>
-		</li>
-		<li id="toc-Data-at-rest_encryption_with_LUKS" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Data-at-rest_encryption_with_LUKS">
-				<div class="vector-toc-text">
-				<span class="vector-toc-numb">2.2</span>Data-at-rest encryption with LUKS</div>
-			</a>
-			
-			<ul id="toc-Data-at-rest_encryption_with_LUKS-sublist" class="vector-toc-list">
-				<li id="toc-systemd-cryptenroll" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#systemd-cryptenroll">
-				<div class="vector-toc-text">
-				<span class="vector-toc-numb">2.2.1</span>systemd-cryptenroll</div>
-			</a>
-			
-			<ul id="toc-systemd-cryptenroll-sublist" class="vector-toc-list">
-			</ul>
-		</li>
-	</ul>
 		</li>
 		<li id="toc-SSH" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#SSH">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">2.3</span>SSH</div>
+				<span class="vector-toc-numb">2.2</span>SSH</div>
 			</a>
 			
 			<ul id="toc-SSH-sublist" class="vector-toc-list">
@@ -102,7 +84,7 @@
 		<li id="toc-GnuPG" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#GnuPG">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">2.4</span>GnuPG</div>
+				<span class="vector-toc-numb">2.3</span>GnuPG</div>
 			</a>
 			
 			<ul id="toc-GnuPG-sublist" class="vector-toc-list">
@@ -111,7 +93,7 @@
 		<li id="toc-Other_good_examples_of_TPM_2.0_usage" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Other_good_examples_of_TPM_2.0_usage">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">2.5</span>Other good examples of TPM 2.0 usage</div>
+				<span class="vector-toc-numb">2.4</span>Other good examples of TPM 2.0 usage</div>
 			</a>
 			
 			<ul id="toc-Other_good_examples_of_TPM_2.0_usage-sublist" class="vector-toc-list">
@@ -254,14 +236,21 @@
 </p>
 <p>TPM is naturally supported only on devices that have TPM hardware support. If your hardware has TPM support but it is not showing up, it might need to be enabled in the BIOS settings.
 </p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> There are two very different TPM specifications: 2.0 and 1.2, which also use different software stacks. <b>This article only describes TPM 2.0</b>, for the older TPM 1.2 see <a href="../en/Trusted_Platform_Module/1.2.html" title="Trusted Platform Module/1.2">/1.2</a>.</div>
 <meta property="mw:PageProp/toc">
-<h2><span class="mw-headline" id="Versions">Versions</span></h2>
-<p>There are two very different TPM specifications: 2.0 and 1.2, which also use different software stacks. This article only describes TPM 2.0, for the older TPM 1.2 see <a href="../en/Trusted_Platform_Module/1.2.html" title="Trusted Platform Module/1.2">/1.2</a>.
+<h2><span class="mw-headline" id="Checking_TPM_support">Checking TPM support</span></h2>
+<p>Most modern computers support TPM 2.0, as it has been <a rel="nofollow" class="external text" href="https://www.computerworld.com/article/3101427/microsoft-mandates-windows-10-hardware-change-for-pc-security.html">required</a> for Windows 10 certification since 2016. To check support on your system, use any of the following methods:
 </p>
-<p>If you are not sure, you can run this command to check it:
-</p>
-<pre>$ cat /sys/class/tpm/tpm*/tpm_version_major
+<ul>
+<li>check the logs, e.g., by running <code>journalctl -k --grep=tpm</code> as root</li>
+<li>read the value of <code>/sys/class/tpm/tpm0/device/description</code><a rel="nofollow" class="external autonumber" href="https://github.com/tpm2-software/tpm2-tools/issues/604#issuecomment-342784674">[1]</a> or <code>/sys/class/tpm/tpm0/tpm_version_major</code>:</li>
+</ul>
+<pre>$ cat /sys/class/tpm/tpm0/device/description
+TPM 2.0 Device
 </pre>
+<ul><li>use <span class="plainlinks archwiki-template-man" title="$ man 1 systemd-analyze"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-analyze.1">systemd-analyze(1)</a></span> to check for TPM 2.0 and the necessary software dependencies: <pre>$ systemd-analyze has-tpm2</pre>
+</li></ul>
 <p>TPM 2.0 allows direct access via <code>/dev/tpm0</code> (one client at a time), kernel-managed access via <code>/dev/tpmrm0</code>, or managed access through the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=tpm2-abrmd">tpm2-abrmd</a></span> resource manager daemon. <a rel="nofollow" class="external text" href="https://groups.google.com/g/linux.debian.bugs.dist/c/OWBHw40g6Vk/m/rnwwkVapDAAJ">According to</a> a systemd project member, using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=tpm2-abrmd">tpm2-abrmd</a></span> is no longer recommended. There are two choices of userspace tools, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=tpm2-tools">tpm2-tools</a></span> by Intel and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/ibm-tss/">ibm-tss</a></span><sup><small>AUR</small></sup> by IBM.
 </p>
 <p>TPM 2.0 requires <a href="../en/Unified_Extensible_Firmware_Interface.html" class="mw-redirect" title="UEFI">UEFI</a> boot; BIOS or Legacy boot systems can only use TPM 1.2.
@@ -269,37 +258,21 @@
 <p>Some TPM chips can be switched between 2.0 and 1.2 through a firmware upgrade (which can be done only a limited number of times).
 </p>
 <h2><span class="mw-headline" id="Usage">Usage</span></h2>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
-<div>
-<b>Reason:</b> This section is a stub. You can help by expanding it with information on how to set up and use a TPM 2.0 device. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Trusted_Platform_Module.html">Talk:Trusted Platform Module</a>)</div>
-</div>
 <p>Many informative resources to learn how to configure and make use of TPM 2.0 services in daily applications are available from the <a rel="nofollow" class="external text" href="https://tpm2-software.github.io/">tpm2-software community</a>.
 </p>
-<h3><span class="mw-headline" id="Checking_support">Checking support</span></h3>
-<p>TPM 2.0 support (either through a <a href="https://en.wikipedia.org/wiki/Trusted_Platform_Module#TPM_2.0_implementations" class="extiw" title="wikipedia:Trusted Platform Module">hardware or software implementation</a>)  has been a requirement for computers certified to run Windows 10 since 2016-07-28.<a rel="nofollow" class="external autonumber" href="https://www.computerworld.com/article/3101427/microsoft-mandates-windows-10-hardware-change-for-pc-security.html">[1]</a> Linux has support for TPM 2.0 since version 3.20<a rel="nofollow" class="external autonumber" href="https://www.phoronix.com/scan.php?page=news_item&amp;px=Linux-3.20-TPM-2.0-Security">[2]</a> and should not require any other steps to be enabled on a default Arch install.
+<h3><span class="mw-headline" id="LUKS_encryption">LUKS encryption</span></h3>
+<p>It is possible to encrypt volumes using keys securely stored in the TPM. This approach ensures that your drives remain locked unless the TPM is present and specific conditions are met, such as the integrity of the firmware or <a href="../en/Unified_Extensible_Firmware_Interface/Secure_Boot.html" class="mw-redirect" title="Secure Boot">Secure Boot</a> state (see <a href="#Accessing_PCR_registers">#Accessing PCR registers</a>).
 </p>
-<p>Two ways to verify whether TPM 2.0 is setup without specific software:
+<p>This mechanism can be used to automatically decrypt the root volume during the boot process, similarly to how BitLocker works on Windows or FileVault on macOS. While this provides strong protection if the drive is removed from the computer with the TPM, data protection will only rely on basic measures like user passwords and system settings if the entire PC is stolen. To mitigate this, you can:
 </p>
 <ul>
-<li>checking the logs, e.g., by running <code>journalctl -k --grep=tpm</code> as root</li>
-<li>read the value of <code>/sys/class/tpm/tpm0/device/description</code><a rel="nofollow" class="external autonumber" href="https://github.com/tpm2-software/tpm2-tools/issues/604#issuecomment-342784674">[3]</a> or <code>/sys/class/tpm/tpm0/tpm_version_major</code>
-</li>
+<li>Consider encrypting user data, such as individual home folders, with a different mechanism, such as <a href="../en/Fscrypt.html#Encrypt_a_home_directory" title="Fscrypt">fscrypt</a> or <a href="../en/Systemd-homed.html#LUKS_home_directory" title="Systemd-homed">systemd-homed</a>.</li>
+<li>Use a <b>TPM pin</b> to benefit from the security properties of the TPM, while avoiding completely unattended unlocking.</li>
 </ul>
-<h3><span class="mw-headline" id="Data-at-rest_encryption_with_LUKS">Data-at-rest encryption with LUKS</span></h3>
-<p>There are two methods for unlocking a LUKS volume using a TPM.  You can use <a href="../en/Clevis.html" title="Clevis">Clevis</a> or <a href="#systemd-cryptenroll">#systemd-cryptenroll</a>.
-</p>
-<p>Using either method, an encrypted volume or volumes may be unlocked using keys stored in a TPM, either automatically at boot or manually at a later time.  Using a TPM for this purpose ensures that your drives will not unlock unless certain conditions are met, such as your firmware not having been modified and <a href="../en/Unified_Extensible_Firmware_Interface/Secure_Boot.html" class="mw-redirect" title="Secure Boot">Secure Boot</a> not having been disabled (see <a href="#Accessing_PCR_registers">#Accessing PCR registers</a>).
-</p>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> If you use this method on your root volume, this means that, as long as the previously mentioned certain conditions are met, your computer will <b>unlock automatically</b> at boot without needing to enter an encryption password.
-<ul>
-<li>This means that access to data is protected in case only the encrypted disk is stolen, but not in case the whole PC gets stolen.</li>
-<li>Be aware that this method makes you more vulnerable to <a href="https://en.wikipedia.org/wiki/Cold_boot_attack" class="extiw" title="wikipedia:Cold boot attack">cold boot attacks</a>, because even if your computer has been powered off for a long time (ensuring the memory is completely cleared), an attacker could simply turn it on and wait for the TPM to load the key automatically. This may be a concern for high-value targets.</li>
-</ul>
+<strong>Warning:</strong> Be aware that this method makes you more vulnerable to <a href="https://en.wikipedia.org/wiki/Cold_boot_attack" class="extiw" title="wikipedia:Cold boot attack">cold boot attacks</a>.
 </div>
-<h4><span class="mw-headline" id="systemd-cryptenroll">systemd-cryptenroll</span></h4>
-<p>See <a href="../en/Systemd-cryptenroll.html#Trusted_Platform_Module" title="Systemd-cryptenroll">systemd-cryptenroll#Trusted Platform Module</a>.
+<p><a href="../en/Systemd-cryptenroll.html" title="Systemd-cryptenroll">systemd-cryptenroll</a> and <a href="../en/Clevis.html" title="Clevis">Clevis</a> allow locking LUKS volumes with a key stored in the TPM. Additionally, systemd-cryptenroll enables tying the encryption to signed policies instead of static PCR values (See <span class="plainlinks archwiki-template-man" title="$ man 1 systemd-cryptenroll"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-cryptenroll.1">systemd-cryptenroll(1)</a></span>).
 </p>
 <h3><span class="mw-headline" id="SSH">SSH</span></h3>
 <p>For TPM sealed SSH keys, there are two options:
@@ -337,6 +310,11 @@
 </li>
 </ul>
 <h2><span class="mw-headline" id="Accessing_PCR_registers">Accessing PCR registers</span></h2>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
+<div>
+<b>Reason:</b> It's probably wiser to list only useful PCRs and give real life examples of when to use them, rather than listing all existing PCRs. (Discuss in <a href="../en/Talk:Trusted_Platform_Module.html#PCR_register_table" title="Talk:Trusted Platform Module">Talk:Trusted Platform Module#PCR register table</a>)</div>
+</div>
 <p>Platform Configuration Registers (PCR) contain hashes that can be read at any time but can only be written via the extend operation, which depends on the previous hash value, thus making a sort of blockchain. They are intended to be used for platform hardware and software integrity checking between boots (e.g. protection against <a href="https://en.wikipedia.org/wiki/en:Evil_Maid_attack" class="extiw" title="wikipedia:en:Evil Maid attack">Evil Maid attack</a>).  They can be used to unlock encryption keys and proving that the correct OS was booted.
 </p>
 <p>The <a rel="nofollow" class="external text" href="https://trustedcomputinggroup.org/resource/pc-client-specific-platform-firmware-profile-specification/">TCG PC Client Specific Platform Firmware Profile Specification</a> defines the registers in use, and <a rel="nofollow" class="external text" href="https://uapi-group.org/specifications/specs/linux_tpm_pcr_registry/">The Linux TPM PCR Registry</a> assigns Linux system components using them.
@@ -350,17 +328,17 @@
 <tr>
 <th scope="col">PCR
 </th>
-<th scope="col">Use
+<th scope="col">Description
 </th>
-<th scope="col">Notes
+<th scope="col">Extended by
 </th>
 </tr>
 <tr>
 <td>PCR0
 </td>
-<td>Core System Firmware executable code (aka Firmware)
+<td>Core System Firmware executable code (aka Firmware). May change if you upgrade your UEFI.
 </td>
-<td>May change if you upgrade your UEFI
+<td>Firmware
 </td>
 </tr>
 <tr>
@@ -368,39 +346,39 @@
 </td>
 <td>Core System Firmware data (aka UEFI settings)
 </td>
-<td>
+<td>Firmware
 </td>
 </tr>
 <tr>
 <td>PCR2
 </td>
-<td>Extended or pluggable executable code
+<td>Extended or pluggable executable code (aka <a href="https://en.wikipedia.org/wiki/Option_ROM" class="extiw" title="wikipedia:Option ROM">OpROMs</a>)
 </td>
-<td>
+<td>Firmware
 </td>
 </tr>
 <tr>
 <td>PCR3
 </td>
-<td>Extended or pluggable firmware data
+<td>Extended or pluggable firmware data. Set during Boot Device Select UEFI boot phase.
 </td>
-<td>Set during Boot Device Select UEFI boot phase
+<td>Firmware
 </td>
 </tr>
 <tr>
 <td>PCR4
 </td>
-<td>Boot Manager Code and Boot Attempts
+<td>Boot Manager Code and Boot Attempts. Measures the boot manager and the devices that the firmware tried to boot from.
 </td>
-<td>Measures the boot manager and the devices that the firmware tried to boot from
+<td>Firmware
 </td>
 </tr>
 <tr>
 <td>PCR5
 </td>
-<td>Boot Manager Configuration and Data
+<td>Boot Manager Configuration and Data. Can measure configuration of boot loaders; includes the GPT Partition Table.
 </td>
-<td>Can measure configuration of boot loaders; includes the GPT Partition Table
+<td>Firmware
 </td>
 </tr>
 <tr>
@@ -408,17 +386,15 @@
 </td>
 <td>Resume from S4 and S5 Power State Events
 </td>
-<td>
+<td>Firmware
 </td>
 </tr>
 <tr>
 <td>PCR7
 </td>
-<td>Secure Boot State
+<td>Secure Boot State. Contains the full contents of PK/KEK/db, as well as the specific certificates used to validate each boot application<a rel="nofollow" class="external autonumber" href="https://superuser.com/questions/1640985/how-to-enable-bitlocker-when-booting-windows-10-from-a-non-microsoft-boot-manage">[2]</a>
 </td>
-<td>Contains the full contents of PK/KEK/db, as well as the specific certificates used to validate each boot application<a rel="nofollow" class="external autonumber" href="https://superuser.com/questions/1640985/how-to-enable-bitlocker-when-booting-windows-10-from-a-non-microsoft-boot-manage">[4]</a>
-<p>When used, shim additionally extends it with its own MokList, MokListX, and MokSBState.
-</p>
+<td>Firmware, shim (adds MokList, MokListX, and MokSBState)
 </td>
 </tr>
 <tr>
@@ -426,7 +402,8 @@
 </td>
 <td>Hash of the kernel command line
 </td>
-<td>Supported by <a rel="nofollow" class="external text" href="https://lists.gnu.org/archive/html/grub-devel/2017-07/msg00003.html">grub</a> and <a rel="nofollow" class="external text" href="https://github.com/systemd/systemd/pull/2587">systemd-boot</a>
+<td>
+<a rel="nofollow" class="external text" href="https://lists.gnu.org/archive/html/grub-devel/2017-07/msg00003.html">GRUB</a>, <a rel="nofollow" class="external text" href="https://github.com/systemd/systemd/pull/2587">systemd-boot</a>
 </td>
 </tr>
 <tr>
@@ -434,7 +411,7 @@
 </td>
 <td>Hash of the initrd and EFI Load Options
 </td>
-<td>Linux measures the initrd and EFI Load Options, essentially the kernel cmdline options.
+<td>Linux (measures the initrd and EFI Load Options, essentially the kernel cmdline options)
 </td>
 </tr>
 <tr>
@@ -450,7 +427,8 @@
 </td>
 <td>Hash of the <a href="../en/Unified_kernel_image.html" title="Unified kernel image">Unified kernel image</a>
 </td>
-<td>see <span class="plainlinks archwiki-template-man" title="$ man 7 systemd-stub"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-stub.7">systemd-stub(7)</a></span>
+<td>
+<span class="plainlinks archwiki-template-man" title="$ man 7 systemd-stub"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-stub.7">systemd-stub(7)</a></span>
 </td>
 </tr>
 <tr>
@@ -458,7 +436,8 @@
 </td>
 <td>Overridden kernel command line, Credentials
 </td>
-<td>see <span class="plainlinks archwiki-template-man" title="$ man 7 systemd-stub"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-stub.7">systemd-stub(7)</a></span>
+<td>
+<span class="plainlinks archwiki-template-man" title="$ man 7 systemd-stub"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-stub.7">systemd-stub(7)</a></span>
 </td>
 </tr>
 <tr>
@@ -466,16 +445,16 @@
 </td>
 <td>System Extensions
 </td>
-<td>see <span class="plainlinks archwiki-template-man" title="$ man 7 systemd-stub"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-stub.7">systemd-stub(7)</a></span>
+<td>
+<span class="plainlinks archwiki-template-man" title="$ man 7 systemd-stub"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-stub.7">systemd-stub(7)</a></span>
 </td>
 </tr>
 <tr>
 <td>PCR14<sup>1</sup>
 </td>
-<td>shim's MokList, MokListX, and MokSBState.
+<td>shim's MokList, MokListX, and MokSBState.<a rel="nofollow" class="external autonumber" href="https://github.com/rhboot/shim/blob/main/README.tpm">[3]</a>
 </td>
-<td>
-<a rel="nofollow" class="external autonumber" href="https://github.com/rhboot/shim/blob/main/README.tpm">[5]</a>
+<td>shim
 </td>
 </tr>
 <tr>
@@ -489,24 +468,24 @@
 <tr>
 <td>PCR16<sup>1</sup>
 </td>
-<td>Debug
+<td>Debug. May be used and reset at any time. May be absent from an official firmware release.
 </td>
-<td>May be used and reset at any time. May be absent from an official firmware release.
+<td>
 </td>
 </tr>
 <tr>
 <td>PCR23
 </td>
-<td>Application Support
+<td>Application Support. The OS can set and reset this PCR.
 </td>
-<td>The OS can set and reset this PCR.
+<td>
 </td>
 </tr>
 </tbody>
 </table>
 <ol><li>Use case defined by the OS and might change between various Linux distros and Windows devices.</li></ol>
 <p>On Windows, BitLocker uses PCR8-11 (Legacy) or PCR11-14 (UEFI) for its own purposes.
-Documentation from tianocore<a rel="nofollow" class="external autonumber" href="https://github.com/tianocore-docs/edk2-TrustedBootChain/blob/main/4_Other_Trusted_Boot_Chains.md">[6]</a>.
+Documentation from tianocore<a rel="nofollow" class="external autonumber" href="https://github.com/tianocore-docs/edk2-TrustedBootChain/blob/main/4_Other_Trusted_Boot_Chains.md">[4]</a>.
 </p>
 <p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=tpm2-totp">tpm2-totp</a></span> facilitates this check with a human observer and dedicated trusted device.
 </p>
@@ -520,7 +499,7 @@ Documentation from tianocore<a rel="nofollow" class="external autonumber" href="
 </pre>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
 <h3><span class="mw-headline" id="TPM2_LUKS2_unlocking_still_asking_for_password">TPM2 LUKS2 unlocking still asking for password</span></h3>
-<p>If you followed the <a href="#Data-at-rest_encryption_with_LUKS">instruction described above</a> for automatically unlocking luks2 devices with enrolled keys in a TPM2 hardware module, but still receive a prompt to input a password during the initramfs boot stage. You may need to <a href="../en/Kernel_module.html#Early_module_loading" title="Kernel module">early load</a> the kernel module (you can obtain its name with <code>systemd-cryptenroll --tpm2-device=list</code>) that is responsible for handling your specific TPM2 module.
+<p>If you followed the <a href="#LUKS_encryption">instruction described above</a> for automatically unlocking luks2 devices with enrolled keys in a TPM2 hardware module, but still receive a prompt to input a password during the initramfs boot stage. You may need to <a href="../en/Kernel_module.html#Early_module_loading" title="Kernel module">early load</a> the kernel module (you can obtain its name with <code>systemd-cryptenroll --tpm2-device=list</code>) that is responsible for handling your specific TPM2 module.
 </p>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul>
@@ -547,8 +526,8 @@ Documentation from tianocore<a rel="nofollow" class="external autonumber" href="
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Trusted_Platform_Module&amp;oldid=821352">https://wiki.archlinux.org/index.php?title=Trusted_Platform_Module&amp;oldid=821352</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 24 November 2024, at 18:09.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Trusted_Platform_Module&amp;oldid=824277">https://wiki.archlinux.org/index.php?title=Trusted_Platform_Module&amp;oldid=824277</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 30 December 2024, at 11:20.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

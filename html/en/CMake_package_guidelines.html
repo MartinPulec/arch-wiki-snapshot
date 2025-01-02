@@ -5,7 +5,7 @@
 <title>CMake package guidelines - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -336,10 +336,18 @@
 <h3><span class="mw-headline" id="Specifying_directories">Specifying directories</span></h3>
 <p>Since CMake version 3.13, there is a <code>-B</code> option that automatically creates the build directory. This avoids the creation of the build directory by a separated <code>mkdir</code> (or <code>install</code>) command. The <code>-S</code> option specifies the source directory (where to search for a <code>CMakeLists.txt</code> file) and avoids the need of <code>cd</code>'ing into the source tree before executing <code>cmake</code>. Combined together, these two options are a convenient way to specify the build and the source directories.
 </p>
+<p>Since building a typical CMake project requires many options, it is convenient to specify them in a local array in the build function. This avoids the need to use backslashes to split the long command to multiple lines and allows to include comments for each option separately.
+</p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">PKGBUILD</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">build() {
-    cmake -B build -S "$pkgname-$pkgver" [other_cmake_options]
-    cmake --build build
+  local cmake_options=(
+    -B build
+    -S $pkgname-$pkgver
+    # Any other options required to build a project may follow
+    <i>[other_cmake_options]</i>
+  )
+  cmake "${cmake_options[@]}"
+  cmake --build build
 }</pre>
 <h3><span class="mw-headline" id="Reducing_possible_unneeded_output">Reducing possible unneeded output</span></h3>
 <p>The <code>-Wno-dev</code> CMake option will suppress the output of some warnings that are meant only for the upstream project developers who write the <code>CMakeLists.txt</code> files. Removing these warnings makes the CMake output smoother and reduces the burden on examining it. As a general rule, these warnings usually can be safely ignored by packagers.
@@ -390,19 +398,33 @@ sha256sums=(
 <strong>Note:</strong> The check function will only work if projects use <code>enable_testing()</code> and/or <code>add_test()</code> functionality in <code>CMakeLists.txt</code>.</div>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">PKGBUILD</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">build() {
-    cmake -B build -S "$pkgname-$pkgver" \
-        -DCMAKE_BUILD_TYPE='None' \
-        -DCMAKE_INSTALL_PREFIX='/usr' \
-        -Wno-dev
-    cmake --build build
+  local cmake_options=(
+    -B build
+    -S $pkgname-$pkgver
+    -W no-dev
+    -D CMAKE_BUILD_TYPE=None
+    -D CMAKE_INSTALL_PREFIX=/usr
+  )
+  cmake "${cmake_options[@]}"
+  cmake --build build
 }
 
 check() {
-    ctest --test-dir build --output-on-failure
+  local excluded_tests=""
+  local ctest_flags=(
+    --test-dir build
+    # show the stdout and stderr when the test fails
+    --output-on-failure
+    # execute tests in parallel
+    --parallel $(nproc)
+    # exclude problematic tests
+    --exclude-regex "$excluded_tests"
+  )
+  ctest "${ctest_flags[@]}"
 }
 
 package() {
-    DESTDIR="$pkgdir" cmake --install build
+  DESTDIR="$pkgdir" cmake --install build
 }</pre>
 <p>Do not forget to place <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=cmake">cmake</a></span> in <a href="../en/PKGBUILD.html#makedepends" class="mw-redirect" title="Makedepends">makedepends</a>.
 </p>
@@ -431,8 +453,8 @@ package() {
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=CMake_package_guidelines&amp;oldid=819019">https://wiki.archlinux.org/index.php?title=CMake_package_guidelines&amp;oldid=819019</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 14 October 2024, at 19:06.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=CMake_package_guidelines&amp;oldid=823701">https://wiki.archlinux.org/index.php?title=CMake_package_guidelines&amp;oldid=823701</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 23 December 2024, at 08:14.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

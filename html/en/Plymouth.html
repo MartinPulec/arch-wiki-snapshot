@@ -5,7 +5,7 @@
 <title>Plymouth - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -378,7 +378,7 @@
 <ul>
 <li>If you want to see the splash screen, append <code>splash</code> to the <a href="../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a>.</li>
 <li>If you want <a href="../en/Silent_boot.html" title="Silent boot">silent boot</a>, append <code>quiet</code> too.</li>
-<li>If you want to disable the logging, append <code>plymouth.nolog</code>.</li>
+<li>If you want to disable the logging, append <code>plymouth.boot-log=/dev/null</code>. Alternatively, add <code>plymouth.nolog</code> which also disables console redirection.</li>
 </ul>
 <p>To start Plymouth on early boot, you must configure your <a href="../en/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs">initramfs</a> generator to create images including Plymouth.
 </p>
@@ -473,17 +473,6 @@ DeviceScale=<i>an-integer-scaling-factor</i></pre>
 <h3><span class="mw-headline" id="Smooth_transition">Smooth transition</span></h3>
 <p><a href="../en/GDM.html" title="GDM">GDM</a> supports <i>smooth transition</i> out of the box.
 </p>
-<p>For other display managers you can get a nearly smooth transition with the following <a href="../en/Systemd.html#Drop-in_files" class="mw-redirect" title="Drop-in snippet">drop-in snippet</a> for <code>display-manager.service</code>:
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/display-manager.service.d/plymouth.conf</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Unit]
-Conflicts=plymouth-quit.service
-After=plymouth-quit.service rc-local.service plymouth-start.service systemd-user-sessions.service
-OnFailure=plymouth-quit.service
-
-[Service]
-ExecStartPost=-/usr/bin/sleep 30
-ExecStartPost=-/usr/bin/plymouth quit --retain-splash</pre>
 <h3><span class="mw-headline" id="Preview_themes">Preview themes</span></h3>
 <p>The currently configured theme can be previewed by running<a rel="nofollow" class="external autonumber" href="https://ubuntuhandbook.org/index.php/2022/10/replace-manufacturer-ubuntu/">[3]</a>:
 </p>
@@ -510,7 +499,7 @@ Alternatively, set the following to keep the firmware background: </p>
 </pre>
 <p>2. Rebuild the initramfs image using the <a href="../en/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs">initramfs</a> tool.
 </p>
-<p>3. Add the deleted files to <a href="../en/Pacman.html#Skip_files_from_being_installed_to_system" title="Pacman">NoExtract</a> in <a href="../en/Pacman.html#Configuration" class="mw-redirect" title="Pacman.conf">pacman.conf</a> to prevent them from being reinstalled:
+<p>3. Add the deleted files to <a href="../en/Pacman.html#Skip_files_from_being_installed_to_system" class="mw-redirect" title="NoExtract">NoExtract</a> in <a href="../en/Pacman.html#Configuration" class="mw-redirect" title="Pacman.conf">pacman.conf</a> to prevent them from being reinstalled:
 </p>
 <pre>NoExtract = usr/lib/plymouth/label*
 </pre>
@@ -581,8 +570,8 @@ WantedBy=plymouth-start.service</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Plymouth&amp;oldid=821101">https://wiki.archlinux.org/index.php?title=Plymouth&amp;oldid=821101</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 21 November 2024, at 08:49.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Plymouth&amp;oldid=824098">https://wiki.archlinux.org/index.php?title=Plymouth&amp;oldid=824098</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 27 December 2024, at 12:37.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

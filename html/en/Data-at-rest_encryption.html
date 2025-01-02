@@ -5,7 +5,7 @@
 <title>Data-at-rest encryption - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -517,7 +517,7 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </p>
 <p>The way it is implemented, is that to unlock the folder storing the raw encrypted files in the host filesystem ("lower directory"), it is mounted (using a special stacked pseudo-filesystem) onto itself or optionally a different location ("upper directory"), where the same files then appear in readable form - until it is unmounted again, or the system is turned off.
 </p>
-<p>Available solutions in this category include <a href="../en/ECryptfs.html" title="ECryptfs">eCryptfs</a> and <a href="../en/EncFS.html" title="EncFS">EncFS</a>, or one of the cloud-ready options bellow.
+<p>Available solutions in this category include <a href="../en/ECryptfs.html" title="ECryptfs">eCryptfs</a> and <a href="../en/EncFS.html" title="EncFS">EncFS</a>, or one of the cloud-ready options below.
 </p>
 <h5><span class="mw-headline" id="Cloud-storage_optimized">Cloud-storage optimized</span></h5>
 <p>If you are deploying stacked filesystem encryption to achieve zero-knowledge synchronization with third-party-controlled locations such as cloud-storage services, you may want to consider alternatives to eCryptfs and EncFS, since these are not optimized for transmission of files over the Internet. There are some solutions designed for this purpose instead:
@@ -563,7 +563,7 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </th>
 <th>Block device encryption
 </th>
-<th>Stacked filesystem encryption
+<th>Native/stacked filesystem encryption
 </th>
 </tr>
 <tr>
@@ -587,7 +587,7 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </th>
 <td>operates below filesystem layer: does not care whether the content of the encrypted block device is a filesystem, a partition table, a LVM setup, or anything else
 </td>
-<td>adds an additional layer to an existing filesystem, to automatically encrypt/decrypt files whenever they are written/read
+<td>adds encryption via filesystem-native features, or an additional/stacked encryption layer to an existing filesystem. Both automatically encrypt/decrypt files whenever they are written/read.
 </td>
 </tr>
 <tr>
@@ -627,7 +627,7 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </th>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No<sup>1</sup>
 </td>
-<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes<sup>2</sup>
 </td>
 </tr>
 <tr>
@@ -640,7 +640,10 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </tr>
 </tbody>
 </table>
-<ol><li>well, a single file in those filesystems could be used as a container (virtual loop-back device!) but then one would not actually be using the filesystem (and the features it provides) anymore</li></ol>
+<ol>
+<li>well, a single file in those filesystems could be used as a container (virtual loop-back device!) but then one would not actually be using the filesystem (and the features it provides) anymore.</li>
+<li>No for ZFS. For other filesystem-native encryption mount restrictions may apply.</li>
+</ol>
 <h3><span class="mw-headline" id="Comparison_table">Comparison table</span></h3>
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
@@ -666,6 +669,9 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 <a href="../en/ZFS.html" title="ZFS">ZFS</a>
 </th>
 <th>
+<a href="../en/Fscrypt.html" title="Fscrypt">fscrypt</a>
+</th>
+<th>
 <a href="../en/ECryptfs.html" title="ECryptfs">eCryptfs</a>
 </th>
 <th>
@@ -673,9 +679,6 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </th>
 <th>
 <a href="../en/Gocryptfs.html" title="Gocryptfs">gocryptfs</a>
-</th>
-<th>
-<a href="../en/Fscrypt.html" title="Fscrypt">fscrypt</a>
 </th>
 </tr>
 <tr>
@@ -689,13 +692,13 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </td>
 <td>native filesystem or block device
 </td>
-<td>stacked filesystem
-</td>
-<td>stacked filesystem
-</td>
-<td>stacked filesystem
-</td>
 <td>native filesystem
+</td>
+<td>stacked filesystem
+</td>
+<td>stacked filesystem
+</td>
+<td>stacked filesystem
 </td>
 </tr>
 <tr>
@@ -709,13 +712,13 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </td>
 <td>encryption feature relatively new (2019); encrypted block devices provided by ZVOL
 </td>
+<td>default for Chrome OS and Android encryption
+</td>
 <td>slightly faster than EncFS; individual encrypted files portable between systems
 </td>
 <td>easiest one to use; supports non-root administration
 </td>
 <td>aspiring successor of EncFS
-</td>
-<td>default for Chrome OS and Android encryption
 </td>
 </tr>
 <tr>
@@ -733,6 +736,9 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 <a href="../en/ZFS.html#Installation" title="ZFS">ZFS#Installation</a>
 </td>
 <td>
+<i>kernel module:</i> already shipped with default kernel; <i>tool:</i> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=fscrypt">fscrypt</a></span>
+</td>
+<td>
 <i>kernel module:</i> already shipped with default kernel; <i>tools:</i> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=ecryptfs-utils">ecryptfs-utils</a></span>
 </td>
 <td>
@@ -740,9 +746,6 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </td>
 <td>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=gocryptfs">gocryptfs</a></span>
-</td>
-<td>
-<i>kernel module:</i> already shipped with default kernel; <i>tool:</i> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=fscrypt">fscrypt</a></span>
 </td>
 </tr>
 <tr>
@@ -756,13 +759,13 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </td>
 <td>CDDL
 </td>
+<td>GPL (kernel), Apache 2.0 (userspace tool)
+</td>
 <td>GPL
 </td>
 <td>GPL
 </td>
 <td>MIT
-</td>
-<td>GPL (kernel), Apache 2.0 (userspace tool)
 </td>
 </tr>
 <tr>
@@ -778,11 +781,11 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </td>
 <td>kernelspace
 </td>
-<td>userspace (<a href="../en/FUSE.html" title="FUSE">FUSE</a>)
-</td>
-<td>userspace (<a href="../en/FUSE.html" title="FUSE">FUSE</a>)
-</td>
 <td>kernelspace
+</td>
+<td>userspace (<a href="../en/FUSE.html" title="FUSE">FUSE</a>)
+</td>
+<td>userspace (<a href="../en/FUSE.html" title="FUSE">FUSE</a>)
 </td>
 </tr>
 <tr>
@@ -796,14 +799,14 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </td>
 <td>DSL (dataset &amp; snapshot layer; <a rel="nofollow" class="external text" href="https://www.youtube.com/watch?v=frnLiXclAMo">talk</a>/<a rel="nofollow" class="external text" href="https://blog.heckel.xyz/wp-content/uploads/2017/01/zfs-encryption-nov-2016.pdf">slides</a>)
 </td>
+<td>
+<code>.fscrypt</code> directory at root of each filesystem
+</td>
 <td>header  of  each encrypted file
 </td>
 <td>control file at the top level of each EncFS container
 </td>
 <td>?
-</td>
-<td>
-<code>.fscrypt</code> directory at root of each filesystem
 </td>
 </tr>
 <tr>
@@ -817,6 +820,9 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </td>
 <td>DSL (dataset &amp; snapshot layer; <a rel="nofollow" class="external text" href="https://www.youtube.com/watch?v=frnLiXclAMo">talk</a>/<a rel="nofollow" class="external text" href="https://blog.heckel.xyz/wp-content/uploads/2017/01/zfs-encryption-nov-2016.pdf">slides</a>)
 </td>
+<td>
+<code>.fscrypt</code> directory at root of each filesystem
+</td>
 <td>key file that can be stored anywhere
 </td>
 <td>key file that can be stored anywhere
@@ -824,9 +830,6 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </p>
 </td>
 <td>?
-</td>
-<td>
-<code>.fscrypt</code> directory at root of each filesystem
 </td>
 </tr>
 <tr>
@@ -840,13 +843,13 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </th>
 <th>ZFS
 </th>
+<th>fscrypt
+</th>
 <th>eCryptfs
 </th>
 <th>EncFS
 </th>
 <th>gocryptfs
-</th>
-<th>fscrypt
 </th>
 </tr>
 <tr>
@@ -860,9 +863,9 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes
 </td>
-<td>limited
-</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes
+</td>
+<td>limited
 </td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes
 </td>
@@ -882,11 +885,11 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No
 </td>
+<td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No
+</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes
 <p><a href="../en/EncFS.html#Gnome_Encfs_Manager" title="EncFS">optional</a>
 </p>
-</td>
-<td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No
 </td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No
 </td>
@@ -924,13 +927,13 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No
 </td>
+<td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No
+</td>
 <td>?
 </td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes
 </td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes<br><a rel="nofollow" class="external autonumber" href="https://github.com/rfjakob/gocryptfs/blob/master/Documentation/MANPAGE.md#-i-duration--idle-duration">[3]</a>
-</td>
-<td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No
 </td>
 </tr>
 <tr>
@@ -944,13 +947,13 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </th>
 <th>ZFS
 </th>
+<th>fscrypt
+</th>
 <th>eCryptfs
 </th>
 <th>EncFS
 </th>
 <th>gocryptfs
-</th>
-<th>fscrypt
 </th>
 </tr>
 <tr>
@@ -964,13 +967,13 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </td>
 <td>AES
 </td>
+<td>AES, ChaCha12
+</td>
 <td>AES, Blowfish, Twofish...
 </td>
 <td>AES, Blowfish, Twofish, and any other ciphers available on the system
 </td>
 <td>AES
-</td>
-<td>AES, ChaCha12
 </td>
 </tr>
 <tr>
@@ -986,11 +989,11 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </td>
 <td>none
 </td>
+<td>none
+</td>
 <td>none (default mode)<br>HMAC (paranoia mode)
 </td>
 <td>GCM
-</td>
-<td>none
 </td>
 </tr>
 <tr>
@@ -1006,9 +1009,9 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes
 </td>
-<td>?
-</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes
+</td>
+<td>?
 </td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes
 </td>
@@ -1026,9 +1029,9 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No
 </td>
-<td>?
-</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No
+</td>
+<td>?
 </td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No
 </td>
@@ -1046,13 +1049,13 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </td>
 <td>?
 </td>
-<td>?
-</td>
-<td>?
-</td>
-<td>?
-</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No
+</td>
+<td>?
+</td>
+<td>?
+</td>
+<td>?
 </td>
 </tr>
 <tr>
@@ -1066,13 +1069,13 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </td>
 <td>?
 </td>
-<td>?
-</td>
-<td>?
-</td>
-<td>?
-</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No
+</td>
+<td>?
+</td>
+<td>?
+</td>
+<td>?
 </td>
 </tr>
 <tr>
@@ -1086,13 +1089,13 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No
 </td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes
+</td>
 <td>?
 </td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No
 </td>
 <td>?
-</td>
-<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes
 </td>
 </tr>
 <tr>
@@ -1106,13 +1109,13 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </th>
 <th>ZFS
 </th>
+<th>fscrypt
+</th>
 <th>eCryptfs
 </th>
 <th>EncFS
 </th>
 <th>gocryptfs
-</th>
-<th>fscrypt
 </th>
 </tr>
 <tr>
@@ -1126,11 +1129,11 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes
 </td>
-<td>?
-</td>
-<td>?
-</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes
+</td>
+<td>?
+</td>
+<td>?
 </td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes
 </td>
@@ -1148,9 +1151,9 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes
 </td>
-<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes<br><a rel="nofollow" class="external autonumber" href="https://github.com/vgough/encfs/issues/118">[5]</a>
-</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes
+</td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes<br><a rel="nofollow" class="external autonumber" href="https://github.com/vgough/encfs/issues/118">[5]</a>
 </td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes
 </td>
@@ -1188,19 +1191,21 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </th>
 <th>ZFS
 </th>
+<th>fscrypt
+</th>
 <th>eCryptfs
 </th>
 <th>EncFS
 </th>
 <th>gocryptfs
 </th>
-<th>fscrypt
-</th>
 </tr>
 <tr>
 <th>Supported file systems
 </th>
 <td>ZFS
+</td>
+<td>ext4, F2FS, UBIFS
 </td>
 <td>ext3, ext4, xfs (with caveats), jfs, nfs...
 </td>
@@ -1209,8 +1214,6 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </p>
 </td>
 <td>any
-</td>
-<td>ext4, F2FS, UBIFS
 </td>
 </tr>
 <tr>
@@ -1232,13 +1235,13 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </th>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No
 </td>
+<td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No
+</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes
 </td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes
 </td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes<br><a rel="nofollow" class="external autonumber" href="https://github.com/rfjakob/gocryptfs/blob/master/Documentation/MANPAGE.md#-plaintextnames">[7]</a>
-</td>
-<td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No
 </td>
 </tr>
 <tr>
@@ -1246,9 +1249,9 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </th>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes
 </td>
-<td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No
-</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes
+</td>
+<td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No
 </td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes
 </td>
@@ -1266,13 +1269,13 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </th>
 <th>ZFS
 </th>
+<th>fscrypt
+</th>
 <th>eCryptfs
 </th>
 <th>EncFS
 </th>
 <th>gocryptfs
-</th>
-<th>fscrypt
 </th>
 </tr>
 <tr>
@@ -1286,13 +1289,13 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </td>
 <td>2.6.32 or newer (as of 0.8.3)
 </td>
+<td>4.1 or newer
+</td>
 <td>?
 </td>
 <td>2.4 or newer
 </td>
 <td>?
-</td>
-<td>4.1 or newer
 </td>
 </tr>
 <tr>
@@ -1306,13 +1309,13 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes<br><a rel="nofollow" class="external text" href="https://openzfsonwindows.org/">OpenZFS on Windows</a> (<a rel="nofollow" class="external text" href="https://github.com/openzfsonwindows/ZFSin">repo</a>)
 </td>
+<td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No
+</td>
 <td>?
 </td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No (requires admin rights)
 </td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes (cppcryptfs port)
-</td>
-<td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No
 </td>
 </tr>
 <tr>
@@ -1326,13 +1329,13 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes<br><a rel="nofollow" class="external text" href="https://openzfsonosx.org/">OpenZFS on OS X</a> (<a rel="nofollow" class="external text" href="https://github.com/openzfsonosx/zfs">repo</a>)
 </td>
+<td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No
+</td>
 <td>?
 </td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes<br><a rel="nofollow" class="external autonumber" href="https://sites.google.com/a/arg0.net/www/encfs-mac-build">[8]</a><sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-07-30 ⓘ]</sup>
 </td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes (beta quality)
-</td>
-<td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No
 </td>
 </tr>
 <tr>
@@ -1346,13 +1349,13 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes<br><a rel="nofollow" class="external text" href="https://zfsonfreebsd.github.io/ZoF/">ZFS on FreeBSD</a> (native; <a rel="nofollow" class="external text" href="https://github.com/zfsonfreebsd/ZoF">repo</a>)
 </td>
+<td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No
+</td>
 <td>?
 </td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes<br><a rel="nofollow" class="external autonumber" href="https://www.freshports.org/sysutils/fusefs-encfs/">[9]</a>
 </td>
 <td>?
-</td>
-<td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No
 </td>
 </tr>
 
@@ -1367,13 +1370,13 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 </td>
 <td>?
 </td>
-<td>?
-</td>
-<td>?
-</td>
-<td>?
-</td>
 <td>Android, Chrome OS
+</td>
+<td>?
+</td>
+<td>?
+</td>
+<td>?
 </td>
 </tr>
 </tbody>
@@ -1442,7 +1445,7 @@ In order to satisfy this goal, wiping the disk using high-quality random bytes i
 <p>It does not go into technical or mathematical details (consult the appropriate literature for that), but should provide a system administrator with a rough understanding of how different setup choices (especially regarding key management) can affect usability and security.
 </p>
 <h3><span class="mw-headline" id="Basic_principle">Basic principle</span></h3>
-<p>For the purposes of disk encryption, each blockdevice (or individual file in the case of stacked filesystem encryption) is divided into <b>sectors</b> of equal length, for example 512 bytes (4,096 bits). The encryption/decryption then happens on a per-sector basis, so the n'th sector of the blockdevice/file on disk will store the encrypted version of the n'th sector of the original data.
+<p>For the purposes of disk encryption, each blockdevice (or individual file in the case of stacked filesystem encryption) is divided into <b>sectors</b> of equal length, for example 512 bytes (4096 bits). The encryption/decryption then happens on a per-sector basis, so the n'th sector of the blockdevice/file on disk will store the encrypted version of the n'th sector of the original data.
 </p>
 <p>Whenever the operating system or an application requests a certain fragment of data from the blockdevice/file, the whole sector (or sectors) that contains the data will be read from disk, decrypted on-the-fly, and temporarily stored in memory:
 </p>
@@ -1707,8 +1710,8 @@ Some can also additionally guarantee authenticity of the encrypted data (i.e. co
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Data-at-rest_encryption&amp;oldid=819182">https://wiki.archlinux.org/index.php?title=Data-at-rest_encryption&amp;oldid=819182</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 19 October 2024, at 12:33.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Data-at-rest_encryption&amp;oldid=824310">https://wiki.archlinux.org/index.php?title=Data-at-rest_encryption&amp;oldid=824310</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 30 December 2024, at 19:39.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

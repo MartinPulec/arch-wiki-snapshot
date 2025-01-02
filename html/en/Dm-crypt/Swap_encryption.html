@@ -5,7 +5,7 @@
 <title>dm-crypt/Swap encryption - ArchWiki</title>
 <link rel="stylesheet" href="../../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -102,23 +102,77 @@
 			</a>
 			
 			<ul id="toc-Using_a_swap_partition-sublist" class="vector-toc-list">
-				<li id="toc-mkinitcpio_hook" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#mkinitcpio_hook">
+				<li id="toc-Basic_swap_partition_setup" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Basic_swap_partition_setup">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">2.2.1</span>mkinitcpio hook</div>
+				<span class="vector-toc-numb">2.2.1</span>Basic swap partition setup</div>
 			</a>
 			
-			<ul id="toc-mkinitcpio_hook-sublist" class="vector-toc-list">
+			<ul id="toc-Basic_swap_partition_setup-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-dracut" class="vector-toc-list-item vector-toc-level-3">
+		<li id="toc-Using_a_TPM" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Using_a_TPM">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">2.2.2</span>Using a TPM</div>
+			</a>
+			
+			<ul id="toc-Using_a_TPM-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Using_an_additional_passphrase_or_keyfile" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Using_an_additional_passphrase_or_keyfile">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">2.2.3</span>Using an additional passphrase or keyfile</div>
+			</a>
+			
+			<ul id="toc-Using_an_additional_passphrase_or_keyfile-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Unlocking_the_partition_in_the_initramfs" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Unlocking_the_partition_in_the_initramfs">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">2.2.4</span>Unlocking the partition in the initramfs</div>
+			</a>
+			
+			<ul id="toc-Unlocking_the_partition_in_the_initramfs-sublist" class="vector-toc-list">
+				<li id="toc-mkinitcpio" class="vector-toc-list-item vector-toc-level-4">
+			<a class="vector-toc-link" href="#mkinitcpio">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">2.2.4.1</span>mkinitcpio</div>
+			</a>
+			
+			<ul id="toc-mkinitcpio-sublist" class="vector-toc-list">
+				<li id="toc-systemd-based_initramfs" class="vector-toc-list-item vector-toc-level-5">
+			<a class="vector-toc-link" href="#systemd-based_initramfs">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">2.2.4.1.1</span>systemd-based initramfs</div>
+			</a>
+			
+			<ul id="toc-systemd-based_initramfs-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-busybox-based_initramfs" class="vector-toc-list-item vector-toc-level-5">
+			<a class="vector-toc-link" href="#busybox-based_initramfs">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">2.2.4.1.2</span>busybox-based initramfs</div>
+			</a>
+			
+			<ul id="toc-busybox-based_initramfs-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+		</li>
+		<li id="toc-dracut" class="vector-toc-list-item vector-toc-level-4">
 			<a class="vector-toc-link" href="#dracut">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">2.2.2</span>dracut</div>
+				<span class="vector-toc-numb">2.2.4.2</span>dracut</div>
 			</a>
 			
 			<ul id="toc-dracut-sublist" class="vector-toc-list">
 			</ul>
+		</li>
+	</ul>
 		</li>
 	</ul>
 		</li>
@@ -294,52 +348,78 @@ swap     LABEL=<i>cryptswap</i>  /dev/urandom  swap,offset=2048,cipher=aes-xts-p
 <pre>$ xfconf-query -c xfce4-session -np /shutdown/ShowHibernate -t bool -s false
 </pre>
 <h2><span class="mw-headline" id="With_suspend-to-disk_support">With suspend-to-disk support</span></h2>
-<p>To be able to resume after suspending the computer to disk (hibernate), it is required to keep the swap space intact. Therefore, it is required to have a pre-existent LUKS swap partition or file, which can be stored on the disk or input manually at startup.
-</p>
-<p>The following three methods are alternatives for setting up an encrypted swap for suspend-to-disk. If you apply any of them, be aware that critical data swapped out by the system may potentially stay in the swap over a long period (i.e. until it is overwritten). To reduce this risk consider setting up a system job which re-encrypts swap, e.g. each time the system is going into a regular shut-down, along with the method of your choice.
+<p>The following three methods are alternatives for setting up an encrypted swap for suspend-to-disk (hibernation). If you apply any of them, be aware that critical data swapped out by the system may potentially stay in the swap over a long period (i.e. until it is overwritten). To reduce this risk consider setting up a system job which re-encrypts swap, e.g. each time the system is going into a regular shut-down, along with the method of your choice.
 </p>
 <h3><span class="mw-headline" id="LVM_on_LUKS">LVM on LUKS</span></h3>
 <p>If the swap volume is in a volume group that gets activated in initramfs, simply follow the instructions in <a href="../../en/Power_management/Suspend_and_hibernate.html#Hibernation" title="Power management/Suspend and hibernate">Power management/Suspend and hibernate#Hibernation</a>.
 </p>
 <h3><span class="mw-headline" id="Using_a_swap_partition">Using a swap partition</span></h3>
-<p>If you want to use a partition which is currently used by the system, you have to disable it first:
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong>  To use a partition which is currently used by the system, you have to disable it first with <code># swapoff /dev/<i>device</i></code>, and make sure to remove any line in <code>/etc/crypttab</code> pointing to this device.</div>
+<h4><span class="mw-headline" id="Basic_swap_partition_setup">Basic swap partition setup</span></h4>
+<p>Use <code>LuksFormat</code> to create the encrypted container for the swap partition:
 </p>
-<pre># swapoff /dev/<i>device</i>
+<pre># cryptsetup luksFormat --label swap /dev/<i>device</i>
 </pre>
-<p>Also make sure you remove any line in <code>/etc/crypttab</code> pointing to this device.
+<p>Open the container to <code>/dev/mapper/swap</code>:
 </p>
-<p>The following setup has the disadvantage of having to insert an additional passphrase for the swap partition manually on every boot.
+<pre># cryptsetup open /dev/disk/by-label/swap swap
+</pre>
+<p>Create a swap filesystem inside the mapped partition:
+</p>
+<pre># mkswap /dev/mapper/swap
+</pre>
+<p>If not using <a href="../../en/Systemd.html#GPT_partition_automounting" title="Systemd">Systemd#GPT partition automounting</a>, add the mapped partition to <code>/etc/fstab</code> by adding the following line:
+</p>
+<pre>/dev/mapper/swap none swap defaults 0 0
+</pre>
+<p>Set up your system to resume from <code>/dev/mapper/swap</code>. For example, if you use <a href="../../en/GRUB.html" title="GRUB">GRUB</a> with kernel hibernation support, add the kernel parameter <code>resume=/dev/mapper/swap</code> to GRUB by appending it to the <code>GRUB_CMDLINE_LINUX_DEFAULT</code> variable in <code>/etc/default/grub</code>. A kernel line with encrypted root and swap partitions can look like this:
+</p>
+<pre>kernel /vmlinuz-linux cryptdevice=/dev/sda2:root root=/dev/mapper/root resume=/dev/mapper/swap ro
+</pre>
+<h4><span class="mw-headline" id="Using_a_TPM">Using a TPM</span></h4>
+<p>The following provides unattended swap decryption with a key stored in the <a href="../../en/Trusted_Platform_Module.html" class="mw-redirect" title="TPM">TPM</a>.
+</p>
+<p>You can use <a href="../../en/Systemd-cryptenroll.html#Trusted_Platform_Module" title="Systemd-cryptenroll">systemd-cryptenroll</a> to enroll the key to the Luks container and TPM, and wipe the previously created keyslot containing the password:
+</p>
+<pre># systemd-cryptenroll --tpm2-device auto /dev/<i>device</i>
+# systemd-cryptenroll --wipe-slot password /dev/<i>device</i>
+</pre>
+<p>Check the result with 
+</p>
+<pre># systemd-cryptenroll /dev/<i>device</i>
+SLOT TYPE
+   0 tpm2
+</pre>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
+<div>
+<b>Reason:</b> Using a TPM for the swap key makes it feasible to (optionally) automate wiping/replacing it, for example when kernel is installed/reboot required. (Discuss in <a rel="nofollow" class="external text" href="../../en/Talk:Dm-crypt/Swap_encryption.html">Talk:Dm-crypt/Swap encryption</a>)</div>
+</div>
+<h4><span class="mw-headline" id="Using_an_additional_passphrase_or_keyfile">Using an additional passphrase or keyfile</span></h4>
+<p>The <a href="#Basic_swap_partition_setup">basic setup</a> above has the disadvantage of having to insert an additional passphrase for the swap partition manually on every boot.
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> Do not use this setup with a key file if <code>/boot</code> is unencrypted. Please read about the issue reported <a rel="nofollow" class="external text" href="https://wiki.archlinux.org/index.php?title=Talk:Dm-crypt&amp;oldid=255742#Suspend_to_disk_instructions_are_insecure">here</a>. Alternatively, use a gnupg-encrypted keyfile as per <a rel="nofollow" class="external free" href="https://bbs.archlinux.org/viewtopic.php?id=120181">https://bbs.archlinux.org/viewtopic.php?id=120181</a>
 </div>
-<p>To format the encrypted container for the swap partition, create a keyslot for a user-memorizable passphrase.
-</p>
-<pre># cryptsetup luksFormat /dev/<i>device</i>
-</pre>
-<p>Open the partition in <code>/dev/mapper</code>:
-</p>
-<pre># cryptsetup open /dev/<i>device</i> swapDevice
-</pre>
-<p>Create a swap filesystem inside the mapped partition:
-</p>
-<pre># mkswap /dev/mapper/swapDevice
-</pre>
-<p>Add the mapped partition to <code>/etc/fstab</code> by adding the following line:
-</p>
-<pre>/dev/mapper/swapDevice none swap defaults 0 0
-</pre>
-<p>Set up your system to resume from <code>/dev/mapper/swapDevice</code>. For example, if you use <a href="../../en/GRUB.html" title="GRUB">GRUB</a> with kernel hibernation support, add the kernel parameter <code>resume=/dev/mapper/swapDevice</code> to GRUB by appending it to the <code>GRUB_CMDLINE_LINUX_DEFAULT</code> variable in <code>/etc/default/grub</code>. A kernel line with encrypted root and swap partitions can look like this:
-</p>
-<pre>kernel /vmlinuz-linux cryptdevice=/dev/sda2:rootDevice root=/dev/mapper/rootDevice resume=/dev/mapper/swapDevice ro
-</pre>
-<h4><span class="mw-headline" id="mkinitcpio_hook">mkinitcpio hook</span></h4>
+<h4><span class="mw-headline" id="Unlocking_the_partition_in_the_initramfs">Unlocking the partition in the initramfs</span></h4>
 <p>To resume from an encrypted swap partition, the encrypted partition must be unlocked in the initramfs.
 </p>
+<h5><span class="mw-headline" id="mkinitcpio">mkinitcpio</span></h5>
+<h6><span class="mw-headline" id="systemd-based_initramfs">systemd-based initramfs</span></h6>
+<p>When using the systemd-based initramfs with the <a href="../../en/Dm-crypt/System_configuration.html#Using_systemd-cryptsetup-generator" class="mw-redirect" title="Sd-encrypt">sd-encrypt</a> mkinitcpio hook, either
+</p>
 <ul>
-<li>When using the default busybox-based initramfs with the <a href="../../en/Dm-crypt/System_configuration.html#Using_encrypt_hook" title="Dm-crypt/System configuration">encrypt</a> hook, follow the instructions in <a href="#mkinitcpio_hook">#mkinitcpio hook</a>.</li>
-<li>When using the systemd-based initramfs with the <a href="../../en/Dm-crypt/System_configuration.html#Using_systemd-cryptsetup-generator" class="mw-redirect" title="Sd-encrypt">sd-encrypt</a> mkinitcpio hook, simply specify additional <code>rd.luks</code> kernel parameters to unlock the swap partition.</li>
+<li>specify the appropriate <code>rd.luks.uuid=</code> <a href="../../en/Dm-crypt/System_configuration.html#rd.luks.uuid" title="Dm-crypt/System configuration">kernel parameters</a> to unlock the swap partition, or</li>
+<li>edit <code>crypttab.initramfs</code> and <a href="../../en/Mkinitcpio.html#Image_creation_and_activation" class="mw-redirect" title="Regenerate the initramfs">regenerate the initramfs</a>.</li>
 </ul>
+<p>For example, for a TPM backed encrypted swap device:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/crypttab.initramfs</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">swap UUID=56f8ee97-54b3-4a65-9282-688deb922527 none tpm2-device=auto</pre>
+<h6><span class="mw-headline" id="busybox-based_initramfs">busybox-based initramfs</span></h6>
+<p>When using the default busybox-based initramfs with the <a href="../../en/Dm-crypt/System_configuration.html#Using_encrypt_hook" title="Dm-crypt/System configuration">encrypt</a> hook, follow the instructions below.
+</p>
 <p>If the swap device is on a different device from that of the root file system, it will not be opened by the <code>encrypt</code> hook, i.e. the resume will take place before <code>/etc/crypttab</code> can be used, therefore it is required to create a hook in <code>/etc/mkinitcpio.conf</code> to open the swap LUKS device before resuming.
 </p>
 <div class="noprint archwiki-template-message">
@@ -354,7 +434,7 @@ swap     LABEL=<i>cryptswap</i>  /dev/urandom  swap,offset=2048,cipher=aes-xts-p
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/initcpio/hooks/openswap</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">run_hook ()
 {
-    cryptsetup open /dev/<i>device</i> swapDevice
+    cryptsetup open /dev/<i>device</i> swap
 }
 </pre>
 <div class="archwiki-template-box archwiki-template-box-warning">
@@ -379,7 +459,7 @@ swap     LABEL=<i>cryptswap</i>  /dev/urandom  swap,offset=2048,cipher=aes-xts-p
 
     mkdir crypto_key_device
     mount /dev/mapper/<i>root-device</i> crypto_key_device
-    cryptsetup open --key-file crypto_key_device/<i>path-to-the-key</i> /dev/<i>device</i> swapDevice
+    cryptsetup open --key-file crypto_key_device/<i>path-to-the-key</i> /dev/<i>device</i> swap
     umount crypto_key_device
 }</pre>
 <p>for opening the swap device by loading a keyfile from a crypted root device.
@@ -398,7 +478,7 @@ swap     LABEL=<i>cryptswap</i>  /dev/urandom  swap,offset=2048,cipher=aes-xts-p
 help ()
 {
 cat&lt;&lt;HELPEOF
-  This opens the swap encrypted partition /dev/<i>device</i> in /dev/mapper/swapDevice
+  This opens the swap encrypted partition /dev/<i>device</i> in /dev/mapper/swap
 HELPEOF
 }
 </pre>
@@ -408,9 +488,9 @@ HELPEOF
 </pre>
 <p><a href="../../en/Mkinitcpio.html#Image_creation_and_activation" class="mw-redirect" title="Regenerate the initramfs">Regenerate the initramfs</a>.
 </p>
-<p>At boot time, the <code>openswap</code> hook will open the swap partition so the kernel resume may use it. If you use special hooks for resuming from hibernation, make sure they are placed <b>after</b> <code>openswap</code> in the <code>HOOKS</code> array. Please note that because of initrd opening swap, there is no entry for swapDevice in <code>/etc/crypttab</code> needed in this case.
+<p>At boot time, the <code>openswap</code> hook will open the swap partition so the kernel resume may use it. If you use special hooks for resuming from hibernation, make sure they are placed <b>after</b> <code>openswap</code> in the <code>HOOKS</code> array. Please note that because of initrd opening swap, there is no entry for swap in <code>/etc/crypttab</code> needed in this case.
 </p>
-<h4><span class="mw-headline" id="dracut">dracut</span></h4>
+<h5><span class="mw-headline" id="dracut">dracut</span></h5>
 <p>Create a keyfile:
 </p>
 <pre># dd bs=512 count=4 if=/dev/random iflag=fullblock | install -m 0600 /dev/stdin /etc/cryptsetup-keys.d/swap.key
@@ -429,7 +509,7 @@ install_items+=" /etc/cryptsetup-keys.d/swap.key "</pre>
 <p>Add the <code>rd.luks.name</code> and <code>rd.luks.key</code> (replace the swap's partition UUID) entries to your kernel command line.
 Your kernel command might look like this now:
 </p>
-<pre>kernel /vmlinuz-linux cryptdevice=/dev/sda2:rootDevice root=/dev/mapper/rootDevice resume=/dev/mapper/swapDevice rd.luks.name=fd839505-3213-4603-9a70-c5a96a24768f=swapDevice rd.luks.key=/etc/cryptsetup-keys.d/swap.key ro
+<pre>kernel /vmlinuz-linux cryptdevice=/dev/sda2:root root=/dev/mapper/root resume=/dev/mapper/swap rd.luks.name=fd839505-3213-4603-9a70-c5a96a24768f=swap rd.luks.key=/etc/cryptsetup-keys.d/swap.key ro
 </pre>
 <h3><span class="mw-headline" id="Using_a_swap_file">Using a swap file</span></h3>
 <p>A swap file can be used to reserve swap-space within an existing partition and may also be setup inside an encrypted blockdevice's partition.
@@ -458,8 +538,8 @@ Your kernel command might look like this now:
 <a href="../../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../../en/Category:Data-at-rest_encryption.html" title="Category:Data-at-rest encryption">Data-at-rest encryption</a></li></ul>
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
-<li><a href="../../en/Category:Pages_or_sections_flagged_with_Template:Merge.html" title="Category:Pages or sections flagged with Template:Merge">Pages or sections flagged with Template:Merge</a></li>
 <li><a href="../../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
+<li><a href="../../en/Category:Pages_or_sections_flagged_with_Template:Merge.html" title="Category:Pages or sections flagged with Template:Merge">Pages or sections flagged with Template:Merge</a></li>
 <li><a href="../../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
 </ul>
 </div>
@@ -472,8 +552,8 @@ Your kernel command might look like this now:
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/Swap_encryption&amp;oldid=821887">https://wiki.archlinux.org/index.php?title=Dm-crypt/Swap_encryption&amp;oldid=821887</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 30 November 2024, at 19:30.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/Swap_encryption&amp;oldid=824016">https://wiki.archlinux.org/index.php?title=Dm-crypt/Swap_encryption&amp;oldid=824016</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 26 December 2024, at 15:58.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

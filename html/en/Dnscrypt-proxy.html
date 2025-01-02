@@ -5,7 +5,7 @@
 <title>dnscrypt-proxy - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -81,28 +81,28 @@
 			<ul id="toc-Select_resolver-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Disable_any_services_bound_to_port_53" class="vector-toc-list-item vector-toc-level-2">
+		<li id="toc-Modify_resolv.conf_and_coordinate_with_other_local_domain_name_resolvers" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Modify_resolv.conf_and_coordinate_with_other_local_domain_name_resolvers">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">2.3</span>Modify resolv.conf and coordinate with other local domain name resolvers</div>
+			</a>
+			
+			<ul id="toc-Modify_resolv.conf_and_coordinate_with_other_local_domain_name_resolvers-sublist" class="vector-toc-list">
+				<li id="toc-Disable_any_services_bound_to_port_53" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Disable_any_services_bound_to_port_53">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">2.3</span>Disable any services bound to port 53</div>
+				<span class="vector-toc-numb">2.3.1</span>Disable any services bound to port 53</div>
 			</a>
 			
 			<ul id="toc-Disable_any_services_bound_to_port_53-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Modify_resolv.conf" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Modify_resolv.conf">
-				<div class="vector-toc-text">
-				<span class="vector-toc-numb">2.4</span>Modify resolv.conf</div>
-			</a>
-			
-			<ul id="toc-Modify_resolv.conf-sublist" class="vector-toc-list">
-			</ul>
+	</ul>
 		</li>
 		<li id="toc-Start_systemd_service" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Start_systemd_service">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">2.5</span>Start systemd service</div>
+				<span class="vector-toc-numb">2.4</span>Start systemd service</div>
 			</a>
 			
 			<ul id="toc-Start_systemd_service-sublist" class="vector-toc-list">
@@ -111,7 +111,7 @@
 		<li id="toc-Check_if_dnscrypt-proxy_is_working" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Check_if_dnscrypt-proxy_is_working">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">2.6</span>Check if dnscrypt-proxy is working</div>
+				<span class="vector-toc-numb">2.5</span>Check if dnscrypt-proxy is working</div>
 			</a>
 			
 			<ul id="toc-Check_if_dnscrypt-proxy_is_working-sublist" class="vector-toc-list">
@@ -339,37 +339,28 @@
 </pre>
 <p>A full list of resolvers is located at the <a rel="nofollow" class="external text" href="https://download.dnscrypt.info/resolvers-list/v3/public-resolvers.md">upstream page</a> or <a rel="nofollow" class="external text" href="https://raw.githubusercontent.com/DNSCrypt/dnscrypt-resolvers/master/v3/public-resolvers.md">Github</a>. If <i>dnscrypt-proxy</i> has run successfully on the system before, <code>/var/cache/dnscrypt-proxy/public-resolvers.md</code> will also contain a list. Look at the description for servers note which validate <a href="../en/DNSSEC.html" title="DNSSEC">DNSSEC</a>, do not log, and are uncensored. These requirements can be configured globally with the <code>require_dnssec</code>, <code>require_nolog</code>, <code>require_nofilter</code> options.
 </p>
-<h3><span class="mw-headline" id="Disable_any_services_bound_to_port_53">Disable any services bound to port 53</span></h3>
-<div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> If using <a href="#Unbound">#Unbound</a> as your local DNS cache this section can be ignored, as <i>unbound</i> runs on port 53 by default.</div>
-<p>To see if any programs are using port 53, run:
-</p>
-<pre> $ ss -lp 'sport = :domain'
-</pre>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
-<div>
-<b>Reason:</b> systemd-resolved listens on 127.0.0.53:53, it should not affect dnscrypt-proxy that listens on 127.0.0.1:53. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Dnscrypt-proxy.html">Talk:Dnscrypt-proxy</a>)</div>
-</div>
-<p>If the output contains more than the first line of column names, you need to disable whatever service is using port 53. One common culprit is <code>systemd-resolved.service</code>(<a href="../en/NetworkManager.html#Unit_dbus-org.freedesktop.resolve1.service_not_found" title="NetworkManager">NetworkManager#Unit dbus-org.freedesktop.resolve1.service not found</a>), but other network managers may have analogous components. You are ready to proceed once the above command outputs nothing more than the following line:
-</p>
-<pre> Netid               State                 Recv-Q                Send-Q                                 Local Address:Port                                   Peer Address:Port
-</pre>
-<h3><span class="mw-headline" id="Modify_resolv.conf">Modify resolv.conf</span></h3>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
-<div>
-<b>Reason:</b> Explain what the options mean. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Dnscrypt-proxy.html">Talk:Dnscrypt-proxy</a>)</div>
-</div>
-<p>Modify the <a href="../en/Domain_name_resolution.html" class="mw-redirect" title="Resolv.conf">resolv.conf</a> file and replace the current set of resolver addresses with the address for <i>localhost</i> and options <a rel="nofollow" class="external autonumber" href="https://github.com/jedisct1/dnscrypt-proxy/wiki/Installation-linux#step-4-change-the-system-dns-settings">[5]</a>:
+<h3><span class="mw-headline" id="Modify_resolv.conf_and_coordinate_with_other_local_domain_name_resolvers">Modify resolv.conf and coordinate with other local domain name resolvers</span></h3>
+<p>Modify the <a href="../en/Domain_name_resolution.html" class="mw-redirect" title="Resolv.conf">resolv.conf</a> file and replace the current set of resolver addresses with the address for <a href="../en/Network_configuration.html#localhost_is_resolved_over_the_network" title="Network configuration">localhost</a> and options<a rel="nofollow" class="external autonumber" href="https://github.com/jedisct1/dnscrypt-proxy/wiki/Installation-linux#step-4-change-the-system-dns-settings">[5]</a>:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/resolv.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">nameserver ::1
 nameserver 127.0.0.1
 options edns0
 </pre>
-<p>Other programs may overwrite this setting; see <a href="../en/Domain_name_resolution.html#Overwriting_of_/etc/resolv.conf" class="mw-redirect" title="Resolv.conf">resolv.conf#Overwriting of /etc/resolv.conf</a> for details.
+<p>Next, existing services doing domain name resolution must be configured not to overwrite the settings. See <a href="../en/Domain_name_resolution.html#Overwriting_of_/etc/resolv.conf" class="mw-redirect" title="Resolv.conf">resolv.conf#Overwriting of /etc/resolv.conf</a> for details.
+They can be used, if they are configured to bind to different addresses than <i>localhost</i> and forward DNS requests to <i>localhost</i> port <code>53</code>. For example, <a href="../en/Systemd-resolved.html" title="Systemd-resolved">systemd-resolved</a> uses address <code>127.0.0.53</code> by default.
 </p>
+<h4><span class="mw-headline" id="Disable_any_services_bound_to_port_53">Disable any services bound to port 53</span></h4>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong> If using <a href="#Unbound">#Unbound</a> as your local DNS cache this section can be ignored, as <i>unbound</i> runs on port 53 by default.</div>
+<p>To see if any programs are using port <code>53</code>, run:
+</p>
+<pre> $ ss -lp 'sport = :domain'
+</pre>
+<p>If the output contains more than the first line of column names, you need to disable whatever service is using port <code>53</code>. For example, <a href="../en/NetworkManager.html#Unit_dbus-org.freedesktop.resolve1.service_not_found" title="NetworkManager">NetworkManager may try to activate a resolver automatically</a>, but other network managers may have analogous components. You are ready to proceed once the above command outputs nothing more than the following line:
+</p>
+<pre> Netid               State                 Recv-Q                Send-Q                                 Local Address:Port                                   Peer Address:Port
+</pre>
 <h3><span class="mw-headline" id="Start_systemd_service">Start systemd service</span></h3>
 <p>Finally, <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start/enable">start/enable</a> the <code>dnscrypt-proxy.service</code> unit or <code>dnscrypt-proxy.socket</code>, depending on which method you chose above.
 </p>
@@ -566,7 +557,6 @@ rst.x4055.x4049.x3827.rs.dns-oarc.net.
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
 <li><a href="../en/Category:Sections_flagged_with_Template:Remove.html" title="Category:Sections flagged with Template:Remove">Sections flagged with Template:Remove</a></li>
 </ul>
 </div>
@@ -579,8 +569,8 @@ rst.x4055.x4049.x3827.rs.dns-oarc.net.
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dnscrypt-proxy&amp;oldid=797793">https://wiki.archlinux.org/index.php?title=Dnscrypt-proxy&amp;oldid=797793</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 21 January 2024, at 21:57.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dnscrypt-proxy&amp;oldid=824017">https://wiki.archlinux.org/index.php?title=Dnscrypt-proxy&amp;oldid=824017</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 26 December 2024, at 15:59.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

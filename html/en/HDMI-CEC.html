@@ -5,7 +5,7 @@
 <title>HDMI-CEC - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -325,7 +325,7 @@
 <strong>Note:</strong> This is confirmed to work with at least the <a href="../en/Intel_graphics.html" class="mw-redirect" title="I915">i915</a>, <a href="../en/Nouveau.html" title="Nouveau">nouveau</a> and <a href="../en/AMDGPU.html" class="mw-redirect" title="Amdgpu">amdgpu</a> drivers.</div>
 <p>The DisplayPort 1.3 standard (introduced in 2014) allows DisplayPort-to-HDMI adapters to use the auxiliary channel to forward CEC signals both ways. This is the sort of feature that adapters do not usually support unless mentioned, and is not commonly found, but it can counter-intuitively be cheaper and easier to use CEC tunneling over DisplayPort than a USB-CEC adapter. The kernel documentation page for the CEC submodule has <a rel="nofollow" class="external text" href="https://docs.kernel.org/admin-guide/media/cec.html#displayport-to-hdmi-adapters-with-working-cec">a list of adapters</a> which have been confirmed to work.
 </p>
-<p>The list is not exhaustive, however, and it is often more useful to know the name of the chipset being used by the adapter than the model of the adapter itself. For instance, the <a href="../en/Framework_Laptop_13.html" class="mw-redirect" title="Framework Laptop">Framework</a> HDMI module card is not explicitly advertised as supporting HDMI-CEC, but the <a rel="nofollow" class="external text" href="https://www.paradetech.com/products/ps186/">Parade PS186 chipset</a> inside of it does, and the card itself is detected by cec-ctl and works as expected. On the other hand, the <a rel="nofollow" class="external text" href="https://www.connect.synaptics.com/spyder">Synaptics "Spyder" VMM7100</a> which is used by several DisplayPost-to-HDMI-2.1 adapters like the Club3D CAC-1088, only does signal processing and seemingly does not support CEC-over-AUX. This is unlike the Club3D CAC-1080, a very similar HDMI 2.0 adapter based on the <a rel="nofollow" class="external text" href="https://hd-plc.megachips.com/mcdp2900-displayport1-4-to-hdmi2-0-converter/">Megachips MCDP2900 chipset</a>, which *does* support CEC.
+<p>The list is not exhaustive, however, and it is often more useful to know the name of the chipset being used by the adapter than the model of the adapter itself. For instance, the <a href="../en/Framework_Laptop_13.html" class="mw-redirect" title="Framework Laptop">Framework</a> HDMI module card is not explicitly advertised as supporting HDMI-CEC, but the <a rel="nofollow" class="external text" href="https://www.paradetech.com/products/ps186/">Parade PS186 chipset</a> inside of it does, and the card itself is detected by cec-ctl and works as expected. On the other hand, the <a rel="nofollow" class="external text" href="https://www.connect.synaptics.com/spyder">Synaptics "Spyder" VMM7100</a> which is used by several DisplayPost-to-HDMI-2.1 adapters like the Club3D CAC-1088, only does signal processing and seemingly does not support CEC-over-AUX. This is unlike the Club3D CAC-1080, a very similar HDMI 2.0 adapter based on the <a rel="nofollow" class="external text" href="https://hd-plc.megachips.com/mcdp2900-displayport1-4-to-hdmi2-0-converter/">Megachips MCDP2900 chipset</a><sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-12-15 ⓘ]</sup>, which *does* support CEC.
 </p>
 <h3><span class="mw-headline" id="CEC_adapter">CEC adapter</span></h3>
 <div class="archwiki-template-box archwiki-template-box-note">
@@ -490,7 +490,8 @@ ExecStart=/usr/bin/cec-ctl --device=0 "--osd-name=%H" --playback "--phys-addr-fr
 <h3><span class="mw-headline" id="CEC_traffic_monitoring">CEC traffic monitoring</span></h3>
 <p>An interesting thing that can be done with a device that supports CEC is to just tap the CEC line to see what other devices are saying. Since the CEC line is <i>physically</i> interconnected between all devices (even those that do not support CEC), all messages sent by any device are visible by all other devices, no matter their position. In order to log these messages with <code>cec-ctl</code>, all that is needed is to run the following:
 </p>
-<pre>sudo cec-ctl -d0 --monitor-all --ignore=all,poll</pre>
+<pre># cec-ctl -d0 --monitor-all --ignore=all,poll
+</pre>
 <p>One specific message that can usually be left out is the polling message. The logical address allocation procedure doesn't define any mean of releasing said addresses, so the expected way of verifying whether an address has become available is to periodically poll it by sending a message with a source and destination address, but no payload, similar to how <a href="../en/Network_configuration.html#Ping" class="mw-redirect" title="Ping">ping</a> works. If the message is not acknowledged, then it is understood that the device at this logical address "no longer needs/uses it", and will be assumed to no longer exist. Most televisions will therefore poll their downstream devices rather frequently to check their status, and using <code>--ignore=all,poll</code> (to ignore all poll messages regardless of provenance) or <code>--ignore=0,poll</code> (to only ignore poll messages from the TV) can help reduce noise in the logs.
 </p>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
@@ -509,7 +510,10 @@ ExecStart=/usr/bin/cec-ctl --device=0 "--osd-name=%H" --playback "--phys-addr-fr
 <div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Display_control.html" title="Category:Display control">Display control</a></li></ul>
 </div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li></ul>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
+<li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
+</ul>
 </div>
 </div>
 				</div>
@@ -520,8 +524,8 @@ ExecStart=/usr/bin/cec-ctl --device=0 "--osd-name=%H" --playback "--phys-addr-fr
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=HDMI-CEC&amp;oldid=818797">https://wiki.archlinux.org/index.php?title=HDMI-CEC&amp;oldid=818797</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 13 October 2024, at 05:30.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=HDMI-CEC&amp;oldid=824299">https://wiki.archlinux.org/index.php?title=HDMI-CEC&amp;oldid=824299</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 30 December 2024, at 17:13.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

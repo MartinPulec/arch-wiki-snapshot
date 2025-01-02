@@ -5,7 +5,7 @@
 <title>systemd-nspawn - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -384,6 +384,15 @@
 			<ul id="toc-Run_docker_in_systemd-nspawn-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Map_a_local_user_and_bind-mount_their_home_directory_into_a_container" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Map_a_local_user_and_bind-mount_their_home_directory_into_a_container">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">5.9</span>Map a local user and bind-mount their home directory into a container</div>
+			</a>
+			
+			<ul id="toc-Map_a_local_user_and_bind-mount_their_home_directory_into_a_container-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-Troubleshooting" class="vector-toc-list-item vector-toc-level-1">
@@ -517,15 +526,15 @@
 <div class="archwiki-template-meta-related-articles">
 <p>Related articles</p>
 <ul>
-<li><a href="../en/Systemd.html" title="Systemd">systemd</a></li>
-<li><a href="../en/Linux_Containers.html" title="Linux Containers">Linux Containers</a></li>
-<li><a href="../en/Systemd-networkd.html" title="Systemd-networkd">systemd-networkd</a></li>
 <li><a href="../en/Docker.html" title="Docker">Docker</a></li>
+<li><a href="../en/Linux_Containers.html" title="Linux Containers">Linux Containers</a></li>
+<li><a href="../en/Systemd.html" title="Systemd">systemd</a></li>
+<li><a href="../en/Systemd-networkd.html" title="Systemd-networkd">systemd-networkd</a></li>
 </ul>
 </div>
 <p><i>systemd-nspawn</i> is like the <a href="../en/Chroot.html" title="Chroot">chroot</a> command, but it is a <i>chroot on steroids</i>.
 </p>
-<p><i>systemd-nspawn</i> may be used to run a command or operating system in a light-weight namespace container. It is more powerful than <a href="../en/Chroot.html" title="Chroot">chroot</a> since it fully virtualizes the file system hierarchy, as well as the process tree, the various IPC subsystems and the host and domain name.
+<p><i>systemd-nspawn</i> may be used to run a command or operating system in a light-weight namespace container. It is more powerful than <i>chroot</i> since it fully virtualizes the file system hierarchy, as well as the process tree, the various IPC subsystems and the host and domain name.
 </p>
 <p><i>systemd-nspawn</i> limits access to various kernel interfaces in the container to read-only, such as <code>/sys</code>, <code>/proc/sys</code> or <code>/sys/fs/selinux</code>. Network interfaces and the system clock may not be changed from within the container. Device nodes may not be created. The host system cannot be rebooted and kernel modules may not be loaded from within the container.
 </p>
@@ -580,7 +589,7 @@
 <li>
 <i>container-name</i> is the directory that will contain the operating system file tree; it will be created if it does not yet exist</li>
 <li>
-<i>repository-url</i>: the mirror from which it should download the operating system tree. For current Debian releases it can be any <a rel="nofollow" class="external text" href="https://www.debian.org/mirror/list">valid mirror</a> such as the CDN-backed <a rel="nofollow" class="external free" href="https://deb.debian.org/debian">https://deb.debian.org/debian</a>, and for Ubuntu any mirror from <a rel="nofollow" class="external autonumber" href="https://launchpad.net/ubuntu/+archivemirrors">[4]</a> such as the reference <a rel="nofollow" class="external free" href="http://archive.ubuntu.com/ubuntu">http://archive.ubuntu.com/ubuntu</a>.</li>
+<i>repository-url</i>: the mirror from which it should download the operating system tree. For current Debian releases it can be any <a rel="nofollow" class="external text" href="https://www.debian.org/mirror/list">valid mirror</a> such as the CDN-backed <a rel="nofollow" class="external free" href="https://deb.debian.org/debian">https://deb.debian.org/debian</a>, and for Ubuntu any mirror from <a rel="nofollow" class="external autonumber" href="https://launchpad.net/ubuntu/+archivemirrors">[4]</a> such as the reference <a rel="nofollow" class="external free" href="https://archive.ubuntu.com/ubuntu">https://archive.ubuntu.com/ubuntu</a>.</li>
 </ul>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> 
@@ -1113,7 +1122,7 @@ Bind=/var/cache/pacman/pkg
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/nspawn/myContainer.nspawn</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Exec]
-SystemCallFilter=add_key keyctl bpf
+SystemCallFilter=@keyring bpf
 </pre>
 <p>Then, Docker should work as-is inside the container.
 </p>
@@ -1144,6 +1153,24 @@ Bind=/dev/fuse
 <pre># systemctl set-property systemd-nspawn@myContainer DeviceAllow='/dev/fuse rwm'
 </pre>
 <p>Finally, install the package <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=fuse-overlayfs">fuse-overlayfs</a></span> inside the container. You need to restart the container for all the configuration to take effect.
+</p>
+<h3><span class="mw-headline" id="Map_a_local_user_and_bind-mount_their_home_directory_into_a_container">Map a local user and bind-mount their home directory into a container</span></h3>
+<p>Create a container in <code>/var/lib/machines/MyContainer/</code> as explained in <a href="#Create_and_boot_a_minimal_Arch_Linux_container">#Create and boot a minimal Arch Linux container</a>.
+</p>
+<p>Create a configuration file with <code>BindUser=</code> to map the selected local user name into the container. Note that this requires <code>PrivateUsers=</code>, see <span class="plainlinks archwiki-template-man" title="$ man 1 systemd-nspawn"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-nspawn.1">systemd-nspawn(1)</a></span> for details. Files created in the bind-mounted home directory both inside and outside the container will have the same UID and GID.
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/nspawn/MyContainer.nspawn</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Exec]
+User=<i>username</i>
+PrivateUsers=pick
+
+[Files]
+BindUser=<i>username</i></pre>
+<p>Having also <code>User=</code> in the configuration specifies the default user used for running commands inside the container, such as the interactive shell:
+</p>
+<pre># systemd-nspawn -M MyContainer bash
+</pre>
+<p>This is helpful for testing Arch Linux packages from another Linux distribution.
 </p>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
 <h3>
@@ -1186,8 +1213,8 @@ Environment=TERM=xterm-256color</pre>
 					<div id="catlinks" class="catlinks" data-mw="interface">
 <div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Categories</a>: <ul>
-<li><a href="../en/Category:Virtualization.html" title="Category:Virtualization">Virtualization</a></li>
 <li><a href="../en/Category:Sandboxing.html" title="Category:Sandboxing">Sandboxing</a></li>
+<li><a href="../en/Category:Virtualization.html" title="Category:Virtualization">Virtualization</a></li>
 </ul>
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
@@ -1205,8 +1232,8 @@ Environment=TERM=xterm-256color</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Systemd-nspawn&amp;oldid=820176">https://wiki.archlinux.org/index.php?title=Systemd-nspawn&amp;oldid=820176</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 5 November 2024, at 18:46.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Systemd-nspawn&amp;oldid=823892">https://wiki.archlinux.org/index.php?title=Systemd-nspawn&amp;oldid=823892</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 25 December 2024, at 18:36.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -5,7 +5,7 @@
 <title>Kubernetes - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -97,19 +97,10 @@
 			</a>
 			
 			<ul id="toc-Container_runtime-sublist" class="vector-toc-list">
-				<li id="toc-Prerequisites" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Prerequisites">
-				<div class="vector-toc-text">
-				<span class="vector-toc-numb">1.2.1</span>Prerequisites</div>
-			</a>
-			
-			<ul id="toc-Prerequisites-sublist" class="vector-toc-list">
-			</ul>
-		</li>
-		<li id="toc-containerd_runtime" class="vector-toc-list-item vector-toc-level-3">
+				<li id="toc-containerd_runtime" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#containerd_runtime">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">1.2.2</span>containerd runtime</div>
+				<span class="vector-toc-numb">1.2.1</span>containerd runtime</div>
 			</a>
 			
 			<ul id="toc-containerd_runtime-sublist" class="vector-toc-list">
@@ -563,41 +554,6 @@
 <p>Both control-plane and regular worker nodes require a container runtime for their <code>kubelet</code> instances which is used for hosting containers.
 <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> either <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=containerd">containerd</a></span> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=cri-o">cri-o</a></span> to meet this dependency.
 </p>
-<h4><span class="mw-headline" id="Prerequisites">Prerequisites</span></h4>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-cut.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is being considered for removal.</b></p>
-<div>
-<b>Reason:</b> The <a href="../en/Overlay_filesystem.html" title="Overlay filesystem">overlay</a> module is auto-loaded, <code>br_netfilter</code> is loaded via <code>/usr/lib/modules-load.d/kubelet.conf</code> and <code>/usr/lib/modules-load.d/cri-o.conf</code>. IP forwarding is enabled via <code>/etc/sysctl.d/50-kubelet.conf</code> and <code>/usr/lib/sysctl.d/90-cri-o.conf</code>. The <code>net.bridge.bridge-nf-call-iptables</code> and <code>net.bridge.bridge-nf-call-ip6tables</code> parameters <a rel="nofollow" class="external text" href="https://unix.stackexchange.com/q/719112">default to 1</a>. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Kubernetes.html">Talk:Kubernetes</a>)</div>
-</div>
-<p>To setup <i>forwarding IPv4 and letting iptables see bridged traffic</i>, begin by <a href="../en/Kernel_module.html#Manual_module_handling" title="Kernel module">loading the kernel modules</a> <code>overlay</code> and <code>br_netfilter</code> manually. 
-</p>
-<p>To perform this step on subsequent boots, create: 
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/modules-load.d/k8s.conf</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">overlay
-br_netfilter
-</pre>
-<p>Some module parameters are required: 
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/sysctl.d/k8s.conf</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">net.bridge.bridge-nf-call-iptables  = 1
-net.bridge.bridge-nf-call-ip6tables = 1
-net.ipv4.ip_forward                 = 1</pre>
-<p>Apply them without rebooting with: 
-</p>
-<pre># sysctl --system
-</pre>
-<p>(Optionally) verify that the <code>br_netfilter</code>, <code>overlay</code> modules are loaded by running the following commands:
-</p>
-<pre>lsmod | grep br_netfilter
-lsmod | grep overlay
-</pre>
-<p>(Optionally) verify that the <code>net.bridge.bridge-nf-call-iptables</code>, <code>net.bridge.bridge-nf-call-ip6tables</code>, and <code>net.ipv4.ip_forward</code> system variables are set to 1 in your <code>sysctl</code> config by running the following command:
-</p>
-<pre>sysctl net.bridge.bridge-nf-call-iptables net.bridge.bridge-nf-call-ip6tables net.ipv4.ip_forward
-</pre>
-<p>Refer to official document<a rel="nofollow" class="external autonumber" href="https://kubernetes.io/docs/setup/production-environment/container-runtimes/#install-and-configure-prerequisites">[1]</a> for more details.
-</p>
 <h4><span class="mw-headline" id="containerd_runtime">containerd runtime</span></h4>
 <p>There are two methods available to install <i>containerd</i>:
 </p>
@@ -660,7 +616,7 @@ lsmod | grep overlay
   [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
     SystemdCgroup = true
 </pre>
-<p>If <code>/etc/containerd/config.toml</code> does not exist, the default configuration can be generated with <a rel="nofollow" class="external autonumber" href="https://github.com/containerd/containerd/blob/main/docs/getting-started.md#customizing-containerd">[2]</a>
+<p>If <code>/etc/containerd/config.toml</code> does not exist, the default configuration can be generated with <a rel="nofollow" class="external autonumber" href="https://github.com/containerd/containerd/blob/main/docs/getting-started.md#customizing-containerd">[1]</a>
 </p>
 <pre># mkdir -p /etc/containerd/
 # containerd config default &gt; /etc/containerd/config.toml
@@ -681,7 +637,7 @@ lsmod | grep overlay
 <pre>kubeadm init --cri-socket /run/containerd/containerd.sock
 </pre>
 <h4><span class="mw-headline" id="Containerd">Containerd</span></h4>
-<p>Before Kubernetes version 1.27.4, when using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=containerd">containerd</a></span> as container runtime, it is required to  provide <code>kubeadm init</code> or <code>kubeadm join</code> with its CRI endpoint. To do so, specify their flag <code>--cri-socket</code> to  <code>/run/containerd/containerd.sock</code><a rel="nofollow" class="external autonumber" href="https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#installing-runtime">[3]</a>.
+<p>Before Kubernetes version 1.27.4, when using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=containerd">containerd</a></span> as container runtime, it is required to  provide <code>kubeadm init</code> or <code>kubeadm join</code> with its CRI endpoint. To do so, specify their flag <code>--cri-socket</code> to  <code>/run/containerd/containerd.sock</code><a rel="nofollow" class="external autonumber" href="https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#installing-runtime">[2]</a>.
 </p>
 <pre>kubeadm join --cri-socket=/run/containerd/containerd.sock
 </pre>
@@ -724,7 +680,7 @@ when initializing the Kubernetes master with kubeadm init, you can specify the I
 </p>
 <p>If you want to use cilium's implementation of node network proxy to fully leverage cilium's network policy feature, you should pass flag <code>--skip-phases=addon/kube-proxy</code> to <code>kubeadm init</code> to skip the install of kube-proxy. 
 </p>
-<p>Cilium will install a full replacement during its installation. See this<a rel="nofollow" class="external autonumber" href="https://docs.cilium.io/en/latest/network/kubernetes/kubeproxy-free/">[4]</a> for details.
+<p>Cilium will install a full replacement during its installation. See this<a rel="nofollow" class="external autonumber" href="https://docs.cilium.io/en/latest/network/kubernetes/kubeproxy-free/">[3]</a> for details.
 </p>
 <h2><span class="mw-headline" id="Create_cluster">Create cluster</span></h2>
 <p>Before <a rel="nofollow" class="external text" href="https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/">creating a new kubernetes cluster</a> with <code>kubeadm</code> <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start">start</a> and <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> <code>kubelet.service</code>.
@@ -1051,7 +1007,6 @@ kube-scheduler-k8s                 1/1     Running            23            21m
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li>
-<li><a href="../en/Category:Sections_flagged_with_Template:Remove.html" title="Category:Sections flagged with Template:Remove">Sections flagged with Template:Remove</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
 </ul>
 </div>
@@ -1064,8 +1019,8 @@ kube-scheduler-k8s                 1/1     Running            23            21m
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Kubernetes&amp;oldid=819378">https://wiki.archlinux.org/index.php?title=Kubernetes&amp;oldid=819378</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 21 October 2024, at 11:53.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Kubernetes&amp;oldid=823606">https://wiki.archlinux.org/index.php?title=Kubernetes&amp;oldid=823606</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 21 December 2024, at 23:54.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -5,7 +5,7 @@
 <title>Improving performance (Português) - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -738,7 +738,7 @@
 </p>
 <p>O <a href="https://en.wikipedia.org/wiki/CFQ" class="extiw" title="wikipedia:CFQ">Completely Fair Queuing (CFQ)</a> (fila completamente justa) aborda o problema diferentemente ao alocar um período fixo de tempo e um número de solicitações permitidas por vez dependendo da prioridade do processo submetendo elas. Suporta o <a href="../pt/Cgroups.html" title="Cgroups (Português)">cgroup</a> que permite a reserva de alguma quantidade de E/S para um grupo específico de processos. É particularmente útil para hosting compartilhado e nuvem: usuários que pagam por alguns IOPS querem sua parte quando necessários. Além disso, ele fica ocioso no final da E/S síncrona, aguardando outras operações próximas, assumindo esse recurso do escalonador <i>anticipatory</i> e trazendo algumas melhorias. Ambos, <i>anticipatory</i> e <i>elevator</i> foram descomissionados do kernel Linux e substituídos pelas alternativas mais avançadas apresentadas nesta seção.
 </p>
-<p>O <a rel="nofollow" class="external text" href="https://algo.ing.unimo.it/people/paolo/disk_sched/">Budget Fair Queuing (BFQ)</a> (carteira de fila justa) é baseado no código do CFQ e trás algumas melhorias. Não garante o disco para cada processo por um período fixo de tempo mas uma "budget" (carteira) mensurada no número de setores para os processos e usa heurísticas. É relativamente complexo, pode ser mais adaptado a unidades de armazenamento rotacionais e SSDs lentos por causa de seu alto uso de recursos por operação, especialmente se associado com uma CPU lenta, pode diminuir o desempenho de dispositivos rápidos. O objetivo do BFQ em sistemas pessoais é esse, em tarefas interativas, o dispositivo de armazenamento é virtualmente tão responsivo quanto se estivesse ocioso. Na configuração padrão se foca em entregar a latência mais baixa do que a taxa de transferência máxima.
+<p>O <a rel="nofollow" class="external text" href="https://algo.ing.unimo.it/people/paolo/disk_sched/">Budget Fair Queuing (BFQ)</a><sup title="Status da última verificação: SSL error">[<a href="https://en.wikipedia.org/wiki/pt:Wikip%C3%A9dia:Liga%C3%A7%C3%A3o_inativa" class="extiw" title="wikipedia:pt:Wikipédia:Ligação inativa">link inativo</a> 2024-12-15 ⓘ]</sup> (carteira de fila justa) é baseado no código do CFQ e trás algumas melhorias. Não garante o disco para cada processo por um período fixo de tempo mas uma "budget" (carteira) mensurada no número de setores para os processos e usa heurísticas. É relativamente complexo, pode ser mais adaptado a unidades de armazenamento rotacionais e SSDs lentos por causa de seu alto uso de recursos por operação, especialmente se associado com uma CPU lenta, pode diminuir o desempenho de dispositivos rápidos. O objetivo do BFQ em sistemas pessoais é esse, em tarefas interativas, o dispositivo de armazenamento é virtualmente tão responsivo quanto se estivesse ocioso. Na configuração padrão se foca em entregar a latência mais baixa do que a taxa de transferência máxima.
 </p>
 <p><a rel="nofollow" class="external text" href="https://lwn.net/Articles/720675/">Kyber</a> é um escalonador recente inspirado pelas técnicas de gerenciamento ativo de fila usado para roteamento de rede. A implementação é baseada em "tokens" que servem como um mecanismo para limitar solicitações. Um token de fila é necessário para alocar uma solicitação, para prevenir a inanição de solicitações. Um token de despacho é também necessário e limita as operações de certa prioridade para dado dispositivo. Finalmente, uma latência alvo de leitura é definida e o escalonador se otimiza para chegar nela. A implementação do algoritmo é relativamente simples e é considerada eficiente para dispositivos rápidos.
 </p>
@@ -827,7 +827,7 @@ ACTION=="add|change", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="1", ATTR{queue
 <p>Evitar acessos desnecessários em unidades de armazenamento lentas é bom para a performance e também aumenta a vida útil dos dispositivos, apesar que em hardware moderno a diferença é normalmente insignificante.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Nota:</strong> Um SSD de 32GB com um fator medíocre de amplificação de escrita em 10 vezes, um padrão de 10000 ciclos de escrever/apagar, e <b>10GB de dados escritos por dia</b>, deve lhe dar uma <b>expectativa de vida útil de 8 anos</b>. Isto melhora com SSDs maiores e controladores modernos com menos amplificação de escrita. Também compare <a rel="nofollow" class="external autonumber" href="https://techreport.com/review/25889/the-ssd-endurance-experiment-500tb-update">[1]</a> ao considerar se qualquer estratégia particular para limitar escritas no disco é, de verdade, necessária.</div>
+<strong>Nota:</strong> Um SSD de 32GB com um fator medíocre de amplificação de escrita em 10 vezes, um padrão de 10000 ciclos de escrever/apagar, e <b>10GB de dados escritos por dia</b>, deve lhe dar uma <b>expectativa de vida útil de 8 anos</b>. Isto melhora com SSDs maiores e controladores modernos com menos amplificação de escrita. Também compare <a rel="nofollow" class="external autonumber" href="https://techreport.com/review/25889/the-ssd-endurance-experiment-500tb-update">[1]</a><sup title="Status da última verificação: 404">[<a href="https://en.wikipedia.org/wiki/pt:Wikip%C3%A9dia:Liga%C3%A7%C3%A3o_inativa" class="extiw" title="wikipedia:pt:Wikipédia:Ligação inativa">link inativo</a> 2024-12-15 ⓘ]</sup> ao considerar se qualquer estratégia particular para limitar escritas no disco é, de verdade, necessária.</div>
 <h4><span class="mw-headline" id="Mostrar_escritas_no_disco">Mostrar escritas no disco</span></h4>
 <p>O pacote <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=iotop">iotop</a></span> pode ordenar programas por escritas no disco, e mostrar quanto e quão frequentemente estes estão escrevendo no disco. Veja <span class="plainlinks archwiki-template-man" title="$ man 8 iotop"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/iotop.8">iotop(8)</a></span> para detalhes.
 </p>
@@ -1097,8 +1097,8 @@ KERNEL=="zram1", ATTR{disksize}="512M" RUN="/usr/bin/mkswap /dev/zram1", TAG+="s
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
 <li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
 <li><a href="../en/Category:Pages_with_broken_package_links.html" title="Category:Pages with broken package links">Pages with broken package links</a></li>
 </ul>
 </div>
@@ -1111,8 +1111,8 @@ KERNEL=="zram1", ATTR{disksize}="512M" RUN="/usr/bin/mkswap /dev/zram1", TAG+="s
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Improving_performance_(Portugu%C3%AAs)&amp;oldid=818501">https://wiki.archlinux.org/index.php?title=Improving_performance_(Português)&amp;oldid=818501</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 12 October 2024, at 15:11.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Improving_performance_(Portugu%C3%AAs)&amp;oldid=823162">https://wiki.archlinux.org/index.php?title=Improving_performance_(Português)&amp;oldid=823162</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 15 December 2024, at 08:52.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

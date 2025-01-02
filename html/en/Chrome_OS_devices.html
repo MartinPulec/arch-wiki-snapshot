@@ -5,7 +5,7 @@
 <title>Chrome OS devices - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -575,7 +575,7 @@
 </div>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> This article relies on third-party scripts and modifications, and may irreparably damage your hardware or data.</div>
-<p>This article was created to provide information on how to get Arch installed on the series of Chrome OS devices built by Acer, HP, Samsung, Toshiba, and Google. Currently this page is being overhauled, and more model specific pages are being built with some of the information listed below. 
+<p>This article was created to provide information on how to get Arch installed on the series of Chrome OS devices built by Acer, HP, Samsung, Toshiba, and Google. Currently this page is being overhauled, and more model specific pages are being built with some of the information listed below.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> This article describes how to install Arch Linux by activating developer mode. For instructions on how to install Arch Linux in a ChromeOS container without having to enable developer mode see <a href="../en/Chrome_OS_devices/Crostini.html" class="mw-redirect" title="Crostini">Crostini</a>
@@ -583,7 +583,7 @@
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Introduction">Introduction</span></h2>
 <h3><span class="mw-headline" id="Legacy_Boot_Mode">Legacy Boot Mode</span></h3>
-<p>All recent Intel-based Chrome OS devices (starting with the 2013 Chromebook Pixel) feature a Legacy Boot Mode, designed to allow the user to boot Linux. Legacy Boot Mode has a dedicated firmware region, <code>RW_LEGACY</code>, which is designed to be user-writeable (hence the 'RW' notation) and is completely separate from the ChromeOS portion of the firmware (ie, it is safe to update and cannot brick the device). It is enabled by the <a rel="nofollow" class="external text" href="https://www.coreboot.org/SeaBIOS">SeaBIOS</a> payload of  <a rel="nofollow" class="external text" href="https://www.coreboot.org/">coreboot</a>, the open-source firmware used for all Chrome OS devices (with the exception of the first generation of Chromebooks and a few early ARM models).  SeaBIOS behaves like a traditional BIOS that boots into the MBR of the disk, and from there into standard boot loaders like Syslinux and GRUB.
+<p>All recent Intel-based Chrome OS devices (starting with the 2013 Chromebook Pixel) feature a Legacy Boot Mode, designed to allow the user to boot Linux. Legacy Boot Mode has a dedicated firmware region, <code>RW_LEGACY</code>, which is designed to be user-writeable (hence the 'RW' notation) and is completely separate from the ChromeOS portion of the firmware (ie, it is safe to update and cannot brick the device). It is enabled by the <a rel="nofollow" class="external text" href="https://www.coreboot.org/SeaBIOS">SeaBIOS</a><sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-12-14 ⓘ]</sup> payload of  <a rel="nofollow" class="external text" href="https://www.coreboot.org/">coreboot</a>, the open-source firmware used for all Chrome OS devices (with the exception of the first generation of Chromebooks and a few early ARM models).  SeaBIOS behaves like a traditional BIOS that boots into the MBR of the disk, and from there into standard boot loaders like Syslinux and GRUB.
 </p>
 <p>Models with a Core-i based SoC (Haswell, Broadwell, Skylake, KabyLake) mostly ship with a functional Legacy Boot Mode payload; updating to a 3rd party build can provide bug fixes and additional features.  Models with an Atom-based SoC (Baytrail, Braswell, Apollolake) have Legacy Boot Mode capability, but do not ship with a RW_LEGACY/SeaBIOS payload (that part of the firmware is blank).  These models require a 3rd party RW_LEGACY firmware to be loaded for Legacy Boot Mode to be functional.
 </p>
@@ -648,11 +648,11 @@
 <li>Boot Arch Linux installation media and install Arch.</li>
 </ul>
 <h3><span class="mw-headline" id="Enabling_developer_mode">Enabling developer mode</span></h3>
-<p><a rel="nofollow" class="external text" href="https://www.chromium.org/chromium-os/developer-information-for-chrome-os-devices/acer-c720-chromebook#TOC-Developer-Mode">Developer Mode</a><sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-07-30 ⓘ]</sup> is necessary in order to access the superuser shell inside ChromeOS, which is required for making changes to the system like allow booting through SeaBIOS.
+<p><a rel="nofollow" class="external text" href="https://www.chromium.org/chromium-os/developer-library/guides/device/developer-mode/#enable-developer-mode">Developer Mode</a> is necessary in order to access the superuser shell inside ChromeOS, which is required for making changes to the system like allow booting through SeaBIOS.
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> Enabling Developer Mode will wipe all of your data.</div>
-<p>To enable developer mode: 
+<p>To enable developer mode:
 </p>
 <ul>
 <li>Press and hold the <code>Esc+⟳</code> (where <code>F3</code> would normally be) keys, then press the <code>Power</code> button. This enters Recovery Mode.
@@ -678,6 +678,8 @@
 <li>Become superuser with <a href="../en/Sudo.html" title="Sudo">sudo</a>, use the command <code>sudo su -</code>.</li>
 </ul>
 <h4><span class="mw-headline" id="Accessing_the_superuser_shell_when_logged_into_ChromeOS">Accessing the superuser shell when logged into ChromeOS</span></h4>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> As of ChromeOS version 117, this approach no longer works as using the <code>sudo</code> command in the crosh shell is not allowed. The other approach above is the only way to access the superuser shell.</div>
 <p>If you have configured ChromeOS already:
 </p>
 <ul>
@@ -778,7 +780,7 @@ GBB_FLAG_DEFAULT_DEV_BOOT_LEGACY 0x00000400
 <strong>Note:</strong> You can most likely ignore this section unless your device requires patched kernel support.</div>
 <p>It is recommended to use the official <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span> package for most Chrome OS devices with the exception being newer devices which might need patched kernel support.
 </p>
-<p>If your devices requires a patched kernel, it is advised to review the list of patches and decide if the patch list is getting decidedly small enough that you no longer require a patched kernel and instead you can use the official <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span> package instead. 
+<p>If your devices requires a patched kernel, it is advised to review the list of patches and decide if the patch list is getting decidedly small enough that you no longer require a patched kernel and instead you can use the official <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span> package instead.
 </p>
 <p>See <a href="../en/Kernel.html" class="mw-redirect" title="Kernels">kernels</a> for more information.
 </p>
@@ -856,7 +858,7 @@ This procedure is not needed with Matt DeVillier's custom firmware since problem
 <p>User reports needing to blacklist <code>atmel_mxt_ts</code> and <code>cros_ec_typec</code> instead of the above module to get suspend &amp; resume working on an 11th gen Acer Chromebook CX5500 running Arch Linux via SeaBIOS.
 </p>
 <h4><span class="mw-headline" id="With_systemd">With systemd</span></h4>
-<p>Sometimes the synaptics touchpad, and various other parts of the laptop are used as wakeup devices causing certain movements of the laptop during suspend to end suspend. In order to disable all wakeup devices except for the laptop lid sensor, create the following <code>suspend-device-fix.sh</code> file. 
+<p>Sometimes the synaptics touchpad, and various other parts of the laptop are used as wakeup devices causing certain movements of the laptop during suspend to end suspend. In order to disable all wakeup devices except for the laptop lid sensor, create the following <code>suspend-device-fix.sh</code> file.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/usr/local/sbin/suspend-device-fix.sh</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">#!/bin/bash
@@ -869,7 +871,7 @@ exit 0
 </pre>
 <p>Now make the file <a href="../en/Help:Reading.html#Make_executable" class="mw-redirect" title="Executable">executable</a>
 </p>
-<p>Create a systemd service to execute the script on every boot. 
+<p>Create a systemd service to execute the script on every boot.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/suspend-fix.service</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Unit]
@@ -900,14 +902,14 @@ WantedBy=multi-user.target</pre>
 
 case $1/$2 in
   pre/*)
-    # Unbind ath9k for preventing error and full sleep mode (wakeup by LID after hibernating) 
+    # Unbind ath9k for preventing error and full sleep mode (wakeup by LID after hibernating)
     echo -n "0000:01:00.0" | tee /sys/bus/pci/drivers/ath9k/unbind
     # Unbind snd_hda_intel for sound
     echo -n "0000:00:1b.0" | tee /sys/bus/pci/drivers/snd_hda_intel/unbind
     echo -n "0000:00:03.0" | tee /sys/bus/pci/drivers/snd_hda_intel/unbind
     ;;
   post/*)
-    # Bind ath9k for preventing error and and full sleep mode (wakeup by LID after hibernating) 
+    # Bind ath9k for preventing error and and full sleep mode (wakeup by LID after hibernating)
     echo -n "0000:01:00.0" | tee /sys/bus/pci/drivers/ath9k/bind
     # bind snd_hda_intel for sound
     echo -n "0000:00:1b.0" | tee /sys/bus/pci/drivers/snd_hda_intel/bind
@@ -915,7 +917,7 @@ case $1/$2 in
     ;;
 esac
 </pre>
-<p>Make sure to make the script <a href="../en/Help:Reading.html#Make_executable" class="mw-redirect" title="Executable">executable</a>. 
+<p>Make sure to make the script <a href="../en/Help:Reading.html#Make_executable" class="mw-redirect" title="Executable">executable</a>.
 </p>
 <p>Then <a href="../en/GRUB.html#Generate_the_main_configuration_file" title="GRUB">rebuild your grub config</a>.
 </p>
@@ -927,6 +929,11 @@ esac
 </p>
 <p>The topology was created by a Sound Open Firmware maintainer and tested by MrChromebox (see <a rel="nofollow" class="external text" href="https://github.com/thesofproject/sof/issues/5361#issuecomment-1048040003">Github discussion</a>). As stated by MrChromebox, this may introduce audio scaling issues (E.g. audio output range is 0-10 instead of 0-100) and incorrect audio output device types (E.g. headphones instead of speaker).
 </p>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:View-refresh-red.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is out of date.</b></p>
+<div>
+<b>Reason:</b> <code>sof-apl-da7219.tplg</code> is currently provided by the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sof-firmware">sof-firmware</a></span> package, so this is probably no longer necessary. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Chrome_OS_devices.html">Talk:Chrome OS devices</a>)</div>
+</div>
 <ul>
 <li>Install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sof-firmware">sof-firmware</a></span>.</li>
 <li>Download and uncompress <a rel="nofollow" class="external text" href="https://mrchromebox.tech/files/misc/sof-apl-da7219.tplg.gz">sof-apl-da7219.tplg.gz</a>.</li>
@@ -941,7 +948,12 @@ options snd-sof-pci fw_path="intel/sof"</pre>
 </p>
 <p>It is likely that you will also need to use <code>alsamixer</code> from <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=alsa-utils">alsa-utils</a></span> to turn on "Left Speaker Mixer Left DAC" and "Right Speaker Mixer Right DAC". For more information, see <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/48936">FS#48936</a>.
 </p>
-<p>If you use max98090, you may also need to install <a href="../en/Advanced_Linux_Sound_Architecture.html#ALSA_firmware" title="Advanced Linux Sound Architecture">Advanced Linux Sound Architecture#ALSA firmware</a> and symbolically link <code>/usr/lib/firmware/sof-cht-max98090.tplg</code> to <code>/usr/lib/firmware/sof-byt-max98090.tplg</code>.
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:View-refresh-red.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is out of date.</b></p>
+<div>
+<b>Reason:</b> Both <code>sof-cht-max98090.tplg</code> and <code>sof-byt-max98090.tplg</code> are currently provided by the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sof-firmware">sof-firmware</a></span> package, so creating a symbolic link is probably no longer necessary. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Chrome_OS_devices.html">Talk:Chrome OS devices</a>)</div>
+</div>
+<p>If you use max98090, you may also need to install <a href="../en/Advanced_Linux_Sound_Architecture.html#Firmware" class="mw-redirect" title="Sound Open Firmware">Sound Open Firmware</a> and symbolically link <code>/usr/lib/firmware/sof-cht-max98090.tplg</code> to <code>/usr/lib/firmware/sof-byt-max98090.tplg</code>.
 </p>
 <h4><span class="mw-headline" id="Haswell_based_models">Haswell based models</span></h4>
 <p>One or more of followings might help solving audio related issues, setting <code>snd_hda_intel</code> module index reported the most useful. It is highly possible that you will not need to make any change.
@@ -978,7 +990,7 @@ f6 = brightnessdown
 f7 = brightnessup
 f8 = mute
 f9 = volumedown
-f10= volumeup 
+f10= volumeup
 
 [meta]
 f1 = f1
@@ -1021,7 +1033,7 @@ f6 = brightnessdown
 f7 = brightnessup
 f8 = mute
 f9 = volumedown
-f10= volumeup 
+f10= volumeup
 
 left  = home
 right = end
@@ -1116,8 +1128,8 @@ HandleLidSwitch=ignore</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Chrome_OS_devices&amp;oldid=820444">https://wiki.archlinux.org/index.php?title=Chrome_OS_devices&amp;oldid=820444</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 9 November 2024, at 19:59.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Chrome_OS_devices&amp;oldid=823674">https://wiki.archlinux.org/index.php?title=Chrome_OS_devices&amp;oldid=823674</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 22 December 2024, at 21:41.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

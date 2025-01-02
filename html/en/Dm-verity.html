@@ -5,7 +5,7 @@
 <title>dm-verity - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -161,13 +161,13 @@
 			</a>
 			
 			<ul id="toc-Secure_Boot-sublist" class="vector-toc-list">
-				<li id="toc-Unified_Kernel_Image" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Unified_Kernel_Image">
+				<li id="toc-Unified_kernel_image" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Unified_kernel_image">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">5.1.1</span>Unified Kernel Image</div>
+				<span class="vector-toc-numb">5.1.1</span>Unified kernel image</div>
 			</a>
 			
-			<ul id="toc-Unified_Kernel_Image-sublist" class="vector-toc-list">
+			<ul id="toc-Unified_kernel_image-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 		<li id="toc-Signing_kernel_modules/DKMS" class="vector-toc-list-item vector-toc-level-3">
@@ -356,15 +356,15 @@
 <div class="mw-content-ltr mw-parser-output" lang="en" dir="ltr">
 <p><span>
 </span>
-Dm-verity uses a tree of sha256 hashes to verify blocks as they are read from a block device. Consequently, this ensures files have not changed between reboots or during runtime. This is useful for extending trust to the OS by mitigating zero days and unauthorized changes to root, as well as enforcing security policies, encryption and userspace security. Verity devices are regular block devices which can be accessed in <code>/dev/mapper</code>. 
+Dm-verity uses a tree of sha256 hashes to verify blocks as they are read from a block device. Consequently, this ensures files have not changed between reboots or during runtime. This is useful for extending trust to the OS by mitigating zero days and unauthorized changes to root, as well as enforcing security policies, encryption and userspace security. Verity devices are regular block devices which can be accessed in <code>/dev/mapper</code>.
 </p>
-<p>dm-verity is part of the <a href="https://en.wikipedia.org/wiki/device_mapper" class="extiw" title="wikipedia:device mapper">device mapper</a> in the Linux kernel and is implemented using <a href="../en/Systemd.html" title="Systemd">systemd</a>. 
+<p>dm-verity is part of the <a href="https://en.wikipedia.org/wiki/Device_mapper" class="extiw" title="wikipedia:Device mapper">device mapper</a> in the Linux kernel and is implemented using <a href="../en/Systemd.html" title="Systemd">systemd</a>.
 </p>
-<p>This article mainly describes setting up a verity-protected read-only root partition. 
+<p>This article mainly describes setting up a verity-protected read-only root partition.
 </p>
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Components">Components</span></h2>
-<p>A dm-verity root setup setup consists of the following: 
+<p>A dm-verity root setup setup consists of the following:
 </p>
 <ol>
 <li>a <code>/</code> root filesystem image or partition,</li>
@@ -388,7 +388,7 @@ Dm-verity uses a tree of sha256 hashes to verify blocks as they are read from a 
 </p>
 <p>Typically, it is necessary to have a separate partition or logical volume to store the verity hash data.
 </p>
-<p>The recommended disk layout is similar to this: 
+<p>The recommended disk layout is similar to this:
 </p>
 <h3><span class="mw-headline" id="Partitioning">Partitioning</span></h3>
 <ol>
@@ -408,19 +408,19 @@ Dm-verity uses a tree of sha256 hashes to verify blocks as they are read from a 
 <p><span class="plainlinks archwiki-template-man" title="$ man 1 mkfs.erofs"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/mkfs.erofs.1">mkfs.erofs(1)</a></span> offers an attractive alternative to ext4 or squashfs on the root partition. EROFS, like squashfs, does not allow writes by design and has better performance in many cases than comparable filesystems on flash and solid-state media. It uses lz4 compression by default and was designed for Android phones by Huawei, which make extensive use of dm-verity.
 </p>
 <h3><span class="mw-headline" id="Possible_issues_with_boot_and_runtime">Possible issues with boot and runtime</span></h3>
-<p>Any files that need to be written to during init or changed during runtime must be made writable by some method otherwise the program will not function as expected. 
+<p>Any files that need to be written to during init or changed during runtime must be made writable by some method otherwise the program will not function as expected.
 </p>
 <p>Many programs need write access to <code>etc</code>. You can use a separate <code>/etc</code> partition but this will make <b>all</b> of these configuration files writable. Create a folder <code>/var/etc</code> and move the files that need write access into it than symlink into <code>etc</code>, as with the example with NetworkManager below.
 </p>
-<p>Some programs will expect these folders and files to still exist (even read-only) on the root filesystem for early init. For instance, <i>systemd-journald</i> will break if <code>/etc/machine-id</code> does not exist or is a symlink. Bind mounts can be useful for this. 
+<p>Some programs will expect these folders and files to still exist (even read-only) on the root filesystem for early init. For instance, <i>systemd-journald</i> will break if <code>/etc/machine-id</code> does not exist or is a symlink. Bind mounts can be useful for this.
 </p>
 <p>One way to find out which files will change when the system is running is to enable the <code>dracut-overlayroot</code> module, use the system, and check the files in <code>/run/overlayroot/u</code> to see what you may need to address. Any files in this folder were written to the tmpfs overlaid on top of root. Place the module into <code>/usr/lib/dracut/modules.d/</code>, add <code>overlayroot</code> to the <a href="../en/Dracut.html" title="Dracut">dracut</a> modules list, and <code>overlayroot=1</code> to your kernel command line and <a href="../en/Mkinitcpio.html#Image_creation_and_activation" class="mw-redirect" title="Regenerate the initramfs">regenerate the initramfs</a>. The module can be found at <a rel="nofollow" class="external free" href="https://github.com/TylerHelt0/dracut-overlayroot">https://github.com/TylerHelt0/dracut-overlayroot</a><sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2023-05-06 ⓘ]</sup>.
 </p>
 <h4><span class="mw-headline" id="Pacman">Pacman</span></h4>
-<p>Since the root filesystem will be mounted read-only and <code>/var</code> should be mounted read-write in most cases, the path to the <i>pacman</i> database should be changed to <code>/usr/lib/pacman</code>. This will ensure the rootfs always has the correct list of installed packages. 
+<p>Since the root filesystem will be mounted read-only and <code>/var</code> should be mounted read-write in most cases, the path to the <i>pacman</i> database should be changed to <code>/usr/lib/pacman</code>. This will ensure the rootfs always has the correct list of installed packages.
 </p>
 <ol>
-<li><code>cp /var/lib/pacman /usr/lib </code></li>
+<li><code>cp /var/lib/pacman /usr/lib</code></li>
 <li>
 <a href="../en/Help:Reading.html#Append,_add,_create,_edit" class="mw-redirect" title="Textedit">Edit</a> <code>/etc/pacman.conf</code> and set <code>DBPath = /usr/lib/pacman</code>
 </li>
@@ -437,12 +437,12 @@ Dm-verity uses a tree of sha256 hashes to verify blocks as they are read from a 
 <li>Boot from a live medium</li>
 <li>Mount your root filesystem as read-only</li>
 <li>Make sure all your changes are perfect</li>
-<li>do <code>veritysetup format &lt;root device&gt; &lt;verity device&gt; | grep Root | cut -f2 &gt;&gt; roothash.txt</code>
+<li>do <code>veritysetup format <i>root-device</i> <i>verity-device</i> | grep Root | cut -f2 &gt;&gt; roothash.txt</code>
 </li>
 </ol>
-<p>You will now have the rootfs, the verity hash tree, and the roothash. Alternatively you can save the hashes to a file by replacing the <code>&lt;verity device&gt;</code> path and write it to the device later. 
+<p>You will now have the rootfs, the verity hash tree, and the roothash. Alternatively you can save the hashes to a file by replacing the <code><i>verity-device</i></code> path and write it to the device later.
 </p>
-<p>To test it you can use <code>veritysetup open &lt;root device&gt; root &lt;verity device&gt; $(cat roothash.txt)</code>. The verity device can be mounted from <code>/dev/mapper/root</code>.
+<p>To test it you can use <code>veritysetup open <i>root-device</i> root <i>verity-device</i> $(cat roothash.txt)</code>. The verity device can be mounted from <code>/dev/mapper/root</code>.
 </p>
 <h3><span class="mw-headline" id="Configuring_the_kernel_command_line">Configuring the kernel command line</span></h3>
 <p>Add the following options to your kernel command line:
@@ -455,7 +455,7 @@ Dm-verity uses a tree of sha256 hashes to verify blocks as they are read from a 
 <li>
 <code>systemd.verity_root_options=restart-on-corruption</code> or <code>panic-on-corruption</code> (the default behavior will just print an error to <a href="../en/Core_utilities.html#Essentials" class="mw-redirect" title="Dmesg">dmesg</a> and will not prevent untrusted code from running)</li>
 </ol>
-<p>If the roothash changes you must also edit the cmdline/rebuild the Unified Kernel Image with the new value. Failure to do so can result in an unbootable system. 
+<p>If the roothash changes you must also edit the cmdline/rebuild the unified kernel image with the new value. Failure to do so can result in an unbootable system.
 </p>
 <h4><span class="mw-headline" id="Additional_recommended_options">Additional recommended options</span></h4>
 <ol>
@@ -473,34 +473,34 @@ Dm-verity uses a tree of sha256 hashes to verify blocks as they are read from a 
 <h2><span class="mw-headline" id="Devices_other_than_root">Devices other than root</span></h2>
 <p>The use of <i>dm-verity</i> is not limited to the root device. Other devices that need to be verified at boot can be put into <code>/etc/veritytab</code> and will be assembled by <code>systemd-veritysetup@.service</code>. See <span class="plainlinks archwiki-template-man" title="$ man 5 veritytab"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/veritytab.5">veritytab(5)</a></span> for more information.
 </p>
-<p>Be aware that it is much easier to remount a non-root partition as RW while the system is running. Integrity violations also will not trigger a reboot. Even if <code></code> has verity enabled, it is trivial for a user with root privileges to disable verity on a non-root partition. 
+<p>Be aware that it is much easier to remount a non-root partition as RW while the system is running. Integrity violations also will not trigger a reboot. Even if <code></code> has verity enabled, it is trivial for a user with root privileges to disable verity on a non-root partition.
 </p>
 <h2><span class="mw-headline" id="Security_considerations">Security considerations</span></h2>
-<p>dm-verity does not provide an all-in-one solution but should be used alongside other methods of securing the system when the disk is removed and when the system is fully booted. 
+<p>dm-verity does not provide an all-in-one solution but should be used alongside other methods of securing the system when the disk is removed and when the system is fully booted.
 </p>
 <h3><span class="mw-headline" id="Secure_Boot">Secure Boot</span></h3>
 <p>It is recommended to enable <a href="../en/Unified_Extensible_Firmware_Interface/Secure_Boot.html" class="mw-redirect" title="Secure Boot">Secure Boot</a> with custom keys after verity is setup.
 </p>
-<p>Verity protection is useless if a virus or attacker can replace the <code>kernel.efi</code> containing the embedded roothash which would allow any root filesystem to be booted. Signing the kernel image for Secure Boot will prevent the kernel image from being replaced and ensure integrity of the root filesystem as long as the firmware is secure. 
+<p>Verity protection is useless if a virus or attacker can replace the <code>kernel.efi</code> containing the embedded roothash which would allow any root filesystem to be booted. Signing the kernel image for Secure Boot will prevent the kernel image from being replaced and ensure integrity of the root filesystem as long as the firmware is secure.
 </p>
-<p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/sbupdate-git/">sbupdate-git</a></span><sup><small>AUR</small></sup> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sbctl">sbctl</a></span> can be used to maintain your Unified kernel images and keep your bootloader signed. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/sbupdate-git/">sbupdate-git</a></span><sup><small>AUR</small></sup> will also handle your kernel command line. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sbctl">sbctl</a></span> can be used to create Secure Boot keys.
+<p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/sbupdate-git/">sbupdate-git</a></span><sup><small>AUR</small></sup> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sbctl">sbctl</a></span> can be used to maintain your unified kernel images and keep your bootloader signed. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/sbupdate-git/">sbupdate-git</a></span><sup><small>AUR</small></sup> will also handle your kernel command line. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sbctl">sbctl</a></span> can be used to create Secure Boot keys.
 </p>
-<h4><span class="mw-headline" id="Unified_Kernel_Image">Unified Kernel Image</span></h4>
+<h4><span class="mw-headline" id="Unified_kernel_image">Unified kernel image</span></h4>
 <p>UKIs bundle together at minimum the linux kernel, an initramfs, CPU microcode, and a cmdline. The advantage to using an UKI is that it prevents changes to both the kernel, initramfs and cmdline when the UKI is signed and used with secureboot. If the cmdline section of the UKI is left blank, it can be supplied by a bootloader like systemd-boot. Otherwise it can only be changed by rebuilding and resigning a new UKI.
 </p>
-<p>UKIs can be directly booted by UEFI if kernel efistub is enabled or if shim/preloader is used. 
+<p>UKIs can be directly booted by UEFI if kernel efistub is enabled or if shim/preloader is used.
 </p>
 <h4>
 <span id="Signing_kernel_modules.2FDKMS"></span><span class="mw-headline" id="Signing_kernel_modules/DKMS">Signing kernel modules/DKMS</span>
 </h4>
-<p>The default kernels ship with pre-signed native modules. If <a href="../en/Dynamic_Kernel_Module_Support.html" class="mw-redirect" title="DKMS">DKMS</a> is used, one must create a custom kernel to enable signing and loading of DKMS modules when secureboot is enabled which activates lockdown mode. If you skip this step DKMS modules will refuse to load. 
+<p>The default kernels ship with pre-signed native modules. If <a href="../en/Dynamic_Kernel_Module_Support.html" class="mw-redirect" title="DKMS">DKMS</a> is used, one must create a custom kernel to enable signing and loading of DKMS modules when secureboot is enabled which activates lockdown mode. If you skip this step DKMS modules will refuse to load.
 </p>
 <p>More information about signed kernel modules can be found here: <a href="../en/Signed_kernel_modules.html" title="Signed kernel modules">Signed kernel modules</a>
 </p>
 <h3><span class="mw-headline" id="Encryption">Encryption</span></h3>
-<p>Although the verity root device will be tamper-resistant, it provides no confidentiality. It could be located on an unencrypted partition if it contains no secret data. If the kernel is protected by Secure Boot, it would be impossible to replace the data in the root or verity devices without replacing the kernel. 
+<p>Although the verity root device will be tamper-resistant, it provides no confidentiality. It could be located on an unencrypted partition if it contains no secret data. If the kernel is protected by Secure Boot, it would be impossible to replace the data in the root or verity devices without replacing the kernel.
 </p>
-<p>The verity root device can be used to unlock other encrypted devices. If done with keyfiles, the verity root <b>should</b> be encrypted. If using a TPM and <i>systemd-cryptenroll</i> to store keys, the verity root could be unencrypted. 
+<p>The verity root device can be used to unlock other encrypted devices. If done with keyfiles, the verity root <b>should</b> be encrypted. If using a TPM and <i>systemd-cryptenroll</i> to store keys, the verity root could be unencrypted.
 </p>
 <h3><span class="mw-headline" id="TPM">TPM</span></h3>
 <div class="noprint archwiki-template-message">
@@ -508,15 +508,15 @@ Dm-verity uses a tree of sha256 hashes to verify blocks as they are read from a 
 <div>
 <b>Reason:</b> <span class="plainlinks archwiki-template-man" title="$ man 1 systemd-cryptenroll"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-cryptenroll.1">systemd-cryptenroll(1)</a></span> recommends PCR7 only (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Dm-verity.html">Talk:Dm-verity</a>)</div>
 </div>
-<p>A <a href="../en/Trusted_Platform_Module.html" class="mw-redirect" title="TPM">TPM</a> 2.0 can be used to protect encryption keys for the LUKS device containing root. After Secure Boot is enabled, you can use <code>systemd-cryptenroll</code> to bind keys to PCRs. Recommended PCRs are 0,1,5,7. This will stop decryption if the firmware, firmware options, GPT layout or secure boot state is changed, respectively. 
+<p>A <a href="../en/Trusted_Platform_Module.html" class="mw-redirect" title="TPM">TPM</a> 2.0 can be used to protect encryption keys for the LUKS device containing root. After Secure Boot is enabled, you can use <code>systemd-cryptenroll</code> to bind keys to PCRs. Recommended PCRs are 0,1,5,7. This will stop decryption if the firmware, firmware options, GPT layout or secure boot state is changed, respectively.
 </p>
-<p>The reason for binding on 0,1, and 5 is to ensure attackers cannot replace the motherboard firmware to disable secureboot and consequently disable verity. 
+<p>The reason for binding on 0,1, and 5 is to ensure attackers cannot replace the motherboard firmware to disable secureboot and consequently disable verity.
 </p>
 <p>You must pass this kernel option:
 </p>
 <pre>rd.luks.options=<i>UUID_of_LUKS</i>=tpm2-device=auto
 </pre>
-<p>You may also need to add tpm2 support to your initramfs or include the module if using dracut. See <a href="../en/Trusted_Platform_Module.html#systemd-cryptenroll" title="Trusted Platform Module">Trusted Platform Module#systemd-cryptenroll</a> for more information.
+<p>You may also need to add tpm2 support to your initramfs or include the module if using dracut. See <a href="../en/Systemd-cryptenroll.html#Trusted_Platform_Module" title="Systemd-cryptenroll">systemd-cryptenroll#Trusted Platform Module</a> for more information.
 </p>
 <h4><span class="mw-headline" id="systemd-boot">systemd-boot</span></h4>
 <p>If you use <a href="../en/Systemd-boot.html" title="Systemd-boot">systemd-boot</a> as your bootloader, it will measure the <code>kernel.efi</code> into PCR 4. This can be used to prevent decryption of root if the kernel image, initramfs, or kernel command line is changed.
@@ -525,28 +525,28 @@ Dm-verity uses a tree of sha256 hashes to verify blocks as they are read from a 
 <p>During runtime, methods such as OverlayFS, tmpfs, and bind mounts can still be used to get write access on the folders within <code>root</code>. For this reason, it is important to still harden the OS. Apparmor, SELinux and other access control mechanisms are useful for this.
 </p>
 <h2><span class="mw-headline" id="Updating_packages">Updating packages</span></h2>
-<p>A dm-verity read-only root should not be updated the traditional way with pacman. Verity is intended mostly for embedded devices and others which value code-integrity over the rolling release model. This has the primary benefits of extending trust to the OS and ensuring a device always boots the same way. E.g. an emulator box for normies or a secure web server. dm-verity, combined with other security methods like selinux, eliminate entire classes of zero-days and consequently the need to update is less frequent unless new features are desired. Think about a router running linux: many routers are compromised by malware without the user ever knowing. If the router was verity-protected in a secure way, it would prevent viruses from gaining persistence. 
+<p>A dm-verity read-only root should not be updated the traditional way with pacman. Verity is intended mostly for embedded devices and others which value code-integrity over the rolling release model. This has the primary benefits of extending trust to the OS and ensuring a device always boots the same way. E.g. an emulator box for normies or a secure web server. dm-verity, combined with other security methods like selinux, eliminate entire classes of zero-days and consequently the need to update is less frequent unless new features are desired. Think about a router running linux: many routers are compromised by malware without the user ever knowing. If the router was verity-protected in a secure way, it would prevent viruses from gaining persistence.
 </p>
-<p>You could use ext4 for <code>/</code> which enables you to mount it rw. You can then do updates, rehash the filesystem, and change the roothash in the cmdline, but it would be better to release incrementally updated images of the filesystems. Disabling verity to do updates on a writable filesystem is as simple as omitting the systemd.verity=1 cmdline option. 
+<p>You could use ext4 for <code>/</code> which enables you to mount it rw. You can then do updates, rehash the filesystem, and change the roothash in the cmdline, but it would be better to release incrementally updated images of the filesystems. Disabling verity to do updates on a writable filesystem is as simple as omitting the systemd.verity=1 cmdline option.
 </p>
 <h3><span class="mw-headline" id="Building_images">Building images</span></h3>
-<p>A VM can be used to maintain a 'rolling' system and imaged when updates are needed. A chroot could work as well. Setup all the partitioning and boot logic the way it is expected to work on the target system, than reboot the VM into a live media and make images of the partitions. If you image the xboot partition, it can be flashed directly to a partition to update the UKI/kernel/initramfs/cmdline. If paired with an image for the root filesystem this is more or less a complete system update. 
+<p>A VM can be used to maintain a 'rolling' system and imaged when updates are needed. A chroot could work as well. Setup all the partitioning and boot logic the way it is expected to work on the target system, than reboot the VM into a live media and make images of the partitions. If you image the xboot partition, it can be flashed directly to a partition to update the UKI/kernel/initramfs/cmdline. If paired with an image for the root filesystem this is more or less a complete system update.
 </p>
-<p>Systemd already has the logic to retrieve images from an update server (Or local dir) and flash them to partitions which may or may not already exist. It can also install and remove files into existing partitions. 
+<p>Systemd already has the logic to retrieve images from an update server (Or local dir) and flash them to partitions which may or may not already exist. It can also install and remove files into existing partitions.
 </p>
-<p>See <span class="plainlinks archwiki-template-man" title="$ man 8 systemd-sysupdate"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-sysupdate.8">systemd-sysupdate(8)</a></span> and <span class="plainlinks archwiki-template-man" title="$ man 8 systemd-repart"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-repart.8">systemd-repart(8)</a></span>. 
+<p>See <span class="plainlinks archwiki-template-man" title="$ man 8 systemd-sysupdate"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-sysupdate.8">systemd-sysupdate(8)</a></span> and <span class="plainlinks archwiki-template-man" title="$ man 8 systemd-repart"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-repart.8">systemd-repart(8)</a></span>.
 </p>
 <h3>
 <span id="A.2FB_update_scheme"></span><span class="mw-headline" id="A/B_update_scheme">A/B update scheme</span>
 </h3>
-<p>Another way to handle updates would be to use a system similar to Android's A/B partition system. This entails having two sets of the root and verity partitions. When an update is necessary the active partition could be copied to the inactive one. The inactive partition could than be updated as normal from chroot or with pacman and 'sealed' with dm-verity. On next boot, the inactive partition becomes the active partition. 
+<p>Another way to handle updates would be to use a system similar to Android's A/B partition system. This entails having two sets of the root and verity partitions. When an update is necessary the active partition could be copied to the inactive one. The inactive partition could than be updated as normal from chroot or with pacman and 'sealed' with dm-verity. On next boot, the inactive partition becomes the active partition.
 </p>
 <p>If using UKI the UKI must be updated with the root and verity partitions. At minimum the kernel cmdline must be updated with new roothash.
 </p>
 <h3><span class="mw-headline" id="overlayfs">overlayfs</span></h3>
 <p>If the user wants a system that has optional persistence or can install packages which are reverted at reboot, an overlay can be mounted as root with the verity root as the lower dir. The upper dir could be a persistent block device or a tmpfs. If using A/B, one could remount <code>/</code> as a writable OverlayFS and use normal update methods, than copy the contents of the overlayfs into the inactive partition and rehash verity.
 </p>
-<p>If the user requires temporary persistence (for example, the ability to install packages that are reset at boot),  <code>systemd.volatile=overlay</code> can be passed on the kernel command line.
+<p>If the user requires temporary persistence (for example, the ability to install packages that are reset at boot), <code>systemd.volatile=overlay</code> can be passed on the kernel command line.
 </p>
 <h3><span class="mw-headline" id="Flatpak">Flatpak</span></h3>
 <p>Flatpak can be used to install and update apps within <code>var</code> and <code>home</code> without write access to <code>/</code>. Flatpak would be ideal to solve most user's needs for installing applications and updating them in a verity-protected desktop PC. Flatpak works on <code>/var</code> by default.
@@ -556,7 +556,7 @@ Dm-verity uses a tree of sha256 hashes to verify blocks as they are read from a 
 <p>The above steps can be automated with the package <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/verity-squash-root/">verity-squash-root</a></span><sup><small>AUR</small></sup>. It will build a squashfs rootfs and sign the roothash with the kernel and the initramfs. On boot, you can decide to boot a persistent system, where changes on the overlayfs are saved, or to boot a volatile system. It also keeps the last rootfs as a backup, so you can decide to boot the last working rootfs.
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong>  Adding persistence to a verity protected partition can be useful in narrow situations but should be avoided. Verity was designed to ensure files do not change while the system is running or turned off. Try to persist application specific data in separate partitions.</div>
+<strong>Warning:</strong> Adding persistence to a verity protected partition can be useful in narrow situations but should be avoided. Verity was designed to ensure files do not change while the system is running or turned off. Try to persist application specific data in separate partitions.</div>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul>
 <li><span class="plainlinks archwiki-template-man" title="$ man 8 systemd-veritysetup@.service"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-veritysetup%40.service.8">systemd-veritysetup@.service(8)</a></span></li>
@@ -586,8 +586,8 @@ Dm-verity uses a tree of sha256 hashes to verify blocks as they are read from a 
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-verity&amp;oldid=785792">https://wiki.archlinux.org/index.php?title=Dm-verity&amp;oldid=785792</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 20 August 2023, at 08:40.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-verity&amp;oldid=823524">https://wiki.archlinux.org/index.php?title=Dm-verity&amp;oldid=823524</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 19 December 2024, at 20:36.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

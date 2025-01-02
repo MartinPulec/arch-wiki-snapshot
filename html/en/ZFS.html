@@ -5,7 +5,7 @@
 <title>ZFS - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -42,10 +42,28 @@
 				<div class="vector-toc-text">Beginning</div>
 			</a>
 		</li>
-		<li id="toc-Installation" class="vector-toc-list-item vector-toc-level-1">
+		<li id="toc-Concepts" class="vector-toc-list-item vector-toc-level-1">
+		<a class="vector-toc-link" href="#Concepts">
+			<div class="vector-toc-text">
+			<span class="vector-toc-numb">1</span>Concepts</div>
+		</a>
+		
+		<ul id="toc-Concepts-sublist" class="vector-toc-list">
+		</ul>
+	</li>
+	<li id="toc-Complications_of_being_out-of-tree" class="vector-toc-list-item vector-toc-level-1">
+		<a class="vector-toc-link" href="#Complications_of_being_out-of-tree">
+			<div class="vector-toc-text">
+			<span class="vector-toc-numb">2</span>Complications of being out-of-tree</div>
+		</a>
+		
+		<ul id="toc-Complications_of_being_out-of-tree-sublist" class="vector-toc-list">
+		</ul>
+	</li>
+	<li id="toc-Installation" class="vector-toc-list-item vector-toc-level-1">
 		<a class="vector-toc-link" href="#Installation">
 			<div class="vector-toc-text">
-			<span class="vector-toc-numb">1</span>Installation</div>
+			<span class="vector-toc-numb">3</span>Installation</div>
 		</a>
 		
 			<button aria-controls="toc-Installation-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
@@ -54,19 +72,19 @@
 			</button>
 		
 		<ul id="toc-Installation-sublist" class="vector-toc-list">
-			<li id="toc-Kernel-specific_packages" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Kernel-specific_packages">
+			<li id="toc-Binary_kernel_module" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Binary_kernel_module">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">1.1</span>Kernel-specific packages</div>
+				<span class="vector-toc-numb">3.1</span>Binary kernel module</div>
 			</a>
 			
-			<ul id="toc-Kernel-specific_packages-sublist" class="vector-toc-list">
+			<ul id="toc-Binary_kernel_module-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 		<li id="toc-DKMS" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#DKMS">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">1.2</span>DKMS</div>
+				<span class="vector-toc-numb">3.2</span>DKMS</div>
 			</a>
 			
 			<ul id="toc-DKMS-sublist" class="vector-toc-list">
@@ -75,7 +93,7 @@
 		<li id="toc-Root_on_ZFS" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Root_on_ZFS">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">1.3</span>Root on ZFS</div>
+				<span class="vector-toc-numb">3.3</span>Root on ZFS</div>
 			</a>
 			
 			<ul id="toc-Root_on_ZFS-sublist" class="vector-toc-list">
@@ -83,19 +101,10 @@
 		</li>
 	</ul>
 	</li>
-	<li id="toc-Experimenting_with_ZFS" class="vector-toc-list-item vector-toc-level-1">
-		<a class="vector-toc-link" href="#Experimenting_with_ZFS">
-			<div class="vector-toc-text">
-			<span class="vector-toc-numb">2</span>Experimenting with ZFS</div>
-		</a>
-		
-		<ul id="toc-Experimenting_with_ZFS-sublist" class="vector-toc-list">
-		</ul>
-	</li>
 	<li id="toc-Configuration" class="vector-toc-list-item vector-toc-level-1">
 		<a class="vector-toc-link" href="#Configuration">
 			<div class="vector-toc-text">
-			<span class="vector-toc-numb">3</span>Configuration</div>
+			<span class="vector-toc-numb">4</span>Configuration</div>
 		</a>
 		
 			<button aria-controls="toc-Configuration-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
@@ -104,39 +113,75 @@
 			</button>
 		
 		<ul id="toc-Configuration-sublist" class="vector-toc-list">
-			<li id="toc-Automatic_start" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Automatic_start">
+			<li id="toc-Importing_pools_at_startup" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Importing_pools_at_startup">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">3.1</span>Automatic start</div>
+				<span class="vector-toc-numb">4.1</span>Importing pools at startup</div>
 			</a>
 			
-			<ul id="toc-Automatic_start-sublist" class="vector-toc-list">
-				<li id="toc-Using_zfs-mount.service" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Using_zfs-mount.service">
+			<ul id="toc-Importing_pools_at_startup-sublist" class="vector-toc-list">
+				<li id="toc-zfs-import-scan" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#zfs-import-scan">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">3.1.1</span>Using zfs-mount.service</div>
+				<span class="vector-toc-numb">4.1.1</span>zfs-import-scan</div>
 			</a>
 			
-			<ul id="toc-Using_zfs-mount.service-sublist" class="vector-toc-list">
+			<ul id="toc-zfs-import-scan-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Using_zfs-mount-generator" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Using_zfs-mount-generator">
+		<li id="toc-zfs-import-cache" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#zfs-import-cache">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">3.1.2</span>Using zfs-mount-generator</div>
+				<span class="vector-toc-numb">4.1.2</span>zfs-import-cache</div>
 			</a>
 			
-			<ul id="toc-Using_zfs-mount-generator-sublist" class="vector-toc-list">
+			<ul id="toc-zfs-import-cache-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
+		</li>
+		<li id="toc-Automatically_mounting_filesystems" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Automatically_mounting_filesystems">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">4.2</span>Automatically mounting filesystems</div>
+			</a>
+			
+			<ul id="toc-Automatically_mounting_filesystems-sublist" class="vector-toc-list">
+				<li id="toc-zfs-mount-generator" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#zfs-mount-generator">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">4.2.1</span>zfs-mount-generator</div>
+			</a>
+			
+			<ul id="toc-zfs-mount-generator-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-fstab" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#fstab">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">4.2.2</span>fstab</div>
+			</a>
+			
+			<ul id="toc-fstab-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+		</li>
+		<li id="toc-Creating_a_hostid_file" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Creating_a_hostid_file">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">4.3</span>Creating a hostid file</div>
+			</a>
+			
+			<ul id="toc-Creating_a_hostid_file-sublist" class="vector-toc-list">
+			</ul>
 		</li>
 	</ul>
 	</li>
 	<li id="toc-Storage_pools" class="vector-toc-list-item vector-toc-level-1">
 		<a class="vector-toc-link" href="#Storage_pools">
 			<div class="vector-toc-text">
-			<span class="vector-toc-numb">4</span>Storage pools</div>
+			<span class="vector-toc-numb">5</span>Storage pools</div>
 		</a>
 		
 			<button aria-controls="toc-Storage_pools-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
@@ -145,44 +190,35 @@
 			</button>
 		
 		<ul id="toc-Storage_pools-sublist" class="vector-toc-list">
-			<li id="toc-Identify_disks" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Identify_disks">
+			<li id="toc-Experimenting_with_ZFS" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Experimenting_with_ZFS">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.1</span>Identify disks</div>
+				<span class="vector-toc-numb">5.1</span>Experimenting with ZFS</div>
 			</a>
 			
-			<ul id="toc-Identify_disks-sublist" class="vector-toc-list">
-				<li id="toc-Using_GPT_labels" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Using_GPT_labels">
-				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.1.1</span>Using GPT labels</div>
-			</a>
-			
-			<ul id="toc-Using_GPT_labels-sublist" class="vector-toc-list">
+			<ul id="toc-Experimenting_with_ZFS-sublist" class="vector-toc-list">
 			</ul>
-		</li>
-	</ul>
 		</li>
 		<li id="toc-Creating_ZFS_pools" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Creating_ZFS_pools">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.2</span>Creating ZFS pools</div>
+				<span class="vector-toc-numb">5.2</span>Creating ZFS pools</div>
 			</a>
 			
 			<ul id="toc-Creating_ZFS_pools-sublist" class="vector-toc-list">
-				<li id="toc-Advanced_Format_disks" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Advanced_Format_disks">
+				<li id="toc-The_ashift_property" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#The_ashift_property">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.2.1</span>Advanced Format disks</div>
+				<span class="vector-toc-numb">5.2.1</span>The ashift property</div>
 			</a>
 			
-			<ul id="toc-Advanced_Format_disks-sublist" class="vector-toc-list">
+			<ul id="toc-The_ashift_property-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 		<li id="toc-GRUB-compatible_pool_creation" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#GRUB-compatible_pool_creation">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.2.2</span>GRUB-compatible pool creation</div>
+				<span class="vector-toc-numb">5.2.2</span>GRUB-compatible pool creation</div>
 			</a>
 			
 			<ul id="toc-GRUB-compatible_pool_creation-sublist" class="vector-toc-list">
@@ -193,82 +229,73 @@
 		<li id="toc-Verifying_pool_status" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Verifying_pool_status">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.3</span>Verifying pool status</div>
+				<span class="vector-toc-numb">5.3</span>Verifying pool status</div>
 			</a>
 			
 			<ul id="toc-Verifying_pool_status-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Importing_a_pool_created_by_id" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Importing_a_pool_created_by_id">
+		<li id="toc-Destroying_a_storage_pool" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Destroying_a_storage_pool">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.4</span>Importing a pool created by id</div>
+				<span class="vector-toc-numb">5.4</span>Destroying a storage pool</div>
 			</a>
 			
-			<ul id="toc-Importing_a_pool_created_by_id-sublist" class="vector-toc-list">
-			</ul>
-		</li>
-		<li id="toc-Destroy_a_storage_pool" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Destroy_a_storage_pool">
-				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.5</span>Destroy a storage pool</div>
-			</a>
-			
-			<ul id="toc-Destroy_a_storage_pool-sublist" class="vector-toc-list">
+			<ul id="toc-Destroying_a_storage_pool-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 		<li id="toc-Exporting_a_storage_pool" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Exporting_a_storage_pool">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.6</span>Exporting a storage pool</div>
+				<span class="vector-toc-numb">5.5</span>Exporting a storage pool</div>
 			</a>
 			
 			<ul id="toc-Exporting_a_storage_pool-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Extending_an_existing_zpool" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Extending_an_existing_zpool">
+		<li id="toc-Extending_an_existing_pool" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Extending_an_existing_pool">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.7</span>Extending an existing zpool</div>
+				<span class="vector-toc-numb">5.6</span>Extending an existing pool</div>
 			</a>
 			
-			<ul id="toc-Extending_an_existing_zpool-sublist" class="vector-toc-list">
+			<ul id="toc-Extending_an_existing_pool-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 		<li id="toc-Attaching_a_device_to_(create)_a_mirror" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Attaching_a_device_to_(create)_a_mirror">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.8</span>Attaching a device to (create) a mirror</div>
+				<span class="vector-toc-numb">5.7</span>Attaching a device to (create) a mirror</div>
 			</a>
 			
 			<ul id="toc-Attaching_a_device_to_(create)_a_mirror-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Renaming_a_zpool" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Renaming_a_zpool">
+		<li id="toc-Renaming_a_pool" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Renaming_a_pool">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.9</span>Renaming a zpool</div>
+				<span class="vector-toc-numb">5.8</span>Renaming a pool</div>
 			</a>
 			
-			<ul id="toc-Renaming_a_zpool-sublist" class="vector-toc-list">
+			<ul id="toc-Renaming_a_pool-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 		<li id="toc-Setting_a_different_mount_point" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Setting_a_different_mount_point">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.10</span>Setting a different mount point</div>
+				<span class="vector-toc-numb">5.9</span>Setting a different mount point</div>
 			</a>
 			
 			<ul id="toc-Setting_a_different_mount_point-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Upgrade_zpools" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Upgrade_zpools">
+		<li id="toc-Upgrading_pools" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Upgrading_pools">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.11</span>Upgrade zpools</div>
+				<span class="vector-toc-numb">5.10</span>Upgrading pools</div>
 			</a>
 			
-			<ul id="toc-Upgrade_zpools-sublist" class="vector-toc-list">
+			<ul id="toc-Upgrading_pools-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -276,7 +303,7 @@
 	<li id="toc-Creating_datasets" class="vector-toc-list-item vector-toc-level-1">
 		<a class="vector-toc-link" href="#Creating_datasets">
 			<div class="vector-toc-text">
-			<span class="vector-toc-numb">5</span>Creating datasets</div>
+			<span class="vector-toc-numb">6</span>Creating datasets</div>
 		</a>
 		
 			<button aria-controls="toc-Creating_datasets-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
@@ -288,14 +315,14 @@
 			<li id="toc-Native_encryption" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Native_encryption">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">5.1</span>Native encryption</div>
+				<span class="vector-toc-numb">6.1</span>Native encryption</div>
 			</a>
 			
 			<ul id="toc-Native_encryption-sublist" class="vector-toc-list">
 				<li id="toc-Unlock/Mount_at_boot_time:_systemd" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Unlock/Mount_at_boot_time:_systemd">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">5.1.1</span>Unlock/Mount at boot time: systemd</div>
+				<span class="vector-toc-numb">6.1.1</span>Unlock/Mount at boot time: systemd</div>
 			</a>
 			
 			<ul id="toc-Unlock/Mount_at_boot_time:_systemd-sublist" class="vector-toc-list">
@@ -304,21 +331,21 @@
 		<li id="toc-Unlock_at_login_time:_PAM" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Unlock_at_login_time:_PAM">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">5.1.2</span>Unlock at login time: PAM</div>
+				<span class="vector-toc-numb">6.1.2</span>Unlock at login time: PAM</div>
 			</a>
 			
 			<ul id="toc-Unlock_at_login_time:_PAM-sublist" class="vector-toc-list">
 				<li id="toc-SSH" class="vector-toc-list-item vector-toc-level-4">
 			<a class="vector-toc-link" href="#SSH">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">5.1.2.1</span>SSH</div>
+				<span class="vector-toc-numb">6.1.2.1</span>SSH</div>
 			</a>
 			
 			<ul id="toc-SSH-sublist" class="vector-toc-list">
 				<li id="toc-SSH_Key_&amp;_Password_when_required" class="vector-toc-list-item vector-toc-level-5">
 			<a class="vector-toc-link" href="#SSH_Key_&amp;_Password_when_required">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">5.1.2.1.1</span>SSH Key &amp; Password when required</div>
+				<span class="vector-toc-numb">6.1.2.1.1</span>SSH Key &amp; Password when required</div>
 			</a>
 			
 			<ul id="toc-SSH_Key_&amp;_Password_when_required-sublist" class="vector-toc-list">
@@ -327,7 +354,7 @@
 		<li id="toc-SSH_Key_&amp;_Password" class="vector-toc-list-item vector-toc-level-5">
 			<a class="vector-toc-link" href="#SSH_Key_&amp;_Password">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">5.1.2.1.2</span>SSH Key &amp; Password</div>
+				<span class="vector-toc-numb">6.1.2.1.2</span>SSH Key &amp; Password</div>
 			</a>
 			
 			<ul id="toc-SSH_Key_&amp;_Password-sublist" class="vector-toc-list">
@@ -342,7 +369,7 @@
 		<li id="toc-Swap_volume" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Swap_volume">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">5.2</span>Swap volume</div>
+				<span class="vector-toc-numb">6.2</span>Swap volume</div>
 			</a>
 			
 			<ul id="toc-Swap_volume-sublist" class="vector-toc-list">
@@ -351,7 +378,7 @@
 		<li id="toc-Access_Control_Lists" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Access_Control_Lists">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">5.3</span>Access Control Lists</div>
+				<span class="vector-toc-numb">6.3</span>Access Control Lists</div>
 			</a>
 			
 			<ul id="toc-Access_Control_Lists-sublist" class="vector-toc-list">
@@ -360,7 +387,7 @@
 		<li id="toc-Databases" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Databases">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">5.4</span>Databases</div>
+				<span class="vector-toc-numb">6.4</span>Databases</div>
 			</a>
 			
 			<ul id="toc-Databases-sublist" class="vector-toc-list">
@@ -369,7 +396,7 @@
 		<li id="toc-/tmp" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#/tmp">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">5.5</span>/tmp</div>
+				<span class="vector-toc-numb">6.5</span>/tmp</div>
 			</a>
 			
 			<ul id="toc-/tmp-sublist" class="vector-toc-list">
@@ -378,21 +405,21 @@
 		<li id="toc-Transmitting_snapshots_with_ZFS_Send_and_ZFS_Recv" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Transmitting_snapshots_with_ZFS_Send_and_ZFS_Recv">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">5.6</span>Transmitting snapshots with ZFS Send and ZFS Recv</div>
+				<span class="vector-toc-numb">6.6</span>Transmitting snapshots with ZFS Send and ZFS Recv</div>
 			</a>
 			
 			<ul id="toc-Transmitting_snapshots_with_ZFS_Send_and_ZFS_Recv-sublist" class="vector-toc-list">
 				<li id="toc-Basic_ZFS_Send" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Basic_ZFS_Send">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">5.6.1</span>Basic ZFS Send</div>
+				<span class="vector-toc-numb">6.6.1</span>Basic ZFS Send</div>
 			</a>
 			
 			<ul id="toc-Basic_ZFS_Send-sublist" class="vector-toc-list">
 				<li id="toc-To_and_from_files" class="vector-toc-list-item vector-toc-level-4">
 			<a class="vector-toc-link" href="#To_and_from_files">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">5.6.1.1</span>To and from files</div>
+				<span class="vector-toc-numb">6.6.1.1</span>To and from files</div>
 			</a>
 			
 			<ul id="toc-To_and_from_files-sublist" class="vector-toc-list">
@@ -403,7 +430,7 @@
 		<li id="toc-Send_over_ssh" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Send_over_ssh">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">5.6.2</span>Send over ssh</div>
+				<span class="vector-toc-numb">6.6.2</span>Send over ssh</div>
 			</a>
 			
 			<ul id="toc-Send_over_ssh-sublist" class="vector-toc-list">
@@ -412,7 +439,7 @@
 		<li id="toc-Incremental_Backups" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Incremental_Backups">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">5.6.3</span>Incremental Backups</div>
+				<span class="vector-toc-numb">6.6.3</span>Incremental Backups</div>
 			</a>
 			
 			<ul id="toc-Incremental_Backups-sublist" class="vector-toc-list">
@@ -425,7 +452,7 @@
 	<li id="toc-Tuning" class="vector-toc-list-item vector-toc-level-1">
 		<a class="vector-toc-link" href="#Tuning">
 			<div class="vector-toc-text">
-			<span class="vector-toc-numb">6</span>Tuning</div>
+			<span class="vector-toc-numb">7</span>Tuning</div>
 		</a>
 		
 			<button aria-controls="toc-Tuning-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
@@ -437,7 +464,7 @@
 			<li id="toc-General" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#General">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">6.1</span>General</div>
+				<span class="vector-toc-numb">7.1</span>General</div>
 			</a>
 			
 			<ul id="toc-General-sublist" class="vector-toc-list">
@@ -446,14 +473,14 @@
 		<li id="toc-Scrubbing" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Scrubbing">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">6.2</span>Scrubbing</div>
+				<span class="vector-toc-numb">7.2</span>Scrubbing</div>
 			</a>
 			
 			<ul id="toc-Scrubbing-sublist" class="vector-toc-list">
 				<li id="toc-How_often_should_I_do_this?" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#How_often_should_I_do_this?">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">6.2.1</span>How often should I do this?</div>
+				<span class="vector-toc-numb">7.2.1</span>How often should I do this?</div>
 			</a>
 			
 			<ul id="toc-How_often_should_I_do_this?-sublist" class="vector-toc-list">
@@ -462,7 +489,7 @@
 		<li id="toc-Start_with_a_service_or_timer" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Start_with_a_service_or_timer">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">6.2.2</span>Start with a service or timer</div>
+				<span class="vector-toc-numb">7.2.2</span>Start with a service or timer</div>
 			</a>
 			
 			<ul id="toc-Start_with_a_service_or_timer-sublist" class="vector-toc-list">
@@ -473,7 +500,7 @@
 		<li id="toc-Enabling_TRIM" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Enabling_TRIM">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">6.3</span>Enabling TRIM</div>
+				<span class="vector-toc-numb">7.3</span>Enabling TRIM</div>
 			</a>
 			
 			<ul id="toc-Enabling_TRIM-sublist" class="vector-toc-list">
@@ -482,14 +509,14 @@
 		<li id="toc-SSD_Caching" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#SSD_Caching">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">6.4</span>SSD Caching</div>
+				<span class="vector-toc-numb">7.4</span>SSD Caching</div>
 			</a>
 			
 			<ul id="toc-SSD_Caching-sublist" class="vector-toc-list">
 				<li id="toc-ZIL" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#ZIL">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">6.4.1</span>ZIL</div>
+				<span class="vector-toc-numb">7.4.1</span>ZIL</div>
 			</a>
 			
 			<ul id="toc-ZIL-sublist" class="vector-toc-list">
@@ -498,7 +525,7 @@
 		<li id="toc-L2ARC" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#L2ARC">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">6.4.2</span>L2ARC</div>
+				<span class="vector-toc-numb">7.4.2</span>L2ARC</div>
 			</a>
 			
 			<ul id="toc-L2ARC-sublist" class="vector-toc-list">
@@ -509,14 +536,14 @@
 		<li id="toc-ZVOLs" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#ZVOLs">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">6.5</span>ZVOLs</div>
+				<span class="vector-toc-numb">7.5</span>ZVOLs</div>
 			</a>
 			
 			<ul id="toc-ZVOLs-sublist" class="vector-toc-list">
 				<li id="toc-RAIDZ_and_Advanced_Format_physical_disks" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#RAIDZ_and_Advanced_Format_physical_disks">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">6.5.1</span>RAIDZ and Advanced Format physical disks</div>
+				<span class="vector-toc-numb">7.5.1</span>RAIDZ and Advanced Format physical disks</div>
 			</a>
 			
 			<ul id="toc-RAIDZ_and_Advanced_Format_physical_disks-sublist" class="vector-toc-list">
@@ -527,7 +554,7 @@
 		<li id="toc-I/O_Scheduler" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#I/O_Scheduler">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">6.6</span>I/O Scheduler</div>
+				<span class="vector-toc-numb">7.6</span>I/O Scheduler</div>
 			</a>
 			
 			<ul id="toc-I/O_Scheduler-sublist" class="vector-toc-list">
@@ -538,7 +565,7 @@
 	<li id="toc-Troubleshooting" class="vector-toc-list-item vector-toc-level-1">
 		<a class="vector-toc-link" href="#Troubleshooting">
 			<div class="vector-toc-text">
-			<span class="vector-toc-numb">7</span>Troubleshooting</div>
+			<span class="vector-toc-numb">8</span>Troubleshooting</div>
 		</a>
 		
 			<button aria-controls="toc-Troubleshooting-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
@@ -550,7 +577,7 @@
 			<li id="toc-Creating_a_zpool_fails" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Creating_a_zpool_fails">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">7.1</span>Creating a zpool fails</div>
+				<span class="vector-toc-numb">8.1</span>Creating a zpool fails</div>
 			</a>
 			
 			<ul id="toc-Creating_a_zpool_fails-sublist" class="vector-toc-list">
@@ -559,25 +586,16 @@
 		<li id="toc-ZFS_is_using_too_much_RAM" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#ZFS_is_using_too_much_RAM">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">7.2</span>ZFS is using too much RAM</div>
+				<span class="vector-toc-numb">8.2</span>ZFS is using too much RAM</div>
 			</a>
 			
 			<ul id="toc-ZFS_is_using_too_much_RAM-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Does_not_contain_an_EFI_label" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Does_not_contain_an_EFI_label">
-				<div class="vector-toc-text">
-				<span class="vector-toc-numb">7.3</span>Does not contain an EFI label</div>
-			</a>
-			
-			<ul id="toc-Does_not_contain_an_EFI_label-sublist" class="vector-toc-list">
-			</ul>
-		</li>
 		<li id="toc-No_hostid_found" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#No_hostid_found">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">7.4</span>No hostid found</div>
+				<span class="vector-toc-numb">8.3</span>No hostid found</div>
 			</a>
 			
 			<ul id="toc-No_hostid_found-sublist" class="vector-toc-list">
@@ -586,7 +604,7 @@
 		<li id="toc-Pool_cannot_be_found_while_booting_from_SAS/SCSI_devices" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Pool_cannot_be_found_while_booting_from_SAS/SCSI_devices">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">7.5</span>Pool cannot be found while booting from SAS/SCSI devices</div>
+				<span class="vector-toc-numb">8.4</span>Pool cannot be found while booting from SAS/SCSI devices</div>
 			</a>
 			
 			<ul id="toc-Pool_cannot_be_found_while_booting_from_SAS/SCSI_devices-sublist" class="vector-toc-list">
@@ -595,14 +613,14 @@
 		<li id='toc-On_boot_the_zfs_pool_does_not_mount_stating:_"pool_may_be_in_use_from_other_system"' class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href='#On_boot_the_zfs_pool_does_not_mount_stating:_"pool_may_be_in_use_from_other_system"'>
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">7.6</span>On boot the zfs pool does not mount stating: "pool may be in use from other system"</div>
+				<span class="vector-toc-numb">8.5</span>On boot the zfs pool does not mount stating: "pool may be in use from other system"</div>
 			</a>
 			
 			<ul id='toc-On_boot_the_zfs_pool_does_not_mount_stating:_"pool_may_be_in_use_from_other_system"-sublist' class="vector-toc-list">
 				<li id="toc-Unexported_pool" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Unexported_pool">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">7.6.1</span>Unexported pool</div>
+				<span class="vector-toc-numb">8.5.1</span>Unexported pool</div>
 			</a>
 			
 			<ul id="toc-Unexported_pool-sublist" class="vector-toc-list">
@@ -611,7 +629,7 @@
 		<li id="toc-Incorrect_hostid" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Incorrect_hostid">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">7.6.2</span>Incorrect hostid</div>
+				<span class="vector-toc-numb">8.5.2</span>Incorrect hostid</div>
 			</a>
 			
 			<ul id="toc-Incorrect_hostid-sublist" class="vector-toc-list">
@@ -622,7 +640,7 @@
 		<li id="toc-Devices_have_different_sector_alignment" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Devices_have_different_sector_alignment">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">7.7</span>Devices have different sector alignment</div>
+				<span class="vector-toc-numb">8.6</span>Devices have different sector alignment</div>
 			</a>
 			
 			<ul id="toc-Devices_have_different_sector_alignment-sublist" class="vector-toc-list">
@@ -631,7 +649,7 @@
 		<li id="toc-Pool_resilvering_stuck/restarting/slow?" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Pool_resilvering_stuck/restarting/slow?">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">7.8</span>Pool resilvering stuck/restarting/slow?</div>
+				<span class="vector-toc-numb">8.7</span>Pool resilvering stuck/restarting/slow?</div>
 			</a>
 			
 			<ul id="toc-Pool_resilvering_stuck/restarting/slow?-sublist" class="vector-toc-list">
@@ -640,7 +658,7 @@
 		<li id="toc-Fix_slow_boot_caused_by_failed_import_of_unavailable_pools_in_the_initramfs_zpool.cache" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Fix_slow_boot_caused_by_failed_import_of_unavailable_pools_in_the_initramfs_zpool.cache">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">7.9</span>Fix slow boot caused by failed import of unavailable pools in the initramfs zpool.cache</div>
+				<span class="vector-toc-numb">8.8</span>Fix slow boot caused by failed import of unavailable pools in the initramfs zpool.cache</div>
 			</a>
 			
 			<ul id="toc-Fix_slow_boot_caused_by_failed_import_of_unavailable_pools_in_the_initramfs_zpool.cache-sublist" class="vector-toc-list">
@@ -649,7 +667,7 @@
 		<li id="toc-ZFS_Command_History" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#ZFS_Command_History">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">7.10</span>ZFS Command History</div>
+				<span class="vector-toc-numb">8.9</span>ZFS Command History</div>
 			</a>
 			
 			<ul id="toc-ZFS_Command_History-sublist" class="vector-toc-list">
@@ -660,7 +678,7 @@
 	<li id="toc-Tips_and_tricks" class="vector-toc-list-item vector-toc-level-1">
 		<a class="vector-toc-link" href="#Tips_and_tricks">
 			<div class="vector-toc-text">
-			<span class="vector-toc-numb">8</span>Tips and tricks</div>
+			<span class="vector-toc-numb">9</span>Tips and tricks</div>
 		</a>
 		
 			<button aria-controls="toc-Tips_and_tricks-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
@@ -672,14 +690,14 @@
 			<li id="toc-Create_an_Archiso_image_with_ZFS_support" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Create_an_Archiso_image_with_ZFS_support">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">8.1</span>Create an Archiso image with ZFS support</div>
+				<span class="vector-toc-numb">9.1</span>Create an Archiso image with ZFS support</div>
 			</a>
 			
 			<ul id="toc-Create_an_Archiso_image_with_ZFS_support-sublist" class="vector-toc-list">
 				<li id="toc-Using_self-built_ZFS_packages_from_the_AUR" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Using_self-built_ZFS_packages_from_the_AUR">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">8.1.1</span>Using self-built ZFS packages from the AUR</div>
+				<span class="vector-toc-numb">9.1.1</span>Using self-built ZFS packages from the AUR</div>
 			</a>
 			
 			<ul id="toc-Using_self-built_ZFS_packages_from_the_AUR-sublist" class="vector-toc-list">
@@ -688,7 +706,7 @@
 		<li id="toc-Using_the_archzfs_unofficial_user_repository" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Using_the_archzfs_unofficial_user_repository">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">8.1.2</span>Using the archzfs unofficial user repository</div>
+				<span class="vector-toc-numb">9.1.2</span>Using the archzfs unofficial user repository</div>
 			</a>
 			
 			<ul id="toc-Using_the_archzfs_unofficial_user_repository-sublist" class="vector-toc-list">
@@ -697,7 +715,7 @@
 		<li id="toc-Finishing_up" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Finishing_up">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">8.1.3</span>Finishing up</div>
+				<span class="vector-toc-numb">9.1.3</span>Finishing up</div>
 			</a>
 			
 			<ul id="toc-Finishing_up-sublist" class="vector-toc-list">
@@ -708,14 +726,14 @@
 		<li id="toc-Automatic_snapshots" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Automatic_snapshots">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">8.2</span>Automatic snapshots</div>
+				<span class="vector-toc-numb">9.2</span>Automatic snapshots</div>
 			</a>
 			
 			<ul id="toc-Automatic_snapshots-sublist" class="vector-toc-list">
 				<li id="toc-zrepl" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#zrepl">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">8.2.1</span>zrepl</div>
+				<span class="vector-toc-numb">9.2.1</span>zrepl</div>
 			</a>
 			
 			<ul id="toc-zrepl-sublist" class="vector-toc-list">
@@ -724,7 +742,7 @@
 		<li id="toc-sanoid" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#sanoid">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">8.2.2</span>sanoid</div>
+				<span class="vector-toc-numb">9.2.2</span>sanoid</div>
 			</a>
 			
 			<ul id="toc-sanoid-sublist" class="vector-toc-list">
@@ -733,7 +751,7 @@
 		<li id="toc-ZFS_Automatic_Snapshot_Service_for_Linux" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#ZFS_Automatic_Snapshot_Service_for_Linux">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">8.2.3</span>ZFS Automatic Snapshot Service for Linux</div>
+				<span class="vector-toc-numb">9.2.3</span>ZFS Automatic Snapshot Service for Linux</div>
 			</a>
 			
 			<ul id="toc-ZFS_Automatic_Snapshot_Service_for_Linux-sublist" class="vector-toc-list">
@@ -744,14 +762,14 @@
 		<li id="toc-Creating_a_share" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Creating_a_share">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">8.3</span>Creating a share</div>
+				<span class="vector-toc-numb">9.3</span>Creating a share</div>
 			</a>
 			
 			<ul id="toc-Creating_a_share-sublist" class="vector-toc-list">
 				<li id="toc-NFS" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#NFS">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">8.3.1</span>NFS</div>
+				<span class="vector-toc-numb">9.3.1</span>NFS</div>
 			</a>
 			
 			<ul id="toc-NFS-sublist" class="vector-toc-list">
@@ -760,7 +778,7 @@
 		<li id="toc-SMB" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#SMB">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">8.3.2</span>SMB</div>
+				<span class="vector-toc-numb">9.3.2</span>SMB</div>
 			</a>
 			
 			<ul id="toc-SMB-sublist" class="vector-toc-list">
@@ -771,7 +789,7 @@
 		<li id="toc-Encryption_in_ZFS_using_dm-crypt" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Encryption_in_ZFS_using_dm-crypt">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">8.4</span>Encryption in ZFS using dm-crypt</div>
+				<span class="vector-toc-numb">9.4</span>Encryption in ZFS using dm-crypt</div>
 			</a>
 			
 			<ul id="toc-Encryption_in_ZFS_using_dm-crypt-sublist" class="vector-toc-list">
@@ -780,7 +798,7 @@
 		<li id="toc-Emergency_chroot_repair_with_archzfs" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Emergency_chroot_repair_with_archzfs">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">8.5</span>Emergency chroot repair with archzfs</div>
+				<span class="vector-toc-numb">9.5</span>Emergency chroot repair with archzfs</div>
 			</a>
 			
 			<ul id="toc-Emergency_chroot_repair_with_archzfs-sublist" class="vector-toc-list">
@@ -789,17 +807,17 @@
 		<li id="toc-Bind_mount" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Bind_mount">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">8.6</span>Bind mount</div>
+				<span class="vector-toc-numb">9.6</span>Bind mount</div>
 			</a>
 			
 			<ul id="toc-Bind_mount-sublist" class="vector-toc-list">
-				<li id="toc-fstab" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#fstab">
+				<li id="toc-fstab_2" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#fstab_2">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">8.6.1</span>fstab</div>
+				<span class="vector-toc-numb">9.6.1</span>fstab</div>
 			</a>
 			
-			<ul id="toc-fstab-sublist" class="vector-toc-list">
+			<ul id="toc-fstab_2-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -807,7 +825,7 @@
 		<li id="toc-Monitoring_/_Mailing_on_Events" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Monitoring_/_Mailing_on_Events">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">8.7</span>Monitoring / Mailing on Events</div>
+				<span class="vector-toc-numb">9.7</span>Monitoring / Mailing on Events</div>
 			</a>
 			
 			<ul id="toc-Monitoring_/_Mailing_on_Events-sublist" class="vector-toc-list">
@@ -816,14 +834,14 @@
 		<li id="toc-Wrap_shell_commands_in_pre_&amp;_post_snapshots" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Wrap_shell_commands_in_pre_&amp;_post_snapshots">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">8.8</span>Wrap shell commands in pre &amp; post snapshots</div>
+				<span class="vector-toc-numb">9.8</span>Wrap shell commands in pre &amp; post snapshots</div>
 			</a>
 			
 			<ul id="toc-Wrap_shell_commands_in_pre_&amp;_post_snapshots-sublist" class="vector-toc-list">
 				<li id="toc-znp" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#znp">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">8.8.1</span>znp</div>
+				<span class="vector-toc-numb">9.8.1</span>znp</div>
 			</a>
 			
 			<ul id="toc-znp-sublist" class="vector-toc-list">
@@ -834,14 +852,14 @@
 		<li id="toc-Remote_unlocking_of_ZFS_encrypted_root" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Remote_unlocking_of_ZFS_encrypted_root">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">8.9</span>Remote unlocking of ZFS encrypted root</div>
+				<span class="vector-toc-numb">9.9</span>Remote unlocking of ZFS encrypted root</div>
 			</a>
 			
 			<ul id="toc-Remote_unlocking_of_ZFS_encrypted_root-sublist" class="vector-toc-list">
 				<li id="toc-Changing_the_SSH_server_port" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Changing_the_SSH_server_port">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">8.9.1</span>Changing the SSH server port</div>
+				<span class="vector-toc-numb">9.9.1</span>Changing the SSH server port</div>
 			</a>
 			
 			<ul id="toc-Changing_the_SSH_server_port-sublist" class="vector-toc-list">
@@ -850,7 +868,7 @@
 		<li id="toc-Unlocking_from_a_Windows_machine_using_PuTTY/Plink" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Unlocking_from_a_Windows_machine_using_PuTTY/Plink">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">8.9.2</span>Unlocking from a Windows machine using PuTTY/Plink</div>
+				<span class="vector-toc-numb">9.9.2</span>Unlocking from a Windows machine using PuTTY/Plink</div>
 			</a>
 			
 			<ul id="toc-Unlocking_from_a_Windows_machine_using_PuTTY/Plink-sublist" class="vector-toc-list">
@@ -861,7 +879,7 @@
 		<li id="toc-Enabling_bclone_support" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Enabling_bclone_support">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">8.10</span>Enabling bclone support</div>
+				<span class="vector-toc-numb">9.10</span>Enabling bclone support</div>
 			</a>
 			
 			<ul id="toc-Enabling_bclone_support-sublist" class="vector-toc-list">
@@ -872,7 +890,7 @@
 	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1">
 		<a class="vector-toc-link" href="#See_also">
 			<div class="vector-toc-text">
-			<span class="vector-toc-numb">9</span>See also</div>
+			<span class="vector-toc-numb">10</span>See also</div>
 		</a>
 		
 		<ul id="toc-See_also-sublist" class="vector-toc-list">
@@ -961,200 +979,261 @@
 <li><a href="../en/Install_Arch_Linux_on_ZFS.html" title="Install Arch Linux on ZFS">Install Arch Linux on ZFS</a></li>
 </ul>
 </div>
-<p><a href="https://en.wikipedia.org/wiki/ZFS" class="extiw" title="wikipedia:ZFS">ZFS</a> is an advanced filesystem, originally developed and released by <a href="https://en.wikipedia.org/wiki/Sun_Microsystems" class="extiw" title="wikipedia:Sun Microsystems">Sun Microsystems</a> in 2005.
+<p><a href="https://en.wikipedia.org/wiki/ZFS" class="extiw" title="wikipedia:ZFS">ZFS</a> is an advanced filesystem, originally developed and released by <a href="https://en.wikipedia.org/wiki/Sun_Microsystems" class="extiw" title="wikipedia:Sun Microsystems">Sun Microsystems</a> for the solaris operating system. Nowadays ZFS usually refers to the fork <a rel="nofollow" class="external text" href="https://github.com/openzfs/zfs">OpenZFS</a>, which ports the original implementation to other operating systems, including Linux, while continuing the development of solaris ZFS. This article will treat ZFS as synonmous with OpenZFS.
 </p>
-<p>Described as <a rel="nofollow" class="external text" href="https://web.archive.org/web/20060428092023/http://www.sun.com/2004-0914/feature/">"The last word in filesystems"</a>, ZFS is stable, fast, secure, and future-proof.
-Features of ZFS include: pooled storage (integrated volume management – zpool), <a href="https://en.wikipedia.org/wiki/Copy-on-write" class="extiw" title="wikipedia:Copy-on-write">Copy-on-write</a>, <a href="https://en.wikipedia.org/wiki/Snapshot_(computer_storage)" class="extiw" title="wikipedia:Snapshot (computer storage)">snapshots</a>, data integrity verification and automatic repair (scrubbing), <a href="https://en.wikipedia.org/wiki/RAID-Z" class="extiw" title="wikipedia:RAID-Z">RAID-Z</a>, a maximum <a href="https://en.wikipedia.org/wiki/Exabyte" class="extiw" title="wikipedia:Exabyte">16 exabyte</a> file size, and a maximum 256 quadrillion <a href="https://en.wikipedia.org/wiki/Zettabyte" class="extiw" title="wikipedia:Zettabyte">zettabyte</a> storage with no limit on number of filesystems (datasets) or files<a rel="nofollow" class="external autonumber" href="https://docs.oracle.com/cd/E19253-01/819-5461/zfsover-2/index.html">[1]</a>.
+<p>ZFS is featureful. Features of ZFS include: an improved page cache algorithm: <a href="https://en.wikipedia.org/wiki/Adaptive_replacement_cache" class="extiw" title="wikipedia:Adaptive replacement cache">ARC</a>, deduplication, pooled storage,  <a href="https://en.wikipedia.org/wiki/Snapshot_(computer_storage)" class="extiw" title="wikipedia:Snapshot (computer storage)">snapshots</a>, replication, data integrity verification and automatic repair (scrubbing), <a href="https://en.wikipedia.org/wiki/RAID-Z" class="extiw" title="wikipedia:RAID-Z">RAID-Z</a> and much more.
 </p>
-<p>ZFS is licensed under the <a href="https://en.wikipedia.org/wiki/CDDL" class="extiw" title="wikipedia:CDDL">Common Development and Distribution License</a> (CDDL). Because the CDDL is incompatible with the GPL, <a rel="nofollow" class="external text" href="https://sfconservancy.org/blog/2016/feb/25/zfs-and-linux/">it is not possible</a> for ZFS to be included in the Linux Kernel. This requirement, however, does not prevent a native Linux kernel module from being developed and distributed by a third party, as is the case with <a rel="nofollow" class="external text" href="https://openzfs.org">OpenZFS</a> (previously named ZFS on Linux).
-</p>
-<p>As a result of ZFS not being included in the Linux kernel:
-</p>
-<ul>
-<li>OpenZFS project must keep up with Linux kernel versions. After making stable OpenZFS release - Arch ZFS maintainers release them.</li>
-<li>This situation sometimes locks down the normal rolling update process by unsatisfied dependencies because the new kernel version, proposed by update, is unsupported by OpenZFS.</li>
-</ul>
 <meta property="mw:PageProp/toc">
-<h2><span class="mw-headline" id="Installation">Installation</span></h2>
-<p>The kernel modules for ZFS can be installed in two ways—either installing a package that provides the modules for a specific kernel version or using a <a href="../en/Dynamic_Kernel_Module_Support.html" class="mw-redirect" title="DKMS">DKMS</a> package that builds the modules for installed kernels. See the following sections.
+<h2><span class="mw-headline" id="Concepts">Concepts</span></h2>
+<p>Unlike regular filesystems where a filesystem reside on a single block device, ZFS stores data in storage pools. Pools are composed of vdevs (virtual devices) which are themselves composed of block devices. Pools always write data to the vdev with most percentage of free space (so data are naturally striped across vdevs). Vdevs on the other hand can use more complex configurations such as RAIDZ and mirror. In the simplest configuration a pool can be create on a single vdev composed of a single partition, which behaves similar to regular filesystems.
 </p>
-<p>ZFS userspace utilities are provided by the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zfs-utils/">zfs-utils</a></span><sup><small>AUR</small></sup> package which is a dependency of all zfs kernel module packages.
-</p>
-<h3><span class="mw-headline" id="Kernel-specific_packages">Kernel-specific packages</span></h3>
-<div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> Unless you use the <a href="../en/Dynamic_Kernel_Module_Support.html" class="mw-redirect" title="Dkms">dkms</a> versions of these packages, the ZFS and SPL kernel modules are tied to a specific kernel version. It will not be possible to apply any kernel updates until updated packages are uploaded to AUR or the <a href="../en/Unofficial_user_repositories.html#archzfs" title="Unofficial user repositories">archzfs</a> repository.</div>
-<div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> You can <a href="../en/Downgrading_packages.html" class="mw-redirect" title="Downgrade">downgrade</a> your linux version to the one from <a href="../en/Unofficial_user_repositories.html#archzfs" title="Unofficial user repositories">archzfs</a> repository if your current kernel is newer or switch to the LTS kernel which may provide better compatibility with out-of-tree kernel modules.</div>
-<p>Install from the <a href="../en/Unofficial_user_repositories.html#archzfs" title="Unofficial user repositories">archzfs</a> repository or alternatively the <a href="../en/Arch_User_Repository.html" title="Arch User Repository">Arch User Repository</a>:
-</p>
-<ul>
-<li>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zfs-linux/">zfs-linux</a></span><sup><small>AUR</small></sup>—<a rel="nofollow" class="external text" href="https://zfsonlinux.org/">stable releases</a> for <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span>.</li>
-<li>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zfs-linux-git/">zfs-linux-git</a></span><sup><small>AUR</small></sup>—<a rel="nofollow" class="external text" href="https://github.com/openzfs/zfs">development</a> releases (with support of newer kernel versions) for <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span>.</li>
-<li>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zfs-linux-lts/">zfs-linux-lts</a></span><sup><small>AUR</small></sup>—stable releases for <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-lts">linux-lts</a></span>.</li>
-<li>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zfs-linux-hardened/">zfs-linux-hardened</a></span><sup><small>AUR</small></sup>—stable releases for <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-hardened">linux-hardened</a></span>.</li>
-<li>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zfs-linux-zen/">zfs-linux-zen</a></span><sup><small>AUR</small></sup>—stable releases for <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-zen">linux-zen</a></span>.</li>
-</ul>
-<p>Test the installation by issuing <code>zpool status</code> on the command line. If an "insmod" error is produced, try <code>depmod -a</code>.
-</p>
-<h3><span class="mw-headline" id="DKMS">DKMS</span></h3>
-<p>Users can make use of <a href="../en/Dynamic_Kernel_Module_Support.html" title="Dynamic Kernel Module Support">Dynamic Kernel Module Support</a> (DKMS) to rebuild the ZFS modules automatically.
-</p>
-<div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> Occasionally, the dkms package might not compile against the newest kernel packages in Arch. Using the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-lts">linux-lts</a></span> <a href="../en/Kernel.html" title="Kernel">kernel</a> may provide better compatibility with out-of-tree kernel modules, otherwise <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zfs-dkms-staging-git/">zfs-dkms-staging-git</a></span><sup><small>AUR</small></sup> backports compatibility patches and fixes for the latest kernel package in Arch on top of the stable zfs branch </div>
-<p>Install from the <a href="../en/Unofficial_user_repositories.html#archzfs" title="Unofficial user repositories">archzfs</a> repository or alternatively the <a href="../en/Arch_User_Repository.html" title="Arch User Repository">Arch User Repository</a>:
-</p>
-<ul>
-<li>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zfs-dkms/">zfs-dkms</a></span><sup><small>AUR</small></sup> for stable releases with dynamic kernel module support (might not work with the latest stable kernels so it is advised to use the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-lts">linux-lts</a></span> <a href="../en/Kernel.html" title="Kernel">kernel</a> instead).</li>
-<li>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zfs-dkms-staging-git/">zfs-dkms-staging-git</a></span><sup><small>AUR</small></sup> to get the latest fixes in the zfs stable branch plus backported support for the newest kernel packages in Arch.</li>
-<li>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zfs-dkms-git/">zfs-dkms-git</a></span><sup><small>AUR</small></sup> for development releases for versions with dynamic kernel module support.</li>
-</ul>
-<div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> Add an <code>IgnorePkg</code> entry to <a href="../en/Pacman.html#Configuration" class="mw-redirect" title="Pacman.conf">pacman.conf</a> to prevent these packages from upgrading when doing a regular update.</div>
-<p>To compile the ZFS modules provided by the aforementioned dkms packages, it is also necessary to install the appropriate headers package(s) for your installed kernel(s) (e.g. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-headers">linux-headers</a></span> for <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-lts-headers">linux-lts-headers</a></span> for <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-lts">linux-lts</a></span>, etc.). When either the dkms packages or the kernel is updated, the kernel modules will be automatically recompiled thanks to the <a href="../en/Dynamic_Kernel_Module_Support.html" class="mw-redirect" title="DKMS">DKMS</a> <a href="../en/Pacman.html#Hooks" class="mw-redirect" title="Pacman hook">pacman hook</a>.
-</p>
-<h3><span class="mw-headline" id="Root_on_ZFS">Root on ZFS</span></h3>
-<p>See <a href="../en/Install_Arch_Linux_on_ZFS.html#Installation" title="Install Arch Linux on ZFS">Install Arch Linux on ZFS#Installation</a>.
-</p>
-<h2><span class="mw-headline" id="Experimenting_with_ZFS">Experimenting with ZFS</span></h2>
-<p>Users wishing to experiment with ZFS on <i>virtual block devices</i> (known in ZFS terms as VDEVs) which can be simple files like <code>~/zfs0.img</code> <code>~/zfs1.img</code> <code>~/zfs2.img</code> etc. with no possibility of real data loss are encouraged to see the <a href="../en/ZFS/Virtual_disks.html" class="mw-redirect" title="Experimenting with ZFS">Experimenting with ZFS</a> article. Common tasks like building a RAIDZ array, purposefully corrupting data and recovering it, snapshotting datasets, etc. are covered.
-</p>
-<h2><span class="mw-headline" id="Configuration">Configuration</span></h2>
-<p>ZFS is considered a "zero administration" filesystem by its creators; therefore, configuring ZFS is very straight forward. Configuration is done primarily with two commands: <code>zfs</code> and <code>zpool</code>.
-</p>
-<h3><span class="mw-headline" id="Automatic_start">Automatic start</span></h3>
-<p>For ZFS to live by its "zero administration" namesake, you probably want the pools to be automatically imported at boot time.
-</p>
-<p>To do so, <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a><a rel="nofollow" class="external autonumber" href="https://github.com/archzfs/archzfs/issues/72">[2]</a>: 
-</p>
-<ul>
-<li>
-<code>zfs.target</code> as the overarching reference point for other units to depend on,</li>
-<li>
-<code>zfs-import.target</code> as it provides the proper ordering<a rel="nofollow" class="external autonumber" href="https://github.com/openzfs/zfs/pull/6822">[3]</a>,</li>
-<li>
-<code>zfs-import-cache.service</code> to import the pools.</li>
-</ul>
-<p><code>zfs-import-cache.service</code> imports the zfs pools by reading the file <code>/etc/zfs/zpool.cache</code>. For each <a href="#Importing_a_pool_created_by_id">imported pool</a> you want automatically imported by <code>zfs-import-cache.service</code>, execute:
-</p>
-<pre># zpool set cachefile=/etc/zfs/zpool.cache <i>pool</i>
-</pre>
-<p>To actually mount the ZFS filesystems (without listing the ZFS filesystems in <code>/etc/fstab</code>), you have 2 choices:
-</p>
-<ul>
-<li>Enable the <a href="#Using_zfs-mount.service">zfs-mount.service</a>
-</li>
-<li>Use <a href="#Using_zfs-mount-generator">zfs-mount-generator</a>
-</li>
-</ul>
-<h4><span class="mw-headline" id="Using_zfs-mount.service">Using zfs-mount.service</span></h4>
-<p>In order to mount ZFS filesystems automatically on boot you need to <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> <code>zfs-mount.service</code>.
-</p>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> 
-<ul>
-<li>This does not work with separated <code>/var</code> dataset because it does not get mounted early enough. Instead you should use <a href="#Using_zfs-mount-generator">zfs-mount-generator</a> option. See <a rel="nofollow" class="external text" href="https://github.com/openzfs/zfs/issues/3768">OpenZFS issue #3768</a> for more information.</li>
-<li>It appears that the ZFS module is loaded too late for using this method, see <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?id=274044">BBS#274044</a> and <a href="../en/Talk:ZFS.html#zfs_hook_in_mkinitcpio.conf" title="Talk:ZFS">Talk:ZFS#zfs hook in mkinitcpio.conf</a>. The workaround is to use the <code>ZFS</code> <a href="../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a> hook.</li>
-</ul>
-</div>
-<h4><span class="mw-headline" id="Using_zfs-mount-generator">Using zfs-mount-generator</span></h4>
-<p>You can also use the zfs-mount-generator to create systemd mount units for your ZFS filesystems at boot. systemd will automatically mount the filesystems based on the mount units without having to use the <code>zfs-mount.service</code>. To do that, you need to:
+<p>Once created, storage resources can be allocated from the pool. Such resources are groupd into units of what called datasets. There are 4 types of datasets:
 </p>
 <ol>
-<li>Create the <code>/etc/zfs/zfs-list.cache</code> directory.</li>
-<li>Enable the ZFS Event Daemon(ZED) script (called a ZEDLET) required to create a list of mountable ZFS filesystems. (This link is created automatically if you are using OpenZFS &gt;= 2.0.0.) <pre># ln -s /usr/lib/zfs/zed.d/history_event-zfs-list-cacher.sh /etc/zfs/zed.d</pre>
-</li>
-<li>
-<a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">Enable</a> <code>zfs.target</code> and <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable/start">enable/start</a> the ZFS Event Daemon (<code>zfs-zed.service</code>). This service is responsible for running the script in the previous step.</li>
-<li>You need to create an empty file named after your pool in <code>/etc/zfs/zfs-list.cache</code>. The ZEDLET will only update the list of filesystems if the file for the pool already exists. <pre># touch /etc/zfs/zfs-list.cache/&lt;pool-name&gt;</pre>
-</li>
-<li>Check the contents of <code>/etc/zfs/zfs-list.cache/&lt;pool-name&gt;</code>. If it is empty, make sure that the <code>zfs-zed.service</code> is running and just change the canmount property of any of your ZFS filesystem by running: <pre>zfs set canmount=off zroot/fs1</pre> This change causes ZFS to raise an event which is captured by ZED, which in turn runs the ZEDLET to update the file in <code>/etc/zfs/zfs-list.cache</code>. If the file in <code>/etc/zfs/zfs-list.cache</code> is updated, you can set the <code>canmount</code> property of the filesystem back by running: <pre>zfs set canmount=on zroot/fs1</pre>
-</li>
+<li>file system: File systems are basically a directory tree and can be mounted like regular filesystems into the system namespace.</li>
+<li>volume (zvol): A volume represented as a block device</li>
+<li>snapshot: A snapshot of a file system or a volume</li>
+<li>bookmark: A snapshot that does not hold data, used for incremental replication.</li>
 </ol>
-<p>You need to add a file in <code>/etc/zfs/zfs-list.cache</code> for each ZFS pool in your system. Make sure the <a href="#Automatic_start">required units and targets</a> are enabled.
+<p>Dataset are identified by a unique path with the following syntax:
 </p>
-<h2><span class="mw-headline" id="Storage_pools">Storage pools</span></h2>
-<p>It is not necessary to partition the drives before creating the ZFS filesystem. It is recommended to point ZFS at an entire disk (ie. <code>/dev/sdx</code> rather than <code>/dev/sdx1</code>), which will <a rel="nofollow" class="external text" href="https://www.reddit.com/r/zfs/comments/667na0/zfs_on_raw_or_gpt/dgh0l9t/">automatically create a GPT (GUID Partition Table)</a> and add an 8 MB reserved partition at the end of the disk for legacy bootloaders. However, you can specify a partition or a file within an existing filesystem, if you wish to create multiple volumes with different redundancy properties.
+<pre>pool(/segment)+((#|@)bookmark/snapshot name)?
+</pre>
+<p>where <code>#</code> is used for bookmarks and <code>@</code> is used for snapshots.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> If some or all device have been used in a software RAID set it is paramount to <a href="../en/RAID.html#Prepare_the_devices" class="mw-redirect" title="Mdadm">erase any old RAID configuration information</a>.</div>
-<div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> For <a href="../en/Advanced_Format.html" title="Advanced Format">Advanced Format</a> disks with 4 KiB sector size, an <code>ashift</code> of <code>12</code> is recommended for best performance. Advanced Format disks emulate a sector size of 512 bytes for compatibility with legacy systems, this causes ZFS to sometimes use an <code>ashift</code> option number that is not ideal. Once the pool has been created, the only way to change the <code>ashift</code> option is to recreate the pool. Using an <code>ashift</code> of <code>12</code> would also decrease available capacity. See the OpenZFS FAQ: <a rel="nofollow" class="external text" href="https://openzfs.github.io/openzfs-docs/Project%20and%20Community/FAQ.html#performance-considerations">Performance Considerations</a>, <a rel="nofollow" class="external text" href="https://openzfs.github.io/openzfs-docs/Project%20and%20Community/FAQ.html#advanced-format-disks">Advanced Format Disks</a>, and <a rel="nofollow" class="external text" href="https://web.archive.org/web/20170913063528/https://wiki.illumos.org/display/illumos/ZFS+and+Advanced+Format+disks">ZFS and Advanced Format disks</a>.</div>
-<h3><span class="mw-headline" id="Identify_disks">Identify disks</span></h3>
-<p>OpenZFS recommends using device IDs when creating ZFS storage pools of less than 10 devices<a rel="nofollow" class="external autonumber" href="https://openzfs.github.io/openzfs-docs/Project%20and%20Community/FAQ.html#selecting-dev-names-when-creating-a-pool-linux">[4]</a>. Use <a href="../en/Persistent_block_device_naming.html#by-id_and_by-path" title="Persistent block device naming">Persistent block device naming#by-id and by-path</a> to identify the list of drives to be used for ZFS pool. 
+<strong>Note:</strong> This is a short summary of <span class="plainlinks archwiki-template-man" title="$ man 7 zpoolconcepts"><a rel="nofollow" class="external text" href="https://openzfs.github.io/openzfs-docs/man/master/7/zpoolconcepts.7.html">zpoolconcepts(7)</a></span> and <span class="plainlinks archwiki-template-man" title="$ man 7 zfsconcepts"><a rel="nofollow" class="external text" href="https://openzfs.github.io/openzfs-docs/man/master/7/zfsconcepts.7.html">zfsconcepts(7)</a></span>. It is highly recommended to read them to familarize with the concepts as well as technical terms not covered here.</div>
+<h2><span class="mw-headline" id="Complications_of_being_out-of-tree">Complications of being out-of-tree</span></h2>
+<p>Due to complex legal reasons, the Linux kernel maintainers refuse to accept ZFS into the linux kernel. As such, ZFS is developed as an out-of-tree module. A consequence of this arrangement is that kernel updates will break the kernel API that ZFS uses from time to time. Whenever this happenes, ZFS would have to change their code to adapt to this new API. This means there will be a time period where ZFS does not work on the latest mainline kernel release.
 </p>
-<p>The disk IDs should look similar to the following:
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ ls -lh /dev/disk/by-id/</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">lrwxrwxrwx 1 root root  9 Aug 12 16:26 ata-ST3000DM001-9YN166_S1F0JKRR -&gt; ../../sdc
-lrwxrwxrwx 1 root root  9 Aug 12 16:26 ata-ST3000DM001-9YN166_S1F0JTM1 -&gt; ../../sde
-lrwxrwxrwx 1 root root  9 Aug 12 16:26 ata-ST3000DM001-9YN166_S1F0KBP8 -&gt; ../../sdd
-lrwxrwxrwx 1 root root  9 Aug 12 16:26 ata-ST3000DM001-9YN166_S1F0KDGY -&gt; ../../sdb</pre>
-<div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> If you create zpools using device names (e.g. <code>/dev/sda</code>,<code>/dev/sdb</code>,...) ZFS might not be able to detect zpools intermittently on boot.</div>
-<h4><span class="mw-headline" id="Using_GPT_labels">Using GPT labels</span></h4>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-clear.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs language, wiki syntax or style improvements. See <a href="../en/Help:Style.html" title="Help:Style">Help:Style</a> for reference.</b></p>
-<div>
-<b>Reason:</b> Missing references to <a href="../en/Persistent_block_device_naming.html" title="Persistent block device naming">Persistent block device naming</a>, it is useless to explain the differences (or even what they are) here. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:ZFS.html">Talk:ZFS</a>)</div>
-</div>
-<p>Disk labels and UUID can also be used for ZFS mounts by using <a href="../en/Partitioning.html#GUID_Partition_Table" class="mw-redirect" title="GUID Partition Table">GPT</a> partitions. ZFS drives have labels but Linux is unable to read them at boot. Unlike <a href="../en/Partitioning.html#Master_Boot_Record" class="mw-redirect" title="Master Boot Record">MBR</a> partitions, GPT partitions directly support both UUID and labels independent of the format inside the partition. Partitioning rather than using the whole disk for ZFS offers two additional advantages. The OS does not generate bogus partition numbers from whatever unpredictable data ZFS has written to the partition sector, and if desired, you can easily over provision SSD drives, and slightly over provision spindle drives to ensure that different models with slightly different sector counts can zpool replace into your mirrors. This is a lot of organization and control over ZFS using readily available tools and techniques at almost zero cost.
-</p>
-<p>Use <a href="../en/Partitioning.html#GUID_Partition_Table" class="mw-redirect" title="GUID Partition Table">gdisk</a> to partition the all or part of the drive as a single partition. gdisk does not automatically name partitions so if partition labels are desired use gdisk command "c" to label the partitions. Some reasons you might prefer labels over UUID are: labels are easy to control, labels can be titled to make the purpose of each disk in your arrangement readily apparent, and labels are shorter and easier to type. These are all advantages when the server is down and the heat is on. GPT partition labels have plenty of space and can store most international characters <a href="https://en.wikipedia.org/wiki/GUID_Partition_Table#Partition_entries" class="extiw" title="wikipedia:GUID Partition Table">wikipedia:GUID_Partition_Table#Partition_entries</a> allowing large data pools to be labeled in an organized fashion.
-</p>
-<p>Drives partitioned with GPT have labels and UUID that look like this. 
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ ls -l /dev/disk/by-partlabel</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">lrwxrwxrwx 1 root root 10 Apr 30 01:44 zfsdata1 -&gt; ../../sdd1
-lrwxrwxrwx 1 root root 10 Apr 30 01:44 zfsdata2 -&gt; ../../sdc1
-lrwxrwxrwx 1 root root 10 Apr 30 01:59 zfsl2arc -&gt; ../../sda1</pre>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ ls -l /dev/disk/by-partuuid</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">lrwxrwxrwx 1 root root 10 Apr 30 01:44 148c462c-7819-431a-9aba-5bf42bb5a34e -&gt; ../../sdd1
-lrwxrwxrwx 1 root root 10 Apr 30 01:59 4f95da30-b2fb-412b-9090-fc349993df56 -&gt; ../../sda1
-lrwxrwxrwx 1 root root 10 Apr 30 01:44 e5ccef58-5adf-4094-81a7-3bac846a885f -&gt; ../../sdc1
-</pre>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> To minimize typing and copy/paste errors, set a local variable with the target PARTUUID: <code>$ UUID=$(lsblk --noheadings --output PARTUUID /dev/sd<i>XY</i>)</code> </div>
-<h3><span class="mw-headline" id="Creating_ZFS_pools">Creating ZFS pools</span></h3>
-<p>To create a ZFS pool:
+<strong>Tip:</strong> Since the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span> package closely tracks the updates of the latest stable branch, it would be a better idea to use <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-lts">linux-lts</a></span> instead if you do not want to pin the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span> package to an unsupported version.</div>
+<h2><span class="mw-headline" id="Installation">Installation</span></h2>
+<p>As an out-of-tree module, there are 2 types of packages you can choose to install. Either installing it as a binary kernel module built against a specific kernel version or installing its source as a <a href="../en/Dynamic_Kernel_Module_Support.html" class="mw-redirect" title="DKMS">DKMS</a> module that gets automatically rebuilt anytime the kernel updates.
 </p>
-<pre># zpool create -f -m &lt;mount&gt; &lt;pool&gt; [raidz(2|3)|mirror] &lt;ids&gt;
-</pre>
-<div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> One may want to read <a href="#Advanced_Format_disks">#Advanced Format disks</a> first as it may be recommend to set <code>ashift</code> on pool creation.</div>
-<ul><li>
-<b>create</b>: subcommand to create the pool.</li></ul>
+<p>In addition to the kernel modules, users would also need to install userspaces tools such as <span class="plainlinks archwiki-template-man" title="$ man 8 zpool"><a rel="nofollow" class="external text" href="https://openzfs.github.io/openzfs-docs/man/master/8/zpool.8.html">zpool(8)</a></span> and <span class="plainlinks archwiki-template-man" title="$ man 8 zfs"><a rel="nofollow" class="external text" href="https://openzfs.github.io/openzfs-docs/man/master/8/zfs.8.html">zfs(8)</a></span>. These userspace tools are usually packaged as a single package called <code>zfs-utils*</code>.
+</p>
+<p>All of the kernel module packages mentioned bellow correctly specified their dependency on their corresponding <code>zfs-utils*</code> packages so when installing you just need to satisfy their dependency.
+</p>
+<h3><span class="mw-headline" id="Binary_kernel_module">Binary kernel module</span></h3>
+<table class="wikitable">
+<caption>Comparison of packages
+</caption>
+<tbody>
+<tr>
+<th>Package
+</th>
+<th>Repository
+</th>
+<th>ZFS release type
+</th>
+<th>Targeting kernel
+</th>
+<th>Binary package
+</th>
+<th>Notes
+</th>
+</tr>
+<tr>
+<td>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zfs-linux-lts/">zfs-linux-lts</a></span><sup><small>AUR</small></sup>
+</td>
+<td>AUR
+</td>
+<td>Stable
+</td>
+<td>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-lts">linux-lts</a></span>
+</td>
+<td>No
+</td>
+<td rowspan="2">Highly recommended to use <a href="../DeveloperWiki:Building_in_a_clean_chroot.html#Convenience_way" title="DeveloperWiki:Building in a clean chroot">devtools</a> when building newer versions of the ZFS package as otherwise you'd have to uninstall your current ZFS package to upgrade the kernel.
+</td>
+</tr>
+<tr>
+<td>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zfs-linux/">zfs-linux</a></span><sup><small>AUR</small></sup>
+</td>
+<td>AUR
+</td>
+<td>Stable
+</td>
+<td>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span>
+</td>
+<td>No
+</td>
+</tr>
+<tr>
+<td>zfs-linux-lts-poscat
+</td>
+<td>
+<a href="../en/Unofficial_user_repositories.html#archlinuxcn" class="mw-redirect" title="Archlinuxcn">archlinuxcn</a>
+</td>
+<td>Stable
+</td>
+<td>linux-lts
+</td>
+<td>Yes
+</td>
+<td rowspan="2">Automatically updated and rebuilt against new kernel versions by a build bot every few hours, additionally provides a mkinitcpio hook for systemd based initrds
+</td>
+</tr>
+<tr>
+<td>zfs-linux-lts-rc-poscat
+</td>
+<td>archlinuxcn
+</td>
+<td>Release candidate
+</td>
+<td>linux-lts
+</td>
+<td>Yes
+</td>
+</tr>
+<tr>
+<td>zfs-linux
+</td>
+<td>
+<a href="../en/Unofficial_user_repositories.html#archzfs" title="Unofficial user repositories">archzfs</a>
+</td>
+<td>Stable
+</td>
+<td>linux
+</td>
+<td>Yes
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>zfs-linux-lts
+</td>
+<td>archzfs
+</td>
+<td>Stable
+</td>
+<td>linux-lts
+</td>
+<td>Yes
+</td>
+<td>
+</td>
+</tr>
+</tbody>
+</table>
+<h3><span class="mw-headline" id="DKMS">DKMS</span></h3>
 <ul>
 <li>
-<b>-f</b>: Force creating the pool. This is to overcome the "EFI label error". See <a href="#Does_not_contain_an_EFI_label">#Does not contain an EFI label</a>.</li>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zfs-dkms/">zfs-dkms</a></span><sup><small>AUR</small></sup>: stable release</li>
 <li>
-<b>-m</b>: The mount point of the pool. If this is not specified, then the pool will be mounted to <code>/&lt;pool&gt;</code>.</li>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zfs-dkms-staging-git/">zfs-dkms-staging-git</a></span><sup><small>AUR</small></sup>: stable release with cherry picked patches for compatibility with latest <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span> kernel</li>
+</ul>
+<h3><span class="mw-headline" id="Root_on_ZFS">Root on ZFS</span></h3>
+<p>See <a href="../en/Install_Arch_Linux_on_ZFS.html" title="Install Arch Linux on ZFS">Install Arch Linux on ZFS</a>.
+</p>
+<h2><span class="mw-headline" id="Configuration">Configuration</span></h2>
+<h3><span class="mw-headline" id="Importing_pools_at_startup">Importing pools at startup</span></h3>
+<p>ZFS provides systemd services for automatically importing pools and targets for other units to determine the state of ZFS initialization. These are:
+</p>
+<ul>
+<li>
+<code>zfs.target</code> which is reached when all ZFS services completes</li>
+<li>
+<code>zfs-import.target</code> which is reached when ZFS pools finish importing</li>
+<li>
+<code>zfs-volumes.target</code> which is reached when zvols all appear under <code>/dev</code>
+</li>
+<li>
+<code>zfs-import-scan.service</code> which imports pools by scanning for devices using libblkid</li>
+<li>
+<code>zfs-import-cache.service</code> which imports pools by consulting a <code>zpool.cache</code> file</li>
+<li>
+<code>zfs-volume-wait.service</code> which waits for all zvols to be available.</li>
+</ul>
+<p>You should choose one between <code>zfs-import-scan.service</code> and <code>zfs-import-cache.service</code> and enable the rest.
+</p>
+<h4><span class="mw-headline" id="zfs-import-scan">zfs-import-scan</span></h4>
+<p><code>zfs-import-scan.service</code> uses <code>zpool import</code>'s default logic of scanning devices using blkid, this means no <code>zpool.cache</code> files are needed. This is the recommended method since <code>zpool.cache</code> is <a rel="nofollow" class="external text" href="https://github.com/openzfs/zfs/issues/1035#issuecomment-13411970">deprecated</a>.
+</p>
+<p>It is important to make sure non of your pools are imported with the <code>cachefile</code> option enabled since <code>zfs-import-scan.service</code> will not start if <code>zpool.cache</code> exists and is not empty. You can achieve this by enabling the <a rel="nofollow" class="external text" href="https://openzfs.github.io/openzfs-docs/Performance%20and%20Tuning/Module%20Parameters.html#zfs-autoimport-disable"><code>zfs_autoimport_diable</code></a> option of the <code>zfs</code> module. You should also either remove the existing <code>zpool.cache</code> or setting <code>cachefile</code> to <code>none</code> for all imported pools when booting.
+</p>
+<h4><span class="mw-headline" id="zfs-import-cache">zfs-import-cache</span></h4>
+<p><code>zfs-import-cache.service</code> uses <code>zpool import -c &lt;zpool.cache&gt;</code> when importing pools which reads device paths from the <code>zpool.cache</code>. 
+</p>
+<p>Using this method means you need to be conscious about the device paths while creating ZFS pools, since some device paths may change between boots or hardware modifications, which would lead to stale cache and failure of pool imports. See <a href="../en/Persistent_block_device_naming.html" title="Persistent block device naming">Persistent block device naming</a> on how to choose devices paths that are persistent.
+</p>
+<h3><span class="mw-headline" id="Automatically_mounting_filesystems">Automatically mounting filesystems</span></h3>
+<p>The services <code>zfs-import-scan.service</code> and <code>zfs-import-cache.service</code> will import the pools without mounting any filesystems. To also mount filesystems on startup there are 2 methods, depending on if your filesystems are configured using <code>mountpoint=legacy</code> or not. If your filesystems are configured with a mix of legacy mount and non-legacy mount you'll need to use both methods.
+</p>
+<h4><span class="mw-headline" id="zfs-mount-generator">zfs-mount-generator</span></h4>
+<p>If your filesystems use non-legacy mount, it is recommended to use <a rel="nofollow" class="external text" href="https://openzfs.github.io/openzfs-docs/man/master/8/zfs-mount-generator.8.html">zfs-mount-generator</a>, which is a <span class="plainlinks archwiki-template-man" title="$ man 7 systemd.generator"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd.generator.7">systemd.generator(7)</a></span> that generates systemd mount units for all filesystems of imported zfs pools with the property <code>canmount=on</code> to mount filesystems on boot. By default though zfs-mount-generator won't do anything since it requires <code>zfs list</code> caches. You need to:
+</p>
+<ol>
+<li>Enable and start <code>zfs-zed.service</code>
+</li>
+<li>Create the <code>/etc/zfs/zfs-list.cache</code> directory.</li>
+<li>Create empty files named after your pools in <code>/etc/zfs/zfs-list.cache</code>. Zed will only update the list of filesystems if the file for the pool already exists and is writable. <pre># touch /etc/zfs/zfs-list.cache/&lt;pool-name&gt;</pre>
+</li>
+<li>Check the contents of <code>/etc/zfs/zfs-list.cache/&lt;pool-name&gt;</code>. If it is empty, change the canmount property of any of your ZFS filesystem to emit ZFS events to trigger zed by running: <pre>zfs set canmount=off zroot/fs1</pre> and then <pre>zfs inherit canmount zroot/fs1</pre>
+</li>
+</ol>
+<h4><span class="mw-headline" id="fstab">fstab</span></h4>
+<p>If your filesystem uses legacy mount, then you should specify the mountpoint in the <a href="../en/Fstab.html" title="Fstab">fstab</a> file. The device field should be the name (full path) of your filesystem and the dump and fsck fields should be left as 0.
+</p>
+<h3><span class="mw-headline" id="Creating_a_hostid_file">Creating a hostid file</span></h3>
+<p>While not strictly necessary, it is usually a good idea to create a <code>/etc/hostid</code> file:
+</p>
+<pre># zgenhostid $(hostid)
+</pre>
+<h2><span class="mw-headline" id="Storage_pools">Storage pools</span></h2>
+<h3><span class="mw-headline" id="Experimenting_with_ZFS">Experimenting with ZFS</span></h3>
+<p>Users wishing to experiment with ZFS with no possibility of real data loss can refer to <a href="../en/ZFS/Virtual_disks.html" title="ZFS/Virtual disks">ZFS/Virtual disks</a>.
+</p>
+<h3><span class="mw-headline" id="Creating_ZFS_pools">Creating ZFS pools</span></h3>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong> One may want to read <a href="#The_ashift_property">#The ashift property</a> first as it may be recommend to set <code>ashift</code> on pool creation.</div>
+<p>To create a ZFS pool:
+</p>
+<pre># zpool create -R &lt;root&gt; -o &lt;poolopts&gt; -O &lt;dsetprops&gt; &lt;pool&gt; &lt;vdevs&gt;
+</pre>
+<p>Where each <code>vdev</code> is either a device or has the format:
+</p>
+<pre>&lt;vdev type&gt; &lt;device&gt; ... &lt;device&gt;
+</pre>
+<ul>
+<li>
+<b>-R</b>: Mounts all filesystems under this directory, useful for not intefering with existing system</li>
+<li>
+<b>-o</b>: Specifies the properties of the pool, can be used multiple times. Some properties such as <code>ashift</code> cannot be changed once created. (technically <code>ashift</code> is per vdev but to configure it per vdev you'll need to use <code>zpool add</code>)</li>
+<li>
+<b>-O</b>: Specifies the properties of the root dataset of the pool, can be used multple times. Some properties such as <code>normalization</code> cannot be changed once created.</li>
 <li>
 <b>pool</b>: This is the name of the pool.</li>
 <li>
-<b>raidz(2|3)|mirror</b>: This is the type of virtual device that will be created from the list of devices. Raidz is a single disk of parity (similar to raid5), raidz2 for 2 disks of parity (similar to raid6) and raidz3 for 3 disks of parity. Also available is <b>mirror</b>, which is similar to raid1 or raid10, but is not constrained to just 2 device. If not specified, each device will be added as a vdev which is similar to raid0. After creation, a device can be added to each single drive vdev to turn it into a mirror, which can be useful for migrating data.</li>
+<b>vdev type</b>: See <span class="plainlinks archwiki-template-man" title="$ man 7 zpoolconcepts"><a rel="nofollow" class="external text" href="https://openzfs.github.io/openzfs-docs/man/master/7/zpoolconcepts.7.html">zpoolconcepts(7)</a></span> for a list of supported vdev types.</li>
 <li>
-<b>ids</b>: The <a href="../en/Persistent_block_device_naming.html#by-id_and_by-path" title="Persistent block device naming">ID's</a> of the drives or partitions that to include into the pool.</li>
+<b>device</b>: A block device, can be either a full path or the file name part of the path</li>
 </ul>
-<p>Create pool with single raidz vdev:
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> Depending on the <a href="#Importing_pools_at_startup">method</a> you chose to use to mount the pools, you might need to be conscious about the device path you use to create pools.
+</div>
+<p>For example, to create a pool on a single partition:
 </p>
-<pre># zpool create -f -m /mnt/data bigdata \
-               raidz \
+<pre># zpool create -R /mnt pool /dev/sda
+</pre>
+<p>To create a pool with a single <code>raidz1</code> vdev:
+</p>
+<pre># zpool create -R /mnt pool \
+               raidz1 \
                   ata-ST3000DM001-9YN166_S1F0KDGY \
                   ata-ST3000DM001-9YN166_S1F0JKRR \
                   ata-ST3000DM001-9YN166_S1F0KBP8 \
                   ata-ST3000DM001-9YN166_S1F0JTM1
 </pre>
-<p>Create pool with two mirror vdevs:
+<p>To create a pool with two <code>mirror</code> vdevs:
 </p>
-<pre># zpool create -f -m /mnt/data bigdata \
+<pre># zpool create -R /mnt pool \
                mirror \
                   ata-ST3000DM001-9YN166_S1F0KDGY \
                   ata-ST3000DM001-9YN166_S1F0JKRR \
@@ -1162,20 +1241,22 @@ lrwxrwxrwx 1 root root 10 Apr 30 01:44 e5ccef58-5adf-4094-81a7-3bac846a885f -&gt
                   ata-ST3000DM001-9YN166_S1F0KBP8 \
                   ata-ST3000DM001-9YN166_S1F0JTM1
 </pre>
-<h4><span class="mw-headline" id="Advanced_Format_disks">Advanced Format disks</span></h4>
-<p>At pool creation, <b>ashift=12</b> should always be used, except with SSDs that have 8k sectors where <b>ashift=13</b> is correct. A vdev of 512 byte disks using 4k sectors will not experience performance issues, but a 4k disk using 512 byte sectors will. Since <b>ashift</b> cannot be changed after pool creation, even a pool with only 512 byte disks should use 4k because those disks may need to be replaced with 4k disks or the pool may be expanded by adding a vdev composed of 4k disks. Because correct detection of 4k disks is not reliable, <code>-o ashift=12</code> should always be specified during pool creation. See the <a rel="nofollow" class="external text" href="https://openzfs.github.io/openzfs-docs/Project%20and%20Community/FAQ.html#advanced-format-disks">OpenZFS FAQ</a> for more details.
+<h4><span class="mw-headline" id="The_ashift_property">The ashift property</span></h4>
+<p><code>ashift</code> is an immutable per-vdev property that determines the (logical) sector size, which is 2^ashift bytes. For optimal performance, the logical sector size should always be greater than or equal to the physical sector size of the disks.
+</p>
+<p>By default, <code>zpool create</code> should be able to correctly determine the physical sector size of the device. This should suffice in a single disk setup. 
+</p>
+<p>However, if your are (or intend to) using vdev setups that can replace failed disks, such as <code>mirror</code> or <code>raidzX</code>, it is usually a good idea to always use <code>ashift=12</code>, since using 4kb logical sector size on a 512b physical disk won't have a performance penalty while the converse will. (unless your devices are the <a rel="nofollow" class="external text" href="https://github.com/openzfs/zfs/blob/master/cmd/zpool/os/linux/zpool_vdev_os.c#L99">few rare SSDs</a> that uses an 8kb sector size)
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> Use <span class="plainlinks archwiki-template-man" title="$ man 8 blockdev"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/blockdev.8">blockdev(8)</a></span> (part of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=util-linux">util-linux</a></span>) to print the sector size reported by the device's ioctls: <code>blockdev --getpbsz /dev/sd<i>XY</i></code> as the root user.</div>
-<p>Create pool with ashift=12 and single raidz vdev:
-</p>
-<pre># zpool create -f -o ashift=12 -m /mnt/data bigdata \
-               raidz \
-                  ata-ST3000DM001-9YN166_S1F0KDGY \
-                  ata-ST3000DM001-9YN166_S1F0JKRR \
-                  ata-ST3000DM001-9YN166_S1F0KBP8 \
-                  ata-ST3000DM001-9YN166_S1F0JTM1
+<strong>Tip:</strong> Use 
+<pre>$ lsblk --filter 'TYPE=="DISK"' -o NAME,PHY-SEC
 </pre>
+<p>to check the physical sector sizes of your disks.
+</p>
+<p>Additionally, if you are using NVMe drives, it might be possible to format it using a more performant LBA format than the factory default (see <span class="plainlinks archwiki-template-man" title="$ man 1 nvme-format"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/nvme-format.1">nvme-format(1)</a></span>).
+</p>
+</div>
 <h4><span class="mw-headline" id="GRUB-compatible_pool_creation">GRUB-compatible pool creation</span></h4>
 <p>By default, <i>zpool create</i> enables all features on a pool. If <code>/boot</code> resides on ZFS when using <a href="../en/GRUB.html" title="GRUB">GRUB</a> you must only enable features supported by GRUB otherwise GRUB will not be able to read the pool. ZFS includes compatibility files (see <code>/usr/share/zfs/compatibility.d</code>) to assist in creating pools at specific feature sets, of which grub2 is an option.
 </p>
@@ -1186,7 +1267,7 @@ lrwxrwxrwx 1 root root 10 Apr 30 01:44 e5ccef58-5adf-4094-81a7-3bac846a885f -&gt
 <h3><span class="mw-headline" id="Verifying_pool_status">Verifying pool status</span></h3>
 <p>If the command is successful, there will be no output. Using the <a href="../en/File_systems.html#Mount_a_file_system" class="mw-redirect" title="Mount">mount</a> command will show that the pool is mounted. Using <code>zpool status</code> will show that the pool has been created:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># zpool status -v</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># zpool status</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">  pool: bigdata
  state: ONLINE
  scan: none requested
@@ -1202,40 +1283,10 @@ config:
 
 errors: No known data errors
 </pre>
-<p>At this point it would be good to reboot the machine to ensure that the ZFS pool is mounted at boot. It is best to deal with all errors before transferring data.
-</p>
-<h3><span class="mw-headline" id="Importing_a_pool_created_by_id">Importing a pool created by id</span></h3>
-<p>Eventually a pool may fail to auto mount and you need to import to bring your pool back. Take care to avoid the most obvious solution.
-</p>
-<div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> Do not run <code>zpool import <i>pool</i></code>! This will import your pools using <code>/dev/sd?</code> which will lead to problems the next time you rearrange your drives. This may be as simple as rebooting with a USB drive left in the machine.</div>
-<p>Adapt one of the following commands to import your pool so that pool imports retain the persistence they were created with:
-</p>
-<pre># zpool import -d /dev/disk/by-id bigdata
-# zpool import -d /dev/disk/by-partlabel bigdata
-# zpool import -d /dev/disk/by-partuuid bigdata
-</pre>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> Use the <code>-l</code> flag when importing a pool that contains <a href="#Native_encryption">encrypted datasets keys</a>, e.g.:
-<pre># zpool import -l -d /dev/disk/by-id bigdata
-</pre>
-</div>
-<p>Finally check the state of the pool:
-</p>
-<pre># zpool status -v bigdata
-</pre>
-<h3><span class="mw-headline" id="Destroy_a_storage_pool">Destroy a storage pool</span></h3>
-<p>ZFS makes it easy to destroy a mounted storage pool, removing all metadata about the ZFS device.
-</p>
-<div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> This command destroys <b>any data</b> containing in the pool and/or dataset.</div>
-<p>To destroy the pool:
+<h3><span class="mw-headline" id="Destroying_a_storage_pool">Destroying a storage pool</span></h3>
+<p>To destroy a whole pool:
 </p>
 <pre># zpool destroy &lt;pool&gt;
-</pre>
-<p>To destroy a dataset:
-</p>
-<pre># zfs destroy &lt;pool&gt;/&lt;dataset&gt;
 </pre>
 <p>And now when checking the status:
 </p>
@@ -1243,26 +1294,14 @@ errors: No known data errors
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">no pools available
 </pre>
 <h3><span class="mw-headline" id="Exporting_a_storage_pool">Exporting a storage pool</span></h3>
-<p>If a storage pool is to be used on another system, it will first need to be exported. It is also necessary to export a pool if it has been imported from the archiso as the hostid is different in the archiso as it is in the booted system. The zpool command will refuse to import any storage pools that have not been exported. It is possible to force the import with the <code>-f</code> argument, but this is considered bad form.
-</p>
-<p>Any attempts made to import an un-exported storage pool will result in an error stating the storage pool is in use by another system. This error can be produced at boot time abruptly abandoning the system in the busybox console and requiring an archiso to do an emergency repair by either exporting the pool, or adding the <code>zfs_force=1</code> to the kernel boot parameters (which is not ideal). See <a href='#On_boot_the_zfs_pool_does_not_mount_stating:_"pool_may_be_in_use_from_other_system"'>#On boot the zfs pool does not mount stating: "pool may be in use from other system"</a>.
-</p>
 <p>To export a pool:
 </p>
 <pre># zpool export &lt;pool&gt;
 </pre>
-<h3><span class="mw-headline" id="Extending_an_existing_zpool">Extending an existing zpool</span></h3>
+<h3><span class="mw-headline" id="Extending_an_existing_pool">Extending an existing pool</span></h3>
 <p>A device (a partition or a disk) can be added to an existing zpool:
 </p>
 <pre># zpool add &lt;pool&gt; &lt;device-id&gt;
-</pre>
-<p>To import a pool which consists of multiple devices:
-</p>
-<pre># zpool import -d &lt;device-id-1&gt; -d &lt;device-id-2&gt; &lt;pool&gt;
-</pre>
-<p>or simply:
-</p>
-<pre># zpool import -d /dev/disk-by-id/ &lt;pool&gt;
 </pre>
 <h3>
 <span id="Attaching_a_device_to_.28create.29_a_mirror"></span><span class="mw-headline" id="Attaching_a_device_to_(create)_a_mirror">Attaching a device to (create) a mirror</span>
@@ -1273,8 +1312,8 @@ errors: No known data errors
 </pre>
 <p>You can attach the new device to an already existing mirror vdev (e.g. to upgrade from a 2-device to a 3-device mirror) or <a rel="nofollow" class="external text" href="https://askubuntu.com/a/1303462">attach it to single device to create a new mirror vdev</a>.
 </p>
-<h3><span class="mw-headline" id="Renaming_a_zpool">Renaming a zpool</span></h3>
-<p>Renaming a zpool that is already created is accomplished in 2 steps:
+<h3><span class="mw-headline" id="Renaming_a_pool">Renaming a pool</span></h3>
+<p>Renaming a pool that is already created is accomplished in 2 steps:
 </p>
 <pre># zpool export oldname
 # zpool import oldname newname
@@ -1284,26 +1323,45 @@ errors: No known data errors
 </p>
 <pre># zfs set mountpoint=/foo/bar poolname
 </pre>
-<h3><span class="mw-headline" id="Upgrade_zpools">Upgrade zpools</span></h3>
-<p>When using a newer <code>zfs</code> module, zpools may display an upgrade indication:
+<h3><span class="mw-headline" id="Upgrading_pools">Upgrading pools</span></h3>
+<p>When upgrading ZFS to a new version, new feature might be available. However for compatibility reasons ZFS won't automatically enable new features on previously created pools. Instead they need to be manually turned on for each pool.
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ zpool status -v</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">pool: bigdata
-state: ONLINE
-status: Some supported features are not enabled on the pool. The pool can still be used, but some features are unavailable.
-action: Enable all features using 'zpool upgrade'. Once this is done, the pool may no longer be accessible by software that does not support the features. See zpool-features(5) for details.</pre>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> 
-<ul>
-<li>Lower version <code>zfs</code> modules will not be able to import a zpool of a higher version.</li>
-<li>When dealing with important data, one may want to create a <a href="../en/System_maintenance.html#Backup" class="mw-redirect" title="Backup">backup</a> prior running a <code>zpool upgrade</code>.</li>
-</ul>
-</div>
-<p>To upgrade the version of zpool <i>bigdata</i>:
+<p>To check for upgrade availability:
 </p>
-<pre># zpool upgrade bigdata
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ zpool upgrade</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">This system supports ZFS pool feature flags.
+
+All pools are formatted using feature flags.
+
+Every feature flags pool has all supported and requested features enabled.</pre>
+<p>An example output with upgradable pools:
+</p>
+<pre>This system supports ZFS pool feature flags.
+
+All pools are formatted using feature flags.
+
+
+Some supported features are not enabled on the following pools. Once a
+feature is enabled the pool may become incompatible with software
+that does not support the feature. See zpool-features(7) for details.
+
+Note that the pool 'compatibility' feature can be used to inhibit
+feature upgrades.
+
+POOL  FEATURE
+<hr>
+rpool
+      redaction_list_spill
+      raidz_expansion
+      fast_dedup
+      longname
+      large_microzap
 </pre>
-<p>To upgrade the version of all zpools:
+<p>To upgrade a single pool:
+</p>
+<pre># zpool upgrade &lt;pool&gt;
+</pre>
+<p>To upgrade all pools:
 </p>
 <pre># zpool upgrade -a
 </pre>
@@ -1328,7 +1386,7 @@ action: Enable all features using 'zpool upgrade'. Once this is done, the pool m
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> 
 <ul>
-<li>To import a pool with keys, one needs to specify the <code>-l</code> flag, without this flag encrypted datasets will be left unavailable until the keys are loaded. See <a href="#Importing_a_pool_created_by_id">#Importing a pool created by id</a>.</li>
+<li>To import a pool with keys, one needs to specify the <code>-l</code> flag, without this flag encrypted datasets will be left unavailable until the keys are loaded. See <a href="#Importing_a_pool_created_by_id">#Importing a pool created by id</a><sup>[<a href="../en/Help:Procedures.html#Fix_broken_section_links" title="Help:Procedures">broken link</a>: invalid section]</sup>.</li>
 <li>Native ZFS encryption has been made available in the stable 0.8.0 release or newer. Previously it was only available in development versions provided by packages like <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zfs-linux-git/">zfs-linux-git</a></span><sup><small>AUR</small></sup>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zfs-dkms-git/">zfs-dkms-git</a></span><sup><small>AUR</small></sup> or other development builds. Users who were only using the development versions for the native encryption, may now switch to the stable releases if they wish.</li>
 <li>The default encryption suite was changed from <code>aes-256-ccm</code> to <code>aes-256-gcm</code> in the 0.8.4 release.</li>
 </ul>
@@ -1569,9 +1627,9 @@ AuthenticationMethods publickey,password</pre>
 <pre># zfs set acltype=posixacl &lt;nameofzpool&gt;/&lt;nameofdataset&gt;
 # zfs set xattr=sa &lt;nameofzpool&gt;/&lt;nameofdataset&gt;
 </pre>
-<p>Setting <code>xattr</code> is recommended for performance reasons <a rel="nofollow" class="external autonumber" href="https://github.com/openzfs/zfs/issues/170#issuecomment-27348094">[5]</a>.
+<p>Setting <code>xattr</code> is recommended for performance reasons <a rel="nofollow" class="external autonumber" href="https://github.com/openzfs/zfs/issues/170#issuecomment-27348094">[1]</a>.
 </p>
-<p>It may be preferable to enable ACL on the zpool as datasets will inherit the ACL parameters. Setting <code>aclinherit=passthrough</code> may be wanted as the default mode is <code>restricted</code> <a rel="nofollow" class="external autonumber" href="https://docs.oracle.com/cd/E19120-01/open.solaris/817-2271/gbaaz/index.html">[6]</a>; however, it is worth noting that <code>aclinherit</code> does not affect POSIX ACLs <a rel="nofollow" class="external autonumber" href="https://askubuntu.com/questions/342553/activate-acl-for-zfs-pool-ubuntu-13-04#comment1220577_392008">[7]</a>:
+<p>It may be preferable to enable ACL on the zpool as datasets will inherit the ACL parameters. Setting <code>aclinherit=passthrough</code> may be wanted as the default mode is <code>restricted</code> <a rel="nofollow" class="external autonumber" href="https://docs.oracle.com/cd/E19120-01/open.solaris/817-2271/gbaaz/index.html">[2]</a>; however, it is worth noting that <code>aclinherit</code> does not affect POSIX ACLs <a rel="nofollow" class="external autonumber" href="https://askubuntu.com/questions/342553/activate-acl-for-zfs-pool-ubuntu-13-04#comment1220577_392008">[3]</a>:
 </p>
 <pre># zfs set aclinherit=passthrough &lt;nameofzpool&gt;
 # zfs set acltype=posixacl &lt;nameofzpool&gt;
@@ -1867,7 +1925,7 @@ WantedBy=multi-user.target</pre>
 </p>
 <pre> # zpool add &lt;pool&gt; log mirror &lt;device-id-1&gt; &lt;device-id-2&gt;
 </pre>
-<p>Or to add a single device ZIL (unsafe):
+<p>Or to add a single device ZIL:
 </p>
 <pre> # zpool add &lt;pool&gt; log &lt;device-id&gt;
 </pre>
@@ -1878,7 +1936,7 @@ WantedBy=multi-user.target</pre>
 </p>
 <pre># zpool add &lt;pool&gt; cache &lt;device-id&gt;
 </pre>
-<p>L2ARC is only a read cache, so redundancy is unnecessary. Since <a rel="nofollow" class="external text" href="https://github.com/openzfs/zfs/releases/tag/zfs-2.0.0">ZFS version 2.0.0</a>, L2ARC is persisted across reboots.<a rel="nofollow" class="external autonumber" href="https://github.com/openzfs/zfs/pull/9582">[8]</a>
+<p>L2ARC is only a read cache, so redundancy is unnecessary. Since <a rel="nofollow" class="external text" href="https://github.com/openzfs/zfs/releases/tag/zfs-2.0.0">ZFS version 2.0.0</a>, L2ARC is persisted across reboots.<a rel="nofollow" class="external autonumber" href="https://github.com/openzfs/zfs/pull/9582">[4]</a>
 </p>
 <p>L2ARC is generally only useful in workloads where the amount of hot data is <b>bigger</b> than system memory, but small enough to fit into L2ARC. The L2ARC is indexed by the ARC in system memory, consuming 70 bytes per record (default 128KiB). Thus, the equation for RAM usage is:
 </p>
@@ -1897,7 +1955,7 @@ WantedBy=multi-user.target</pre>
 <h3>
 <span id="I.2FO_Scheduler"></span><span class="mw-headline" id="I/O_Scheduler">I/O Scheduler</span>
 </h3>
-<p>While ZFS is expected to work well with modern schedulers including, <code>mq-deadline</code>, and <code>none</code>, experimenting with <a href="../en/Improving_performance.html#Changing_I/O_scheduler" title="Improving performance">manually setting</a> the I/O scheduler on ZFS disks may yield performance gains. The ZFS recomendation is "[...] users leave the default scheduler <a rel="nofollow" class="external text" href="https://github.com/openzfs/zfs/issues/9778#issuecomment-569347505">“unless you’re encountering a specific problem, or have clearly measured a performance improvement for your workload”</a>"<a rel="nofollow" class="external autonumber" href="https://openzfs.github.io/openzfs-docs/Performance%20and%20Tuning/Module%20Parameters.html#zfs-vdev-scheduler">[9]</a>
+<p>While ZFS is expected to work well with modern schedulers including, <code>mq-deadline</code>, and <code>none</code>, experimenting with <a href="../en/Improving_performance.html#Changing_I/O_scheduler" title="Improving performance">manually setting</a> the I/O scheduler on ZFS disks may yield performance gains. The ZFS recomendation is "[...] users leave the default scheduler <a rel="nofollow" class="external text" href="https://github.com/openzfs/zfs/issues/9778#issuecomment-569347505">“unless you’re encountering a specific problem, or have clearly measured a performance improvement for your workload”</a>"<a rel="nofollow" class="external autonumber" href="https://openzfs.github.io/openzfs-docs/Performance%20and%20Tuning/Module%20Parameters.html#zfs-vdev-scheduler">[5]</a>
 </p>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
 <h3><span class="mw-headline" id="Creating_a_zpool_fails">Creating a zpool fails</span></h3>
@@ -1906,7 +1964,7 @@ WantedBy=multi-user.target</pre>
 <pre># the kernel failed to rescan the partition table: 16
 # cannot label 'sdc': try using parted(8) and then provide a specific slice: -1
 </pre>
-<p>One reason this can occur is because ZFS expects pool creation to take less than 1 second<a rel="nofollow" class="external autonumber" href="https://github.com/openzfs/zfs/issues/2582">[10]</a><a rel="nofollow" class="external autonumber" href="https://github.com/openzfs/zfs/issues/1646">[11]</a>. This is a reasonable assumption under ordinary conditions, but in many situations it may take longer. Each drive will need to be cleared again before another attempt can be made.
+<p>One reason this can occur is because ZFS expects pool creation to take less than 1 second<a rel="nofollow" class="external autonumber" href="https://github.com/openzfs/zfs/issues/2582">[6]</a><a rel="nofollow" class="external autonumber" href="https://github.com/openzfs/zfs/issues/1646">[7]</a>. This is a reasonable assumption under ordinary conditions, but in many situations it may take longer. Each drive will need to be cleared again before another attempt can be made.
 </p>
 <pre># parted /dev/sda rm 1
 # parted /dev/sda rm 1
@@ -1940,13 +1998,6 @@ One cause for creation slowdown can be slow burst read writes on a drive. By rea
 <p>For a more detailed description, as well as other configuration options, see <a href="https://wiki.gentoo.org/wiki/ZFS#ARC" class="extiw" title="gentoo:ZFS">Gentoo:ZFS#ARC</a>.
 </p>
 <p>ZFS should release ARC as applications reserve more RAM, but some applications still <a rel="nofollow" class="external text" href="https://github.com/openzfs/zfs/issues/10255">get confused</a>, and reported <a rel="nofollow" class="external text" href="https://github.com/openzfs/zfs/issues/10251">free RAM is always wrong</a>. But in case all your applications work as intended and you have no problems, there is no need to change ARC settings.
-</p>
-<h3><span class="mw-headline" id="Does_not_contain_an_EFI_label">Does not contain an EFI label</span></h3>
-<p>The following error will occur when attempting to create a zfs filesystem,
-</p>
-<pre>/dev/disk/by-id/&lt;id&gt; does not contain an EFI label but it may contain partition
-</pre>
-<p>The way to overcome this is to use <code>-f</code> with the zfs create command.
 </p>
 <h3><span class="mw-headline" id="No_hostid_found">No hostid found</span></h3>
 <p>An error that occurs at boot with the following lines appearing before initscript output:
@@ -2002,7 +2053,7 @@ One cause for creation slowdown can be slow burst read writes on a drive. By rea
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ hostid</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">0a0af0f8
 </pre>
-<p>This number have to be added to the <a href="../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a> as <code>spl.spl_hostid=0x0a0af0f8</code>. Another solution is writing the hostid inside the initram image, see the <a href="../en/Install_Arch_Linux_on_ZFS.html#Configure_systemd_ZFS_mounts" title="Install Arch Linux on ZFS">installation guide</a> explanation about this.
+<p>This number have to be added to the <a href="../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a> as <code>spl.spl_hostid=0x0a0af0f8</code>. Another solution is writing the hostid inside the initram image, see the <a href="../en/Install_Arch_Linux_on_ZFS.html#Configure_systemd_ZFS_mounts" title="Install Arch Linux on ZFS">installation guide</a><sup>[<a href="../en/Help:Procedures.html#Fix_broken_section_links" title="Help:Procedures">broken link</a>: invalid section]</sup> explanation about this.
 </p>
 <p>Users can always ignore the check adding <code>zfs_force=1</code> in the <a href="../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a>, but it is not advisable as a permanent solution.
 </p>
@@ -2082,6 +2133,11 @@ The log may be helpful when restoring a degraded or failed pool.
 </pre>
 <h2><span class="mw-headline" id="Tips_and_tricks">Tips and tricks</span></h2>
 <h3><span class="mw-headline" id="Create_an_Archiso_image_with_ZFS_support">Create an Archiso image with ZFS support</span></h3>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-go-next.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is a candidate for moving to <a href="../en/Install_Arch_Linux_on_ZFS.html#Embedding_ZFS_module_into_custom_archiso" title="Install Arch Linux on ZFS">Install Arch Linux on ZFS#Embedding ZFS module into custom archiso</a>.</b></p>
+<div>
+<b>Notes:</b> The target links here for its Arch instructions, but is the natural context. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:ZFS.html">Talk:ZFS</a>)</div>
+</div>
 <p>Follow the <a href="../en/Archiso.html" title="Archiso">Archiso</a> steps for creating a fully functional Arch Linux live CD/DVD/USB image. To include ZFS support in the image, you can either build your choice of PKGBUILDs from the AUR or include prebuilt packages from one of the <a href="../en/Unofficial_user_repositories.html" title="Unofficial user repositories">unofficial user repositories</a>.
 </p>
 <h4><span class="mw-headline" id="Using_self-built_ZFS_packages_from_the_AUR">Using self-built ZFS packages from the AUR</span></h4>
@@ -2203,7 +2259,7 @@ SMB1 disabled -- no workgroup available
 <pre># zfs get sharesmb
 </pre>
 <h3><span class="mw-headline" id="Encryption_in_ZFS_using_dm-crypt">Encryption in ZFS using dm-crypt</span></h3>
-<p>Before <a rel="nofollow" class="external text" href="https://github.com/openzfs/zfs/releases/tag/zfs-0.8.0">OpenZFS version 0.8.0</a>, ZFS did not support encryption directly (See <a href="#Native_encryption">#Native encryption</a>). Instead, zpools can be created on <a href="../en/Dm-crypt.html" title="Dm-crypt">dm-crypt</a> block devices. Since the zpool is created on the plain-text abstraction, it is possible to have the data encrypted while having all the advantages of ZFS like deduplication, compression, and data robustness. Furthermore, utilizing dm-crypt will encrypt the zpools metadata, which the native encryption can inherently not provide.<a rel="nofollow" class="external autonumber" href="https://openzfs.github.io/openzfs-docs/man/8/zfs-change-key.8.html#Encryption">[12]</a>
+<p>Before <a rel="nofollow" class="external text" href="https://github.com/openzfs/zfs/releases/tag/zfs-0.8.0">OpenZFS version 0.8.0</a>, ZFS did not support encryption directly (See <a href="#Native_encryption">#Native encryption</a>). Instead, zpools can be created on <a href="../en/Dm-crypt.html" title="Dm-crypt">dm-crypt</a> block devices. Since the zpool is created on the plain-text abstraction, it is possible to have the data encrypted while having all the advantages of ZFS like deduplication, compression, and data robustness. Furthermore, utilizing dm-crypt will encrypt the zpools metadata, which the native encryption can inherently not provide.<a rel="nofollow" class="external autonumber" href="https://openzfs.github.io/openzfs-docs/man/8/zfs-change-key.8.html#Encryption">[8]</a>
 </p>
 <p>dm-crypt, possibly via LUKS, creates devices in <code>/dev/mapper</code> and their name is fixed. So you just need to change <code>zpool create</code> commands to point to that names. The idea is configuring the system to create the <code>/dev/mapper</code> block devices and import the zpools from there. Since zpools can be created in multiple devices (raid, mirroring, striping, ...), it is important all the devices are encrypted otherwise the protection might be partially lost.
 </p>
@@ -2271,7 +2327,7 @@ SMB1 disabled -- no workgroup available
 <h3><span class="mw-headline" id="Bind_mount">Bind mount</span></h3>
 <p>Here a bind mount from /mnt/zfspool to /srv/nfs4/music is created. The configuration ensures that the zfs pool is ready before the bind mount is created.
 </p>
-<h4><span class="mw-headline" id="fstab">fstab</span></h4>
+<h4><span class="mw-headline" id="fstab_2">fstab</span></h4>
 <p>See <span class="plainlinks archwiki-template-man" title="$ man 5 systemd.mount"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd.mount.5">systemd.mount(5)</a></span> for more information on how systemd converts fstab into mount unit files with <span class="plainlinks archwiki-template-man" title="$ man 8 systemd-fstab-generator"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-fstab-generator.8">systemd-fstab-generator(8)</a></span>.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/fstab</pre>
@@ -2400,15 +2456,14 @@ SMB1 disabled -- no workgroup available
 </div>
 					<div id="catlinks" class="catlinks" data-mw="interface">
 <div id="mw-normal-catlinks" class="mw-normal-catlinks">
-<a href="../Special:Categories.html" title="Special:Categories">Categories</a>: <ul>
-<li><a href="../en/Category:File_systems.html" title="Category:File systems">File systems</a></li>
-<li><a href="../en/Category:Oracle.html" title="Category:Oracle">Oracle</a></li>
-</ul>
+<a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:File_systems.html" title="Category:File systems">File systems</a></li></ul>
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
+<li><a href="../en/Category:Pages_with_broken_section_links.html" title="Category:Pages with broken section links">Pages with broken section links</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li>
 <li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Move.html" title="Category:Pages or sections flagged with Template:Move">Pages or sections flagged with Template:Move</a></li>
 </ul>
 </div>
 </div>
@@ -2420,8 +2475,8 @@ SMB1 disabled -- no workgroup available
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=ZFS&amp;oldid=820288">https://wiki.archlinux.org/index.php?title=ZFS&amp;oldid=820288</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 6 November 2024, at 05:58.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=ZFS&amp;oldid=824230">https://wiki.archlinux.org/index.php?title=ZFS&amp;oldid=824230</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 29 December 2024, at 09:03.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -5,7 +5,7 @@
 <title>S.M.A.R.T. - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -382,17 +382,7 @@ drives_csv | column -s, -t
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">/dev/sda -a
 /dev/sdb -a
 </pre>
-<p>To monitor for all possible SMART errors on externally connected disks (USB-backup disks spring to mind) it is prudent to tell <i>smartd</i> the UUID of the device since the <code>/dev/sd<i>X</i></code> of the drive might change during a reboot.
-</p>
-<p>First, you will have to get the UUID of the disk to monitor: <code>ls -lah /dev/disk/by-uuid/</code> now look for the disk you want to Monitor
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ ls -lah /dev/disk/by-uuid/</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">lrwxrwxrwx 1 root root   9 Nov  5 22:41 820cdd8a-866a-444d-833c-1edb0f4becac -&gt; ../../sde
-lrwxrwxrwx 1 root root  10 Nov  5 22:41 b51b87f3-425e-4fe7-883f-f4ff1689189e -&gt; ../../sdf2
-lrwxrwxrwx 1 root root   9 Nov  5 22:42 ea2199dd-8f9f-4065-a7ba-71bde11a462c -&gt; ../../sda
-lrwxrwxrwx 1 root root  10 Nov  5 22:41 fe9e886a-8031-439f-a909-ad06c494fadb -&gt; ../../sdf1
-</pre>
-<p>In this example, the target device is <i>sde</i>. Now to tell <i>smartd</i> to monitor that disk simply use the <code>/dev/disk/by-uuid/</code> path.
+<p>To monitor for all possible SMART errors on externally connected disks (USB-backup disks spring to mind) it is prudent to use <a href="../en/Persistent_block_device_naming.html" title="Persistent block device naming">persistent block device naming</a>:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/smartd.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">/dev/disk/by-uuid/820cdd8a-866a-444d-833c-1edb0f4becac -a
@@ -433,7 +423,7 @@ wall "$SMARTD_MESSAGE"
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">#!/bin/sh
 
 sudo -u <i>X_user</i> DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/<i>X_userid</i>/bus notify-send "S.M.A.R.T Error ($SMARTD_FAILTYPE)" "$SMARTD_MESSAGE" --icon=dialog-warning -u critical</pre>
-<p>This requires <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=libnotify">libnotify</a></span> and a compatible desktop environment. See <a href="../en/Desktop_notifications.html" title="Desktop notifications">Desktop notifications</a> for more details.
+<p>This requires <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=libnotify">libnotify</a></span> and a compatible <a href="../en/Desktop_notifications.html" class="mw-redirect" title="Desktop notification">desktop notification</a> server.
 </p>
 <p>You can also put your custom scripts into <code>/usr/share/smartmontools/smartd_warning.d/</code>:
 </p>
@@ -581,8 +571,8 @@ Device: /dev/sdb [SAT], no ATA CHECK POWER STATUS support, ignoring -n Directive
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=S.M.A.R.T.&amp;oldid=809164">https://wiki.archlinux.org/index.php?title=S.M.A.R.T.&amp;oldid=809164</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 24 May 2024, at 16:49.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=S.M.A.R.T.&amp;oldid=822436">https://wiki.archlinux.org/index.php?title=S.M.A.R.T.&amp;oldid=822436</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 7 December 2024, at 14:34.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

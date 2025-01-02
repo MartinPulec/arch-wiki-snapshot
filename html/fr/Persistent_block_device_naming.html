@@ -5,7 +5,7 @@
 <title>Persistent block device naming (Français) - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -264,7 +264,7 @@
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ lsblk -f</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">NAME   FSTYPE LABEL  UUID                                 MOUNTPOINT
-sda                                                       
+sda
 ├─sda1 vfat          CBB6-24F2                            /boot
 ├─sda2 ext4   SYSTEM 0a3407de-014b-458b-b5c1-848e92a327a3 /
 ├─sda3 ext4   DATA   b411dc99-f0a0-4c87-9e05-184977be8539 /home
@@ -273,16 +273,15 @@ sda
 <p>Pour ceux qui utilisent <a href="../en/Partitioning.html#GUID_Partition_Table" class="mw-redirect" title="GPT">GPT</a>, utilisez la commande <code>blkid</code> à la place. Ce dernier est plus pratique pour les scripts, mais plus difficile à lire.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># blkid</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">/dev/sda1: UUID="CBB6-24F2" TYPE="vfat" PARTLABEL="EFI SYSTEM PARTITION" PARTUUID="d0d0d110-0a71-4ed6-936a-304969ea36af" 
-/dev/sda2: LABEL="SYSTEM" UUID="0a3407de-014b-458b-b5c1-848e92a327a3" TYPE="ext4" PARTLABEL="GNU/LINUX" PARTUUID="98a81274-10f7-40db-872a-03df048df366" 
-/dev/sda3: LABEL="DATA" UUID="b411dc99-f0a0-4c87-9e05-184977be8539" TYPE="ext4" PARTLABEL="HOME" PARTUUID="7280201c-fc5d-40f2-a9b2-466611d3d49e" 
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">/dev/sda1: UUID="CBB6-24F2" TYPE="vfat" PARTLABEL="EFI SYSTEM PARTITION" PARTUUID="d0d0d110-0a71-4ed6-936a-304969ea36af"
+/dev/sda2: LABEL="SYSTEM" UUID="0a3407de-014b-458b-b5c1-848e92a327a3" TYPE="ext4" PARTLABEL="GNU/LINUX" PARTUUID="98a81274-10f7-40db-872a-03df048df366"
+/dev/sda3: LABEL="DATA" UUID="b411dc99-f0a0-4c87-9e05-184977be8539" TYPE="ext4" PARTLABEL="HOME" PARTUUID="7280201c-fc5d-40f2-a9b2-466611d3d49e"
 /dev/sda4: UUID="f9fe0b69-a280-415d-a03a-a32752370dee" TYPE="swap" PARTLABEL="SWAP" PARTUUID="039b6c1c-7553-4455-9537-1befbc9fbc5b"</pre>
 <h3><span class="mw-headline" id="by-label">by-label</span></h3>
-<p>Presque tous les <a href="../en/File_systems.html#Types_of_file_systems" title="File systems">types de systèmes de fichiers</a> peuvent avoir une étiquette (<i>label</i>). Toutes vos partitions qui en ont une sont listées dans le répertoire <code>/dev/disk/by-label</code>. 
+<p>Presque tous les <a href="../en/File_systems.html#Types_of_file_systems" title="File systems">types de systèmes de fichiers</a> peuvent avoir une étiquette (<i>label</i>). Toutes vos partitions qui en ont une sont listées dans le répertoire <code>/dev/disk/by-label</code>.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ ls -l /dev/disk/by-label</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"> 
-total 0
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">total 0
 lrwxrwxrwx 1 root root 10 May 27 23:31 DATA -&gt; ../../sda3
 lrwxrwxrwx 1 root root 10 May 27 23:31 SYSTEM -&gt; ../../sda2
 </pre>
@@ -382,7 +381,7 @@ lrwxrwxrwx 1 root root 10 May 27 23:31 f9fe0b69-a280-415d-a03a-a32752370dee -&gt
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># blkid -s UUID -o value /dev/sda1</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">CBB6-24F2
-</pre> 
+</pre>
 <p>L'avantage de la méthode UUID est qu'il est beaucoup moins probable que des collisions de noms se produisent qu'avec les étiquettes. De plus, il est généré automatiquement lors de la création du système de fichiers. Il restera, par exemple, unique même si l'appareil est branché à un autre système (qui peut avoir un appareil avec la même étiquette).
 </p>
 <p>L'inconvénient est que les UUIDs rendent les longues lignes de code difficiles à lire et rompent le formatage dans de nombreux fichiers de configuration (par ex: <a href="../fr/Fstab.html" title="Fstab (Français)">fstab</a> ou <a href="../en/Dm-crypt/System_configuration.html#crypttab" class="mw-redirect" title="Crypttab">crypttab</a>). Aussi chaque fois qu'une partition est redimensionnée ou reformatée, un nouvel UUID est généré et les configurations doivent être ajustées manuellement.
@@ -508,10 +507,10 @@ lrwxrwxrwx 1 root root 10 May 27 23:31 d0d0d110-0a71-4ed6-936a-304969ea36af -&gt
 <h3>
 <span id="Noms_de_p.C3.A9riph.C3.A9riques_statiques_avec_Udev"></span><span class="mw-headline" id="Noms_de_périphériques_statiques_avec_Udev">Noms de périphériques statiques avec Udev</span>
 </h3>
-<p>Voir <a href="../en/Udev.html#Setting_static_device_names" title="Udev">Udev#Setting static device names</a>
+<p>Voir <a href="../fr/Udev.html#D%C3%A9finition_de_noms_de_p%C3%A9riph%C3%A9riques_statiques" title="Udev (Français)">udev (Français)#Définition de noms de périphériques statiques</a>
 </p>
 <h2><span class="mw-headline" id="Utilisation_des_noms_persistants">Utilisation des noms persistants</span></h2>
-<p>Il existe plusieurs applications qui peuvent être configurées à l'aide de noms persistants. Ci-dessous quelques exemples et la façon de les configurer. 
+<p>Il existe plusieurs applications qui peuvent être configurées à l'aide de noms persistants. Ci-dessous quelques exemples et la façon de les configurer.
 </p>
 <h3><span class="mw-headline" id="fstab">fstab</span></h3>
 <p>Voir l'article <a href="../fr/Fstab.html#Identification_des_syst%C3%A8mes_de_fichiers" title="Fstab (Français)">Fstab (Français)#Identification des systèmes de fichiers</a>
@@ -519,14 +518,14 @@ lrwxrwxrwx 1 root root 10 May 27 23:31 d0d0d110-0a71-4ed6-936a-304969ea36af -&gt
 <h3>
 <span id="Param.C3.A8tres_du_noyau"></span><span class="mw-headline" id="Paramètres_du_noyau">Paramètres du noyau</span>
 </h3>
-<p>Pour utiliser des noms persistants dans les <a href="../en/Kernel_parameters.html" title="Kernel parameters">paramètres du noyau</a>, les conditions préalables suivantes doivent être remplies. Lors d'une installation standard qui a suivi le <a href="../fr/Installation_guide.html" title="Installation guide (Français)">guide d'installation</a> ces deux prérequis sont remplis : 
+<p>Pour utiliser des noms persistants dans les <a href="../en/Kernel_parameters.html" title="Kernel parameters">paramètres du noyau</a>, les conditions préalables suivantes doivent être remplies. Lors d'une installation standard qui a suivi le <a href="../fr/Installation_guide.html" title="Installation guide (Français)">guide d'installation</a> ces deux prérequis sont remplis :
 </p>
 <ul>
 <li>Vous utilisez une <a href="../fr/Arch_boot_process.html#Initramfs" title="Arch boot process (Français)">initramfs</a> avec <a href="../fr/Udev.html" title="Udev (Français)">udev</a> inclus.</li>
 <li>Pour <a href="../fr/Mkinitcpio.html" title="Mkinitcpio (Français)">Mkinitcpio</a>, vous avez activé le <a href="../fr/Mkinitcpio.html#HOOKS" title="Mkinitcpio (Français)">hook</a> <code>udev</code> ou <code>systemd</code> dans <code>/etc/mkinitcpio.conf</code>
 </li>
 </ul>
-<p>L'emplacement du système de fichiers racine est donné par le paramètre <code>root</code> sur la ligne de commande du noyau. La ligne de commande du noyau est configurée à partir du <a href="../fr/Arch_boot_process.html#Chargeur_d'amor%C3%A7age" class="mw-redirect" title="Chargeur d'amorçage">chargeur d'amorçage</a>, consultez <a href="../en/Kernel_parameters.html#Configuration" title="Kernel parameters">Kernel parameters#Configuration</a>. Pour changer le nom d'un périphérique persistant, ne modifiez que les paramètres qui spécifient les périphériques de type bloc, par exemple : <code>root</code> et <code>resume</code>, tout en laissant les autres paramètres tels quels.  Différents schémas de nommage sont pris en charge:
+<p>L'emplacement du système de fichiers racine est donné par le paramètre <code>root</code> sur la ligne de commande du noyau. La ligne de commande du noyau est configurée à partir du <a href="../fr/Arch_boot_process.html#Chargeur_d'amor%C3%A7age" class="mw-redirect" title="Chargeur d'amorçage">chargeur d'amorçage</a>, consultez <a href="../en/Kernel_parameters.html#Boot_loader_configuration" title="Kernel parameters">Kernel parameters#Boot loader configuration</a>. Pour changer le nom d'un périphérique persistant, ne modifiez que les paramètres qui spécifient les périphériques de type bloc, par exemple : <code>root</code> et <code>resume</code>, tout en laissant les autres paramètres tels quels.  Différents schémas de nommage sont pris en charge:
 </p>
 <p>Nommage des périphériques persistants <a href="#by-label">utilisant l'étiquette</a> et le format <code>LABEL=</code>, dans cet exemple <code>Arch Linux</code> est l'étiquette du système de fichiers racine.
 </p>
@@ -565,8 +564,8 @@ lrwxrwxrwx 1 root root 10 May 27 23:31 d0d0d110-0a71-4ed6-936a-304969ea36af -&gt
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Persistent_block_device_naming_(Fran%C3%A7ais)&amp;oldid=767973">https://wiki.archlinux.org/index.php?title=Persistent_block_device_naming_(Français)&amp;oldid=767973</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 18 February 2023, at 08:49.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Persistent_block_device_naming_(Fran%C3%A7ais)&amp;oldid=824006">https://wiki.archlinux.org/index.php?title=Persistent_block_device_naming_(Français)&amp;oldid=824006</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 26 December 2024, at 15:02.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

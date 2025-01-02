@@ -5,7 +5,7 @@
 <title>fish - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -217,10 +217,19 @@
 			<ul id="toc-Evaluate_ssh-agent-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Evaluate_keychain" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Evaluate_keychain">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">4.8</span>Evaluate keychain</div>
+			</a>
+			
+			<ul id="toc-Evaluate_keychain-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 		<li id='toc-The_"command_not_found"_hook' class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href='#The_"command_not_found"_hook'>
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.8</span>The "command not found" hook</div>
+				<span class="vector-toc-numb">4.9</span>The "command not found" hook</div>
 			</a>
 			
 			<ul id='toc-The_"command_not_found"_hook-sublist' class="vector-toc-list">
@@ -229,7 +238,7 @@
 		<li id="toc-Remove_a_process_from_the_list_of_jobs" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Remove_a_process_from_the_list_of_jobs">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.9</span>Remove a process from the list of jobs</div>
+				<span class="vector-toc-numb">4.10</span>Remove a process from the list of jobs</div>
 			</a>
 			
 			<ul id="toc-Remove_a_process_from_the_list_of_jobs-sublist" class="vector-toc-list">
@@ -238,7 +247,7 @@
 		<li id="toc-Set_a_persistent_alias" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Set_a_persistent_alias">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.10</span>Set a persistent alias</div>
+				<span class="vector-toc-numb">4.11</span>Set a persistent alias</div>
 			</a>
 			
 			<ul id="toc-Set_a_persistent_alias-sublist" class="vector-toc-list">
@@ -247,7 +256,7 @@
 		<li id="toc-Source_/etc/profile_on_login" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Source_/etc/profile_on_login">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.11</span>Source /etc/profile on login</div>
+				<span class="vector-toc-numb">4.12</span>Source /etc/profile on login</div>
 			</a>
 			
 			<ul id="toc-Source_/etc/profile_on_login-sublist" class="vector-toc-list">
@@ -498,7 +507,7 @@ end</pre>
     set -g __fish_git_prompt_color_cleanstate brgreen
   end
 
-  printf '%s%s %s%s%s%s ' (set_color $fish_color_host) (prompt_hostname) (set_color $fish_color_cwd) (prompt_pwd) (set_color normal) (__fish_git_prompt)
+  printf '%s%s %s%s%s%s ' (set_color $fish_color_host) (prompt_hostname) (set_color $fish_color_cwd) (prompt_pwd) (set_color normal) (fish_git_prompt)
 
   if not test $last_status -eq 0
     set_color $fish_color_error
@@ -507,8 +516,6 @@ end</pre>
   set_color normal
 end
 </pre>
-<p>However, this is now deprecated, see <a rel="nofollow" class="external text" href="https://github.com/fish-shell/fish-shell/blob/master/share/functions/__fish_git_prompt.fish">fish-shell git</a>. Alternatively, the <a rel="nofollow" class="external text" href="https://mariuszs.github.io/blog/2013/informative_git_prompt.html">Informative Git Prompt</a> has now been built into fish and can be activated from fish_config if so desired.
-</p>
 <h3><span class="mw-headline" id="Color_the_hostname_in_the_prompt_in_SSH">Color the hostname in the prompt in SSH</span></h3>
 <p>To color the hostname in the prompt dynamically whenever connected through SSH, add the following lines in either the <code>fish_prompt</code> function or the fish configuration file, here using the red color:
 </p>
@@ -525,6 +532,11 @@ end
 <p>In fish, <code>eval (ssh-agent)</code> generate errors due to how variables are set. To work around this, use the csh-style option <code>-c</code>:
 </p>
 <pre>$ eval (ssh-agent -c)
+</pre>
+<h3><span class="mw-headline" id="Evaluate_keychain">Evaluate keychain</span></h3>
+<p>Because <code>keychain --eval</code> uses the <code>SHELL</code> environment variable to format output, it should work with fish as the default shell. However, if using fish as an interactive shell only, this variable must be set:
+</p>
+<pre>$   SHELL=/bin/fish keychain --eval --quiet -Q id_ed25519 | source
 </pre>
 <h3>
 <span id="The_.22command_not_found.22_hook"></span><span class="mw-headline" id='The_"command_not_found"_hook'>The "command not found" hook</span>
@@ -611,8 +623,8 @@ have in a <code>bash</code> login session.
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Fish&amp;oldid=811412">https://wiki.archlinux.org/index.php?title=Fish&amp;oldid=811412</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 28 June 2024, at 10:07.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Fish&amp;oldid=823521">https://wiki.archlinux.org/index.php?title=Fish&amp;oldid=823521</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 19 December 2024, at 19:29.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

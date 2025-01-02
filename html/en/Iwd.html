@@ -5,7 +5,7 @@
 <title>iwd - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -375,13 +375,13 @@
 			<ul id="toc-No_DHCP_in_AP_mode-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-WiFi_keeps_disconnecting_due_to_iwd_crash" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#WiFi_keeps_disconnecting_due_to_iwd_crash">
+		<li id="toc-Wi-Fi_keeps_disconnecting_due_to_iwd_crash" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Wi-Fi_keeps_disconnecting_due_to_iwd_crash">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">5.5</span>WiFi keeps disconnecting due to iwd crash</div>
+				<span class="vector-toc-numb">5.5</span>Wi-Fi keeps disconnecting due to iwd crash</div>
 			</a>
 			
-			<ul id="toc-WiFi_keeps_disconnecting_due_to_iwd_crash-sublist" class="vector-toc-list">
+			<ul id="toc-Wi-Fi_keeps_disconnecting_due_to_iwd_crash-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 		<li id="toc-Error_loading_client_private_key" class="vector-toc-list-item vector-toc-level-2">
@@ -590,6 +590,10 @@
 </p>
 <pre>[iwd]# station <i>name</i> connect <i>SSID</i>
 </pre>
+<p>If network is hidden:
+</p>
+<pre>[iwd]# station <i>name</i> connect-hidden <i>SSID</i>
+</pre>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> For automatic IP and DNS configuration via DHCP, you have to <a href="#Enable_built-in_network_configuration">manually enable</a> the built-in DHCP client or configure a <a href="../en/Network_configuration.html#Network_managers" title="Network configuration">standalone DHCP client</a>.</div>
 <div class="archwiki-template-box archwiki-template-box-tip">
@@ -628,7 +632,7 @@
 <pre>[iwd]# station <i>device</i> disconnect
 </pre>
 <h4><span class="mw-headline" id="Show_device_and_connection_information">Show device and connection information</span></h4>
-<p>To display the details of a WiFi device, like MAC address:
+<p>To display the details of a Wi-Fi device, like MAC address:
 </p>
 <pre>[iwd]# device <i>device</i> show
 </pre>
@@ -756,7 +760,7 @@ EAP-TTLS-Phase2-Password=password
 [Settings]
 AutoConnect=true</pre>
 <h4><span class="mw-headline" id="EAP-TLS">EAP-TLS</span></h4>
-<p>EAP-TLS uses x509 <i>client certificates</i> to authenticate you. Like ssh keys, these use public-key cryptography, so the wifi authentication server never needs to be sent a secret, and you do not need to copy and reuse a password between devices. Usually each device will use a distinct cert, one that can, in theory at least, be revoked without forcing you to change a password or disrupt your other devices.
+<p>EAP-TLS uses x509 <i>client certificates</i> to authenticate you. Like ssh keys, these use public-key cryptography, so the Wi-Fi authentication server never needs to be sent a secret, and you do not need to copy and reuse a password between devices. Usually each device will use a distinct cert, one that can, in theory at least, be revoked without forcing you to change a password or disrupt your other devices.
 </p>
 <p>As with the other enterprise methods you need to know the CA cert your organization uses (<code>cacert.pem</code>), which is used to prove to your device it is connecting to the right place. You also need to have the client certificate, which represents you and will be uploaded on each connection (<code>client-cert.pem</code>), and the private key that goes with it (<code>client-key.pem</code>), which is used to prove you own that client certificate.
 </p>
@@ -777,6 +781,11 @@ EAP-TLS-ClientKey=/path/to/client-key.pem
 [Settings]
 AutoConnect=true</pre>
 <h4><span class="mw-headline" id="eduroam">eduroam</span></h4>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
+<div>
+<b>Reason:</b> iwd support does not work (Discuss in <a href="../en/Talk:Iwd.html#eduroam_and_iwd_section_wrong?" title="Talk:Iwd">Talk:Iwd#eduroam and iwd section wrong?</a>)</div>
+</div>
 <p>eduroam offers a <a rel="nofollow" class="external text" href="https://cat.eduroam.org/">configuration assistant tool (CAT)</a>, which <a rel="nofollow" class="external text" href="https://github.com/GEANT/CAT/pull/207">supports iwd</a>. If your organisation has a profile within the CAT, getting connected to eduroam can be done by downloading the Linux script and running it using <a href="../en/Python.html" title="Python">python</a>. If your organisation does not support CAT, you will have to create the configuration file manually using parameters provided to you by the administrators (the below table can be helpful in doing so).
 </p>
 <p>If for whatever reason the script does not work, it is easy to extract the necessary configuration options manually, including the certificate and server domain mask. Additionally, some institutions are upgrading to EAP-TLS, and outsourcing the generation of <code>client-cert.pem</code> to <a rel="nofollow" class="external text" href="https://www.securew2.com/">SecureW2</a>, in which case you will need to use their tool as well to generate a client cert.
@@ -1023,8 +1032,8 @@ NamePolicy=keep kernel</pre>
 EnableNetworkConfiguration=True</pre>
 <p>The mentioned file has to be created if it does not already exist.
 </p>
-<h3><span class="mw-headline" id="WiFi_keeps_disconnecting_due_to_iwd_crash">WiFi keeps disconnecting due to iwd crash</span></h3>
-<p>Some users experience disconnections with WiFi, re-connecting continuously but stabilizing eventually and managing to connect. 
+<h3><span class="mw-headline" id="Wi-Fi_keeps_disconnecting_due_to_iwd_crash">Wi-Fi keeps disconnecting due to iwd crash</span></h3>
+<p>Some users experience disconnections with Wi-Fi, re-connecting continuously but stabilizing eventually and managing to connect. 
 </p>
 <p>Users report crashes (<a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=273965">[1]</a>) of <code>iwd.service</code> in their <a href="../en/Systemd/Journal.html" class="mw-redirect" title="Journal">journal</a>. 
 </p>
@@ -1078,7 +1087,10 @@ SendHostname=true</pre>
 <li><a href="../en/Category:Network_configuration.html" title="Category:Network configuration">Network configuration</a></li>
 </ul>
 </div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li></ul>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
+</ul>
 </div>
 </div>
 				</div>
@@ -1089,8 +1101,8 @@ SendHostname=true</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Iwd&amp;oldid=820532">https://wiki.archlinux.org/index.php?title=Iwd&amp;oldid=820532</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 10 November 2024, at 18:30.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Iwd&amp;oldid=823895">https://wiki.archlinux.org/index.php?title=Iwd&amp;oldid=823895</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 25 December 2024, at 20:30.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

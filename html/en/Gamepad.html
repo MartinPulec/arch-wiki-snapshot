@@ -5,7 +5,7 @@
 <title>Gamepad - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -287,10 +287,19 @@
 			</a>
 			
 			<ul id="toc-Nintendo_Switch_Pro_Controller_and_Joy-Cons-sublist" class="vector-toc-list">
-				<li id="toc-Use_Joy-Cons_as_one_device" class="vector-toc-list-item vector-toc-level-3">
+				<li id="toc-Userspace_Daemon" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Userspace_Daemon">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.4.1</span>Userspace Daemon</div>
+			</a>
+			
+			<ul id="toc-Userspace_Daemon-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Use_Joy-Cons_as_one_device" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Use_Joy-Cons_as_one_device">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">3.4.1</span>Use Joy-Cons as one device</div>
+				<span class="vector-toc-numb">3.4.2</span>Use Joy-Cons as one device</div>
 			</a>
 			
 			<ul id="toc-Use_Joy-Cons_as_one_device-sublist" class="vector-toc-list">
@@ -299,7 +308,7 @@
 		<li id="toc-Use_positional_layout_on_SDL2_applications" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Use_positional_layout_on_SDL2_applications">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">3.4.2</span>Use positional layout on SDL2 applications</div>
+				<span class="vector-toc-numb">3.4.3</span>Use positional layout on SDL2 applications</div>
 			</a>
 			
 			<ul id="toc-Use_positional_layout_on_SDL2_applications-sublist" class="vector-toc-list">
@@ -1168,13 +1177,16 @@ EndSection</pre>
 </p>
 <p>For earlier kernel versions, it is possible to install the <a href="../en/Dynamic_Kernel_Module_Support.html" class="mw-redirect" title="DKMS">DKMS</a> module <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/hid-nintendo-nso-dkms/">hid-nintendo-nso-dkms</a></span><sup><small>AUR</small></sup>.
 </p>
-<h4><span class="mw-headline" id="Use_Joy-Cons_as_one_device">Use Joy-Cons as one device</span></h4>
-<p>The hid-nintendo kernel driver handles two Joy-Cons as two separate devices.
+<h4><span class="mw-headline" id="Userspace_Daemon">Userspace Daemon</span></h4>
+<p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/joycond-git/">joycond-git</a></span><sup><small>AUR</small></sup> is a userspace daemon that provides better integration for Nintendo Switch Controllers. When the daemon is active, Switch controllers placed in a pairing mode (LEDs flashing) can have both their triggers pressed to be paired, and then ready to be used by apps. See <a rel="nofollow" class="external autonumber" href="https://github.com/DanielOgorchock/joycond?tab=readme-ov-file#usage">[2]</a>.
 </p>
-<p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/joycond-git/">joycond-git</a></span><sup><small>AUR</small></sup> is a userspace daemon that combines two kernel Joy-Con evdev devices into one virtual input device using uinput. When the daemon is active, Switch controllers will be placed in a pseudo pairing mode, and the LEDs will start flashing. Holding the triggers can be used to pair the controllers and make them usable. To pair two Joy-Cons together, press one trigger on each Joy-Con.
+<h4><span class="mw-headline" id="Use_Joy-Cons_as_one_device">Use Joy-Cons as one device</span></h4>
+<p>The <code>hid-nintendo</code> kernel driver handles two Joy-Cons as two separate devices.
+</p>
+<p>To pair two Joy-Cons together, make sure <code>joycond</code> is running and both Joy-Cons are in pairing mode. Then, press one trigger on each Joy-Con at the same time.
 </p>
 <h4><span class="mw-headline" id="Use_positional_layout_on_SDL2_applications">Use positional layout on SDL2 applications</span></h4>
-<p>By default, SDL2 maps buttons on Nintendo controllers according to the gamepad's label instead of the button's position. This is enabled by the <a rel="nofollow" class="external text" href="https://github.com/libsdl-org/SDL/blob/b886f4c6c97f3d37d65f65afdb6bd68148fd4de6/include/SDL_hints.h#L508">SDL_HINT_GAMECONTROLLER_USE_BUTTON_LABELS</a> setting, which defaults to <code>1</code> for controllers known to use the Nintendo button layout,<a rel="nofollow" class="external autonumber" href="https://github.com/libsdl-org/SDL/blob/7c05ea0a0ef075527fd745215d5d8a77f667bc21/src/joystick/SDL_gamecontrollerdb.h">[2]</a> and <code>0</code> for other controllers.<a rel="nofollow" class="external autonumber" href="https://github.com/libsdl-org/SDL/blob/ec58a817ef66efc23d7d6e964844317673b23ead/src/joystick/SDL_gamecontroller.c#L1575-L1582">[3]</a> This behavior can be overridden for all controllers by setting the <code>SDL_HINT_GAMECONTROLLER_USE_BUTTON_LABELS</code> <a href="../en/Environment_variables.html" class="mw-redirect" title="Environment variable">environment variable</a>. For example, if Nintendo's conception of A/B and X/Y is undesirable, set <code>SDL_HINT_GAMECONTROLLER_USE_BUTTON_LABELS=0</code>.
+<p>By default, SDL2 maps buttons on Nintendo controllers according to the gamepad's label instead of the button's position. This is enabled by the <a rel="nofollow" class="external text" href="https://github.com/libsdl-org/SDL/blob/b886f4c6c97f3d37d65f65afdb6bd68148fd4de6/include/SDL_hints.h#L508">SDL_HINT_GAMECONTROLLER_USE_BUTTON_LABELS</a> setting, which defaults to <code>1</code> for controllers known to use the Nintendo button layout,<a rel="nofollow" class="external autonumber" href="https://github.com/libsdl-org/SDL/blob/7c05ea0a0ef075527fd745215d5d8a77f667bc21/src/joystick/SDL_gamecontrollerdb.h">[3]</a> and <code>0</code> for other controllers.<a rel="nofollow" class="external autonumber" href="https://github.com/libsdl-org/SDL/blob/ec58a817ef66efc23d7d6e964844317673b23ead/src/joystick/SDL_gamecontroller.c#L1575-L1582">[4]</a> This behavior can be overridden for all controllers by setting the <code>SDL_HINT_GAMECONTROLLER_USE_BUTTON_LABELS</code> <a href="../en/Environment_variables.html" class="mw-redirect" title="Environment variable">environment variable</a>. For example, if Nintendo's conception of A/B and X/Y is undesirable, set <code>SDL_HINT_GAMECONTROLLER_USE_BUTTON_LABELS=0</code>.
 </p>
 <h3><span class="mw-headline" id="Steam_Controller">Steam Controller</span></h3>
 <div class="archwiki-template-box archwiki-template-box-note">
@@ -1308,7 +1320,7 @@ else:
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> 
-<p>In the latest version of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=bluez">bluez</a></span> (as of 2024/01/03), the default value for <code>ClassicBondedOnly</code> was changed from <code>false</code> to <code>true</code> for security reasons <a rel="nofollow" class="external autonumber" href="https://bugs.launchpad.net/ubuntu/+source/bluez/+bug/2045931/comments/6">[4]</a>. This change makes it impossible to pair a Dual Shock 3 controller, as <code>bluetoothctl</code> asks for a PIN and cannot proceed. To work around this, set <code>ClassicBondedOnly</code> to <code>false</code> by adding the following lines in the newly created file at <code>/etc/bluetooth/input.conf</code>.
+<p>In the latest version of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=bluez">bluez</a></span> (as of 2024/01/03), the default value for <code>ClassicBondedOnly</code> was changed from <code>false</code> to <code>true</code> for security reasons <a rel="nofollow" class="external autonumber" href="https://bugs.launchpad.net/ubuntu/+source/bluez/+bug/2045931/comments/6">[5]</a>. This change makes it impossible to pair a Dual Shock 3 controller, as <code>bluetoothctl</code> asks for a PIN and cannot proceed. To work around this, set <code>ClassicBondedOnly</code> to <code>false</code> by adding the following lines in the newly created file at <code>/etc/bluetooth/input.conf</code>.
 </p>
 <p>As of 2024-03-09, the default value for <code>UserspaceHID</code> has also changed to <code>true</code>. While the connection succeeds, controllers can no longer be set into operational mode unless this value is changed to <code>false</code>. See <a rel="nofollow" class="external text" href="https://github.com/bluez/bluez/issues/771">issue #771 on Github</a> for more information.
 </p>
@@ -1407,7 +1419,7 @@ ATTRS{name}=="Wireless Controller Touchpad", ENV{LIBINPUT_IGNORE_DEVICE}="1"</pr
 </p>
 <ul>
 <li>
-<a href="../en/Systemd.html" title="Systemd">systemd</a>'s default rules set the group of all <code>input</code> devices to <code>input</code>, and the mode of joystick devices to <code>664</code> <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/blob/edfb4a474e5cbef6578a70aae7f08a0f435c6c6a/rules.d/50-udev-default.rules.in#L33">[5]</a>.</li>
+<a href="../en/Systemd.html" title="Systemd">systemd</a>'s default rules set the group of all <code>input</code> devices to <code>input</code>, and the mode of joystick devices to <code>664</code> <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/blob/edfb4a474e5cbef6578a70aae7f08a0f435c6c6a/rules.d/50-udev-default.rules.in#L33">[6]</a>.</li>
 <li>
 <a href="../en/Steam.html" title="Steam">Steam</a> ships udev rules allowing access to a variety of controllers. See <a rel="nofollow" class="external text" href="https://steamcommunity.com/app/353370/discussions/2/1735465524711324558/">this Steam discussion</a> for further info about the contents of the rules.</li>
 <li>
@@ -1416,7 +1428,7 @@ ATTRS{name}=="Wireless Controller Touchpad", ENV{LIBINPUT_IGNORE_DEVICE}="1"</pr
 <p>If your system does not already happen to have a udev rule for the device you want to use, you can either write one yourself or install the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/game-devices-udev/">game-devices-udev</a></span><sup><small>AUR</small></sup> package and restart your computer.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> It is possible to add a user to the <code>input</code> group in order to give them access to all devices. However, this is not recommended <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/4288">[6]</a>.</div>
+<strong>Note:</strong> It is possible to add a user to the <code>input</code> group in order to give them access to all devices. However, this is not recommended <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/4288">[7]</a>.</div>
 <h3><span class="mw-headline" id="Gamepad_is_not_recognized_by_all_programs">Gamepad is not recognized by all programs</span></h3>
 <p>Some software, Steam for example, will only recognize the first gamepad it encounters. Due to a bug in the driver for Microsoft wireless periphery devices this can in fact be the bluetooth dongle. If you find you have a <code>/dev/input/js*</code> and <code>/dev/input/event*</code> belonging to you keyboard's bluetooth transceiver you can get automatically get rid of it by creating according udev rules: 
 </p>
@@ -1872,8 +1884,8 @@ BTN_TL=lb</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Gamepad&amp;oldid=820846">https://wiki.archlinux.org/index.php?title=Gamepad&amp;oldid=820846</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 16 November 2024, at 18:52.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Gamepad&amp;oldid=822551">https://wiki.archlinux.org/index.php?title=Gamepad&amp;oldid=822551</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 8 December 2024, at 17:43.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

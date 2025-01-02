@@ -5,7 +5,7 @@
 <title>systemd-networkd - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -533,13 +533,8 @@
 <h3><span class="mw-headline" id="Required_services_and_setup">Required services and setup</span></h3>
 <p>To use <i>systemd-networkd</i>, <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start/enable">start/enable</a> <code>systemd-networkd.service</code>.
 </p>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
-<div>
-<b>Reason:</b> Since 256, systemd-networkd should work fine at least alongside <a href="../en/NetworkManager.html" class="mw-redirect" title="Networkmanager">Networkmanager</a>. See <code>ID_NET_MANAGED_BY=</code> in <span class="plainlinks archwiki-template-man" title="$ man 5 systemd.network"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd.network.5#%5BMATCH%5D_SECTION_OPTIONS">systemd.network(5) § [MATCH]_SECTION_OPTIONS</a></span> and [<a rel="nofollow" class="external autonumber" href="https://mastodon.social/@pid_eins/112398647693125514">[1]</a>]. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Systemd-networkd.html">Talk:Systemd-networkd</a>)</div>
-</div>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> Ensure that no other service that wants to configure the network is running; in fact, multiple networking services will conflict. Find a list of the currently running services with <code>systemctl --type=service</code> and then <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Stop">stop</a> them.</div>
+<strong>Note:</strong> Each network interface should be managed by only one <a href="../en/Network_configuration.html#Network_managers" title="Network configuration">DHCP client or network manager</a>, so it is advised to run only one DHCP client or network manager on the system. Find a list of the currently running services with <code>systemctl --type=service</code> and then <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Stop">stop</a> or reconfigure those that conflict.</div>
 <p>It is optional to also configure <a href="../en/Systemd-resolved.html" title="Systemd-resolved">systemd-resolved</a>, which is a network name resolution service to local applications, considering the following points:
 </p>
 <ul>
@@ -1318,7 +1313,7 @@ DHCP=yes</pre>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> Number in the file name decides the order in which the files are processed. Users can [Match] based on SSID or BSSID or both.</div>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/network/24-wireless-office.network</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># special configuration for office WiFi network
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># special configuration for office Wi-Fi network
 [Match]
 Name=wlp2s0
 SSID=office_ap_name
@@ -1330,7 +1325,7 @@ Gateway=10.1.10.1
 DNS=10.1.10.1
 #DNS=8.8.8.8</pre>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/network/25-wireless-dhcp.network</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># use DHCP for any other WiFi network
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># use DHCP for any other Wi-Fi network
 [Match]
 Name=wlp2s0
 
@@ -1400,7 +1395,7 @@ DHCP=yes</pre>
 <h3><span class="mw-headline" id="Speeding_up_TCP_slow-start">Speeding up TCP slow-start</span></h3>
 <p>On a higher bandwidth link with moderate latency (typically a home Internet connection that is above 10 Mbit/s) the default settings for the TCP Slow Start algorithm are somewhat conservative.  This issue exhibits as downloads starting slowly and taking a number of seconds to speed up before they reach the connection's full bandwidth.  It is particularly noticeable with a pacman upgrade, where each package downloaded starts off slowly and often finishes before it has reached the connection's full speed.
 </p>
-<p>These settings can be adjusted to make TCP connections start with larger window sizes than the defaults, avoiding the time it takes for them to automatically increase on each new TCP connection<a rel="nofollow" class="external autonumber" href="https://www.cdnplanet.com/blog/tune-tcp-initcwnd-for-optimum-performance/">[2]</a>.  While this will usually decrease performance on slow connections (or if the values are increased too far) due to having to retransmit a larger number of lost packets, they can substantially increase performance on connections with sufficient bandwidth.
+<p>These settings can be adjusted to make TCP connections start with larger window sizes than the defaults, avoiding the time it takes for them to automatically increase on each new TCP connection<a rel="nofollow" class="external autonumber" href="https://www.cdnplanet.com/blog/tune-tcp-initcwnd-for-optimum-performance/">[1]</a>.  While this will usually decrease performance on slow connections (or if the values are increased too far) due to having to retransmit a larger number of lost packets, they can substantially increase performance on connections with sufficient bandwidth.
 </p>
 <p>It is important to benchmark before and after changing these values to ensure it is improving network speed and not reducing it.  If you are not seeing downloads begin slowly and gradually speed up, then there is no need to change these values as they are already optimal for your connection speed.  When benchmarking, be sure to test against both a high speed and low speed remote server to ensure you are not speeding up access to fast machines at the expense of making access to slow servers even slower.
 </p>
@@ -1465,9 +1460,9 @@ UseRoutes=false</pre>
 </ul>
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
 <li><a href="../en/Category:Sections_flagged_with_Template:Remove.html" title="Category:Sections flagged with Template:Remove">Sections flagged with Template:Remove</a></li>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Out_of_date.html" title="Category:Pages or sections flagged with Template:Out of date">Pages or sections flagged with Template:Out of date</a></li>
 </ul>
 </div>
@@ -1480,8 +1475,8 @@ UseRoutes=false</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Systemd-networkd&amp;oldid=821355">https://wiki.archlinux.org/index.php?title=Systemd-networkd&amp;oldid=821355</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 24 November 2024, at 19:25.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Systemd-networkd&amp;oldid=822121">https://wiki.archlinux.org/index.php?title=Systemd-networkd&amp;oldid=822121</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 4 December 2024, at 09:22.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

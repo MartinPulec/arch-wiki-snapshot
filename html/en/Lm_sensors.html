@@ -5,7 +5,7 @@
 <title>lm_sensors - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -276,13 +276,13 @@
 			<ul id="toc-Gigabyte_GA-J1900N-D3V-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-MAG_B650_TOMAHAWK_WIFI_(MS-7D75)" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#MAG_B650_TOMAHAWK_WIFI_(MS-7D75)">
+		<li id="toc-MAG_B650_TOMAHAWK_WIFI_(MS-7D75)/MAG_B550_MORTAR_WIFI_(MS-7C94)" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#MAG_B650_TOMAHAWK_WIFI_(MS-7D75)/MAG_B550_MORTAR_WIFI_(MS-7C94)">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">6.8</span>MAG B650 TOMAHAWK WIFI (MS-7D75)</div>
+				<span class="vector-toc-numb">6.8</span>MAG B650 TOMAHAWK WIFI (MS-7D75)/MAG B550 MORTAR WIFI (MS-7C94)</div>
 			</a>
 			
-			<ul id="toc-MAG_B650_TOMAHAWK_WIFI_(MS-7D75)-sublist" class="vector-toc-list">
+			<ul id="toc-MAG_B650_TOMAHAWK_WIFI_(MS-7D75)/MAG_B550_MORTAR_WIFI_(MS-7C94)-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 		<li id="toc-Asrock_B650M_Pro_RS_/_X870_Pro_RS" class="vector-toc-list-item vector-toc-level-2">
@@ -846,7 +846,7 @@ Core7:        +60.0°C  (high = +85.0°C, crit = +95.0°C)
 <pre># sensors-detect --auto
 </pre>
 <h3><span class="mw-headline" id="S.M.A.R.T._drive_temperature">S.M.A.R.T. drive temperature</span></h3>
-<p><a rel="nofollow" class="external text" href="https://hwmon.wiki.kernel.org/device_support_status">Since kernel 5.6</a><sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-10-12 ⓘ]</sup> the <code>drivetemp</code> module will report SATA/SAS temperature through hwmon, but <code>sensors-detect</code> does not automatically detect this so the module must be <a href="../en/Kernel_module.html#Manual_module_handling" title="Kernel module">manually loaded</a>.
+<p>Since kernel 5.6<a rel="nofollow" class="external autonumber" href="https://patchwork.kernel.org/project/linux-hwmon/patch/20191215174509.1847-2-linux@roeck-us.net/">[1]</a> the <code>drivetemp</code> module will report SATA/SAS temperature through hwmon, but <code>sensors-detect</code> does not automatically detect this so the module must be <a href="../en/Kernel_module.html#Manual_module_handling" title="Kernel module">manually loaded</a>.
 </p>
 <pre># modprobe drivetemp
 </pre>
@@ -897,12 +897,12 @@ ACTION=="add", SUBSYSTEM=="hwmon", ATTRS{vendor}=="0x1002", ATTRS{device}=="0x73
 <h3>
 <span id="Asus_B450M-A.2FA320M-K.2FA320M-K-BR_motherboards"></span><span class="mw-headline" id="Asus_B450M-A/A320M-K/A320M-K-BR_motherboards">Asus B450M-A/A320M-K/A320M-K-BR motherboards</span>
 </h3>
-<p>These motherboards use a IT8655E chip, which is not supported by the it87 kernel driver, as of Nov 2020 <a rel="nofollow" class="external autonumber" href="https://docs.kernel.org/hwmon/it87.html">[1]</a>. However, it is supported by the upstream version of the kernel driver <a rel="nofollow" class="external autonumber" href="https://github.com/bbqlinux/it87/blob/master/it87.c#L22">[2]</a>. The <a href="../en/Dynamic_Kernel_Module_Support.html" class="mw-redirect" title="DKMS">DKMS</a> variant is contained in <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/it87-dkms-git/">it87-dkms-git</a></span><sup><small>AUR</small></sup>.
+<p>These motherboards use a IT8655E chip, which is not supported by the it87 kernel driver, as of Nov 2020 <a rel="nofollow" class="external autonumber" href="https://docs.kernel.org/hwmon/it87.html">[2]</a>. However, it is supported by the upstream version of the kernel driver <a rel="nofollow" class="external autonumber" href="https://github.com/bbqlinux/it87/blob/master/it87.c#L22">[3]</a>. The <a href="../en/Dynamic_Kernel_Module_Support.html" class="mw-redirect" title="DKMS">DKMS</a> variant is contained in <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/it87-dkms-git/">it87-dkms-git</a></span><sup><small>AUR</small></sup>.
 </p>
 <h3>
 <span id="Asus_B450.2FX399.2FX470_motherboards_with_AM4_Socket"></span><span class="mw-headline" id="Asus_B450/X399/X470_motherboards_with_AM4_Socket">Asus B450/X399/X470 motherboards with AM4 Socket</span>
 </h3>
-<p>Some recent Asus motherboards use a ITE IT8665E chip, accessing the temperature, fan and voltage sensors may require the <code>asus-wmi-sensors</code> module. It is part of the mainline kernel since 5.17: load the <code>asus-wmi-sensors</code> <a href="../en/Kernel_module.html" title="Kernel module">kernel module</a> which uses the UEFI interface and may require a BIOS update on some boards <a rel="nofollow" class="external autonumber" href="https://github.com/electrified/asus-wmi-sensors#supported-hardware">[3]</a>.
+<p>Some recent Asus motherboards use a ITE IT8665E chip, accessing the temperature, fan and voltage sensors may require the <code>asus-wmi-sensors</code> module. It is part of the mainline kernel since 5.17: load the <code>asus-wmi-sensors</code> <a href="../en/Kernel_module.html" title="Kernel module">kernel module</a> which uses the UEFI interface and may require a BIOS update on some boards <a rel="nofollow" class="external autonumber" href="https://github.com/electrified/asus-wmi-sensors#supported-hardware">[4]</a>.
 </p>
 <p>Alternatively, the <code>it87</code> module reads the values from the chip directly, install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/it87-dkms-git/">it87-dkms-git</a></span><sup><small>AUR</small></sup> and load the <code>it87</code> <a href="../en/Kernel_module.html" title="Kernel module">kernel module</a>.
 </p>
@@ -930,7 +930,7 @@ ACTION=="add", SUBSYSTEM=="hwmon", ATTRS{vendor}=="0x1002", ATTRS{device}=="0x73
 <h3>
 <span id="Gigabyte_B250.2FZ370.2FB450M.2FB560M.2FB660M.2FZ690.2FB550_motherboards"></span><span class="mw-headline" id="Gigabyte_B250/Z370/B450M/B560M/B660M/Z690/B550_motherboards">Gigabyte B250/Z370/B450M/B560M/B660M/Z690/B550 motherboards</span>
 </h3>
-<p>Some Gigabyte motherboards use the ITE IT8686E, ITE8689 (for B560 and B660M) or ITE8689E (for Z690 and B550) chip, which is not supported by the it87 kernel driver, as of May 2019 <a rel="nofollow" class="external autonumber" href="https://docs.kernel.org/hwmon/it87.html">[4]</a>. However, it is supported by the upstream version of the kernel driver <a rel="nofollow" class="external autonumber" href="https://github.com/bbqlinux/it87/blob/master/it87.c#L24">[5]</a>. The <a href="../en/Dynamic_Kernel_Module_Support.html" class="mw-redirect" title="DKMS">DKMS</a> variant is contained in <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/it87-dkms-git/">it87-dkms-git</a></span><sup><small>AUR</small></sup>. As with <a href="#ASUS_H97/Z97/Z170/Z370i/X570/B550/B650-PLUS/X670_motherboards">#ASUS H97/Z97/Z170/Z370i/X570/B550/B650-PLUS/X670 motherboards</a>, a <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a> is required before attempting to install the module:
+<p>Some Gigabyte motherboards use the ITE IT8686E, ITE8689 (for B560 and B660M) or ITE8689E (for Z690 and B550) chip, which is not supported by the it87 kernel driver, as of May 2019 <a rel="nofollow" class="external autonumber" href="https://docs.kernel.org/hwmon/it87.html">[5]</a>. However, it is supported by the upstream version of the kernel driver <a rel="nofollow" class="external autonumber" href="https://github.com/bbqlinux/it87/blob/master/it87.c#L24">[6]</a>. The <a href="../en/Dynamic_Kernel_Module_Support.html" class="mw-redirect" title="DKMS">DKMS</a> variant is contained in <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/it87-dkms-git/">it87-dkms-git</a></span><sup><small>AUR</small></sup>. As with <a href="#ASUS_H97/Z97/Z170/Z370i/X570/B550/B650-PLUS/X670_motherboards">#ASUS H97/Z97/Z170/Z370i/X570/B550/B650-PLUS/X670 motherboards</a>, a <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a> is required before attempting to install the module:
 </p>
 <pre>acpi_enforce_resources=lax
 </pre>
@@ -962,7 +962,7 @@ Now you can also use <a href="../en/Fan_speed_control.html" class="mw-redirect" 
 <p>Optionally installation of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zenpower3-dkms/">zenpower3-dkms</a></span><sup><small>AUR</small></sup> may allow greater fine tuning of the motherboard's cooling system. However, it does disable the default k10temp module.
 </p>
 <h3><span class="mw-headline" id="Gigabyte_GA-J1900N-D3V">Gigabyte GA-J1900N-D3V</span></h3>
-<p>This motherboard uses the ITE IT8620E chip (useful also to read voltages, mainboard temp, fan speed). As of October 2014, lm_sensors has no driver support for chip ITE IT8620E <a rel="nofollow" class="external autonumber" href="https://hwmon.wiki.kernel.org/device_support_status_g_i">[6]</a><sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-10-12 ⓘ]</sup> <a rel="nofollow" class="external autonumber" href="https://marc.info/?l=lm-sensors&amp;m=139496833404519">[7]</a>. lm_sensors developers had a report that the chip is somewhat compatible with the IT8728F for the hardware monitoring part. However, as of August 2016, <a rel="nofollow" class="external autonumber" href="https://docs.kernel.org/hwmon/it87.html">[8]</a> lists the IT8620E as supported.
+<p>This motherboard uses the ITE IT8620E chip (useful also to read voltages, mainboard temp, fan speed). As of October 2014, lm_sensors has no driver support for chip ITE IT8620E <a rel="nofollow" class="external autonumber" href="https://hwmon.wiki.kernel.org/device_support_status_g_i">[7]</a><sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-10-12 ⓘ]</sup> <a rel="nofollow" class="external autonumber" href="https://marc.info/?l=lm-sensors&amp;m=139496833404519">[8]</a>. lm_sensors developers had a report that the chip is somewhat compatible with the IT8728F for the hardware monitoring part. However, as of August 2016, <a rel="nofollow" class="external autonumber" href="https://docs.kernel.org/hwmon/it87.html">[9]</a> lists the IT8620E as supported.
 </p>
 <p>You can load the module at runtime with modprobe:
 </p>
@@ -979,9 +979,9 @@ Now you can also use <a href="../en/Fan_speed_control.html" class="mw-redirect" 
 <p>Now you can also use <a href="../en/Fan_speed_control.html" class="mw-redirect" title="Fancontrol">fancontrol</a> to control the speedsteps of your case fan.
 </p>
 <h3>
-<span id="MAG_B650_TOMAHAWK_WIFI_.28MS-7D75.29"></span><span class="mw-headline" id="MAG_B650_TOMAHAWK_WIFI_(MS-7D75)">MAG B650 TOMAHAWK WIFI (MS-7D75)</span>
+<span id="MAG_B650_TOMAHAWK_WIFI_.28MS-7D75.29.2FMAG_B550_MORTAR_WIFI_.28MS-7C94.29"></span><span class="mw-headline" id="MAG_B650_TOMAHAWK_WIFI_(MS-7D75)/MAG_B550_MORTAR_WIFI_(MS-7C94)">MAG B650 TOMAHAWK WIFI (MS-7D75)/MAG B550 MORTAR WIFI (MS-7C94)</span>
 </h3>
-<p>This motherboard uses a Nuvoton NCT6687-R chip for fan, voltage and temperature readings. You need kernel module <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/nct6687d-dkms-git/">nct6687d-dkms-git</a></span><sup><small>AUR</small></sup> to access those values.
+<p>These motherboards use a Nuvoton NCT6687-R chip for fan, voltage and temperature readings. You need kernel module <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/nct6687d-dkms-git/">nct6687d-dkms-git</a></span><sup><small>AUR</small></sup> to access those values.
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> If you previously ran <i>sensors-detect</i>, it likely configured a different nuvoton module to be autoloaded. You can update <i>/etc/conf.d/lm_sensors</i> with the correct module name to have the module loaded on start up.</div>
@@ -1007,7 +1007,7 @@ Now you can also use <a href="../en/Fan_speed_control.html" class="mw-redirect" 
 <p>This motherboard uses a newer Nuvoton NCT6686D for fan, voltage and temperature readings. The <a rel="nofollow" class="external text" href="https://docs.kernel.org/hwmon/nct6683.html">nct6683 driver documentation</a> states that the driver will only instantiate with Intel CPUs. AMD CPUs require setting force to 1.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/modprobe.d/nct6683.conf</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">options force=1</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">options nct6683 force=1</pre>
 </div>
 </div>
 					<div id="catlinks" class="catlinks" data-mw="interface">
@@ -1028,8 +1028,8 @@ Now you can also use <a href="../en/Fan_speed_control.html" class="mw-redirect" 
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Lm_sensors&amp;oldid=820932">https://wiki.archlinux.org/index.php?title=Lm_sensors&amp;oldid=820932</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 19 November 2024, at 01:33.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Lm_sensors&amp;oldid=824032">https://wiki.archlinux.org/index.php?title=Lm_sensors&amp;oldid=824032</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 26 December 2024, at 18:57.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

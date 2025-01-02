@@ -5,7 +5,7 @@
 <title>Active Directory integration - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -1055,7 +1055,12 @@ nameserver &lt;IP2&gt;
 <p>Replacing &lt;IP1&gt; and &lt;IP2&gt; with valid IP addresses for the AD servers. If your AD domains do not permit DNS forwarding or recursion, you may need to add additional resolvers. 
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> If your machine dual boots Windows and Linux, you should use a different DNS hostname and netbios name for the linux configuration if both operating systems will be members of the same domain.</div>
+<strong>Note:</strong> 
+<ul>
+<li>The DNS entry 127.0.0.53 in the /etc/resolv.conf file refers to the local DNS resolver provided by systemd-resolved. If you have configured your DNS Servers using Network manager this step is unnecessary and can cause issues if you modify the resolv.conf as suggested.</li>
+<li>If your machine dual boots Windows and Linux, you should use a different DNS hostname and netbios name for the linux configuration if both operating systems will be members of the same domain.</li>
+</ul>
+</div>
 <h4><span class="mw-headline" id="Configuring_NTP"><s>Configuring NTP</s></span></h4>
 <p>Read <a href="../en/System_time.html#Time_synchronization" title="System time">System time#Time synchronization</a> to configure an NTP service.
 </p>
@@ -1079,8 +1084,10 @@ nameserver &lt;IP2&gt;
 [realms]
 	EXAMPLE.COM = {
 		kdc 	= 	PDC.EXAMPLE.COM
-                admin_server = PDC.EXAMPLE.COM
-		default_domain = EXAMPLE.COM
+        kdc     =   PDC2.EXAMPLE.COM
+        admin_server = PDC.EXAMPLE.COM
+		admin_server = PDC2.EXAMPLE.COM
+        default_domain = EXAMPLE.COM
 	}
 	
 [domain_realm]
@@ -1112,7 +1119,10 @@ nameserver &lt;IP2&gt;
 <strong>Note:</strong> The keys and commands are user specific: sudo will be root, so your non-elevated account can connect to a different AD user with a separate key.  If you only have one domain, it is not necessary to type @EXAMPLE.COM</div>
 <p>Now you can query the AD domain controllers and request a kerberos ticket (<b>uppercase is necessary</b>):
 </p>
-<pre>kinit administrator@EXAMPLE.COM</pre>
+<pre>kinit administrator@EXAMPLE.COM
+</pre>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> The suggested <code>smb.conf</code>, including <code>winbind use default domain = yes</code> cannot use <code>@EXAMPLE.COM</code> in the username. <code>kinit administrator</code> will bring in the <code>DOMAINNAME</code> from <code>smb.conf</code>.</div>
 <p>You can use any username that has rights as a Domain Administrator.
 </p>
 <h5><span class="mw-headline" id="Validating_the_Ticket"><s>Validating the Ticket</s></span></h5>
@@ -1703,8 +1713,8 @@ q
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Active_Directory_integration&amp;oldid=798021">https://wiki.archlinux.org/index.php?title=Active_Directory_integration&amp;oldid=798021</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 24 January 2024, at 03:11.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Active_Directory_integration&amp;oldid=824362">https://wiki.archlinux.org/index.php?title=Active_Directory_integration&amp;oldid=824362</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 1 January 2025, at 10:49.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

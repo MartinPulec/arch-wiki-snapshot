@@ -5,7 +5,7 @@
 <title>PipeWire - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -412,13 +412,13 @@
 			</a>
 			
 			<ul id="toc-No_sound_in_mpv,_vlc,_totem,_but_sound_works_in_web_browser_and_GNOME_speaker_test-sublist" class="vector-toc-list">
-				<li id="toc-Condition_Description" class="vector-toc-list-item vector-toc-level-4">
-			<a class="vector-toc-link" href="#Condition_Description">
+				<li id="toc-Condition_description" class="vector-toc-list-item vector-toc-level-4">
+			<a class="vector-toc-link" href="#Condition_description">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">5.1.4.1</span>Condition Description</div>
+				<span class="vector-toc-numb">5.1.4.1</span>Condition description</div>
 			</a>
 			
-			<ul id="toc-Condition_Description-sublist" class="vector-toc-list">
+			<ul id="toc-Condition_description-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 		<li id="toc-Reason_for_the_issue" class="vector-toc-list-item vector-toc-level-4">
@@ -838,7 +838,7 @@
 <h3><span class="mw-headline" id="Audio">Audio</span></h3>
 <p>PipeWire can be used as an audio server, similar to PulseAudio and JACK. It aims to replace both PulseAudio and JACK, by providing a PulseAudio-compatible server implementation and ABI-compatible libraries for JACK clients. See the blog post <a rel="nofollow" class="external text" href="https://blogs.gnome.org/uraeus/2020/09/04/pipewire-late-summer-update-2020/">PipeWire Late Summer Update 2020</a> for more information.
 </p>
-<p>First, install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pipewire-audio">pipewire-audio</a></span>. Depending on the type of audio clients, you may also need to take some extra steps. You may need to install additional firmware for your audio device, see <a href="../en/Advanced_Linux_Sound_Architecture.html#ALSA_firmware" title="Advanced Linux Sound Architecture">Advanced Linux Sound Architecture#ALSA firmware</a>.
+<p>First, install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pipewire-audio">pipewire-audio</a></span>. Depending on the type of audio clients, you may also need to take some extra steps. You may need to install additional firmware for your audio device, see <a href="../en/Advanced_Linux_Sound_Architecture.html#Firmware" title="Advanced Linux Sound Architecture">Advanced Linux Sound Architecture#Firmware</a>.
 </p>
 <h4><span class="mw-headline" id="ALSA_clients">ALSA clients</span></h4>
 <p>Install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pipewire-alsa">pipewire-alsa</a></span> (and remove <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pulseaudio-alsa">pulseaudio-alsa</a></span> if it was installed) to route all applications using the ALSA API through PipeWire.
@@ -1011,7 +1011,7 @@ $ pactl load-module module-zeroconf-publish
 </p>
 </div>
 <h4><span class="mw-headline" id="Use_ALSA_dmix_devices_as_PipeWire_sinks">Use ALSA dmix devices as PipeWire sinks</span></h4>
-<p>It is possible to have a PipeWire server (or multiple, for each user) output to ALSA via <a href="../en/Advanced_Linux_Sound_Architecture.html#Dmix" title="Advanced Linux Sound Architecture">ALSA dmix devices</a>. This allows you to use ALSA as the primary audio output system while being able to use non-ALSA devices such as Bluetooth headphones.
+<p>It is possible to have a PipeWire server (or multiple, for each user) output to ALSA via <a href="../en/Advanced_Linux_Sound_Architecture.html#Software_mixing" title="Advanced Linux Sound Architecture">ALSA dmix devices</a>. This allows you to use ALSA as the primary audio output system while being able to use non-ALSA devices such as Bluetooth headphones.
 </p>
 <h5><span class="mw-headline" id="ALSA_dmix_setup">ALSA dmix setup</span></h5>
 <p>Suppose you have two cards, <code>PCH</code> and <code>HDMI</code>:
@@ -1343,26 +1343,26 @@ $ aplay test-mic.wav # play it</pre>
 <div>
 <b>Reason:</b> The writing style is not wiki, but more like a blog. It needs a rephrase + shortening. Sub chapters are overkill as well. Issue root cause is guessed not verified.  (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:PipeWire.html">Talk:PipeWire</a>)</div>
 </div>
-<h5><span class="mw-headline" id="Condition_Description">Condition Description</span></h5>
-<p>The best tool to verify the condition of this issue is to use <code>mpv</code> on a file that's expected to work with installed codecs:
+<h5><span class="mw-headline" id="Condition_description">Condition description</span></h5>
+<p>The best tool to verify the condition of this issue is to use <code>mpv</code> on a file that is expected to work with installed codecs:
 </p>
-<pre>mpv --ao=alsa test_file.mpv
-mpv --ao=pcm test_file.mpv
-mpv --ao=jack test_file.mpv
-mpv --ao=pulse test_file.mpv
-mpv --ao=openal test_file.mpv
+<pre>$ mpv --ao=alsa <i>test_file.mpv</i>
+$ mpv --ao=pcm <i>test_file.mpv</i>
+$ mpv --ao=jack <i>test_file.mpv</i>
+$ mpv --ao=pulse <i>test_file.mpv</i>
+$ mpv --ao=openal <i>test_file.mpv</i>
 </pre>
 <p>This recipie applies if some or all of the above tests produce sound and the same test with <code>pipewire</code> option does not produce sound:
 </p>
-<pre> mpv --ao=pipewire test_file.mpv
+<pre>$ mpv --ao=pipewire <i>test_file.mpv</i>
 </pre>
-<p>Gnome desktop speaker test and web browser 'youtube' produce valid sound outcomes.  
+<p>Gnome desktop speaker test and web browser 'youtube' produce valid sound outcomes.
 </p>
 <p>Switching inputs, muting, unmuting, changing volume in Gnome does not resolve the issue.
 </p>
 <p>Sink status reported by <code>pactl list sinks</code> as 'SUSPENDED' is of no concern, because status properly changes when running video through a web browser.
 </p>
-<p>Use of <code>pactl info</code> does not point to any obvious issues.  
+<p>Use of <code>pactl info</code> does not point to any obvious issues.
 </p>
 <p>Inspection of relevant <code>systemd</code> unit logs does not point to any obvious issues.
 </p>
@@ -1464,6 +1464,8 @@ context.properties = {
 </pre>
 <p>If they appear, check the currently selected codec using <code>pactl list sinks</code> and try changing it by setting <code>bluez5.codecs</code> to one of <code>sbc aac ldac aptx aptx_hd</code>. You can also try mSBC support (fixes mic on Sony 1000XM3, i.e. Headphones WH-1000XM3 and Earbuds WF-1000XM3), and the SBC-XQ codec.
 </p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong>  Headphones like the WH-1000XM3 refuse to advertise any codecs other than SBC/SBC-XQ if "Sound Quality Mode" is set to "Priority On Stable Connection" instead of "Prioritize Sound Quality" in the companion app.</div>
 <p>With <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=wireplumber">wireplumber</a></span>:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/wireplumber/wireplumber.conf.d/51-bluez-config.conf (or ~/.config/wireplumber/wireplumber.conf.d/51-bluez-config.conf)</pre>
@@ -1887,8 +1889,8 @@ info: [pipewire] playing stream…
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PipeWire&amp;oldid=821864">https://wiki.archlinux.org/index.php?title=PipeWire&amp;oldid=821864</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 30 November 2024, at 12:17.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PipeWire&amp;oldid=824247">https://wiki.archlinux.org/index.php?title=PipeWire&amp;oldid=824247</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 29 December 2024, at 16:47.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

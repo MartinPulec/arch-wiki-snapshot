@@ -5,7 +5,7 @@
 <title>Firewalld - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -371,7 +371,7 @@
 <p>There <code><i>zone</i></code> is a new zone that you want to assign interface to.
 </p>
 <h5><span class="mw-headline" id="Using_NetworkManager_to_manage_zones">Using NetworkManager to manage zones</span></h5>
-<p><a href="../en/NetworkManager.html" title="NetworkManager">NetworkManager</a> can assign different connection profiles to different zones. This allows for example, adding a home WiFi connection to the "home" zone, a work WiFi connection to the "work" zone, and all other WiFi connections to the default "public" zone.
+<p><a href="../en/NetworkManager.html" title="NetworkManager">NetworkManager</a> can assign different connection profiles to different zones. This allows for example, adding a home Wi-Fi connection to the "home" zone, a work Wi-Fi connection to the "work" zone, and all other Wi-Fi connections to the default "public" zone.
 </p>
 <p>List connection profiles:
 </p>
@@ -422,18 +422,23 @@
 <p>To close the port use <code>--remove-port</code> option with same port number and protocol.
 </p>
 <h3><span class="mw-headline" id="NAT_masquerade">NAT masquerade</span></h3>
-<p>This command has the same effect as <code>iptables -t nat -A POSTROUTING -j MASQUERADE</code>:
+<p>Masquerading is a form of <i>source NAT</i> where the source address is unknown at the time the firewall rule created in the kernel, and instead the source address of a packet is dynamically modified to the primary IP address of the outgoing interface <a rel="nofollow" class="external autonumber" href="https://serverfault.com/a/119374">[1]</a>.
 </p>
 <pre># firewall-cmd --permanent --zone=public --add-masquerade
 </pre>
-<p>Since version 1.0.0, to make NAT masquerade working between different firewall zones, you have to create a new policy object which is used to filter traffic between them:
+<p>Since version 1.0.0, to make NAT masquerade work between different firewall zones, you have to create a new policy object which is used to filter traffic between them:
 </p>
-<pre># firewall-cmd --new-policy NAT_int_to_ext --permanent
-# firewall-cmd --permanent --policy NAT_int_to_ext --add-ingress-zone internal
-# firewall-cmd --permanent --policy NAT_int_to_ext --add-egress-zone public
-# firewall-cmd --permanent --policy NAT_int_to_ext --set-target ACCEPT
+<pre># firewall-cmd --new-policy internal-to-public --permanent
+# firewall-cmd --permanent --policy internal-to-public --add-ingress-zone internal
+# firewall-cmd --permanent --policy internal-to-public --add-egress-zone public
+# firewall-cmd --permanent --policy internal-to-public --set-target ACCEPT
 </pre>
 <h3><span class="mw-headline" id="Port_forwarding">Port forwarding</span></h3>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
+<div>
+<b>Reason:</b> Add a note about <a rel="nofollow" class="external text" href="https://firewalld.org/2024/11/strict-forward-ports">StrictForwardPorts</a>. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Firewalld.html">Talk:Firewalld</a>)</div>
+</div>
 <p>If you have firewalld configured on a router, and you have enabled NAT masquerading as above, it is simple to set up port forwarding through firewalld:
 </p>
 <pre># firewall-cmd --zone=public --add-forward-port=port=12345:proto=tcp:toport=22:toaddr=10.20.30.40
@@ -498,9 +503,13 @@ For example, adding <a href="../en/Secure_Shell.html" class="mw-redirect" title=
 </ul>
 </div>
 </div>
-					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
+					<div id="catlinks" class="catlinks" data-mw="interface">
+<div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Firewalls.html" title="Category:Firewalls">Firewalls</a></li></ul>
-</div></div>
+</div>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li></ul>
+</div>
+</div>
 				</div>
 			</main>
 			
@@ -509,8 +518,8 @@ For example, adding <a href="../en/Secure_Shell.html" class="mw-redirect" title=
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Firewalld&amp;oldid=819812">https://wiki.archlinux.org/index.php?title=Firewalld&amp;oldid=819812</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 29 October 2024, at 10:32.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Firewalld&amp;oldid=823817">https://wiki.archlinux.org/index.php?title=Firewalld&amp;oldid=823817</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 24 December 2024, at 19:15.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

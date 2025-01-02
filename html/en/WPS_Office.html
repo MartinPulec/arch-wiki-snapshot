@@ -5,7 +5,7 @@
 <title>WPS Office - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -81,24 +81,6 @@
 			<ul id="toc-Modify_WPS_file_icon_and_file_association-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Use_GTK+_UI" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Use_GTK+_UI">
-				<div class="vector-toc-text">
-				<span class="vector-toc-numb">2.3</span>Use GTK+ UI</div>
-			</a>
-			
-			<ul id="toc-Use_GTK+_UI-sublist" class="vector-toc-list">
-				<li id="toc-Manually_repair_Kingsoft_PDF_startup_script" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Manually_repair_Kingsoft_PDF_startup_script">
-				<div class="vector-toc-text">
-				<span class="vector-toc-numb">2.3.1</span>Manually repair Kingsoft PDF startup script</div>
-			</a>
-			
-			<ul id="toc-Manually_repair_Kingsoft_PDF_startup_script-sublist" class="vector-toc-list">
-			</ul>
-		</li>
-	</ul>
-		</li>
 	</ul>
 	</li>
 	<li id="toc-Troubleshooting" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
@@ -149,28 +131,10 @@
 			<ul id="toc-Microsoft_Office_file_in_KDE_Plasma_is_recognized_as_Zip-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Fcitx_input_method_framework_cannot_input_on_WPS" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Fcitx_input_method_framework_cannot_input_on_WPS">
-				<div class="vector-toc-text">
-				<span class="vector-toc-numb">3.5</span>Fcitx input method framework cannot input on WPS</div>
-			</a>
-			
-			<ul id="toc-Fcitx_input_method_framework_cannot_input_on_WPS-sublist" class="vector-toc-list">
-			</ul>
-		</li>
-		<li id="toc-Bad_integration_with_dark_theme_of_KDE_Plasma" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Bad_integration_with_dark_theme_of_KDE_Plasma">
-				<div class="vector-toc-text">
-				<span class="vector-toc-numb">3.6</span>Bad integration with dark theme of KDE Plasma</div>
-			</a>
-			
-			<ul id="toc-Bad_integration_with_dark_theme_of_KDE_Plasma-sublist" class="vector-toc-list">
-			</ul>
-		</li>
 		<li id="toc-WPSPDF_functionality_unavailable" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#WPSPDF_functionality_unavailable">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">3.7</span>WPSPDF functionality unavailable</div>
+				<span class="vector-toc-numb">3.5</span>WPSPDF functionality unavailable</div>
 			</a>
 			
 			<ul id="toc-WPSPDF_functionality_unavailable-sublist" class="vector-toc-list">
@@ -179,7 +143,7 @@
 		<li id="toc-Fonts_are_too_bold" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Fonts_are_too_bold">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">3.8</span>Fonts are too bold</div>
+				<span class="vector-toc-numb">3.6</span>Fonts are too bold</div>
 			</a>
 			
 			<ul id="toc-Fonts_are_too_bold-sublist" class="vector-toc-list">
@@ -375,39 +339,6 @@ application\/vnd.openxmlformats-officedocument.wordprocessingml.document;"
     sed -i "s/^MimeType.*$/$_wppMT/" $pkgdir/usr/share/applications/wps-office-wpp.desktop
     #_wps
     sed -i "s/^MimeType.*$/$_wpsMT/" $pkgdir/usr/share/applications/wps-office-wps.desktop</pre>
-<h3>
-<span id="Use_GTK.2B_UI"></span><span class="mw-headline" id="Use_GTK+_UI">Use GTK+ UI</span>
-</h3>
-<p>The default UI of WPS is Qt. In fact, the bundled Qt is 4.7.4, so the themes such as qtcurve cannot be loaded normally because the versions do not match. But we can change it to GTK+ and add the parameter <code>-style gtk+</code> directly.
-</p>
-<p>You can modify the et, wpp, and wps files in the <code>/usr/bin/</code> directory and delete it (if any):
-</p>
-<pre>gOpt=
-</pre>
-<p>Then, add:
-</p>
-<pre>gOpt="-style=gtk+"
-export GTK2_RC_FILES=/usr/share/themes/Breeze/gtk-2.0/gtkrc
-</pre>
-<h4><span class="mw-headline" id="Manually_repair_Kingsoft_PDF_startup_script">Manually repair Kingsoft PDF startup script</span></h4>
-<p>The startup script provided by Kingsoft PDF is missing the custom configuration of GTK. You can add it at the beginning of its startup script <code>/usr/bin/wpspdf</code>:
-</p>
-<pre>gOpt="-style=gtk+"
-export GTK2_RC_FILES=/usr/share/themes/Breeze/gtk-2.0/gtkrc
-</pre>
-<p>And add <code>${gOpt}</code> to the subsequent <code>run</code> function, the modified <code>run</code> function is as follows:
-</p>
-<pre>function run()
-{
-	if [ -e "${gInstallPath}/office6/${gApp}" ] ; then
-		{ ${gInstallPath}/office6/${gApp} ${gOpt} "$@"; } &gt;/dev/null 2&gt;&amp;1
-	else
-		echo "${gApp} does not exist!"
-	fi
-}
-</pre>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> Since each upgrade may result in the loss of file modifications, you may consider copying the et, wpp, and wps files to other directories (for example: <code>~/.local/bin/</code>) and adding them to <a href="../en/Environment_variables.html" title="Environment variables">Environment variables</a>.</div>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
 <h3><span class="mw-headline" id="WPS_Office_overriding_or_breaking_mime">WPS Office overriding or breaking mime</span></h3>
 <p><a href="../en/Help:Reading.html#Append,_add,_create,_edit" class="mw-redirect" title="Add">Add</a> <code>common\do_not_detect_file_association_while_startup=true</code> before <code>[kdcsdk]</code>: 
@@ -432,39 +363,18 @@ common\do_not_detect_file_association_while_startup=true
 <p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/ttf-wps-fonts/">ttf-wps-fonts</a></span><sup><small>AUR</small></sup> contain all of these fonts except <i>monotypesorts.ttf</i>, you can install it directly.
 </p>
 <h3><span class="mw-headline" id="Microsoft_Office_file_in_KDE_Plasma_is_recognized_as_Zip">Microsoft Office file in KDE Plasma is recognized as Zip</span></h3>
-<p>After installing WPS Office, Microsoft Office files will be recognized as zip and cannot open with WPS. You can change this kind of recognition by delete mime file in <code>/usr/share/packages/</code>:
-</p>
-<pre># rm /usr/share/mime/packages/wps-office-*.xml
-# update-mime-database /usr/share/mime
-</pre>
-<h3><span class="mw-headline" id="Fcitx_input_method_framework_cannot_input_on_WPS">Fcitx input method framework cannot input on WPS</span></h3>
-<p>add following lines to <code>/usr/bin/wps</code> <code>/usr/bin/et</code> <code>/usr/bin/wpp</code> separately to add fcitx to Writer, Spreadsheet and Presentation:
-</p>
-<pre>export XMODIFIERS="@im=fcitx"
-export QT_IM_MODULE="fcitx"
-</pre>
-<h3><span class="mw-headline" id="Bad_integration_with_dark_theme_of_KDE_Plasma">Bad integration with dark theme of KDE Plasma</span></h3>
-<p>Run the applications with:
-</p>
-<pre>env GTK2_RC_FILES=/usr/share/themes/Breeze/gtk-2.0/gtkrc et -style gtk+
-</pre>
-<p>Breeze theme can be replaced with any light theme, i.e. Adwaita, Breath, etc.
-</p>
-<p>After running the application, WPS will show a warning: 'Unable to open "gtk+"'. Ignore it and press Ok.
+<p>After installing WPS Office, Microsoft Office files will be recognized as zip and cannot open with WPS. You can remove the offending <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/wps-office-mime/">wps-office-mime</a></span><sup><small>AUR</small></sup> package.
 </p>
 <h3><span class="mw-headline" id="WPSPDF_functionality_unavailable">WPSPDF functionality unavailable</span></h3>
-<p>Functions related to PDF export, opening, and other PDF-related features are all provided by WPSPDF. However, WPSPDF relies on libtiff5.so.5 to support its PDF functionality. After a system update, Arch Linux provides libtiff.so.6 or a newer version, which causes WPSPDF to malfunction. Solution: Install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/libtiff5/">libtiff5</a></span><sup><small>AUR</small></sup>.
+<p>Functions related to PDF export, opening, and other PDF-related features are all provided by WPSPDF. However, WPSPDF relies on <code>libtiff5.so.5</code> to support its PDF functionality: install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/libtiff5/">libtiff5</a></span><sup><small>AUR</small></sup>.
 </p>
 <h3><span class="mw-headline" id="Fonts_are_too_bold">Fonts are too bold</span></h3>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> The problem is fixed on chinese version 12.1.0.17885-1,however this version has not been push to the international version as by 09-11-2024</div>
-<p>Version 11.1.0.11704-1 doesn't work well with freetype2 versions 2.13.1 and 2.13.2. Normally, freetype2 creates a bold variant if the chosen font does not have a bold version. This is called "fakebold", but in this case, wps-office is also making fonts bold on its own, and the result is that the text looks too bold.
+<strong>Note:</strong> The problem is fixed on Chinese version 12.1.0.17885-1, however this version has not been made available internationally as of 2024-12-17.</div>
+<p>Version 11.1.0.11704-1 doesn't work well with freetype2 versions above 2.13.0. Normally, freetype2 creates a bold variant if the chosen font does not have a bold version. This is called "fakebold", but in this case, wps-office is also making fonts bold on its own, and the result is that the text looks too bold.
 </p>
-<p>To workaround this issue until a long term fix is provided, <a href="../en/Downgrading_packages.html" class="mw-redirect" title="Downgrade">downgrade</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=freetype2">freetype2</a></span> to 2.13.0.
+<p>To workaround this issue until a long term fix is provided, <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/freetype2-wps/">freetype2-wps</a></span><sup><small>AUR</small></sup>.
 </p>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> An alternative is to add the environment varible to your path to old version of freetype2 in desktop file. See <a rel="nofollow" class="external autonumber" href="https://aur.archlinux.org/packages/wps-office-cn#comment-937115">[1]</a>
-</div>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul><li><a rel="nofollow" class="external text" href="https://www.wps.cn/product/wpslinux/">WPS For Linux (Chinese)</a></li></ul>
 </div>
@@ -480,8 +390,8 @@ export QT_IM_MODULE="fcitx"
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=WPS_Office&amp;oldid=816390">https://wiki.archlinux.org/index.php?title=WPS_Office&amp;oldid=816390</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 13 September 2024, at 13:26.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=WPS_Office&amp;oldid=823410">https://wiki.archlinux.org/index.php?title=WPS_Office&amp;oldid=823410</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 17 December 2024, at 14:47.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

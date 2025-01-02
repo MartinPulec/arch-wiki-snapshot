@@ -5,7 +5,7 @@
 <title>Flashing BIOS from Linux - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -679,7 +679,7 @@ initrd /flashbios.img
 </p>
 <ol>
 <li>Download the BIOS executable from HP's support website using your serial number and indicating Windows as the OS .</li>
-<li>The exe file is an archive and can then be extracted using e.g <a href="../en/P7zip.html" class="mw-redirect" title="7z">7z</a>
+<li>The exe file is an archive and can then be extracted using e.g <a href="../en/7-Zip.html" class="mw-redirect" title="7z">7z</a>
 </li>
 <li>Create the appropriate directory structure in the USB as described above. If one does not work, try the other</li>
 <li>Unmount the USB</li>
@@ -701,18 +701,16 @@ initrd /flashbios.img
 <p>For some models, particularly around the years 2010-2014, unpacking the executable produces a file ending in <i>.fd</i> that contains both the BIOS file and an RSA signature for the file.  Instructions have been published on how to extract from the <i>.fd</i> file, and some tools have been published as well. Once these files are extracted and placed on a USB drive, they can be used to perform the update. Sometimes the firmware update user interface makes it possible to navigate to the files, but it may sometimes also be necessary to place them in a particular directory with a particular name. The bios file usually has the suffix <i>.bin</i> and the signature file has the suffix <i>.sig</i> or <i>.s12</i>. The <a href="../en/Laptop/HP.html#Model_list" class="mw-redirect" title="HP ENVY m4-1015dx">HP ENVY m4-1015dx</a> page provides specific details for one such model.
 </p>
 <h3><span class="mw-headline" id="ASUS">ASUS</span></h3>
-<p>Modern Asus motherboards do not require Windows for firmware update. You can update bios from within bios with in-built utility Ez-Flash. However, they <a rel="nofollow" class="external text" href="https://forum.manjaro.org/t/questions-about-updating-the-bios-and-intel-management-service-on-a-new-motherboard/141876">ask</a> you to update ME before updating bios. The problem is that they do not include Linux update tool in the arhive (<a rel="nofollow" class="external text" href="https://www.asus.com/motherboards-components/motherboards/prime/prime-z370-a/helpdesk_bios/?model2Name=PRIME-Z370-A">example</a>).
+<p>Modern ASUS motherboards do not require Windows for firmware update. You can update from within the UEFI with the Ez-Flash utility. However, they <a rel="nofollow" class="external text" href="https://forum.manjaro.org/t/questions-about-updating-the-bios-and-intel-management-service-on-a-new-motherboard/141876">ask</a> you to update ME before updating bios. The problem is that they do not include Linux update tool in the archive<a rel="nofollow" class="external autonumber" href="https://www.asus.com/motherboards-components/motherboards/prime/prime-z370-a/helpdesk_bios/?model2Name=PRIME-Z370-A">[2]</a>.
 </p>
 <p>Even if your bios is at latest version, you need update ME anyway. It is important to avoid hardware problems, such as unable to wake from sleep.
 </p>
-<p>Download the System Tools from <a rel="nofollow" class="external text" href="https://winraid.level1techs.com/t/intel-converged-security-management-engine-drivers-firmware-and-tools-2-15/30719">here</a>. For this particular motherboard the latest (v15) version did not work (Unknown PCH platform). As recommended <a rel="nofollow" class="external text" href="https://winraid.level1techs.com/t/me-firmware-linux/33230">here</a>, using v11 version worked. Extract the linux executable from the archive ("CSME System Tools v11 r46/FWUpdate/LINUX64/FWUpdLcl") and place it to the folder with the firmware in archive downloaded from Asus site (MEUpdateTool_11.8.80.3746v5_S/FW/). Make the "FWUpdLcl" executable.
+<p>Download the System Tools from <a rel="nofollow" class="external text" href="https://winraid.level1techs.com/t/intel-converged-security-management-engine-drivers-firmware-and-tools-2-15/30719">here</a>. For this particular motherboard the latest (v15) version did not work (Unknown PCH platform). As recommended <a rel="nofollow" class="external text" href="https://winraid.level1techs.com/t/me-firmware-linux/33230">here</a>, using v11 version worked. Extract the Linux executable from the archive ("CSME System Tools v11 r46/FWUpdate/LINUX64/FWUpdLcl") and place it to the folder with the firmware in archive downloaded from Asus site (MEUpdateTool_11.8.80.3746v5_S/FW/). Make the "FWUpdLcl" executable.
 </p>
-<p>Show usage
+<p>Show usage: 
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ ./FWUpdLcl</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">
-
-Intel (R) Firmware Update Utility Version: 11.8.92.4222
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Intel (R) Firmware Update Utility Version: 11.8.92.4222
 Copyright (C) 2007 - 2022, Intel Corporation.  All rights reserved.
 
 FWUpdLcl.exe [-H|?] [-VER] [-EXP] [-VERBOSE] [-F] [-Y] [-SAVE] 
@@ -736,7 +734,7 @@ FWUpdLcl.exe [-H|?] [-VER] [-EXP] [-VERBOSE] [-F] [-Y] [-SAVE]
 </pre>
 <p>Show your current ME version:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ sudo ./FWUpdLcl -FWVER</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># ./FWUpdLcl -FWVER</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Intel (R) Firmware Update Utility Version: 11.8.92.4222
 Copyright (C) 2007 - 2022, Intel Corporation.  All rights reserved.
 
@@ -750,7 +748,7 @@ Copyright (C) 2007 - 2022, Intel Corporation.  All rights reserved.
 FW Version: 11.8.80.3746</pre>
 <p>Start flashing:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">sudo ./FWUpdLcl -F ME.bin</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># ./FWUpdLcl -F ME.bin</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Intel (R) Firmware Update Utility Version: 11.8.92.4222
 Copyright (C) 2007 - 2022, Intel Corporation.  All rights reserved.
 
@@ -760,19 +758,17 @@ Checking firmware parameters...
 Warning: Do not exit the process or power off the machine before the firmware update process ends.
 Sending the update image to FW for verification:  [ COMPLETE ] 
 
-
-
 FW Update:  [ 100% (/)]Do not Interrupt
 FW Update is completed successfully.</pre>
 <p>To be able to see new version you need reboot. Now you can see the version applied:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">sudo ./FWUpdLcl -FWVER</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># ./FWUpdLcl -FWVER</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Intel (R) Firmware Update Utility Version: 11.8.92.4222
 Copyright (C) 2007 - 2022, Intel Corporation.  All rights reserved.
 
 FW Version: 11.8.80.3746</pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> Alternatively, you can update via uefi shell using <code>FWUpdLcl.efi</code> from the archive.</div>
+<strong>Note:</strong> Alternatively, you can update via the UEFI shell using <code>FWUpdLcl.efi</code> from the archive.</div>
 <h3><span class="mw-headline" id="Lenovo">Lenovo</span></h3>
 <p>Some firmware updates are only provided in Windows executable format. This section uses as an example the Lenovo IdeaPad L340-15API firmware. If you try to apply these steps to another system, your mileage may vary. The Lenovo IdeaPad L340-15API only offers a <i>.exe</i> on the Lenovo support site. This renders not just many, but all of the methods in the article futile:
 </p>
@@ -790,7 +786,7 @@ FW Version: 11.8.80.3746</pre>
 <ol>
 <li>The installer. The IdeaPad's firmware download comes in an installer format, specifically <a rel="nofollow" class="external text" href="https://bladecoder.medium.com/flash-your-lenovo-ideapad-laptop-bios-from-linux-using-uefi-capsule-updates-a82e455ea29c">set up by Inno Setup</a>. Instead of extracting by running the installer with something like Wine, use the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=innoextract">innoextract</a></span> tool: <pre>$ innoextract <i>installer.exe</i></pre>
 </li>
-<li>We find inside another executable. This inner IdeaPad executable also does not work in FreeDOS or Windows PE. However, note the earlier mentioned TDK library error. TDK refers to the firmware dev kit made by <a rel="nofollow" class="external text" href="https://www.phoenix.com/uefi-bios-utilities-package/">Phoenix Technologies</a>. It was mentioned on the <a rel="nofollow" class="external text" href="https://www.badcaps.net/forum/showthread.php?t=80861">badcaps forum</a> that the executable itself will extract the contents using the <code>/ext</code> argument. So using Wine, run <pre>$ wine <i>firmware.exe</i> /ext</pre> Alternatively, using <a href="../en/P7zip.html" class="mw-redirect" title="7z">7z</a> has been reported as working too: <pre>$ 7z x <i>firmware.exe</i></pre>
+<li>We find inside another executable. This inner IdeaPad executable also does not work in FreeDOS or Windows PE. However, note the earlier mentioned TDK library error. TDK refers to the firmware dev kit made by <a rel="nofollow" class="external text" href="https://www.phoenix.com/uefi-bios-utilities-package/">Phoenix Technologies</a>. It was mentioned on the <a rel="nofollow" class="external text" href="https://www.badcaps.net/forum/showthread.php?t=80861">badcaps forum</a> that the executable itself will extract the contents using the <code>/ext</code> argument. So using Wine, run <pre>$ wine <i>firmware.exe</i> /ext</pre> Alternatively, using <a href="../en/7-Zip.html" class="mw-redirect" title="7z">7z</a> has been reported as working too: <pre>$ 7z x <i>firmware.exe</i></pre>
 </li>
 <li>We find ourselves with more <i>.exe</i> files in this <i>.exe</i> file too. None of them work in FreeDOS or Windows PE. However, note that the firmware itself is in a UEFI capsule update format, suggested in <a rel="nofollow" class="external text" href="https://bladecoder.medium.com/flash-your-lenovo-ideapad-laptop-bios-from-linux-using-uefi-capsule-updates-a82e455ea29c">bladecoder's blog</a>.
 <ul>
@@ -819,8 +815,8 @@ FW Version: 11.8.80.3746</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Flashing_BIOS_from_Linux&amp;oldid=800674">https://wiki.archlinux.org/index.php?title=Flashing_BIOS_from_Linux&amp;oldid=800674</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 17 February 2024, at 22:31.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Flashing_BIOS_from_Linux&amp;oldid=824293">https://wiki.archlinux.org/index.php?title=Flashing_BIOS_from_Linux&amp;oldid=824293</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 30 December 2024, at 16:46.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

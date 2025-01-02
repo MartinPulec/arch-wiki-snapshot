@@ -5,7 +5,7 @@
 <title>Xfce - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -491,6 +491,15 @@
 			<ul id="toc-Add_more_volume_steps_in_pulseaudio-plugin-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Using_the_experimental_Wayland_support" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Using_the_experimental_Wayland_support">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">4.18</span>Using the experimental Wayland support</div>
+			</a>
+			
+			<ul id="toc-Using_the_experimental_Wayland_support-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-Troubleshooting" class="vector-toc-list-item vector-toc-level-1">
@@ -674,6 +683,24 @@
 			</a>
 			
 			<ul id="toc-Weather_plugin_forgets_labels-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Wayland_support_not_working" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Wayland_support_not_working">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">5.20</span>Wayland support not working</div>
+			</a>
+			
+			<ul id="toc-Wayland_support_not_working-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Could_not_toggle_guake_dropdown_in_Wayland_mode" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Could_not_toggle_guake_dropdown_in_Wayland_mode">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">5.21</span>Could not toggle guake dropdown in Wayland mode</div>
+			</a>
+			
+			<ul id="toc-Could_not_toggle_guake_dropdown_in_Wayland_mode-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -1244,6 +1271,11 @@ For example: In <i>Window Manager &gt; Keyboard</i>, you can use <code>Super</co
 </pre>
 <p>To reduce volume steps simple change the number after <code>-s</code> to a higher value
 </p>
+<h3><span class="mw-headline" id="Using_the_experimental_Wayland_support">Using the experimental Wayland support</span></h3>
+<p>Xfce supports both <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=labwc">labwc</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/wayfire/">wayfire</a></span><sup><small>AUR</small></sup> as it's Wayland compositor. However only labwc works out of the box; wayfire requires additional tweaking to the session file to make it work. For this purpose I decided to focus this section on getting Xfce working with labwc as it requires the least effort to get Xfce working in Wayland.
+</p>
+<p>After installing <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=labwc">labwc</a></span> you should be able to switch to the Xfce Session (Wayland) option in your Desktop Manager of choice and log in as usual. Note that Wayland support is marked as experimental for a good reason: things will not work like you expect it to and <i>a lot of stuff are generally broken</i>. For example, the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=guake">guake</a></span> dropdown terminal cannot capture the key chord required to toggle it's visibility. Additionally desktop icons placed by <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xfdesktop">xfdesktop</a></span> may appear and disappear as the desktop gain and lose focus.
+</p>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
 <h3><span class="mw-headline" id="Desktop_icons_rearrange_themselves">Desktop icons rearrange themselves</span></h3>
 <p>At certain events (such as opening the panel settings dialog) icons on the desktop rearrange themselves. This is because icon positions are determined by files in the <code>~/.config/xfce4/desktop/</code> directory. Each time a change is made to the desktop (icons are added or removed or change position) a new file is generated in this directory and these files can conflict.
@@ -1379,6 +1411,14 @@ Unable to determine failsafe session name.  Possible causes: xfconfd is not runn
 <h3><span class="mw-headline" id="Weather_plugin_forgets_labels">Weather plugin forgets labels</span></h3>
 <p>This is a known bug. The workaround is to make a backup of config files and recover them when the problem occurs. You can use scripts from this <a rel="nofollow" class="external text" href="https://gitlab.xfce.org/panel-plugins/xfce4-weather-plugin/-/issues/2#note_57817">bug report</a>.
 </p>
+<h3><span class="mw-headline" id="Wayland_support_not_working">Wayland support not working</span></h3>
+<p>If you are trying to get Xfce working with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/Wayfire/">Wayfire</a></span><sup><small>AUR</small></sup>, additional editing must be done to the session files to make it work. 
+</p>
+<p>If not, make sure you have labwc installed. 
+</p>
+<h3><span class="mw-headline" id="Could_not_toggle_guake_dropdown_in_Wayland_mode">Could not toggle guake dropdown in Wayland mode</span></h3>
+<p>If <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=guake">guake</a></span> loses focus while hidden in Wayland mode, it may no longer be possible to call the dropdown using your assigned key chord. As a workaround you may create a launcher in the panel to link to the program <i>guake-toggle</i>, a utility installed alongside guake that was meant to work around this exact issue int the early days of Wayland. It may be possible to edit <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=labwc">labwc</a></span>'s settings to map your key chord of choice to the guake-toggle utility.
+</p>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul>
 <li><a rel="nofollow" class="external text" href="https://docs.xfce.org/">Xfce - Documentation</a></li>
@@ -1411,8 +1451,8 @@ Unable to determine failsafe session name.  Possible causes: xfconfd is not runn
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Xfce&amp;oldid=820558">https://wiki.archlinux.org/index.php?title=Xfce&amp;oldid=820558</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 11 November 2024, at 12:19.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Xfce&amp;oldid=824246">https://wiki.archlinux.org/index.php?title=Xfce&amp;oldid=824246</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 29 December 2024, at 16:09.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

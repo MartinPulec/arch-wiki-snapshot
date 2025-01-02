@@ -5,7 +5,7 @@
 <title>Solid state drive - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -104,6 +104,15 @@
 			</a>
 			
 			<ul id="toc-dm-crypt-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-swap" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#swap">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">1.1.6</span>swap</div>
+			</a>
+			
+			<ul id="toc-swap-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -524,7 +533,7 @@
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td>
-<a rel="nofollow" class="external autonumber" href="https://xfs.org/index.php/FITRIM/discard">[8]</a><sup title="Last check status: SSL error">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-10-12 ⓘ]</sup>
+<a rel="nofollow" class="external autonumber" href="https://xfs.org/index.php/FITRIM/discard">[8]</a>
 </td>
 </tr>
 <tr>
@@ -594,6 +603,22 @@
 </div>
 <p>Follow the instructions in <a href="../en/Dm-crypt/Specialties.html#Discard/TRIM_support_for_solid_state_drives_(SSD)" title="Dm-crypt/Specialties">dm-crypt/Specialties#Discard/TRIM support for solid state drives (SSD)</a> to enable discard support.
 </p>
+<h4><span class="mw-headline" id="swap">swap</span></h4>
+<p>To activate discard for the swap space, use:
+</p>
+<pre># swapon --discard
+</pre>
+<p>See <span class="plainlinks archwiki-template-man" title="$ man 8 swapon"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/swapon.8">swapon(8)</a></span> for the discussion on <code>discard=once</code> or <code>discard=pages</code>.
+</p>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
+<div>
+<b>Reason:</b> Is discard automatically enabled when using <a href="../en/Systemd.html#GPT_partition_automounting" title="Systemd">Systemd#GPT partition automounting</a> ? (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Solid_state_drive.html">Talk:Solid state drive</a>)</div>
+</div> 
+<p>To enable discard when booting, add <code>discard</code> to the options in <a href="../en/Fstab.html" title="Fstab">fstab</a> for the swap device.
+</p>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning:</strong> Enabling discard on RAID setups using mdadm will cause system lockup on boot and during runtime, if using swapon.</div>
 <h3><span class="mw-headline" id="Maximizing_performance">Maximizing performance</span></h3>
 <p>Follow the tips in <a href="../en/Improving_performance.html#Storage_devices" title="Improving performance">Improving performance#Storage devices</a> to maximize the performance of your drives.
 </p>
@@ -773,7 +798,7 @@ See the following web page for firmware updates:
 <h3><span class="mw-headline" id="Intel">Intel</span></h3>
 <p>Intel has a Linux live system based <a rel="nofollow" class="external text" href="https://downloadcenter.intel.com/download/18363">Firmware Update Tool</a> for operating systems that are not compatible with its Windows <a rel="nofollow" class="external text" href="https://downloadcenter.intel.com/download/30380/">Intel® Memory and Storage Tool (GUI)</a> software.
 </p>
-<p>There is also a newer Linux command-line utility that can reflash firmware called the <a rel="nofollow" class="external text" href="https://downloadcenter.intel.com/download/29337/Intel-Memory-and-Storage-Tool-CLI-Command-Line-Interface-?product=83425">Intel Memory and Storage (MAS) Tool</a> available as <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/intel-mas-cli-tool/">intel-mas-cli-tool</a></span><sup><small>AUR</small></sup>.  There is a <a rel="nofollow" class="external text" href="https://downloadmirror.intel.com/646992/CLI-Intel-MAS-1.10-User-Guide-Public-342245-011US.pdf">PDF user guide</a><sup title="Last check status: 403">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-07-30 ⓘ]</sup> available.
+<p>There is also a newer Linux command-line utility that can reflash firmware called the <a rel="nofollow" class="external text" href="https://downloadcenter.intel.com/download/29337/Intel-Memory-and-Storage-Tool-CLI-Command-Line-Interface-?product=83425">Intel Memory and Storage (MAS) Tool</a> available as <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/intel-mas-cli-tool/">intel-mas-cli-tool</a></span><sup><small>AUR</small></sup>.  There is a <a rel="nofollow" class="external text" href="https://downloadmirror.intel.com/822151/342329_CLI_IMAS_Tool_Install_Guide_Public_Rev011US.pdf">PDF user guide</a> available.
 </p>
 <p>An example for checking the firmware status is:
 </p>
@@ -903,7 +928,7 @@ FirmwareUpdateAvailable : The selected Intel SSD contains current firmware as o
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Storage.html" title="Category:Storage">Storage</a></li></ul>
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
-<li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li>
 </ul>
 </div>
@@ -916,8 +941,8 @@ FirmwareUpdateAvailable : The selected Intel SSD contains current firmware as o
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Solid_state_drive&amp;oldid=819870">https://wiki.archlinux.org/index.php?title=Solid_state_drive&amp;oldid=819870</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 30 October 2024, at 02:32.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Solid_state_drive&amp;oldid=824216">https://wiki.archlinux.org/index.php?title=Solid_state_drive&amp;oldid=824216</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 28 December 2024, at 19:16.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

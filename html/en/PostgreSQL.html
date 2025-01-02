@@ -5,7 +5,7 @@
 <title>PostgreSQL - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -270,7 +270,7 @@
 		<li id='toc-WARNING:_database_"postgres"_has_a_collation_version_mismatch' class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href='#WARNING:_database_"postgres"_has_a_collation_version_mismatch'>
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">9.4</span>WARNING:  database "postgres" has a collation version mismatch</div>
+				<span class="vector-toc-numb">9.4</span>WARNING: database "postgres" has a collation version mismatch</div>
 			</a>
 			
 			<ul id='toc-WARNING:_database_"postgres"_has_a_collation_version_mismatch-sublist' class="vector-toc-list">
@@ -388,7 +388,7 @@
 <li>If your data directory resides on a file system without data checksumming, you may wish to enable PostgreSQL's built-in <a rel="nofollow" class="external text" href="https://www.postgresql.org/docs/current/checksums.html">checksumming</a> for increased integrity guarantees - add the <code>--data-checksums</code> argument to do so. Read <a href="#Enable_data_checksumming">#Enable data checksumming</a> for more information. (Once the database is up, you can check if it is enabled with <code>[postgres]$ psql --tuples-only -c "SHOW data_checksums"</code>.)</li>
 </ul>
 <dl><dd><div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> The <code>/var/lib/postgres/data/</code> directory has the NO_COW <code>C</code> attribute set. <a rel="nofollow" class="external autonumber" href="https://gitlab.archlinux.org/archlinux/packaging/packages/postgresql/-/blob/main/postgresql.tmpfiles#L3">[2]</a> This <a rel="nofollow" class="external text" href="https://unix.stackexchange.com/a/316797">disables checksumming</a> in <a href="../en/Btrfs.html" title="Btrfs">Btrfs</a>.</div></dd></dl>
+<strong>Note:</strong> The <code>/var/lib/postgres/data/</code> directory has the <code>C</code> (<code>No_COW</code>) <a href="../en/File_permissions_and_attributes.html#File_attributes" class="mw-redirect" title="File attribute">file attribute</a> set. <a rel="nofollow" class="external autonumber" href="https://gitlab.archlinux.org/archlinux/packaging/packages/postgresql/-/blob/main/postgresql.tmpfiles#L3">[2]</a> This <a rel="nofollow" class="external text" href="https://unix.stackexchange.com/a/316797">disables checksumming</a> in <a href="../en/Btrfs.html" title="Btrfs">Btrfs</a>.</div></dd></dl>
 <ul>
 <li>The <i>trust</i> authentication method is used by default, meaning that anyone on the host can connect as any database user. You can use <code>--auth-local=peer --auth-host=scram-sha-256</code> for safer authentication methods.</li>
 <li>The <code>-c</code>/<code>--set</code> option can be used to set any <code>postgresql.conf</code> parameter avoiding the need to manually edit <code>postgresql.conf</code>.</li>
@@ -553,13 +553,19 @@ After this you should <a href="../en/Help:Reading.html#Control_of_systemd_units"
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/var/lib/postgres/data/pg_hba.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># TYPE  DATABASE        USER            ADDRESS                 METHOD
 # IPv4 local connections:
-host    all             all             <i>ip_address</i>/32   md5</pre>
+host    all             all             <i>ip_address</i>/32           scram-sha-256</pre>
 <p>where <code><i>ip_address</i></code> is the IP address of the remote client.
 </p>
 <p>See the documentation for <a rel="nofollow" class="external text" href="https://www.postgresql.org/docs/current/static/auth-pg-hba-conf.html">pg_hba.conf</a>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> Neither sending your plain password nor the md5 hash (used in the example above) over the Internet is secure if it is not done over an SSL-secured connection. See <a rel="nofollow" class="external text" href="https://www.postgresql.org/docs/current/static/ssl-tcp.html">Secure TCP/IP Connections with SSL</a> for how to configure PostgreSQL with SSL.</div>
+<strong>Note:</strong> 
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
+<div>
+<b>Reason:</b> The <a rel="nofollow" class="external text" href="https://www.postgresql.org/docs/current/auth-password.html">official documentation</a> says that <code>md5</code> uses challenge-response authentication which "prevents password sniffing". Perhaps it should not be considered as insecure as sending the password in clear-text. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:PostgreSQL.html">Talk:PostgreSQL</a>)</div>
+</div>
+Neither sending your plain password nor the md5 hash over the Internet is secure if it is not done over an SSL-secured connection. See <a rel="nofollow" class="external text" href="https://www.postgresql.org/docs/current/static/ssl-tcp.html">Secure TCP/IP Connections with SSL</a> for how to configure PostgreSQL with SSL.</div>
 <p>After this you should <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Restart">restart</a> <code>postgresql.service</code> for the changes to take effect.
 </p>
 <p>For troubleshooting take a look in the server log file:
@@ -692,6 +698,11 @@ template1 | postgres | UTF8      | C         | C     |
 <dl><dd>
 <a rel="nofollow" class="external free" href="https://github.com/paxa/postbird">https://github.com/paxa/postbird</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/postbird-bin/">postbird-bin</a></span><sup><small>AUR</small></sup>
 </dd></dl>
+<ul><li>
+<b>rainfrog</b> — Database management TUI for Postgres</li></ul>
+<dl><dd>
+<a rel="nofollow" class="external free" href="https://github.com/achristmascarl/rainfrog">https://github.com/achristmascarl/rainfrog</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=rainfrog">rainfrog</a></span>
+</dd></dl>
 <p>For tools supporting multiple DBMSs, see <a href="../en/List_of_applications/Documents.html#Database_tools" title="List of applications/Documents">List of applications/Documents#Database tools</a>.
 </p>
 <h2><span class="mw-headline" id="Set_up_backups">Set up backups</span></h2>
@@ -806,7 +817,7 @@ template1 | postgres | UTF8      | C         | C     |
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> This is a very dirty solution that may break or cause data loss in the database, so keep a backup.</div>
 <h3>
-<span id="WARNING:_database_.22postgres.22_has_a_collation_version_mismatch"></span><span class="mw-headline" id='WARNING:_database_"postgres"_has_a_collation_version_mismatch'>WARNING:  database "postgres" has a collation version mismatch</span>
+<span id="WARNING:_database_.22postgres.22_has_a_collation_version_mismatch"></span><span class="mw-headline" id='WARNING:_database_"postgres"_has_a_collation_version_mismatch'>WARNING: database "postgres" has a collation version mismatch</span>
 </h3>
 <p>You might see something like this:
 </p>
@@ -833,6 +844,7 @@ HINT:  Rebuild all objects in this database that use the default collation and r
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
 <li><a href="../en/Category:Pages_with_broken_package_links.html" title="Category:Pages with broken package links">Pages with broken package links</a></li>
 </ul>
 </div>
@@ -845,8 +857,8 @@ HINT:  Rebuild all objects in this database that use the default collation and r
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PostgreSQL&amp;oldid=821750">https://wiki.archlinux.org/index.php?title=PostgreSQL&amp;oldid=821750</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 29 November 2024, at 22:50.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PostgreSQL&amp;oldid=824302">https://wiki.archlinux.org/index.php?title=PostgreSQL&amp;oldid=824302</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 30 December 2024, at 18:50.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

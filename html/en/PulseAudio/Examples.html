@@ -5,7 +5,7 @@
 <title>PulseAudio/Examples - ArchWiki</title>
 <link rel="stylesheet" href="../../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -967,8 +967,8 @@ LABEL="pulseaudio_end"
 <h2><span class="mw-headline" id="Simultaneous_HDMI_and_analog_output">Simultaneous HDMI and analog output</span></h2>
 <p>PulseAudio allows for simultaneous output to multiple sources.  In this example, some applications are configured to use HDMI while others are configured to use analog.  Multiple applications are able to receive audio at the same time. (<i>aplay</i> is from the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=alsa-utils">alsa-utils</a></span> package.)
 </p>
-<pre>$ aplay -l
-**** List of PLAYBACK Hardware Devices ****
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ aplay -l</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">**** List of PLAYBACK Hardware Devices ****
 card 0: Intel [HDA Intel], device 0: ALC889A Analog [ALC889A Analog]
   Subdevices: 0/1
   Subdevice #0: subdevice #0
@@ -977,19 +977,20 @@ card 0: Intel [HDA Intel], device 1: ALC889A Digital [ALC889A Digital]
   Subdevice #0: subdevice #0
 card 0: Intel [HDA Intel], device 3: HDMI 0 [HDMI 0]
   Subdevices: 0/1
-  Subdevice #0: subdevice #0</pre>
+  Subdevice #0: subdevice #0
+</pre>
 <p>Or by using the <i>pacmd</i> command: 
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ pacmd list-sinks  | grep -e 'name:'  -e 'alsa.device ' -e 'alsa.subdevice '</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">	name: &lt;alsa_output.pci-0000_00_1b.0.analog-stereo&gt;
-		alsa.subdevice = "0"
-		alsa.device = "0"</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ pacmd list-sinks | grep -e 'name:' -e 'alsa.card ' -e 'alsa.device '</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">name: &lt;alsa_output.pci-0000_00_1b.0.analog-stereo&gt;
+		alsa.device = "0"
+		alsa.card = "0"</pre>
 <p>The key to a configuration like this is to understand that whatever is selected in pavucontrol under <i>Configuration &gt; Internal Audio</i> is the default device. Load <i>pavucontrol &gt; Configuration</i> and select HDMI as the profile. 
 </p>
 <p>To setup the analog device as a secondary source, add the following to the <code>/etc/pulse/default.pa</code> configuration at the beginning, before any other modules are loaded: 
 </p>
 <pre>### Load analog device
-load-module module-alsa-sink device=hw:0,0
+load-module module-alsa-sink device=hw:<i>card</i>,<i>device</i>
 load-module module-combine-sink sink_name=combined
 set-default-sink combined
 </pre>
@@ -1116,6 +1117,8 @@ sudo -u "$USER_NAME" pactl --server "$PULSE_SERVER" set-card-profile 0 output:$A
 </pre>
 <p>A reboot might be required.
 </p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> The udev rule may not work if <a href="../../en/NVIDIA.html#fbdev" title="NVIDIA">NVIDIA#fbdev</a> is enabled. <a rel="nofollow" class="external autonumber" href="https://forums.developer.nvidia.com/t/545-29-06-no-udev-events/278697">[1]</a> You can check this by running <code>udevadm monitor</code> and trying to connect or disconnect the HDMI cable. If this command does not show any events, add the <code>fbdev=0</code> <a href="../../en/Kernel_module.html#Setting_module_options" class="mw-redirect" title="Kernel module parameter">kernel module parameter</a> for the <code>nvidia_drm</code> module.</div>
 <h2><span class="mw-headline" id="Surround_sound_systems">Surround sound systems</span></h2>
 <p>Many people have a surround sound card, but have speakers for just two channels, so PulseAudio cannot really default to a surround sound setup. To enable all of the channels, edit <code>/etc/pulse/daemon.conf</code>: uncomment the default-sample-channels line (i.e. remove the semicolon from the beginning of the line) and set the value to <b>6</b>. For a <i>5.1</i> setup, or <b>8</b> for a <i>7.1</i> setup etc.
 </p>
@@ -1276,7 +1279,7 @@ It will also downmix any audio to stereo for the stereo sink, but will not touch
 <h3>
 <span id="Using_RTP.2FUDP_instead_of_native-protocol-tcp"></span><span class="mw-headline" id="Using_RTP/UDP_instead_of_native-protocol-tcp">Using RTP/UDP instead of native-protocol-tcp</span>
 </h3>
-<p>There are serious issues with trying to send data in real time over TCP, especially over lossy connections like wifi. This is why <a href="https://en.wikipedia.org/wiki/Real-time_Transport_Protocol" class="extiw" title="wikipedia:Real-time Transport Protocol">RTP over UDP</a> was invented. It can be used to increase reliability and reduce latency.
+<p>There are serious issues with trying to send data in real time over TCP, especially over lossy connections like Wi-Fi. This is why <a href="https://en.wikipedia.org/wiki/Real-time_Transport_Protocol" class="extiw" title="wikipedia:Real-time Transport Protocol">RTP over UDP</a> was invented. It can be used to increase reliability and reduce latency.
 </p>
 <p>When RTP is working properly, late or dropped packets will just create a few milliseconds of silence instead of a long pause while TCP is orchestrating the packet resend logistics. As an added bonus, if the remote server is ever restarted, the connection will be re-established automatically.  However there will no longer be a way to remotely control the server's master volume, with each client machine having its own independent master volume instead.
 </p>
@@ -1288,7 +1291,7 @@ It will also downmix any audio to stereo for the stereo sink, but will not touch
 </p>
 <pre>load-module module-rtp-recv latency_msec=10 sap_address=0.0.0.0
 </pre>
-<p><code>sap_address=0.0.0.0</code> is important to prevent pulseaudio from trying to use multicast, which <a rel="nofollow" class="external text" href="https://datatracker.ietf.org/doc/html/draft-mcbride-mboned-wifi-mcast-problem-statement-01.html#section-1">doesn't work at all over wifi</a>. Use <code>latency_msec</code> to tune the receiving buffer size on the remote end. If you find the audio is spotty, try increasing this number. If you care more about latency, try decreasing it. Restart the remote server to cause the changes to take effect.
+<p><code>sap_address=0.0.0.0</code> is important to prevent pulseaudio from trying to use multicast, which <a rel="nofollow" class="external text" href="https://datatracker.ietf.org/doc/html/draft-mcbride-mboned-wifi-mcast-problem-statement-01.html#section-1">doesn't work at all over Wi-Fi</a>. Use <code>latency_msec</code> to tune the receiving buffer size on the remote end. If you find the audio is spotty, try increasing this number. If you care more about latency, try decreasing it. Restart the remote server to cause the changes to take effect.
 </p>
 <p>To configure the local pulseaudio server, add the following to <code>/etc/pulse/default.pa</code>:
 </p>
@@ -1590,7 +1593,7 @@ $ pulseaudio --start
 <p><a rel="nofollow" class="external text" href="https://www.freedesktop.org/wiki/Software/PulseAudio/FAQ/#index34h3">Pulseaudio FAQ: How can I reverse my left and right speaker channels?</a>
 </p>
 <h3><span class="mw-headline" id="Using_default.pa">Using default.pa</span></h3>
-<p>Another approach to swapping channels is suggested in <a rel="nofollow" class="external autonumber" href="https://superuser.com/a/144252">[1]</a>:
+<p>Another approach to swapping channels is suggested in <a rel="nofollow" class="external autonumber" href="https://superuser.com/a/144252">[2]</a>:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.config/pulse/default.pa</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">#!/usr/bin/pulseaudio -nF
@@ -1961,7 +1964,7 @@ pactl load-module module-loopback latency_msec=60 adjust_time=6 source=sink_fx.m
 <p>Using <code>module-remap-source</code> to work around applications that do not accept a monitor as source is taken from <a rel="nofollow" class="external free" href="https://unix.stackexchange.com/a/608482">https://unix.stackexchange.com/a/608482</a> .
 </p>
 <h2><span class="mw-headline" id="Invert_phase_of_one_audio_channel">Invert phase of one audio channel</span></h2>
-<p>This is useful for compensating when one of your speakers is wired with the wrong polarity. To test if this is needed, see <a rel="nofollow" class="external autonumber" href="https://www.audiocheck.net/audiotests_polaritycheck.php">[2]</a>.
+<p>This is useful for compensating when one of your speakers is wired with the wrong polarity. To test if this is needed, see <a rel="nofollow" class="external autonumber" href="https://www.audiocheck.net/audiotests_polaritycheck.php">[3]</a>.
 </p>
 <p>Adapted from a more general example of <a rel="nofollow" class="external text" href="https://askubuntu.com/a/194345">Assigning a LADSPA filter to a single audio channel</a>.
 Requires <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=swh-plugins">swh-plugins</a></span>.
@@ -2026,8 +2029,8 @@ If you change the default sink, the new default sink will be used on command rel
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PulseAudio/Examples&amp;oldid=815668">https://wiki.archlinux.org/index.php?title=PulseAudio/Examples&amp;oldid=815668</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 31 August 2024, at 21:42.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PulseAudio/Examples&amp;oldid=822569">https://wiki.archlinux.org/index.php?title=PulseAudio/Examples&amp;oldid=822569</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 8 December 2024, at 21:25.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

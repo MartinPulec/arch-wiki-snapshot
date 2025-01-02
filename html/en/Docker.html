@@ -5,7 +5,7 @@
 <title>Docker - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -582,7 +582,7 @@
 <p>If you want to be able to run the <code>docker</code> CLI command as a non-root user, add your user to the <code>docker</code> <a href="../en/Users_and_groups.html#Group_management" class="mw-redirect" title="User group">user group</a>, re-login and restart <code>docker.service</code>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> Anyone added to the <code>docker</code> group is root equivalent because they can use the <code>docker run --privileged</code> command to start containers with root privileges. For more information see <a rel="nofollow" class="external autonumber" href="https://github.com/docker/docker/issues/9976">[3]</a> and <a rel="nofollow" class="external autonumber" href="https://docs.docker.com/engine/security/security/">[4]</a>.</div>
+<strong>Warning:</strong> Anyone added to the <code>docker</code> group is root equivalent because they can use the <code>docker run --privileged</code> command to start containers with root privileges. For more information see <a rel="nofollow" class="external autonumber" href="https://github.com/moby/moby/issues/9976">[3]</a> and <a rel="nofollow" class="external autonumber" href="https://docs.docker.com/engine/security/security/">[4]</a>.</div>
 <p>If you plan to build container images using Docker, install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=docker-buildx">docker-buildx</a></span> to use the current builder instead of the deprecated legacy builder.
 </p>
 <h3><span class="mw-headline" id="Docker_Compose">Docker Compose</span></h3>
@@ -595,14 +595,16 @@
 </p>
 <p>Also, to run <a rel="nofollow" class="external text" href="https://www.docker.com/products/docker-desktop/">Docker Desktop</a> you will need to ensure the <a rel="nofollow" class="external text" href="https://docs.docker.com/desktop/install/linux-install/">Linux system requirements</a>, including  virtualization support via <a href="../en/KVM.html" title="KVM">KVM</a>. To see a tray icon under Gnome, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=gnome-shell-extension-appindicator">gnome-shell-extension-appindicator</a></span> will be needed.
 </p>
-<p>Finally, file sharing support requires mapping user and group ids via <code>/etc/subuid</code> and <code>/etc/subgid</code>. See the <a rel="nofollow" class="external text" href="https://docs.docker.com/desktop/faqs/linuxfaqs/#how-do-i-enable-file-sharing">Docker Desktop For Linux File Sharing instructions</a> for more details.
+<p>Finally, file sharing support requires mapping user and group ids via <code>/etc/subuid</code> and <code>/etc/subgid</code>. See the <a rel="nofollow" class="external text" href="https://docs.docker.com/get-started/docker-concepts/running-containers/sharing-local-files/">Docker Desktop For Linux File Sharing instructions</a> for more details.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> Docker Desktop on Linux runs a Virtual Machine (VM) which creates and uses a custom docker context, desktop-linux, on startup. This means images and containers deployed on the Linux Docker Engine (before installation) are not available in Docker Desktop for Linux.<a rel="nofollow" class="external autonumber" href="https://docs.docker.com/desktop/install/linux-install/">[6]</a>
-<p>For more information see <a rel="nofollow" class="external text" href="https://docs.docker.com/desktop/faqs/linuxfaqs/#what-is-the-difference-between-docker-desktop-for-linux-and-docker-engine">What is the difference between Docker Desktop for Linux and Docker Engine</a>.
+<p>For more information see <a rel="nofollow" class="external text" href="https://docs.docker.com/desktop/setup/install/linux/">What is the difference between Docker Desktop for Linux and Docker Engine</a>.
 </p>
 </div>
 <p>Furthermore, expect degraded performance and higher cpu usage when using Docker Desktop on Linux.
+</p>
+<p>By default, Docker Desktop enables a user-level systemd service that starts the application automatically on boot. Disabling the "Autostart" setting in the Docker Desktop dashboard <a rel="nofollow" class="external text" href="https://github.com/docker/desktop-linux/issues/182">does not</a> prevent this service from starting.
 </p>
 <h3><span class="mw-headline" id="Front-ends">Front-ends</span></h3>
 <ul><li>
@@ -682,7 +684,7 @@
 <p>It is possible to configure the Daemon to additionally listen on a TCP socket, which can allow remote Docker API access from other computers. <a rel="nofollow" class="external autonumber" href="https://docs.docker.com/engine/install/linux-postinstall/#allow-access-to-the-remote-api-through-a-firewall">[7]</a> This can be useful for allowing <code>docker</code> commands on a host machine to access the Docker daemon on a Linux virtual machine, such as an Arch virtual machine on a Windows or macOS system.
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> The Docker API is unencrypted and unauthenticated by default. Remote TCP access to the Docker daemon is equivalent to unsecured remote root access unless <a rel="nofollow" class="external text" href="https://docs.docker.com/engine/security/protect-access/">additional production using SSH or TLS is also enabled</a>.</div>
+<strong>Warning:</strong> The Docker API is unencrypted and unauthenticated by default. Remote TCP access to the Docker daemon is equivalent to unsecured remote root access unless <a rel="nofollow" class="external text" href="https://docs.docker.com/engine/security/protect-access/">additional protection using SSH or TLS is also enabled</a>.</div>
 <p>Note that the default <code>docker.service</code> file sets the <code>-H</code> flag by default, and Docker will not start if an option is present in both the flags and <code>/etc/docker/daemon.json</code> file. Therefore, the simplest way to change the socket settings is with a drop-in file, such as the following which adds a TCP socket on port 2376:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/docker.service.d/docker.conf</pre>
@@ -734,7 +736,7 @@ ExecStart=/usr/bin/dockerd -H unix:///var/run/docker.sock -H tcp://0.0.0.0:2376<
 <p>Restart <code>docker.service</code> to apply changes.
 </p>
 <h3><span class="mw-headline" id="IPv6">IPv6</span></h3>
-<p>In order to enable IPv6 support in Docker, you will need to do a few things. See <a rel="nofollow" class="external autonumber" href="https://github.com/docker/docker.github.io/blob/c0eb65aabe4de94d56bbc20249179f626df5e8c3/engine/userguide/networking/default_network/ipv6.md">[8]</a> and <a rel="nofollow" class="external autonumber" href="https://github.com/moby/moby/issues/36954">[9]</a> for details.
+<p>In order to enable IPv6 support in Docker, you will need to do a few things. See <a rel="nofollow" class="external autonumber" href="https://github.com/moby/moby.github.io/blob/c0eb65aabe4de94d56bbc20249179f626df5e8c3/engine/userguide/networking/default_network/ipv6.md">[8]</a> and <a rel="nofollow" class="external autonumber" href="https://github.com/moby/moby/issues/36954">[9]</a> for details.
 </p>
 <p>Firstly, enable the <code>ipv6</code> setting in <code>/etc/docker/daemon.json</code> and set a specific IPv6 subnet. In this case, we will use the private <code>fd00::/80</code> subnet. Make sure to use a subnet at least 80 bits as this allows a container's IPv6 to end with the container's MAC address which allows you to mitigate NDP neighbor cache invalidation issues.
 </p>
@@ -1008,18 +1010,18 @@ default * docker
 <p>You can use the following <code>Dockerfile</code> to build a custom Arch Linux image with CUDA. It uses the <a rel="nofollow" class="external text" href="https://github.com/moby/buildkit/blob/master/frontend/dockerfile/docs/syntax.md">Dockerfile frontend syntax 1.2</a> to cache pacman packages on the host. The <code>DOCKER_BUILDKIT=1</code> <a href="../en/Environment_variables.html" class="mw-redirect" title="Environment variable">environment variable</a> must be set on the client before building the Docker image.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">Dockerfile</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># syntax = docker/dockerfile:1.2
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># syntax=docker/dockerfile:1.2
 
-FROM archlinux
+FROM archlinux:base-devel
 
-# install packages
+# Install packages
 RUN --mount=type=cache,sharing=locked,target=/var/cache/pacman \
-    pacman -Syu --noconfirm --needed base base-devel cuda
+    pacman -Syu --noconfirm --needed cuda
 
-# configure nvidia container runtime
-# https://github.com/NVIDIA/nvidia-container-runtime#environment-variables-oci-spec
-ENV NVIDIA_VISIBLE_DEVICES all
-ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
+# Configure nvidia container runtime
+# https://github.com/NVIDIA/nvidia-container-toolkit/tree/main/cmd/nvidia-container-runtime#environment-variables-oci-spec
+ENV NVIDIA_VISIBLE_DEVICES=all
+ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility
 </pre>
 <h2><span class="mw-headline" id="Remove_Docker_and_images">Remove Docker and images</span></h2>
 <p>In case you want to remove Docker entirely you can do this by following  the steps below:
@@ -1099,11 +1101,16 @@ TasksMax=infinity
 <p>For more background, look for <code>DefaultLimitNPROC</code> at <span class="plainlinks archwiki-template-man" title="$ man 5 systemd-system.conf"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-system.conf.5#OPTIONS">systemd-system.conf(5) § OPTIONS</a></span>. And for <code>TasksMax</code> at <span class="plainlinks archwiki-template-man" title="$ man 5 systemd.resource-control"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd.resource-control.5#OPTIONS">systemd.resource-control(5) § OPTIONS</a></span>.
 </p>
 <h3><span class="mw-headline" id="Error_initializing_graphdriver:_devmapper">Error initializing graphdriver: devmapper</span></h3>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-cut.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is being considered for removal.</b></p>
+<div>
+<b>Reason:</b> (1) Removing the data directory is extremely hacky and bad (2) The device mapper has been deprecated per the linked issue (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Docker.html">Talk:Docker</a>)</div>
+</div>
 <p>If <i>systemctl</i> fails to start docker and provides an error:
 </p>
 <pre>Error starting daemon: error initializing graphdriver: devmapper: Device docker-8:2-915035-pool is not a thin pool
 </pre>
-<p>Then, try the following steps to resolve the error. Stop the service, back up <code>/var/lib/docker/</code> (if desired), remove the contents of <code>/var/lib/docker/</code>, and try to start the service. See the open <a rel="nofollow" class="external text" href="https://github.com/docker/docker/issues/21304">GitHub issue</a> for details.
+<p>Then, try the following steps to resolve the error. Stop the service, back up <code>/var/lib/docker/</code> (if desired), remove the contents of <code>/var/lib/docker/</code>, and try to start the service. See <a rel="nofollow" class="external free" href="https://github.com/moby/moby/issues/21304">https://github.com/moby/moby/issues/21304</a> for details.
 </p>
 <h3>
 <span id="Failed_to_create_some.2Fpath.2Fto.2Ffile:_No_space_left_on_device"></span><span class="mw-headline" id="Failed_to_create_some/path/to/file:_No_space_left_on_device">Failed to create some/path/to/file: No space left on device</span>
@@ -1263,9 +1270,7 @@ $ docker run cr.example.com/nginx:1.19.3
 <li><a rel="nofollow" class="external text" href="https://docs.docker.com/engine/installation/linux/archlinux/">Arch Linux on docs.docker.com</a></li>
 <li>
 <a rel="nofollow" class="external text" href="https://opensource.com/business/14/7/docker-security-selinux">Are Docker containers really secure?</a> — opensource.com</li>
-<li>
-<a rel="nofollow" class="external text" href="https://awesome-docker.netlify.com/">Awesome Docker</a><sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-07-30 ⓘ]</sup>
-</li>
+<li><a rel="nofollow" class="external text" href="https://github.com/veggiemonk/awesome-docker">Awesome Docker</a></li>
 <li><a rel="nofollow" class="external text" href="https://www.trendmicro.com/en_us/research/19/l/why-running-a-privileged-container-in-docker-is-a-bad-idea.html">Why A Privileged Container in Docker Is a Bad Idea</a></li>
 </ul>
 </div>
@@ -1281,6 +1286,7 @@ $ docker run cr.example.com/nginx:1.19.3
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Out_of_date.html" title="Category:Pages or sections flagged with Template:Out of date">Pages or sections flagged with Template:Out of date</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
 <li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li>
+<li><a href="../en/Category:Sections_flagged_with_Template:Remove.html" title="Category:Sections flagged with Template:Remove">Sections flagged with Template:Remove</a></li>
 </ul>
 </div>
 </div>
@@ -1292,8 +1298,8 @@ $ docker run cr.example.com/nginx:1.19.3
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Docker&amp;oldid=819459">https://wiki.archlinux.org/index.php?title=Docker&amp;oldid=819459</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 23 October 2024, at 05:40.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Docker&amp;oldid=824202">https://wiki.archlinux.org/index.php?title=Docker&amp;oldid=824202</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 28 December 2024, at 16:10.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

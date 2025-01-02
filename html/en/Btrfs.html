@@ -5,7 +5,7 @@
 <title>Btrfs - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -808,7 +808,7 @@ Make sure that the data are not used during this process. Also note that <code>m
 <pre># btrfs filesystem defragment -r -v -czstd /
 </pre>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong>  Defragmenting a file which has a COW copy (either a snapshot copy or one made with <code>cp</code> or bcp) plus using the <code>-c</code> switch with a compression algorithm may result in two unrelated files effectively increasing the disk usage.</div>
+<strong>Warning:</strong> Defragmenting a file which has a COW copy (either a snapshot copy or one made with <code>cp</code> or bcp) plus using the <code>-c</code> switch with a compression algorithm may result in two unrelated files effectively increasing the disk usage.</div>
 <p>To enable compression when installing Arch to an empty Btrfs partition, use the <code>compress</code> option when <a href="../en/File_systems.html#Mount_a_file_system" class="mw-redirect" title="Mounting">mounting</a> the file system: <code>mount -o compress=zstd /dev/sd<i>xY</i> /mnt/</code>. During configuration, add <code>compress=zstd</code> to the mount options of the root file system in <a href="../en/Fstab.html" title="Fstab">fstab</a>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
@@ -874,7 +874,7 @@ Make sure that the data are not used during this process. Also note that <code>m
 <p>See <span class="plainlinks archwiki-template-man" title="$ man 5 btrfs"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/btrfs.5">btrfs(5)</a></span> for a full list of Btrfs-specific mount options.
 </p>
 <h4><span class="mw-headline" id="Mounting_subvolume_as_root">Mounting subvolume as root</span></h4>
-<p>To use a subvolume as the root mountpoint, either make it the <a href="#Changing_the_default_sub-volume">default subvolume</a>, or specify the subvolume via a <a href="../en/Kernel_parameters.html#Configuration" title="Kernel parameters">kernel parameter</a> using <code>rootflags=subvol=<i>/path/to/subvolume</i></code>. Edit the root mountpoint in <code>/etc/fstab</code> and specify the mount option <code>subvol=</code>. Alternatively, the subvolume can be specified with its id, <code>rootflags=subvolid=<i>objectid</i></code> as kernel parameter and <code>subvolid=<i>objectid</i></code> as mount option in <code>/etc/fstab</code>. It is preferable to mount using <code>subvol=<i>/path/to/subvolume</i></code>, rather than the subvolid, as the subvolid may change when restoring <a href="#Snapshots">#Snapshots</a>, requiring a change of mount configuration, or else the system will not boot.
+<p>To use a subvolume as the root mountpoint, either make it the <a href="#Changing_the_default_sub-volume">default subvolume</a>, or specify the subvolume via a <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a> using <code>rootflags=subvol=<i>/path/to/subvolume</i></code>. Edit the root mountpoint in <code>/etc/fstab</code> and specify the mount option <code>subvol=</code>. Alternatively, the subvolume can be specified with its id, <code>rootflags=subvolid=<i>objectid</i></code> as kernel parameter and <code>subvolid=<i>objectid</i></code> as mount option in <code>/etc/fstab</code>. It is preferable to mount using <code>subvol=<i>/path/to/subvolume</i></code>, rather than the subvolid, as the subvolid may change when restoring <a href="#Snapshots">#Snapshots</a>, requiring a change of mount configuration, or else the system will not boot.
 </p>
 <h4><span class="mw-headline" id="Changing_the_default_sub-volume">Changing the default sub-volume</span></h4>
 <p>The default sub-volume is mounted if no <code>subvol=</code> mount option is provided. To change the default subvolume, do:
@@ -1065,7 +1065,7 @@ To show usage and limits for a given path within a file system, use
 <h3><span class="mw-headline" id="Deduplication">Deduplication</span></h3>
 <p>Using copy-on-write, Btrfs is able to copy files or whole subvolumes without actually copying the data. However, whenever a file is altered, a new <i>proper</i> copy is created. Deduplication takes this a step further by actively identifying blocks of data which share common sequences and combining them into an extent with the same copy-on-write semantics.
 </p>
-<p>Tools dedicated to deduplicate a Btrfs formatted partition include <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=duperemove">duperemove</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=bees">bees</a></span>. One may also want to merely deduplicate data on a file based level instead using e.g. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=rmlint">rmlint</a></span><sup>[<a href="../en/Help:Procedures.html#Fix_broken_package_links" title="Help:Procedures">broken link</a>: package not found]</sup>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=rdfind">rdfind</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/jdupes/">jdupes</a></span><sup><small>AUR</small></sup> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/dduper-git/">dduper-git</a></span><sup><small>AUR</small></sup>. For an overview of available features of those programs and additional information, have a look at the <a rel="nofollow" class="external text" href="https://btrfs.readthedocs.io/en/latest/Deduplication.html">upstream Wiki entry</a>.
+<p>Tools dedicated to deduplicate a Btrfs formatted partition include <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=duperemove">duperemove</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=bees">bees</a></span>. One may also want to merely deduplicate data on a file based level instead using e.g. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/rmlint-git/">rmlint-git</a></span><sup><small>AUR</small></sup>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=rdfind">rdfind</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/jdupes/">jdupes</a></span><sup><small>AUR</small></sup> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/dduper-git/">dduper-git</a></span><sup><small>AUR</small></sup>. For an overview of available features of those programs and additional information, have a look at the <a rel="nofollow" class="external text" href="https://btrfs.readthedocs.io/en/latest/Deduplication.html">upstream Wiki entry</a>.
 </p>
 <h3><span class="mw-headline" id="Resizing">Resizing</span></h3>
 <div class="archwiki-template-box archwiki-template-box-warning">
@@ -1355,7 +1355,6 @@ You are now being dropped into an emergency shell.
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
-<li><a href="../en/Category:Pages_with_broken_package_links.html" title="Category:Pages with broken package links">Pages with broken package links</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Out_of_date.html" title="Category:Pages or sections flagged with Template:Out of date">Pages or sections flagged with Template:Out of date</a></li>
 </ul>
@@ -1369,8 +1368,8 @@ You are now being dropped into an emergency shell.
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Btrfs&amp;oldid=821764">https://wiki.archlinux.org/index.php?title=Btrfs&amp;oldid=821764</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 30 November 2024, at 07:24.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Btrfs&amp;oldid=823474">https://wiki.archlinux.org/index.php?title=Btrfs&amp;oldid=823474</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 18 December 2024, at 21:14.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

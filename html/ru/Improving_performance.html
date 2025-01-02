@@ -5,7 +5,7 @@
 <title>Improving performance (Русский) - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -743,7 +743,7 @@
 </p>
 <p><a href="https://en.wikipedia.org/wiki/CFQ" class="extiw" title="wikipedia:CFQ">Completely Fair Queuing (CFQ)</a> («абсолютно справедливая очередь») подходит к проблеме иначе, выделяя временной интервал и количество разрешённых запросов по очереди в зависимости от приоритета процесса, отправляющего их. Он поддерживает <a href="../en/Cgroups.html" title="Cgroups">cgroups</a>, что позволяет зарезервировать некоторый объём ввода-вывода для определённого набора процессов. Это особенно полезно для общего и облачного хостинга: пользователи, которые заплатили за определённое число IOPS, хотят получать свою долю, когда это необходимо. Кроме того, он простаивает в конце синхронного ввода-вывода в ожидании других ближайших операций, переняв эту функцию у <i>anticipatory</i> планировщика и внеся некоторые улучшения. Планировщики <i>anticipatory</i> и <i>elevator</i> были выведены из эксплуатации из ядра Linux и заменены более продвинутыми альтернативами, представленными ниже.
 </p>
-<p><a rel="nofollow" class="external text" href="https://algo.ing.unimo.it/people/paolo/disk_sched/">Budget Fair Queuing (BFQ)</a> основан на коде CFQ и содержит некоторые улучшения. Он не предоставляет диск каждому процессу на фиксированный отрезок времени, но назначает процессу «бюджет», измеряемый в количестве секторов, и использует эвристики. Это относительно сложный планировщик, он может быть более адаптирован для HDD и медленных SSD, поскольку его высокие накладные расходы на операцию, особенно если они связаны с медленным процессором, могут замедлять работу быстрых устройств. Цель BFQ в персональных системах состоит в том, чтобы при интерактивных задачах запоминающее устройство реагировало практически так же, как если бы оно простаивало. В своей конфигурации по умолчанию он ориентирован на обеспечение минимальной задержки, а не на достижение максимальной пропускной способности, что порой может сильно <a rel="nofollow" class="external text" href="https://www.phoronix.com/review/linux-50hdd-io/2">ускорить запуск приложений</a> на HDD.
+<p><a rel="nofollow" class="external text" href="https://algo.ing.unimo.it/people/paolo/disk_sched/">Budget Fair Queuing (BFQ)</a><sup title="Статус последней проверки: SSL error">[<a href="https://en.wikipedia.org/wiki/ru:%D0%92%D0%B8%D0%BA%D0%B8%D0%BF%D0%B5%D0%B4%D0%B8%D1%8F:%D0%9C%D1%91%D1%80%D1%82%D0%B2%D1%8B%D0%B5_%D1%81%D1%81%D1%8B%D0%BB%D0%BA%D0%B8" class="extiw" title="wikipedia:ru:Википедия:Мёртвые ссылки">устаревшая ссылка</a> 2024-12-15 ⓘ]</sup> основан на коде CFQ и содержит некоторые улучшения. Он не предоставляет диск каждому процессу на фиксированный отрезок времени, но назначает процессу «бюджет», измеряемый в количестве секторов, и использует эвристики. Это относительно сложный планировщик, он может быть более адаптирован для HDD и медленных SSD, поскольку его высокие накладные расходы на операцию, особенно если они связаны с медленным процессором, могут замедлять работу быстрых устройств. Цель BFQ в персональных системах состоит в том, чтобы при интерактивных задачах запоминающее устройство реагировало практически так же, как если бы оно простаивало. В своей конфигурации по умолчанию он ориентирован на обеспечение минимальной задержки, а не на достижение максимальной пропускной способности, что порой может сильно <a rel="nofollow" class="external text" href="https://www.phoronix.com/review/linux-50hdd-io/2">ускорить запуск приложений</a> на HDD.
 </p>
 <p><a rel="nofollow" class="external text" href="https://lwn.net/Articles/720675/">Kyber</a> — относительно новый планировщик, созданный на основе методов активного управления очередью, используемых для сетевой маршрутизации. Реализация основана на «токенах», которые служат механизмом ограничения запросов. Токен очереди необходим для выделения запроса, он используется для предотвращения голодания. Dispatch-токен также необходим и ограничивает операции определённого приоритета на данном устройстве. Наконец, определяется целевая задержка чтения, и планировщик настраивается для достижения этой цели. Реализация алгоритма относительно проста и считается эффективной для быстрых устройств.
 </p>
@@ -1157,8 +1157,8 @@ ACTION=="add|change", KERNEL=="nvme[0-9]*", ATTR{queue/rotational}=="0", ATTR{qu
 </ul>
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
-<li><a href="../en/Category:Pages_with_broken_package_links.html" title="Category:Pages with broken package links">Pages with broken package links</a></li>
 <li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li>
+<li><a href="../en/Category:Pages_with_broken_package_links.html" title="Category:Pages with broken package links">Pages with broken package links</a></li>
 </ul>
 </div>
 </div>
@@ -1170,8 +1170,8 @@ ACTION=="add|change", KERNEL=="nvme[0-9]*", ATTR{queue/rotational}=="0", ATTR{qu
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Improving_performance_(%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9)&amp;oldid=819676">https://wiki.archlinux.org/index.php?title=Improving_performance_(Русский)&amp;oldid=819676</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 27 October 2024, at 07:13.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Improving_performance_(%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9)&amp;oldid=823163">https://wiki.archlinux.org/index.php?title=Improving_performance_(Русский)&amp;oldid=823163</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 15 December 2024, at 08:53.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

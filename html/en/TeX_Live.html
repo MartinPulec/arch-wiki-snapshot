@@ -5,7 +5,7 @@
 <title>TeX Live - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -336,6 +336,8 @@
 </li>
 <li>As the install script will notify you at the end of the process, it's necessary to add the TeX Live installation to the system executable and documentation paths: <code>PATH</code>, <code>MANPATH</code>, <code>INFOPATH</code>. The install script prints the exact additions that are required before exiting.</li>
 </ol>
+<p>Or, alternatively, install the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/texlive-installer/">texlive-installer</a></span><sup><small>AUR</small></sup> package and run <code>install-tl</code> while following above procedure.
+</p>
 <h4><span class="mw-headline" id="Updating">Updating</span></h4>
 <p>See the <a rel="nofollow" class="external text" href="https://tug.org/texlive/doc/tlmgr.html">tlmgr</a> documentation, <code>tlmgr update --all</code> upgrades all packages from the collections chosen during the installation. It will also install any packages that are newly added to an installed TeX Live collection.
 </p>
@@ -404,14 +406,16 @@
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
 <div>
-<b>Reason:</b> The "fix" should be incorporated into the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=texlive-core">texlive-core</a></span><sup>[<a href="../en/Help:Procedures.html#Fix_broken_package_links" title="Help:Procedures">broken link</a>: replaced by <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=texlive-basic">texlive-basic</a></span>]</sup> package. Editing files in <i>TEXMFDIST</i> will not survive package upgrades. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:TeX_Live.html">Talk:TeX Live</a>)</div>
+<b>Reason:</b> The "fix" should be incorporated into the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=texlive-basic">texlive-basic</a></span> package. Editing files in <i>TEXMFDIST</i> will not survive package upgrades. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:TeX_Live.html">Talk:TeX Live</a>)</div>
 </div>
 <p>The <i>tlmgr</i> utility is the standard way of installing and updating packages from CTAN. It requires minor fixes as follows: 
 </p>
 <p>First, edit <code><i>TEXMFDIST</i>/scripts/texlive/tlmgr.pl</code> and replace <code>$Master = "$Master/../..";</code> with <code>$Master = "${Master}/../../..";</code>. The path prefix <i>TEXMFDIST</i> is not a predefined environment variable, it is defined below in this article. Replace it with the correct value.
 </p>
-<p>This can also be done from the command line with <code>sudo sed -i 's/\$Master = "\$Master\/..\/..";/\$Master = "\$Master\/..\/..\/..";/' "$TEXMFDIST/scripts/texlive/tlmgr.pl"</code>
+<p>This can also be done from the command line with: 
 </p>
+<pre># sed -i 's/\$Master = "\$Master\/..\/..";/\$Master = "\$Master\/..\/..\/..";/' "$TEXMFDIST/scripts/texlive/tlmgr.pl"
+</pre>
 <p>Create an alias for the perl script (which you can add in your shell init file).
 </p>
 <pre>alias tlmgr='<i>TEXMFDIST</i>/scripts/texlive/tlmgr.pl --usermode'
@@ -572,7 +576,7 @@ $ mkfontdir ~/<i>font_path</i>/OTF
 </pre>
 <p>Similar steps follow for TrueType fonts and Type 1 fonts. In the lines above, substitute <code>opentype</code> with <code>truetype</code> or <code>type1</code> and substitute <code>OTF</code> with <code>TTF</code> or <code>Type1</code>.
 </p>
-<p>Alternatively, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=texlive-core">texlive-core</a></span><sup>[<a href="../en/Help:Procedures.html#Fix_broken_package_links" title="Help:Procedures">broken link</a>: replaced by <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=texlive-basic">texlive-basic</a></span>]</sup> contains the file <code>/usr/share/fontconfig/conf.avail/09-texlive-fonts.conf</code> that contains a list of the font directories used by TeX Live. You can use this file with:
+<p>Alternatively, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=texlive-basic">texlive-basic</a></span> contains the file <code>/usr/share/fontconfig/conf.avail/09-texlive-fonts.conf</code> that contains a list of the font directories used by TeX Live. You can use this file with:
 </p>
 <pre># ln -s /usr/share/fontconfig/conf.avail/09-texlive-fonts.conf /etc/fonts/conf.d/09-texlive-fonts.conf</pre>
 <p>And then update fontconfig:
@@ -620,7 +624,6 @@ $ mkfontdir ~/<i>font_path</i>/OTF
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:TeX.html" title="Category:TeX">TeX</a></li></ul>
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
-<li><a href="../en/Category:Pages_with_broken_package_links.html" title="Category:Pages with broken package links">Pages with broken package links</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li>
 </ul>
@@ -634,8 +637,8 @@ $ mkfontdir ~/<i>font_path</i>/OTF
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=TeX_Live&amp;oldid=818970">https://wiki.archlinux.org/index.php?title=TeX_Live&amp;oldid=818970</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 14 October 2024, at 09:43.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=TeX_Live&amp;oldid=824297">https://wiki.archlinux.org/index.php?title=TeX_Live&amp;oldid=824297</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 30 December 2024, at 17:11.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

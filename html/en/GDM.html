@@ -5,7 +5,7 @@
 <title>GDM - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -228,10 +228,19 @@
 			<ul id="toc-Passwordless_login-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Disable_fingerprint_login" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Disable_fingerprint_login">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.5.3</span>Disable fingerprint login</div>
+			</a>
+			
+			<ul id="toc-Disable_fingerprint_login-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 		<li id="toc-Passwordless_shutdown_for_multiple_sessions" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Passwordless_shutdown_for_multiple_sessions">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">3.5.3</span>Passwordless shutdown for multiple sessions</div>
+				<span class="vector-toc-numb">3.5.4</span>Passwordless shutdown for multiple sessions</div>
 			</a>
 			
 			<ul id="toc-Passwordless_shutdown_for_multiple_sessions-sublist" class="vector-toc-list">
@@ -240,7 +249,7 @@
 		<li id="toc-Enable_root_login_in_GDM" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Enable_root_login_in_GDM">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">3.5.4</span>Enable root login in GDM</div>
+				<span class="vector-toc-numb">3.5.5</span>Enable root login in GDM</div>
 			</a>
 			
 			<ul id="toc-Enable_root_login_in_GDM-sublist" class="vector-toc-list">
@@ -249,7 +258,7 @@
 		<li id="toc-Hide_user_from_login_list" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Hide_user_from_login_list">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">3.5.5</span>Hide user from login list</div>
+				<span class="vector-toc-numb">3.5.6</span>Hide user from login list</div>
 			</a>
 			
 			<ul id="toc-Hide_user_from_login_list-sublist" class="vector-toc-list">
@@ -258,14 +267,14 @@
 		<li id="toc-Remote_login_via_RDP" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Remote_login_via_RDP">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">3.5.6</span>Remote login via RDP</div>
+				<span class="vector-toc-numb">3.5.7</span>Remote login via RDP</div>
 			</a>
 			
 			<ul id="toc-Remote_login_via_RDP-sublist" class="vector-toc-list">
 				<li id="toc-Via_Graphical_Interface" class="vector-toc-list-item vector-toc-level-4">
 			<a class="vector-toc-link" href="#Via_Graphical_Interface">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">3.5.6.1</span>Via Graphical Interface</div>
+				<span class="vector-toc-numb">3.5.7.1</span>Via Graphical Interface</div>
 			</a>
 			
 			<ul id="toc-Via_Graphical_Interface-sublist" class="vector-toc-list">
@@ -274,7 +283,7 @@
 		<li id="toc-Via_CLI" class="vector-toc-list-item vector-toc-level-4">
 			<a class="vector-toc-link" href="#Via_CLI">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">3.5.6.2</span>Via CLI</div>
+				<span class="vector-toc-numb">3.5.7.2</span>Via CLI</div>
 			</a>
 			
 			<ul id="toc-Via_CLI-sublist" class="vector-toc-list">
@@ -786,6 +795,13 @@ TimedLoginDelay=1</pre>
 <li>You will not be able to change your session type at login with GDM anymore. If you want to change your default session type, you will first need to remove your user from the <code>nopasswdlogin</code> group.</li>
 </ul>
 </div>
+<h4><span class="mw-headline" id="Disable_fingerprint_login">Disable fingerprint login</span></h4>
+<p>When using a <a href="../en/Fprint.html" title="Fprint">fingerprint</a> to login, it will not unlock the keychain, so you will still be prompted for the keychain password. You might want to disallow login and keep the fingerprint to unlock your session. To do this, just disable fingerprint for the GDM user. 
+</p>
+<p>Execute the following as the GDM user temporarily and change this setting:
+</p>
+<pre>[gdm]$ dbus-launch gsettings set org.gnome.login-screen enable-fingerprint-authentication false
+</pre>
 <h4><span class="mw-headline" id="Passwordless_shutdown_for_multiple_sessions">Passwordless shutdown for multiple sessions</span></h4>
 <p>GDM uses polkit and logind to gain permissions for shutdown. You can shutdown the system when multiple users are logged in by setting:
 </p>
@@ -1042,8 +1058,8 @@ systemd[1022]: org.gnome.Shell@wayland.service: Control process exited, code=exi
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GDM&amp;oldid=819935">https://wiki.archlinux.org/index.php?title=GDM&amp;oldid=819935</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 31 October 2024, at 15:45.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GDM&amp;oldid=824318">https://wiki.archlinux.org/index.php?title=GDM&amp;oldid=824318</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 31 December 2024, at 07:12.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

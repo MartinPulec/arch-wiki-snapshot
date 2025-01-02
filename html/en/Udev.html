@@ -5,7 +5,7 @@
 <title>udev - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -444,7 +444,7 @@
 <h2><span class="mw-headline" id="About_udev_rules">About udev rules</span></h2>
 <p><i>udev</i> rules written by the administrator go in <code>/etc/udev/rules.d/</code>, their file name has to end with <i>.rules</i>. The <i>udev</i> rules shipped with various packages are found in <code>/usr/lib/udev/rules.d/</code>. If there are two files by the same name under <code>/usr/lib</code> and <code>/etc</code>, the ones in <code>/etc</code> take precedence.
 </p>
-<p>To learn about <i>udev</i> rules, refer to the <span class="plainlinks archwiki-template-man" title="$ man 7 udev"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/udev.7">udev(7)</a></span> manual. Also see <a rel="nofollow" class="external text" href="http://www.reactivated.net/writing_udev_rules.html">Writing udev rules</a> and some practical examples are provided within the guide: <a rel="nofollow" class="external text" href="http://www.reactivated.net/writing_udev_rules.html#example-printer">Writing udev rules - Examples</a>.
+<p>To learn about <i>udev</i> rules, refer to the <span class="plainlinks archwiki-template-man" title="$ man 7 udev"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/udev.7">udev(7)</a></span> manual. Also see <a rel="nofollow" class="external text" href="https://www.reactivated.net/writing_udev_rules.html">Writing udev rules</a> and some practical examples are provided within the guide: <a rel="nofollow" class="external text" href="https://www.reactivated.net/writing_udev_rules.html#example-printer">Writing udev rules - Examples</a>.
 </p>
 <h3><span class="mw-headline" id="udev_rule_example">udev rule example</span></h3>
 <p>Below is an example of a rule that creates a symlink <code>/dev/video-cam</code> when a webcamera is connected.
@@ -704,52 +704,22 @@ LABEL="persistent_printer_end"</pre>
 <p>This command will trigger a USB remove event on all USB devices with vendor ID <code>abcd</code>.
 </p>
 <h3><span class="mw-headline" id="Triggering_desktop_notifications_from_a_udev_rule">Triggering desktop notifications from a udev rule</span></h3>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
-<div>
-<b>Reason:</b> This is a lengthy monologue on how to hardcode variables (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Udev.html">Talk:Udev</a>)</div>
-</div>
-<p>Invoking an external script containing calls to <code>notify-send</code> via <i>udev</i> <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?id=212364">can sometimes be challenging</a> since the notification(s) never display on the Desktop. Here is an example of what commands and environmental variables need to be included in which files for <code>notify-send</code> to successfully be executed from a <i>udev</i> rule.
+<p>To trigger a desktop notification from a <i>udev</i> rule, use <span class="plainlinks archwiki-template-man" title="$ man 1 systemd-run"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-run.1">systemd-run(1)</a></span> as explained in <a href="../en/Desktop_notifications.html#Send_notifications_to_another_user" title="Desktop notifications">Desktop notifications#Send notifications to another user</a>: 
 </p>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> A number of variables are hardcoded in this example, thus consider making them portable (i.e., $USER rather than user's shortname) once you understand the example. 
-</div>
-<p>1) The following <i>udev</i> rule executes a script that plays a notification sound and sends a desktop notification when screen brightness is changed according to power state on a laptop. Create the file:
+<p>Create the file:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/udev/rules.d/99-powersupply_notification.rules</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># Rule for when switching to battery
-ACTION=="change", SUBSYSTEM=="power_supply", ATTR{type}=="Mains", ATTR{online}=="0", ENV{DISPLAY}=":0", ENV{XAUTHORITY}="/home/USERNAME/.Xauthority" RUN+="/usr/bin/su USERNAME_TO_RUN_SCRIPT_AS -c /usr/local/bin/power_notification.sh"
+ACTION=="change", SUBSYSTEM=="power_supply", ATTRS{type}=="Mains", ATTRS{online}=="0", RUN+="/usr/bin/systemd-run --machine=<i>target_user</i>@.host --user notify-send 'Changing Power States' 'Using battery power'"
 # Rule for when switching to AC
-ACTION=="change", SUBSYSTEM=="power_supply", ATTR{type}=="Mains", ATTR{online}=="1", ENV{DISPLAY}=":0", ENV{XAUTHORITY}="/home/USERNAME/.Xauthority" RUN+="/usr/bin/su USERNAME_TO_RUN_SCRIPT_AS -c /usr/local/bin/power_notification.sh"</pre>
-<ul>
-<li>
-<code>USERNAME_TO_RUN_SCRIPT_AS</code> and <code>USERNAME</code> need to be changed to that of the shortname for the user of the graphical session where the notification will be displayed;</li>
-<li>the script needs to be executed with <code>/usr/bin/su</code>, which will place its ownership under the user of the graphical session (rather than root/the system) where the notification will be displayed.</li>
-</ul>
-<p>2) Contents of the executable script to be run on trigger of the <i>udev</i> rule:
+ACTION=="change", SUBSYSTEM=="power_supply", ATTRS{type}=="Mains", ATTRS{online}=="1", RUN+="/usr/bin/systemd-run --machine=<i>target_user</i>@.host --user notify-send 'Changing Power States' 'Using AC power'"</pre>
+<p>To launch multiple or long commands, an <a href="../en/Help:Reading.html#Make_executable" class="mw-redirect" title="Executable">executable</a> script can be given to <i>systemd-run</i>:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/usr/local/bin/power_notification.sh</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/usr/local/bin/from_battery.sh</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">#!/bin/sh
 
-export XAUTHORITY=/home/USERNAME_TO_RUN_SCRIPT_AS/.Xauthority
-export DISPLAY=:0
-export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/UID_OF_USER_TO_RUN_SCRIPT_AS/bus"
-
-/usr/bin/sudo -u USERNAME_TO_RUN_SCRIPT_AS /usr/bin/paplay --server=/run/user/UID_OF_USER_TO_RUN_SCRIPT_AS/pulse/native /home/USERNAME/.i3/sounds/Click1.wav &gt; /dev/null 2&gt;&amp;1
-
-/usr/bin/notify-send --icon=/usr/share/icons/gnome/256x256/status/battery-full-charging.png 'Changing Power States' --expire-time=4000</pre>
-<ul>
-<li>
-<code>USERNAME_TO_RUN_SCRIPT_AS</code>, <code>UID_OF_USER_TO_RUN_SCRIPT_AS</code> and <code>USERNAME</code> needs to be changed to that of the shortname for the user and user's UID of the graphical session where the notification will be displayed;</li>
-<li>
-<code>/usr/bin/sudo</code> is needed when playing audio via pulseaudio;</li>
-<li>three environmental variables (i.e., <code>XAUTHORITY</code>, <code>DISPLAY</code> and <code>DBUS_SESSION_BUS_ADDRESS</code>) for the user of the graphical session where the notification will be displayed need to be defined and exported.</li>
-</ul>
-<div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> See also <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/xpub/">xpub</a></span><sup><small>AUR</small></sup> as a method for getting the user's display environment variables and exporting the last into <i>udev</i> rules via <code>IMPORT</code> key.
-</div>
-<p>3) Load/reload the new <i>udev</i> rule (see above) and test it by unplugging the power supply to the laptop.
-</p>
+paplay /usr/share/sounds/freedesktop/stereo/power-unplug.oga
+notify-send --icon=/usr/share/icons/Adwaita/symbolic/legacy/battery-good-symbolic.svg 'Changing Power States' 'Using battery power' --expire-time=4000</pre>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> If the rule triggers before the X server starts, it may not work as intended. See <a href="#X_programs_in_RUN_rules_hang_when_no_X_server_is_present">#X programs in RUN rules hang when no X server is present</a>.</div>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
@@ -816,9 +786,14 @@ storage								storage
 <h3>
 <span id="IDE_CD.2FDVD-drive_support"></span><span class="mw-headline" id="IDE_CD/DVD-drive_support">IDE CD/DVD-drive support</span>
 </h3>
-<p>Starting with version 170, <i>udev</i> does not support CD-ROM/DVD-ROM drives that are loaded as traditional IDE drives with the <code>ide_cd_mod</code> module and show up as <code>/dev/hd*</code>. The drive remains usable for tools which access the hardware directly, like <a href="../en/Optical_disc_drive.html#Ripping" title="Optical disc drive">cdparanoia</a>, but is invisible for higher userspace programs, like KDE.
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-cut.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is being considered for removal.</b></p>
+<div>
+<b>Reason:</b> It's been more than a decade since the switch to ATAPI. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Udev.html">Talk:Udev</a>)</div>
+</div>
+<p>Starting with version 170, <i>udev</i> does not support CD-ROM/DVD-ROM drives that are loaded as traditional IDE drives with the <code>ide_cd_mod</code> module and show up as <code>/dev/hd*</code>. The drive remains usable for tools which access the hardware directly, like <a href="../en/Optical_disc_drive.html#Ripping" title="Optical disc drive">cdparanoia</a>, but is invisible for higher userspace programs, like <a href="../en/Dolphin.html" title="Dolphin">Dolphin</a>.
 </p>
-<p>A cause for the loading of the ide_cd_mod module prior to others, like sr_mod, could be e.g. that you have for some reason the module piix loaded with your <a href="../en/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs">initramfs</a>. In that case you can just replace it with ata_piix in your <code>/etc/mkinitcpio.conf</code>.
+<p>A cause for the loading of the <code>ide_cd_mod</code> module prior to others, like <code>sr_mod</code>, could be e.g. that you have for some reason the module <code>piix</code> loaded with your <a href="../en/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs">initramfs</a>. In that case you can just replace it with <code>ata_piix</code> in your <code>/etc/mkinitcpio.conf</code>.
 </p>
 <h3>
 <span id="Optical_drives_have_group_ID_set_to_.22disk.22"></span><span class="mw-headline" id='Optical_drives_have_group_ID_set_to_"disk"'>Optical drives have group ID set to "disk"</span>
@@ -826,10 +801,7 @@ storage								storage
 <p>If the group ID of your optical drive is set to <code>disk</code> and you want to have it set to <code>optical</code>, you have to create a custom <i>udev</i> rule:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/udev/rules.d</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># permissions for IDE CD devices
-SUBSYSTEMS=="ide", KERNEL=="hd[a-z]", ATTR{removable}=="1", ATTRS{media}=="cdrom*", GROUP="optical"
-
-# permissions for SCSI CD devices
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># permissions for SCSI CD devices
 SUBSYSTEMS=="scsi", KERNEL=="s[rg][0-9]*", ATTRS{type}=="5", GROUP="optical"</pre>
 <h3><span class="mw-headline" id="X_programs_in_RUN_rules_hang_when_no_X_server_is_present">X programs in RUN rules hang when no X server is present</span></h3>
 <p>When <i>xrandr</i> or another X-based program tries to connect to an X server, it falls back to a TCP connection on failure. However, due to <code>IPAddressDeny</code> in the <a rel="nofollow" class="external text" href="https://github.com/systemd/systemd/blob/main/units/systemd-udevd.service.in#L43">systemd-udev service configuration</a>, this hangs. Eventually the program will be killed and event processing will resume.
@@ -842,7 +814,7 @@ SUBSYSTEMS=="scsi", KERNEL=="s[rg][0-9]*", ATTRS{type}=="5", GROUP="optical"</pr
 <li><a rel="nofollow" class="external text" href="https://opensource.com/article/18/11/udev">An Introduction to udev</a></li>
 <li><a rel="nofollow" class="external text" href="http://vger.kernel.org/vger-lists.html#linux-hotplug">udev mailing list information</a></li>
 <li><a rel="nofollow" class="external text" href="http://jasonwryan.com/blog/2014/01/20/udev/">Scripting with udev</a></li>
-<li><a rel="nofollow" class="external text" href="http://www.reactivated.net/writing_udev_rules.html">Writing udev rules</a></li>
+<li><a rel="nofollow" class="external text" href="https://www.reactivated.net/writing_udev_rules.html">Writing udev rules</a></li>
 <li><a rel="nofollow" class="external text" href="https://www.linuxfromscratch.org/lfs/view/stable/chapter09/udev.html">Device and Module Handling on an LFS System</a></li>
 <li><a rel="nofollow" class="external text" href="https://github.com/Ventto/xpub">Running GUI or accessing display variables from udev rules</a></li>
 <li><a rel="nofollow" class="external text" href="https://doc.opensuse.org/documentation/leap/reference/html/book-reference/cha-udev.html">openSUSE udev documentation</a></li>
@@ -855,7 +827,7 @@ SUBSYSTEMS=="scsi", KERNEL=="s[rg][0-9]*", ATTRS{type}=="5", GROUP="optical"</pr
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Merge.html" title="Category:Pages or sections flagged with Template:Merge">Pages or sections flagged with Template:Merge</a></li>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
+<li><a href="../en/Category:Sections_flagged_with_Template:Remove.html" title="Category:Sections flagged with Template:Remove">Sections flagged with Template:Remove</a></li>
 </ul>
 </div>
 </div>
@@ -867,8 +839,8 @@ SUBSYSTEMS=="scsi", KERNEL=="s[rg][0-9]*", ATTRS{type}=="5", GROUP="optical"</pr
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Udev&amp;oldid=817231">https://wiki.archlinux.org/index.php?title=Udev&amp;oldid=817231</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 26 September 2024, at 10:33.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Udev&amp;oldid=822988">https://wiki.archlinux.org/index.php?title=Udev&amp;oldid=822988</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 14 December 2024, at 13:14.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

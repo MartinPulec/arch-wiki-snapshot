@@ -5,7 +5,7 @@
 <title>Kdump - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -63,35 +63,44 @@
 			<ul id="toc-The_automatic_way:_kdumpst-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-The_automatic_way:_simple-kdump" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#The_automatic_way:_simple-kdump">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">1.2</span>The automatic way: simple-kdump</div>
+			</a>
+			
+			<ul id="toc-The_automatic_way:_simple-kdump-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 		<li id="toc-Manual_steps" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Manual_steps">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">1.2</span>Manual steps</div>
+				<span class="vector-toc-numb">1.3</span>Manual steps</div>
 			</a>
 			
 			<ul id="toc-Manual_steps-sublist" class="vector-toc-list">
 				<li id="toc-Compiling_kernel" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Compiling_kernel">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">1.2.1</span>Compiling kernel</div>
+				<span class="vector-toc-numb">1.3.1</span>Compiling kernel</div>
 			</a>
 			
 			<ul id="toc-Compiling_kernel-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Prepare_the_kdump_initramfs" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Prepare_the_kdump_initramfs">
+		<li id="toc-Reuse_existing_kernel_and_initramfs" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Reuse_existing_kernel_and_initramfs">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">1.2.2</span>Prepare the kdump initramfs</div>
+				<span class="vector-toc-numb">1.3.2</span>Reuse existing kernel and initramfs</div>
 			</a>
 			
-			<ul id="toc-Prepare_the_kdump_initramfs-sublist" class="vector-toc-list">
+			<ul id="toc-Reuse_existing_kernel_and_initramfs-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 		<li id="toc-Setup_the_kdump_kernel" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Setup_the_kdump_kernel">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">1.2.3</span>Setup the kdump kernel</div>
+				<span class="vector-toc-numb">1.3.3</span>Setup the kdump kernel</div>
 			</a>
 			
 			<ul id="toc-Setup_the_kdump_kernel-sublist" class="vector-toc-list">
@@ -100,7 +109,7 @@
 		<li id="toc-Testing_kdump_by_crashing_the_kernel" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Testing_kdump_by_crashing_the_kernel">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">1.2.4</span>Testing kdump by crashing the kernel</div>
+				<span class="vector-toc-numb">1.3.4</span>Testing kdump by crashing the kernel</div>
 			</a>
 			
 			<ul id="toc-Testing_kdump_by_crashing_the_kernel-sublist" class="vector-toc-list">
@@ -109,7 +118,7 @@
 		<li id="toc-Saving_the_crashed_kernel_memory" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Saving_the_crashed_kernel_memory">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">1.2.5</span>Saving the crashed kernel memory</div>
+				<span class="vector-toc-numb">1.3.5</span>Saving the crashed kernel memory</div>
 			</a>
 			
 			<ul id="toc-Saving_the_crashed_kernel_memory-sublist" class="vector-toc-list">
@@ -118,7 +127,7 @@
 		<li id="toc-Early_kdump_using_mkinitcpio" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Early_kdump_using_mkinitcpio">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">1.2.6</span>Early kdump using mkinitcpio</div>
+				<span class="vector-toc-numb">1.3.6</span>Early kdump using mkinitcpio</div>
 			</a>
 			
 			<ul id="toc-Early_kdump_using_mkinitcpio-sublist" class="vector-toc-list">
@@ -241,55 +250,68 @@
 </p>
 <p>After installing kdumpst, one can check the journal and the following message means kdump is loaded: <code>kdumpst: panic kexec loaded successfully</code>. If a kernel crash happens, the kdump will be collected and in the subsequent boot, a message indicates the success of the operation: <code>kdumpst: logs saved in "/var/crash/kdumpst/logs"</code>. In that folder, the user will find a lightweight zip blob, that included a dmesg plus some extra data. The vmcore itself is saved on <code>/var/crash/kdumpst/crash</code>. For questions/issues, the #kdump IRC channel at OFTC could be used, or open issues in the kdumpst repository.
 </p>
+<h3><span class="mw-headline" id="The_automatic_way:_simple-kdump">The automatic way: simple-kdump</span></h3>
+<p>The <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/simple-kdump/">simple-kdump</a></span><sup><small>AUR</small></sup> tool provides a simple and easy-to-config way to setup and collect kdump.
+Unlike <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/kdumpst/">kdumpst</a></span><sup><small>AUR</small></sup>, it is bootloader independent, has one and only one objective, save the vmcore file
+to <code>/var/crash/</code>.
+</p>
+<p>It's mostly all the manual setups mentioned in later sections with slightly better organization using systemd, but re-use the Archlinux kernels (or whatever kernel the end user choose), so it's super flex and simple.
+</p>
+<p>After installing <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/simple-kdump/">simple-kdump</a></span><sup><small>AUR</small></sup>, fill <code>/etc/conf.d/simple-kdump.conf</code> using any booting kernel/initramfs combination, which has the <code>CONFIG_PROC_VMCORE=y</code> enabled.
+It's recommended to use the Archlinux linux or linux-lts kernel, which already have all the needed features enabled.
+</p>
+<p>Then add <code>crashkernel=[size]</code> <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a> and reboot. Recommended to use value no smaller than 512M
+</p>
+<p>Finally enable and start <code>simple-kdump-setup.service</code>, then refer to <a href="#Testing_kdump_by_crashing_the_kernel">#Testing kdump by crashing the kernel</a> to verify the kdump behavior.
+</p>
+<p>The kexec kernel should reach target <code>Emergency Mode to collect vmcore</code>, with a prompt asking login for the emergency shell. You can ignore that login as the vmcore collection will happen at the background and reboot automatically.
+</p>
+<p>After the reboot, there should be a new crash dump at <code>/var/crash/crashdump-*</code>.
+</p>
 <h3><span class="mw-headline" id="Manual_steps">Manual steps</span></h3>
 <p>In case the preference is for doing that manually, the below guide will help with that.
 </p>
 <h4><span class="mw-headline" id="Compiling_kernel">Compiling kernel</span></h4>
 <p>Both System/kdump kernels requires some configuration flags that may not be set by default. Please consult <a href="../en/Kernel.html#Compilation" class="mw-redirect" title="Kernel Compilation">Kernel Compilation</a> article for more information about compiling a custom kernel in Arch. Here we will emphasize on Kdump specific configurations. Current default Arch kernel builds have these flags already set.  You can verify if your running kernel has these set by looking in <code>/proc/config.gz</code>.
 </p>
+<p>Please note that, the default <a rel="nofollow" class="external text" href="https://archlinux.org/packages/core/x86_64/linux/">linux</a> and <a rel="nofollow" class="external text" href="https://archlinux.org/packages/core/x86_64/linux-lts/">linux-lts</a> kernels all have the needed options enabled.
+But unfortunately the default kernels have debug info striped, thus one still needs to recompile the kernel to have all the debug info so that the vmcore can be properly analyzed.
+</p>
 <p>To create a kernel you need to edit the kernel <code>.config</code> file and enable following configuration options:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">.config</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">CONFIG_DEBUG_INFO=y
 CONFIG_CRASH_DUMP=y
-CONFIG_PROC_VMCORE=y</pre>
+CONFIG_PROC_VMCORE=y
+CONFIG_DEBUG_INFO=y
+COFNIG_DEBUG_INFO_BTF=y</pre>
+<p>The last two are for the extra debuginfo so that tools like <a rel="nofollow" class="external text" href="https://archlinux.org/packages/extra/x86_64/crash/">crash</a> or <a rel="nofollow" class="external text" href="https://archlinux.org/packages/extra/x86_64/drgn/">drgn</a> can analyze the vmcore.
+(Or is there a way to use debuginfod to download the kernel debuginfo?)
+</p>
 <p>Also change package base name to something like <b>linux-kdump</b> to distinguish the kernel from the default Arch one. Compile kernel package and install it. Save <i>./src/linux-X.Y/vmlinux</i> uncompressed system kernel binary - it contains debug symbols and you will need them later when analyzing the crash.
 </p>
 <p>For reference, some details about building a kdump kernel or configuring the kernel parameters for kdump could be found in the kernel <a rel="nofollow" class="external text" href="https://docs.kernel.org/admin-guide/kdump/kdump.html">Kdump</a> documentation.
 </p>
-<h4><span class="mw-headline" id="Prepare_the_kdump_initramfs">Prepare the kdump initramfs</span></h4>
-<p>The kdump initramfs should contain the tool for extracting the <code>/proc/vmcore</code> file information (see <a href="#Saving_the_crashed_kernel_memory">#Saving the crashed kernel memory</a>). If you wish to save the artifacts to your root filesystem, it is easiest to modify your default initramfs. For example, if initramfs is built with <a href="../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a>, the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=makedumpfile">makedumpfile</a></span> is required.
+<h4><span class="mw-headline" id="Reuse_existing_kernel_and_initramfs">Reuse existing kernel and initramfs</span></h4>
+<p>The simplest way to setup kdump is to use the existing kernel and initramfs.
+The example here will use <a rel="nofollow" class="external text" href="https://archlinux.org/packages/core/x86_64/linux/">linux</a> kernel as an example,
+which generates its initramfs at <code>/boot/initramfs-linux.img</code>.
 </p>
-<pre>--- mkinitcpio.conf
-+++ mkinitcpio-kdump.conf
-@@ -11,12 +11,12 @@
- # wish into the CPIO image.  This is run last, so it may be used to
- # override the actual binaries included by a given hook
- # BINARIES are dependency parsed, so you may safely ignore libraries
--BINARIES=()
-+BINARIES=(/usr/bin/makedumpfile)
-
- # FILES
- # This setting is similar to BINARIES above, however, files are added
- # as-is and are not parsed in any way.  This is useful for config files.
--FILES=()
-+FILES=(/etc/systemd/system/kdump-save.service)
-
- # HOOKS
- # This is the most important setting in this file.  The HOOKS control the
-</pre>
-<p>and remember to update mkinitcpio preset file so that fresh initrd is rebuilt upon each kernel update.
+<p>The core idea is to boot the kexec environment just as a regular Archlinux boot sequence.
+But with extra systemd options to slightly change the boot sequence (to skip re-setup kexec environment, collect vmcore, and reboot).
+</p>
+<p>Thus we do not need to generate a special initramfs, unlike other distros (and our default initramfs generated by <a href="../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a> is already way smaller than our competitors).
 </p>
 <h4><span class="mw-headline" id="Setup_the_kdump_kernel">Setup the kdump kernel</span></h4>
 <p>First, you need to reserve memory in the system kernel, for the kdump kernel loading. Edit your bootloader configuration and add <code>crashkernel=[size]</code> <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a>.
 </p>
-<p>Depending on the machine and how the kdump kernel was built, something from <i>128M</i> to <i>256M</i> is usually enough - it worth trying after setting everything to check if it succeeds. Note that the reserved memory is unavailable to the system kernel.
+<p>Depending on the machine and how the kdump kernel was built, something from <i>256M</i> to <i>512M</i> is usually enough - it worth trying after setting everything to check if it succeeds. Note that the reserved memory is unavailable to the system kernel.
 </p>
 <p>Reboot into your system kernel.  To make sure that the kernel is booted with correct options please check the files <code>/proc/cmdline</code> and <code>/sys/kernel/kexec_crash_size</code> to see if the memory was indeed pre-reserved (sometimes it's possible , though rare, that such memory reservation fails - if it happens, check the <code>dmesg</code> to get more information).
 </p>
-<p>Next you need to tell <a href="../en/Kexec.html" title="Kexec">Kexec</a> that you want to use your kdump kernel. Specify your kernel, initramfs file, root device and other parameters if needed:
+<p>Next you need to tell <a href="../en/Kexec.html" title="Kexec">Kexec</a> that you want to use your kdump kernel. Specify your kernel, initramfs file, root device and other parameters if needed: (here we use default <a rel="nofollow" class="external text" href="https://archlinux.org/packages/core/x86_64/linux/">linux</a> kernel)
 </p>
-<pre># kexec -p [/boot/vmlinuz-linux-kdump] --initrd=[/boot/initramfs-linux-kdump.img] --append="root=[root-device] irqpoll nr_cpus=1 reset_devices"
+<pre># kexec -p /boot/vmlinuz-linux --initrd=/boot/initramfs-linux.img] --append="root=[root-device] irqpoll nr_cpus=1 reset_devices"
 </pre>
 <p>It loads the kdump kernel into the reserved area. Without the <code>-p</code> flag <i>kexec</i> would boot the kernel right away, but in presence of such flag, the kdump kernel will be loaded into the reserved memory but its boot is postponed until a crash happens.
 </p>
@@ -305,14 +327,17 @@ After=local-fs.target
 [Service]
 Type=oneshot
 RemainAfterExit=true
-ExecStart=/usr/bin/kexec -p [/boot/vmlinuz-linux-kdump] --initrd=[/boot/initramfs-linux-kdump.img] --append="root=[root-device] irqpoll nr_cpus=1 reset_devices"
+ExecStart=/usr/bin/kexec -p /boot/vmlinuz-linux --initrd=/boot/initramfs-linux.img --append="root=[root-device] irqpoll nr_cpus=1 reset_devices systemd.mask=kdump.service"
 ExecStop=/usr/bin/kexec -p -u
 
 [Install]
 WantedBy=multi-user.target
 </pre>
-<p><br>
-Then <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> <code>kdump.service</code>.
+<p>Then <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> <code>kdump.service</code>.
+</p>
+<p>Note, since the service is enabled, and our kexec environment boots exactly like a regular boot,
+it will try to start <code>kdump.service</code> but fail since there is not enough memory.
+Thus in the <code>--append=</code> option, <code>systemd.mask=kdump.service</code> is specified to avoid the kdump service itself.
 </p>
 <p>To check whether the crash kernel is already loaded please run following command:
 </p>
@@ -325,7 +350,7 @@ If you want to test crash then you can use <i>sysrq</i> for this. </p>
 <strong>Warning:</strong> a kernel crash may corrupt data on your disks, run it at your own risk!</div>
 <pre># sync; echo 1 &gt; /proc/sys/kernel/sysrq; echo c &gt; /proc/sysrq-trigger
 </pre>
-<p>Once crash happens kexec will load your kdump kernel.
+<p>Once crash happens kexec will load your kdump kernel, which should look exactly like a regular boot, but with much smaller memory (the reserved size) and only one CPU core.
 </p>
 <h4><span class="mw-headline" id="Saving_the_crashed_kernel_memory">Saving the crashed kernel memory</span></h4>
 <p>Once booted into the kdump kernel, the idea is to save the relevant contents from <code>/proc/vmcore</code> to analyze it later. Though this is exposed as a file (hence it's possible to copy it, like in <code>cp /proc/vmcore /root/vmcore.crashdump</code>, this is not the recommended way. The vmcore is a full copy of system memory, so this file will have 64G if your machine has 64G, for example. It includes all data from all the userpace loaded, as well as free memory. So, the best way for saving it is use the <code>makedumpfile</code> utility. Such application is able to remove free memory and userspace irrelevant data, as well as compress the vmcore! Example of the usage:
@@ -341,18 +366,13 @@ If you want to test crash then you can use <i>sysrq</i> for this. </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/kdump-save.service</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Unit]
 Description=Save the kernel crash dump after a crash
-DefaultDependencies=no
-Wants=local-fs.target
-After=local-fs.target
+After=multi-user.target
 
 [Service]
 Type=idle
 ExecStart=/bin/sh -c 'mkdir -p /var/crash/ &amp;&amp; /usr/bin/makedumpfile -z -d 31 /proc/vmcore "/var/crash/crashdump-$$(date +%%F-%%T)"'
 ExecStopPost=/usr/bin/systemctl reboot
 UMask=0077
-StandardInput=tty-force
-StandardOutput=inherit
-StandardError=inherit
 </pre>
 <p>This can be invoked from the kdump kernel command line - for that, we should edit the kdump load service as below:
 </p>
@@ -364,7 +384,7 @@ After=local-fs.target
 [Service]
 Type=oneshot
 RemainAfterExit=true
-ExecStart=/usr/bin/kexec -p [/boot/vmlinuz-linux-kdump] --initrd=[/boot/initramfs-linux-kdump.img] --append="root=[root-device] irqpoll nr_cpus=1 reset_devices systemd.unit=kdump-save.service"
+ExecStart=/usr/bin/kexec -p /boot/vmlinuz-linux --initrd=/boot/initramfs-linux.img --append="root=[root-device] irqpoll nr_cpus=1 reset_devices systemd.mask=kdump.service systemd.unit=kdump-save.service"
 ExecStop=/usr/bin/kexec -p -u
 
 [Install]
@@ -373,9 +393,9 @@ WantedBy=multi-user.target
 <h4><span class="mw-headline" id="Early_kdump_using_mkinitcpio">Early kdump using mkinitcpio</span></h4>
 <p>You might encounter a situation where the kernel crashes before the systemd service can be started.  In this case, it might be helpful to run kexec as a mkinitcpio hook rather than a service.
 </p>
-<p>First make a copy of your initramfs.  This will be used to run the crash kernel.
+<p>First make a copy of your initramfs.  This will be used to run the crash kernel. 
 </p>
-<pre># sudo cp /boot/initramfs-linux.img /boot/initramfs-linux-crash.img
+<pre># cp /boot/initramfs-linux.img /boot/initramfs-linux-crash.img
 </pre>
 <p>Next, create the mkinitcpio install file.  This builds allows us to build the main initramfs with a copy of the crash initramfs for the crash kernel and the 
 </p>
@@ -459,8 +479,8 @@ HELPEOF
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Kdump&amp;oldid=818145">https://wiki.archlinux.org/index.php?title=Kdump&amp;oldid=818145</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 12 October 2024, at 06:20.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Kdump&amp;oldid=824359">https://wiki.archlinux.org/index.php?title=Kdump&amp;oldid=824359</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 1 January 2025, at 10:21.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

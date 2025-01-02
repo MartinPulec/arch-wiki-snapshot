@@ -5,7 +5,7 @@
 <title>ASUS ROG STRIX G732LXS - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -183,34 +183,25 @@
 <h3>
 <span id="Speakers_not_working.2Fquiet"></span><span class="mw-headline" id="Speakers_not_working/quiet">Speakers not working/quiet</span>
 </h3>
-<p>Install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pulseaudio">pulseaudio</a></span>.
-</p>
-<p>Create: 
+<p>You need to create: 
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/modprobe.d/alsa-base.conf</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">options snd-hda-intel model=asus-zenbook</pre>
-<p>This will help to have sound from the speakers, but only 0% or 100%. 
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">snd_hda_intel: model=1043:1982,1043:1982</pre>
+<p>You can check 
 </p>
-<p>To be adjustable: 
+<pre>alsa-info.sh --no-upload</pre>
+<p>to see which card is normally added to PCH and which to NVidia. You can see it after the <i>Soundcards recognised by ALSA</i> section Both are using snd_hda_nvidia and you normally can only apply the model to that and you want to apply to PCH. So if that comes after Nvidia you can only use
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/usr/share/pulseaudio/alsa-mixer/paths/analog-output.conf.common</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">...
-<b>[Element Master]</b>
-<b>switch = mute</b>
-<b>volume = ignore</b>
-[Element PCM]
-...</pre>
-<p>Unfortunately this made the jack headphones to be very quiet.
-Change the volume in <code>[Element PCM]</code> from merge to ignore and that fixes the issue: 
+<pre>snd_hda_intel: model=,1043:1982</pre>
+<p>And you are good to go. Or 
 </p>
-<pre>[Element PCM]
-switch = mute
-volume = <b>ignore</b>
-</pre>
-<p>Restart PulseAudio with <code>pulseaudio -k</code>.
+<pre>snd_hda_intel: model=1043:1982</pre>
+<p>if PCH is the first one.
 </p>
 <h2><span class="mw-headline" id="Video">Video</span></h2>
-<p>Works with optimus, it seems to have better performance with only using NVIDIA and not hybrid.
+<p>Works with envycontrol or optimus it seems to have better performance with only using NVIDIA and not hybrid.
+</p>
+<p>Using supergfxctl and an external monitor created a very laggy experience when the laptop screen was turned off. Also for some reason optimus does not always start with the latest kernel. At this point I would suggest using envycontrol if you would like to use nvidia only.
 </p>
 <p>Fan-curves works with kernel version 5.17 and up or there is an option to use the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/linux-g14/">linux-g14</a></span><sup><small>AUR</small></sup> kernel.
 </p>
@@ -233,8 +224,8 @@ volume = <b>ignore</b>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=ASUS_ROG_STRIX_G732LXS&amp;oldid=757078">https://wiki.archlinux.org/index.php?title=ASUS_ROG_STRIX_G732LXS&amp;oldid=757078</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 15 November 2022, at 17:46.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=ASUS_ROG_STRIX_G732LXS&amp;oldid=824190">https://wiki.archlinux.org/index.php?title=ASUS_ROG_STRIX_G732LXS&amp;oldid=824190</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 28 December 2024, at 10:09.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

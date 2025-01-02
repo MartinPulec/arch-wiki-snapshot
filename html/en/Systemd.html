@@ -5,7 +5,7 @@
 <title>systemd - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -1119,26 +1119,26 @@ Created symlink /etc/systemd/system/default.target -&gt; /usr/lib/systemd/system
 <p>An example of these mount options is <i>automounting</i>, which means mounting only when the resource is required rather than automatically at boot time. This is provided in <a href="../en/Fstab.html#Automount_with_systemd" title="Fstab">fstab#Automount with systemd</a>.
 </p>
 <h4><span class="mw-headline" id="GPT_partition_automounting">GPT partition automounting</span></h4>
-<p>On UEFI-booted systems, if specific conditions are met, <span class="plainlinks archwiki-template-man" title="$ man 8 systemd-gpt-auto-generator"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-gpt-auto-generator.8">systemd-gpt-auto-generator(8)</a></span> will automount GPT partitions following the <a rel="nofollow" class="external text" href="https://uapi-group.org/specifications/specs/discoverable_partitions_specification/">Discoverable Partitions Specification</a>. Automounted partitions can thus be omitted from <a href="../en/Fstab.html" title="Fstab">fstab</a>, and if the root partition is automounted, then <code>root=</code> can be omitted from the kernel command line.
+<p>On UEFI-booted systems, GPT partitions such as <code>root</code>, <code>home</code>, <code>swap</code>, etc. can be mounted automatically following the <a rel="nofollow" class="external text" href="https://uapi-group.org/specifications/specs/discoverable_partitions_specification/">Discoverable Partitions Specification</a>. These partitions can thus be omitted from <a href="../en/Fstab.html" title="Fstab">fstab</a>, and if the root partition is automounted, then <code>root=</code> can be omitted from the kernel command line. See <span class="plainlinks archwiki-template-man" title="$ man 8 systemd-gpt-auto-generator"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-gpt-auto-generator.8">systemd-gpt-auto-generator(8)</a></span>.
 </p>
 <p>The prerequisites are:
 </p>
 <ul>
-<li>When using <a href="../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a>, use the <a href="../en/Mkinitcpio.html#Common_hooks" title="Mkinitcpio">systemd hook</a>.</li>
+<li>When using <a href="../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a>, the <a href="../en/Mkinitcpio.html#Common_hooks" title="Mkinitcpio">systemd hook</a> is required.</li>
+<li>All automounted partitions must reside on the same physical disk as the ESP.</li>
+<li>The correct GPT partition types must be set. See <a href="../en/Partitioning.html#Partition_scheme" title="Partitioning">Partitioning#Partition scheme</a>.</li>
 <li>The boot loader must set the <a rel="nofollow" class="external text" href="https://systemd.io/BOOT_LOADER_INTERFACE/">LoaderDevicePartUUID</a> EFI variable, so that the used EFI system partition can be identified. This is supported by <a href="../en/Systemd-boot.html" title="Systemd-boot">systemd-boot</a>, <span class="plainlinks archwiki-template-man" title="$ man 7 systemd-stub"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-stub.7">systemd-stub(7)</a></span>, <a href="../en/GRUB.html" title="GRUB">GRUB</a> (with <i>grub-mkconfig</i> generated <code>grub.cfg</code>; custom <code>grub.cfg</code> requires <a href="../en/GRUB.html#LoaderDevicePartUUID" title="GRUB">loading the bli module</a>) and <a href="../en/REFInd.html#LoaderDevicePartUUID" title="REFInd">rEFInd (not enabled by default)</a>. This can be verified by running <code>bootctl</code> and checking the status of <code>Boot loader sets ESP information</code> or the status of <code>Stub sets ESP information</code> when booting via <a href="../en/Unified_kernel_image.html" title="Unified kernel image">Unified kernel images</a>.</li>
-<li>The root partition must be on the same physical disk as the used EFI system partition. Other partitions that will be automounted must be on the same physical disk as the root partition. This basically means that all automounted partitions must share the same physical disk with the ESP.</li>
-<li>The <code>/efi</code> mount point must be manually created (if desired), otherwise <code>systemd-gpt-auto-generator</code> will use <code>/boot</code>.</li>
 </ul>
-<div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> Be very careful when creating <code>/efi</code> on an existing system when using GPT automounting. <code>/efi</code> will be used as the default mount point on the next boot, which might leave your system in an inconsistent state with an empty <code>/boot</code> directory. You will most likely need to reinstall your kernel(s) and/or microcode,  regenerate your initramfs, etc..</div>
+<p><i>udev</i> will create a <code>/dev/gpt-auto-root</code> symlink that points to the root volume block device. If the root partition is encrypted with LUKS, <code>/dev/gpt-auto-root</code> will point to the unlocked/mapped volume and <code>/dev/gpt-auto-root-luks</code> to the encrypted partition.
+</p>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> The automounting of a partition can be disabled by changing the partition's <a href="https://en.wikipedia.org/wiki/GUID_Partition_Table#Partition_type_GUIDs" class="extiw" title="wikipedia:GUID Partition Table">type GUID</a> or setting the partition attribute bit 63 "do not automount", see <a href="../en/GPT_fdisk.html#Prevent_GPT_partition_automounting" class="mw-redirect" title="Gdisk">gdisk#Prevent GPT partition automounting</a>.</div>
 <h5>
 <span id=".2Fvar"></span><span class="mw-headline" id="/var">/var</span>
 </h5>
-<p>For <code>/var</code> automounting to work, the PARTUUID must match the SHA256 HMAC hash of the partition type UUID (<code>4d21b016-b534-45c2-a9fb-5c16e091fd2d</code>) keyed by the machine ID. The required PARTUUID can be obtained using: 
+<p>For <code>/var</code> automounting to work, the PARTUUID must match the SHA256 HMAC hash of the partition type UUID keyed by the machine ID. The required PARTUUID can be obtained using: 
 </p>
-<pre>$ systemd-id128 -u --app-specific=4d21b016-b534-45c2-a9fb-5c16e091fd2d machine-id
+<pre>$ systemd-id128 -u var-partition-uuid
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> <span class="plainlinks archwiki-template-man" title="$ man 1 systemd-id128"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-id128.1">systemd-id128(1)</a></span> reads the machine ID from <code>/etc/machine-id</code>, this makes it impossible to know the needed PARTUUID before the system is installed.</div>
@@ -1488,8 +1488,8 @@ Environment=SYSTEMD_LOG_LEVEL=debug
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Systemd&amp;oldid=819957">https://wiki.archlinux.org/index.php?title=Systemd&amp;oldid=819957</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 1 November 2024, at 07:18.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Systemd&amp;oldid=822798">https://wiki.archlinux.org/index.php?title=Systemd&amp;oldid=822798</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 12 December 2024, at 12:12.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -5,7 +5,7 @@
 <title>WireGuard - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.42.3">
+<meta name="generator" content="MediaWiki 1.42.4">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -366,13 +366,13 @@
 			<ul id="toc-Reload_peer_(server)_configuration-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Workaround_for_some_public_WiFi/networks_seemingly_blocking_WireGuard_connections" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Workaround_for_some_public_WiFi/networks_seemingly_blocking_WireGuard_connections">
+		<li id="toc-Workaround_for_some_public_Wi-Fi_networks_seemingly_blocking_WireGuard_connections" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Workaround_for_some_public_Wi-Fi_networks_seemingly_blocking_WireGuard_connections">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">5.7</span>Workaround for some public WiFi/networks seemingly blocking WireGuard connections</div>
+				<span class="vector-toc-numb">5.7</span>Workaround for some public Wi-Fi networks seemingly blocking WireGuard connections</div>
 			</a>
 			
-			<ul id="toc-Workaround_for_some_public_WiFi/networks_seemingly_blocking_WireGuard_connections-sublist" class="vector-toc-list">
+			<ul id="toc-Workaround_for_some_public_Wi-Fi_networks_seemingly_blocking_WireGuard_connections-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -987,7 +987,7 @@ Address=10.0.0.1/24
 Address=fdc9:281f:04d7:9ee9::1/64</pre>
 <ul>
 <li>To use a peer as a DNS server, specify its WireGuard tunnel's IP address(es) in the <i>.network</i> file using the <code>DNS=</code> option. For <a href="https://en.wikipedia.org/wiki/Search_domain" class="extiw" title="wikipedia:Search domain">search domains</a> use the <code>Domains=</code> option. See <span class="plainlinks archwiki-template-man" title="$ man 5 systemd.network"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd.network.5#%5BNETWORK%5D_SECTION_OPTIONS">systemd.network(5) § [NETWORK] SECTION OPTIONS</a></span> for details.</li>
-<li>To use a peer as the <b>only</b> DNS server, then in the <i>.network</i> file's <code>[Network]</code> section set <code>DNSDefaultRoute=true</code> and add <code>~.</code> to <code>Domains=</code> option.</li>
+<li>To use a peer as the <b>only</b> DNS server set <code>DNSDefaultRoute=true</code> and <code>Domains=~</code> in the <code>[Network]</code> section of <i>.network</i> file's.</li>
 <li>To route additional subnets add them as <code>[Route]</code> sections in the <i>.network</i> file. For example:</li>
 </ul>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/network/99-wg0.network</pre>
@@ -1149,7 +1149,7 @@ Destination=0.0.0.0/0
 Table=1000</pre>
 <p><b>Exempting specific addresses</b>
 </p>
-<p>In order to exempt specific addresses (such as private LAN addresses) from routing over the WireGuard tunnel, add them to a higher-priority RoutingPolicyRule than the one that was just created.  This will configure them to use the default routing table, and prevent them from using the WireGuard table.
+<p>In order to exempt specific addresses (such as private LAN addresses) from routing over the WireGuard tunnel, add them to another RoutingPolicyRule with higher priority.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/network/50-wg0.network</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">...
@@ -1618,14 +1618,12 @@ ExecStart=/bin/sh -c 'for i in /etc/wireguard/*.conf; do /usr/share/wireguard-to
 <div>
 <b>Reason:</b> Show how to do this with other network managers from <a href="#Persistent_configuration">#Persistent configuration</a>. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:WireGuard.html">Talk:WireGuard</a>)</div>
 </div>
-<h3>
-<span id="Workaround_for_some_public_WiFi.2Fnetworks_seemingly_blocking_WireGuard_connections"></span><span class="mw-headline" id="Workaround_for_some_public_WiFi/networks_seemingly_blocking_WireGuard_connections">Workaround for some public WiFi/networks seemingly blocking WireGuard connections</span>
-</h3>
+<h3><span class="mw-headline" id="Workaround_for_some_public_Wi-Fi_networks_seemingly_blocking_WireGuard_connections">Workaround for some public Wi-Fi networks seemingly blocking WireGuard connections</span></h3>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> This workaround will only be an option if a cellular connection is available on the device.</div>
-<p>Some WiFi networks can be configured to actively identify and block Wireguard's handshake thus preventing the initial connection and preventing the establishment of the secure tunnel.
+<p>Some Wi-Fi networks can be configured to actively identify and block WireGuard's handshake thus preventing the initial connection and preventing the establishment of the secure tunnel.
 </p>
-<p>This strategy works for blocking <i>new</i> WireGuard connections but it is useless against <i>existing</i> connections.  Therefore, to use WireGuard on such a network, simply connect to the WireGuard peer over cellular before joining the WiFi network thus allowing the handshake to take place before the active blocking can occur.  WireGuard will keep this tunnel open as the devices transitions from cellular to WiFi,
+<p>This strategy works for blocking <i>new</i> WireGuard connections but it is useless against <i>existing</i> connections.  Therefore, to use WireGuard on such a network, simply connect to the WireGuard peer over cellular before joining the Wi-Fi network thus allowing the handshake to take place before the active blocking can occur.  WireGuard will keep this tunnel open as the devices transitions from cellular to Wi-Fi.
 </p>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
 <h3><span class="mw-headline" id="Routes_are_periodically_reset">Routes are periodically reset</span></h3>
@@ -1751,8 +1749,8 @@ esac</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=WireGuard&amp;oldid=820039">https://wiki.archlinux.org/index.php?title=WireGuard&amp;oldid=820039</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 2 November 2024, at 17:41.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=WireGuard&amp;oldid=823571">https://wiki.archlinux.org/index.php?title=WireGuard&amp;oldid=823571</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 21 December 2024, at 07:39.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>
