@@ -462,14 +462,16 @@ To fix the installation you can follow <a rel="nofollow" class="external text" h
 <h2><span class="mw-headline" id="Configuration">Configuration</span></h2>
 <p>Most Arduino boards have a USB port which can be used for establishing a serial connection. This serial connection allows the user to program the board. The main microcontroller of most Arduinos, however, does not have a USB interface built-in. Hence, the board is usually equipped with a USB to serial chip in between the main microcontroller and the USB port.
 </p>
-<p>To achieve the serial interface over USB, most genuine Arduino boards are equipped with another ATmega microcontroller (e.g. ATmega16U2) or an FTDI USB UART converter (e.g. FT232RL). Both of these chips register themselves over USB as an ACM device, and as such, Linux will use the <code>cdc_acm</code> <a href="../en/Kernel_module.html" class="mw-redirect" title="Kernel modules">module</a>. The Arduino will then show up as <code>/dev/ttyACMx</code>.
+<p>To achieve the serial connection over USB, most genuine Arduino boards are equipped with another ATmega microcontroller (e.g. ATmega16U2) or an FTDI USB UART converter (e.g. FT232RL). Both of these chips register themselves over USB as an ACM device, and as such, Linux will use the <code>cdc_acm</code> <a href="../en/Kernel_module.html" class="mw-redirect" title="Kernel modules">module</a>. The Arduino will then show up as <code>/dev/ttyACMx</code>.
 </p>
-<p>Non-genuine Arduino boards cheap out on the interfacing chip. They are typically equipped with a Chinese CH340 or a counterfeit of the aforementioned models. The CH340 exposes itself as a proprietary UART over USB device. Here the <code>ch341</code> <a href="../en/Kernel_module.html" class="mw-redirect" title="Kernel modules">module</a> is used, making such Arduinos show up as <code>/dev/ttyUSBx</code>. This naming pattern may be customized by <a href="#Consistent_naming_of_Arduino_devices">altering udev rules</a>.
+<p>Non-genuine Arduino boards cheap out on the interfacing chip. They are typically equipped with a Chinese WCH CH340x or a counterfeit of the aforementioned models. The CH340x exposes itself as a proprietary UART over USB device. Here the <code>ch341</code> <a href="../en/Kernel_module.html" class="mw-redirect" title="Kernel modules">module</a> is used, making such Arduinos show up as <code>/dev/ttyUSBx</code>. This naming pattern may be customized by <a href="#Consistent_naming_of_Arduino_devices">altering udev rules</a>.
 </p>
-<p>Some boards may be equipped with a main microcontroller which does expose a native USB interface itself. Whether the board has a dedicated interface chip or not, genuine boards will come out of the factory with a proper bootloader pre-installed. Such bootloaders automatically establish a serial interface over USB once they are connected.
+<p>Some boards may be equipped with a main microcontroller which does expose a native USB interface by itself. Whether the board has a dedicated interface chip or not, genuine boards will come out of the factory with a proper bootloader pre-installed. Such bootloaders automatically establish a serial connection over USB once they are connected.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong>  Some boards, notably the Pro Mini, do not expose USB at all and must be programmed with additional hardware.</div>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong>  It may be useful to monitor the kernel messages with <code>dmesg</code> as the board is being plugged in. If a successful connection has been established, the assigned port can be read therein.</div>
 <h3><span class="mw-headline" id="Accessing_serial">Accessing serial</span></h3>
 <p>For the boards that expose a UART over USB, it is  necessary to allow read/write access to the serial port to users<a rel="nofollow" class="external autonumber" href="https://arduino.stackexchange.com/a/21219">[1]</a>. As explained in <a href="../en/Udev.html#Allowing_regular_users_to_use_devices" title="Udev">Udev#Allowing regular users to use devices</a>, create a file containing: 
 </p>
@@ -695,8 +697,8 @@ ch341-uart ttyUSB0: ch341-uart converter now disconnected from ttyUSB0
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Arduino&amp;oldid=823097">https://wiki.archlinux.org/index.php?title=Arduino&amp;oldid=823097</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 14 December 2024, at 21:05.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Arduino&amp;oldid=825199">https://wiki.archlinux.org/index.php?title=Arduino&amp;oldid=825199</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 17 January 2025, at 23:22.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -60,10 +60,19 @@
 		<ul id="toc-Configuration-sublist" class="vector-toc-list">
 		</ul>
 	</li>
+	<li id="toc-Databases" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#Databases">
+			<div class="vector-toc-text">
+			<span class="vector-toc-numb">3</span>Databases</div>
+		</a>
+		
+		<ul id="toc-Databases-sublist" class="vector-toc-list">
+		</ul>
+	</li>
 	<li id="toc-Service" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
 		<a class="vector-toc-link" href="#Service">
 			<div class="vector-toc-text">
-			<span class="vector-toc-numb">3</span>Service</div>
+			<span class="vector-toc-numb">4</span>Service</div>
 		</a>
 		
 		<ul id="toc-Service-sublist" class="vector-toc-list">
@@ -72,7 +81,7 @@
 	<li id="toc-User_management" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
 		<a class="vector-toc-link" href="#User_management">
 			<div class="vector-toc-text">
-			<span class="vector-toc-numb">4</span>User management</div>
+			<span class="vector-toc-numb">5</span>User management</div>
 		</a>
 		
 		<ul id="toc-User_management-sublist" class="vector-toc-list">
@@ -81,7 +90,7 @@
 	<li id="toc-Spider_Webcrawler" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
 		<a class="vector-toc-link" href="#Spider_Webcrawler">
 			<div class="vector-toc-text">
-			<span class="vector-toc-numb">5</span>Spider Webcrawler</div>
+			<span class="vector-toc-numb">6</span>Spider Webcrawler</div>
 		</a>
 		
 		<ul id="toc-Spider_Webcrawler-sublist" class="vector-toc-list">
@@ -90,7 +99,7 @@
 	<li id="toc-Interesting_channels" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
 		<a class="vector-toc-link" href="#Interesting_channels">
 			<div class="vector-toc-text">
-			<span class="vector-toc-numb">6</span>Interesting channels</div>
+			<span class="vector-toc-numb">7</span>Interesting channels</div>
 		</a>
 		
 		<ul id="toc-Interesting_channels-sublist" class="vector-toc-list">
@@ -99,7 +108,7 @@
 	<li id="toc-Troubleshooting" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
 		<a class="vector-toc-link" href="#Troubleshooting">
 			<div class="vector-toc-text">
-			<span class="vector-toc-numb">7</span>Troubleshooting</div>
+			<span class="vector-toc-numb">8</span>Troubleshooting</div>
 		</a>
 		
 			<button aria-controls="toc-Troubleshooting-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
@@ -111,7 +120,7 @@
 			<li id="toc-Read-only_file_system" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Read-only_file_system">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">7.1</span>Read-only file system</div>
+				<span class="vector-toc-numb">8.1</span>Read-only file system</div>
 			</a>
 			
 			<ul id="toc-Read-only_file_system-sublist" class="vector-toc-list">
@@ -120,7 +129,7 @@
 		<li id="toc-High_memory_consumption" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#High_memory_consumption">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">7.2</span>High memory consumption</div>
+				<span class="vector-toc-numb">8.2</span>High memory consumption</div>
 			</a>
 			
 			<ul id="toc-High_memory_consumption-sublist" class="vector-toc-list">
@@ -216,15 +225,30 @@
 <h2><span class="mw-headline" id="Configuration">Configuration</span></h2>
 <p>After installation, a configuration file needs to be generated. It should be readable by the <i>synapse</i> user:
 </p>
-<pre>[synapse]$ cd /var/lib/synapse
-[synapse]$ python -m synapse.app.homeserver \
-  --server-name <i>my.domain.name</i> \
-  --config-path /etc/synapse/homeserver.yaml \
-  --generate-config \
-  --report-stats=yes</pre>
+<pre># generate_config --server-name <i>my.domain.name</i> \
+                  --config-dir /etc/synapse \
+                  --data-dir /var/lib/synapse \
+                  --report-stats yes \
+                  --generate-secrets \
+                  --output-file /etc/synapse/homeserver.yaml
+
+# generate_log_config -o /etc/synapse/<i>my.domain.name</i>.log.config \
+                      -f /var/log/synapse/homeserver.log
+                      
+# generate_signing_key --output_file /etc/synapse/<i>my.domain.name</i>.signing.key
+
+# chown -R synapse:synapse /etc/synapse \
+                           /var/log/synapse</pre>
 <p>Note that this will generate corresponding SSL keys and self-signed certificates for the specified server name. You have to regenerate those if you change the server name.
 </p>
 <p>If your Synapse server is meant to be accessed over the internet, it is highly recommended to configure a <a rel="nofollow" class="external text" href="https://github.com/element-hq/synapse/blob/develop/docs/reverse_proxy.md">reverse proxy</a>.
+</p>
+<h2><span class="mw-headline" id="Databases">Databases</span></h2>
+<p>Synapse uses SQLite only to test the server, Postgres is used for operation.
+</p>
+<p>To use Postgres you will need to install the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=python-psycopg2">python-psycopg2</a></span> package.
+</p>
+<p>You can read more about installation and configuration on the official website: <a rel="nofollow" class="external text" href="https://github.com/matrix-org/synapse/blob/develop/docs/postgres.md">Using Postgres</a>
 </p>
 <h2><span class="mw-headline" id="Service">Service</span></h2>
 <p>The <code>synapse.service</code> systemd service is included in the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=matrix-synapse">matrix-synapse</a></span> package. It will start the synapse server as user <i>synapse</i> and use the configuration file <code>/etc/synapse/homeserver.yaml</code>.
@@ -287,8 +311,8 @@
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Matrix&amp;oldid=809886">https://wiki.archlinux.org/index.php?title=Matrix&amp;oldid=809886</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 2 June 2024, at 07:39.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Matrix&amp;oldid=826107">https://wiki.archlinux.org/index.php?title=Matrix&amp;oldid=826107</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 29 January 2025, at 20:51.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

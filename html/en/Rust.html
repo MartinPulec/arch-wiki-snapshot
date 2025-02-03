@@ -509,7 +509,7 @@
 </p>
 <pre>$ rustup default stable</pre>
 <h4><span class="mw-headline" id="Building_rust_against_a_new_version_of_llvm">Building rust against a new version of llvm</span></h4>
-<p>Since rust builds using a bootstrap strategy, a functional rust package is required.  In the case of building a version of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=llvm">llvm</a></span> which is <b>newer</b> that the version in the official repos, users will encounter the need to have a shared object from a previous version of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=llvm-libs">llvm-libs</a></span> (one which was used to build the repo version of rust) in order to build against the newer version of llvm.
+<p>Since rust builds using a bootstrap strategy, a functional rust package is required.  In the case of building a version of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=llvm">llvm</a></span> which is <b>newer</b> than the version in the official repos, users will encounter the need to have a shared object from a previous version of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=llvm-libs">llvm-libs</a></span> (one which was used to build the repo version of rust) in order to build against the newer version of llvm.
 </p>
 <p>Example: the official repos offer llvm-18.1.8 and the goal is to build llvm-19.1.6.
 </p>
@@ -581,9 +581,9 @@
 <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mingw-w64-gcc">mingw-w64-gcc</a></span>
 </li>
 <li>Run <code>rustup target add $ARCH-pc-windows-gnu</code> to install Rust standard library for your architecture.</li>
-<li>Finally, tell cargo where to find the MinGW-w64 gcc/ar by adding the following to your <code>~/.cargo/config</code>:</li>
+<li>Finally, tell cargo where to find the MinGW-w64 gcc/ar by adding the following to your <code>~/.cargo/config.toml</code>:</li>
 </ol>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.cargo/config</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.cargo/config.toml</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[target.$ARCH-pc-windows-gnu]
 linker = "/usr/bin/$ARCH-w64-mingw32-gcc"
 ar = "/usr/bin/$ARCH-w64-mingw32-ar"
@@ -627,7 +627,7 @@ edition = "2021"
 [dependencies]</pre>
 </div>
 <h3><span class="mw-headline" id="Optimizing_for_native_CPU_platform">Optimizing for native CPU platform</span></h3>
-<p>In order to instruct Cargo to always compile optimal code for your CPU platform, you can achieve this by adding a flag to <code>~/.cargo/config</code>. Please be aware that the resulting binaries can not be distributed for use on other computers, and might even fail on your own system if you decide to change your CPU in the future.
+<p>In order to instruct Cargo to always compile optimal code for your CPU platform, you can achieve this by adding a flag to <code>~/.cargo/config.toml</code>. Please be aware that the resulting binaries can not be distributed for use on other computers, and might even fail on your own system if you decide to change your CPU in the future.
 </p>
 <p>Find out which target platform is used by default on your installation:
 </p>
@@ -638,12 +638,12 @@ edition = "2021"
 </p>
 <p>Instruct Cargo to always compile code optimized for the native CPU platform:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.cargo/config</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.cargo/config.toml</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[target.x86_64-unknown-linux-gnu]
 rustflags = ["-C", "target-cpu=native"]
 </pre>
 <h3><span class="mw-headline" id="sccache">sccache</span></h3>
-<p>Compilation times can be greatly reducing by using <a rel="nofollow" class="external text" href="https://github.com/mozilla/sccache">sccache</a> (<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sccache">sccache</a></span> package). This will maintain a local cache of compiler artifacts, eliminating the need to recompile code that has not changed since the last time it was compiled.
+<p>Compilation times can be greatly reduced by using <a rel="nofollow" class="external text" href="https://github.com/mozilla/sccache">sccache</a> (<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sccache">sccache</a></span> package). This will maintain a local cache of compiler artifacts, eliminating the need to recompile code that has not changed since the last time it was compiled.
 </p>
 <p>To enable sccache, you can use <code>RUSTC_WRAPPER</code> <a href="../en/Environment_variables.html" class="mw-redirect" title="Environment variable">environment variable</a>:
 </p>
@@ -654,9 +654,9 @@ $ cargo build
 </p>
 <pre>$ RUSTC_WRAPPER=sccache cargo build
 </pre>
-<p>Alternatively, add the following configuration to <code>~/.cargo/config</code>:
+<p>Alternatively, add the following configuration to <code>~/.cargo/config.toml</code>:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.cargo/config</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.cargo/config.toml</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[build]
 rustc-wrapper = "sccache"
 </pre>
@@ -714,7 +714,7 @@ rustc-wrapper = "sccache"
 It can be found and downloaded under their official <a rel="nofollow" class="external text" href="https://www.jetbrains.com/rust/">Website</a> or in the AUR under <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/rustrover/">rustrover</a></span><sup><small>AUR</small></sup> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/rustrover-eap/">rustrover-eap</a></span><sup><small>AUR</small></sup>.
 </p>
 <h4><span class="mw-headline" id="Visual_Studio_Code">Visual Studio Code</span></h4>
-<p><a href="../en/Visual_Studio_Code.html" title="Visual Studio Code">Visual Studio Code</a> support for Rust can be obtained via <a href="#rust-analyzer">rust-analyzer</a> with the <a rel="nofollow" class="external text" href="https://marketplace.visualstudio.com/items?itemName=matklad.rust-analyzer">matklad.rust-analyzer</a> extension.
+<p><a href="../en/Visual_Studio_Code.html" title="Visual Studio Code">Visual Studio Code</a> support for Rust can be obtained via <a href="#rust-analyzer">rust-analyzer</a> with the <a rel="nofollow" class="external text" href="https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer">rust-lang.rust-analyzer</a> extension.
 </p>
 <h4><span class="mw-headline" id="Vim">Vim</span></h4>
 <p><a href="../en/Vim.html" title="Vim">Vim</a> support for Rust can be obtained via the official <a rel="nofollow" class="external text" href="https://github.com/rust-lang/rust.vim">rust.vim</a> plugin, which provides file detection, syntax highlighting, formatting and support for the <a rel="nofollow" class="external text" href="https://github.com/vim-syntastic/syntastic">Syntastic</a> syntax checking plugin. Many completion engines have Rust support, like <a rel="nofollow" class="external text" href="https://github.com/neoclide/coc.nvim">coc</a> (via the <a rel="nofollow" class="external text" href="https://github.com/neoclide/coc-rls">coc.rls</a> plugin) and <a rel="nofollow" class="external text" href="https://github.com/ycm-core/YouCompleteMe">YouCompleteMe</a>.
@@ -748,8 +748,8 @@ It can be found and downloaded under their official <a rel="nofollow" class="ext
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Rust&amp;oldid=824238">https://wiki.archlinux.org/index.php?title=Rust&amp;oldid=824238</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 29 December 2024, at 12:21.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Rust&amp;oldid=826235">https://wiki.archlinux.org/index.php?title=Rust&amp;oldid=826235</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 1 February 2025, at 17:54.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

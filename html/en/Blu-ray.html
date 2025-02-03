@@ -396,7 +396,7 @@
 <h4><span class="mw-headline" id="AACS">AACS</span></h4>
 <p>The AACS specification and decryption process are publicly available at <a rel="nofollow" class="external autonumber" href="https://aacsla.com/aacs-specifications/">[1]</a>. Many articles and research papers describe it in detail at <a rel="nofollow" class="external autonumber" href="https://forum.doom9.org/showthread.php?t=122363">[2]</a>, <a rel="nofollow" class="external autonumber" href="https://web.archive.org/web/20170809220215/http://cacr.uwaterloo.ca/~dstinson/papers/AACS-journal.pdf">[3]</a> or <a rel="nofollow" class="external autonumber" href="https://www.iis.sinica.edu.tw/papers/lcs/5007-F.pdf">[4]</a><sup title="Last check status: SSL error">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-07-30 ⓘ]</sup>.
 </p>
-<p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=libaacs">libaacs</a></span> is a research project from the VideoLAN developer team to implement the Advanced Access Content System specification, and distributed as an open-source library <a rel="nofollow" class="external autonumber" href="https://www.videolan.org/developers/libaacs.html">[5]</a>. This project does not offer any key or certificate that could be used to decode encrypted copyrighted material. However, combined with a key database file, it is possible to use it to play Blu-ray discs that use the AACS standard. This file is called <code>KEYDB.cfg</code> and is accessed by libaacs in <code>~/.config/aacs</code>. The format of this file is available at <a rel="nofollow" class="external autonumber" href="https://code.videolan.org/videolan/libaacs/-/blob/master/KEYDB.cfg">[6]</a>.
+<p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=libaacs">libaacs</a></span> is a research project from the VideoLAN developer team to implement the Advanced Access Content System specification, and distributed as an open-source library <a rel="nofollow" class="external autonumber" href="https://www.videolan.org/developers/libaacs.html">[5]</a>. This project does not offer any key or certificate that could be used to decode encrypted copyrighted material. However, combined with a key database file, it is possible to use it to play Blu-ray discs that use the AACS standard. This file is called <code>KEYDB.cfg</code> and is accessed by libaacs in <code>$XDG_CONFIG_DIRS/aacs</code>. The format of this file is available at <a rel="nofollow" class="external autonumber" href="https://code.videolan.org/videolan/libaacs/-/blob/master/KEYDB.cfg">[6]</a>.
 </p>
 <h5><span class="mw-headline" id="AACS_decryption_process">AACS decryption process</span></h5>
 <p>The AACS decryption process for a protected disc by a licensed player goes through four stages:
@@ -433,7 +433,7 @@
 <ol>
 <li>
 <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=libbluray">libbluray</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=libaacs">libaacs</a></span>.</li>
-<li>Download a <code>KEYDB.cfg</code> file (uppercase matters) from <a rel="nofollow" class="external autonumber" href="http://fvonline-db.bplaced.net/">[8]</a> and copy it in the directory <code>~/.config/aacs</code>. This file contains VUK data required for attempting the decryption process described below for more than 90,000 discs. Note that all languages contain the same information to read a disc, only the name of the disc is translated. You may want to update this file regularly, as new versions are provided from time to time.</li>
+<li>Download a <code>KEYDB.cfg</code> file (uppercase matters) from <a rel="nofollow" class="external autonumber" href="http://fvonline-db.bplaced.net/">[8]</a> and copy it in the directory <code>~/.config/aacs</code> or <code>/etc/xdg/aacs</code>. This file contains VUK data required for attempting the decryption process described below for more than 90,000 discs. Note that all languages contain the same information to read a disc, only the name of the disc is translated. You may want to update this file regularly, as new versions are provided from time to time.</li>
 <li>Optionally, copy the PK and Host K/C data provided at <a rel="nofollow" class="external autonumber" href="https://forum.doom9.org/showpost.php?p=1883655&amp;postcount=3">[9]</a> at the beginning of that <code>KEYDB.cfg</code> file. This provides PK and Host K/C data for discs up to MKB v68. This is only necessary for discs that may not already be listed in the VUK list, and will only work for drives that have never read a disc using MKB v70 or above.</li>
 <li>If necessary (i.e. if volumes are not mounted automatically on your system), mount the disc to a directory, <i>e.g.</i>: <pre># mount /dev/sr0 /media/blurays</pre>
 </li>
@@ -480,7 +480,7 @@ BD+ detected        : no
 <li>If the BR disc is scrambled with AACS, libaacs will:
 <ol>
 <li>Check if a valid VUK for the disc is already available in <code>~/.cache/aacs/vuk/</code>. If yes, go to step 4.1, if not continue to next step.</li>
-<li>Read <code>~/.config/aacs/KEYDB.cfg</code>:
+<li>Read <code>$XDG_CONFIG_DIRS/KEYDB.cfg</code>:
 <ol>
 <li>If a valid VUK is available, go to 4.1, if not continue to next step.</li>
 <li>If a valid PK (<i>i.e.</i> corresponding to the disc MKB version) and a valid (non-revoked by drive) Host key/certificate is available, libaacs will attempt to compute the VUK. The VUK is then stored in <code>~/.cache/aacs/vuk</code> for future use. Go to step 4.1. If no valid PK/HKC are available, go to step 4.2.</li>
@@ -592,7 +592,7 @@ BD+ detected        : no
 </pre>
 <h3><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h3>
 <h4><span class="mw-headline" id="Absent_KEYDB.cfg_file">Absent KEYDB.cfg file</span></h4>
-<p>If a valid VUK is found in <code>~/.cache/aacs/vuk</code>, then libaacs does not need to use <code>KEYDB.cfg</code> to decrypt the content. However, a <code>KEYDB.cfg</code> file in <code>~/.config/aacs/</code> is still required (even if that file is empty).
+<p>If a valid VUK is found in <code>~/.cache/aacs/vuk</code>, then libaacs does not need to use <code>KEYDB.cfg</code> to decrypt the content. However, a <code>KEYDB.cfg</code> file in <code>$XDG_CONFIG_DIRS/aacs/</code> is still required (even if that file is empty).
 </p>
 <h4>
 <span id="Revoked_Host_key.2Fcertificate"></span><span class="mw-headline" id="Revoked_Host_key/certificate">Revoked Host key/certificate</span>
@@ -622,7 +622,7 @@ BD+ detected        : no
 </p>
 <p>$ cd /usr/share/aacskeys &amp;&amp; aacskeys /media/blurays
 </p>
-<p>If you wish, you may add the Blu-ray to the key database: edit <code>~/.config/aacs/KEYDB.cfg</code> and add the information output by aacskeys using this syntax:
+<p>If you wish, you may add the Blu-ray to the key database: edit <code>$XDG_CONFIG_DIRS/KEYDB.cfg</code> and add the information output by aacskeys using this syntax:
 </p>
 <pre>0x<i>unit key file hash</i> = Film Title    | V | 0x<i>volume unique key</i>
 </pre>
@@ -640,25 +640,19 @@ BD+ detected        : no
 </p>
 <pre># modprobe sg</pre>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
-<p>Below are some options for Blu-ray/HD-DVD decryption. Users can employ to backup a commercial Blu-ray movie under Fair Use guidelines:
+<p>Below are some options for Blu-ray/HD-DVD decryption users can employ to backup a commercial Blu-ray movie under Fair Use guidelines:
 </p>
 <ul>
 <li>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/aacskeys/">aacskeys</a></span><sup><small>AUR</small></sup> - Open source</li>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/aacskeys/">aacskeys</a></span><sup><small>AUR</small></sup>—Open-source program to retrieve decryption keys for HD discs.</li>
 <li>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/makemkv/">makemkv</a></span><sup><small>AUR</small></sup> - Closed source/limited free beta, has a native Linux version</li>
-</ul>
-<ul>
+<a rel="nofollow" class="external text" href="https://www.aiseesoft.com/blu-ray-player/">Aiseesoft Blu-ray Player</a>—Commercial software player for Windows and Mac, works fine using <a href="../en/Wine.html" title="Wine">Wine</a>.</li>
 <li>
-<a rel="nofollow" class="external text" href="https://github.com/m4tthi4s/vukextract">vukextract</a> <a rel="nofollow" class="external text" href="https://forum.doom9.org/showthread.php?t=174404">VukExtract support+discussion</a> - Open source software that uses proprietary DVDFab to extract VUKs</li>
+<a rel="nofollow" class="external text" href="https://forum.doom9.org/showthread.php?t=176924">Blu-ray playback with libaacs and libbdplus</a>—Doom9's forum thread.</li>
 <li>
-<a rel="nofollow" class="external text" href="https://www.redfox.bz/anydvdhd.html">AnyDVD HD</a><sup title="Last check status: domain name not resolved">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-07-30 ⓘ]</sup> - Commercial software requiring users to run it on an Microsoft OS in a VM.</li>
+<a rel="nofollow" class="external text" href="https://www.dvdfab.cn/dvdfab-hd-decrypter.htm">DVDFab HD Decrypter</a>—Free part of commercial software for Windows and Mac; works fine using Wine, for more information see the <a rel="nofollow" class="external text" href="https://appdb.winehq.org/objectManager.php?sClass=application&amp;iId=2377">AppDB entry</a>.</li>
 <li>
-<a rel="nofollow" class="external text" href="https://appdb.winehq.org/objectManager.php?sClass=application&amp;iId=2377">DVDFab HD Decrypter</a> - Commercial software for Windows, but works fine using <a href="../en/Wine.html" title="Wine">Wine</a>.</li>
-<li>
-<a rel="nofollow" class="external text" href="https://www.aiseesoft.com/blu-ray-player/">Aiseesoft Blu-ray Player</a> - Commercial software player for Windows, but works fine using <a href="../en/Wine.html" title="Wine">Wine</a>.</li>
-<li>
-<a rel="nofollow" class="external text" href="https://forum.doom9.org/showthread.php?t=176924">Blu-ray playback with libaacs and libbdplus thread</a> on Doom9’s forum.</li>
+<a rel="nofollow" class="external text" href="https://www.makemkv.com/">MakeMKV</a> (<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/makemkv/">makemkv</a></span><sup><small>AUR</small></sup>)—Closed-source DVD and Blu-ray to <a href="https://en.wikipedia.org/wiki/Matroska" class="extiw" title="wikipedia:Matroska">Matroska</a> converter. It has a <a rel="nofollow" class="external text" href="https://forum.makemkv.com/forum/viewforum.php?f=3">native Linux version</a>.</li>
 </ul>
 </div>
 </div>
@@ -680,8 +674,8 @@ BD+ detected        : no
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Blu-ray&amp;oldid=818769">https://wiki.archlinux.org/index.php?title=Blu-ray&amp;oldid=818769</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 13 October 2024, at 04:31.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Blu-ray&amp;oldid=825718">https://wiki.archlinux.org/index.php?title=Blu-ray&amp;oldid=825718</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 22 January 2025, at 09:08.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

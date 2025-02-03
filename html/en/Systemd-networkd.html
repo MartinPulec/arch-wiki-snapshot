@@ -420,6 +420,15 @@
 			<ul id="toc-Prevent_multiple_default_routes-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Configuring_a_second_static_IP_with_its_own_MAC_address_on_an_existing_interface" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Configuring_a_second_static_IP_with_its_own_MAC_address_on_an_existing_interface">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">4.6</span>Configuring a second static IP with its own MAC address on an existing interface</div>
+			</a>
+			
+			<ul id="toc-Configuring_a_second_static_IP_with_its_own_MAC_address_on_an_existing_interface-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1">
@@ -1064,8 +1073,10 @@ DNS=9.9.9.9</pre>
 </li>
 </ul>
 <h2><span class="mw-headline" id="Usage_with_containers">Usage with containers</span></h2>
-<p><i>systemd-networkd</i> can provide fully automatic configuration of networking for <a href="../en/Systemd-nspawn.html" title="Systemd-nspawn">systemd-nspawn</a> containers when it is used on the host system as well as inside the container. See <a href="../en/Systemd-nspawn.html#Networking" title="Systemd-nspawn">systemd-nspawn#Networking</a> for a comprehensive overview.
+<p><i>systemd-networkd</i> can provide fully automatic configuration of networking for <a href="../en/Systemd-nspawn.html" title="Systemd-nspawn">systemd-nspawn</a> containers using private networking when it is used on the host system as well as inside the container. See <a href="../en/Systemd-nspawn.html#Networking" title="Systemd-nspawn">systemd-nspawn#Networking</a> for a comprehensive overview.
 </p>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong> <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Starting">Starting</a> <code>systemd-networkd</code> is <b>all that is needed</b> on the host to provide the described network auto-configuration for containers which use the default <a href="../en/Systemd-nspawn.html#Use_a_virtual_Ethernet_link" title="Systemd-nspawn">virtual Ethernet link</a> setup. The following is only needed for other private networking scenarios.</div>
 <p>For the examples below,
 </p>
 <ul>
@@ -1423,26 +1434,49 @@ InitialAdvertisedReceiveWindow=10</pre>
 <p>The sysctl setting <code>net.ipv4.tcp_congestion_control</code> is not directly related to these values, as it controls how the congestion and receive windows are adjusted while a TCP link is active, and particularly when the path between the two hosts is congested and throughput must be reduced.  The above <code>Initial*</code> values simply set the default window values selected for each new connection, before any congestion algorithm takes over and adjusts them as needed.  Setting higher initial values simply shortcuts some negotiation while the congestion algorithm tries to find the optimum values (or, conversely, setting the wrong initial values adds additional negotiation time while the congestion algorithm works towards correcting them, slowing down each newly established TCP connection for a few seconds extra).
 </p>
 <h3><span class="mw-headline" id="Prevent_multiple_default_routes">Prevent multiple default routes</span></h3>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
-<div>
-<b>Reason:</b> It is not clear why a configured network interface without routes is desired in this scenario. Rather than removing one default route, adjusting its priority with <code>RouteMetric=</code> would make more sense. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Systemd-networkd.html">Talk:Systemd-networkd</a>)</div>
-</div>
-<p>When using multiple network devices, <code>ip route</code> may show multiple default routes. Not all of them may be desired, e.g.
+<p><i>systemd-networkd</i> <a rel="nofollow" class="external text" href="https://github.com/systemd/systemd/issues/17698">does not set per-interface-type default route metrics</a>, i.e. they need to be configured manually when using multiple network devices. For example, the following <code>ip route</code> shows multiple default routes:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">ip route</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">default via 10.30.1.1 dev eno2 proto dhcp src 10.30.1.15 metric 1024
 default via 192.168.1.254 dev eno1 proto dhcp src 172.18.105.104 metric 1024</pre>
-<p>In the above example, eno1 provides internet while eno2 provides restricted access. There is a race condition for which of both is chosen as default route. Since eno2 came up first, it is preferred and thus, there is no internet access. To prevent that, make systemd-networkd not accept the device for routing at all. In the associated .network file - in the above example: eno2 - put
+<p>Since the same default <code>metric</code> value <code>1024</code> is assigned, there is a race condition which of both is chosen as default route. Since the <code>eno2</code> device came up first, it is preferred and thus, access available via <code>eno2</code> may be ignored.
 </p>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
-<div>
-<b>Reason:</b> A <i>.network</i> file without a <code>[Match]</code> section does not make sense. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Systemd-networkd.html">Talk:Systemd-networkd</a>)</div>
-</div>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/network/eno2.network</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[DHCP]
-UseRoutes=false</pre>
+<p>To prevent the race condition, assign different <code>RouteMetric=</code> values for the devices. See <a href="#Wired_and_wireless_adapters_on_the_same_machine">#Wired and wireless adapters on the same machine</a> for a corresponding example.
+</p>
+<p>If instead one device should not provide a default route, the <code>UseRoutes=false</code> option can be used to ignore routes provides by the DHCP server. This may be useful, for example, if the device provides a connection to a single other machine.
+</p>
+<h3><span class="mw-headline" id="Configuring_a_second_static_IP_with_its_own_MAC_address_on_an_existing_interface">Configuring a second static IP with its own MAC address on an existing interface</span></h3>
+<p>To make your computer appear as two completely separate devices to your router, you can create a virtual interface not just with a different IP but also with a different MAC address.
+</p>
+<p>To achieve this, create a virtual interface (<i>macvlan</i>) on top of your physical interface with a unique MAC address:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/network/<i>25-eth210</i>.netdev</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[NetDev]
+Name=<i>eth210</i>
+Kind=macvlan
+MACAddress=<i>00:11:22:33:44:55</i>
+
+[MACVLAN]
+Mode=bridge</pre>
+<p>Then add a network file as usual, using the same subnet and gateway, and avoiding the range of IP numbers used for DHCP if you configure a static IP. For example:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/network/<i>25-eth210</i>.network</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Match]
+Name=<i>eth210</i>
+
+[Network]
+Address=<i>192.168.132.210/24</i>
+Gateway=<i>192.168.132.1</i>
+
+[Route]
+Destination=<i>192.168.132.0/24</i>
+Metric=2</pre>
+<p>The <i>macvlan</i> interface route has metric 2. This ensures that traffic will prefer going through the main interface, since that (implicitly) has a default route with metric 1, unless specifically directed to use the <i>macvlan</i> interface.
+</p>
+<p>Finally, add <code>MACVLAN=eth210</code> to the <code>[Network]</code> section of the <i>.network</i> file of your main interface!
+</p>
+<p>At this point, a fast way to make your router aware of the new MAC (and configure it to accept that MAC) you can for example run <code>arping -I eth210 192.168.132.1</code> as root. After configuring your router for the "new device" you can test if the new interface has internet access with for example <code>curl --interface 192.168.132.210 ifconfig.me</code> that should then print your public IP number.
+</p>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul>
 <li><span class="plainlinks archwiki-template-man" title="$ man 8 systemd-networkd"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-networkd.8">systemd-networkd(8)</a></span></li>
@@ -1475,8 +1509,8 @@ UseRoutes=false</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Systemd-networkd&amp;oldid=822121">https://wiki.archlinux.org/index.php?title=Systemd-networkd&amp;oldid=822121</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 4 December 2024, at 09:22.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Systemd-networkd&amp;oldid=826239">https://wiki.archlinux.org/index.php?title=Systemd-networkd&amp;oldid=826239</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 1 February 2025, at 19:29.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -208,10 +208,19 @@
 			</button>
 		
 		<ul id="toc-Tips_and_tricks-sublist" class="vector-toc-list">
-			<li id="toc-Disable_sleep_completely" class="vector-toc-list-item vector-toc-level-2">
+			<li id="toc-Unlocking_automatically_on_resume_in_trusted_locations" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Unlocking_automatically_on_resume_in_trusted_locations">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">6.1</span>Unlocking automatically on resume in trusted locations</div>
+			</a>
+			
+			<ul id="toc-Unlocking_automatically_on_resume_in_trusted_locations-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Disable_sleep_completely" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Disable_sleep_completely">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">6.1</span>Disable sleep completely</div>
+				<span class="vector-toc-numb">6.2</span>Disable sleep completely</div>
 			</a>
 			
 			<ul id="toc-Disable_sleep_completely-sublist" class="vector-toc-list">
@@ -220,7 +229,7 @@
 		<li id="toc-Intel_Rapid_Start_Technology_(IRST)" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Intel_Rapid_Start_Technology_(IRST)">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">6.2</span>Intel Rapid Start Technology (IRST)</div>
+				<span class="vector-toc-numb">6.3</span>Intel Rapid Start Technology (IRST)</div>
 			</a>
 			
 			<ul id="toc-Intel_Rapid_Start_Technology_(IRST)-sublist" class="vector-toc-list">
@@ -464,7 +473,7 @@
 <b>Reason:</b> systemd v256 supports automatically selecting the most appropriate sleep operation with the new <code>systemctl sleep</code> command. <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/pull/29853">[1]</a> (Discuss in <a rel="nofollow" class="external text" href="../../en/Talk:Power_management/Suspend_and_hibernate.html">Talk:Power management/Suspend and hibernate</a>)</div>
 </div>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> The goal of the high level interface is to provide binaries/scripts that can be invoked to perform suspend/hibernate and ways to hook extra preparatory/cleanup work into the said process. For automatically enter sleep state on power buttons, menu clicks, or laptop lid events, refer to <a href="../../en/Power_management.html#ACPI_events" title="Power management">Power management#ACPI events</a>.</div>
+<strong>Note:</strong> The goal of the high level interface is to provide binaries/scripts that can be invoked to perform suspend/hibernate and ways to hook extra preparatory/cleanup work into the said process. For automatically entering sleep state on power buttons, menu clicks, or laptop lid events, refer to <a href="../../en/Power_management.html#ACPI_events" title="Power management">Power management#ACPI events</a>.</div>
 <p><a href="../../en/Systemd.html" title="Systemd">systemd</a> provides native commands for suspend, hibernate and a hybrid suspend. This is the default interface used in Arch Linux.
 </p>
 <p><code>systemctl suspend</code> should work out of the box. For <code>systemctl hibernate</code> to work on your system you might need to follow the instructions at <a href="#Hibernation">#Hibernation</a>.
@@ -671,7 +680,7 @@ File size of /swapfile is 4294967296 (1048576 blocks of 4096 bytes)
 <h3><span class="mw-headline" id="Disable_zswap_writeback_to_use_the_swap_space_only_for_hibernation">Disable zswap writeback to use the swap space only for hibernation</span></h3>
 <p>In Linux 6.8, <a href="../../en/Zswap.html" title="Zswap">zswap</a> gained <a rel="nofollow" class="external text" href="https://git.kernel.org/linus/501a06fe8e4c185bbda371b8cedbdf1b23a633d8">a per-cgroup option to disable writeback</a>. By using systemd unit setting <code>MemoryZSwapWriteback</code> (see <span class="plainlinks archwiki-template-man" title="$ man 5 systemd.resource-control"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd.resource-control.5#Memory_Accounting_and_Control">systemd.resource-control(5) § Memory Accounting and Control</a></span>) in all possible unit types, zswap writeback can be effectively disabled entirely. This allows to use zswap just like zram with the added benefit of supporting hibernation.
 </p>
-<p>To avoid having to manually create twelve top level per-type drop-in files (for system and user <code>scope</code>, <code>service</code>, <code>slice</code>, <code>socket</code>, <code>mount</code>, <code>swap</code> units types), <a href="../../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zswap-disable-writeback/">zswap-disable-writeback</a></span><sup><small>AUR</small></sup>. Reboot for the settings to take effect.
+<p>To avoid having to manually create twelve top level per-type drop-in files (for system and user <code>scope</code>, <code>service</code>, <code>slice</code>, <code>socket</code>, <code>mount</code>, <code>swap</code> units types), <a href="../../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zswap-disable-writeback/">zswap-disable-writeback</a></span><sup><small>AUR</small></sup>. <a href="../../en/Zswap.html#Toggling_zswap" title="Zswap">Enable zswap</a> and reboot for the settings to take effect.
 </p>
 <p>Try to perform memory intensive tasks and confirm that zswap has not written anything to disk:
 </p>
@@ -799,6 +808,33 @@ esac
 <p>Do not forget to make your script <a href="../../en/Help:Reading.html#Make_executable" class="mw-redirect" title="Executable">executable</a>.
 </p>
 <h2><span class="mw-headline" id="Tips_and_tricks">Tips and tricks</span></h2>
+<h3><span class="mw-headline" id="Unlocking_automatically_on_resume_in_trusted_locations">Unlocking automatically on resume in trusted locations</span></h3>
+<p>When resuming, you can automatically unlock your system if it is connected to certain devices or trusted Wi-Fi networks.
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/local-scripts/resume-unlock.sh</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">#!/usr/bin/bash
+# Unlock session if at a trusted location
+
+function trusted() {
+    # Check if connected to a trusted Wi-Fi network
+    [[ $(iwgetid -r) == <i>your_home_ssid</i> ]] \
+        &amp;&amp; return 0
+
+    # Check if trusted USB device is connected.
+    #lsusb -d <i>xxxx:xxxx</i> &amp;&amp; return 0
+
+    return 1 # Not trusted
+}
+
+for (( i=0; i &lt; 10; i++ )); do
+    if trusted; then
+        loginctl unlock-sessions
+        exit
+    fi
+    sleep 0.5
+done</pre>
+<p>Configure your desktop environment so that it locks on resume, and then create a <a href="#Sleep_hooks">sleep hook</a> that runs the above script after resuming. You also need to <a href="../../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=wireless_tools">wireless_tools</a></span> to read the connected Wi-Fi SSID. If you also want to test for connected USB devices, uncomment the <code>lsusb -d ...</code> line in the script and fill in the ID of your trusted device. You can get the ID of your device by running <code>lsusb</code>.
+</p>
 <h3><span class="mw-headline" id="Disable_sleep_completely">Disable sleep completely</span></h3>
 <p>When using a device as e.g a server, suspending/hibernating might not be needed or it could even be undesired. Each sleep state can be disabled through <span class="plainlinks archwiki-template-man" title="$ man 5 systemd-sleep.conf"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-sleep.conf.5">systemd-sleep.conf(5)</a></span>:
 </p>
@@ -1004,8 +1040,8 @@ Environment=SYSTEMD_SLEEP_FREEZE_USER_SESSIONS=false</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Power_management/Suspend_and_hibernate&amp;oldid=823486">https://wiki.archlinux.org/index.php?title=Power_management/Suspend_and_hibernate&amp;oldid=823486</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 19 December 2024, at 06:08.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Power_management/Suspend_and_hibernate&amp;oldid=825681">https://wiki.archlinux.org/index.php?title=Power_management/Suspend_and_hibernate&amp;oldid=825681</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 21 January 2025, at 19:49.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

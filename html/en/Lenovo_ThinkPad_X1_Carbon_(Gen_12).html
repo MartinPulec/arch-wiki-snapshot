@@ -211,8 +211,13 @@
 </td>
 </tr>
 <tr>
-<td>Mobile broadband</td>
+<td rowspan="2">Mobile broadband</td>
 <td><code>2c7c:0310</code></td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes
+</td>
+</tr>
+<tr>
+<td><code>1eac:1007</code></td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes
 </td>
 </tr>
@@ -462,18 +467,18 @@
 <li>Security feature that disables data transfer through USB-C connectors while the charge function is kept</li>
 </ol>
 <h2><span class="mw-headline" id="Mobile_broadband">Mobile broadband</span></h2>
-<p>For now only China veriants have WWAN module preinstalled, with Quectel EM05-CN.
+<p>This generation currently supports three WWAN modules from Quectel: two 4G-LTE modules (EM160R-GL and EM05-CN) and a 5G module (RM520N-GL). <a rel="nofollow" class="external autonumber" href="https://pcsupport.lenovo.com/us/en/products/laptops-and-netbooks/thinkpad-x-series-laptops/thinkpad-x1-carbon-12th-gen-type-21kc-21kd/21kd/21kds00600/pf4ztedh/downloads/driver-list/component?name=Networking%3A%20Wireless%20WAN&amp;id=49B19606-BEF8-41DD-BE7F-95B570C212C8">[1]</a>
 </p>
-<p>From this generation, WWAN modules are detected with <span class="plainlinks archwiki-template-man" title="$ man 8 lsusb"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/lsusb.8">lsusb(8)</a></span>
+<p>WWAN modules are detected with <span class="plainlinks archwiki-template-man" title="$ man 8 lspci"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/lspci.8">lspci(8)</a></span>. For example, RM520N-GL is shown running <code>lspci -nn </code> as:
 </p>
-<p>Using this module does not requires to have FCC unlocked and can be used directly with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=modemmanager">modemmanager</a></span>.
+<pre>08:00.0 Unassigned class [ff00]: Quectel Wireless Solutions Co., Ltd. Device [1eac:1007]</pre>
+<p>The three WWAN modules are detected out-of-the-box. However, FCC must be unlocked before the modules can be used with a SIM or an eSIM.
 </p>
-<p>Note that this module will fail to reactivate after hibernation, you can solve it via resetting the USB device:
+<p>For example, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=modemmanager">modemmanager</a></span> can automatically unlock the module RM520N-GL by adding the following symlink:
 </p>
-<pre># usbreset $(lsusb | grep Quectel | awk '{print $6}')
-</pre>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> This script is only for official devices with Quectel WWAN module. You should check your WWAN device's manufacturer if you are concerned about it or your WWAN module is not delivered with device.</div>
+<pre># ln -s /usr/share/ModemManager/fcc-unlock.available.d/1eac /etc/ModemManager/fcc-unlock.d/1eac:1007</pre>
+<p>For other modules, read <a href="../en/Mobile_broadband_modem.html#FCC_locking" title="Mobile broadband modem">Mobile_broadband_modem#FCC_locking</a> and <a rel="nofollow" class="external text" href="https://modemmanager.org/docs/modemmanager/fcc-unlock/">the ModemManager documentation</a>.
+</p>
 <h2><span class="mw-headline" id="Firmware">Firmware</span></h2>
 <p>Similar to <a href="../en/Lenovo_ThinkPad_X1_Carbon_(Gen_10).html#Firmware" title="Lenovo ThinkPad X1 Carbon (Gen 10)">Lenovo ThinkPad X1 Carbon (Gen 10)#Firmware</a>, UEFI firmware and other device firmware is available through the <a rel="nofollow" class="external text" href="https://fwupd.org/">Linux Vendor Firmware Service (LVFS)</a>, and can be installed using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=fwupd">fwupd</a></span>. Updates to the UEFI firmware include updates to the Intel Management Engine, so they may fail altogether if IME is disabled on the UEFI settings. A workaround for this is to temporarily enable IME, upgrade the firmware with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=fwupd">fwupd</a></span>, and disable IME after that.
 </p>
@@ -509,8 +514,8 @@
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Lenovo_ThinkPad_X1_Carbon_(Gen_12)&amp;oldid=823069">https://wiki.archlinux.org/index.php?title=Lenovo_ThinkPad_X1_Carbon_(Gen_12)&amp;oldid=823069</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 14 December 2024, at 18:44.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Lenovo_ThinkPad_X1_Carbon_(Gen_12)&amp;oldid=825201">https://wiki.archlinux.org/index.php?title=Lenovo_ThinkPad_X1_Carbon_(Gen_12)&amp;oldid=825201</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 17 January 2025, at 23:47.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

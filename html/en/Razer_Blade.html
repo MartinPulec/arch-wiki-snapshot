@@ -147,12 +147,30 @@
 			<ul id="toc-Bad_Sound_from_headphone_jack-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Bad_sound_from_speakers" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Bad_sound_from_speakers">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">2.2.3</span>Bad sound from speakers</div>
+			</a>
+			
+			<ul id="toc-Bad_sound_from_speakers-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
+		</li>
+		<li id="toc-Left/Right_Speaker_Signal_is_Reversed" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Left/Right_Speaker_Signal_is_Reversed">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">2.3</span>Left/Right Speaker Signal is Reversed</div>
+			</a>
+			
+			<ul id="toc-Left/Right_Speaker_Signal_is_Reversed-sublist" class="vector-toc-list">
+			</ul>
 		</li>
 		<li id="toc-Dual_Boot" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Dual_Boot">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">2.3</span>Dual Boot</div>
+				<span class="vector-toc-numb">2.4</span>Dual Boot</div>
 			</a>
 			
 			<ul id="toc-Dual_Boot-sublist" class="vector-toc-list">
@@ -161,7 +179,7 @@
 		<li id="toc-Secure_Boot" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Secure_Boot">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">2.4</span>Secure Boot</div>
+				<span class="vector-toc-numb">2.5</span>Secure Boot</div>
 			</a>
 			
 			<ul id="toc-Secure_Boot-sublist" class="vector-toc-list">
@@ -170,7 +188,7 @@
 		<li id="toc-Suspend_issues" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Suspend_issues">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">2.5</span>Suspend issues</div>
+				<span class="vector-toc-numb">2.6</span>Suspend issues</div>
 			</a>
 			
 			<ul id="toc-Suspend_issues-sublist" class="vector-toc-list">
@@ -179,7 +197,7 @@
 		<li id="toc-Touchpad_issues" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Touchpad_issues">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">2.6</span>Touchpad issues</div>
+				<span class="vector-toc-numb">2.7</span>Touchpad issues</div>
 			</a>
 			
 			<ul id="toc-Touchpad_issues-sublist" class="vector-toc-list">
@@ -188,7 +206,7 @@
 		<li id="toc-Webcam_power_drain" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Webcam_power_drain">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">2.7</span>Webcam power drain</div>
+				<span class="vector-toc-numb">2.8</span>Webcam power drain</div>
 			</a>
 			
 			<ul id="toc-Webcam_power_drain-sublist" class="vector-toc-list">
@@ -197,7 +215,7 @@
 		<li id="toc-SwitchBlade_UI_not_working_(2013)" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#SwitchBlade_UI_not_working_(2013)">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">2.8</span>SwitchBlade UI not working (2013)</div>
+				<span class="vector-toc-numb">2.9</span>SwitchBlade UI not working (2013)</div>
 			</a>
 			
 			<ul id="toc-SwitchBlade_UI_not_working_(2013)-sublist" class="vector-toc-list">
@@ -568,6 +586,178 @@ EndSection
 <h4><span class="mw-headline" id="Bad_Sound_from_headphone_jack">Bad Sound from headphone jack</span></h4>
 <p>On newer models (such as Blade 14+ 2021), the quality from the headphone jack is very bad/low volume, and is unusable. You can use Bluetooth, the internal speakers, or a USB audio adapter to remedy this.
 </p>
+<h4><span class="mw-headline" id="Bad_sound_from_speakers">Bad sound from speakers</span></h4>
+<p>Razer models can require equalization to sound as good as they do in their windows configurations. <a href="../en/PipeWire.html#EasyEffects" class="mw-redirect" title="EasyEffects">EasyEffects</a>, Calf, or Carla can be used with parametric equalizers to fix that issue. Equalization can be automatically applied using PipeWire filters, which may be more user friendly than running one of these tools constantly.
+</p>
+<p><br>
+In the following example, Freq, Q, and Gain settings are copied directly from saved LSP Parametric Equalizer configuration - equalized on a 2022 Blade 15" Advanced RZ09-421. The mix node dumps 5% of input to account for increases in the mid-range.
+It uses wireplumber smart filter features to auto-wire the filter to the correct interface, without touching the default audio sink.
+This pipewire config could be placed under <code>~/.config/pipewire/pipewire.conf.d/razer.conf</code>.
+</p>
+<p><br>
+</p>
+<pre>context.modules = [
+    { name = libpipewire-module-filter-chain
+        args = {
+            node.description = "Equalizer Sink"
+            media.name       = "Equalizer Sink"
+            filter.graph = {
+                nodes = [
+                    {
+                        type    = builtin
+                        name    = eq_band_0
+                        label   = bq_lowpass
+                        control = { "Freq" = 18000.0 "Q" = 0.707 "Gain" = 0.0 }
+                    }
+                    {
+                        type    = builtin
+                        name    = eq_band_1
+                        label   = bq_peaking
+                        control = { "Freq" = 250.0 "Q" = 1.0 "Gain" = 4.3 }
+                    }
+                    {
+                        type    = builtin
+                        name    = eq_band_2
+                        label   = bq_peaking
+                        control = { "Freq" = 500.0 "Q" = 1.698 "Gain" = -4.3 }
+                    }
+                    {
+                        type    = builtin
+                        name    = eq_band_3
+                        label   = bq_peaking
+                        control = { "Freq" = 760.612 "Q" = 1.0 "Gain" = -8.7 }
+                    }
+                    {
+                        type    = builtin
+                        name    = eq_band_4
+                        label   = bq_peaking
+                        control = { "Freq" = 8000.0 "Q" = 1.0 "Gain" = -1.2 }
+                    }
+                    {
+                        type    = builtin
+                        name    = eq_band_5
+                        label   = bq_highshelf
+                        control = { "Freq" = 5000.0 "Q" = 0.707 "Gain" = 0.0 }
+                    }
+                    {
+                        name   = mix
+                        type   = builtin
+                        label  = mixer
+                        control = {
+                          "Gain 1" = .95
+                        }
+                    }
+                ]
+                links = [
+                    { output = "mix:Out" input = "eq_band_0:In" }
+                    { output = "eq_band_0:Out" input = "eq_band_1:In" }
+                    { output = "eq_band_1:Out" input = "eq_band_2:In" }
+                    { output = "eq_band_2:Out" input = "eq_band_3:In" }
+                    { output = "eq_band_3:Out" input = "eq_band_4:In" }
+                    { output = "eq_band_4:Out" input = "eq_band_5:In" }
+                ]
+                inputs  = [ "mix:In 1" ]
+                outputs = [  "eq_band_5:Out"  ]
+            }
+	    audio.channels = 2
+	    audio.position = [ FL FR ]
+        capture.props = {
+            node.name   = "effect_input.eq6"
+            media.class = Audio/Sink
+            filter.smart = true
+            filter.smart.name = "effect_input.eq6.smart.1"
+            filter.smart.target = { node.name = "alsa_output.pci-0000_00_1f.3-platform-skl_hda_dsp_generic.HiFi__Speaker__sink" }
+        }
+        playback.props = {
+            node.name   = "effect_output.eq6"
+            node.passive = true
+        }
+
+        }
+    }
+]
+</pre>
+<p>Get the <code>node.name</code> for the <code>smart.target</code> parameter by inspecting the default sink <code>wpctl status</code> : 
+</p>
+<pre>#wpctl inspect 75 | grep 'node\.name'
+  * node.name = "alsa_output.pci-0000_00_1f.3-platform-skl_hda_dsp_generic.HiFi__Speaker__sink"
+</pre>
+<p>The id for the default output can be found <code>wpctl status | grep '\*' | head -n1 </code> or by examining <code>wpctl status</code>.
+</p>
+<p>Apply the settings by restarting pipewire and wireplumber services <code>systemctl --user restart pipewire &amp;&amp; systemctl --user restart wireplumber</code>
+</p>
+<h3>
+<span id="Left.2FRight_Speaker_Signal_is_Reversed"></span><span class="mw-headline" id="Left/Right_Speaker_Signal_is_Reversed">Left/Right Speaker Signal is Reversed</span>
+</h3>
+<p>On the RZ09-421 model left/right speaker sound is swapped. 
+</p>
+<p>This can be automatically corrected using a pipewire configuration that follows. The example uses wireplumber smart filter features to auto-wire the filter to the correct interface, without touching the default audio sink. File <code>~/.config/pipewire/pipewire.conf.d/razer_speaker_swap.conf</code>:
+</p>
+<pre>context.modules = [
+    { name = libpipewire-module-filter-chain
+        args = {
+            node.description = "remap-FL-FR-to-FR-FL"
+            media.name       = "remap-FL-FR-to-FR-FL"
+            filter.graph = {
+                nodes = [
+                    {
+                        name   = copyIL
+                        type   = builtin
+                        label  = copy
+                    }
+                    {
+                        name   = copyIR
+                        type   = builtin
+                        label  = copy
+                    }
+                    {
+                        name   = copyOL
+                        type   = builtin
+                        label  = copy
+                    }
+                    {
+                        name   = copyOR
+                        type   = builtin
+                        label  = copy
+                    }
+                ]
+                links = [
+                # we can only tee from nodes, not inputs so we need
+                # to copy the inputs and then tee.
+                    { output = "copyIL:Out" input = "copyOR:In" }
+                    { output = "copyIR:Out" input = "copyOL:In" }
+                ]
+                inputs  = [ "copyIL:In"  "copyIR:In" ]
+                outputs = [ "copyOL:Out" "copyOR:Out" ]
+            }
+            capture.props = {
+                node.name         = "remap_input.remap-FL-FR-to-FR-FL"
+                audio.position    = [ FL FR ]
+                stream.dont-remix = true
+                node.passive      = true
+                media.class = Audio/Sink
+                filter.smart = true
+                filter.smart.name = "swapflfr"
+                filter.smart.target = { node.name = "alsa_output.pci-0000_00_1f.3-platform-skl_hda_dsp_generic.HiFi__Speaker__sink" }
+            }
+            playback.props = {
+                node.name         = "remap_output.remap-FL-FR-to-FR-FL"
+                audio.position    = [ FL FR ]
+            }
+        }
+    }
+]
+</pre>
+<p>Get the <code>node.name</code> for the <code>smart.target</code> parameter by inspecting the default sink <code>wpctl status</code> : 
+</p>
+<pre>#wpctl inspect 75 | grep 'node\.name'
+  * node.name = "alsa_output.pci-0000_00_1f.3-platform-skl_hda_dsp_generic.HiFi__Speaker__sink"
+</pre>
+<p>The id for the default output can be found <code>wpctl status | grep '\*' | head -n1 </code> or by examining <code>wpctl status</code>.
+This effect can be chained with the equalized described in the previous section by adding a wireplumber filter smart rule to <code>capture.props</code> : <code>filter.smart.after = [ "effect_input.eq6.smart.1"]</code>
+</p>
+<p>Apply the settings by restarting pipewire and wireplumber services <code>systemctl --user restart pipewire &amp;&amp; systemctl --user restart wireplumber</code>
+</p>
 <h3><span class="mw-headline" id="Dual_Boot">Dual Boot</span></h3>
 <p>On later 'Kaby Lake' Intel CPU, if you also have a dual-boot with Windows, you might experience some audio issues when booting to Windows and restarting on Linux. The problem is no sound from the speakers and some cracking noises on the headphones—especially when using the touchpad. No official solution has been posted yet, but a quick hack is to completely shut down the computer (so power off, not restart).
 </p>
@@ -769,8 +959,8 @@ kernel: pcieport 0000:00:1c.0:    [12] Replay Timer Timeout
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Razer_Blade&amp;oldid=823036">https://wiki.archlinux.org/index.php?title=Razer_Blade&amp;oldid=823036</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 14 December 2024, at 18:22.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Razer_Blade&amp;oldid=824985">https://wiki.archlinux.org/index.php?title=Razer_Blade&amp;oldid=824985</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 12 January 2025, at 19:10.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

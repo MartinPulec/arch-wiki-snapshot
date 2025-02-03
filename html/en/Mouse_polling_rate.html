@@ -418,7 +418,7 @@ E:  Ad=81(I) Atr=03(Int.) MxPS=   2 Ivl=255ms</pre>
 </pre>
 <p>This example requests a polling rate of 250Hz. Similarly, you may use jspoll or kbpoll to change the polling rate of gamepads/joysticks or keyboards.
 </p>
-<p>To change the polling interval without rebooting 
+<p>To change the polling interval without rebooting:
 </p>
 <pre># modprobe -r usbhid &amp;&amp; modprobe usbhid mousepoll=4
 </pre>
@@ -427,7 +427,7 @@ E:  Ad=81(I) Atr=03(Int.) MxPS=   2 Ivl=255ms</pre>
 <p>You may have to unplug the mouse and plug it back in for the change to take effect.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> If the usbhid module is included on your initramfs image, you may need to add <code>/etc/modprobe.d/usbhid.conf</code> to the image also. See the note at <a href="../en/Kernel_module.html#Using_files_in_/etc/modprobe.d/" class="mw-redirect" title="Kernel modules">Kernel modules#Using files in /etc/modprobe.d/</a>. Alternatively, you can add <code>usbhid.mousepoll=X</code> to your kernel command line. See <a href="../en/Kernel_module.html#Using_kernel_command_line" class="mw-redirect" title="Kernel modules">Kernel modules#Using kernel command line</a>.</div>
+<strong>Note:</strong> If the usbhid module is included on your initramfs image, you may need to add <code>/etc/modprobe.d/usbhid.conf</code> to the image also. See the note at <a href="../en/Kernel_module.html#Using_modprobe.d" class="mw-redirect" title="Kernel modules">Kernel modules#Using modprobe.d</a>. Alternatively, you can add <code>usbhid.mousepoll=X</code> to your kernel command line. See <a href="../en/Kernel_module.html#Using_kernel_command_line" class="mw-redirect" title="Kernel modules">Kernel modules#Using kernel command line</a>.</div>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> When using a smaller than default interval, you may want to adjust the <a href="../en/Mouse_acceleration.html" title="Mouse acceleration">Mouse acceleration</a> option <a rel="nofollow" class="external text" href="https://xorg.freedesktop.org/wiki/Development/Documentation/PointerAcceleration/#VelocityScale">VelocityScale</a> to match.</div>
 <h2><span class="mw-headline" id="Known_issues">Known issues</span></h2>
@@ -445,7 +445,7 @@ E:  Ad=81(I) Atr=03(Int.) MxPS=   2 Ivl=255ms</pre>
 </p>
 <p>Another work-around is to disable <a href="https://en.wikipedia.org/wiki/Extensible_Host_Controller_Interface" class="extiw" title="wikipedia:Extensible Host Controller Interface">xHCI</a>. There might be a BIOS setting for this or you can do so by <a href="../en/Kernel_module.html#Blacklisting" class="mw-redirect" title="Blacklisting">blacklisting</a> the <code>xhci-hcd</code> module. <b>However</b>, either way will cause any USB 3 ports to act as USB 2 as the kernel will use the <code>ehci-hcd</code> module instead.
 </p>
-<p>As an alternative, one can install a kernel module <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/wmo_oc-dkms/">wmo_oc-dkms</a></span><sup><small>AUR</small></sup> (or build it manually from <a rel="nofollow" class="external text" href="https://github.com/YeaSeb/wmo-oc-kmod">wmo_oc-kmod</a>), which is a fork of gcadapter-oc-kmod for wmo1.1a (MS Wheel Mouse Optical 1.1a). The <code>wmo_oc-dkms</code> identifies a mouse with its vendor and product ID (VID:PID) values to overclock it even with XHCI hubs, without losing USB 3 functionality. Changing the polling rate of any USB mouse other than the default wmo1.1a requires modifying the default VID:PID values (045e:0040) found in the module's source file <code>wmo_oc.c</code> in <code>/usr/src/<i>module_name</i>/</code> and finally rebuilding (removing and installing) the kernel module using DKMS.  The polling rate of the wmc_oc module can be configured by editing the source, or with a runtime option e.g. a .conf file in /etc/modprobe.d/:
+<p>As an alternative, one can install a kernel module <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/wmo_oc-dkms/">wmo_oc-dkms</a></span><sup><small>AUR</small></sup> (or build it manually from <a rel="nofollow" class="external text" href="https://github.com/YeaSeb/wmo-oc-kmod">wmo_oc-kmod</a>), which is a fork of gcadapter-oc-kmod for wmo1.1a (MS Wheel Mouse Optical 1.1a). The <code>wmo_oc-dkms</code> identifies a mouse with its vendor and product ID (VID:PID) values to overclock it even with XHCI hubs, without losing USB 3 functionality. Changing the polling rate of any USB mouse other than the default wmo1.1a requires modifying the default VID:PID values (045e:0040) found in the module's source file <code>wmo_oc.c</code> in <code>/usr/src/<i>module_name</i>/</code> and finally rebuilding (removing and installing) the kernel module using DKMS.  The polling rate of the wmc_oc module can be configured by editing the source, or with a runtime option e.g. a <i>.conf</i> file in <code>/etc/modprobe.d/</code>:
 </p>
 <pre>options wmc_oc rate=2
 </pre>
@@ -454,7 +454,7 @@ E:  Ad=81(I) Atr=03(Int.) MxPS=   2 Ivl=255ms</pre>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> To see which <code>hcd</code> drivers are in use, see the <code>S: Manufacturer</code> line for hub devices in <code>/sys/kernel/debug/usb/devices</code>.</div>
 <h3><span class="mw-headline" id="Polling_rate_resulting_in_lag_with_wine">Polling rate resulting in lag with wine</span></h3>
-<p>Having a mouse with a high poll rate and using wine can result in game lag; see <a rel="nofollow" class="external text" href="https://bugs.winehq.org/show_bug.cgi?id=46976">here</a>. It would seem that the user who created that bug had the problem solved by updating the bios. The bug, however, is not resolved for other users. 
+<p>Having a mouse with a high poll rate and using wine can result in game lag; see <a rel="nofollow" class="external text" href="https://bugs.winehq.org/show_bug.cgi?id=46976">here</a>. It would seem that the user who created that bug had the problem solved by updating the bios. The bug, however, is not resolved for other users.
 </p>
 <p>It is not possible to change the polling rate of the mouse using the methods within this wiki (the "usbhid" method) if your computer only has a USB3 xHCI Controller.
 </p>
@@ -481,8 +481,8 @@ E:  Ad=81(I) Atr=03(Int.) MxPS=   2 Ivl=255ms</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Mouse_polling_rate&amp;oldid=819689">https://wiki.archlinux.org/index.php?title=Mouse_polling_rate&amp;oldid=819689</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 27 October 2024, at 10:43.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Mouse_polling_rate&amp;oldid=825580">https://wiki.archlinux.org/index.php?title=Mouse_polling_rate&amp;oldid=825580</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 19 January 2025, at 20:09.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

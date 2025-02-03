@@ -124,19 +124,10 @@
 			</a>
 			
 			<ul id="toc-Maximizing_performance-sublist" class="vector-toc-list">
-				<li id="toc-Sector_size" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Sector_size">
-				<div class="vector-toc-text">
-				<span class="vector-toc-numb">1.2.1</span>Sector size</div>
-			</a>
-			
-			<ul id="toc-Sector_size-sublist" class="vector-toc-list">
-			</ul>
-		</li>
-		<li id="toc-SSD_memory_cell_clearing" class="vector-toc-list-item vector-toc-level-3">
+				<li id="toc-SSD_memory_cell_clearing" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#SSD_memory_cell_clearing">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">1.2.2</span>SSD memory cell clearing</div>
+				<span class="vector-toc-numb">1.2.1</span>SSD memory cell clearing</div>
 			</a>
 			
 			<ul id="toc-SSD_memory_cell_clearing-sublist" class="vector-toc-list">
@@ -433,7 +424,7 @@
 <p>Compared to hard drives, where deleting a file is only handled at the file system level<a rel="nofollow" class="external autonumber" href="https://www.redhat.com/sysadmin/linux-delete-file-rm">[1]</a>, SSDs benefit from informing the disk controller when blocks of memory are free to be reused. Since the flash cells they are made of are worn out a little with each write operation, the disk controllers use algorithms to share the write operations on all the cells: this process is called <a href="https://en.wikipedia.org/wiki/Wear_leveling" class="extiw" title="wikipedia:Wear leveling">wear leveling</a>. Without the NVMe <a href="https://en.wikipedia.org/wiki/Trim_(computing)#NVM_Express" class="extiw" title="wikipedia:Trim (computing)">DEALLOCATE</a>, SAS <a href="https://en.wikipedia.org/wiki/Trim_(computing)#SCSI" class="extiw" title="wikipedia:Trim (computing)">UNMAP</a> or <a href="https://en.wikipedia.org/wiki/ATA_TRIM" class="extiw" title="wikipedia:ATA TRIM">ATA_TRIM</a> command (supported by most SSDs), the disk controller takes more time to do a write operation as soon as there is no empty memory blocks, as it has to shuffle data around to erase a cell before writing to it (see <a href="https://en.wikipedia.org/wiki/Write_amplification" class="extiw" title="wikipedia:Write amplification">Wikipedia:Write amplification</a>): a <a rel="nofollow" class="external text" href="https://www.techspot.com/review/737-ocz-vector-150-ssd/page9.html">TechSpot benchmark</a> shows the performance impact before and after filling an SSD with data.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> If you want to use TRIM, use <b>either</b> periodic TRIM or continuous TRIM. Continuous TRIM is <b>not</b> the most preferred way to issue TRIM commands among the Linux community. For example, Ubuntu enables periodic TRIM by default <a rel="nofollow" class="external autonumber" href="https://askubuntu.com/questions/1034169/is-trim-enabled-on-my-ubuntu-18-04-installation">[2]</a>, Debian does not recommend using <a href="https://wiki.debian.org/SSDOptimization#Mounting_SSD_filesystems" class="extiw" title="debian:SSDOptimization">continuous TRIM</a> and Red Hat recommends using periodic TRIM over using continuous TRIM if feasible <a rel="nofollow" class="external autonumber" href="https://web.archive.org/web/20160917183831/https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/7/html/Storage_Administration_Guide/ch02s04.html">[3]</a>.</div>
+<strong>Note:</strong> If you want to use TRIM, use <b>either</b> periodic TRIM or continuous TRIM. Continuous TRIM is <b>not</b> the most preferred way to issue TRIM commands among the Linux community. For example, Ubuntu enables periodic TRIM by default <a rel="nofollow" class="external autonumber" href="https://askubuntu.com/questions/1034169/is-trim-enabled-on-my-ubuntu-18-04-installation">[2]</a>, Debian does not recommend using <a href="https://wiki.debian.org/SSDOptimization#Mounting_SSD_filesystems" class="extiw" title="debian:SSDOptimization">continuous TRIM</a> and Red Hat recommends using periodic TRIM over using continuous TRIM if feasible <a rel="nofollow" class="external autonumber" href="https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/managing_file_systems/discarding-unused-blocks_managing-file-systems">[3]</a>.</div>
 <p>As of Linux kernel version 3.8 onwards, support for TRIM was continually added for the different <a href="../en/File_systems.html" class="mw-redirect" title="Filesystems">filesystems</a>. See the following table for an indicative overview:
 </p>
 <table class="wikitable sortable">
@@ -566,7 +557,7 @@
 <p>Instead of issuing TRIM commands once in a while (by default once a week if using <code>fstrim.timer</code>), it is also possible to issue TRIM commands each time files are deleted instead. The latter is known as the continuous TRIM.
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> Before <a href="https://en.wikipedia.org/wiki/Serial_ATA#SATA_revision_3.1" class="extiw" title="wikipedia:Serial ATA">SATA 3.1</a> all TRIM commands were non-queued, so continuous trimming would produce frequent system freezes. In this case, applying <a href="#Periodic_TRIM">#Periodic TRIM</a> less often is better alternative. Similar issue holds also for a number of devices, see <code>ata_device_blacklist</code> in <a rel="nofollow" class="external text" href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/ata/libata-core.c">Linux source code</a>, for which queued TRIM command execution was blacklisted due to serious data corruption. In such case, depending on the device, the system may be forced to send non-queued TRIM commands the SSD instead of queued TRIM. See <a href="https://en.wikipedia.org/wiki/Trim_(computing)#Disadvantages" class="extiw" title="wikipedia:Trim (computing)">Wikipedia:Trim_(computing)#Disadvantages</a> for details.</div>
+<strong>Warning:</strong> Before <a href="https://en.wikipedia.org/wiki/Serial_ATA#SATA_revision_3.1" class="extiw" title="wikipedia:Serial ATA">SATA 3.1</a> all TRIM commands were non-queued, so continuous trimming would produce frequent system freezes. In this case, applying <a href="#Periodic_TRIM">#Periodic TRIM</a> less often is better alternative. Similar issue holds also for a number of devices, see the <code>__ata_dev_quirks</code> entries with <code>ATA_QUIRK_NO_NCQ_TRIM</code> in <a rel="nofollow" class="external text" href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/ata/libata-core.c">Linux source code</a>, for which queued TRIM command execution was blacklisted due to serious data corruption. In such case, depending on the device, the system may be forced to send non-queued TRIM commands the SSD instead of queued TRIM. See <a href="https://en.wikipedia.org/wiki/Trim_(computing)#Disadvantages" class="extiw" title="wikipedia:Trim (computing)">Wikipedia:Trim_(computing)#Disadvantages</a> for details.</div>
 <p>Using the <code>discard</code> option for a mount in <code>/etc/fstab</code> enables continuous TRIM in device operations:
 </p>
 <pre>/dev/sda1  /           ext4  defaults,<b>discard</b>   0  1
@@ -595,35 +586,20 @@
 <strong>Warning:</strong> Enabling <code>issue_discards</code> will prevent volume group metadata restoration with <i>vgcfgrestore</i>. There will be no recovery options in case of a mistakenly issued LVM command.</div>
 <h4><span class="mw-headline" id="dm-crypt">dm-crypt</span></h4>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> The discard option allows discard requests to be passed through the encrypted block device. This may or may not improve performance on SSD storage <a rel="nofollow" class="external autonumber" href="https://lore.kernel.org/linux-raid/508FA2C6.2050800@hesbynett.no/">[9]</a> but has security implications. See the following for more information:
-<ul>
-<li><a href="https://wiki.debian.org/SSDOptimization#Mounting_SSD_filesystems" class="extiw" title="debian:SSDOptimization">Debian:SSDOptimization#Mounting SSD filesystems</a></li>
-<li><a href="../en/Dm-crypt/Specialties.html#Discard/TRIM_support_for_solid_state_drives_(SSD)" title="Dm-crypt/Specialties">dm-crypt/Specialties#Discard/TRIM support for solid state drives (SSD)</a></li>
-</ul>
-</div>
-<p>Follow the instructions in <a href="../en/Dm-crypt/Specialties.html#Discard/TRIM_support_for_solid_state_drives_(SSD)" title="Dm-crypt/Specialties">dm-crypt/Specialties#Discard/TRIM support for solid state drives (SSD)</a> to enable discard support.
+<strong>Warning:</strong> dm-crypt supports passing through discard requests to the underlying block device. This may or may not improve performance on SSD storage <a rel="nofollow" class="external autonumber" href="https://lore.kernel.org/linux-raid/508FA2C6.2050800@hesbynett.no/">[9]</a>, but has security implications, so it is not enabled by default.</div>
+<p>Follow the instructions in <a href="../en/Dm-crypt/Specialties.html#Discard/TRIM_support_for_solid_state_drives_(SSD)" title="Dm-crypt/Specialties">dm-crypt/Specialties#Discard/TRIM support for solid state drives (SSD)</a> to enable discard support for LUKS and plain dm-crypt devices.
 </p>
 <h4><span class="mw-headline" id="swap">swap</span></h4>
-<p>To activate discard for the swap space, use:
+<p>To enable discard for swap space, either add the <code>discard</code> option to a swap device's entry in <a href="../en/Fstab.html" title="Fstab">fstab</a> or pass <code>--discard</code> when calling <code>swapon</code>.
 </p>
-<pre># swapon --discard
-</pre>
-<p>See <span class="plainlinks archwiki-template-man" title="$ man 8 swapon"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/swapon.8">swapon(8)</a></span> for the discussion on <code>discard=once</code> or <code>discard=pages</code>.
+<p>Discard is <i>not</i> automatically enabled for swap partitions when using <a href="../en/Systemd.html#GPT_partition_automounting" title="Systemd">Systemd#GPT partition automounting</a>.
 </p>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
-<div>
-<b>Reason:</b> Is discard automatically enabled when using <a href="../en/Systemd.html#GPT_partition_automounting" title="Systemd">Systemd#GPT partition automounting</a> ? (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Solid_state_drive.html">Talk:Solid state drive</a>)</div>
-</div> 
-<p>To enable discard when booting, add <code>discard</code> to the options in <a href="../en/Fstab.html" title="Fstab">fstab</a> for the swap device.
+<p>See <span class="plainlinks archwiki-template-man" title="$ man 8 swapon"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/swapon.8">swapon(8)</a></span> for discussion on when swap is discarded: <code>discard=once</code> or <code>discard=pages</code>. If <code>discard</code> is specified without a specific mode, the default is to enable both.
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> Enabling discard on RAID setups using mdadm will cause system lockup on boot and during runtime, if using swapon.</div>
 <h3><span class="mw-headline" id="Maximizing_performance">Maximizing performance</span></h3>
 <p>Follow the tips in <a href="../en/Improving_performance.html#Storage_devices" title="Improving performance">Improving performance#Storage devices</a> to maximize the performance of your drives.
-</p>
-<h4><span class="mw-headline" id="Sector_size">Sector size</span></h4>
-<p>See <a href="../en/Advanced_Format.html#NVMe_solid_state_drives" title="Advanced Format">Advanced Format#NVMe solid state drives</a>.
 </p>
 <h4><span class="mw-headline" id="SSD_memory_cell_clearing">SSD memory cell clearing</span></h4>
 <p>On occasion, users may wish to completely reset an SSD's cells to the same virgin state they were at the time the device was installed, thus restoring it to its <a rel="nofollow" class="external text" href="https://www.anandtech.com/show/2738/8">factory default write performance</a>. Write performance is known to degrade over time even on SSDs with native TRIM support: TRIM only safeguards against file deletes, not replacements such as an incremental save.
@@ -927,10 +903,7 @@ FirmwareUpdateAvailable : The selected Intel SSD contains current firmware as o
 <div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Storage.html" title="Category:Storage">Storage</a></li></ul>
 </div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li>
-</ul>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li></ul>
 </div>
 </div>
 				</div>
@@ -941,8 +914,8 @@ FirmwareUpdateAvailable : The selected Intel SSD contains current firmware as o
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Solid_state_drive&amp;oldid=824216">https://wiki.archlinux.org/index.php?title=Solid_state_drive&amp;oldid=824216</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 28 December 2024, at 19:16.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Solid_state_drive&amp;oldid=826135">https://wiki.archlinux.org/index.php?title=Solid_state_drive&amp;oldid=826135</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 30 January 2025, at 13:25.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

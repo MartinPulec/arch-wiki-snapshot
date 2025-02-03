@@ -220,19 +220,10 @@
 			</a>
 			
 			<ul id="toc-Snapper_snapshot_integration_for_Btrfs-sublist" class="vector-toc-list">
-				<li id="toc-Setup" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Setup">
-				<div class="vector-toc-text">
-				<span class="vector-toc-numb">6.2.1</span>Setup</div>
-			</a>
-			
-			<ul id="toc-Setup-sublist" class="vector-toc-list">
-			</ul>
-		</li>
-		<li id="toc-Configurations" class="vector-toc-list-item vector-toc-level-3">
+				<li id="toc-Configurations" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Configurations">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">6.2.2</span>Configurations</div>
+				<span class="vector-toc-numb">6.2.1</span>Configurations</div>
 			</a>
 			
 			<ul id="toc-Configurations-sublist" class="vector-toc-list">
@@ -241,7 +232,7 @@
 		<li id="toc-Commands" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Commands">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">6.2.3</span>Commands</div>
+				<span class="vector-toc-numb">6.2.2</span>Commands</div>
 			</a>
 			
 			<ul id="toc-Commands-sublist" class="vector-toc-list">
@@ -250,7 +241,7 @@
 		<li id="toc-Known_limitations" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Known_limitations">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">6.2.4</span>Known limitations</div>
+				<span class="vector-toc-numb">6.2.3</span>Known limitations</div>
 			</a>
 			
 			<ul id="toc-Known_limitations-sublist" class="vector-toc-list">
@@ -473,11 +464,17 @@ Exec = /usr/bin/cp /usr/share/limine/BOOTX64.EFI /boot/EFI/BOOT/</pre>
 <p>1. Edit <code>/etc/default/limine</code>
 </p>
 <ul>
-<li>Set <code>ESP_PATH</code> to your <a href="../en/EFI_system_partition.html" class="mw-redirect" title="ESP">ESP</a> path.</li>
-<li>Set <code>KERNEL_CMDLINE</code> with your preferred <a href="../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a>.</li>
+<li>Set <code>ESP_PATH</code> to your <a href="../en/EFI_system_partition.html" class="mw-redirect" title="ESP">ESP</a> path. (or, if <code>bootctl</code> automatically detects the ESP, you do not need to configure <code>ESP_PATH</code>).</li>
+<li>Set <code>KERNEL_CMDLINE[default]=</code> with your preferred <a href="../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a>.</li>
 </ul>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> If <code>KERNEL_CMDLINE</code> is not set, the tool will first try to read from the file <code>/etc/kernel/cmdline</code>. If unavailable, it will fall back to reading from <code>/proc/cmdline</code>.</div>
+<strong>Tip:</strong> 
+<ul>
+<li>If <code>KERNEL_CMDLINE[default]=</code> or <code>KERNEL_CMDLINE=</code> is not set, the tool will first try to read from the file <code>/etc/kernel/cmdline</code>. If unavailable, it will fall back to reading from <code>/proc/cmdline</code>.</li>
+<li>Optionally, <code>KERNEL_CMDLINE[fallback]=</code> applies to kernel entries containing the name <i>fallback</i>.</li>
+<li>Additionally, <code>KERNEL_CMDLINE["<i>kernel name</i>"]=</code> entries correspond to kernel entry name in the boot menu, allowing unique kernel cmdline/parameters per kernel entry. For example, <code>KERNEL_CMDLINE["linux-lts"]=</code> for <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-lts">linux-lts</a></span> kernel entry.</li>
+</ul>
+</div>
 <ul>
 <li>To save ESP space, set <code>DRACUT_FALLBACK</code> to <code>no</code> to disable automatic fallback generation for <a href="../en/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs">initramfs</a> or <a href="../en/Unified_kernel_image.html" class="mw-redirect" title="UKI">UKI</a>.</li>
 <li>If you prefer to boot with <a href="../en/Unified_kernel_image.html" class="mw-redirect" title="UKI">UKI</a>, set <code>DRACUT_UKI</code> to <code>yes</code>.</li>
@@ -503,11 +500,16 @@ Exec = /usr/bin/cp /usr/share/limine/BOOTX64.EFI /boot/EFI/BOOT/</pre>
 <p>1. Edit <code>/etc/default/limine</code> to override any settings in <code>/etc/limine-entry-tool.conf</code>
 </p>
 <ul>
-<li>Set <code>ESP_PATH</code> to your <a href="../en/EFI_system_partition.html" class="mw-redirect" title="ESP">ESP</a> path.</li>
-<li>Set <code>KERNEL_CMDLINE</code> with your preferred <a href="../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a>.</li>
+<li>Set <code>ESP_PATH</code> to your <a href="../en/EFI_system_partition.html" class="mw-redirect" title="ESP">ESP</a> path. (or, if <code>bootctl</code> automatically detects the ESP, configuring <code>ESP_PATH</code> is not required).</li>
+<li>Set <code>KERNEL_CMDLINE[default]=</code> with your preferred <a href="../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a>.</li>
 </ul>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> If <code>KERNEL_CMDLINE</code> is not set, the tool will first attempt to read from the file <code>/etc/kernel/cmdline</code>. If unavailable, it will fall back to reading from <code>/proc/cmdline</code>.</div>
+<strong>Tip:</strong> 
+<ul>
+<li>If <code>KERNEL_CMDLINE[default]=</code> or <code>KERNEL_CMDLINE=</code> is not set, the tool will first attempt to read from the file <code>/etc/kernel/cmdline</code>. If unavailable, it will fall back to reading from <code>/proc/cmdline</code>.</li>
+<li>Optionally, <code>KERNEL_CMDLINE["<i>kernel name</i>"]=</code> entries correspond to kernel entry names in the boot menu, allowing unique kernel cmdline/parameters per kernel entry.</li>
+</ul>
+</div>
 <p>2. Install an <a href="../en/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs">initramfs</a> tool of your choice (e.g., <a href="../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a>, <a href="../en/Dracut.html" title="Dracut">dracut</a>, <a href="../en/Booster.html" title="Booster">booster</a>, or another preferred tool).
 </p>
 <p>3. Write a script, such as <a href="../en/Pacman.html#Hooks" class="mw-redirect" title="Pacman hooks">pacman hooks</a> to automate kernel addition and removal using the <code>limine-entry-tool</code> command with desired options for managing boot entries in Limine boot menu.
@@ -520,19 +522,17 @@ Exec = /usr/bin/cp /usr/share/limine/BOOTX64.EFI /boot/EFI/BOOT/</pre>
 <ul>
 <li>Supports booting into selected <a href="../en/Snapper.html" title="Snapper">Snapper</a> snapshot.</li>
 <li>Offers two different methods for restoring a system snapshot: <a href="../en/Rsync.html" title="Rsync">rsync</a> or <a href="../en/Btrfs.html" title="Btrfs">btrfs</a>.</li>
-<li>Testing read-only snapshots: Use <a href="../en/Overlay_filesystem.html" class="mw-redirect" title="Overlayfs">overlayfs</a> to experiment with an immutable system and reproduce issues without modifying the original data in the system.</li>
 <li>After restoring a snapshot, a "backup" entry is added to the Limine bootloader, providing an easy way to revert to the "backup" if needed.</li>
 <li>Automatically repairs corrupted bootable files from old snapshots on the ESP when a new snapshot with the same bootable files is created.</li>
 <li>Automatically logs error messages about potential hardware issues if two hashes of the same bootable file do not match on the ESP.</li>
+<li>Testing read-only snapshots: Use <a href="../en/Overlay_filesystem.html" class="mw-redirect" title="Overlayfs">overlayfs</a> to test any installed packages on an immutable-like system without modifying the original data. Note that this does not mean testing the boot partition or a separate home subvolume/partition.</li>
 </ul>
-<h4><span class="mw-headline" id="Setup">Setup</span></h4>
+<h4><span class="mw-headline" id="Configurations">Configurations</span></h4>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong>  It is recommended to have an <a href="../en/EFI_system_partition.html" class="mw-redirect" title="ESP">ESP</a> size of more than 1 GiB, depending on how many bootable snapshots and different kernel versions you wish to install.</div>
-<p>1. Ensure your <a href="../en/Snapper.html" title="Snapper">Snapper</a> has a configuration name for your root subvolume.
+<p>1. Configure <code><i>esp</i>/limine.conf</code> to include either the <code>//Snapshots</code> or <code>/Snapshots</code> keyword for auto-generated snapshot entries.
 </p>
-<p>2. Configure <code><i>esp</i>/limine.conf</code> to include either the <code>//Snapshots</code> or <code>/Snapshots</code> keyword for auto-generated snapshot entries.
-</p>
-<p>An example: 
+<p>An example:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">limine.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">/+Arch Linux
@@ -560,22 +560,19 @@ comment: machine-id=<i>yyyyyyyyyyyyyyyyyy</i>
 <p>Including the machine-ID from <code>/etc/machine-id</code> is optional but helpful for automatic identification. Renaming the boot entry will not affect the tool.
 </p>
 </div>
-<h4><span class="mw-headline" id="Configurations">Configurations</span></h4>
-<p>Do not edit the config file <code>/etc/limine-snapper-sync.conf</code>. Instead, edit <code>/etc/default/limine</code>, which will override <code>/etc/limine-snapper-sync.conf</code>.
-</p>
-<p>Edit <code>/etc/default/limine</code>:
+<p>2. Edit <code>/etc/default/limine</code>, which will override <code>/etc/limine-snapper-sync.conf</code>:
 </p>
 <ul>
-<li>Set <code>ESP_PATH</code> to your <a href="../en/EFI_system_partition.html" class="mw-redirect" title="ESP">ESP</a> path.</li>
+<li>Set <code>ESP_PATH</code> to your <a href="../en/EFI_system_partition.html" class="mw-redirect" title="ESP">ESP</a> path  (or, if <code>bootctl</code> automatically detects the ESP, configuring <code>ESP_PATH</code> is not required).</li>
 <li>Set <code>LIMIT_NUMBER</code> to limit the number of snapshot entries. The default is 8.</li>
 <li>Set <code>LIMIT_USAGE_PERCENT</code> to stop creating new snapshot entries when the limit of ESP usage is exceeded. The default is 80.</li>
 </ul>
-<p>If using <b>custom</b> Snapper layout, make sure to configure the following:
-</p>
+<ul><li>If using <b>custom</b> Snapper layout, make sure to configure the following:
 <ul>
-<li>Specify <code>ROOT_SUBVOLUME_PATH</code> for the path to your root subvolume.</li>
-<li>Specify <code>ROOT_SNAPSHOTS_PATH</code> for the path to your root snapshots.</li>
+<li>Specify <code>ROOT_SUBVOLUME_PATH</code> for the path to your root subvolume. The default is <code>/@</code> in most cases.</li>
+<li>Specify <code>ROOT_SNAPSHOTS_PATH</code> for the path to your root snapshots. The default is <code>/@/.snapshots</code>, which is the standard Snapper layout for the root subvolume <code>/@</code>.</li>
 </ul>
+</li></ul>
 <p>3. Run the command to check if it succeeds or shows an error message:
 </p>
 <pre># limine-snapper-sync
@@ -623,8 +620,8 @@ comment: machine-id=<i>yyyyyyyyyyyyyyyyyy</i>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Limine&amp;oldid=824196">https://wiki.archlinux.org/index.php?title=Limine&amp;oldid=824196</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 28 December 2024, at 12:51.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Limine&amp;oldid=826039">https://wiki.archlinux.org/index.php?title=Limine&amp;oldid=826039</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 27 January 2025, at 19:43.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

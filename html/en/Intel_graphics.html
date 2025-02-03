@@ -632,26 +632,30 @@
 <li>Also, check that you have not disabled Intel by using any modprobe blacklisting within <code>/etc/modprobe.d/</code> or <code>/usr/lib/modprobe.d/</code>.</li>
 </ul>
 <h3><span class="mw-headline" id="Early_KMS">Early KMS</span></h3>
-<p><a href="../en/Kernel_mode_setting.html" title="Kernel mode setting">Kernel mode setting</a> (KMS) is supported by the <code>i915</code> driver and is enabled early since <a href="../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a> v32, as the <code>kms</code> hook is included by default. For other setups, see <a href="../en/Kernel_mode_setting.html#Early_KMS_start" title="Kernel mode setting">Kernel mode setting#Early KMS start</a> for instructions on how to enable KMS as soon as possible at the boot process.
+<p><a href="../en/Kernel_mode_setting.html" title="Kernel mode setting">Kernel mode setting</a> (KMS) is supported by the <code>i915</code> and <code>xe</code> drivers, and is enabled early since <a href="../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a> v32, as the <code>kms</code> <a href="../en/Mkinitcpio.html#Common_hooks" title="Mkinitcpio">hook</a> is included by default. For other setups, see <a href="../en/Kernel_mode_setting.html#Early_KMS_start" title="Kernel mode setting">Kernel mode setting#Early KMS start</a> for instructions on how to enable KMS as soon as possible at the boot process.
 </p>
 <h3>
 <span id="Enable_GuC_.2F_HuC_firmware_loading"></span><span class="mw-headline" id="Enable_GuC_/_HuC_firmware_loading">Enable GuC / HuC firmware loading</span>
 </h3>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
-<div>
-<b>Reason:</b> Despite Intel's documentation, Tiger Lake and Rocket Lake GPUs may actually support <code>enable_guc=3</code>, and have a default of <code>enable_guc=1</code>. (Discuss in <a href="../en/Talk:Intel_graphics.html#TGL/RKL_GuC_Submission" title="Talk:Intel graphics">Talk:Intel graphics#TGL/RKL GuC Submission</a>)</div>
-</div>
-<p>Starting with Gen9 (Skylake and onwards), Intel GPUs include a <i>Graphics micro (μ) Controller</i> (GuC) which provides the following functionality <a rel="nofollow" class="external autonumber" href="https://01.org/linuxgraphics/downloads/firmware">[6]</a><sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2023-09-16 ⓘ]</sup>:
+<p>Starting with Gen9 (Skylake and onwards), Intel GPUs include a <i>Graphics micro (μ) Controller</i> (GuC) which provides the following functionality:
 </p>
 <ul>
 <li>Offloading some media decoding functionality from the CPU to the <i>HEVC/H.265 micro (µ) Controller</i> (HuC). Only applicable if using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=intel-media-driver">intel-media-driver</a></span> for <a href="../en/Hardware_video_acceleration.html" title="Hardware video acceleration">hardware video acceleration</a>. Introduced with Gen9.</li>
 <li>Using the GuC for scheduling, context submission, and power management. Introduced with Alder Lake-P (Mobile), within Gen12.</li>
 </ul>
-<p>To use this functionality, the GuC firmware must be loaded. With regards to HuC support, some video features (e.g. CBR rate control on SKL low-power encoding mode) require loading the HuC firmware as well <a rel="nofollow" class="external autonumber" href="https://github.com/intel/media-driver#known-issues-and-limitations">[7]</a>. The GuC and HuC firmware files are both provided by <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-firmware">linux-firmware</a></span>.
+<p>To use this functionality, first ensure that <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-firmware">linux-firmware</a></span> is <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">installed</a>, as it provides the GuC and HuC firmware files.
 </p>
-<p>GuC functionality is controlled by the <code>i915.enable_guc</code> <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a>. Its usage is as follows:
+<p>Next, the GuC firmware must be loaded. With regards to HuC support, some video features (e.g. CBR rate control on SKL low-power encoding mode) require loading the HuC firmware as well <a rel="nofollow" class="external autonumber" href="https://github.com/intel/media-driver#known-issues-and-limitations">[6]</a>.
 </p>
+<p>The <a class="mw-selflink-fragment" href="#Testing_the_new_experimental_Xe_driver">new experimental</a> <code>xe</code> driver enables Guc and Huc functionality by default.
+</p>
+<p>For the <code>i915</code> driver, GuC functionality is controlled by the <code>i915.enable_guc</code> <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a>. Its usage is as follows:
+</p>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
+<div>
+<b>Reason:</b> Despite Intel's documentation, Tiger Lake and Rocket Lake GPUs may actually support <code>enable_guc=3</code>, and have a default of <code>enable_guc=1</code>. (Discuss in <a href="../en/Talk:Intel_graphics.html#TGL/RKL_GuC_Submission" title="Talk:Intel graphics">Talk:Intel graphics#TGL/RKL GuC Submission</a>)</div>
+</div>
 <table class="wikitable">
 <tbody>
 <tr>
@@ -666,7 +670,7 @@
 <td>0</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
-<td>Tiger Lake, Rocket Lake, and Pre-Gen12 <a rel="nofollow" class="external autonumber" href="https://github.com/torvalds/linux/blob/b3454ce0b2c8a56e760e6baa88ed10278585072b/drivers/gpu/drm/i915/gt/uc/intel_uc.c#L26-L36">[8]</a>
+<td>Tiger Lake, Rocket Lake, and Pre-Gen12 <a rel="nofollow" class="external autonumber" href="https://github.com/torvalds/linux/blob/b3454ce0b2c8a56e760e6baa88ed10278585072b/drivers/gpu/drm/i915/gt/uc/intel_uc.c#L26-L36">[7]</a>
 </td>
 <td>All
 </td>
@@ -683,7 +687,7 @@
 <td>2</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
-<td>Alder Lake-S (Desktop) <a rel="nofollow" class="external autonumber" href="https://github.com/torvalds/linux/blob/b3454ce0b2c8a56e760e6baa88ed10278585072b/drivers/gpu/drm/i915/gt/uc/intel_uc.c#L38-L42">[9]</a> <a rel="nofollow" class="external autonumber" href="https://lore.kernel.org/all/87ee6wit2r.fsf@intel.com/T/">[10]</a>
+<td>Alder Lake-S (Desktop) <a rel="nofollow" class="external autonumber" href="https://github.com/torvalds/linux/blob/b3454ce0b2c8a56e760e6baa88ed10278585072b/drivers/gpu/drm/i915/gt/uc/intel_uc.c#L38-L42">[8]</a> <a rel="nofollow" class="external autonumber" href="https://lore.kernel.org/all/87ee6wit2r.fsf@intel.com/T/">[9]</a>
 </td>
 <td>Gen9 and newer
 </td>
@@ -702,20 +706,18 @@
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> Manually enabling GuC / HuC firmware loading taints the kernel <a rel="nofollow" class="external text" href="https://bugs.freedesktop.org/show_bug.cgi?id=111918">even when the feature is not supported</a>. Moreover, enabling GuC/HuC firmware loading can cause issues on some systems; disable it if you experience freezing (for example, after resuming from hibernation).</div>
-<p>First, ensure that <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-firmware">linux-firmware</a></span> is <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">installed</a>.
-</p>
 <p>Set the <code>i915.enable_guc</code> <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a>, for example with:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/modprobe.d/i915.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">options i915 enable_guc=2</pre>
 <p><a href="../en/Mkinitcpio.html#Image_creation_and_activation" class="mw-redirect" title="Regenerate the initramfs">Regenerate the initramfs</a>, on next boot you can verify both GuC and HuC are enabled by using <a href="../en/Core_utilities.html#Essentials" class="mw-redirect" title="Dmesg">dmesg</a>:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># dmesg</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># dmesg | grep -i -e 'huc' -e 'guc'</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[30130.586970] i915 0000:00:02.0: [drm] GuC firmware i915/icl_guc_33.0.0.bin version 33.0 submission:disabled
 [30130.586973] i915 0000:00:02.0: [drm] HuC firmware i915/icl_huc_9.0.0.bin version 9.0 authenticated:yes</pre>
 <p>If they are not supported by your graphics adapter you will see:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># dmesg</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># dmesg | grep -i -e 'huc' -e 'guc'</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[    0.571339] i915 0000:00:02.0: [drm] Incompatible option enable_guc=2 - GuC is not supported!
 [    0.571340] i915 0000:00:02.0: [drm] Incompatible option enable_guc=2 - HuC is not supported!</pre>
 <p>Alternatively, check using:
@@ -724,14 +726,14 @@
 # less /sys/kernel/debug/dri/*/gt0/uc/huc_info
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> Using <a href="../en/Intel_GVT-g.html" title="Intel GVT-g">GVT-g graphics virtualization</a> by setting <code>enable_gvt=1</code> is not supported as of linux 4.20.11 when GuC/HuC is also enabled. The i915 module would fail to initialize as shown in system journal.
+<strong>Note:</strong> Using <a href="../en/Intel_GVT-g.html" title="Intel GVT-g">GVT-g graphics virtualization</a> by setting <code>i915.enable_gvt=1</code> is not supported as of linux 4.20.11 when GuC/HuC is also enabled. The i915 module would fail to initialize as shown in system journal.
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># journalctl</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">... kernel: [drm:intel_gvt_init [i915]] *ERROR* i915 GVT-g loading failed due to Graphics virtualization is not yet supported with GuC submission
 ... kernel: i915 0000:00:02.0: [drm:i915_driver_load [i915]] Device initialization failed (-5)
 ... kernel: i915: probe of 0000:00:02.0 failed with error -5
 ... kernel: snd_hda_intel 0000:00:1f.3: failed to add i915 component master (-19)
 </pre>
-<p>Note that the related warning  is not fatal, as explained in <a rel="nofollow" class="external autonumber" href="https://github.com/intel/gvt-linux/issues/77#issuecomment-707541069">[11]</a>:
+<p>Note that the related warning  is not fatal, as explained in <a rel="nofollow" class="external autonumber" href="https://github.com/intel/gvt-linux/issues/77#issuecomment-707541069">[10]</a>:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># journalctl -b </pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">... kernel: i915 0000:00:02.0: Direct firmware load for i915/gvt/vid_0x8086_did_0x5916_rid_0x02.golden_hw_state failed with error -2
@@ -832,10 +834,10 @@ Option      "SwapbuffersWait" "false"
 The solution is to disable frame buffer compression which will imperceptibly increase power consumption (around 0.06 W). In order to disable it add <code>i915.enable_fbc=0</code> to the kernel line parameters. More information on the results of disabled compression can be found <a rel="nofollow" class="external text" href="https://web.archive.org/web/20200228230053/https://kernel.ubuntu.com/~cking/power-benchmarking/background-colour-and-framebuffer-compression/">here</a>.</div>
 <h3><span class="mw-headline" id="Fastboot">Fastboot</span></h3>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> This parameter is enabled by default for Skylake and newer<a rel="nofollow" class="external autonumber" href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3d6535cbed4a4b029602ff83efb2adec7cb8d28b">[12]</a> as well as Bay- and Cherry-Trail (VLV/CHV)<a rel="nofollow" class="external autonumber" href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7360c9f6b857e22a48e545f4e99c79630994e932">[13]</a> since Linux 5.1<a rel="nofollow" class="external autonumber" href="https://kernelnewbies.org/Linux_5.1#Graphics">[14]</a>,
-has subsequently been removed completely since Linux 6.7<a rel="nofollow" class="external autonumber" href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=58883680a8416661b48a800e5530e2efcea64a4a">[15]</a>, and fastboot has finally been enabled for all GPU generations (including those older than Skylake) since Linux 6.9.<a rel="nofollow" class="external autonumber" href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1b923307a1b0067a302b394e73311aeaebc06f65">[16]</a>
+<strong>Note:</strong> This parameter is enabled by default for Skylake and newer<a rel="nofollow" class="external autonumber" href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3d6535cbed4a4b029602ff83efb2adec7cb8d28b">[11]</a> as well as Bay- and Cherry-Trail (VLV/CHV)<a rel="nofollow" class="external autonumber" href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7360c9f6b857e22a48e545f4e99c79630994e932">[12]</a> since Linux 5.1<a rel="nofollow" class="external autonumber" href="https://kernelnewbies.org/Linux_5.1#Graphics">[13]</a>,
+has subsequently been removed completely since Linux 6.7<a rel="nofollow" class="external autonumber" href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=58883680a8416661b48a800e5530e2efcea64a4a">[14]</a>, and fastboot has finally been enabled for all GPU generations (including those older than Skylake) since Linux 6.9.<a rel="nofollow" class="external autonumber" href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1b923307a1b0067a302b394e73311aeaebc06f65">[15]</a>
 </div>
-<p>The goal of Intel Fastboot is to preserve the frame-buffer as setup by the BIOS or <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> to avoid any flickering until <a href="../en/Xorg.html" title="Xorg">Xorg</a> has started.<a rel="nofollow" class="external autonumber" href="https://lists.freedesktop.org/archives/intel-gfx/2012-May/017653.html">[17]</a><a rel="nofollow" class="external autonumber" href="https://www.phoronix.com/scan.php?page=news_item&amp;px=MTEwNzc">[18]</a>
+<p>The goal of Intel Fastboot is to preserve the frame-buffer as setup by the BIOS or <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> to avoid any flickering until <a href="../en/Xorg.html" title="Xorg">Xorg</a> has started.<a rel="nofollow" class="external autonumber" href="https://lists.freedesktop.org/archives/intel-gfx/2012-May/017653.html">[16]</a><a rel="nofollow" class="external autonumber" href="https://www.phoronix.com/scan.php?page=news_item&amp;px=MTEwNzc">[17]</a>
 </p>
 <p>To force enable fastboot on platforms where it is not the default already, set <code>i915.fastboot=1</code> as <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a> or set in <code>/etc/modprobe.d/i915.conf</code>:
 </p>
@@ -848,18 +850,18 @@ has subsequently been removed completely since Linux 6.7<a rel="nofollow" class=
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
 <div>
-<b>Reason:</b> What does Mesa actually do using the performance counters? What's the effect of this? Some report drastic performance increases on Intel Tiger Lake, attributing it to a support for Dynamic Tuning <a rel="nofollow" class="external autonumber" href="https://www.reddit.com/r/linux/comments/u7zxa0/psa_for_intel_tiger_lake_dynamic_tuning_laptops/">[19]</a>. (Discuss in <a href="../en/Talk:Intel_graphics.html#Potential_performance_gains_via_Observation_Architecture" title="Talk:Intel graphics">Talk:Intel graphics#Potential performance gains via Observation Architecture</a>)</div>
+<b>Reason:</b> What does Mesa actually do using the performance counters? What's the effect of this? Some report drastic performance increases on Intel Tiger Lake, attributing it to a support for Dynamic Tuning <a rel="nofollow" class="external autonumber" href="https://www.reddit.com/r/linux/comments/u7zxa0/psa_for_intel_tiger_lake_dynamic_tuning_laptops/">[18]</a>. (Discuss in <a href="../en/Talk:Intel_graphics.html#Potential_performance_gains_via_Observation_Architecture" title="Talk:Intel graphics">Talk:Intel graphics#Potential performance gains via Observation Architecture</a>)</div>
 </div>
-<p>Starting with Gen6 (Sandy Bridge and onwards), Intel GPUs provide performance counters used for exposing internal performance data to drivers. The drivers and hardware registers refer to this infrastructure as the <i>Observation Architecture</i> (internally "OA") <a rel="nofollow" class="external autonumber" href="https://www.phoronix.com/scan.php?page=news_item&amp;px=Intel-HSW-Observation-Arch">[20]</a>, but Intel's documentation also more generally refers to this functionality as providing <i>Observability Performance Counters</i> <a rel="nofollow" class="external autonumber" href="https://01.org/sites/default/files/documentation/observability_performance_counters_haswell.pdf">[21]</a><sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2023-09-16 ⓘ]</sup> <a rel="nofollow" class="external autonumber" href="https://01.org/sites/default/files/documentation/intel-gfx-prm-osrc-skl-vol14-observability.pdf">[22]</a><sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2023-09-16 ⓘ]</sup>.
+<p>Starting with Gen6 (Sandy Bridge and onwards), Intel GPUs provide performance counters used for exposing internal performance data to drivers. The drivers and hardware registers refer to this infrastructure as the <i>Observation Architecture</i> (internally "OA") <a rel="nofollow" class="external autonumber" href="https://www.phoronix.com/scan.php?page=news_item&amp;px=Intel-HSW-Observation-Arch">[19]</a>, but Intel's documentation also more generally refers to this functionality as providing <i>Observability Performance Counters</i> <a rel="nofollow" class="external autonumber" href="https://01.org/sites/default/files/documentation/observability_performance_counters_haswell.pdf">[20]</a><sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2023-09-16 ⓘ]</sup> <a rel="nofollow" class="external autonumber" href="https://01.org/sites/default/files/documentation/intel-gfx-prm-osrc-skl-vol14-observability.pdf">[21]</a><sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2023-09-16 ⓘ]</sup>.
 </p>
-<p>By default, only programs running with the <a rel="nofollow" class="external text" href="https://lwn.net/Articles/486306/">CAP_SYS_ADMIN</a> (equivalent to root) or <a rel="nofollow" class="external text" href="https://lwn.net/Articles/812719/">CAP_PERFMON</a> <a href="../en/Capabilities.html" title="Capabilities">capabilities</a> can utilize the observation architecture <a rel="nofollow" class="external autonumber" href="https://github.com/torvalds/linux/blob/b14ffae378aa1db993e62b01392e70d1e585fb23/drivers/gpu/drm/i915/i915_perf.c#L267">[23]</a> <a rel="nofollow" class="external autonumber" href="https://github.com/torvalds/linux/blob/b14ffae378aa1db993e62b01392e70d1e585fb23/drivers/gpu/drm/i915/i915_perf.c#L3481-L3484">[24]</a>. Most applications will be running without either of these, resulting in the following warning:
+<p>By default, only programs running with the <a rel="nofollow" class="external text" href="https://lwn.net/Articles/486306/">CAP_SYS_ADMIN</a> (equivalent to root) or <a rel="nofollow" class="external text" href="https://lwn.net/Articles/812719/">CAP_PERFMON</a> <a href="../en/Capabilities.html" title="Capabilities">capabilities</a> can utilize the observation architecture <a rel="nofollow" class="external autonumber" href="https://github.com/torvalds/linux/blob/b14ffae378aa1db993e62b01392e70d1e585fb23/drivers/gpu/drm/i915/i915_perf.c#L267">[22]</a> <a rel="nofollow" class="external autonumber" href="https://github.com/torvalds/linux/blob/b14ffae378aa1db993e62b01392e70d1e585fb23/drivers/gpu/drm/i915/i915_perf.c#L3481-L3484">[23]</a>. Most applications will be running without either of these, resulting in the following warning:
 </p>
 <pre>MESA-INTEL: warning: Performance support disabled, consider sysctl dev.i915.perf_stream_paranoid=0
 </pre>
 <p>To enable performance support without using the capabilities (or root), set the kernel parameter as described in <a href="../en/Sysctl.html" title="Sysctl">sysctl</a>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> The restrictive defaults of the <code>perf_event_paranoid</code> family of options exists because there is risk associated with allowing applications to access performance data <a rel="nofollow" class="external autonumber" href="https://docs.kernel.org/admin-guide/perf-security.html">[25]</a>. With this being said, <code>dev.i915.perf_stream_paranoid</code> only influences access to GPU performance counters, which carry less risk than e.g. CPU architectural execution context registers.</div>
+<strong>Warning:</strong> The restrictive defaults of the <code>perf_event_paranoid</code> family of options exists because there is risk associated with allowing applications to access performance data <a rel="nofollow" class="external autonumber" href="https://docs.kernel.org/admin-guide/perf-security.html">[24]</a>. With this being said, <code>dev.i915.perf_stream_paranoid</code> only influences access to GPU performance counters, which carry less risk than e.g. CPU architectural execution context registers.</div>
 <h2><span class="mw-headline" id="Tips_and_tricks">Tips and tricks</span></h2>
 <h3><span class="mw-headline" id="Setting_scaling_mode">Setting scaling mode</span></h3>
 <p>This can be useful for some full screen applications:
@@ -883,12 +885,12 @@ has subsequently been removed completely since Linux 6.7<a rel="nofollow" class=
 <p>where <code><i>param</i></code> is one of <code>"Full"</code>, <code>"Center"</code> or <code>"Full aspect"</code>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> This option currently does not work for external displays (e.g. VGA, DVI, HDMI, DP). <a rel="nofollow" class="external autonumber" href="https://bugs.freedesktop.org/show_bug.cgi?id=90989">[26]</a>
+<strong>Note:</strong> This option currently does not work for external displays (e.g. VGA, DVI, HDMI, DP). <a rel="nofollow" class="external autonumber" href="https://bugs.freedesktop.org/show_bug.cgi?id=90989">[25]</a>
 </div>
 <h3><span class="mw-headline" id="Hardware_accelerated_H.264_decoding_on_GMA_4500">Hardware accelerated H.264 decoding on GMA 4500</span></h3>
 <p>The <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=libva-intel-driver">libva-intel-driver</a></span> package only provides hardware accelerated MPEG-2 decoding – and not H.264 decoding – for some GMA 4500 series GPUs. To check whether that affects your particular GPU, install both that driver and the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=libva-utils">libva-utils</a></span> package, then check the output of the <code>vainfo</code> tool for the presence of entries that start with <code>VAProfileH264</code>.
 </p>
-<p>The H.264 decoding support is maintained in a separated g45-h264 branch, which can be used by installing <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/libva-intel-driver-g45-h264/">libva-intel-driver-g45-h264</a></span><sup><small>AUR</small></sup> package. Note, however, that this support is experimental and its development has been abandoned. Using the VA-API with this driver on a GMA 4500 series GPU will offload the CPU but may not result in as smooth a playback as non-accelerated playback. Tests using mplayer showed that using vaapi to play back an H.264 encoded 1080p video halved the CPU load (compared to the XV overlay) but resulted in very choppy playback, while 720p worked reasonably well <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=150550">[27]</a>. This is echoed by other experiences <a rel="nofollow" class="external autonumber" href="https://web.archive.org/web/20160325142959/http://www.emmolution.org/?p=192&amp;cpage=1#comment-12292">[28]</a>. Setting the preallocated video ram size higher in BIOS results in much better hardware decoded playback. Even 1080p h264 works well if this is done<a rel="nofollow" class="external autonumber" href="https://lists.libreplanet.org/archive/html/guix-patches/2019-11/msg00652.html">[29]</a>. Smooth playback (1080p/720p) works also with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/mpv-git/">mpv-git</a></span><sup><small>AUR</small></sup> in combination with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/ffmpeg-git/">ffmpeg-git</a></span><sup><small>AUR</small></sup> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/libva-intel-driver-g45-h264/">libva-intel-driver-g45-h264</a></span><sup><small>AUR</small></sup>. With MPV and the Firefox plugin "Send to MPV player"<a rel="nofollow" class="external autonumber" href="https://addons.mozilla.org/firefox/addon/send-to-mpv-player/">[30]</a> it is possible to watch hardware accelerated YouTube videos.
+<p>The H.264 decoding support is maintained in a separated g45-h264 branch, which can be used by installing <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/libva-intel-driver-g45-h264/">libva-intel-driver-g45-h264</a></span><sup><small>AUR</small></sup> package. Note, however, that this support is experimental and its development has been abandoned. Using the VA-API with this driver on a GMA 4500 series GPU will offload the CPU but may not result in as smooth a playback as non-accelerated playback. Tests using mplayer showed that using vaapi to play back an H.264 encoded 1080p video halved the CPU load (compared to the XV overlay) but resulted in very choppy playback, while 720p worked reasonably well <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=150550">[26]</a>. This is echoed by other experiences <a rel="nofollow" class="external autonumber" href="https://web.archive.org/web/20160325142959/http://www.emmolution.org/?p=192&amp;cpage=1#comment-12292">[27]</a>. Setting the preallocated video ram size higher in BIOS results in much better hardware decoded playback. Even 1080p h264 works well if this is done<a rel="nofollow" class="external autonumber" href="https://lists.libreplanet.org/archive/html/guix-patches/2019-11/msg00652.html">[28]</a>. Smooth playback (1080p/720p) works also with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/mpv-git/">mpv-git</a></span><sup><small>AUR</small></sup> in combination with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/ffmpeg-git/">ffmpeg-git</a></span><sup><small>AUR</small></sup> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/libva-intel-driver-g45-h264/">libva-intel-driver-g45-h264</a></span><sup><small>AUR</small></sup>. With MPV and the Firefox plugin "Send to MPV player"<a rel="nofollow" class="external autonumber" href="https://addons.mozilla.org/firefox/addon/send-to-mpv-player/">[29]</a> it is possible to watch hardware accelerated YouTube videos.
 </p>
 <h3><span class="mw-headline" id="Overriding_reported_OpenGL_version">Overriding reported OpenGL version</span></h3>
 <p>The <code>MESA_GL_VERSION_OVERRIDE</code> <a href="../en/Environment_variables.html" class="mw-redirect" title="Environment variable">environment variable</a> can be used to override the reported OpenGL version to any application. For example, setting <code>MESA_GL_VERSION_OVERRIDE=4.5</code> will report OpenGL 4.5.
@@ -953,17 +955,17 @@ EndSection</pre>
 <strong>Note:</strong> 
 <ul>
 <li>This option may not work when <code>SwapbuffersWait</code> is <code>false</code>.</li>
-<li>This option may increase memory allocation considerably and reduce performance. <a rel="nofollow" class="external autonumber" href="https://bugs.freedesktop.org/show_bug.cgi?id=37686#c123">[31]</a>
+<li>This option may increase memory allocation considerably and reduce performance. <a rel="nofollow" class="external autonumber" href="https://bugs.freedesktop.org/show_bug.cgi?id=37686#c123">[30]</a>
 </li>
 <li>This option is problematic for applications that are very picky about vsync timing, like <a href="https://en.wikipedia.org/wiki/Super_Meat_Boy" class="extiw" title="wikipedia:Super Meat Boy">Super Meat Boy</a>.</li>
 <li>This option does not work with UXA acceleration method, only with SNA.</li>
 <li>For Intel UHD 620 or 630 you will need to add <code>Option "TripleBuffer" "true"</code> in order for <code>TearFree</code> to work.</li>
-<li>It might be necessary to disable DRI3 by adding <code>Option "DRI" "2"</code>, otherwise any full screen app (such as video playback) can break TearFree. <a rel="nofollow" class="external autonumber" href="https://bugs.freedesktop.org/show_bug.cgi?id=96847#c7">[32]</a>
+<li>It might be necessary to disable DRI3 by adding <code>Option "DRI" "2"</code>, otherwise any full screen app (such as video playback) can break TearFree. <a rel="nofollow" class="external autonumber" href="https://bugs.freedesktop.org/show_bug.cgi?id=96847#c7">[31]</a>
 </li>
 </ul>
 </div>
 <h4><span class="mw-headline" id="With_the_modesetting_driver_2">With the modesetting driver</span></h4>
-<p>TearFree support <a rel="nofollow" class="external text" href="https://gitlab.freedesktop.org/xorg/xserver/-/merge_requests/1006">was added</a> to the modesetting driver <a rel="nofollow" class="external autonumber" href="https://www.phoronix.com/news/xf86-video-modesetting-TearFree">[33]</a><a rel="nofollow" class="external autonumber" href="https://www.phoronix.com/news/Modesetting-TearFree-Merged">[34]</a>. As the last release for the non-XWayland servers was the 21.1 release in 2021, this patch has not reached a stable release, so you will need <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/xorg-server-git/">xorg-server-git</a></span><sup><small>AUR</small></sup> until then.
+<p>TearFree support <a rel="nofollow" class="external text" href="https://gitlab.freedesktop.org/xorg/xserver/-/merge_requests/1006">was added</a> to the modesetting driver <a rel="nofollow" class="external autonumber" href="https://www.phoronix.com/news/xf86-video-modesetting-TearFree">[32]</a><a rel="nofollow" class="external autonumber" href="https://www.phoronix.com/news/Modesetting-TearFree-Merged">[33]</a>. As the last release for the non-XWayland servers was the 21.1 release in 2021, this patch has not reached a stable release, so you will need <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/xorg-server-git/">xorg-server-git</a></span><sup><small>AUR</small></sup> until then.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/X11/xorg.conf.d/20-intel.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Section "Device"
@@ -1078,10 +1080,10 @@ Jun 16 17:54:03 hostname kernel: RIP  [&lt;          (null)&gt;]           (null
 <p>The video output of a Windows guest in VirtualBox sometimes hangs until the host forces a screen update (e.g. by moving the mouse cursor). Removing the <code>enable_fbc=1</code> option fixes this issue.
 </p>
 <h3><span class="mw-headline" id="Screen_flickering">Screen flickering</span></h3>
-<p>Panel Self Refresh (PSR), a power saving feature used by Intel iGPUs is known to cause flickering in some instances <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/49628">FS#49628</a> <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/49371">FS#49371</a> <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/50605">FS#50605</a>. A temporary solution is to disable this feature using the <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a> <code>i915.enable_psr=0</code>.
+<p>Panel Self Refresh (PSR), a power saving feature used by Intel iGPUs is known to cause flickering in some instances <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/49628">FS#49628</a> <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/49371">FS#49371</a> <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/50605">FS#50605</a>. A temporary solution is to disable this feature using the <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a> <code>i915.enable_psr=0</code> or <code>xe.enable_psr=0</code>.
 </p>
 <h3><span class="mw-headline" id="OpenGL_2.1_with_i915_driver">OpenGL 2.1 with i915 driver</span></h3>
-<p>The classic mesa driver for Gen 3 GPUs included in the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mesa-amber">mesa-amber</a></span> package reports OpenGL 2.0 by default, because the hardware is not fully compatible with OpenGL 2.1.<a rel="nofollow" class="external autonumber" href="https://www.phoronix.com/scan.php?page=news_item&amp;px=Mesa-i915-OpenGL-2-Drop">[35]</a> OpenGL 2.1 support can be enabled manually by setting <code>/etc/drirc</code> or <code>~/.drirc</code> options like:
+<p>The classic mesa driver for Gen 3 GPUs included in the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mesa-amber">mesa-amber</a></span> package reports OpenGL 2.0 by default, because the hardware is not fully compatible with OpenGL 2.1.<a rel="nofollow" class="external autonumber" href="https://www.phoronix.com/scan.php?page=news_item&amp;px=Mesa-i915-OpenGL-2-Drop">[34]</a> OpenGL 2.1 support can be enabled manually by setting <code>/etc/drirc</code> or <code>~/.drirc</code> options like:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/drirc</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">&lt;driconf&gt;
@@ -1317,8 +1319,8 @@ done
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
-<li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
+<li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Merge.html" title="Category:Pages or sections flagged with Template:Merge">Pages or sections flagged with Template:Merge</a></li>
 </ul>
 </div>
@@ -1331,8 +1333,8 @@ done
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Intel_graphics&amp;oldid=822575">https://wiki.archlinux.org/index.php?title=Intel_graphics&amp;oldid=822575</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 8 December 2024, at 22:29.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Intel_graphics&amp;oldid=825629">https://wiki.archlinux.org/index.php?title=Intel_graphics&amp;oldid=825629</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 20 January 2025, at 18:03.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

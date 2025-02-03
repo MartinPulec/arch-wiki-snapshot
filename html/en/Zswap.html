@@ -126,6 +126,15 @@
 			<ul id="toc-Compression_algorithm-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Disable_writeback" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Disable_writeback">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">2.6</span>Disable writeback</div>
+			</a>
+			
+			<ul id="toc-Disable_writeback-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-Zswap_statistics" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
@@ -278,7 +287,7 @@
 <h4><span class="mw-headline" id="Using_kernel_boot_parameters">Using kernel boot parameters</span></h4>
 <p>To persist the parameter change, the corresponding option, for example <code>zswap.compressor=lz4</code>, must be added to the kernel boot parameter. Therefore to set permanently all the above settings, the following <a href="../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a> must be added: 
 </p>
-<pre>zswap.enabled=1 zswap.compressor=lz4 zswap.max_pool_percent=20 zswap.zpool=z3fold
+<pre>zswap.enabled=1 zswap.compressor=lz4 zswap.max_pool_percent=20 zswap.zpool=zsmalloc
 </pre>
 <p>When changing the compression algorithm via boot parameter, one needs to ensure the corresponding compression module is loaded early during boot (refer to <a href="#Compression_algorithm">#Compression algorithm</a>).
 </p>
@@ -288,11 +297,11 @@
 <h3><span class="mw-headline" id="Compressed_memory_pool_allocator">Compressed memory pool allocator</span></h3>
 <p>The <i>zpool</i> parameter controls the management of the compressed memory pool.
 </p>
-<p>With the <i>zbud</i> data allocator, 2 compressed objects are stored into 1 page which limits the compression ratio to 2 or less.
-</p>
-<p><a rel="nofollow" class="external text" href="https://docs.kernel.org/mm/z3fold.html">z3fold</a> allocator allows up to 3 compressed objects by page. The compression ratio with <i>z3fold</i> typically averages 2.7 while it is 1.7 for <i>zbud</i>.
-</p>
 <p>In kernels after 6.3 <a rel="nofollow" class="external text" href="https://docs.kernel.org/mm/zsmalloc.html">zsmalloc</a> allocator was added. It is supposed to work well under low memory conditions and it saves more memory.
+</p>
+<p>For older kernels, the <i>zbud</i> data allocator is available, which stores exactly two compressed pages into one, which limits the compression ratio to 2 or less.
+</p>
+<p>Similarly, the <a rel="nofollow" class="external text" href="https://docs.kernel.org/mm/z3fold.html">z3fold</a> allocator allows up to 3 compressed objects by page (with a typical compression ratio averaging  around 2.7, compared with 1.7 for <i>zbud</i>). This allocator was previously suggested over <i>zsmalloc</i> because it had better performances, but as this is no longer true and because of numerous bugs, it <a rel="nofollow" class="external text" href="https://lore.kernel.org/all/20240904233343.933462-1-yosryahmed@google.com/T/#u">has been deprecated</a> and disabled by default since 6.13 (backported to 6.6 LTS in 6.6.55) and is <a rel="nofollow" class="external text" href="https://lore.kernel.org/lkml/Z5gdpStVzlM_fRLT@google.com/">scheduled for removal</a>.
 </p>
 <p>A <i>zpool</i> of type <i>zsmalloc</i> is created by default. Use the kernel parameter <code>zswap.zpool</code> to select another allocator at boot time. The data allocator can also be changed at a later stage via the <i>sysfs</i> interface.
 </p>
@@ -309,10 +318,15 @@
 </ol>
 <p>On next boot, see <a href="#Current_parameters">#Current parameters</a> to check if <i>zswap</i> now uses the requested compressor.
 </p>
+<h3><span class="mw-headline" id="Disable_writeback">Disable writeback</span></h3>
+<p><i>zswap</i> has a a per-<a href="../en/Cgroups.html" class="mw-redirect" title="Cgroup">cgroup</a> option to disable writeback (i.e. to prevent writes to disk).
+</p>
+<p>See <a href="../en/Power_management/Suspend_and_hibernate.html#Disable_zswap_writeback_to_use_the_swap_space_only_for_hibernation" title="Power management/Suspend and hibernate">Power management/Suspend and hibernate#Disable zswap writeback to use the swap space only for hibernation</a> for an example use case.
+</p>
 <h2><span class="mw-headline" id="Zswap_statistics">Zswap statistics</span></h2>
 <p>To see <i>zswap</i> statistics you can run this:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># grep -r . /sys/kernel/debug/zswap</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># grep -r . /sys/kernel/debug/zswap/</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">/sys/kernel/debug/zswap/same_filled_pages:26274
 /sys/kernel/debug/zswap/stored_pages:159898
 /sys/kernel/debug/zswap/pool_total_size:171565056
@@ -323,7 +337,6 @@
 /sys/kernel/debug/zswap/reject_alloc_fail:0
 /sys/kernel/debug/zswap/reject_reclaim_fail:31
 /sys/kernel/debug/zswap/pool_limit_hit:0
-
 </pre>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul>
@@ -351,8 +364,8 @@
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Zswap&amp;oldid=824090">https://wiki.archlinux.org/index.php?title=Zswap&amp;oldid=824090</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 27 December 2024, at 09:45.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Zswap&amp;oldid=826263">https://wiki.archlinux.org/index.php?title=Zswap&amp;oldid=826263</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 2 February 2025, at 09:57.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

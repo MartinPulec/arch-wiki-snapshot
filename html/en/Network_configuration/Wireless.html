@@ -1163,7 +1163,8 @@
 see <a rel="nofollow" class="external free" href="https://wireless.wiki.kernel.org/en/users/documentation/hostapd">https://wireless.wiki.kernel.org/en/users/documentation/hostapd</a>
 for more information on how to do that.
 </pre>
-This can be bypassed by changing the operating mode to <code>__ap</code> (<code>iw <i>interface</i> set type __ap</code>).</div>
+This can be bypassed by changing the operating mode to <code>__ap</code> (<code>iw <i>interface</i> set type __ap</code>). <a rel="nofollow" class="external autonumber" href="https://git.kernel.org/pub/scm/linux/kernel/git/jberg/iw.git/tree/interface.c#n179">[1]</a>
+</div>
 <h3><span class="mw-headline" id="Connect_to_an_access_point">Connect to an access point</span></h3>
 <p>Depending on the encryption, you need to associate your wireless device with the access point to use and pass the encryption key:
 </p>
@@ -1227,7 +1228,7 @@ This can be bypassed by changing the operating mode to <code>__ap</code> (<code>
 <ul>
 <li>Check connection details <b>first</b> with your institution before applying any profiles listed in this section. Example profiles are not guaranteed to work or match any security requirements.</li>
 <li>When storing connection profiles unencrypted, it is recommended restrict read access to the root account by specifying <code>chmod 600 <i>profile</i></code> as root.</li>
-<li>If authentication keeps failing with NetworkManager, try setting <code>phase1-auth-flags=32</code> for TLS 1.0 or <code>phase1-auth-flags=64</code> for TLS 1.1, as described in <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?pid=2104709#p2104709">[1]</a> and <a href='../../en/NetworkManager.html#WPA_Enterprise_connections_fail_to_authenticate_with_OpenSSL_"unsupported_protocol"_error' title="NetworkManager">NetworkManager#WPA Enterprise connections fail to authenticate with OpenSSL "unsupported protocol" error</a>.</li>
+<li>If authentication keeps failing with NetworkManager, try setting <code>phase1-auth-flags=32</code> for TLS 1.0 or <code>phase1-auth-flags=64</code> for TLS 1.1, as described in <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?pid=2104709#p2104709">[2]</a> and <a href='../../en/NetworkManager.html#WPA_Enterprise_connections_fail_to_authenticate_with_OpenSSL_"unsupported_protocol"_error' title="NetworkManager">NetworkManager#WPA Enterprise connections fail to authenticate with OpenSSL "unsupported protocol" error</a>.</li>
 </ul>
 </div>
 <div class="archwiki-template-box archwiki-template-box-tip">
@@ -1252,8 +1253,6 @@ This can be bypassed by changing the operating mode to <code>__ap</code> (<code>
 <dd><div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> Custom certificates can be specified by adding the line <code>'ca_cert="/path/to/special/certificate.cer"'</code> in <code>WPAConfigSection</code>.</div></dd>
 </dl>
-<ul><li>
-<a href="../../en/Systemd-networkd.html#Wireless_adapter" title="Systemd-networkd">Systemd-networkd#Wireless_adapter</a>. The <a href="../../en/Systemd-networkd.html" title="Systemd-networkd">systemd-networkd</a> article has other sections that are related to wireless configuration. Such as <a href="../../en/Systemd-networkd.html#Wired_and_wireless_adapters_on_the_same_machine" title="Systemd-networkd">a host with both wired and wireless interfaces</a>, <a href="../../en/Systemd-networkd.html#DHCPServer" title="Systemd-networkd">Systemd-networkd#DHCPServer</a> or <a href="../../en/Systemd-networkd.html#Tips_and_tricks" title="Systemd-networkd">Systemd-networkd#Tips and tricks</a>.</li></ul>
 <h3><span class="mw-headline" id="WPA3_Personal">WPA3 Personal</span></h3>
 <p>WPA3 Personal, a.k.a. WPA3-SAE, is a mode of <a href="https://en.wikipedia.org/wiki/Wi-Fi_Protected_Access#WPA3" class="extiw" title="wikipedia:Wi-Fi Protected Access">Wi-Fi Protected Access</a>.
 </p>
@@ -1320,7 +1319,7 @@ This can be bypassed by changing the operating mode to <code>__ap</code> (<code>
 <strong>Note:</strong> It is possible that the card will go from <i>hard-blocked</i> and <i>soft-unblocked</i> state into <i>hard-unblocked</i> and <i>soft-blocked</i> state by pressing the hardware button (i.e. the <i>soft-blocked</i> bit is just switched no matter what). This can be adjusted by tuning some options of the <code>rfkill</code> <a href="../../en/Kernel_module.html" title="Kernel module">kernel module</a>.</div>
 <p>Hardware buttons to toggle wireless cards are handled by a vendor specific <a href="../../en/Kernel_module.html" title="Kernel module">kernel module</a>. Frequently, these are <a rel="nofollow" class="external text" href="https://lwn.net/Articles/391230/">WMI</a> modules. Particularly for very new hardware models, it happens that the model is not fully supported in the latest stable kernel yet. In this case, it often helps to search the kernel bug tracker for information and report the model to the maintainer of the respective vendor kernel module, if it has not happened already. 
 </p>
-<p>See also <a rel="nofollow" class="external autonumber" href="https://askubuntu.com/questions/62166/siocsifflags-operation-not-possible-due-to-rf-kill">[2]</a>.
+<p>See also <a rel="nofollow" class="external autonumber" href="https://askubuntu.com/questions/62166/siocsifflags-operation-not-possible-due-to-rf-kill">[3]</a>.
 </p>
 <h3><span class="mw-headline" id="Power_saving">Power saving</span></h3>
 <p>See <a href="../../en/Power_management.html#Network_interfaces" class="mw-redirect" title="Power saving">Power saving#Network interfaces</a>.
@@ -1434,7 +1433,7 @@ wlp1s0: send auth to 56:e7:ee:7b:55:bc (try 1/3)
 wlp1s0: send auth to 56:e7:ee:7b:55:bc (try 2/3)
 wlp1s0: send auth to 56:e7:ee:7b:55:bc (try 3/3)
 wlp1s0: authentication with 56:e7:ee:7b:55:bc timed out</pre>
-<p>A possible workaround is to disable the <a rel="nofollow" class="external text" href="https://docs.kernel.org/arch/x86/iommu.html">Intel IOMMU driver (DMA)</a>, adding <code>intel_iommu=off</code> to the <a href="../../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a> <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?pid=1907446#p1907446">[3]</a>.
+<p>A possible workaround is to disable the <a rel="nofollow" class="external text" href="https://docs.kernel.org/arch/x86/iommu.html">Intel IOMMU driver (DMA)</a>, adding <code>intel_iommu=off</code> to the <a href="../../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a> <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?pid=1907446#p1907446">[4]</a>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> The Intel IOMMU driver is needed for some advanced virtual machine features, like PCI pass-through.</div>
@@ -1473,7 +1472,7 @@ wlp1s0: authentication with 56:e7:ee:7b:55:bc timed out</pre>
 </tr>
 </tbody>
 </table>
-<p>This fix was discovered at <a rel="nofollow" class="external autonumber" href="https://forums.debian.net/viewtopic.php?t=121696#p576208">[4]</a>.
+<p>This fix was discovered at <a rel="nofollow" class="external autonumber" href="https://forums.debian.net/viewtopic.php?t=121696#p576208">[5]</a>.
 </p>
 <h4>
 <span id="Cause_.237"></span><span class="mw-headline" id="Cause_#7">Cause #7</span>
@@ -1518,7 +1517,7 @@ wlp1s0: authentication with 56:e7:ee:7b:55:bc timed out</pre>
 <dl><dt>Additional notes</dt></dl>
 <ul>
 <li>Since kernel 3.0, rt2x00 includes also these drivers: <code>rt2800pci</code>, <code>rt2800usb</code>.</li>
-<li>Since kernel 3.0, the staging drivers <code>rt2860sta</code> and <code>rt2870sta</code> are replaced by the mainline drivers <code>rt2800pci</code> and <code>rt2800usb</code> <a rel="nofollow" class="external autonumber" href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fefecc6989b4b24276797270c0e229c07be02ad3">[5]</a>.</li>
+<li>Since kernel 3.0, the staging drivers <code>rt2860sta</code> and <code>rt2870sta</code> are replaced by the mainline drivers <code>rt2800pci</code> and <code>rt2800usb</code> <a rel="nofollow" class="external autonumber" href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fefecc6989b4b24276797270c0e229c07be02ad3">[6]</a>.</li>
 <li>Some devices have a wide range of options that can be configured with <code>iwpriv</code>. These are documented in the <a rel="nofollow" class="external text" href="https://web.archive.org/web/20111105120212/http://web.ralinktech.com:80/ralink/Home/Support/Linux.html">source tarballs</a> available from Ralink.</li>
 </ul>
 <h4><span class="mw-headline" id="rt3090">rt3090</span></h4>
@@ -1545,7 +1544,7 @@ wlp1s0: authentication with 56:e7:ee:7b:55:bc timed out</pre>
 <pre># modprobe -r mt7921e &amp;&amp; modprobe mt7921e
 </pre>
 <h3><span class="mw-headline" id="Realtek">Realtek</span></h3>
-<p>See <a rel="nofollow" class="external autonumber" href="https://wikidevi.wi-cat.ru/Realtek">[6]</a> for a list of Realtek chipsets and specifications.
+<p>See <a rel="nofollow" class="external autonumber" href="https://wikidevi.wi-cat.ru/Realtek">[7]</a> for a list of Realtek chipsets and specifications.
 </p>
 <h4><span class="mw-headline" id="rtl8192cu">rtl8192cu</span></h4>
 <p>The driver is now in the kernel, but many users have reported being unable to make a connection although scanning for networks does work.
@@ -1559,7 +1558,7 @@ wlp1s0: authentication with 56:e7:ee:7b:55:bc timed out</pre>
 </p>
 <p>Some users may encounter errors with powersave on this card. This is shown with occasional disconnects that are not recognized by high level network managers (<a href="../../en/Netctl.html" title="Netctl">netctl</a>, <a href="../../en/NetworkManager.html" title="NetworkManager">NetworkManager</a>). This error can be confirmed by running <code>dmesg -w</code> as root or <code>journalctl -f</code> as root and looking for output related to powersave and the <code>rtl8723ae</code>/<code>rtl8723be</code> module. If you have this issue, use the <code>fwlps=0</code> <a href="../../en/Kernel_module.html#Setting_module_options" class="mw-redirect" title="Kernel module parameter">kernel module parameter</a> which should prevent the Wi-Fi card from automatically sleeping and halting connection. 
 </p>
-<p>If you have poor signal, perhaps your device has only one physical antenna connected, and antenna autoselection is broken. You can force the choice of antenna with <code>ant_sel=1</code> or <code>ant_sel=2</code> kernel option. <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=208472">[7]</a>
+<p>If you have poor signal, perhaps your device has only one physical antenna connected, and antenna autoselection is broken. You can force the choice of antenna with <code>ant_sel=1</code> or <code>ant_sel=2</code> kernel option. <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=208472">[8]</a>
 </p>
 <h4><span class="mw-headline" id="rtl88xxau">rtl88xxau</span></h4>
 <p>Realtek chipsets rtl8811au, rtl8812au, rtl8814au and rtl8821au designed for various USB adapters ranging from AC600 to AC1900. Several packages provide various kernel drivers, these require <a href="../../en/Dynamic_Kernel_Module_Support.html" class="mw-redirect" title="DKMS">DKMS</a> (the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dkms">dkms</a></span> package and the kernel headers installed):
@@ -1613,7 +1612,7 @@ wlp1s0: authentication with 56:e7:ee:7b:55:bc timed out</pre>
 </p>
 <p>This requires <a href="../../en/Dynamic_Kernel_Module_Support.html" class="mw-redirect" title="DKMS">DKMS</a>, so make sure you have your proper kernel headers installed.
 </p>
-<p>If no wireless interface shows up even though the <code>8821cu</code> module is loaded, you may need to manually specify the <code>rtw_RFE_type</code> <a href="../../en/Kernel_module.html#Setting_module_options" class="mw-redirect" title="Kernel module parameter">kernel module parameter</a> <a rel="nofollow" class="external autonumber" href="https://forums.linuxmint.com/viewtopic.php?p=1913190&amp;sid=68f2d6eff91cd47e184ae5a56385dc02#p1913190">[8]</a><a rel="nofollow" class="external autonumber" href="https://github.com/brektrou/rtl8821CU/issues/83">[9]</a>. Try e.g. <code>rtw_RFE_type=0x26</code>, other values might also work.
+<p>If no wireless interface shows up even though the <code>8821cu</code> module is loaded, you may need to manually specify the <code>rtw_RFE_type</code> <a href="../../en/Kernel_module.html#Setting_module_options" class="mw-redirect" title="Kernel module parameter">kernel module parameter</a> <a rel="nofollow" class="external autonumber" href="https://forums.linuxmint.com/viewtopic.php?p=1913190&amp;sid=68f2d6eff91cd47e184ae5a56385dc02#p1913190">[9]</a><a rel="nofollow" class="external autonumber" href="https://github.com/brektrou/rtl8821CU/issues/83">[10]</a>. Try e.g. <code>rtw_RFE_type=0x26</code>, other values might also work.
 </p>
 <h4><span class="mw-headline" id="rtl8821ce">rtl8821ce</span></h4>
 <p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/rtl8821ce-dkms-git/">rtl8821ce-dkms-git</a></span><sup><small>AUR</small></sup> provides a kernel module for the Realtek 8821ce chipset found in the Asus X543UA.
@@ -1621,7 +1620,7 @@ wlp1s0: authentication with 56:e7:ee:7b:55:bc timed out</pre>
 <p>This requires <a href="../../en/Dynamic_Kernel_Module_Support.html" class="mw-redirect" title="DKMS">DKMS</a>, so make sure you have your proper kernel headers installed.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> It has been reported <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=273440">[10]</a> that the default <code>rtl8821ce</code> module provided by Realtek is broken for Linux kernel ≥ 5.9, which may lead to low connectivity. The AUR version above should be preferred. See <a rel="nofollow" class="external text" href="https://github.com/tomaspinho/rtl8821ce#wi-fi-not-working-for-kernel--59">the statement on GitHub.</a> Use <code>lspci -k</code> to check whether the default kernel driver (<code>rtw88_8821ce</code>) is in use. If it is, <a href="../../en/Kernel_module.html#Blacklisting" class="mw-redirect" title="Blacklist">blacklist</a> it and reboot your system.</div>
+<strong>Note:</strong> It has been reported <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=273440">[11]</a> that the default <code>rtl8821ce</code> module provided by Realtek is broken for Linux kernel ≥ 5.9, which may lead to low connectivity. The AUR version above should be preferred. See <a rel="nofollow" class="external text" href="https://github.com/tomaspinho/rtl8821ce#wi-fi-not-working-for-kernel--59">the statement on GitHub.</a> Use <code>lspci -k</code> to check whether the default kernel driver (<code>rtw88_8821ce</code>) is in use. If it is, <a href="../../en/Kernel_module.html#Blacklisting" class="mw-redirect" title="Blacklist">blacklist</a> it and reboot your system.</div>
 <h4><span class="mw-headline" id="rtl8822bu">rtl8822bu</span></h4>
 <p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/rtl88x2bu-dkms-git/">rtl88x2bu-dkms-git</a></span><sup><small>AUR</small></sup> provides a kernel module for the Realtek 8822bu chipset found in the Edimax EW7822ULC USB3, Asus AC53 Nano USB 802.11ac and TP-Link Archer T3U adapter.
 </p>
@@ -1811,7 +1810,7 @@ Try disabling ASPM-related features using the config below.
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> There is also an older, deprecated driver <code>prism54</code>, which might conflict with the newer driver (<code>p54pci</code> or <code>p54usb</code>). Make sure to <a href="../../en/Kernel_module.html#Blacklisting" class="mw-redirect" title="Blacklist">blacklist</a> <code>prism54</code>.</div>
 <h4><span class="mw-headline" id="zd1211rw">zd1211rw</span></h4>
-<p><a rel="nofollow" class="external text" href="https://sourceforge.net/projects/zd1211/">zd1211rw</a> is a driver for the ZyDAS ZD1211 802.11b/g USB WLAN chipset, and it is included in recent versions of the Linux kernel. See <a rel="nofollow" class="external autonumber" href="https://wireless.docs.kernel.org/en/latest/en/users/drivers/zd1211rw/devices.html">[11]</a> for a list of supported devices. You only need to <a href="../../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> the firmware for the device, provided by the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zd1211-firmware/">zd1211-firmware</a></span><sup><small>AUR</small></sup> package.
+<p><a rel="nofollow" class="external text" href="https://sourceforge.net/projects/zd1211/">zd1211rw</a> is a driver for the ZyDAS ZD1211 802.11b/g USB WLAN chipset, and it is included in recent versions of the Linux kernel. See <a rel="nofollow" class="external autonumber" href="https://wireless.docs.kernel.org/en/latest/en/users/drivers/zd1211rw/devices.html">[12]</a> for a list of supported devices. You only need to <a href="../../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> the firmware for the device, provided by the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zd1211-firmware/">zd1211-firmware</a></span><sup><small>AUR</small></sup> package.
 </p>
 <h4><span class="mw-headline" id="hostap_cs">hostap_cs</span></h4>
 <p><a rel="nofollow" class="external text" href="https://hostap.epitest.fi/">Host AP</a> is a Linux driver for wireless LAN cards based on Intersil's Prism2/2.5/3 chipset. The driver is included in Linux kernel.
@@ -1878,8 +1877,8 @@ Try disabling ASPM-related features using the config below.
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Network_configuration/Wireless&amp;oldid=824228">https://wiki.archlinux.org/index.php?title=Network_configuration/Wireless&amp;oldid=824228</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 29 December 2024, at 08:19.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Network_configuration/Wireless&amp;oldid=824635">https://wiki.archlinux.org/index.php?title=Network_configuration/Wireless&amp;oldid=824635</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 7 January 2025, at 09:31.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

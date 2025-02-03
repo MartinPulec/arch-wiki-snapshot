@@ -147,7 +147,34 @@
 			</a>
 			
 			<ul id="toc-NVIDIA_-_vulkan_is_not_working_and_can_not_initialize-sublist" class="vector-toc-list">
+				<li id="toc-Environment_variables" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Environment_variables">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">6.1.1</span>Environment variables</div>
+			</a>
+			
+			<ul id="toc-Environment_variables-sublist" class="vector-toc-list">
 			</ul>
+		</li>
+		<li id="toc-GPU_switching" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#GPU_switching">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">6.1.2</span>GPU switching</div>
+			</a>
+			
+			<ul id="toc-GPU_switching-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-GSP_firmware" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#GSP_firmware">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">6.1.3</span>GSP firmware</div>
+			</a>
+			
+			<ul id="toc-GSP_firmware-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
 		</li>
 		<li id="toc-No_device_for_the_display_GPU_found._Are_the_intel-mesa_drivers_installed?" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#No_device_for_the_display_GPU_found._Are_the_intel-mesa_drivers_installed?">
@@ -398,23 +425,20 @@
 </p>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
 <h3><span class="mw-headline" id="NVIDIA_-_vulkan_is_not_working_and_can_not_initialize">NVIDIA - vulkan is not working and can not initialize</span></h3>
-<p>Check if you have any other vulkan driver installed, it may prevent NVIDIA's vulkan driver from being detected.
+<h4><span class="mw-headline" id="Environment_variables">Environment variables</span></h4>
+<p>Invalid or contradictory <a href="../en/Environment_variables.html" class="mw-redirect" title="Environment variable">environment variable</a> values might cause Vulkan to fail, and inappropriate values can result in the use of a different GPU than intended on machines with multiple GPUs. Properly setting the variables can also help <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?pid=2152232#p2152232">keep a secondary GPU powered down when it is not needed</a>.
 </p>
-<p>Alternatively set the <a href="../en/Environment_variables.html" class="mw-redirect" title="Environment variable">environment variable</a> <code>VK_DRIVER_FILES</code> to <code>/usr/share/vulkan/icd.d/nvidia_icd.json</code>.
-</p>
-<p>If you have a dual-graphics system, like <a href="../en/NVIDIA_Optimus.html" title="NVIDIA Optimus">NVIDIA Optimus</a>, ensure that your system is using the graphics card that you installed Vulkan drivers for.
+<h4><span class="mw-headline" id="GPU_switching">GPU switching</span></h4>
+<p>If your machine has multiple GPUs and Vulkan cannot see or use one of them, make sure it is not currently disabled by the BIOS/UEFI or in the kernel. See <a href="../en/NVIDIA_Optimus.html" title="NVIDIA Optimus">NVIDIA Optimus</a> for an overview of the different methods of switching between GPUs.
 </p>
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
 <div>
-<b>Reason:</b> optimus-manager is just one of several utilities for <a href="../en/NVIDIA_Optimus.html" title="NVIDIA Optimus">NVIDIA Optimus</a>. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Vulkan.html">Talk:Vulkan</a>)</div>
+<b>Reason:</b> Is there a simpler way to check this information without installing an AUR package? (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Vulkan.html">Talk:Vulkan</a>)</div>
 </div>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-clear.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs language, wiki syntax or style improvements. See <a href="../en/Help:Style.html" title="Help:Style">Help:Style</a> for reference.</b></p>
-<div>
-<b>Reason:</b> Command in code block requires a <a href="../en/Help:Style.html#Command_line_text" title="Help:Style">prompt symbol</a>. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Vulkan.html">Talk:Vulkan</a>)</div>
-</div>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">optimus-manager --status</pre>
+<p>Example command to check the current status with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/optimus-manager-git/">optimus-manager-git</a></span><sup><small>AUR</small></sup>:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ optimus-manager --status</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Optimus Manager (Client) version 1.4
 
 Current GPU mode : nvidia
@@ -422,6 +446,18 @@ GPU mode requested for next login : no change
 GPU at startup : integrated
 Temporary config path: no
 </pre>
+<h4><span class="mw-headline" id="GSP_firmware">GSP firmware</span></h4>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Merge-arrows-2.svg" decoding="async" width="36" height="40" class="mw-file-element"></span></span><b>This article or section is a candidate for merging with <a href="../en/NVIDIA/Troubleshooting.html#Crashes_and_hangs" title="NVIDIA/Troubleshooting">NVIDIA/Troubleshooting#Crashes and hangs</a>.</b></p>
+<div>
+<b>Notes:</b> This fixes more than Vulkan issues. We should leave a stub linking there though. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Vulkan.html">Talk:Vulkan</a>)</div>
+</div>
+<p>The use of the <a rel="nofollow" class="external text" href="https://download.nvidia.com/XFree86/Linux-x86_64/555.42.02/README/gsp.html">GSP firmware</a>, enabled by default since version 555 of the NVIDIA driver released in June 2024, is known to cause <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?pid=2181317">a range of issues</a> including Vulkan failures and system crashes. 
+</p>
+<p>To disable it, use the <code>NVreg_EnableGpuFirmware=0</code> <a href="../en/Kernel_module.html#Setting_module_options" class="mw-redirect" title="Module parameter">module parameter</a> for the <code>nvidia</code> kernel module. This will only works with the proprietary NVIDIA driver: see <a href="../en/NVIDIA.html#Installation" title="NVIDIA">NVIDIA#Installation</a> if switching from the open source driver.
+</p>
+<p>Do not forget to to <a href="../en/Mkinitcpio.html#Image_creation_and_activation" class="mw-redirect" title="Regenerate the initramfs">regenerate the initramfs</a> if needed. To have this new kernel module options take effect, reboot.
+</p>
 <h3>
 <span id="No_device_for_the_display_GPU_found._Are_the_intel-mesa_drivers_installed.3F"></span><span class="mw-headline" id="No_device_for_the_display_GPU_found._Are_the_intel-mesa_drivers_installed?">No device for the display GPU found. Are the intel-mesa drivers installed?</span>
 </h3>
@@ -499,7 +535,7 @@ ERROR at /usr/src/debug/vulkan-tools/Vulkan-Tools-1.3.269/vulkaninfo/./vulkaninf
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Merge.html" title="Category:Pages or sections flagged with Template:Merge">Pages or sections flagged with Template:Merge</a></li>
 </ul>
 </div>
 </div>
@@ -511,8 +547,8 @@ ERROR at /usr/src/debug/vulkan-tools/Vulkan-Tools-1.3.269/vulkaninfo/./vulkaninf
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Vulkan&amp;oldid=821388">https://wiki.archlinux.org/index.php?title=Vulkan&amp;oldid=821388</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 25 November 2024, at 10:44.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Vulkan&amp;oldid=824744">https://wiki.archlinux.org/index.php?title=Vulkan&amp;oldid=824744</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 9 January 2025, at 09:14.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -379,13 +379,13 @@
 			<ul id="toc-12th_gen_Turbo-Boost_on_battery_with_tlp-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-12th_&amp;_13th_gen_brightness_and_airplane_mode_keys" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#12th_&amp;_13th_gen_brightness_and_airplane_mode_keys">
+		<li id="toc-12th_gen_brightness_and_airplane_mode_keys" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#12th_gen_brightness_and_airplane_mode_keys">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">7.11</span>12th &amp; 13th gen brightness and airplane mode keys</div>
+				<span class="vector-toc-numb">7.11</span>12th gen brightness and airplane mode keys</div>
 			</a>
 			
-			<ul id="toc-12th_&amp;_13th_gen_brightness_and_airplane_mode_keys-sublist" class="vector-toc-list">
+			<ul id="toc-12th_gen_brightness_and_airplane_mode_keys-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 		<li id="toc-Ethernet_not_working_with_tlp" class="vector-toc-list-item vector-toc-level-2">
@@ -891,6 +891,13 @@
 <td>
 </td>
 </tr>
+<tr>
+<td>SD (full-size)</td>
+<td><code>32ac:0009</code></td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
+<td>Can cause booting issues if an empty SD-to-MicroSD adapter is inserted at boot time.
+</td>
+</tr>
 </tbody>
 </table>
 <h3><span class="mw-headline" id="Headset_jack">Headset jack</span></h3>
@@ -902,13 +909,56 @@
 </p>
 <p>If you are using <a href="../en/TLP.html" title="TLP">TLP</a>, you can instead set the <code>SOUND_POWER_SAVE_</code> variables in <code>/etc/tlp.conf</code>.
 </p>
+<p>Motherboards with an Intel Core 12th Gen and later use a different DAC, the <a rel="nofollow" class="external text" href="https://temposemi.com/products/pclaptop-hd/92hd95/">Tempo 92HD95B</a><a rel="nofollow" class="external autonumber" href="https://community.frame.work/t/responded-headphone-jack-intermittent-noise/5246/149">[1]</a>, which can cause popping noises when playing back audio using the <a href="../en/PipeWire.html" title="PipeWire"> PipeWire audio server</a>. This seems to happen because PipeWire incorrectly sets the bit depth for the device to 32-bit, while the card only supports 16, 20 &amp; 24-bit <a rel="nofollow" class="external autonumber" href="https://community.frame.work/t/responded-headphone-jack-intermittent-noise/5246/119">[2]</a>.
+</p>
+<p>The supported rates can be verified by probing <code>/proc/asound/card0/codec#0</code>:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ cat /proc/asound/card0/codec\#0</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">...
+Default PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+...
+</pre>
+<p>The current sample rate can be verified by probing <code>/proc/asound/card0/pcm0p/sub0/hw_params</code> while playing back audio:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ cat /proc/asound/card0/pcm0p/sub0/hw_params</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">access: MMAP_INTERLEAVED
+format: S32_LE
+subformat: STD
+channels: 2
+rate: 48000 (48000/1)
+period_size: 1024
+buffer_size: 32768
+</pre>
+<p>The solution is to force the use of 16-bit samples through <a href="../en/WirePlumber.html" title="WirePlumber">WirePlumber</a>, by creating the following config file <a rel="nofollow" class="external autonumber" href="https://community.frame.work/t/responded-headphone-jack-intermittent-noise/5246/176">[3]</a>:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/wireplumber/wireplumber.conf.d/51-fix-crackle.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">monitor.alsa.rules = [
+  {
+    matches = [
+      {
+        node.name = "alsa_output.pci-0000_00_1f.3.analog-stereo"
+      }
+    ]
+    actions = {
+      update-props = {
+        audio.format = "S16LE",
+      }
+    }
+  }
+]
+</pre>
+<p><br>
+</p>
 <h3><span class="mw-headline" id="Speakers">Speakers</span></h3>
 <p>By default, the speakers do not sound very balanced (due to downward firing speakers), so you may want to use an equalizer to fix this. The recommended method is to install <a href="../en/PipeWire.html#EasyEffects" class="mw-redirect" title="EasyEffects">EasyEffects</a> and use the official preset found <a rel="nofollow" class="external text" href="https://github.com/FrameworkComputer/linux-docs/blob/main/easy-effects/fw13-easy-effects.json">here</a>.
 </p>
 <p>Alternatively, you can use user-created profiles such as <a rel="nofollow" class="external text" href="https://github.com/cab404/framework-dsp">this one</a> created by cab404.
 </p>
 <h3><span class="mw-headline" id="Display">Display</span></h3>
-<p>The Framework Laptop 13 can be configured with 2 different displays: a 2256x1504 TFT-LCD display <a rel="nofollow" class="external autonumber" href="https://www.panelook.com/NE135FBM-N41_BOE_13.5_LCM_overview_44979.html">[1]</a> or a 2880x1920 display with rounded corners, both manufactured by <a href="https://en.wikipedia.org/wiki/BOE_Technology" class="extiw" title="wikipedia:BOE Technology">BOE</a>. They are uncalibrated from factory, giving a suboptimal default sRGB coverage. It is thus recommended to apply an <a href="../en/ICC_profiles.html" title="ICC profiles">ICC profile</a> to have better color reproduction. <a rel="nofollow" class="external autonumber" href="https://www.notebookcheck.net/Framework-Laptop-13-5-Intel-12th-gen-review-Like-the-Microsoft-Surface-but-actually-repairable.633893.0.html#c8723572">[2]</a>
+<p>The Framework Laptop 13 can be configured with 2 different displays: a 2256x1504 TFT-LCD display <a rel="nofollow" class="external autonumber" href="https://www.panelook.com/NE135FBM-N41_BOE_13.5_LCM_overview_44979.html">[4]</a> or a 2880x1920 display with rounded corners, both manufactured by <a href="https://en.wikipedia.org/wiki/BOE_Technology" class="extiw" title="wikipedia:BOE Technology">BOE</a>. They are uncalibrated from factory, giving a suboptimal default sRGB coverage. It is thus recommended to apply an <a href="../en/ICC_profiles.html" title="ICC profiles">ICC profile</a> to have better color reproduction. <a rel="nofollow" class="external autonumber" href="https://www.notebookcheck.net/Framework-Laptop-13-5-Intel-12th-gen-review-Like-the-Microsoft-Surface-but-actually-repairable.633893.0.html#c8723572">[5]</a>
 </p>
 <ul>
 <li>Intel Framework 13 ICC color profile: <a rel="nofollow" class="external free" href="https://www.notebookcheck.net/uploads/tx_nbc2/BOE_CQ_______NE135FBM_N41_01.icm">https://www.notebookcheck.net/uploads/tx_nbc2/BOE_CQ_______NE135FBM_N41_01.icm</a>
@@ -949,7 +999,7 @@
 <td>3.08</td>
 <td></td>
 <td></td>
-<td>Later batches come with 3.05 "to resolve an in-factory specific issue"<a rel="nofollow" class="external autonumber" href="https://www.reddit.com/r/framework/comments/zn4dpc/comment/j0fn7ev/?utm_source=share&amp;utm_medium=web2x&amp;context=3">[3]</a>. <div class="archwiki-template-box archwiki-template-box-warning">
+<td>Later batches come with 3.05 "to resolve an in-factory specific issue"<a rel="nofollow" class="external autonumber" href="https://www.reddit.com/r/framework/comments/zn4dpc/comment/j0fn7ev/?utm_source=share&amp;utm_medium=web2x&amp;context=3">[6]</a>. <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> After updating your BIOS to version 3.06 or 3.08, you cannot downgrade to version 3.04 or 3.05 as it will result in the left side ports to stop functioning properly.</div>
 </td>
 </tr>
@@ -958,7 +1008,7 @@
 <td>3.05</td>
 <td></td>
 <td></td>
-<td>Windows updater and EFI Shell packages for 3.05 available. Announcement here: <a rel="nofollow" class="external autonumber" href="https://community.frame.work/t/13th-gen-intel-core-bios-3-05-release-and-2024-06-25-drivers-release-beta/53641">[4]</a>
+<td>Windows updater and EFI Shell packages for 3.05 available. Announcement here: <a rel="nofollow" class="external autonumber" href="https://community.frame.work/t/13th-gen-intel-core-bios-3-05-release-and-2024-06-25-drivers-release-beta/53641">[7]</a>
 </td>
 </tr>
 <tr>
@@ -966,7 +1016,7 @@
 <td>3.04</td>
 <td></td>
 <td>3.04</td>
-<td>Announcement here: <a rel="nofollow" class="external autonumber" href="https://community.frame.work/t/framework-laptop-13-intel-core-ultra-series-1-bios-3-04-release/59579">[5]</a>
+<td>Announcement here: <a rel="nofollow" class="external autonumber" href="https://community.frame.work/t/framework-laptop-13-intel-core-ultra-series-1-bios-3-04-release/59579">[8]</a>
 </td>
 </tr>
 <tr>
@@ -986,14 +1036,14 @@
 <pre># dmidecode -s bios-version
 </pre>
 <h4><span class="mw-headline" id="LVFS">LVFS</span></h4>
-<p>Support for <a href="../en/Fwupd.html" title="Fwupd">fwupd</a> is in testing <a rel="nofollow" class="external autonumber" href="https://community.frame.work/t/bios-3-09-beta-release/20085#lvfs-update-6">[6]</a>, and can be enabled by running:
+<p>Support for <a href="../en/Fwupd.html" title="Fwupd">fwupd</a> is in testing <a rel="nofollow" class="external autonumber" href="https://community.frame.work/t/bios-3-09-beta-release/20085#lvfs-update-6">[9]</a>, and can be enabled by running:
 </p>
 <pre>$ fwupdmgr enable-remote lvfs-testing
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> 
 <ul>
-<li>For AMD 7040 series laptops you should not enable testing remotes if you want to use only released BIOS updates and not those in beta testing <a rel="nofollow" class="external autonumber" href="https://knowledgebase.frame.work/framework-laptop-bios-and-driver-releases-amd-ryzen-7040-series-r1rXGVL16">[7]</a><a rel="nofollow" class="external autonumber" href="https://knowledgebase.frame.work/en_us/updating-bios-on-linux-Hk4pROTn">[8]</a>.</li>
+<li>For AMD 7040 series laptops you should not enable testing remotes if you want to use only released BIOS updates and not those in beta testing <a rel="nofollow" class="external autonumber" href="https://knowledgebase.frame.work/framework-laptop-bios-and-driver-releases-amd-ryzen-7040-series-r1rXGVL16">[10]</a><a rel="nofollow" class="external autonumber" href="https://knowledgebase.frame.work/en_us/updating-bios-on-linux-Hk4pROTn">[11]</a>.</li>
 <li>11th Gen Intel Mainboards with BIOS versions earlier than 3.17 only have in-memory capsule update support, not on-disk. To upgrade to newer versions with the support, add the following fwupd configuration changes, update to 3.17 or higher, and then revert the change after the BIOS is updated:</li>
 </ul>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/fwupd/fwupd.conf</pre>
@@ -1012,12 +1062,12 @@ DisableCapsuleUpdateOnDisk=true</pre>
 <p>One can enroll custom keys into the Framework Laptop without any Option ROM concerns, or use the SHIM approach. See <a href="../en/Unified_Extensible_Firmware_Interface/Secure_Boot.html" class="mw-redirect" title="Secure Boot">Secure Boot</a> for details.
 </p>
 <h3><span class="mw-headline" id="Suspend">Suspend</span></h3>
-<p>On Intel boards, adding the <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a> <code>acpi_osi="!Windows 2020"</code> fixes a regression in s2idle, making the keyboard backlight and power button correctly turn off when suspending, as well as decreasing battery drain in suspend to about 1%/hour<a rel="nofollow" class="external autonumber" href="https://community.frame.work/t/solved-laptop-stays-on-in-sleep/17168">[9]</a>.
+<p>On Intel boards, adding the <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a> <code>acpi_osi="!Windows 2020"</code> fixes a regression in s2idle, making the keyboard backlight and power button correctly turn off when suspending, as well as decreasing battery drain in suspend to about 1%/hour<a rel="nofollow" class="external autonumber" href="https://community.frame.work/t/solved-laptop-stays-on-in-sleep/17168">[12]</a>.
 </p>
 <p>If your system fails to wake up from suspend due to the SSD disconnecting, you can try putting <code>nvme.noacpi=1</code> in your <a href="../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a>. This may also improve battery life in suspend, if your SSD has a bad ACPI implementation. This should only be used on Intel boards, as on AMD it will cause the issue, instead of fixing it.
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> Some NVMe drives do not successfully wake from the deep sleep state described below, disconnecting from the laptop and becoming inaccessible until a reboot, which typically causes the laptop to lock up. One example is the Sabrent Rocket NVMe 4.0<a rel="nofollow" class="external autonumber" href="https://community.frame.work/t/linux-deep-sleep/2491/48">[10]</a><a rel="nofollow" class="external autonumber" href="https://community.frame.work/t/ubuntu-21-04-on-the-framework-laptop/2722/30">[11]</a>. Before enabling this sleep state in a production installation, you may wish to test the suspend functionality of your NVMe drive from the Arch installer environment so as not to cause corruption.</div>
+<strong>Warning:</strong> Some NVMe drives do not successfully wake from the deep sleep state described below, disconnecting from the laptop and becoming inaccessible until a reboot, which typically causes the laptop to lock up. One example is the Sabrent Rocket NVMe 4.0<a rel="nofollow" class="external autonumber" href="https://community.frame.work/t/linux-deep-sleep/2491/48">[13]</a><a rel="nofollow" class="external autonumber" href="https://community.frame.work/t/ubuntu-21-04-on-the-framework-laptop/2722/30">[14]</a>. Before enabling this sleep state in a production installation, you may wish to test the suspend functionality of your NVMe drive from the Arch installer environment so as not to cause corruption.</div>
 <p>See <a href="../en/Power_management/Suspend_and_hibernate.html#Changing_suspend_method" title="Power management/Suspend and hibernate">Power management/Suspend and hibernate#Changing suspend method</a> if you want to use S3 sleep instead of s2idle.
 </p>
 <h4><span class="mw-headline" id="Fn_key_after_suspend">Fn key after suspend</span></h4>
@@ -1031,10 +1081,10 @@ DisableCapsuleUpdateOnDisk=true</pre>
 <div>
 <b>Reason:</b> Patch landed in 6.7, once <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-lts">linux-lts</a></span> has caught up this can be deleted. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Framework_Laptop_13.html">Talk:Framework Laptop 13</a>)</div>
 </div>
-<p>For AMD versions running kernel versions less than 6.7, <a href="../en/Systemd.html" title="Systemd">systemd</a>'s suspend-then-hibernate will wake up after exactly 5 minutes (regular suspend works). Until the kernel patch <a rel="nofollow" class="external autonumber" href="https://lore.kernel.org/linux-kernel/20231106162310.85711-1-mario.limonciello@amd.com/">[12]</a> is merged, add the <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a> <code>rtc_cmos.use_acpi_alarm=1</code> to use the proper wakeup mechanism.
+<p>For AMD versions running kernel versions less than 6.7, <a href="../en/Systemd.html" title="Systemd">systemd</a>'s suspend-then-hibernate will wake up after exactly 5 minutes (regular suspend works). Until the kernel patch <a rel="nofollow" class="external autonumber" href="https://lore.kernel.org/linux-kernel/20231106162310.85711-1-mario.limonciello@amd.com/">[15]</a> is merged, add the <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a> <code>rtc_cmos.use_acpi_alarm=1</code> to use the proper wakeup mechanism.
 </p>
 <h3><span class="mw-headline" id="Touchpad">Touchpad</span></h3>
-<p>There are reports of the touchpad exhibiting issues (e.g. pointer does not move, two-finger scroll does not work, etc.) after waking from sleep. Disabling PS/2 mouse emulation under Advanced in the BIOS seems to resolve the issues<a rel="nofollow" class="external autonumber" href="https://community.frame.work/t/sleep-and-touchpad-not-responding/4928/16">[13]</a>.
+<p>There are reports of the touchpad exhibiting issues (e.g. pointer does not move, two-finger scroll does not work, etc.) after waking from sleep. Disabling PS/2 mouse emulation under Advanced in the BIOS seems to resolve the issues<a rel="nofollow" class="external autonumber" href="https://community.frame.work/t/sleep-and-touchpad-not-responding/4928/16">[16]</a>.
 </p>
 <h3><span class="mw-headline" id="Interact_with_system">Interact with system</span></h3>
 <p>You can interact with your system using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/framework-system-git/">framework-system-git</a></span><sup><small>AUR</small></sup>.
@@ -1342,15 +1392,15 @@ DisableCapsuleUpdateOnDisk=true</pre>
 <h3>
 <span id="Intel_Wi-Fi_6E_AX210_reset_.2F_low_throughput_.2F_.22Microcode_SW_error.22"></span><span class="mw-headline" id='Intel_Wi-Fi_6E_AX210_reset_/_low_throughput_/_"Microcode_SW_error"'>Intel Wi-Fi 6E AX210 reset / low throughput / "Microcode SW error"</span>
 </h3>
-<p>Under high stress, Wi-Fi device restarts and network speeds become abysmally slow or non-responsive until disconnecting and reconnecting to Wi-Fi network.<a rel="nofollow" class="external autonumber" href="https://bugzilla.kernel.org/show_bug.cgi?id=214693#c0">[14]</a>
+<p>Under high stress, Wi-Fi device restarts and network speeds become abysmally slow or non-responsive until disconnecting and reconnecting to Wi-Fi network.<a rel="nofollow" class="external autonumber" href="https://bugzilla.kernel.org/show_bug.cgi?id=214693#c0">[17]</a>
 </p>
-<p>This issue has been observed by owners of other manufacturers' laptops (not just framework). <a rel="nofollow" class="external autonumber" href="https://community.intel.com/t5/Wireless/Intel-AX210-Firmware-Reset-under-Load/m-p/1339292/highlight/true#M39083">[15]</a>
+<p>This issue has been observed by owners of other manufacturers' laptops (not just framework). <a rel="nofollow" class="external autonumber" href="https://community.intel.com/t5/Wireless/Intel-AX210-Firmware-Reset-under-Load/m-p/1339292/highlight/true#M39083">[18]</a>
 </p>
-<p>Disabling IEEE 802.11ax seems to be a suitable workaround for the time being. <a rel="nofollow" class="external autonumber" href="https://community.frame.work/t/using-the-ax210-with-linux-on-the-framework-laptop/1844/92">[16]</a>
+<p>Disabling IEEE 802.11ax seems to be a suitable workaround for the time being. <a rel="nofollow" class="external autonumber" href="https://community.frame.work/t/using-the-ax210-with-linux-on-the-framework-laptop/1844/92">[19]</a>
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/modprobe.d/iwlwifi.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">options iwlwifi disable_11ax=Y</pre>
-<p>Intel is aware<a rel="nofollow" class="external autonumber" href="https://bugzilla.kernel.org/show_bug.cgi?id=214693#c4">[17]</a> of the issue and there is a patch<a rel="nofollow" class="external autonumber" href="https://bugzilla.kernel.org/attachment.cgi?id=299667&amp;action=diff">[18]</a> that fix slow tx after restart, and another<a rel="nofollow" class="external autonumber" href="https://bugzilla.kernel.org/attachment.cgi?id=299841&amp;action=diff">[19]</a> that address the SW error.
+<p>Intel is aware<a rel="nofollow" class="external autonumber" href="https://bugzilla.kernel.org/show_bug.cgi?id=214693#c4">[20]</a> of the issue and there is a patch<a rel="nofollow" class="external autonumber" href="https://bugzilla.kernel.org/attachment.cgi?id=299667&amp;action=diff">[21]</a> that fix slow tx after restart, and another<a rel="nofollow" class="external autonumber" href="https://bugzilla.kernel.org/attachment.cgi?id=299841&amp;action=diff">[22]</a> that address the SW error.
 </p>
 <h3><span class="mw-headline" id="Fingerprint_reader_device_disconnected_error">Fingerprint reader device disconnected error</span></h3>
 <p>When the fingerprint reader has been used to enroll a fingerprint on Windows, and you later attempt to use the reader under Linux without first unenrolling your print from within Windows, <code>fprintd</code> can fail to work. In this situation, upon <a href="../en/Fprint.html#Create_fingerprint_signature" title="Fprint">enrolling with fprintd-enroll</a>, the command will hang, as <code>fprintd</code> has crashed.
@@ -1379,10 +1429,8 @@ DisableCapsuleUpdateOnDisk=true</pre>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/tlp.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">CPU_ENERGY_PERF_POLICY_ON_AC=balance_performance
 CPU_ENERGY_PERF_POLICY_ON_BAT=balance_performance</pre>
-<h3>
-<span id="12th_.26_13th_gen_brightness_and_airplane_mode_keys"></span><span class="mw-headline" id="12th_&amp;_13th_gen_brightness_and_airplane_mode_keys">12th &amp; 13th gen brightness and airplane mode keys</span>
-</h3>
-<p>On the 12th and 13th gen motherboards there is <a rel="nofollow" class="external text" href="https://guides.frame.work/Guide/Fedora+36+Installation+on+the+Framework+Laptop/108#s734">a bug</a><sup title="Last check status: 403">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2023-10-29 ⓘ]</sup> where ALS and the brightness up/down including the airplane mode keys conflict. In order to make the brightness and airplane mode keys work <b>in the detriment of using the ambient light sensor</b>, <a href="../en/Kernel_module.html#Blacklisting" class="mw-redirect" title="Blacklist">blacklist</a> the <code>hid_sensor_hub</code> module.
+<h3><span class="mw-headline" id="12th_gen_brightness_and_airplane_mode_keys">12th gen brightness and airplane mode keys</span></h3>
+<p>On the 12th gen motherboards there is <a rel="nofollow" class="external text" href="https://guides.frame.work/Guide/Fedora+36+Installation+on+the+Framework+Laptop/108#s734">a bug</a><sup title="Last check status: 403">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2023-10-29 ⓘ]</sup> where ALS and the brightness up/down including the airplane mode keys conflict. In order to make the brightness and airplane mode keys work <b>in the detriment of using the ambient light sensor</b>, <a href="../en/Kernel_module.html#Blacklisting" class="mw-redirect" title="Blacklist">blacklist</a> the <code>hid_sensor_hub</code> module.
 </p>
 <h3><span class="mw-headline" id="Ethernet_not_working_with_tlp">Ethernet not working with tlp</span></h3>
 <p>By default tlp will power limit the framework ethernet adapter. This can be changed in tlp's configuration where <code>0bda:8156</code> is the ID of the framework ethernet adapter.
@@ -1570,8 +1618,8 @@ echo $DRM_PERF_LEVEL &gt; /sys/class/drm/card1/device/power_dpm_force_performanc
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Framework_Laptop_13&amp;oldid=824308">https://wiki.archlinux.org/index.php?title=Framework_Laptop_13&amp;oldid=824308</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 30 December 2024, at 19:34.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Framework_Laptop_13&amp;oldid=826189">https://wiki.archlinux.org/index.php?title=Framework_Laptop_13&amp;oldid=826189</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 31 January 2025, at 18:30.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

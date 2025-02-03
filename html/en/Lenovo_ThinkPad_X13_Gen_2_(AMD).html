@@ -142,10 +142,19 @@
 		<ul id="toc-Function_keys-sublist" class="vector-toc-list">
 		</ul>
 	</li>
+	<li id="toc-Gaming" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#Gaming">
+			<div class="vector-toc-text">
+			<span class="vector-toc-numb">6</span>Gaming</div>
+		</a>
+		
+		<ul id="toc-Gaming-sublist" class="vector-toc-list">
+		</ul>
+	</li>
 	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
 		<a class="vector-toc-link" href="#See_also">
 			<div class="vector-toc-text">
-			<span class="vector-toc-numb">6</span>See also</div>
+			<span class="vector-toc-numb">7</span>See also</div>
 		</a>
 		
 		<ul id="toc-See_also-sublist" class="vector-toc-list">
@@ -531,6 +540,296 @@ defaults.ctl.card 2
 <li>The physical key has a symbol on it, which describes its function</li>
 <li>systemd-logind handles this by default</li>
 </ol>
+<h2><span class="mw-headline" id="Gaming">Gaming</span></h2>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-clear.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs language, wiki syntax or style improvements. See <a href="../en/Help:Style.html" title="Help:Style">Help:Style</a> for reference.</b></p>
+<div>
+<b>Reason:</b> Written like a blog post, some irrelevant details (e.g. game launchers), needs to interlink with existing pages and avoid big config dumps. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Lenovo_ThinkPad_X13_Gen_2_(AMD).html">Talk:Lenovo ThinkPad X13 Gen 2 (AMD)</a>)</div>
+</div>
+<p>The APU incorporates a RENOIR from AMD GPU.
+It is possible to make a few optimizations to be able to run recent games that would otherwise have great difficulty.
+</p>
+<p>To do this, you need a few tools and configurations:
+</p>
+<p>-znver3 Linux kernel: Available via chaotic-aur or AUR, required for WineFSync support and other optimisations.
+</p>
+<p>-ProtonUP: to install a customised version of Proton/DXVK with FSR support.
+</p>
+<p>-Proton-GE: proton fork with native FSR support.
+</p>
+<p>-Steam: to launch your games
+</p>
+<p>-Heroic: to launch your games
+</p>
+<p>-LACT: to manually specify the GPU frequency, which is necessary for certain games that don't push it to the limit, with a clear degradation in performance in this case.
+</p>
+<p>If you only want a game machine, you can optimise the launch parameters via /etc/default/grub wich removing mitigations too (enable it if you prefer security by removing mitigations=off) :
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/default/grub</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">GRUB_CMDLINE_LINUX_DEFAULT="apparmor=0 security=apparmor lsm=landlock,lockdown,yama,integrity,apparmor,bpf udev. log_priority=3 clearcpuid=514 module_blacklist=pcspkr,snd_pcsp tsc=unstable mitigations=off iommu=pt amd_pstate=active amdgpu.abmlevel=0 idle=nomwait rcu_nocbs=0-$(($(nproc)-1)) processor.max_cstate=5’</pre>
+<p><br>
+Editing environment variables : 
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/environment</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">WINEFSYNC=1
+#DX12 support
+VKD3D_DEBUG=none
+VKD3D_SHADER_COMPILE_OPTIONS=fast_math
+VKD3D_FRAME_RATE=24 # choose 24 or 30fps max 
+#Enable FSR for Proton-GE or Wine-GE, works only with DXVK
+WINE_FULLSCREEN_FSR=1
+WINE_FULLSCREEN_FSR_MODE=performance # choose performance, medium, quality
+#Choose global config file for directx 9/10/11 support with DXVK. (Alternatively, you can comment this line and include this file next to the executable in each game)
+DXVK_CONFIG_FILE=/home/youruser/.config/dxvk.conf
+#Force using radeon vulkan support
+VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/radeon_icd.i686.json:/usr/share/vulkan/icd.d/radeon_icd.x86_64.json
+#Correcting Bug texture with AMD
+AMD_DEBUG=dpc
+RADV_PERFTEST=video_decode
+#MESA_LOADER_DRIVER_OVERRIDE=zink # Enable only for OpenGL support via Vulkan. GDM will only launch under Wayland, no longer with X.
+
+#Various optimisations and HUD display for Vulkan.
+VK_INSTANCE_LAYERS=VK_LAYER_MESA_overlay VK_LAYER_MESA_OVERLAY_CONFIG=fps,frame_timing=0,device=0,format=0 VK_LAYER_KHRONOS_validation VK_LAYER_L&gt;
+VK_LAYER_KHRONOS_validation=0
+MESA_VK_WSI_PRESENT_MODE=mailbox
+VK_SWAPCHAIN_COLORS=bt709
+vblank_mode=0
+VK_LAYER_LUNARG_standard_validation=0
+MESA_NO_ERROR=1
+VK_LOADER_DISABLE_EXTENSIONS=VK_EXT_debug_marker,VK_KHR_surface</pre>
+<p>Edit /home/youruser/.config/dxvk.conf or your dxvk.conf next to the game executable :
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">dxvk.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">----------Various---------
+dxgi.syncInterval = 0
+d3d11.relaxedBarriers = True
+d3d11.apitrace = False
+
+<hr>Enable HUD---------
+dxvk.hud = api,fps,memory,gpuload,version
+
+<hr>Optimisation---------
+
+d3d11.ignoreGraphicsBarriers = True
+
+<hr>HDR---------
+dxgi.enableHDR = False
+dxgi.enableUe4Workarounds = False
+
+
+<hr>Fix framerate 24 or 30---------
+dxgi.maxFrameLatency = 2
+d3d9.maxFrameLatency = 2
+
+dxgi.maxFrameRate = 24
+d3d9.maxFrameRate = 24
+
+dxgi.numBackBuffers = 2
+d3d9.numBackBuffers =2
+
+
+
+<hr>Fast Vsync-----
+dxvk.tearFree = False
+
+<hr>Vsync-----
+dxgi.syncInterval = -1
+d3d9.presentInterval = -1
+
+
+<hr>Disable Anisotropic Fltering---------
+<hr>(0-16)-------
+d3d11.samplerAnisotropy  = 0
+dxgi.samplerAnisotropy  = 0
+d3d9.samplerAnisotropy  = 0
+
+<hr>Texture sharpening 
+<hr>( -2-1)--------
+d3d11.samplerLodBias = 0.1
+dxgi.samplerLodBias = 0.1
+d3d9.samplerLodBias = 0.1
+d3d11.clampNegativeLodBias = True
+d3d9.clampNegativeLodBias = True
+
+<hr>Supersampling---------
+<hr>(True-False)--------------
+d3d11.forceSampleRateShading = False
+d3d9.forceSampleRateShading = False
+
+<hr>Optimisation--------------
+
+d3d11.dcSingleUseMode = True
+d3d11.maxFeatureLevel = 11_0
+d3d11.maxTessFactor = 8
+d3d11.relaxedBarriers = False
+
+<hr>Vram max 2048 or 4096--------------
+dxgi.maxDeviceMemory = 2048
+dxgi.maxSharedMemory = 2048</pre>
+<p>Now if your on Gnome, on login screen, choose Wayland which offers a much smoother gaming experience when the frame rate drops.
+</p>
+<p>Launch Proton-Up and choose lateste version of Proton-GE for Steam/Heroic, and config them to using this version.
+</p>
+<p>In Gnome, don't forget to set power to performance in settings.
+</p>
+<p>Launch LACT tool for AMD GPU, and choose in "OC" TAB to enable service, then reboot system.
+</p>
+<p>Launch LACT again, and in OC Tab, choose Highest Clocks. This will increase the GPU's capacity to its maximum. Note that this is not overclocking.
+</p>
+<p>Launch your game and enjoy. :-)
+</p>
+<p><br>
+You can optimize config file for engines too.
+</p>
+<p>Example of Engine.ini for Unreal Engine 4 (here for Final Fantasy VII Remake Intergrade, but could works for others games too) :
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">Engine.ini</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[SystemSettings]
+
+r.VSync=0
+r.SetRes=1920x1080f
+#r.FramerateLimit=30
+#r.MaxFrameRate=30
+
+r.TextureStreaming=1
+r.DynamicRes.OperationMode=0
+r.DynamicRes.MinScreenPercentage=100
+r.DynamicRes.MaxScreenPercentage=100
+r.PostProcess.ScreenResolution=60
+r.MaxAnisotropy=16
+r.PostProcess.AntiAliasingQuality=2
+
+r.Shadow.Quality=0
+r.Shadow.MaxResolution=512
+r.Shadow.MaxCSMResolution=1024
+r.Shadow.RadiusThreshold=0.06
+r.Shadow.DistanceScale=0.8
+
+r.Effects.Quality=1
+r.Foliage.Quality=0
+r.DistanceFieldQuality=0
+r.Water.Quality=0
+r.Particle.Quality=0
+
+r.MotionBlurQuality=0
+r.DepthOfFieldQuality=0
+r.BloomQuality=2
+
+r.TextureQuality=2
+r.Texture.LODBias=-0.5
+r.Streaming.MipBias=1
+
+tessellation.MaxDisplacement=0
+
+r.ParticleLODBias=2
+r.ParticleLightQuality=0
+
+r.ViewDistanceScale=0.9
+
+r.AmbientOcclusionLevels=0
+r.AmbientOcclusionRadiusScale=0.5
+
+r.SkeletalMeshLODBias=2
+
+r.DefaultFeature.MotionBlur=0
+
+r.AllowAsyncCompute=0
+r.AsyncComputeBudget=4
+
+r.FastVRam.BokehDOF=1
+r.FastVRam.CombineLUTs=1
+r.FastVRam.DistanceFieldAODownsampledBentNormal=1
+r.FastVRam.DistanceFieldAOHistory=1
+r.FastVRam.DistanceFieldAOScreenGridResources=1
+r.FastVRam.DistanceFieldCulledObjectBuffers=1
+r.FastVRam.DistanceFieldNormal=1
+r.FastVRam.DistanceFieldShadows=1
+r.FastVRam.DistanceFieldTileIntersectionResources=1
+r.FastVRam.DistortHistory=1
+r.FastVRam.Distortion=1
+r.FastVRam.DOFPostfilter=1
+r.FastVRam.DOFReduce=1
+r.FastVRam.DOFSetup=1
+r.FastVRam.Downsample=1
+r.FastVRam.EyeAdaptation=1
+r.FastVRam.ForwardLightingCullingResources=1
+r.FastVRam.Histogram=1
+r.FastVRam.HistogramReduce=1
+r.FastVRam.HZB=1
+r.FastVRam.LPV=1
+r.FastVRam.MotionBlur=1
+r.FastVRam.PostProcessMaterial=1
+r.FastVRam.SceneColor=1
+r.FastVRam.SceneDepth=1
+r.FastVRam.ScreenSpaceShadowMask=1
+r.FastVRam.ScreenSpaceShadowMask=1
+r.FastVRam.ShadowCSM=1
+r.FastVRam.ShadowPerObject=1
+r.FastVRam.Tonemap=1
+r.FastVRam.Upscale=1
+r.FastVRam.VelocityFlat=1
+r.FastVRam.VelocityMax=1
+r.FastVRam.VolumetricFog=1
+
+[RenderSettings]
+r.Shadow.Quality=0
+r.Effects.Quality=1
+r.Foliage.Quality=0
+r.DistanceFieldQuality=0
+r.Water.Quality=0
+r.Particle.Quality=0</pre>
+<p>Or Unreal Engine 5 (here for Dragon Ball Sparking Zero, but could works for other games) add in Engine.ini : 
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">Engine.ini</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Engine.Engine]
+; Limit Max FPS
+bSmoothFrameRate=True
+MinSmoothedFrameRate=30
+MaxSmoothedFrameRate=30
+
+[/script/engine.engine]
+FixedFrameRate=30
+
+[SystemSettings]
+bUseFixedFrameRate=True
+bSmoothFrameRate=False
+FixedFrameRate=30
+FrameRateLimit=30
+
+; Resolution and details
+r.ScreenPercentage=75             ; Renders the game at 75% of the native resolution for an FPS boost
+r.ViewDistanceScale=1.5           ; Reduces the view distance
+r.StaticMeshLODDistanceScale=1.5  ; Increases the use of LOD (Low-Detail Objects)
+r.SkeletalMeshLODBias=1           ; Reduces character quality at a distance
+
+; Shadows
+r.ShadowQuality=1                 ; Reduces shadow quality
+r.Shadow.MaxResolution=128        ; Limits shadow resolution
+r.Shadow.RadiusThreshold=0.05     ; Reduces shadows on small objects
+r.Shadow.DistanceScale=0.5        ; Decreases shadow range
+
+; Lighting and visual effects
+r.VolumetricFog=0                 ; Disables volumetric fog
+r.VolumetricCloud=0               ; Disables volumetric clouds
+r.MotionBlurQuality=0             ; Disables motion blur
+r.BloomQuality=0                  ; Disables bloom
+r.LensFlareQuality=0              ; Disables lens flares
+r.SceneColorFringeQuality=0       ; Disables chromatic aberration
+r.DepthOfFieldQuality=0           ; Disables depth of field
+
+; Textures and streaming
+r.TextureStreaming=1              ; Enables texture streaming
+r.Streaming.PoolSize=768          ; Texture pool size (for 12 GB of system RAM)
+r.MaxAnisotropy=16                ; Limits anisotropic filtering to 4x
+
+; Anti-aliasing
+r.TemporalAACurrentFrameWeight=0.2 ; Reduces temporal anti-aliasing artifacts
+r.TemporalAASamples=0             ; Adjusts temporal anti-aliasing samples
+
+; FPS optimization
+r.HZBOcclusion=0                  ; Disables hierarchical occlusion
+r.DistanceFieldShadowing=0        ; Disables distance field shadows
+r.GenerateMeshDistanceFields=0    ; Disables the generation of distance fields</pre>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul>
 <li>Specifications: <a rel="nofollow" class="external free" href="https://psref.lenovo.com/syspool/Sys/PDF/ThinkPad/ThinkPad_x13_Gen_2_AMD/ThinkPad_x13_Gen_2_AMD_Spec.PDF">https://psref.lenovo.com/syspool/Sys/PDF/ThinkPad/ThinkPad_x13_Gen_2_AMD/ThinkPad_x13_Gen_2_AMD_Spec.PDF</a>
@@ -541,9 +840,13 @@ defaults.ctl.card 2
 </ul>
 </div>
 </div>
-					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
+					<div id="catlinks" class="catlinks" data-mw="interface">
+<div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Lenovo.html" title="Category:Lenovo">Lenovo</a></li></ul>
-</div></div>
+</div>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li></ul>
+</div>
+</div>
 				</div>
 			</main>
 			
@@ -552,8 +855,8 @@ defaults.ctl.card 2
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Lenovo_ThinkPad_X13_Gen_2_(AMD)&amp;oldid=769944">https://wiki.archlinux.org/index.php?title=Lenovo_ThinkPad_X13_Gen_2_(AMD)&amp;oldid=769944</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 3 March 2023, at 14:04.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Lenovo_ThinkPad_X13_Gen_2_(AMD)&amp;oldid=824823">https://wiki.archlinux.org/index.php?title=Lenovo_ThinkPad_X13_Gen_2_(AMD)&amp;oldid=824823</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 10 January 2025, at 12:12.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

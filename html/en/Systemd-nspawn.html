@@ -188,50 +188,68 @@
 			</a>
 			
 			<ul id="toc-Networking-sublist" class="vector-toc-list">
-				<li id="toc-Use_host_networking" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Use_host_networking">
+				<li id="toc-Host_networking" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Host_networking">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.4.1</span>Use host networking</div>
+				<span class="vector-toc-numb">4.4.1</span>Host networking</div>
 			</a>
 			
-			<ul id="toc-Use_host_networking-sublist" class="vector-toc-list">
+			<ul id="toc-Host_networking-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Use_a_virtual_Ethernet_link" class="vector-toc-list-item vector-toc-level-3">
+		<li id="toc-Private_networking" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Private_networking">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">4.4.2</span>Private networking</div>
+			</a>
+			
+			<ul id="toc-Private_networking-sublist" class="vector-toc-list">
+				<li id="toc-Use_a_virtual_Ethernet_link" class="vector-toc-list-item vector-toc-level-4">
 			<a class="vector-toc-link" href="#Use_a_virtual_Ethernet_link">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.4.2</span>Use a virtual Ethernet link</div>
+				<span class="vector-toc-numb">4.4.2.1</span>Use a virtual Ethernet link</div>
 			</a>
 			
 			<ul id="toc-Use_a_virtual_Ethernet_link-sublist" class="vector-toc-list">
+				<li id="toc-Use_NAT_networking" class="vector-toc-list-item vector-toc-level-5">
+			<a class="vector-toc-link" href="#Use_NAT_networking">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">4.4.2.1.1</span>Use NAT networking</div>
+			</a>
+			
+			<ul id="toc-Use_NAT_networking-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Use_a_network_bridge" class="vector-toc-list-item vector-toc-level-3">
+		<li id="toc-Use_a_network_bridge" class="vector-toc-list-item vector-toc-level-5">
 			<a class="vector-toc-link" href="#Use_a_network_bridge">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.4.3</span>Use a network bridge</div>
+				<span class="vector-toc-numb">4.4.2.1.2</span>Use a network bridge</div>
 			</a>
 			
 			<ul id="toc-Use_a_network_bridge-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id='toc-Use_a_"macvlan"_or_"ipvlan"_interface' class="vector-toc-list-item vector-toc-level-3">
+	</ul>
+		</li>
+		<li id='toc-Use_a_"macvlan"_or_"ipvlan"_interface' class="vector-toc-list-item vector-toc-level-4">
 			<a class="vector-toc-link" href='#Use_a_"macvlan"_or_"ipvlan"_interface'>
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.4.4</span>Use a "macvlan" or "ipvlan" interface</div>
+				<span class="vector-toc-numb">4.4.2.2</span>Use a "macvlan" or "ipvlan" interface</div>
 			</a>
 			
 			<ul id='toc-Use_a_"macvlan"_or_"ipvlan"_interface-sublist' class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Use_an_existing_interface" class="vector-toc-list-item vector-toc-level-3">
+		<li id="toc-Use_an_existing_interface" class="vector-toc-list-item vector-toc-level-4">
 			<a class="vector-toc-link" href="#Use_an_existing_interface">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.4.5</span>Use an existing interface</div>
+				<span class="vector-toc-numb">4.4.2.3</span>Use an existing interface</div>
 			</a>
 			
 			<ul id="toc-Use_an_existing_interface-sublist" class="vector-toc-list">
 			</ul>
+		</li>
+	</ul>
 		</li>
 	</ul>
 		</li>
@@ -581,34 +599,38 @@
 </p>
 <p>Then invoke <i>deboostrap</i> with the following structure:
 </p>
-<pre># debootstrap <i>codename</i> <i>container-name</i> <i>repository-url</i>
+<pre># debootstrap [OPTIONS...] <i>SUITE</i> <i>TARGET</i> [<i>MIRROR</i>]
 </pre>
 <ul>
 <li>
-<i>codename</i>: for Debian, valid code names are either the stable aliases <code>stable</code>, <code>testing</code> and <code>unstable</code>, or release names like <code>bookworm</code> and <code>sid</code>: see <a rel="nofollow" class="external autonumber" href="https://www.debian.org/releases/">[1]</a> for a list. For Ubuntu, only code names such as <code>jammy</code> and <code>noble</code> should be used and not version numbers: see <a rel="nofollow" class="external autonumber" href="https://wiki.ubuntu.com/Releases">[2]</a> and <a rel="nofollow" class="external autonumber" href="https://wiki.ubuntu.com/DevelopmentCodeNames#Release_Naming_Scheme">[3]</a> for a table of code names to version numbers.</li>
-<li>
-<i>container-name</i> is the directory that will contain the operating system file tree; it will be created if it does not yet exist</li>
-<li>
-<i>repository-url</i>: the mirror from which it should download the operating system tree. For current Debian releases it can be any <a rel="nofollow" class="external text" href="https://www.debian.org/mirror/list">valid mirror</a> such as the CDN-backed <a rel="nofollow" class="external free" href="https://deb.debian.org/debian">https://deb.debian.org/debian</a>, and for Ubuntu any mirror from <a rel="nofollow" class="external autonumber" href="https://launchpad.net/ubuntu/+archivemirrors">[4]</a> such as the reference <a rel="nofollow" class="external free" href="https://archive.ubuntu.com/ubuntu">https://archive.ubuntu.com/ubuntu</a>.</li>
-</ul>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> 
+<i>SUITE</i> (required) is the code name or alias for the specific version of the desired distribution as found in <a rel="nofollow" class="external text" href="https://salsa.debian.org/installer-team/debootstrap/-/tree/master/scripts">the scripts directory</a>:
 <ul>
-<li>If you need an archived version of Debian (as of 2024-08 this is anything before Debian 10/Buster ), use the special <a rel="nofollow" class="external text" href="https://www.debian.org/distrib/archive">debian-archive</a> mirror URL <a rel="nofollow" class="external free" href="https://archive.debian.org/debian/">https://archive.debian.org/debian/</a>. For Ubuntu, use <a rel="nofollow" class="external free" href="https://old-releases.ubuntu.com/ubuntu/">https://old-releases.ubuntu.com/ubuntu/</a>.</li>
-<li>
-<i>systemd-nspawn</i> requires that the operating system in the container uses <i>systemd</i> as its init (has it running as PID 1). It is the default init system for Debian since Debian 8 ("jessie")<a rel="nofollow" class="external autonumber" href="https://wiki.debian.org/systemd#Introduction">[5]</a> and Ubuntu since 15.04 ("vivid")<a rel="nofollow" class="external autonumber" href="https://wiki.ubuntu.com/SystemdForUpstartUsers#Support_status">[6]</a>. Note however that issues relating to "unknown signing key" arise for releases not included in the aforementioned keyring packages, <i>e.g.</i> any release older than 9 ("Stretch") for Debian<a rel="nofollow" class="external autonumber" href="https://ftp-master.debian.org/keys.html#archivekey">[7]</a>, making the latter the oldest release installable without fiddling around.</li>
+<li>for Debian, valid suite names are either the stable aliases <code>stable</code>, <code>testing</code> and <code>unstable</code>, or release names like <code>bookworm</code> and <code>sid</code>: see <a rel="nofollow" class="external autonumber" href="https://www.debian.org/releases/">[1]</a> for a list.</li>
+<li>For Ubuntu, only version names such as <code>jammy</code> and <code>noble</code> should be used and not version numbers: see <a rel="nofollow" class="external autonumber" href="https://wiki.ubuntu.com/Releases">[2]</a> and <a rel="nofollow" class="external autonumber" href="https://wiki.ubuntu.com/DevelopmentCodeNames#Release_Naming_Scheme">[3]</a> for a table of code names to version numbers.</li>
+<li>other references exist in the scripts directory for other Debian-based distributions such as Devuan, eLxr, Kali Linux, Pardus, PureOS, Trisquel and Tanglu (discontinued since 2017). Invoking those usually require acquiring their specific keyring and passing it to the <code>--keyring</code> option, or disabling checking OpenPGP signatures of retrieved Release files with <code>--no-check-sig</code>.</li>
 </ul>
-</div>
+</li>
+<li>
+<i>TARGET</i> (required) is the directory that will contain the debootstrapped system; it will be created if it does not yet exist.</li>
+<li>
+<i>MIRROR</i> (optional): the archive URL from which packages should be downloaded. For current Debian releases it can be any <a rel="nofollow" class="external text" href="https://www.debian.org/mirror/list">valid mirror</a> such as the CDN-backed <a rel="nofollow" class="external free" href="https://deb.debian.org/debian">https://deb.debian.org/debian</a> (default), and for Ubuntu any mirror from <a rel="nofollow" class="external autonumber" href="https://launchpad.net/ubuntu/+archivemirrors">[4]</a> such as the reference <a rel="nofollow" class="external free" href="https://archive.ubuntu.com/ubuntu">https://archive.ubuntu.com/ubuntu</a> (also used by default).</li>
+</ul>
+<dl><dd><div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> Archived versions of Debian (as of 2025-01 this is anything before Debian 10/Buster) use the special <a rel="nofollow" class="external text" href="https://www.debian.org/distrib/archive">debian-archive</a> mirror URL <a rel="nofollow" class="external free" href="https://archive.debian.org/debian/">https://archive.debian.org/debian/</a>. For Ubuntu the scripts use <a rel="nofollow" class="external free" href="https://old-releases.ubuntu.com/ubuntu/">https://old-releases.ubuntu.com/ubuntu/</a>. Note however that issues relating to "unknown signing key" arise for releases not included in the aforementioned keyring packages, <i>e.g.</i> any release older than 9 ("Stretch") for Debian<a rel="nofollow" class="external autonumber" href="https://ftp-master.debian.org/keys.html#archivekey">[5]</a>, making the latter the oldest release installable without fetching a different keyring or disabling signature checking as previously mentioned.</div></dd></dl>
+<p><i>debootstrap</i> cannot resolve dependencies on virtual package<a rel="nofollow" class="external autonumber" href="https://forums.debian.net/viewtopic.php?t=160578">[6]</a>, and as a consequence it does not install <i>systemd'</i>s <code>dbus</code> and <code>libpam-systemd</code> recommended dependencies by default<a rel="nofollow" class="external autonumber" href="https://github.com/systemd/mkosi/issues/15">[7]</a><a rel="nofollow" class="external autonumber" href="https://github.com/systemd/mkosi/issues/3189">[8]</a>. As a consequence, some systemd/dbus-related functionalities (<i>e.g.</i> <a href="../en/Locale.html#Setting_the_locale" class="mw-redirect" title="Localectl">localectl</a>) as well as managing the container with <a href="#machinectl">#machinectl</a> do not work out of the box.
+</p>
+<p>In order to get full functionality in systemd-based systems, add <code>--include=dbus,libpam-systemd</code> to the <i>debootstrap</i> invocation or install those packages once in the container:
+</p>
+<pre># debootstrap --include=dbus,libpam-systemd stable <i>/path/to/machine</i>
+</pre>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> Other difficulties might arise when <i>booting</i> (<i>i.e.</i> using the <code>-b, --boot</code> option) containers not using <i>systemd</i> as their init. It is the default init system for Debian since Debian 8 ("jessie")<a rel="nofollow" class="external autonumber" href="https://wiki.debian.org/systemd#Introduction">[9]</a> and Ubuntu since 15.04 ("vivid")<a rel="nofollow" class="external autonumber" href="https://wiki.ubuntu.com/SystemdForUpstartUsers#Support_status">[10]</a>. Getting a shell should work irrespective of the init system.</div>
 <p>Just like Arch, Debian and Ubuntu will not let you log in without a password. To set the root password, run <i>systemd-nspawn</i> without the <code>-b</code> option:
 </p>
-<pre># systemd-nspawn -D ./<i>container-name</i>
+<pre># systemd-nspawn -D <i>/path/to/machine</i>
 # passwd
 # logout
 </pre>
-<div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> If planning to manage the container with <a href="#machinectl">#machinectl</a>, make sure to install the <a href="../en/D-Bus.html" class="mw-redirect" title="Dbus">dbus</a> package inside the container using its appropriate name for the target operating system, otherwise it won't work. This can be done by installing <code>systemd-container</code>, which always depends on dbus and systemd, using the <code>--include=</code> option as such:
-<pre># debootstrap --include=systemd-container <i>codename</i> /var/lib/machines/<i>container-name</i> <i>repository-url</i></pre>
-</div>
 <h3><span class="mw-headline" id="Create_a_Fedora_or_AlmaLinux_environment">Create a Fedora or AlmaLinux environment</span></h3>
 <p>Install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dnf">dnf</a></span>, and edit the <code>/etc/dnf/dnf.conf</code> file to add the required Fedora repositories.
 </p>
@@ -673,13 +695,13 @@ gpgkey=https://repo.almalinux.org/almalinux/RPM-GPG-KEY-AlmaLinux-$releasever</p
 </p>
 <h3><span class="mw-headline" id="machinectl">machinectl</span></h3>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> The <i>machinectl</i> tool requires <a href="../en/Systemd.html" title="Systemd">systemd</a> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dbus">dbus</a></span> to be installed in the container. See <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/685">[8]</a> for detailed discussion.</div>
+<strong>Note:</strong> The <i>machinectl</i> tool requires <a href="../en/Systemd.html" title="Systemd">systemd</a> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dbus">dbus</a></span> to be installed in the container. See <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/685">[11]</a> for detailed discussion.</div>
 <p>Containers can be managed by the <code>machinectl <i>subcommand</i> <i>container-name</i></code> command. For example, to start a container:
 </p>
 <pre>$ machinectl start <i>container-name</i>
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> <i>machinectl</i> requires that the container-name consists of only ASCII letters, digits and hyphens so that they are valid <a href="../en/Network_configuration.html#Set_the_hostname" class="mw-redirect" title="Hostname">hostnames</a>. For example, if the container-name contains an underscore, it simply will not be recognized and running <code>machinectl start container_name</code> will result in error <code>Invalid machine name container_name</code>. See <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/11765">[9]</a> and <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/commit/d65652f1f21a4b0c59711320f34266c635393c89">[10]</a> for more details.</div>
+<strong>Note:</strong> <i>machinectl</i> requires that the container-name consists of only ASCII letters, digits and hyphens so that they are valid <a href="../en/Network_configuration.html#Set_the_hostname" class="mw-redirect" title="Hostname">hostnames</a>. For example, if the container-name contains an underscore, it simply will not be recognized and running <code>machinectl start container_name</code> will result in error <code>Invalid machine name container_name</code>. See <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/11765">[12]</a> and <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/commit/d65652f1f21a4b0c59711320f34266c635393c89">[13]</a> for more details.</div>
 <p>Similarly, there are subcommands such as <code>poweroff</code>, <code>reboot</code>, <code>status</code> and <code>show</code>. See <span class="plainlinks archwiki-template-man" title="$ man 1 machinectl"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/machinectl.1#Machine_Commands">machinectl(1) § Machine Commands</a></span> for detailed explanations.
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
@@ -727,9 +749,9 @@ gpgkey=https://repo.almalinux.org/almalinux/RPM-GPG-KEY-AlmaLinux-$releasever</p
 <strong>Note:</strong> 
 <ul>
 <li>
-<i>.nspawn</i> files may be removed unexpectedly from <code>/etc/systemd/nspawn/</code> when you run <code>machinectl remove</code>. <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/15900">[11]</a>
+<i>.nspawn</i> files may be removed unexpectedly from <code>/etc/systemd/nspawn/</code> when you run <code>machinectl remove</code>. <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/15900">[14]</a>
 </li>
-<li>The interaction of network options specified in the <i>.nspawn</i> file and on the command line does not work correctly when there is <code>--settings=override</code> (which is specified in the <code>systemd-nspawn@.service</code> file). <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/12313#issuecomment-681116926">[12]</a> As a workaround, you need to include the option <code>VirtualEthernet=on</code>, even though the service specifies <code>--network-veth</code>.</li>
+<li>The interaction of network options specified in the <i>.nspawn</i> file and on the command line does not work correctly when there is <code>--settings=override</code> (which is specified in the <code>systemd-nspawn@.service</code> file). <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/12313#issuecomment-681116926">[15]</a> As a workaround, you need to include the option <code>VirtualEthernet=on</code>, even though the service specifies <code>--network-veth</code>.</li>
 </ul>
 </div>
 <h3><span class="mw-headline" id="Enable_container_to_start_at_boot">Enable container to start at boot</span></h3>
@@ -764,26 +786,26 @@ gpgkey=https://repo.almalinux.org/almalinux/RPM-GPG-KEY-AlmaLinux-$releasever</p
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> If you want these changes to be only temporary, you can pass the option <code>--runtime</code>. You can check their results with <i>systemd-cgtop</i>.</div>
 <h3><span class="mw-headline" id="Networking">Networking</span></h3>
-<p><i>systemd-nspawn</i> containers can use either <i>host networking</i> or <i>private networking</i>:
+<p><i>systemd-nspawn</i> containers can use either <a href="#Host_networking">host networking</a> or <a href="#Private_networking">private networking</a>:
 </p>
 <ul>
 <li>In the host networking mode, the container has full access to the host network. This means that the container will be able to access all network services on the host and packets coming from the container will appear to the outside network as coming from the host (i.e. sharing the same IP address).</li>
 <li>In the private networking mode, the container is disconnected from the host's network. This makes all network interfaces unavailable to the container, with the exception of the loopback device and those explicitly assigned to the container. There is a number of different ways to set up network interfaces for the container:
 <ul>
-<li>An existing interface can be assigned to the container (e.g. if you have multiple Ethernet devices).</li>
-<li>A virtual network interface associated with an existing interface (i.e. <a href="../en/VLAN.html" title="VLAN">VLAN</a> interface) can be created and assigned to the container.</li>
-<li>A virtual Ethernet link between the host and the container can be created.</li>
+<li>An existing interface can be assigned to the container (e.g. if you have multiple Ethernet devices): see <a href="#Use_an_existing_interface">#Use an existing interface</a>.</li>
+<li>A virtual network interface associated with an existing interface (i.e. <a href="../en/VLAN.html" title="VLAN">VLAN</a> interface) can be created and assigned to the container: see <a href='#Use_a_"macvlan"_or_"ipvlan"_interface'>#Use a "macvlan" or "ipvlan" interface</a>.</li>
+<li>A virtual Ethernet link between the host and the container can be created: see <a href="#Use_a_virtual_Ethernet_link">#Use a virtual Ethernet link</a>.</li>
 </ul>
 </li>
 </ul>
-<dl><dd>In the latter case the container's network is fully isolated (from the outside network as well as other containers) and it is up to the administrator to configure networking between the host and the containers. This typically involves creating a <a href="../en/Network_bridge.html" title="Network bridge">network bridge</a> to connect multiple (physical or virtual) interfaces or setting up a <a href="https://en.wikipedia.org/wiki/Network_Address_Translation" class="extiw" title="wikipedia:Network Address Translation">Network Address Translation</a> between multiple interfaces.</dd></dl>
+<dl><dd>In the latter case the container's network is fully isolated (from the outside network as well as other containers) and it is up to the administrator to configure networking between the host and the containers. This typically involves <a href="#Use_NAT_networking">using NAT networking</a> between multiple interfaces or <a href="#Use_a_network_bridge">using a network bridge</a> to connect multiple (physical or virtual) interfaces.</dd></dl>
 <p>The host networking mode is suitable for <i>application containers</i> which do not run any networking software that would configure the interface assigned to the container. Host networking is the default mode when you run <i>systemd-nspawn</i> from the shell.
 </p>
 <p>On the other hand, the private networking mode is suitable for <i>system containers</i> that should be isolated from the host system. The creation of virtual Ethernet links is a very flexible tool allowing to create complex virtual networks. This is the default mode for containers started by <i>machinectl</i> or <code>systemd-nspawn@.service</code>.
 </p>
 <p>The following subsections describe common scenarios. See <span class="plainlinks archwiki-template-man" title="$ man 1 systemd-nspawn"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-nspawn.1#Networking_Options">systemd-nspawn(1) § Networking Options</a></span> for details about the available <i>systemd-nspawn</i> options.
 </p>
-<h4><span class="mw-headline" id="Use_host_networking">Use host networking</span></h4>
+<h4><span class="mw-headline" id="Host_networking">Host networking</span></h4>
 <p>To disable private networking and the creation of a virtual Ethernet link used by containers started with <i>machinectl</i>, add a <i>.nspawn</i> file with the following option:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/nspawn/<i>container-name</i>.nspawn</pre>
@@ -791,7 +813,8 @@ gpgkey=https://repo.almalinux.org/almalinux/RPM-GPG-KEY-AlmaLinux-$releasever</p
 VirtualEthernet=no</pre>
 <p>This will override the <code>-n</code>/<code>--network-veth</code> option used in <code>systemd-nspawn@.service</code> and the newly started containers will use the host networking mode.
 </p>
-<h4><span class="mw-headline" id="Use_a_virtual_Ethernet_link">Use a virtual Ethernet link</span></h4>
+<h4><span class="mw-headline" id="Private_networking">Private networking</span></h4>
+<h5><span class="mw-headline" id="Use_a_virtual_Ethernet_link">Use a virtual Ethernet link</span></h5>
 <p>If a container is started with the <code>-n</code>/<code>--network-veth</code> option, <i>systemd-nspawn</i> will create a virtual Ethernet link between the host and the container. The host side of the link will be available as a network interface named <code>ve-<i>container-name</i></code>. The container side of the link will be named <code>host0</code>. Note that this option implies <code>--private-network</code>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
@@ -808,8 +831,11 @@ VirtualEthernet=no</pre>
 <li>the <code>/usr/lib/systemd/network/80-container-ve.network</code> file on the host matches the <code>ve-<i>container-name</i></code> interface and starts a DHCP server, which assigns IP addresses to the host interface as well as the container,</li>
 <li>the <code>/usr/lib/systemd/network/80-container-host0.network</code> file in the container matches the <code>host0</code> interface and starts a DHCP client, which receives an IP address from the host.</li>
 </ul>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong> Simply <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Starting">starting</a> <code>systemd-networkd</code> on the host will provide the described container network auto-configuration  <b>without interfering with the existing network setup</b>, as the existing interface(s) will remain <i>unmanaged</i> by <code>systemd-networkd</code> until configured otherwise. As such, it is perfectly compatible with a managed network setup e.g. with <a href="../en/NetworkManager.html" title="NetworkManager">NetworkManager</a>, and <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Starting">starting</a> <code>systemd-networkd</code> is really all that is needed to get Internet connectivity inside the containers (as well as to be able to reach them from the host) without disturbing anything on the host.</div>
 <p>If you do not use <a href="../en/Systemd-networkd.html" title="Systemd-networkd">systemd-networkd</a>, you can configure static IP addresses or start a DHCP server on the host interface and a DHCP client in the container. See <a href="../en/Network_configuration.html" title="Network configuration">Network configuration</a> for details.
 </p>
+<h6><span class="mw-headline" id="Use_NAT_networking">Use NAT networking</span></h6>
 <p>To give the container access to the outside network, you can configure NAT as described in <a href="../en/Internet_sharing.html#Enable_NAT" title="Internet sharing">Internet sharing#Enable NAT</a>. If you use <a href="../en/Systemd-networkd.html" title="Systemd-networkd">systemd-networkd</a>, this is done (partially) automatically via the <code>IPMasquerade=both</code> option in <code>/usr/lib/systemd/network/80-container-ve.network</code>. However, this issues just one <a href="../en/Iptables.html" title="Iptables">iptables</a> (or <a href="../en/Nftables.html" title="Nftables">nftables</a>) rule such as
 </p>
 <pre>-t nat -A POSTROUTING -s 192.168.163.192/28 -j MASQUERADE
@@ -819,21 +845,21 @@ VirtualEthernet=no</pre>
 <pre># iptables -A FORWARD -i ve-+ -o <i>internet0</i> -j ACCEPT
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> <i>systemd-networkd</i> and <i>systemd-nspawn</i> can interface with <a href="../en/Iptables.html" title="Iptables">iptables</a> (using the <a rel="nofollow" class="external text" href="https://tldp.org/HOWTO/Querying-libiptc-HOWTO/whatis.html">libiptc</a> library) as well as with <a href="../en/Nftables.html" title="Nftables">nftables</a> <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/13307">[13]</a><a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/blob/9ca34cf5a4a20d48f829b2a36824255aac29078c/NEWS#L295-L304">[14]</a>. In both cases IPv4 and IPv6 NAT is supported.</div>
+<strong>Note:</strong> <i>systemd-networkd</i> and <i>systemd-nspawn</i> can interface with <a href="../en/Iptables.html" title="Iptables">iptables</a> (using the <a rel="nofollow" class="external text" href="https://tldp.org/HOWTO/Querying-libiptc-HOWTO/whatis.html">libiptc</a> library) as well as with <a href="../en/Nftables.html" title="Nftables">nftables</a> <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/13307">[16]</a><a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/blob/9ca34cf5a4a20d48f829b2a36824255aac29078c/NEWS#L295-L304">[17]</a>. In both cases IPv4 and IPv6 NAT is supported.</div>
 <p>Additionally, you need to open the UDP port 67 on the <code>ve-+</code> interfaces for incoming connections to the DHCP server (operated by <i>systemd-networkd</i>):
 </p>
 <pre># iptables -A INPUT -i ve-+ -p udp -m udp --dport 67 -j ACCEPT
 </pre>
-<h4><span class="mw-headline" id="Use_a_network_bridge">Use a network bridge</span></h4>
+<h6><span class="mw-headline" id="Use_a_network_bridge">Use a network bridge</span></h6>
 <p>If you have configured a <a href="../en/Network_bridge.html" title="Network bridge">network bridge</a> on the host system, you can create a virtual Ethernet link for the container and add its host side to the network bridge. This is done with the <code>--network-bridge=<i>bridge-name</i></code> option. Note that <code>--network-bridge</code> implies <code>--network-veth</code>, i.e. the virtual Ethernet link is created automatically. However, the host side of the link will use the <code>vb-</code> prefix instead of <code>ve-</code>, so the <a href="../en/Systemd-networkd.html" title="Systemd-networkd">systemd-networkd</a> options for starting the DHCP server and IP masquerading will not be applied.
 </p>
 <p>The bridge management is left to the administrator. For example, the bridge can connect virtual interfaces with a physical interface, or it can connect only virtual interfaces of several containers. See <a href="../en/Systemd-networkd.html#Network_bridge_with_DHCP" title="Systemd-networkd">systemd-networkd#Network bridge with DHCP</a> and <a href="../en/Systemd-networkd.html#Network_bridge_with_static_IP_addresses" title="Systemd-networkd">systemd-networkd#Network bridge with static IP addresses</a> for example configurations using <a href="../en/Systemd-networkd.html" title="Systemd-networkd">systemd-networkd</a>.
 </p>
 <p>There is also a <code>--network-zone=<i>zone-name</i></code> option which is similar to <code>--network-bridge</code> but the network bridge is managed automatically by <i>systemd-nspawn</i> and <i>systemd-networkd</i>. The bridge interface named <code>vz-<i>zone-name</i></code> is automatically created when the first container configured with <code>--network-zone=<i>zone-name</i></code> is started, and is automatically removed when the last container configured with <code>--network-zone=<i>zone-name</i></code> exits. Hence, this option makes it easy to place multiple related containers on a common virtual network. Note that <code>vz-*</code> interfaces are managed by <a href="../en/Systemd-networkd.html" title="Systemd-networkd">systemd-networkd</a> same way as <code>ve-*</code> interfaces using the options from the <code>/usr/lib/systemd/network/80-container-vz.network</code> file.
 </p>
-<h4>
+<h5>
 <span id="Use_a_.22macvlan.22_or_.22ipvlan.22_interface"></span><span class="mw-headline" id='Use_a_"macvlan"_or_"ipvlan"_interface'>Use a "macvlan" or "ipvlan" interface</span>
-</h4>
+</h5>
 <p>Instead of creating a virtual Ethernet link (whose host side may or may not be added to a bridge), you can create a virtual interface on an existing physical interface (i.e. <a href="../en/VLAN.html" title="VLAN">VLAN</a> interface) and add it to the container. The virtual interface will be bridged with the underlying host interface and thus the container will be exposed to the outside network, which allows it to obtain a distinct IP address via DHCP from the same LAN as the host is connected to.
 </p>
 <p><i>systemd-nspawn</i> offers 2 options:
@@ -848,7 +874,7 @@ VirtualEthernet=no</pre>
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> To allow the host to communicate with the container, create a macvlan or ipvlan interface on the host attaching it to the same physical interface as the container uses and set up a network connection on it. Make sure the virtual interface name does not conflict with the virtual interface created by <i>systemd-nspawn</i>. See <a href="../en/Systemd-networkd.html#MACVLAN_bridge" title="Systemd-networkd">systemd-networkd#MACVLAN bridge</a> for an example using <i>systemd-networkd</i>.</div>
-<h4><span class="mw-headline" id="Use_an_existing_interface">Use an existing interface</span></h4>
+<h5><span class="mw-headline" id="Use_an_existing_interface">Use an existing interface</span></h5>
 <p>If the host system has multiple physical network interfaces, you can use the <code>--network-interface=<i>interface</i></code> to assign <code><i>interface</i></code> to the container (and make it unavailable to the host while the container is started). Note that <code>--network-interface</code> implies <code>--private-network</code>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
@@ -864,7 +890,7 @@ Port=tcp:8000:80</pre>
 <pre># iptables -A FORWARD -i <i>wan_interface</i> -o ve-+ -p tcp --syn --dport 8000 -m conntrack --ctstate NEW -j ACCEPT
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> <i>systemd-nspawn</i> explicitly excludes the <code>loopback</code> interface when mapping ports. Hence, for the example above, <code>localhost:8000</code> connects to the host and not to the container. Only connections to other interfaces are subjected to port mapping. See <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/6106">[15]</a> for details.</div>
+<strong>Note:</strong> <i>systemd-nspawn</i> explicitly excludes the <code>loopback</code> interface when mapping ports. Hence, for the example above, <code>localhost:8000</code> connects to the host and not to the container. Only connections to other interfaces are subjected to port mapping. See <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/6106">[18]</a> for details.</div>
 <h3><span class="mw-headline" id="Domain_name_resolution">Domain name resolution</span></h3>
 <p><a href="../en/Domain_name_resolution.html" title="Domain name resolution">Domain name resolution</a> in the container can be configured the same way as on the host system. Additionally, <i>systemd-nspawn</i> provides options to manage the <code>/etc/resolv.conf</code> file inside the container:
 </p>
@@ -1140,7 +1166,7 @@ SystemCallFilter=@keyring bpf
 Bind=/proc:/run/proc
 Bind=/sys:/run/sys
 </pre>
-<p>See <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/27994">[16]</a> for more details.
+<p>See <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/27994">[19]</a> for more details.
 </p>
 <p>Since <i>overlayfs</i> does not work with user namespaces and is unavailable inside <i>systemd-nspawn</i>, by default, Docker falls back to using the inefficient <i>vfs</i> as its storage driver, which creates a copy of the image each time a container is started. This can be worked around by using <i>fuse-overlayfs</i> as its storage driver. To do so, we need to first expose <i>fuse</i> to the container:
 </p>
@@ -1232,8 +1258,8 @@ Environment=TERM=xterm-256color</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Systemd-nspawn&amp;oldid=823892">https://wiki.archlinux.org/index.php?title=Systemd-nspawn&amp;oldid=823892</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 25 December 2024, at 18:36.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Systemd-nspawn&amp;oldid=825686">https://wiki.archlinux.org/index.php?title=Systemd-nspawn&amp;oldid=825686</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 21 January 2025, at 20:18.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

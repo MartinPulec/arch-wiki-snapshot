@@ -95,10 +95,19 @@
 			</button>
 		
 		<ul id="toc-Tips_and_tricks-sublist" class="vector-toc-list">
-			<li id="toc-Defining_URL-handlers" class="vector-toc-list-item vector-toc-level-2">
+			<li id="toc-JavaScript_(sort_of)_support" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#JavaScript_(sort_of)_support">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">4.1</span>JavaScript (sort of) support</div>
+			</a>
+			
+			<ul id="toc-JavaScript_(sort_of)_support-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Defining_URL-handlers" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Defining_URL-handlers">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.1</span>Defining URL-handlers</div>
+				<span class="vector-toc-numb">4.2</span>Defining URL-handlers</div>
 			</a>
 			
 			<ul id="toc-Defining_URL-handlers-sublist" class="vector-toc-list">
@@ -107,7 +116,7 @@
 		<li id="toc-Tor_usage" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Tor_usage">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.2</span>Tor usage</div>
+				<span class="vector-toc-numb">4.3</span>Tor usage</div>
 			</a>
 			
 			<ul id="toc-Tor_usage-sublist" class="vector-toc-list">
@@ -116,14 +125,14 @@
 		<li id="toc-Passing_URL's_to_external_commands" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Passing_URL's_to_external_commands">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.3</span>Passing URL's to external commands</div>
+				<span class="vector-toc-numb">4.4</span>Passing URL's to external commands</div>
 			</a>
 			
 			<ul id="toc-Passing_URL's_to_external_commands-sublist" class="vector-toc-list">
 				<li id="toc-Saving_link_to_the_X_clipboard" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Saving_link_to_the_X_clipboard">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.3.1</span>Saving link to the X clipboard</div>
+				<span class="vector-toc-numb">4.4.1</span>Saving link to the X clipboard</div>
 			</a>
 			
 			<ul id="toc-Saving_link_to_the_X_clipboard-sublist" class="vector-toc-list">
@@ -132,7 +141,7 @@
 		<li id="toc-Passing_YouTube-links_through_external_player" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Passing_YouTube-links_through_external_player">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.3.2</span>Passing YouTube-links through external player</div>
+				<span class="vector-toc-numb">4.4.2</span>Passing YouTube-links through external player</div>
 			</a>
 			
 			<ul id="toc-Passing_YouTube-links_through_external_player-sublist" class="vector-toc-list">
@@ -278,6 +287,23 @@
 <p>By default, the <code>o</code> key opens the option manager and the <code>k</code> key the keybind-manager.
 </p>
 <h2><span class="mw-headline" id="Tips_and_tricks">Tips and tricks</span></h2>
+<h3>
+<span id="JavaScript_.28sort_of.29_support"></span><span class="mw-headline" id="JavaScript_(sort_of)_support">JavaScript (sort of) support</span>
+</h3>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> Users needing JavaScipt support in a terminal browser should consider using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/browsh/">browsh</a></span><sup><small>AUR</small></sup> instead of following this tip.</div>
+<p>ELinks has an experimental feature called <a rel="nofollow" class="external text" href="https://github.com/rkd77/elinks/blob/master/doc/ecmascript.txt">ECMAScript</a> which is a form of JavaScript. Currently, the repo package does not build with this, but a simple modification to the PKGBUILD can provide it.
+</p>
+<ol>
+<li>Add <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=js128">js128</a></span> and something that provides xxd such as <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=vim">vim</a></span> to the depends array.</li>
+<li>Add the following to the arch-meson bit in the package function: -D spidermonkey=true \
+# </li>
+</ol>
+<p>Once built, it must be enabled in elinks either by navigating to the options section or directly modifying <code>~/.config/elinks/elinks.conf</code> to contain:
+set ecmascript.enable = 1
+</p>
+<p>ECMAScript is not perfect and may not provide full JavaScript functionality.
+</p>
 <h3><span class="mw-headline" id="Defining_URL-handlers">Defining URL-handlers</span></h3>
 <p>ELinks is capable of using external programs for various tasks,
 </p>
@@ -311,7 +337,7 @@ set mime.type.image.png = "image_viewer"
 set mime.type.image.gif = "image_viewer"
 set mime.type.image.bmp = "image_viewer"</pre>
 <h3><span class="mw-headline" id="Tor_usage">Tor usage</span></h3>
-<p>ELinks does not support SOCKS directly. Alternatives are to either invoke ELinks through <code>torify elinks</code>, or <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=privoxy">privoxy</a></span> package for forwarding to <a href="../en/Tor.html" title="Tor">Tor</a>'s SOCKS proxy, first by adding the following line to your <code>/etc/privoxy/config</code>:
+<p>ELinks does not support <a href="../en/Proxy_server.html" class="mw-redirect" title="Using a SOCKS proxy">using a SOCKS proxy</a> directly. Alternatives are to either invoke ELinks through <code><a href="../en/Tor.html#Torsocks" title="Tor">torsocks</a> elinks</code>, or <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> the <a href="../en/Privoxy.html" title="Privoxy">privoxy</a> package for forwarding to <a href="../en/Tor.html" title="Tor">Tor</a>'s SOCKS proxy, first by adding the following line to your <code>/etc/privoxy/config</code>:
 </p>
 <pre>forward-socks5 / localhost:9050 .
 </pre>
@@ -379,8 +405,8 @@ set protocol.https.proxy.host = "127.0.0.1:8118"
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=ELinks&amp;oldid=800470">https://wiki.archlinux.org/index.php?title=ELinks&amp;oldid=800470</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 14 February 2024, at 06:48.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=ELinks&amp;oldid=825085">https://wiki.archlinux.org/index.php?title=ELinks&amp;oldid=825085</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 14 January 2025, at 19:59.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -108,6 +108,15 @@
 			<ul id="toc-by-partuuid-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-gpt-auto" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#gpt-auto">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">1.6</span>gpt-auto</div>
+			</a>
+			
+			<ul id="toc-gpt-auto-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-Using_persistent_naming" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
@@ -239,8 +248,14 @@
 </div>
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Persistent_naming_methods">Persistent naming methods</span></h2>
-<p>There are four different schemes used for persistent naming by <a href="../en/Udev.html" title="Udev">udev</a> (through <code>60-persistent-storage.rules</code>): <a href="#by-label">by-label</a>, <a href="#by-uuid">by-uuid</a>, <a href="#by-id_and_by-path">by-id and by-path</a>. For those using disks with <a href="../en/Partitioning.html#GUID_Partition_Table" class="mw-redirect" title="GUID Partition Table">GUID Partition Table (GPT)</a>, two additional schemes can be used <a href="#by-partlabel">by-partlabel</a> and <a href="#by-partuuid">by-partuuid</a>.
+<p>There are different schemes providing persistent naming managed by <a href="../en/Udev.html" title="Udev">udev</a>.
 </p>
+<ul>
+<li>
+<code>60-persistent-storage.rules</code> provides four by default: <a href="#by-label">by-label</a>, <a href="#by-uuid">by-uuid</a>, <a href="#by-id_and_by-path">by-id and by-path</a>. For disks with a <a href="../en/Partitioning.html#GUID_Partition_Table" class="mw-redirect" title="GUID Partition Table">GUID Partition Table (GPT)</a>, there are two additional schemes—<a href="#by-partlabel">by-partlabel</a> and <a href="#by-partuuid">by-partuuid</a>.</li>
+<li>
+<code>99-systemd.rules</code> provides <a href="#gpt-auto">gpt-auto</a> for setups compatible with <a href="../en/Systemd.html#GPT_partition_automounting" title="Systemd">GPT partition automounting</a>.</li>
+</ul>
 <p>The directories in <code>/dev/disk/</code> are created and destroyed dynamically, depending on whether there are devices in them.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
@@ -387,6 +402,7 @@ lrwxrwxrwx 1 root root 10 May 27 23:31 F4CA-5D75 -&gt; ../../mmcblk0p1
 <li>
 <code>by-id</code> and <code>by-path</code> links can only be considered persistent for disks, not partitions. Partitions will be referenced by their number in the partition table and that can change if the partitions are reordered.</li>
 <li>The <code>/dev/disk/by-path/pci-*</code> paths for NVMe devices may change if a PCIe device is added or removed from the system or if the system firmware <a rel="nofollow" class="external text" href="https://github.com/systemd/systemd/issues/22692">does not enumerate them deterministically</a>.</li>
+<li>NVMe device <code>by-id</code> links without a namespace identifier (NSID) are obsolete. Use the links with a namespace identifier after the hardware serial number instead (e.g. <code>_1</code> for the first namespace or <code><b>_1</b>-part1</code> for the first partition on the first namespace).</li>
 </ul>
 </div>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ ls -l /dev/disk/by-id/</pre>
@@ -516,6 +532,13 @@ lrwxrwxrwx 1 root root 10 May 27 23:31 d0d0d110-0a71-4ed6-936a-304969ea36af -&gt
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># blkid -s PARTUUID -o value /dev/sda1</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">d0d0d110-0a71-4ed6-936a-304969ea36af
 </pre>
+<h3><span class="mw-headline" id="gpt-auto">gpt-auto</span></h3>
+<p>If all prerequisites of <a href="../en/Systemd.html#GPT_partition_automounting" title="Systemd">systemd-gpt-auto-generator</a> are met, udev will create a <code>/dev/gpt-auto-root</code> symlink that points to the root volume block device. If the root partition is encrypted with LUKS, <code>/dev/gpt-auto-root</code> will point to the unlocked/mapped volume and <code>/dev/gpt-auto-root-luks</code> will point to the encrypted partition.
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ ls -l /dev/gpt-auto-*</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">lrwxrwxrwx 1 root root 10 May 27 23:31 /dev/gpt-auto-root -&gt; dm-0
+lrwxrwxrwx 1 root root 10 May 27 23:31 /dev/gpt-auto-root-luks -&gt; nvme1n1p2
+</pre>
 <h2><span class="mw-headline" id="Using_persistent_naming">Using persistent naming</span></h2>
 <p>There are various applications that can be configured using persistent naming. Following are some examples of how to configure them.
 </p>
@@ -552,6 +575,10 @@ lrwxrwxrwx 1 root root 10 May 27 23:31 d0d0d110-0a71-4ed6-936a-304969ea36af -&gt
 </p>
 <pre>root="PARTLABEL=GNU/Linux"
 </pre>
+<p>When using <a href="#gpt-auto">GPT partition automounting</a>, the <code>root=</code> parameter can be omited entirely. If an explicit configuration is desired, use:
+</p>
+<pre>root=gpt-auto
+</pre>
 </div>
 </div>
 					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
@@ -569,8 +596,8 @@ lrwxrwxrwx 1 root root 10 May 27 23:31 d0d0d110-0a71-4ed6-936a-304969ea36af -&gt
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Persistent_block_device_naming&amp;oldid=824106">https://wiki.archlinux.org/index.php?title=Persistent_block_device_naming&amp;oldid=824106</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 27 December 2024, at 12:51.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Persistent_block_device_naming&amp;oldid=824492">https://wiki.archlinux.org/index.php?title=Persistent_block_device_naming&amp;oldid=824492</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 3 January 2025, at 19:47.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

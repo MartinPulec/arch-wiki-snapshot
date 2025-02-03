@@ -978,7 +978,9 @@ The following are examples of common scenarios of full system encryption with <i
 <p>Do <b>not</b> regenerate the initramfs <b>yet</b>, as the <code>/boot/EFI/Linux</code> directory needs to be created by the boot loader installer first.
 </p>
 <h3><span class="mw-headline" id="Installing_the_boot_loader">Installing the boot loader</span></h3>
-<p>Install <a href="../../en/Systemd-boot.html" title="Systemd-boot">systemd-boot</a> with:
+<p>You can configure your system to directly boot the UEFI image without any boot loader, see <a href="../../en/Unified_kernel_image.html#Directly_from_UEFI" title="Unified kernel image">Unified_kernel_image#Directly_from_UEFI</a>.
+</p>
+<p>If a boot loader is desired, continue installing <a href="../../en/Systemd-boot.html" title="Systemd-boot">systemd-boot</a> with
 </p>
 <pre># bootctl install
 </pre>
@@ -995,10 +997,10 @@ The following are examples of common scenarios of full system encryption with <i
 <p>You can now sign the boot loader executables and the EFI binary, in order to enable <a href="../../en/Unified_Extensible_Firmware_Interface/Secure_Boot.html" class="mw-redirect" title="Secure Boot">Secure Boot</a>. For a quick and easy way, see <a href="../../en/Unified_Extensible_Firmware_Interface/Secure_Boot.html#Assisted_process_with_sbctl" title="Unified Extensible Firmware Interface/Secure Boot">Unified Extensible Firmware Interface/Secure Boot#Assisted process with sbctl</a>.
 </p>
 <h3><span class="mw-headline" id="Enrolling_the_TPM">Enrolling the TPM</span></h3>
-<p>After signing the boot loader executables and enabling Secure Boot, you can now enroll the TPM in order to use it to unlock the LUKS volume. The following commands will remove the empty passphrase created during the LUKS format process, create a key bound to the TPM <a href="../../en/Trusted_Platform_Module.html#Accessing_PCR_registers" title="Trusted Platform Module">PCR 7</a> (default, <a href="../../en/Unified_Extensible_Firmware_Interface/Secure_Boot.html" class="mw-redirect" title="Secure Boot">Secure Boot</a> state and firmware certificates) and create a recovery key to be used in case of any problems. The TPM will automatically release the key as long as the boot chain is not tampered with. See <a href="../../en/Systemd-cryptenroll.html#Trusted_Platform_Module" title="Systemd-cryptenroll">systemd-cryptenroll#Trusted Platform Module</a> and <span class="plainlinks archwiki-template-man" title="$ man 1 systemd-cryptenroll"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-cryptenroll.1">systemd-cryptenroll(1)</a></span>.
+<p>After signing the boot loader executables and enabling Secure Boot, you can now enroll the TPM in order to use it to unlock the LUKS volume. The following commands will remove the empty passphrase created during the LUKS format process, create a key bound to the TPM <a href="../../en/Trusted_Platform_Module.html#Accessing_PCR_registers" title="Trusted Platform Module">PCR 7</a> (<a href="../../en/Unified_Extensible_Firmware_Interface/Secure_Boot.html" class="mw-redirect" title="Secure Boot">Secure Boot</a> state and enrolled certificates) and create a recovery key to be used in case of any problems. The TPM will automatically release the key as long as the boot chain is not tampered with. See <a href="../../en/Systemd-cryptenroll.html#Trusted_Platform_Module" title="Systemd-cryptenroll">systemd-cryptenroll#Trusted Platform Module</a> and <span class="plainlinks archwiki-template-man" title="$ man 1 systemd-cryptenroll"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-cryptenroll.1">systemd-cryptenroll(1)</a></span>.
 </p>
 <pre># systemd-cryptenroll /dev/sda2 --recovery-key
-# systemd-cryptenroll /dev/sda2 --wipe-slot=empty --tpm2-device=auto
+# systemd-cryptenroll /dev/sda2 --wipe-slot=empty --tpm2-device=auto --tpm2-pcrs=7
 </pre>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> Add <code>--tpm2-with-pin=yes</code> to require an additional PIN to unlock at boot time.</div>
@@ -1761,8 +1763,8 @@ normal</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/Encrypting_an_entire_system&amp;oldid=824015">https://wiki.archlinux.org/index.php?title=Dm-crypt/Encrypting_an_entire_system&amp;oldid=824015</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 26 December 2024, at 15:47.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/Encrypting_an_entire_system&amp;oldid=826264">https://wiki.archlinux.org/index.php?title=Dm-crypt/Encrypting_an_entire_system&amp;oldid=826264</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 2 February 2025, at 10:13.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

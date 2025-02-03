@@ -296,6 +296,15 @@
 			<ul id="toc-Macvtap-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-nftables_firewall" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#nftables_firewall">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">4.5.4</span>nftables firewall</div>
+			</a>
+			
+			<ul id="toc-nftables_firewall-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 		</li>
 		<li id="toc-Snapshots" class="vector-toc-list-item vector-toc-level-2">
@@ -698,7 +707,7 @@
 <ul><li>
 <b>Qt VirtManager</b> — Qt application for managing virtual machines.</li></ul>
 <dl><dd>
-<a rel="nofollow" class="external free" href="https://github.com/F1ash/qt-virt-manager">https://github.com/F1ash/qt-virt-manager</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/qt-virt-manager/">qt-virt-manager</a></span><sup><small>AUR</small></sup>
+<a rel="nofollow" class="external free" href="https://github.com/F1ash/qt-virt-manager">https://github.com/F1ash/qt-virt-manager</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/qt-virt-manager/">qt-virt-manager</a></span><sup><small>AUR</small></sup><sup>[<a href="../en/Help:Procedures.html#Fix_broken_package_links" title="Help:Procedures">broken link</a>: package not found]</sup>
 </dd></dl>
 <ul><li>
 <b><a href="../en/Virt-manager.html" title="Virt-manager">Virt-manager</a></b> — Graphically manage KVM, Xen, or LXC via libvirt.</li></ul>
@@ -725,7 +734,7 @@
 </p>
 <ul><li>VM autostart on host boot only works for 'system', and the root libvirtd instance has necessary permissions to use proper networkings via bridges or virtual networks. <code>qemu:///system</code> is generally what tools like virt-manager default to.</li></ul>
 <ul><li>
-<code>qemu:///session</code> has a serious drawback: since the libvirtd instance does not have sufficient privileges, the only out of the box network option is qemu's usermode networking, which has nonobvious limitations, so its usage is discouraged (<a rel="nofollow" class="external text" href="http://people.gnome.org/~markmc/qemu-networking.html">more info on qemu networking options</a> <sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-12-30 ⓘ]</sup>)</li></ul>
+<code>qemu:///session</code> has a serious drawback: since the libvirtd instance does not have sufficient privileges, the only out of the box network option is qemu's usermode networking, which has non-obvious limitations, so its usage is discouraged (<a rel="nofollow" class="external text" href="https://web.archive.org/web/20210426155203/https://people.gnome.org/~markmc/qemu-networking.html">more info on qemu networking options</a>)</li></ul>
 <dl><dd>The benefit of <code>qemu:///session</code> is that permission issues vanish: disk images can easily be stored in $HOME, serial PTYs are owned by the user, etc.</dd></dl>
 <p>For <i><b>system</b></i>-level administration (i.e. global settings and image-<i>volume</i> location), libvirt minimally requires <a href="#Set_up_authentication">setting up authorization</a>, and <a href="#Daemon">starting the daemon</a>.
 </p>
@@ -1078,6 +1087,29 @@ $ virsh net-start macvtap-net
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> The host cannot communicate with the domains via this network. The host's networking will not be affected, and the domains can communicate with other machines on the network, but not with the host itself. See the <a rel="nofollow" class="external text" href="https://wiki.libvirt.org/TroubleshootMacvtapHostFail.html">libvirt wiki</a> for a workaround.</div>
+<h4><span class="mw-headline" id="nftables_firewall">nftables firewall</span></h4>
+<p>When using network type NAT in combination with a simple restrictive nftables firewall (e.g. the default configuration) you might need to allow forwarding to/from the virtual network interface (default configuration drops packets here) and DNS/DHCP requests for DHCP clients from the virtual network interface to the host. Reduced Example assuming <code>virbr0</code> as libvirt bridge interface:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/nftables.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># ...
+table inet filter {
+  chain input {
+    type filter hook input priority filter
+    policy drop
+    # ...
+    iifname virbr0 udp dport {53, 67} accept comment "allow VM dhcp/dns requests to host"
+    # ...
+  }
+
+  chain forward {
+    type filter hook forward priority filter
+    policy drop
+    
+    iifname virbr0 accept
+    oifname virbr0 accept
+  }
+}
+</pre>
 <h3><span class="mw-headline" id="Snapshots">Snapshots</span></h3>
 <p>Snapshots take the disk, memory, and device state of a domain at a point-of-time, and save it for future use.  They have many uses, from saving a "clean" copy of an OS image to saving a domain's state before a potentially destructive operation.  Snapshots are identified with a unique name.
 </p>
@@ -1462,7 +1494,7 @@ If you plan to run the VM in headless mode, consider removing some of the unnece
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Virtualization.html" title="Category:Virtualization">Virtualization</a></li></ul>
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
-<li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li>
+<li><a href="../en/Category:Pages_with_broken_package_links.html" title="Category:Pages with broken package links">Pages with broken package links</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Out_of_date.html" title="Category:Pages or sections flagged with Template:Out of date">Pages or sections flagged with Template:Out of date</a></li>
 </ul>
@@ -1476,8 +1508,8 @@ If you plan to run the VM in headless mode, consider removing some of the unnece
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Libvirt&amp;oldid=824309">https://wiki.archlinux.org/index.php?title=Libvirt&amp;oldid=824309</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 30 December 2024, at 19:38.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Libvirt&amp;oldid=825960">https://wiki.archlinux.org/index.php?title=Libvirt&amp;oldid=825960</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 26 January 2025, at 09:37.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

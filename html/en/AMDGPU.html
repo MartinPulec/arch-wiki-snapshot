@@ -124,15 +124,6 @@
 		</li>
 	</ul>
 		</li>
-		<li id="toc-Disable_loading_radeon_completely_at_boot" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Disable_loading_radeon_completely_at_boot">
-				<div class="vector-toc-text">
-				<span class="vector-toc-numb">2.2.3</span>Disable loading radeon completely at boot</div>
-			</a>
-			
-			<ul id="toc-Disable_loading_radeon_completely_at_boot-sublist" class="vector-toc-list">
-			</ul>
-		</li>
 	</ul>
 		</li>
 		<li id="toc-ACO_compiler" class="vector-toc-list-item vector-toc-level-2">
@@ -609,9 +600,9 @@
 </p>
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Selecting_the_right_driver">Selecting the right driver</span></h2>
-<p>Depending on the card you have, find the right driver in <a href="../en/Xorg.html#AMD" title="Xorg">Xorg#AMD</a>.
-This driver supports <a rel="nofollow" class="external text" href="https://www.x.org/wiki/RadeonFeature/">Southern Islands (SI)</a> cards and later. AMD has no plans to support pre-GCN GPUs.
-Owners of unsupported GPUs may use the open source <a href="../en/ATI.html" title="ATI">ATI</a> driver.
+<p>Depending on the card you have, find the right driver in <a href="../en/Xorg.html#AMD" title="Xorg">Xorg#AMD</a>. This driver supports <a rel="nofollow" class="external text" href="https://www.x.org/wiki/RadeonFeature/">Southern Islands</a> (GCN 1, released in 2012) cards and later. AMD has no plans to support pre-GCN GPUs.
+</p>
+<p>Owners of unsupported GPUs may use the open source <a href="../en/ATI.html" title="ATI">ATI</a> driver.
 </p>
 <h2><span class="mw-headline" id="Installation">Installation</span></h2>
 <p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mesa">mesa</a></span> package, which provides both the DRI driver for 3D acceleration and VA-API/VDPAU drivers for <a href="#Video_acceleration">accelerated video decoding</a>.
@@ -642,7 +633,7 @@ Owners of unsupported GPUs may use the open source <a href="../en/ATI.html" titl
 <h3>
 <span id="Enable_Southern_Islands_.28SI.29_and_Sea_Islands_.28CIK.29_support"></span><span class="mw-headline" id="Enable_Southern_Islands_(SI)_and_Sea_Islands_(CIK)_support">Enable Southern Islands (SI) and Sea Islands (CIK) support</span>
 </h3>
-<p>The <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span> package enables AMDGPU support for cards of the Southern Islands (HD 7000 Series, SI, ie. GCN 1) and Sea Islands (HD 8000 Series, CIK, ie. GCN 2). The <code>amdgpu</code> kernel driver needs to be loaded before the <a href="../en/ATI.html" title="ATI">radeon</a> one. You can check which kernel driver is loaded by running <code>lspci -k</code>. It should be like this:
+<p><a href="../en/Kernel.html#Officially_supported_kernels" title="Kernel">Officially supported kernels</a> enable AMDGPU support for cards of the Southern Islands (GCN 1, released in 2012) and Sea Islands (GCN 2, released in 2013). The <code>amdgpu</code> kernel driver needs to be loaded before the <a href="../en/ATI.html" title="ATI">radeon</a> one. You can check which kernel driver is loaded by running <code>lspci -k</code>. It should be like this:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ lspci -k -d ::03xx</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">01:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI] Curacao PRO [Radeon R7 370 / R9 270/370 OEM]
@@ -686,19 +677,6 @@ options radeon cik_support=0</pre>
 </p>
 <h5><span class="mw-headline" id="Compile_kernel_which_supports_amdgpu_driver">Compile kernel which supports amdgpu driver</span></h5>
 <p>When building or compiling a <a href="../en/Kernel.html" title="Kernel">kernel</a>, <code>CONFIG_DRM_AMDGPU_SI=Y</code> and/or <code>CONFIG_DRM_AMDGPU_CIK=Y</code> should be set in the config.
-</p>
-<h4><span class="mw-headline" id="Disable_loading_radeon_completely_at_boot">Disable loading radeon completely at boot</span></h4>
-<p>The kernel may still probe and load the <code>radeon</code> module depending on the specific graphics chip involved, but the module is unnecessary to have loaded after confirming <code>amdgpu</code> works as expected. Reboot between each step to confirm it works before moving to the next step:
-</p>
-<ol>
-<li>Use the module parameters on the kernel commandline method to ensure <code>amdgpu</code> works as expected</li>
-<li>Use the <code>MODULES=(amdgpu)</code> mkinitcpio method but do <b>not</b> add <code>radeon</code> to the configuration</li>
-<li>Test that <code>modprobe -r radeon</code> will remove the kernel module cleanly after logged into the desktop</li>
-<li>Blacklist the <code>radeon</code> module from being probed by the kernel during second stage boot:</li>
-</ol>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/modprobe.d/radeon.conf</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">blacklist radeon</pre>
-<p>The output of <code>lsmod</code> and <code>dmesg</code> should now only show the amdgpu driver loading, radeon should not be present. The directory <code>/sys/module/radeon</code> should not exist.
 </p>
 <h3><span class="mw-headline" id="ACO_compiler">ACO compiler</span></h3>
 <p>The <a rel="nofollow" class="external text" href="https://steamcommunity.com/games/221410/announcements/detail/1602634609636894200">ACO compiler</a> is an open source shader compiler created and developed by <a href="https://en.wikipedia.org/wiki/Valve_Corporation" class="extiw" title="wikipedia:Valve Corporation">Valve Corporation</a> to directly compete with the <a rel="nofollow" class="external text" href="https://llvm.org/">LLVM compiler</a>, the <a rel="nofollow" class="external text" href="https://github.com/GPUOpen-Drivers/AMDVLK">AMDVLK drivers</a>, as well as <a href="https://en.wikipedia.org/wiki/Windows_10" class="extiw" title="wikipedia:Windows 10">Windows 10</a>. It offers lesser compilation time and also performs better while gaming than LLVM and AMDVLK.
@@ -909,7 +887,7 @@ EndSection</pre>
 </pre>
 <p>It is also possible to forbid the driver from switching to certain P-states, e.g. to workaround problems with deep powersaving P-states, such as flickering artifacts or stutter. To force the highest VRAM P-state on a card, while still allowing the GPU itself to run with lower clocks, first find the highest possible P-state, then set it:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># cat /sys/class/drm/card0/device/pp_dpm_mclk</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ cat /sys/class/drm/card0/device/pp_dpm_mclk</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">0: 96Mhz *
 1: 456Mhz 
 2: 675Mhz 
@@ -920,7 +898,7 @@ EndSection</pre>
 </pre>
 <p>Allow only the three highest GPU P-states:
 </p>
-<pre># echo "5 6 7" &gt;  /sys/class/drm/card0/device/pp_dpm_sclk
+<pre># echo "5 6 7" &gt; /sys/class/drm/card0/device/pp_dpm_sclk
 </pre>
 <p>To set the allowed maximum power consumption of the GPU to e.g. 50 Watts, run: 
 </p>
@@ -951,16 +929,15 @@ EndSection</pre>
 <ul><li>
 <b>LACT</b> — A GTK tool to view information and control your AMD GPU.</li></ul>
 <dl><dd>
-<a rel="nofollow" class="external free" href="https://github.com/ilya-zlobintsev/LACT">https://github.com/ilya-zlobintsev/LACT</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/lact/">lact</a></span><sup><small>AUR</small></sup>
+<a rel="nofollow" class="external free" href="https://github.com/ilya-zlobintsev/LACT">https://github.com/ilya-zlobintsev/LACT</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lact">lact</a></span>
 </dd></dl>
 <h4><span class="mw-headline" id="Startup_on_boot">Startup on boot</span></h4>
 <p>One way is to use systemd units, if you want your settings to apply automatically upon boot, consider looking at this <a rel="nofollow" class="external text" href="https://www.reddit.com/r/Amd/comments/agwroj/how_to_overclock_your_amd_gpu_on_linux/">Reddit thread</a> to configure and apply your settings on boot.
 </p>
 <p>Another way is to use udev rules for some of the values, for example, to set a low performance level to save energy:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/udev/rules.d/30-amdgpu-low-power.rules </pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">SUBSYSTEM=="pci", DRIVER=="amdgpu", ATTR{power_dpm_force_performance_level}="low"
-</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/udev/rules.d/30-amdgpu-low-power.rules</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">ACTION=="add", SUBSYSTEM=="drm", DRIVERS=="amdgpu", ATTR{device/power_dpm_force_performance_level}="low"</pre>
 <h3><span class="mw-headline" id="Performance_levels">Performance levels</span></h3>
 <p>AMDGPU offers several performance levels,  the file power_dpm_force_performance_level is used for this, it is possible to select between these levels:
 </p>
@@ -985,7 +962,7 @@ EndSection</pre>
 <h3><span class="mw-headline" id="Power_profiles">Power profiles</span></h3>
 <p>AMDGPU offers several optimizations via power profiles, one of the most commonly used is the compute mode for OpenCL intensive applications. Available power profiles can be listed with:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">cat /sys/class/drm/card0/device/pp_power_profile_mode</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ cat /sys/class/drm/card0/device/pp_power_profile_mode</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">NUM        MODE_NAME     SCLK_UP_HYST   SCLK_DOWN_HYST SCLK_ACTIVE_LEVEL     MCLK_UP_HYST   MCLK_DOWN_HYST MCLK_ACTIVE_LEVEL
   0   BOOTUP_DEFAULT:        -                -                -                -                -                -
   1   3D_FULL_SCREEN:        0              100               30                0              100               10
@@ -1016,15 +993,16 @@ EndSection</pre>
 <p>To avoid the usage of the scaler which is built in the display, and use the GPU own scaler instead, when not using the native resolution of the monitor, execute:
 </p>
 <pre>$ xrandr --output <i>output</i> --set "scaling mode" <i>scaling_mode</i>
+
 </pre>
 <p>Possible values for <code>"scaling mode"</code> are: <code>None</code>, <code>Full</code>, <code>Center</code>, <code>Full aspect</code>.
 </p>
-<ul><li>To show the available outputs and settings, execute:</li></ul>
-<pre>$ xrandr --prop
-</pre>
-<ul><li>To set <code>scaling mode = Full aspect</code> for just every available output, execute:</li></ul>
-<pre>$ for output in $(xrandr --prop | grep -E -o -i "^[A-Z\-]+-[0-9]+"); do xrandr --output "$output" --set "scaling mode" "Full aspect"; done
-</pre>
+<ul>
+<li>To show the available outputs and settings, execute: <pre>$ xrandr --prop</pre>
+</li>
+<li>To set <code>scaling mode = Full aspect</code> for just every available output, execute: <pre>$ for output in $(xrandr --prop | grep -E -o -i "^[A-Z\-]+-[0-9]+"); do xrandr --output "$output" --set "scaling mode" "Full aspect"; done</pre>
+</li>
+</ul>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
 <h3><span class="mw-headline" id="Module_parameters">Module parameters</span></h3>
 <p>The amdgpu module stashes several config parameters (<code>modinfo amdgpu | grep mask</code>) in masks that are only documented in the <a rel="nofollow" class="external text" href="https://raw.githubusercontent.com/torvalds/linux/master/drivers/gpu/drm/amd/include/amd_shared.h">kernel sources</a>.
@@ -1053,13 +1031,14 @@ EndSection
 <p>To make it persistent, you may create a <a href="../en/Udev.html" title="Udev">udev</a> rule:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/udev/rules.d/30-amdgpu-pm.rules</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">KERNEL=="card0", SUBSYSTEM=="drm", DRIVERS=="amdgpu", ATTR{device/power_dpm_force_performance_level}="high"
-</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">KERNEL=="card0", SUBSYSTEM=="drm", DRIVERS=="amdgpu", ATTR{device/power_dpm_force_performance_level}="high"</pre>
 <p>To determine the <code>KERNEL</code> name execute: 
 </p>
 <pre>$ find /sys/class/drm/ -regextype awk -regex '.+/card[0-9]+' -printf '%f\n'
 </pre>
 <p>There is also a GUI solution <a rel="nofollow" class="external autonumber" href="https://github.com/marazmista/radeon-profile">[4]</a> where you can manage the "power_dpm" with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/radeon-profile-git/">radeon-profile-git</a></span><sup><small>AUR</small></sup> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/radeon-profile-daemon-git/">radeon-profile-daemon-git</a></span><sup><small>AUR</small></sup>.
+</p>
+<p>Changing the kernel version can also help eliminate this issue. For example, it appears to be fixed in 6.12.9.
 </p>
 <h4><span class="mw-headline" id="Artifacts_in_Chromium">Artifacts in Chromium</span></h4>
 <p>If you see artifacts in <a href="../en/Chromium.html" title="Chromium">Chromium</a>, forcing the vulkan-based backend might help. Go to <code>chrome://flags</code> and <i>enable</i> <code>#ignore-gpu-blocklist</code> and <code>#enable-vulkan</code>.
@@ -1160,7 +1139,10 @@ blacklist hid_sensor_gyro_3d
 blacklist hid_sensor_magn_3d
 </pre>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
-<ul><li><a href="https://wiki.gentoo.org/wiki/AMDGPU" class="extiw" title="gentoo:AMDGPU">Gentoo:AMDGPU</a></li></ul>
+<ul>
+<li><a href="https://wiki.gentoo.org/wiki/AMDGPU" class="extiw" title="gentoo:AMDGPU">Gentoo:AMDGPU</a></li>
+<li><a rel="nofollow" class="external text" href="https://gitlab.freedesktop.org/drm/amd">AMDGPU issue tracker</a></li>
+</ul>
 </div>
 </div>
 					<div id="catlinks" class="catlinks" data-mw="interface">
@@ -1184,8 +1166,8 @@ blacklist hid_sensor_magn_3d
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=AMDGPU&amp;oldid=820674">https://wiki.archlinux.org/index.php?title=AMDGPU&amp;oldid=820674</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 14 November 2024, at 06:02.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=AMDGPU&amp;oldid=826262">https://wiki.archlinux.org/index.php?title=AMDGPU&amp;oldid=826262</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 2 February 2025, at 09:52.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

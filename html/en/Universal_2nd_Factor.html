@@ -214,10 +214,10 @@
 					<h1 id="firstHeading" class="firstHeading mw-first-heading"><span class="mw-page-title-main">Universal 2nd Factor</span></h1>
 							
 <div id="p-lang-btn" class="vector-dropdown mw-portlet mw-portlet-lang">
-	<input type="checkbox" id="p-lang-btn-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-p-lang-btn" class="vector-dropdown-checkbox mw-interlanguage-selector" aria-label="Go to an article in another language. Available in 1 language">
-	<label id="p-lang-btn-label" for="p-lang-btn-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive mw-portlet-lang-heading-1" aria-hidden="true"><span class="vector-icon mw-ui-icon-language-progressive mw-ui-icon-wikimedia-language-progressive"></span>
+	<input type="checkbox" id="p-lang-btn-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-p-lang-btn" class="vector-dropdown-checkbox mw-interlanguage-selector" aria-label="Go to an article in another language. Available in 2 languages">
+	<label id="p-lang-btn-label" for="p-lang-btn-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive mw-portlet-lang-heading-2" aria-hidden="true"><span class="vector-icon mw-ui-icon-language-progressive mw-ui-icon-wikimedia-language-progressive"></span>
 
-<span class="vector-dropdown-label-text">1 language</span>
+<span class="vector-dropdown-label-text">2 languages</span>
 	</label>
 	<div class="vector-dropdown-content">
 
@@ -226,6 +226,7 @@
 			<ul class="vector-menu-content-list">
 				
 				<li class="interlanguage-link interwiki-ja mw-list-item"><a href="https://wiki.archlinux.jp/index.php/Universal_2nd_Factor" title="Universal 2nd Factor – 日本語" lang="ja" hreflang="ja" class="interlanguage-link-target"><span>日本語</span></a></li>
+<li class="interlanguage-link interwiki-zh-hans mw-list-item"><a href="https://wiki.archlinuxcn.org/wiki/%E9%80%9A%E7%94%A8%E7%AC%AC%E4%BA%8C%E5%9B%A0%E7%B4%A0" title="通用第二因素 – 中文（简体）" lang="zh-Hans" hreflang="zh-Hans" class="interlanguage-link-target"><span>中文（简体）</span></a></li>
 			</ul>
 			
 		</div>
@@ -338,8 +339,34 @@ $ pamu2fcfg -o pam://<i>hostname</i> -i pam://<i>hostname</i> &gt; ~/.config/Yub
 </h3>
 <p><a href="../en/SDDM.html" title="SDDM">SDDM</a> does not appear to support pam_u2f with initial user login. <a href="../en/SDDM.html#Autologin" title="SDDM">Autologin</a> can be used instead, and then edit <code>/etc/pam.d/kde</code> to just control screen locking.
 </p>
-<p>If you are using a U2F key with biometric authentication (e.g. Yubikey Bio) and want 1FA, use <code>kde-fingerprint</code>, commenting out the pam_fprintd.so line and placing your changes in its place. This avoids an unnecessary "unlock" button that gets displayed after authentication, rather than simply unlocking immediately<a rel="nofollow" class="external autonumber" href="https://www.reddit.com/r/kdeneon/comments/1bgh78z/using_face_login_without_unlock_button_appearing/">[4]</a>.
+<p>If you are using a U2F key with biometric authentication (e.g. Yubikey Bio) and want 1FA, use <code>/etc/pam.d/kde-fingerprint</code>, commenting out the pam_fprintd.so line and placing your changes in its place. This avoids an unnecessary "unlock" button that gets displayed after authentication, rather than simply unlocking immediately<a rel="nofollow" class="external autonumber" href="https://www.reddit.com/r/kdeneon/comments/1bgh78z/using_face_login_without_unlock_button_appearing/">[4]</a>.
 </p>
+<p>For example:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pam.d/kde-fingerprint</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">#%PAM-1.0
+
+auth       required                    pam_shells.so
+auth       requisite                   pam_nologin.so
+auth       requisite                   pam_faillock.so      preauth
+
+# take over fprintd for u2f since yubikey bio is a fingerprint reader and bypasses kscreenlocker's "unlock" button
+#-auth      required                    pam_fprintd.so
+auth required pam_u2f.so cue pinverification=0 userverification=1
+
+auth       optional                    pam_permit.so
+auth       required                    pam_env.so
+
+account    include                     system-local-login
+
+password   required                    pam_deny.so
+
+session    include                     system-local-login
+</pre>
+<p><br>
+</p>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning:</strong> Do not use <code>auth sufficient</code> in <code>/etc/pam.d/kde-fingerprint</code> as you might in other PAM config files. This will cause failed authentication attempts to bypass the lock screen.</div>
 <h3><span class="mw-headline" id="Other_authentication_methods">Other authentication methods</span></h3>
 <p>Enable the PAM module for other services like explained above. For example, to secure the screensaver of <a href="../en/Cinnamon.html" title="Cinnamon">Cinnamon</a>, edit <code>/etc/pam.d/cinnamon-screensaver</code>.
 </p>
@@ -399,8 +426,8 @@ $ pamu2fcfg -o pam://<i>hostname</i> -i pam://<i>hostname</i> &gt; ~/.config/Yub
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Universal_2nd_Factor&amp;oldid=823968">https://wiki.archlinux.org/index.php?title=Universal_2nd_Factor&amp;oldid=823968</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 26 December 2024, at 13:30.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Universal_2nd_Factor&amp;oldid=826070">https://wiki.archlinux.org/index.php?title=Universal_2nd_Factor&amp;oldid=826070</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 28 January 2025, at 13:09.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

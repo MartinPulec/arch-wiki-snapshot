@@ -277,9 +277,9 @@
 <h2><span class="mw-headline" id="Installation">Installation</span></h2>
 <p>The <a rel="nofollow" class="external text" href="https://mullvad.net/download/">official GUI client</a> is available as <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/mullvad-vpn/">mullvad-vpn</a></span><sup><small>AUR</small></sup> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/mullvad-vpn-bin/">mullvad-vpn-bin</a></span><sup><small>AUR</small></sup>.
 </p>
-<p>After installation, you will need to <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start/enable">start/enable</a> <code>mullvad-daemon.service</code>.
+<p>After installation, you will only have to <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start/enable">start/enable</a> <code>mullvad-daemon.service</code>.
 </p>
-<p>Alternatively you can use either <a href="../en/OpenVPN.html" title="OpenVPN">OpenVPN</a> or <a href="../en/WireGuard.html" title="WireGuard">WireGuard</a> with a configuration file for Mullvad as explained in <a href="#Manual_configuration">#Manual configuration</a>.
+<p>Alternatively, see <a href="#Manual_configuration">#Manual configuration</a> for manually setting up a Mullvad VPN connection without the official GUI.
 </p>
 <h2><span class="mw-headline" id="Manual_configuration">Manual configuration</span></h2>
 <div class="noprint archwiki-template-message">
@@ -287,14 +287,16 @@
 <div>
 <b>Reason:</b> Still refers to iptables instead of nftables, information about dnsmasq/DNS needs verification, content about legacy OpenVPN might be excessive and should probably focus more on wireguard. Cross-reference the <a href="../en/WireGuard.html" title="WireGuard">WireGuard</a> page for more up-to-date info on VPN configuration. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Mullvad.html">Talk:Mullvad</a>)</div>
 </div>
-<p>If you do not want to use the Mullvad app you can set it up manually with standard Linux software. Mullvad supports the <a href="../en/OpenVPN.html" title="OpenVPN">OpenVPN</a> and <a href="../en/WireGuard.html" title="WireGuard">WireGuard</a> protocols. Mullvad <a rel="nofollow" class="external text" href="https://mullvad.net/en/help/why-wireguard/">advises</a> to use WireGuard. It is a more modern protocol and is deeply integrated to the Linux kernel, generally allowing for better performance and a more reliable connection. Modern desktop environments and graphical utilities support managing both protocols.
+<p>If you do not want to use the official application, you can manually set up a Mullvad VPN connection with either <a href="../en/OpenVPN.html" title="OpenVPN">OpenVPN</a> or <a href="../en/WireGuard.html" title="WireGuard">WireGuard</a>, both of which Mullvad officially supports. WireGuard is <a rel="nofollow" class="external text" href="https://mullvad.net/en/help/why-wireguard/">recommended</a> by Mullvad, as it is more modern protocol and is deeply integrated to the kernel, allowing for better performance and a more reliable connection.
 </p>
-<p>If you use <a href="../en/NetworkManager.html" title="NetworkManager">NetworkManager</a> you may want to set up <a href="../en/Dnsmasq.html" title="Dnsmasq">dnsmasq</a> to decrease DNS lookup times and decrease risk of DNS leakages. Follow the steps under <a href="../en/NetworkManager.html#DNS_caching_and_conditional_forwarding" title="NetworkManager">DNS_caching_and_conditional_forwarding</a>. Mind you, using <a href="../en/Dnsmasq.html" title="Dnsmasq">dnsmasq</a> together with the Mullvad app will result in poorer performance as NetworkManager cannot manage per-interface configs via dnsmasq.
+<p>If you use <a href="../en/NetworkManager.html" title="NetworkManager">NetworkManager</a> you may want to set up <a href="../en/Dnsmasq.html" title="Dnsmasq">dnsmasq</a> to decrease DNS lookup times and decrease the risk of DNS leakages. Follow the steps under <a href="../en/NetworkManager.html#DNS_caching_and_conditional_forwarding" title="NetworkManager">DNS_caching_and_conditional_forwarding</a>.
 </p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> Using <a href="../en/Dnsmasq.html" title="Dnsmasq">dnsmasq</a> together with the official app will result in poorer performance as NetworkManager cannot manage per-interface configurations via dnsmasq.</div>
 <h3><span class="mw-headline" id="Using_OpenVPN">Using OpenVPN</span></h3>
-<p>First make sure the packages <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=openvpn">openvpn</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=openresolv">openresolv</a></span> are installed, then proceed to download Mullvad's OpenVPN configuration file package from <a rel="nofollow" class="external text" href="https://mullvad.net/en/account/openvpn-config">their website</a> and unzip the downloaded file to <code>/etc/openvpn/client/</code>. From here you can either use the <a href="../en/NetworkManager.html#Front-ends" title="NetworkManager">NetworkManager front-ends</a> when using <a href="../en/NetworkManager.html" title="NetworkManager">NetworkManager</a>, or you can use <a href="../en/Systemd.html" title="Systemd">systemd</a> to start it automatically at boot.
+<p>First make sure the packages <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=openvpn">openvpn</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=openresolv">openresolv</a></span> are installed, then proceed to download Mullvad's OpenVPN configuration file package from <a rel="nofollow" class="external text" href="https://mullvad.net/en/account/openvpn-config">their website</a> and unzip the downloaded file to <code>/etc/openvpn/client/</code>. From here you can either use the <a href="../en/NetworkManager.html#Front-ends" title="NetworkManager">NetworkManager front-ends</a>, if using <a href="../en/NetworkManager.html" title="NetworkManager">NetworkManager</a>, or you can use <a href="../en/Systemd.html" title="Systemd">systemd</a> to start openvpn automatically at boot.
 </p>
-<p>Alternatively, after downloading the configuration file package, change directories to the directory where you unzipped your files to and run:
+<p>Alternatively, after downloading the configuration file package, change directories into the directory where you unzipped your files to and run:
 </p>
 <pre># openvpn --config mullvad_&lt;LOCATION&gt;.conf
 </pre>
@@ -542,8 +544,8 @@ Table=1000</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Mullvad&amp;oldid=818837">https://wiki.archlinux.org/index.php?title=Mullvad&amp;oldid=818837</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 13 October 2024, at 06:15.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Mullvad&amp;oldid=824461">https://wiki.archlinux.org/index.php?title=Mullvad&amp;oldid=824461</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 3 January 2025, at 06:37.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -104,10 +104,19 @@
 			</button>
 		
 		<ul id="toc-Troubleshooting-sublist" class="vector-toc-list">
-			<li id="toc-System_halts" class="vector-toc-list-item vector-toc-level-2">
+			<li id="toc-Random_reboots" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Random_reboots">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">4.1</span>Random reboots</div>
+			</a>
+			
+			<ul id="toc-Random_reboots-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-System_halts" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#System_halts">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.1</span>System halts</div>
+				<span class="vector-toc-numb">4.2</span>System halts</div>
 			</a>
 			
 			<ul id="toc-System_halts-sublist" class="vector-toc-list">
@@ -116,7 +125,7 @@
 		<li id="toc-Screen-tearing_(APU)" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Screen-tearing_(APU)">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.2</span>Screen-tearing (APU)</div>
+				<span class="vector-toc-numb">4.3</span>Screen-tearing (APU)</div>
 			</a>
 			
 			<ul id="toc-Screen-tearing_(APU)-sublist" class="vector-toc-list">
@@ -125,7 +134,7 @@
 		<li id="toc-Soft_lock_freezing" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Soft_lock_freezing">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.3</span>Soft lock freezing</div>
+				<span class="vector-toc-numb">4.4</span>Soft lock freezing</div>
 			</a>
 			
 			<ul id="toc-Soft_lock_freezing-sublist" class="vector-toc-list">
@@ -134,7 +143,7 @@
 		<li id="toc-Freeze_on_shutdown,_reboot_and_suspend" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Freeze_on_shutdown,_reboot_and_suspend">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.4</span>Freeze on shutdown, reboot and suspend</div>
+				<span class="vector-toc-numb">4.5</span>Freeze on shutdown, reboot and suspend</div>
 			</a>
 			
 			<ul id="toc-Freeze_on_shutdown,_reboot_and_suspend-sublist" class="vector-toc-list">
@@ -279,8 +288,20 @@
 <p>See <a href="https://wiki.gentoo.org/wiki/Ryzen#Kernel" class="extiw" title="gentoo:Ryzen">Gentoo:Ryzen#Kernel</a> on enabling Ryzen support. The <a href="../en/Kernel.html#Officially_supported_kernels" title="Kernel">officially supported kernels</a> have the required configuration by default.
 </p>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
+<h3><span class="mw-headline" id="Random_reboots">Random reboots</span></h3>
+<p>See <a href="https://wiki.gentoo.org/wiki/Ryzen#Random_reboots_with_mce_events" class="extiw" title="gentoo:Ryzen">Gentoo:Ryzen#Random_reboots_with_mce_events</a> if you are experiencing random reboots.
+</p>
+<p>With Ryzen 5000 series, particularly the higher-end models of 5950X and 5900X there seem to be some slight instability issues under Linux, related possibly to the 5.11+ kernel, as shown by <a rel="nofollow" class="external text" href="https://bugzilla.kernel.org/show_bug.cgi?id=212087">this kernel bug</a>. After investigating and reading reports on the Internet, It seems that out of the box, Windows seems to run the CPUs at higher voltage and lower peak frequencies, compared to the stock linux kernel, which depending on your draw from the silicon lottery could cause a host of random application crashes or hardware errors that lead to reboots. You will recognise those by dmesg logs that look like:
+</p>
+<pre>kernel: mce: [Hardware Error]: Machine check events logged
+kernel: mce: [Hardware Error]: CPU 22: Machine Check: 0 Bank 1: bc800800060c0859
+kernel: mce: [Hardware Error]: TSC 0 ADDR 7ea8f5b00 MISC d012000000000000 IPID 100b000000000 
+kernel: mce: [Hardware Error]: PROCESSOR 2:a20f10 TIME 1636645367 SOCKET 0 APIC d microcode a201016
+</pre>
+<p>The CPU ID and the Processor number may vary. To solve this problem you need to supply higher voltage to your CPU so that it is stable when running at peak frequencies. The easiest way to achieve this is to use the AMD curve optimiser which is accessible via your motherboard's UEFI. Access it and put a positive offset of 4 points, which will increase the voltage your CPU is getting at higher loads. It will limit overclocking potential due to higher heat dissipation requirements, but it will run stable. For more details check <a rel="nofollow" class="external text" href="https://community.amd.com/t5/processors/ryzen-5900x-system-constantly-crashing-restarting-whea-logger-id/td-p/423321/page/84">this forum post</a>. When I did this for my 5950X, my processor stabilised and the frequency and voltage ranges were more similar to those observed under windows.
+</p>
 <h3><span class="mw-headline" id="System_halts">System halts</span></h3>
-<p>Systems might halt under heavy or specific low loads, even after applying the fixes. Reset button or forced shutdowns don't work, peripherals powers off, video output might stop, and unplugging is the only way out of this state.
+<p>Within similar context of <a href="#Random_reboots">#Random reboots</a>, systems might halt under heavy or specific low loads, even after applying the fixes. Reset button or forced shutdowns don't work, peripherals powers off, video output might stop, and unplugging is the only way out of this state.
 </p>
 <p>Reducing frequencies to within non-overclocked standards and increasing voltages of CPU or RAM helps, but might not fix the issue. A potential fix is to update the UEFI (also misnamed "BIOS updates"), and then apply the PBO+4 curve for more stability on higher frequencies. Per silicon lottery, some CPUs might need +6 or higher offsets.
 </p>
@@ -330,8 +351,8 @@
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Ryzen&amp;oldid=824332">https://wiki.archlinux.org/index.php?title=Ryzen&amp;oldid=824332</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 31 December 2024, at 14:44.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Ryzen&amp;oldid=824521">https://wiki.archlinux.org/index.php?title=Ryzen&amp;oldid=824521</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 4 January 2025, at 10:27.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

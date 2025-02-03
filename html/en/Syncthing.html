@@ -513,7 +513,9 @@ Then on request, for a given device ID, it returns the information stored in JSO
 </p>
 <p>A list of public of <a rel="nofollow" class="external text" href="https://docs.syncthing.net/dev/infrastructure.html#global-discovery-servers">global discovery server</a> is provided. In addition, anyone can run a <a rel="nofollow" class="external text" href="https://docs.syncthing.net/users/stdiscosrv.html">discovery server</a>, to run your own, <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=syncthing-discosrv">syncthing-discosrv</a></span> package.
 </p>
-<p>The discovery server requires certificates to run, which should ideally be placed in <code>/var/discosrv</code>. The user/group <code>syncthing</code> needs permissions to be able to read the certificate files. You need to <a href="../en/Systemd.html#Editing_provided_units" class="mw-redirect" title="Edit">edit</a> the systemd unit file to correctly point to the certificates (and to undertake any other configuration change you may want, see <a rel="nofollow" class="external text" href="https://docs.syncthing.net/users/stdiscosrv.html#configuring">list</a>).
+<p>The default unit file provided by the package stores data at <code>/var/lib/syncthing-discosrv</code> and appears to work fine if you don't need to customize any flags; see <a rel="nofollow" class="external text" href="https://docs.syncthing.net/users/stdiscosrv.html#configuring">list</a>.
+</p>
+<p>An example replacement unit file follows, which stores data at <code>/var/discosrv</code> instead of <code>/var/lib/syncthing-discosrv</code>. The user/group <code>syncthing-discosrv</code> needs permissions to be able to read the certificate files. You need to <a href="../en/Systemd.html#Editing_provided_units" class="mw-redirect" title="Edit">edit</a> the systemd unit file to correctly point to the certificates and to undertake any other configuration change you may want.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">syncthing-discosrv.service</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Unit]
@@ -523,7 +525,7 @@ After=network.target
 [Service]
 User=syncthing
 Group=syncthing
-ExecStart=/usr/bin/syncthing-discosrv -db-dsn /var/discosrv/discosrv.db -cert /var/discosrv/cert.pem -key /var/discosrv/key.pem
+ExecStart=/usr/bin/syncthing-discosrv --db-dir /var/discosrv/discosrv.db --cert /var/discosrv/cert.pem --key /var/discosrv/key.pem
 Restart=on-failure
 SuccessExitStatus=2
 
@@ -618,8 +620,8 @@ Environment="no_proxy=127.0.0.1"</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Syncthing&amp;oldid=820234">https://wiki.archlinux.org/index.php?title=Syncthing&amp;oldid=820234</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 5 November 2024, at 22:01.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Syncthing&amp;oldid=824625">https://wiki.archlinux.org/index.php?title=Syncthing&amp;oldid=824625</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 6 January 2025, at 22:22.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

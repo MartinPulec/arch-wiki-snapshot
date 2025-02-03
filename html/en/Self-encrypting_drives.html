@@ -592,7 +592,7 @@
 </div>
 <p>The kernel supports OPAL self-encrypting drives via the <code>BLK_SED_OPAL</code> option.<a rel="nofollow" class="external autonumber" href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=455a7b238cd6bc68c4a550cbbd37c1e22b64f71c">[5]</a> All <a href="../en/Kernel.html#Officially_supported_kernels" title="Kernel">officially supported kernels</a> are built with this option enabled.
 </p>
-<p><i>msed</i> and <i>OpalTool</i>, the two known Open Source code bases available for self-encrypting drives support on Linux, have both been retired, and their development efforts officially merged to form <a rel="nofollow" class="external text" href="https://github.com/Drive-Trust-Alliance/sedutil">sedutil</a>, under the umbrella of The <a rel="nofollow" class="external text" href="https://www.drivetrust.com">Drive Trust Alliance (DTA)</a>. <i>sedutil</i> is "an Open Source (GPLv3) effort to make Self Encrypting Drive technology freely available to everyone."
+<p><a rel="nofollow" class="external text" href="https://github.com/Drive-Trust-Alliance/sedutil">sedutil</a>, under the umbrella of The <a rel="nofollow" class="external text" href="https://www.drivetrust.com">Drive Trust Alliance (DTA)</a>, is "an Open Source (GPLv3) effort to make core Self Encrypting Drive technology freely available to developers."<a rel="nofollow" class="external autonumber" href="https://www.drivetrust.com/source-code/">[6]</a>
 </p>
 <p><i>cryptsetup</i>, the command line utility for <a href="../en/Dm-crypt.html" title="Dm-crypt">dm-crypt</a>, gained limited OPAL support. See the <a rel="nofollow" class="external text" href="https://mirrors.edge.kernel.org/pub/linux/utils/cryptsetup/v2.7/v2.7.0-ReleaseNotes">cryptsetup 2.7.0 release notes</a> to check whether its capabilities suffice for your purpose.
 </p>
@@ -748,8 +748,10 @@
 # sedutil-cli --initialsetup <i>PASSWORD DRIVE</i>
 # sedutil-cli --setMBREnable off <i>PASSWORD DRIVE</i>
 </pre>
-<p>The <i>PSID</i> code can be found on the physical hard drive (the code must be written without any spaces or underscore).
+<p>The PSID (physical security identifier) can only be found on the physical drive label (the sticker on top of the drive).
 </p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> The PSID must be written without any dashes, spaces or underscores.</div>
 <h5><span class="mw-headline" id="Partition_the_drive">Partition the drive</span></h5>
 <p><a href="../en/Partitioning.html" class="mw-redirect" title="Partition">Partition</a> the drive as desired, making sure the EFI and/or <code>/boot</code> partitions are at the start of the disk, immediately followed by the root partition. For example:
 </p>
@@ -882,7 +884,8 @@ get_block_device_info() {
 opal_unlock() {
 	while true ; do
 		stty -echo
-		echo -n "Password for $2 ($1): "
+		echo "Password for"
+		echo -n "$2 ($1): "
 		read pass
 		stty echo
 
@@ -891,11 +894,11 @@ opal_unlock() {
         # Uncomment to also unlock boot range
 		# sedutil-cli --setlockingrange 2 rw "$pass" "$1"
 		if [ $? != 0 ] ; then
-			msg "Failed to unlock!"
+			echo "Failed to unlock!"
 			continue
 		fi
         
-		msg  "Unlocked!"
+		echo  "Unlocked!"
 		break
 	done
 }</pre>
@@ -907,7 +910,7 @@ opal_unlock() {
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> It is a good idea to create a separate mkinitcpio config and image as described in <a href="../en/Mkinitcpio.html#Customized_generation" title="Mkinitcpio">Mkinitcpio#Customized generation</a>, as your system may be unbootable if e.g. the keyboard does not work.</div>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/mkinitcpio.conf</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">HOOKS=(base keyboard keymap sedutil udev autodetect ...)</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">HOOKS=(base keymap consolefont sedutil udev autodetect microcode modconf kms keyboard block filesystems fsck)</pre>
 <h6><span class="mw-headline" id="Regenerate_mkinitcpio_image">Regenerate mkinitcpio image</span></h6>
 <p>Finally, <a href="../en/Mkinitcpio.html#Image_creation_and_activation" class="mw-redirect" title="Regenerate the initramfs">regenerate the initramfs</a>.
 </p>
@@ -948,6 +951,7 @@ opal_unlock() {
 </p>
 <pre># sedutil-cli --initialsetup <i>password drive</i>
 # sedutil-cli --enableLockingRange 0 <i>password drive</i>
+# sedutil-cli --setMBREnable off <i>password drive</i>
 </pre>
 <p>If it is a portable drive and/or you want to unlock the drive manually, you should do the as in <a href="#Accessing_the_drive_from_a_live_distribution">#Accessing the drive from a live distribution</a>, but you need just the first command, because MBR shadowing has not been enabled:
 </p>
@@ -966,7 +970,7 @@ opal_unlock() {
 <h3><span class="mw-headline" id="Waking_up_from_suspend">Waking up from suspend</span></h3>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> Keeping the unlock password or hash on disk and in kernel memory is a requirement.</div>
-<p>Suspending the system results in a crash by default, because power is being cut from the drive and that causes it to lock itself. In order to wake up from suspend the kernel should know a hashed password for the disk. This functionality is in-kernel since 4.11, but it is only available via a fork of sedutil, either <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/sedutil-sleep-git/">sedutil-sleep-git</a></span><sup><small>AUR</small></sup> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/sedutil-ladar/">sedutil-ladar</a></span><sup><small>AUR</small></sup>. Note the latter has additional features but a slightly different command syntax <a rel="nofollow" class="external autonumber" href="https://github.com/ladar/sedutil">[6]</a>.
+<p>Suspending the system results in a crash by default, because power is being cut from the drive and that causes it to lock itself. In order to wake up from suspend the kernel should know a hashed password for the disk. This functionality is in-kernel since 4.11, but it is only available via a fork of sedutil, either <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/sedutil-sleep-git/">sedutil-sleep-git</a></span><sup><small>AUR</small></sup> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/sedutil-ladar/">sedutil-ladar</a></span><sup><small>AUR</small></sup>. Note the latter has additional features but a slightly different command syntax <a rel="nofollow" class="external autonumber" href="https://github.com/ladar/sedutil">[7]</a>.
 </p>
 <p>Generate a hashed password for the <a href="../en/Device_file.html#Block_devices" class="mw-redirect" title="Block device">block device</a> specified as <code><i>/dev/device</i></code>:
 </p>
@@ -1069,14 +1073,17 @@ Are you sure? (Type 'yes' in capital letters): YES
 Command successful.</pre>
 <p>The <code>-v</code> option returns the <code>Command successful</code> output.
 </p>
-<div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> 
+<p>The PSID (physical security identifier) can only be found on the physical drive label (the sticker on top of the drive).
+</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> 
 <ul>
 <li>For <a href="../en/Solid_state_drive/NVMe.html" class="mw-redirect" title="NVMe">NVMe</a> drives use the namespace form of the device name, i.e. use <code>/dev/nvme<i>X</i>n<i>Y</i></code> rather than <code>/dev/nvme<i>X</i></code>.</li>
-<li>Check that your drive is using the <a href="../en/Advanced_Format.html" title="Advanced Format">optimal logical sector size</a> before performing the erase.</li>
-<li>Omit any dashes when entering the PSID.</li>
+<li>The PSID must be written without any dashes, spaces or underscores.</li>
 </ul>
 </div>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong> Check that your drive is using the <a href="../en/Advanced_Format.html" title="Advanced Format">optimal logical sector size</a> before performing the erase.</div>
 <h3>
 <span id="Suspend.2Fhibernation_support"></span><span class="mw-headline" id="Suspend/hibernation_support">Suspend/hibernation support</span>
 </h3>
@@ -1085,7 +1092,7 @@ Command successful.</pre>
 <p>See <a href="../en/Dm-crypt/Swap_encryption.html" title="Dm-crypt/Swap encryption">dm-crypt/Swap encryption</a>.
 </p>
 <h2><span class="mw-headline" id="BIOS_based_ATA-password">BIOS based ATA-password</span></h2>
-<p>Previous to the industry's TCG OPAL 2.0 standard initiative, the relevant <a href="https://en.wikipedia.org/wiki/Parallel_ATA#ATA_standards_versions.2C_transfer_rates.2C_and_features" class="extiw" title="w:Parallel ATA">ATA</a> standard defined an "ATA security feature set" for full-disk encryption using self-encrypting drives. This relies on the PC BIOS, not the drive, to feature an unlocking mechanism utilizing the BIOS to setup the user's encryption passphrase. This legacy BIOS-based (ATA) method was considered more unreliable to setup and prone to error with regard to interoperability between PC vendors.<a rel="nofollow" class="external autonumber" href="https://web.archive.org/web/20200615155842/http://www.t13.org/documents/UploadedDocuments/docs2006/e05179r4-ACS-SecurityClarifications.pdf">[7]</a> Typical errors include, for example, inabilities to unlock a device once it is plugged into a system from a different hardware vendor. Hence, the availability of BIOS support for the legacy password mechanism decreases in availability, particularly for consumer hardware. 
+<p>Previous to the industry's TCG OPAL 2.0 standard initiative, the relevant <a href="https://en.wikipedia.org/wiki/Parallel_ATA#ATA_standards_versions.2C_transfer_rates.2C_and_features" class="extiw" title="w:Parallel ATA">ATA</a> standard defined an "ATA security feature set" for full-disk encryption using self-encrypting drives. This relies on the PC BIOS, not the drive, to feature an unlocking mechanism utilizing the BIOS to setup the user's encryption passphrase. This legacy BIOS-based (ATA) method was considered more unreliable to setup and prone to error with regard to interoperability between PC vendors.<a rel="nofollow" class="external autonumber" href="https://web.archive.org/web/20200615155842/http://www.t13.org/documents/UploadedDocuments/docs2006/e05179r4-ACS-SecurityClarifications.pdf">[8]</a> Typical errors include, for example, inabilities to unlock a device once it is plugged into a system from a different hardware vendor. Hence, the availability of BIOS support for the legacy password mechanism decreases in availability, particularly for consumer hardware. 
 </p>
 <p>See <a href="../en/Solid_state_drive.html#Security" title="Solid state drive">Solid state drive#Security</a> for more information.
 </p>
@@ -1119,8 +1126,8 @@ Command successful.</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Self-encrypting_drives&amp;oldid=823610">https://wiki.archlinux.org/index.php?title=Self-encrypting_drives&amp;oldid=823610</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 22 December 2024, at 00:41.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Self-encrypting_drives&amp;oldid=824865">https://wiki.archlinux.org/index.php?title=Self-encrypting_drives&amp;oldid=824865</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 11 January 2025, at 08:40.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

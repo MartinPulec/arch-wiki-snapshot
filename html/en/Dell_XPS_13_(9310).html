@@ -332,7 +332,7 @@
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Merge-arrows-2.svg" decoding="async" width="36" height="40" class="mw-file-element"></span></span><b>This article or section is a candidate for merging with <a href="../en/Network_configuration/Wireless.html#Atheros" title="Network configuration/Wireless">Network configuration/Wireless#Atheros</a>.</b></p>
 <div>
-<b>Notes:</b> Also referenced for an other model (<a href="../en/Lenovo_ThinkPad_T14_(AMD)_Gen_3.html#Suspend/Hibernate" title="Lenovo ThinkPad T14 (AMD) Gen 3">Lenovo ThinkPad T14 (AMD) Gen 3#Suspend/Hibernate</a>): this would probably be helpful in the main page instead of having it hidden in a laptop-specific page. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Dell_XPS_13_(9310).html">Talk:Dell XPS 13 (9310)</a>)</div>
+<b>Notes:</b> Fixes are referenced for and partially apply to other models (<a href="../en/Lenovo_ThinkPad_T14_(AMD)_Gen_3.html#Suspend/Hibernate" title="Lenovo ThinkPad T14 (AMD) Gen 3">Lenovo ThinkPad T14 (AMD) Gen 3#Suspend/Hibernate</a>, <a href="../en/Lenovo_ThinkPad_T14s_(AMD)_Gen_3.html#Network_/_Wi-Fi" title="Lenovo ThinkPad T14s (AMD) Gen 3">Lenovo_ThinkPad_T14s_(AMD)_Gen_3#Network_/_Wi-Fi</a>, <a href="../en/Lenovo_ThinkPad_T14_(AMD)_Gen_4.html#Failure_to_resume_from_hibernation" title="Lenovo ThinkPad T14 (AMD) Gen 4">Lenovo_ThinkPad_T14_(AMD)_Gen_4#Failure_to_resume_from_hibernation</a>, <a href="../en/Lenovo_ThinkPad_P14s_(AMD)_Gen_4.html#Wi-Fi" title="Lenovo ThinkPad P14s (AMD) Gen 4">Lenovo_ThinkPad_P14s_(AMD)_Gen_4#Wi-Fi</a>, <a href="../en/Lenovo_ThinkPad_P14s_(AMD)_Gen_5.html#Wi-Fi" title="Lenovo ThinkPad P14s (AMD) Gen 5">Lenovo_ThinkPad_P14s_(AMD)_Gen_5#Wi-Fi</a>, <a href="../en/Lenovo_ThinkPad_P16s_(AMD)_Gen_2.html#Hang_on_resume" title="Lenovo ThinkPad P16s (AMD) Gen 2">Lenovo_ThinkPad_P16s_(AMD)_Gen_2#Hang_on_resume</a>): this would probably be helpful in the main page instead of having it hidden in a laptop-specific page. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Dell_XPS_13_(9310).html">Talk:Dell XPS 13 (9310)</a>)</div>
 </div>
 <p>Since Kernel version 5.10.9, users have reported some success with the Arch stock Kernel (a recent Dell firmware is also required: at least version 1.2.5), however there are persistent problems, including firmware crashes and problems when resuming from hibernate/suspend. If your Wi-Fi is not working, first try to add the following <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a>:
 </p>
@@ -353,7 +353,7 @@ Description=Suspend: rmmod ath11k_pci
 Before=sleep.target
 
 [Service]
-Type=simple
+Type=oneshot
 ExecStart=/usr/bin/rmmod ath11k_pci
 
 [Install]
@@ -361,14 +361,14 @@ WantedBy=sleep.target</pre>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/ath11k-resume.service</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Unit]
 Description=Resume: modprobe ath11k_pci
-After=suspend.target
+After=suspend.target suspend-then-hibernate.target hibernate.target hybrid-sleep.target
 
 [Service]
-Type=simple
+Type=oneshot
 ExecStart=/usr/bin/modprobe ath11k_pci
 
 [Install]
-WantedBy=suspend.target</pre>
+WantedBy=suspend.target suspend-then-hibernate.target hibernate.target hybrid-sleep.target</pre>
 <p>You need to <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> <code>ath11k-suspend.service</code> and <code>ath11k-resume.service</code>.
 </p>
 <p>There is also work in progress in the form of qca6390 (the SoC of Killer AX500) driver development in the <a rel="nofollow" class="external text" href="https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git">kernel.org kvalo/ath repository</a><sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-10-12 ⓘ]</sup>. Patches based on the <a rel="nofollow" class="external text" href="https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/log/?h=ath11k-qca6390-bringup">ath11k-qca6390-bringup branch</a><sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-10-12 ⓘ]</sup> have been working (with an "experimental" caveat) for a while.
@@ -464,8 +464,8 @@ See <a rel="nofollow" class="external free" href="https://www.virtualbox.org/tic
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dell_XPS_13_(9310)&amp;oldid=823007">https://wiki.archlinux.org/index.php?title=Dell_XPS_13_(9310)&amp;oldid=823007</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 14 December 2024, at 16:25.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dell_XPS_13_(9310)&amp;oldid=825174">https://wiki.archlinux.org/index.php?title=Dell_XPS_13_(9310)&amp;oldid=825174</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 17 January 2025, at 15:50.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

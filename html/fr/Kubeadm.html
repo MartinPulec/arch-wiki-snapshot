@@ -95,13 +95,13 @@
 			</button>
 		
 		<ul id="toc-Démarrage_Kubernetes-sublist" class="vector-toc-list">
-			<li id="toc-Premier_Nœud" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Premier_N%C5%93ud">
+			<li id="toc-Nœud_Maître" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#N%C5%93ud_Ma%C3%AEtre">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">3.1</span>Premier Nœud</div>
+				<span class="vector-toc-numb">3.1</span>Nœud Maître</div>
 			</a>
 			
-			<ul id="toc-Premier_Nœud-sublist" class="vector-toc-list">
+			<ul id="toc-Nœud_Maître-sublist" class="vector-toc-list">
 				<li id="toc-InitConfiguration" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#InitConfiguration">
 				<div class="vector-toc-text">
@@ -134,10 +134,51 @@
 		</li>
 	</ul>
 	</li>
+	<li id="toc-Dépannage" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#D%C3%A9pannage">
+			<div class="vector-toc-text">
+			<span class="vector-toc-numb">4</span>Dépannage</div>
+		</a>
+		
+			<button aria-controls="toc-Dépannage-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon vector-icon--x-small mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle Dépannage subsection</span>
+			</button>
+		
+		<ul id="toc-Dépannage-sublist" class="vector-toc-list">
+			<li id="toc-Control_Plane" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Control_Plane">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">4.1</span>Control Plane</div>
+			</a>
+			
+			<ul id="toc-Control_Plane-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Kubelet" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Kubelet">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">4.2</span>Kubelet</div>
+			</a>
+			
+			<ul id="toc-Kubelet-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Renouvellement_des_certificats" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Renouvellement_des_certificats">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">4.3</span>Renouvellement des certificats</div>
+			</a>
+			
+			<ul id="toc-Renouvellement_des_certificats-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+	</li>
 	<li id="toc-Outils_supplémentaires" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
 		<a class="vector-toc-link" href="#Outils_suppl%C3%A9mentaires">
 			<div class="vector-toc-text">
-			<span class="vector-toc-numb">4</span>Outils supplémentaires</div>
+			<span class="vector-toc-numb">5</span>Outils supplémentaires</div>
 		</a>
 		
 			<button aria-controls="toc-Outils_supplémentaires-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
@@ -149,7 +190,7 @@
 			<li id="toc-Réseau" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#R%C3%A9seau">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.1</span>Réseau</div>
+				<span class="vector-toc-numb">5.1</span>Réseau</div>
 			</a>
 			
 			<ul id="toc-Réseau-sublist" class="vector-toc-list">
@@ -158,7 +199,7 @@
 		<li id="toc-GPUs" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#GPUs">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">4.2</span>GPUs</div>
+				<span class="vector-toc-numb">5.2</span>GPUs</div>
 			</a>
 			
 			<ul id="toc-GPUs-sublist" class="vector-toc-list">
@@ -237,10 +278,12 @@
 </div>
 <p><a rel="nofollow" class="external text" href="https://kubernetes.io/fr/docs/setup/production-environment/tools/kubeadm/">Kubeadm</a> est un outil pour installer et configurer un nœud Kubernetes en utilisant la distribution officielle.
 </p>
+<p>Il permet de configurer kubelet — interface entre la machine hôte et l’amas Kubernetes — et d’installer <i>kube-apiserver</i>, <i>kube-controller-manager</i>, <i>kube-scheduler</i> et <i>etcd</i> statiquement sur le nœud maître.
+</p>
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Requis">Requis</span></h2>
 <p>Le service <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=kubelet">kubelet</a></span> doit être installé et démarré sur chaque ordinateur participant à la grappe Kubernetes.
-Il permet le démarrage des composants de contrôle à partir des définitions entreposées dans le dossier /etc/kubernetes/manifest.
+Il permet le démarrage des composants de contrôle à partir des définitions entreposées dans le dossier /etc/kubernetes/manifests.
 Il est le contrôleur local et communique avec l’API pour recevoir les instructions de création et destruction de Pod.
 </p>
 <p>Le programme <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=kubeadm">kubeadm</a></span> doit être installé sur chaque ordinateur pour l’installation, la mise à jour des composants ou un changement de la configuration.
@@ -320,7 +363,7 @@ kubeReserved:
 <span id="D.C3.A9marrage_Kubernetes"></span><span class="mw-headline" id="Démarrage_Kubernetes">Démarrage Kubernetes</span>
 </h2>
 <h3>
-<span id="Premier_N.C5.93ud"></span><span class="mw-headline" id="Premier_Nœud">Premier Nœud</span>
+<span id="N.C5.93ud_Ma.C3.AEtre"></span><span class="mw-headline" id="Nœud_Maître">Nœud Maître</span>
 </h3>
 <p>Le premier nœud installe les composants du <i>control-plane</i> (apiserver, etcd, controler-manager, scheduler), génère des certificats x509 pour les communication et démarre les premiers modules dans Kubernetes (coredns, kube-proxy).
 Suivre <a rel="nofollow" class="external text" href="https://kubernetes.io/docs/setup/best-practices/certificates/">ce tutoriel</a> pour utiliser ses propres certificats.
@@ -356,6 +399,7 @@ La commande <code>kubeadm join --discovery-token=&lt;token&gt; --discovery-token
 </p>
 <h3><span class="mw-headline" id="Personnalisation_du_control-plane">Personnalisation du <i>control-plane</i></span></h3>
 <p>Kubeadm installe les définitions pour <i>kube-apiserver</i>, <i>kube-controller-manager</i> et <i>kube-scheduler</i> dans le dossier /etc/kubernetes/manifests du nœud principal.
+Ces fichiers peuvent être modifiés pour mettre à jour les pods correspondants.
 À la moindre modification, le service kubelet éteint et redémarre les <i>Pods</i> correspondants pour appliquer les modifications.
 </p>
 <p>La méthode conseillée pour appliquer des modifications est d’utiliser Kubeadm avec des <a rel="nofollow" class="external text" href="https://kubernetes.io/docs/reference/config-api/kubeadm-config.v1beta3/#kubeadm-k8s-io-v1beta3-Patches">correctifs</a>.
@@ -391,6 +435,42 @@ spec:
         periodSeconds: 15
 </pre>
 <p>Cet exemple diminue la fréquence du test <i>readiness</i>, réserve et limite la mémoire et informe le programme Go de ces nouvelles limitations. <a rel="nofollow" class="external text" href="https://pkg.go.dev/runtime">GOMEMLIMIT</a> est une limite douce.
+</p>
+<h2>
+<span id="D.C3.A9pannage"></span><span class="mw-headline" id="Dépannage">Dépannage</span>
+</h2>
+<p>Les erreurs réseau qui ne concernent pas api-server et les autres composants du control-plane sont causées par un dysfonctionnement du réseau entre les machines ou du plugin CNI utilisé.
+Kubeadm ne peut rien faire.
+</p>
+<h3><span class="mw-headline" id="Control_Plane">Control Plane</span></h3>
+<p>Les pods du <i>control-plane</i> ne sont pas enregistrés dans etcd et ne sont pas contrôlés par le <i>controller-manager</i>.
+Si les fichiers de définition sont absents ou invalides, ils peuvent être régénérés par kubeadm sur le nœud maître avec la commande <code>kubeadm init phase control-plane</code> ou <code>kubeadm upgrade node control-plane</code>.
+</p>
+<h3><span class="mw-headline" id="Kubelet">Kubelet</span></h3>
+<ul>
+<li>La configuration /var/lib/kubelet/config.yaml est invalide</li>
+<li>kubelet ne communique pas avec cri-o/containerd</li>
+</ul>
+<p>Sa configuration peut être mise à jour depuis la définition commune stockée dans la ConfigMap kube-system/kubelet-config.
+La commande <code>kubeadm upgrade node phase kubelet-config</code> récupère la configuration et l’installe sur la machine.
+Il n’est pas nécessaire que le nœud soit fonctionnel pour effectuer cette action.
+</p>
+<p>Pour changer de <i>Container Runtime Interface</i>, le nœud doit être détruit puis créé à nouveau.
+</p>
+<h3><span class="mw-headline" id="Renouvellement_des_certificats">Renouvellement des certificats</span></h3>
+<ul>
+<li>Kubectl ne peut pas se connecter à l’API</li>
+<li>Les pods ne sont pas détruits et les nouveaux ne sont pas créés. Les <i>deployments</i> ne démarrent pas.</li>
+</ul>
+<p>Le controller-manager ne parvient pas à communiquer avec l’API.
+</p>
+<p>Les certificats auto-signés utilisés pour les communications internes sont générés par kubeadm avec une période de validité de <b>365 jours</b> par défaut.
+Ils sont automatiquement renouvelés si besoin par <code>kubeadm upgrade</code>.
+</p>
+<p>Les certificats de connexion sont également à renouveler.
+Le fichier /etc/kubernetes/admin.conf est mis à jour avec les autres certificats.
+</p>
+<p>Pour forcer le redémarrage des pods du control-plane, il faut déplacer les fichiers hors du dossier /etc/kubernetes/manifests, attendre que kubelet détruise les pods correspondants, puis remettre les fichiers à leurs places.
 </p>
 <p><br>
 </p>
@@ -433,8 +513,8 @@ Cette ressource est contrôlée par un <i>device-plugin</i> (voir <a rel="nofoll
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Kubeadm_(Fran%C3%A7ais)&amp;oldid=811758">https://wiki.archlinux.org/index.php?title=Kubeadm_(Français)&amp;oldid=811758</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 1 July 2024, at 19:25.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Kubeadm_(Fran%C3%A7ais)&amp;oldid=825186">https://wiki.archlinux.org/index.php?title=Kubeadm_(Français)&amp;oldid=825186</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 17 January 2025, at 18:15.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

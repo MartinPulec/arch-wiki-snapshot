@@ -181,44 +181,53 @@
 <li><a href="../en/SSHFS.html" title="SSHFS">SSHFS</a></li>
 </ul>
 </div>
-<p>You can use sftpman (an <a href="../en/SSHFS.html" title="SSHFS">SSHFS</a> helper) to mount a remote system - accessible via <a href="../en/Secure_Shell.html" class="mw-redirect" title="SSH">SSH</a> - to a local folder.
+<p>You can use <a rel="nofollow" class="external text" href="https://github.com/spantaleev/sftpman-rs">sftpman</a> (an <a href="../en/SSHFS.html" title="SSHFS">SSHFS</a> helper) to mount a remote system - accessible via <a href="../en/Secure_Shell.html" class="mw-redirect" title="SSH">SSH</a> - to a local folder.
 </p>
-<p>sftpman offers both a command-line tool (<i>sftpman</i>) and a GTK frontend (<i>sftpman-gtk</i>, see <a rel="nofollow" class="external text" href="https://github.com/spantaleev/sftpman-gtk/raw/master/sftpman-gui.png">screenshot</a>), each packaged separately.
+<p>sftpman offers both a command-line tool (<i>sftpman</i>) and an <a rel="nofollow" class="external text" href="https://iced.rs">iced</a>-based frontend (<i>sftpman-iced</i>, see <a rel="nofollow" class="external text" href="https://raw.githubusercontent.com/spantaleev/sftpman-iced-rs/refs/heads/main/assets/screenshots/sftpman-iced-home.png">screenshot</a>), each packaged separately.
 </p>
-<p>With sftpman, you first setup (define) your remote filesystems and then you mount/unmount them easily (with one click/command).
+<p>With sftpman, you first setup (define) your remote filesystems and then you mount/unmount them easily (with one command or click).
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> In order to use <i>sftpman</i> or its GTK frontend <i>sftpman-gtk</i>, you will first need to have a working <a href="../en/SSHFS.html" title="SSHFS">SSHFS</a> setup.</div>
+<strong>Note:</strong> In order to use <i>sftpman</i> or its GUI <i>sftpman-iced</i>, you will first need to have a working <a href="../en/SSHFS.html" title="SSHFS">SSHFS</a> setup.</div>
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Installation">Installation</span></h2>
-<p>The <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/sftpman/">sftpman</a></span><sup><small>AUR</small></sup> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/sftpman-gtk/">sftpman-gtk</a></span><sup><small>AUR</small></sup> packages are available to <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a>.
+<p>There are 2 packages you may wish to <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a>.
 </p>
-<p><i>sftpman</i> provides the base library and the command-line application <i>sftpman</i>.
-</p>
-<p><i>sftpman-gtk</i> provides the <i>sftpman-gtk</i> application, a GTK frontend to <i>sftpman</i>.
-</p>
+<ul><li>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/sftpman/">sftpman</a></span><sup><small>AUR</small></sup> - provides the command-line application <i>sftpman</i> and is also used internally (as a library) by the GUI frontend.</li></ul>
+<ul><li>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/sftpman-iced/">sftpman-iced</a></span><sup><small>AUR</small></sup> - provides the <i>sftpman-iced</i> application, an <a rel="nofollow" class="external text" href="https://iced.rs">iced</a>-based GUI frontend to <i>sftpman</i>.</li></ul>
 <h2><span class="mw-headline" id="Defining_filesystems">Defining filesystems</span></h2>
 <p>Each filesystem managed by sftpman needs to have a unique name/id which will be used when managing the system and also in its mount path.
 A system with an id of <i>my-machine</i> will be mounted locally to <i>/mnt/sshfs/my-machine</i>.
 </p>
-<p>Authentication with the remote filesystem during mounting can be performed using passwords or <a href="../en/SSH_keys.html" title="SSH keys">SSH keys</a>.
+<p>Authentication with the remote filesystem during mounting can be performed using passwords, <a href="../en/SSH_keys.html" title="SSH keys">SSH keys</a> or by delegating it to an <i>authentication-agent</i>.
 </p>
 <p>To define a new remote filesystem with password-based authentication using the command-line tool, do:
 </p>
-<pre># sftpman setup --id "my-machine" --host "HOSTNAME_OR_IP" --user "USERNAME" \
---mount_point "/REMOTE_PATH" --auth_method=password
+<pre>$ sftpman create \
+--id "my-machine" \
+--host "HOSTNAME_OR_IP" \
+--user "USERNAME" \
+--auth_type=password \
+--remote_path "/REMOTE_PATH"
 </pre>
-<p>Or the equivalent in case you want to use authentication with SSH Keys (recommended):
+<p>Or the equivalent in case you want to authenticate with SSH Keys (recommended):
 </p>
-<pre># sftpman setup --id "my-machine" --host "HOSTNAME_OR_IP" --user "USERNAME" \
---mount_point "/REMOTE_PATH" --auth_method=publickey --ssh_key "PATH_TO_PRIVATE_KEY"
+<pre>$ sftpman create \
+--id "my-machine" \
+--host "HOSTNAME_OR_IP" \
+--user "USERNAME" \
+--auth_type=publickey \
+--ssh_key "/PATH/TO/PRIVATE_KEY" \
+--mount_point "/REMOTE_PATH"
 </pre>
-<p>The above setup is the minimum you need to specify to define a new filesystem that sftpman can mount.
-Depending on your environment, you may need to use some more options (like <i>--port</i>, which defaults to 22). To see a full list of available options do:
+<p>The above setup is the minimum for defining a new filesystem that <i>sftpman</i> can mount.
+Depending on your environment, you may need to configure additional options (like <i>--port</i>, which defaults to <i>22</i>). To see a full list of available options do:
 </p>
-<pre># sftpman help
+<pre>$ sftpman create --help
 </pre>
-<p>You can also use the GTK frontend to define new filesystems more easily.
+<p>You can also use the GUI application to define new filesystems more easily.
 </p>
 <h3>
 <span id="Mounting.2FUnmounting"></span><span class="mw-headline" id="Mounting/Unmounting">Mounting/Unmounting</span>
@@ -227,37 +236,37 @@ Depending on your environment, you may need to use some more options (like <i>--
 </p>
 <p>To mount:
 </p>
-<pre># sftpman mount my-machine
+<pre>$ sftpman mount my-machine
 </pre>
 <p>which mounts the filesystem to <i>/mnt/sshfs/my-machine</i>
 </p>
 <p>To unmount:
 </p>
-<pre># sftpman umount my-machine
+<pre>$ sftpman umount my-machine
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> In order for the GUI application to be able to ask you for a password when mounting, you will need to install some form of an ssh askpass tool. See <a href="../en/SSH_keys.html#x11-ssh-askpass" title="SSH keys">SSH keys#x11-ssh-askpass</a>.</div>
 <h3><span class="mw-headline" id="Removing_defined_filesystems">Removing defined filesystems</span></h3>
 <p>To remove a defined filesystem from sftpman's list do:
 </p>
-<pre># sftpman rm machine-id
+<pre>$ sftpman rm machine-id
 </pre>
 <h3><span class="mw-headline" id="Learning_more">Learning more</span></h3>
 <p>To see a list of more commands and options that <i>sftpman</i> supports, consult the help:
 </p>
-<pre># sftpman help
+<pre>$ sftpman help
 </pre>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
 <p><i>sftpman</i> can perform some basic checks on the environment, which may catch some potential problems:
 </p>
-<pre># sftpman preflight_check
+<pre>$ sftpman preflight_check
 </pre>
 <p>If the GUI application does not ask you for a password while mounting (when using password-based authentication or for password-protected ssh keys), you will need to install an ssh askpass tool, see <a href="#Mounting/Unmounting">#Mounting/Unmounting</a>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong>  If mounting a filesystem fails, sftpman will give you the full <i>sshfs</i> command and its output.
 You can then use that command and run it manually (possibly after adding some more debug options to it, so you would see some more output). </div>
-<p>When doing authentication using keys, start small and make sure SSHing actually works by trying it manually, before trying to use sshfs. Some common problems can be solved by consulting <a href="../en/SSH_keys.html#Troubleshooting" class="mw-redirect" title="Using SSH Keys">Using SSH Keys#Troubleshooting</a>.
+<p>When doing authentication using keys, start small and make sure SSH-ing actually works by trying it manually, before trying to use <i>sshfs</i> and a helper around <i>sshfs</i> (like <i>sftpman</i>). Some common problems can be solved by consulting <a href="../en/SSH_keys.html#Troubleshooting" class="mw-redirect" title="Using SSH Keys">Using SSH Keys#Troubleshooting</a>.
 </p>
 <p>Also see <a href="../en/SSHFS.html#Troubleshooting" title="SSHFS">SSHFS#Troubleshooting</a>.
 </p>
@@ -274,8 +283,8 @@ You can then use that command and run it manually (possibly after adding some mo
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Sftpman&amp;oldid=806456">https://wiki.archlinux.org/index.php?title=Sftpman&amp;oldid=806456</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 19 April 2024, at 15:34.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Sftpman&amp;oldid=825484">https://wiki.archlinux.org/index.php?title=Sftpman&amp;oldid=825484</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 19 January 2025, at 11:20.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

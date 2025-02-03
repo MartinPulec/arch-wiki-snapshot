@@ -545,7 +545,7 @@ XDG_DATA_HOME/atuin/history.db
 </tr>
 <tr>
 <td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=asunder">asunder</a></span>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/asunder/">asunder</a></span><sup><small>AUR</small></sup>
 </td>
 <td>
 <code>~/.asunder</code> <code>~/.asunder_album_artist</code> <code>~/.asunder_album_genre</code> <code>~/.asunder_album_title</code>
@@ -4347,6 +4347,8 @@ path: gpgcli-gitcli-fs+file:///home/&lt;userid&gt;/.config/password-store
 <code>export GTK2_RC_FILES="$XDG_CONFIG_HOME/gtk-2.0/gtkrc":"$XDG_CONFIG_HOME/gtk-2.0/gtkrc.mine"</code>
 <p>If <b>Lxappearance</b> is used, <code>~/.gtkrc-2.0</code> may keep being created because it is where clicking "Apply" customizations writes to. The path is hardcoded in Lxappearance, but simply being an output file, the settings can be repeatedly moved to the location.
 </p>
+<p>To prevent KDE Plasma from creating this file, disable the "GNOME/GTK Settings Synchronization" background service.
+</p>
 </td>
 </tr>
 <tr>
@@ -5285,13 +5287,15 @@ pkg local_list /home/&lt;your username&gt;/.local/share/octave/octave_packages;
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/packettracer/">packettracer</a></span><sup><small>AUR</small></sup>
 </td>
 <td>
-<code>~/.packettracer</code>, <code>~/packettracer/</code>
+<code>~/.packettracer</code>, <code>~/pt</code>
 </td>
 <td>
 </td>
 <td>
 </td>
-<td>Has GUI config to change PT installation directory, <code>~/packettracer/</code> (<i>Options &gt; Preferences &gt; Administrative &gt; User Folder</i>). This path is written to the file <code>~/.packettracer</code>.
+<td>Has GUI config to change PT installation directory, <code>~/pt/</code> (<i>Options &gt; Preferences &gt; Administrative &gt; User Folder</i>). This path is written to the file <code>~/.packettracer</code>.
+<p>Log files may still be written to <code>~/pt/logs</code> regardless of this setting until the <code>.packettracer</code> file is recreated manually.
+</p>
 </td>
 </tr>
 <tr>
@@ -5453,7 +5457,7 @@ pkg local_list /home/&lt;your username&gt;/.local/share/octave/octave_packages;
 <a rel="nofollow" class="external autonumber" href="https://bugs.python.org/issue29779">[257]</a> <a rel="nofollow" class="external autonumber" href="https://bugs.python.org/issue20886">[258]</a> <a rel="nofollow" class="external autonumber" href="https://github.com/python/cpython/pull/13208">[259]</a>
 </td>
 <td>All history from interactive sessions is saved to <code>~/.python_history</code> by default since <a rel="nofollow" class="external text" href="https://bugs.python.org/issue5845">version 3.4</a> and <code>PYTHON_HISTORY</code> since 3.13. For the history file, Python will not create any missing directories and only writes to the file if its directory exists. This can still be customized the same way as in older versions (see <a rel="nofollow" class="external text" href="https://docs.python.org/3/library/readline.html?highlight=readline#example">this example</a>), including to <a rel="nofollow" class="external text" href="https://bugs.python.org/msg318437">use a custom path</a> or <a rel="nofollow" class="external text" href="https://bugs.python.org/msg265568">disable history saving</a>.
-<p><a rel="nofollow" class="external text" href="https://docs.python.org/3.13/using/cmdline.html#envvar-PYTHON_HISTORY">PYTHON_HISTORY</a>: <code>export PYTHON_HISTORY=$XDG_DATA_HOME/python_history</code>
+<p><a rel="nofollow" class="external text" href="https://docs.python.org/3.13/using/cmdline.html#envvar-PYTHON_HISTORY">PYTHON_HISTORY</a>: <code>export PYTHON_HISTORY=$XDG_STATE_HOME/python_history</code>
 <a rel="nofollow" class="external text" href="https://docs.python.org/3/using/cmdline.html#envvar-PYTHONPYCACHEPREFIX">PYTHONPYCACHEPREFIX</a>: <code>export PYTHONPYCACHEPREFIX=$XDG_CACHE_HOME/python</code>
 <a rel="nofollow" class="external text" href="https://docs.python.org/3/using/cmdline.html#envvar-PYTHONUSERBASE">PYTHONUSERBASE</a>: <code>export PYTHONUSERBASE=$XDG_DATA_HOME/python</code>
 </p>
@@ -5507,7 +5511,7 @@ pkg local_list /home/&lt;your username&gt;/.local/share/octave/octave_packages;
 </tr>
 <tr>
 <td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/rbenv/">rbenv</a></span><sup><small>AUR</small></sup>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=rbenv">rbenv</a></span>
 </td>
 <td>
 <code>~/.rbenv</code>
@@ -7153,6 +7157,18 @@ export KUBECACHEDIR="$XDG_CACHE_HOME/kube"
 </tr>
 <tr>
 <td>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=maliit-keyboard">maliit-keyboard</a></span>
+</td>
+<td>
+<code>~/.presage</code>
+</td>
+<td>
+</td>
+<td>Maliit Keyboard uses an old, unmaintained library called Presage that creates <code>~/.presage</code>. In 2024, Maliit Keyboard <a rel="nofollow" class="external text" href="https://github.com/maliit/keyboard/pull/146">dropped their Presage dependency</a> but as of version 2.3.1, this has not yet been included in a release. In the meantime, compile the master branch of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=maliit-keyboard">maliit-keyboard</a></span>.
+</td>
+</tr>
+<tr>
+<td>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=man-db">man-db</a></span>
 </td>
 <td>
@@ -8168,8 +8184,8 @@ R_HISTFILE="$HOME/.config/R/history"
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=XDG_Base_Directory&amp;oldid=824255">https://wiki.archlinux.org/index.php?title=XDG_Base_Directory&amp;oldid=824255</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 29 December 2024, at 21:17.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=XDG_Base_Directory&amp;oldid=825910">https://wiki.archlinux.org/index.php?title=XDG_Base_Directory&amp;oldid=825910</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 25 January 2025, at 11:48.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -506,7 +506,7 @@ Routing decision                                                  |
 <h3>
 <span id="Cha.C3.AEnes"></span><span class="mw-headline" id="Chaînes">Chaînes</span>
 </h3>
-<p>Les tables sont composées de <i>chaînes</i>, qui sont des listes de règles qui sont suivies dans l'ordre. La table par défaut, <code>filter</code>, contient trois chaînes intégrées : <code>INPUT</code>, <code>OUTPUT</code> et <code>FORWARD</code> qui sont activées à différents moments du processus de filtrage des paquets, comme l'illustre le <a rel="nofollow" class="external text" href="https://www.frozentux.net/iptables-tutorial/chunkyhtml/images/tables_traverse.jpg">graphique</a>.  La table nat comprend les chaînes <code>PREROUTING</code>, <code>POSTROUTING</code> et <code>OUTPUT</code>.
+<p>Les tables sont composées de <i>chaînes</i>, qui sont des listes de règles qui sont suivies dans l'ordre. La table par défaut, <code>filter</code>, contient trois chaînes intégrées : <code>INPUT</code>, <code>OUTPUT</code> et <code>FORWARD</code> qui sont activées à différents moments du processus de filtrage des paquets, comme l'illustre le <a rel="nofollow" class="external text" href="https://www.frozentux.net/iptables-tutorial/chunkyhtml/images/tables_traverse.jpg">graphique</a><sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2025-01-19 ⓘ]</sup>.  La table nat comprend les chaînes <code>PREROUTING</code>, <code>POSTROUTING</code> et <code>OUTPUT</code>.
 </p>
 <p>Consultez <span class="plainlinks archwiki-template-man" title="$ man 8 iptables"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/iptables.8">iptables(8)</a></span> pour une description des chaînes intégrées dans d'autres tables.
 </p>
@@ -524,7 +524,7 @@ Routing decision                                                  |
 <h3>
 <span id="Traverser_les_cha.C3.AEnes"></span><span class="mw-headline" id="Traverser_les_chaînes">Traverser les chaînes</span>
 </h3>
-<p>Un paquet réseau reçu sur n'importe quelle interface traverse les chaînes de contrôle du trafic des tables dans l'ordre indiqué dans l'organigramme <a rel="nofollow" class="external autonumber" href="https://www.frozentux.net/iptables-tutorial/chunkyhtml/images/tables_traverse.jpg">[1]</a>. La première décision de routage consiste à déterminer si la destination finale du paquet est la machine locale (auquel cas le paquet traverse les chaînes <code>INPUT</code>) ou une autre machine (auquel cas le paquet traverse les chaînes <code>FORWARD</code>). Les décisions de routage ultérieures consistent à décider de l'interface à attribuer à un paquet sortant. À chaque chaîne du chemin, chaque règle de cette chaîne est évaluée dans l'ordre et chaque fois qu'une règle correspond, l'action cible/saut correspondante est exécutée.  Les trois cibles les plus couramment utilisées sont <code>ACCEPT</code>, <code>DROP</code> et le saut vers une chaîne définie par l'utilisateur.  Alors que les chaînes intégrées peuvent avoir des politiques par défaut, les chaînes définies par l'utilisateur ne le peuvent pas.  Si toutes les règles d'une chaîne que vous avez sautée ne parviennent pas à fournir une correspondance complète, le paquet est renvoyé dans la chaîne d'appel ; voir l'illustration suivante <a rel="nofollow" class="external autonumber" href="https://www.frozentux.net/iptables-tutorial/images/table_subtraverse.jpg">[2]</a>. Si, à tout moment, une correspondance complète est obtenue pour une règle avec une cible <code>DROP</code>, le paquet est abandonné et aucun autre traitement n'est effectué. Si un paquet atteint un saut vers la cible ACCEPT, il ne traversera pas d'autres règles de la chaîne et des chaînes suivantes de la table. Son traitement passera à la première chaîne de la table suivante dans l'ordre. Voir aussi <a rel="nofollow" class="external text" href="https://www.frozentux.net/iptables-tutorial/iptables-tutorial.html#TRAVERSINGOFTABLES">Traversing tables and chains</a> et <a rel="nofollow" class="external text" href="https://www.frozentux.net/iptables-tutorial/iptables-tutorial.html#ACCEPTTARGET">Accept Target</a> du tutoriel frozentux.
+<p>Un paquet réseau reçu sur n'importe quelle interface traverse les chaînes de contrôle du trafic des tables dans l'ordre indiqué dans l'organigramme <a rel="nofollow" class="external autonumber" href="https://www.frozentux.net/iptables-tutorial/chunkyhtml/images/tables_traverse.jpg">[1]</a><sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2025-01-19 ⓘ]</sup>. La première décision de routage consiste à déterminer si la destination finale du paquet est la machine locale (auquel cas le paquet traverse les chaînes <code>INPUT</code>) ou une autre machine (auquel cas le paquet traverse les chaînes <code>FORWARD</code>). Les décisions de routage ultérieures consistent à décider de l'interface à attribuer à un paquet sortant. À chaque chaîne du chemin, chaque règle de cette chaîne est évaluée dans l'ordre et chaque fois qu'une règle correspond, l'action cible/saut correspondante est exécutée.  Les trois cibles les plus couramment utilisées sont <code>ACCEPT</code>, <code>DROP</code> et le saut vers une chaîne définie par l'utilisateur.  Alors que les chaînes intégrées peuvent avoir des politiques par défaut, les chaînes définies par l'utilisateur ne le peuvent pas.  Si toutes les règles d'une chaîne que vous avez sautée ne parviennent pas à fournir une correspondance complète, le paquet est renvoyé dans la chaîne d'appel ; voir l'illustration suivante <a rel="nofollow" class="external autonumber" href="https://www.frozentux.net/iptables-tutorial/images/table_subtraverse.jpg">[2]</a>. Si, à tout moment, une correspondance complète est obtenue pour une règle avec une cible <code>DROP</code>, le paquet est abandonné et aucun autre traitement n'est effectué. Si un paquet atteint un saut vers la cible ACCEPT, il ne traversera pas d'autres règles de la chaîne et des chaînes suivantes de la table. Son traitement passera à la première chaîne de la table suivante dans l'ordre. Voir aussi <a rel="nofollow" class="external text" href="https://www.frozentux.net/iptables-tutorial/iptables-tutorial.html#TRAVERSINGOFTABLES">Traversing tables and chains</a> et <a rel="nofollow" class="external text" href="https://www.frozentux.net/iptables-tutorial/iptables-tutorial.html#ACCEPTTARGET">Accept Target</a> du tutoriel frozentux.
 </p>
 <h3><span class="mw-headline" id="Modules">Modules</span></h3>
 <p>Il existe de nombreux modules qui peuvent être utilisés pour étendre iptables tels que connlimit, conntrack, limit et recent. Ces modules ajoutent des fonctionnalités supplémentaires pour permettre des règles de filtrage complexes.
@@ -758,9 +758,13 @@ num   pkts bytes target     prot opt in     out     source               destina
 </ul>
 </div>
 </div>
-					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
+					<div id="catlinks" class="catlinks" data-mw="interface">
+<div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../fr/Category:Firewalls.html" title="Category:Firewalls (Français)">Firewalls (Français)</a></li></ul>
-</div></div>
+</div>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li></ul>
+</div>
+</div>
 				</div>
 			</main>
 			
@@ -769,8 +773,8 @@ num   pkts bytes target     prot opt in     out     source               destina
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Iptables_(Fran%C3%A7ais)&amp;oldid=813061">https://wiki.archlinux.org/index.php?title=Iptables_(Français)&amp;oldid=813061</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 29 July 2024, at 06:20.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Iptables_(Fran%C3%A7ais)&amp;oldid=825574">https://wiki.archlinux.org/index.php?title=Iptables_(Français)&amp;oldid=825574</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 19 January 2025, at 17:29.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

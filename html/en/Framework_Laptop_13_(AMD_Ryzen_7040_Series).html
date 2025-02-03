@@ -114,10 +114,33 @@
 		<ul id="toc-Firmware-sublist" class="vector-toc-list">
 		</ul>
 	</li>
+	<li id="toc-Troubleshooting" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#Troubleshooting">
+			<div class="vector-toc-text">
+			<span class="vector-toc-numb">9</span>Troubleshooting</div>
+		</a>
+		
+			<button aria-controls="toc-Troubleshooting-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon vector-icon--x-small mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle Troubleshooting subsection</span>
+			</button>
+		
+		<ul id="toc-Troubleshooting-sublist" class="vector-toc-list">
+			<li id="toc-Wakeup_issues" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Wakeup_issues">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">9.1</span>Wakeup issues</div>
+			</a>
+			
+			<ul id="toc-Wakeup_issues-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+	</li>
 	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
 		<a class="vector-toc-link" href="#See_also">
 			<div class="vector-toc-text">
-			<span class="vector-toc-numb">9</span>See also</div>
+			<span class="vector-toc-numb">10</span>See also</div>
 		</a>
 		
 		<ul id="toc-See_also-sublist" class="vector-toc-list">
@@ -323,6 +346,23 @@ You will need to upgrade the fingerprint reader firmware following the article o
 </p>
 <p>Custom <a href="../en/Unified_Extensible_Firmware_Interface/Secure_Boot.html" class="mw-redirect" title="Secure Boot">Secure Boot</a> keys can be installed.
 </p>
+<h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
+<h3><span class="mw-headline" id="Wakeup_issues">Wakeup issues</span></h3>
+<p>Some users experience issues on wakeup from suspend / hibernate, as the framework has a chance of rebooting instead of waking up. The wifi module Mediatek MT7921 seems to cause this. As a workaround, turn off wifi before suspend and enable it after wakeup. The following systemd service automates this for both wifi and bluetooth for suspend / hibernate / suspend-then-hibernate:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/rfkill-before-sleep.service</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Unit]
+Description=Disable wifi and bluetooth before suspend
+Before=sleep.target
+
+[Service]
+Type=oneshot
+
+ExecStart=/usr/sbin/rfkill block all
+ExecStop=/usr/sbin/rfkill unblock all
+
+[Install]
+WantedBy=sleep.target</pre>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul>
 <li><a href="../en/Laptop/Framework.html" title="Laptop/Framework">ArchWiki vendor page</a></li>
@@ -346,8 +386,8 @@ You will need to upgrade the fingerprint reader firmware following the article o
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Framework_Laptop_13_(AMD_Ryzen_7040_Series)&amp;oldid=824038">https://wiki.archlinux.org/index.php?title=Framework_Laptop_13_(AMD_Ryzen_7040_Series)&amp;oldid=824038</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 26 December 2024, at 21:53.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Framework_Laptop_13_(AMD_Ryzen_7040_Series)&amp;oldid=825814">https://wiki.archlinux.org/index.php?title=Framework_Laptop_13_(AMD_Ryzen_7040_Series)&amp;oldid=825814</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 23 January 2025, at 14:51.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

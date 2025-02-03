@@ -475,7 +475,25 @@
 			</a>
 			
 			<ul id="toc-Changing_the_allowed_sample_rate(s)-sublist" class="vector-toc-list">
+				<li id="toc-Getting_allowed_sample_rate(s)" class="vector-toc-list-item vector-toc-level-4">
+			<a class="vector-toc-link" href="#Getting_allowed_sample_rate(s)">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">5.1.8.1</span>Getting allowed sample rate(s)</div>
+			</a>
+			
+			<ul id="toc-Getting_allowed_sample_rate(s)-sublist" class="vector-toc-list">
 			</ul>
+		</li>
+		<li id="toc-Checking_currently_used_sample_rate" class="vector-toc-list-item vector-toc-level-4">
+			<a class="vector-toc-link" href="#Checking_currently_used_sample_rate">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">5.1.8.2</span>Checking currently used sample rate</div>
+			</a>
+			
+			<ul id="toc-Checking_currently_used_sample_rate-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
 		</li>
 		<li id="toc-Sound_quality_(resampling_quality)" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Sound_quality_(resampling_quality)">
@@ -790,7 +808,7 @@
 <p>Pipewire can work as drop-in replacement for other audio servers. See <a href="#Audio">#Audio</a> for details.
 </p>
 <h3><span class="mw-headline" id="Session_manager">Session manager</span></h3>
-<p>Like <a href="../en/JACK_Audio_Connection_Kit.html" class="mw-redirect" title="JACK">JACK</a>, PipeWire implements no connection logic internally. The burden of watching for new streams and connect them to the appropriate output device or application is left to an external component known as a session manager.
+<p>Like <a href="../en/JACK_Audio_Connection_Kit.html" class="mw-redirect" title="JACK">JACK</a>, PipeWire implements no connection logic internally. The burden of watching for new streams and connecting them to the appropriate output device or application is left to an external component known as a session manager.
 </p>
 <h4><span class="mw-headline" id="WirePlumber">WirePlumber</span></h4>
 <p><a href="../en/WirePlumber.html" title="WirePlumber">WirePlumber</a> is the recommended session manager. It is based on a modular design, with Lua plugins that implement the actual management functionality.
@@ -1413,27 +1431,41 @@ context.properties = {
 </p>
 <p>According to <a rel="nofollow" class="external text" href="https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/1523">the developer</a>: "PipeWire allows up to 16 different sample rates and will switch when possible". That means, with configuration above, <b>no resampling is done</b> when supported. Since PipeWire <a rel="nofollow" class="external text" href="https://gitlab.freedesktop.org/pipewire/pipewire/-/releases/0.3.61#pipewire">0.3.61</a> up to 32 different sample rates can be configured.
 </p>
+<h5>
+<span id="Getting_allowed_sample_rate.28s.29"></span><span class="mw-headline" id="Getting_allowed_sample_rate(s)">Getting allowed sample rate(s)</span>
+</h5>
 <p>Consult your hardware manual for supported values of your DAC. Supported rates by the kernel driver codec are listed with the following command.
 </p>
 <pre>$ grep -E 'Codec|Audio Output|rates' /proc/asound/card*/codec#*
 </pre>
-<p>To check out which output sample rate are configured for a card run:
+<p>If your DAC does not report codec information, you can try to obtain supported rates like this:
 </p>
-<pre>$ grep rate: /proc/asound/card?/pcm??/sub?/hw_params
-/proc/asound/card1/pcm0p/sub0/hw_params:rate: 96000 (96000/1)
+<pre>$ grep -m1 -Hn "" /proc/asound/card?/stream? | tee /dev/tty | awk -F':' '{print $1}' | xargs grep 'Rates'
+</pre>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> Although your DAC chip may report rates higher than advertised in specification, some of them were designed for exotic modes like USB to I2S </div>
+<h5><span class="mw-headline" id="Checking_currently_used_sample_rate">Checking currently used sample rate</span></h5>
+<p>To check which output sample rate is being used for a card run:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ grep rate: /proc/asound/card?/pcm??/sub?/hw_params</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">/proc/asound/card1/pcm0p/sub0/hw_params:rate: 96000 (96000/1)
 </pre>
 <p>In <code>pcm0p</code> or <code>pcm0c</code> <code>c</code> is short for "capture" and <code>p</code> is for "playback".
 </p>
+<p>Command:
+</p>
 <pre>$ pw-top
 </pre>
-<p>also shows sample rate for each card and audio stream.
+<p>also shows currently used sample rate for each card and audio stream.
 </p>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong> If your DAC will not switch to a higher rate, after setting default.clock.allowed-rates, it may mean that system cannot read rates supported by DAC. In such case you can still try setting default.clock.rate </div>
 <h4>
 <span id="Sound_quality_.28resampling_quality.29"></span><span class="mw-headline" id="Sound_quality_(resampling_quality)">Sound quality (resampling quality)</span>
 </h4>
 <p>If you used PulseAudio with <code>resample-method = speex-float-10</code> or <code>soxr-vhq</code>, then you might consider setting <code>resample.quality</code> to <code>10</code> or the maximum <code>14</code>:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pipewire/pipewire-client.conf.d/resample.conf (or ~/.config/pipewire/pipewire-client.conf.d/resample.conf)</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pipewire/client.conf.d/resample.conf (or ~/.config/pipewire/client.conf.d/resample.conf)</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">stream.properties = {
     resample.quality = 10
 }</pre>
@@ -1889,8 +1921,8 @@ info: [pipewire] playing stream…
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PipeWire&amp;oldid=824247">https://wiki.archlinux.org/index.php?title=PipeWire&amp;oldid=824247</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 29 December 2024, at 16:47.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PipeWire&amp;oldid=824845">https://wiki.archlinux.org/index.php?title=PipeWire&amp;oldid=824845</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 10 January 2025, at 17:34.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

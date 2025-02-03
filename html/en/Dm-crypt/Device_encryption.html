@@ -308,10 +308,19 @@
 			</button>
 		
 		<ul id="toc-Resizing_encrypted_devices-sublist" class="vector-toc-list">
-			<li id="toc-Loopback_file_system" class="vector-toc-list-item vector-toc-level-2">
+			<li id="toc-LVM_on_LUKS" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#LVM_on_LUKS">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">6.1</span>LVM on LUKS</div>
+			</a>
+			
+			<ul id="toc-LVM_on_LUKS-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Loopback_file_system" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Loopback_file_system">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">6.1</span>Loopback file system</div>
+				<span class="vector-toc-numb">6.2</span>Loopback file system</div>
 			</a>
 			
 			<ul id="toc-Loopback_file_system-sublist" class="vector-toc-list">
@@ -320,7 +329,7 @@
 		<li id="toc-Integrity_protected_device" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Integrity_protected_device">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">6.2</span>Integrity protected device</div>
+				<span class="vector-toc-numb">6.3</span>Integrity protected device</div>
 			</a>
 			
 			<ul id="toc-Integrity_protected_device-sublist" class="vector-toc-list">
@@ -1368,14 +1377,24 @@ MK bits:       	128
 <div>
 <b>Reason:</b> This section should be rewritten to introduce resizing more generically. Perhaps work on it together with <a href="../../en/Resizing_LVM-on-LUKS.html" title="Resizing LVM-on-LUKS">Resizing LVM-on-LUKS</a>. (Discuss in <a rel="nofollow" class="external text" href="../../en/Talk:Dm-crypt/Device_encryption.html">Talk:Dm-crypt/Device encryption</a>)</div>
 </div>
-<p>If a storage device encrypted with dm-crypt is being cloned (with a tool like dd) to another larger device, the underlying dm-crypt device must be resized to use the whole space. 
+<p>If a storage device encrypted with dm-crypt is being cloned (with a tool like dd) to another larger device, or  the partition is being enlarged or shrinked, the underlying file system has to be resized. For devices based on LUKS, this is the only necessary step, as LUKS does not store any size information about the partition, but uses the whole size by default, i.e., when no <code>--size</code> parameter is passed. To this end, follow necessary steps to <a href="../../en/Parted.html#Resizing_partitions" title="Parted">resize a partition</a> as usual. An example for the encrypted LUKS device <code>/dev/sdX2</code> containing an <i>ext4</i> filesystem that needs to be enlarged follows: 
 </p>
-<p>The destination device is /dev/sdX2 in this example, the whole available space adjacent to the partition will be used:
+<p>Firstly, resize the underlying partition with <a href="../../en/Parted.html" title="Parted">Parted</a> or <a href="../../en/Fdisk.html" title="Fdisk">fdisk</a>. When shrinking a partition, this needs to be done last. Now, open your device and resize the filesystem:
 </p>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning:</strong> Consider backing up your data before resizing and do not mount the respective filesystem.</div>
 <pre># cryptsetup luksOpen /dev/sdX2 sdX2
-# cryptsetup resize sdX2
+# e2fsck /dev/mapper/sdX2
+# resize2fs /dev/mapper/sdX2  # Uses all available space on the enlarged LUKS partition
 </pre>
-<p>Then the underlying file system must be resized.
+<p>After mounting the mapped enlarged LUKS device, it can be used as before.
+</p>
+<pre># mount /dev/mapper/sdX2 /mnt/enlarged_sdX2 
+</pre>
+ <div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> cryptsetup-resize is a command to resize an actively mapped partition and usually not needed when resizing an <i>ext2/3/4</i> filesystem.</div>
+<h3><span class="mw-headline" id="LVM_on_LUKS">LVM on LUKS</span></h3>
+<p>See <a href="../../en/Resizing_LVM-on-LUKS.html" title="Resizing LVM-on-LUKS">Resizing LVM on LUKS</a>.
 </p>
 <h3><span class="mw-headline" id="Loopback_file_system">Loopback file system</span></h3>
 <p>Assume that an encrypted loopback file system is stored in a file <code>/bigsecret</code>, looped to <code>/dev/loop0</code>, mapped to <code>secret</code> and mounted on <code>/mnt/secret</code>, as in the example at <a href="../../en/Dm-crypt/Encrypting_a_non-root_file_system.html#File_container" title="Dm-crypt/Encrypting a non-root file system">dm-crypt/Encrypting a non-root file system#File container</a>.
@@ -1588,8 +1607,8 @@ That means if such a file is lost or changed, decrypting the volume may no longe
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/Device_encryption&amp;oldid=824010">https://wiki.archlinux.org/index.php?title=Dm-crypt/Device_encryption&amp;oldid=824010</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 26 December 2024, at 15:14.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/Device_encryption&amp;oldid=825623">https://wiki.archlinux.org/index.php?title=Dm-crypt/Device_encryption&amp;oldid=825623</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 20 January 2025, at 15:50.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

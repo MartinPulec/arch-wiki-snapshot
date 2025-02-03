@@ -274,7 +274,7 @@ It's recommended to use the Archlinux linux or linux-lts kernel, which already h
 <h4><span class="mw-headline" id="Compiling_kernel">Compiling kernel</span></h4>
 <p>Both System/kdump kernels requires some configuration flags that may not be set by default. Please consult <a href="../en/Kernel.html#Compilation" class="mw-redirect" title="Kernel Compilation">Kernel Compilation</a> article for more information about compiling a custom kernel in Arch. Here we will emphasize on Kdump specific configurations. Current default Arch kernel builds have these flags already set.  You can verify if your running kernel has these set by looking in <code>/proc/config.gz</code>.
 </p>
-<p>Please note that, the default <a rel="nofollow" class="external text" href="https://archlinux.org/packages/core/x86_64/linux/">linux</a> and <a rel="nofollow" class="external text" href="https://archlinux.org/packages/core/x86_64/linux-lts/">linux-lts</a> kernels all have the needed options enabled.
+<p>Please note that, the default <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-lts">linux-lts</a></span> kernels all have the needed options enabled.
 But unfortunately the default kernels have debug info striped, thus one still needs to recompile the kernel to have all the debug info so that the vmcore can be properly analyzed.
 </p>
 <p>To create a kernel you need to edit the kernel <code>.config</code> file and enable following configuration options:
@@ -285,7 +285,7 @@ CONFIG_CRASH_DUMP=y
 CONFIG_PROC_VMCORE=y
 CONFIG_DEBUG_INFO=y
 COFNIG_DEBUG_INFO_BTF=y</pre>
-<p>The last two are for the extra debuginfo so that tools like <a rel="nofollow" class="external text" href="https://archlinux.org/packages/extra/x86_64/crash/">crash</a> or <a rel="nofollow" class="external text" href="https://archlinux.org/packages/extra/x86_64/drgn/">drgn</a> can analyze the vmcore.
+<p>The last two are for the extra debuginfo so that tools like <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=crash">crash</a></span> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=drgn">drgn</a></span> can analyze the vmcore.
 (Or is there a way to use debuginfod to download the kernel debuginfo?)
 </p>
 <p>Also change package base name to something like <b>linux-kdump</b> to distinguish the kernel from the default Arch one. Compile kernel package and install it. Save <i>./src/linux-X.Y/vmlinux</i> uncompressed system kernel binary - it contains debug symbols and you will need them later when analyzing the crash.
@@ -294,7 +294,7 @@ COFNIG_DEBUG_INFO_BTF=y</pre>
 </p>
 <h4><span class="mw-headline" id="Reuse_existing_kernel_and_initramfs">Reuse existing kernel and initramfs</span></h4>
 <p>The simplest way to setup kdump is to use the existing kernel and initramfs.
-The example here will use <a rel="nofollow" class="external text" href="https://archlinux.org/packages/core/x86_64/linux/">linux</a> kernel as an example,
+The example here will use <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span> kernel as an example,
 which generates its initramfs at <code>/boot/initramfs-linux.img</code>.
 </p>
 <p>The core idea is to boot the kexec environment just as a regular Archlinux boot sequence.
@@ -309,7 +309,7 @@ But with extra systemd options to slightly change the boot sequence (to skip re-
 </p>
 <p>Reboot into your system kernel.  To make sure that the kernel is booted with correct options please check the files <code>/proc/cmdline</code> and <code>/sys/kernel/kexec_crash_size</code> to see if the memory was indeed pre-reserved (sometimes it's possible , though rare, that such memory reservation fails - if it happens, check the <code>dmesg</code> to get more information).
 </p>
-<p>Next you need to tell <a href="../en/Kexec.html" title="Kexec">Kexec</a> that you want to use your kdump kernel. Specify your kernel, initramfs file, root device and other parameters if needed: (here we use default <a rel="nofollow" class="external text" href="https://archlinux.org/packages/core/x86_64/linux/">linux</a> kernel)
+<p>Next you need to tell <a href="../en/Kexec.html" title="Kexec">Kexec</a> that you want to use your kdump kernel. Specify your kernel, initramfs file, root device and other parameters if needed: (here we use default <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span> kernel)
 </p>
 <pre># kexec -p /boot/vmlinuz-linux --initrd=/boot/initramfs-linux.img] --append="root=[root-device] irqpoll nr_cpus=1 reset_devices"
 </pre>
@@ -479,8 +479,8 @@ HELPEOF
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Kdump&amp;oldid=824359">https://wiki.archlinux.org/index.php?title=Kdump&amp;oldid=824359</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 1 January 2025, at 10:21.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Kdump&amp;oldid=825507">https://wiki.archlinux.org/index.php?title=Kdump&amp;oldid=825507</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 19 January 2025, at 13:46.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

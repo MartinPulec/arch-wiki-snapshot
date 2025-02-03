@@ -393,22 +393,22 @@
 			<ul id="toc-How_to_use_while_booting?-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Remove_PreLoader" class="vector-toc-list-item vector-toc-level-4">
-			<a class="vector-toc-link" href="#Remove_PreLoader">
-				<div class="vector-toc-text">
-				<span class="vector-toc-numb">3.2.1.3</span>Remove PreLoader</div>
-			</a>
-			
-			<ul id="toc-Remove_PreLoader-sublist" class="vector-toc-list">
-			</ul>
-		</li>
 		<li id="toc-Delete_enrolled_hash" class="vector-toc-list-item vector-toc-level-4">
 			<a class="vector-toc-link" href="#Delete_enrolled_hash">
 				<div class="vector-toc-text">
-				<span class="vector-toc-numb">3.2.1.4</span>Delete enrolled hash</div>
+				<span class="vector-toc-numb">3.2.1.3</span>Delete enrolled hash</div>
 			</a>
 			
 			<ul id="toc-Delete_enrolled_hash-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Remove_PreLoader" class="vector-toc-list-item vector-toc-level-4">
+			<a class="vector-toc-link" href="#Remove_PreLoader">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">3.2.1.4</span>Remove PreLoader</div>
+			</a>
+			
+			<ul id="toc-Remove_PreLoader-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -736,7 +736,7 @@
 </p>
 <h3><span class="mw-headline" id="Using_your_own_keys">Using your own keys</span></h3>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> Replacing the platform keys with your own can end up bricking hardware on some machines, including laptops, making it impossible to get into the firmware settings to rectify the situation. This is due to the fact that some device (e.g GPU) firmware (<a href="https://en.wikipedia.org/wiki/OpROM" class="extiw" title="wikipedia:OpROM">OpROMs</a>), that get executed during boot, <a href="#Microsoft_Windows">are signed using Microsoft 3rd Party UEFI CA certificate</a> or vendor certificates. This is the case in many <a rel="nofollow" class="external text" href="https://forums.lenovo.com/t5/Other-Linux-Discussions/Reports-of-custom-secure-boot-keys-bricking-recent-X-P-and-T-series-laptops/m-p/5105571">Lenovo Thinkpad X, P and T series laptops</a> which uses the Lenovo CA certificate to sign UEFI applications and firmwares.</div>
+<strong>Warning:</strong> Replacing the platform keys with your own can end up bricking hardware on some machines, including laptops, making it impossible to get into the firmware settings to rectify the situation. This is due to the fact that some device (e.g GPU) firmware (<a href="https://en.wikipedia.org/wiki/OpROM" class="extiw" title="wikipedia:OpROM">OpROMs</a>), that get executed during boot, <a href="#Microsoft_Windows">are signed using Microsoft 3rd Party UEFI CA certificate</a> or vendor certificates. This is the case in many <a rel="nofollow" class="external text" href="https://forums.lenovo.com/t5/Other-Linux-Discussions/Reports-of-custom-secure-boot-keys-bricking-recent-X-P-and-T-series-laptops/m-p/5105571">Lenovo Thinkpad X, P and T series laptops</a> which uses the Lenovo CA certificate to sign UEFI applications and firmware.</div>
 <p>Secure Boot implementations use these keys:
 </p>
 <dl>
@@ -839,6 +839,11 @@
 <pre># sbctl verify | sed 's/✗ /sbctl sign -s /e'
 </pre>
 <p>This example assumes that the outputted file paths are relative to <code>/boot</code>.
+Alternatively, you can use:
+</p>
+<pre># sbctl verify | sed -E 's|^.* (/.+) is not signed$|sbctl sign -s "\1"|e'
+</pre>
+<p>This is agnostic of the filepath, and doesn't need the '✗' character.
 </p>
 </div>
 <p>Now you are done! Reboot your system and turn secure boot back on in the firmware settings. If the boot loader and OS load, secure boot should be working. Check with:
@@ -1212,6 +1217,15 @@ $ cat MS_Win_KEK_2011.esl MS_Win_KEK_2023.esl &gt; MS_Win_KEK.esl
 <li>In the boot device selection menu choose <i>Arch Linux archiso x86_64 UEFI CD</i>
 </li>
 </ul>
+<h5><span class="mw-headline" id="Delete_enrolled_hash">Delete enrolled hash</span></h5>
+<p>Every entry of hashes enrolled in the MOK database eats up a little piece of space of NVRAM. You may want to delete useless hashes to free the space and to prevent outdated programs from booting.
+</p>
+<p><a href="../../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=efitools">efitools</a></span> and copy <code>KeyTool.efi</code>:
+</p>
+<pre># cp /usr/share/efitools/efi/KeyTool.efi <i>esp</i>/EFI/systemd/KeyTool.efi
+</pre>
+<p>Manage to boot to Preloader and you will see the KeyTool entry. You can then edit hashes in the MOK database.
+</p>
 <h5><span class="mw-headline" id="Remove_PreLoader">Remove PreLoader</span></h5>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> Since you are going to remove stuff, is a good idea to backup it.</div>
@@ -1227,15 +1241,6 @@ Check with the <i>efibootmgr</i> command and adjust the boot-order if necessary.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> The above commands cover the easiest case; if you have created, copied, renamed or edited further files probably you have to handle with them, too. If PreLoader was your operational boot entry, you obviously also need to <a href="#Disabling_Secure_Boot">#Disabling Secure Boot</a>.</div>
-<h5><span class="mw-headline" id="Delete_enrolled_hash">Delete enrolled hash</span></h5>
-<p>Every entry of hashes enrolled in the MOK database eats up a little piece of space of NVRAM. You may want to delete useless hashes to free the space and to prevent outdated programs from booting.
-</p>
-<p><a href="../../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=efitools">efitools</a></span> and copy <code>KeyTool.efi</code>:
-</p>
-<pre># cp /usr/share/efitools/efi/KeyTool.efi <i>esp</i>/EFI/systemd/KeyTool.efi
-</pre>
-<p>Manage to boot to Preloader and you will see the KeyTool entry. You can then edit hashes in the MOK database.
-</p>
 <h4><span class="mw-headline" id="shim">shim</span></h4>
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
@@ -1257,7 +1262,7 @@ Check with the <i>efibootmgr</i> command and adjust the boot-order if necessary.
 <strong>Tip:</strong> The <a href="../../en/REFInd.html" title="REFInd">rEFInd</a> boot manager's <code>refind-install</code> script can sign rEFInd EFI binaries and copy them along with shim and the MOK certificates to the ESP. See <a href="../../en/REFInd.html#Using_shim" title="REFInd">rEFInd#Using shim</a> for instructions.</div>
 <p><a href="../../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/shim-signed/">shim-signed</a></span><sup><small>AUR</small></sup>.
 </p>
-<p>Rename your current <a href="../../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> to <code>grubx64.efi</code>
+<p>Rename your current <a href="../../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> to <code>grubx64.efi</code>, because, by default, Shim will try load and run a file named <code>grubx64.efi</code>. While this default can be overridden by passing a file path to a different EFI binary as a command line argument to shim, since some firmware have issues with UEFI boot entries that have command line arguments, it is more foolproof to rely on the default.
 </p>
 <pre># mv <i>esp</i>/EFI/BOOT/BOOTx64.EFI <i>esp</i>/EFI/BOOT/grubx64.efi
 </pre>
@@ -1605,8 +1610,8 @@ $ digest-to-efi-sig-list <i>fedcba9876543210fedcba9876543210fedcba9876543210fedc
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Unified_Extensible_Firmware_Interface/Secure_Boot&amp;oldid=822881">https://wiki.archlinux.org/index.php?title=Unified_Extensible_Firmware_Interface/Secure_Boot&amp;oldid=822881</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 13 December 2024, at 21:22.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Unified_Extensible_Firmware_Interface/Secure_Boot&amp;oldid=826254">https://wiki.archlinux.org/index.php?title=Unified_Extensible_Firmware_Interface/Secure_Boot&amp;oldid=826254</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 2 February 2025, at 06:04.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

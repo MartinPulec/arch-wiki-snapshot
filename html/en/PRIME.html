@@ -468,6 +468,13 @@ ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030200"
 </pre>
 <p>While the GPU is in <code>suspended</code> state, the counter will be incrementing every time you run the command. When the GPU's state becomes <code>running</code> it will stop incrementing.
 </p>
+<p>If you notice that the <code>runtime_suspended_time</code> is not incrementing, you can check your D3 Status with this command. 
+</p>
+<pre>$ cat /proc/driver/nvidia/gpus/0000:01:00.0/power
+
+</pre>
+<p>If it says <code>Runtime D3 status: Not supported</code>, you may need to follow the steps <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?pid=2181317#p2181317">in this forum post</a> to disable. <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?pid=2187680#p2187680">One user noted</a> disabling the <code>GpuFirmware</code> only works on the closed source driver, not on <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nvidia-open">nvidia-open</a></span>.
+</p>
 <p>We also need to <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> <code>nvidia-persistenced.service</code> to avoid the kernel tearing down the device state whenever the NVIDIA device resources are no longer in use. <a rel="nofollow" class="external autonumber" href="https://us.download.nvidia.com/XFree86/Linux-x86_64/550.54.14/README/nvidia-persistenced.html">[4]</a>
 </p>
 <h4><span class="mw-headline" id="Configure_applications_to_render_using_GPU">Configure applications to render using GPU</span></h4>
@@ -716,8 +723,8 @@ __GLX_VENDOR_LIBRARY_NAME=mesa</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PRIME&amp;oldid=824134">https://wiki.archlinux.org/index.php?title=PRIME&amp;oldid=824134</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 27 December 2024, at 19:48.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PRIME&amp;oldid=825135">https://wiki.archlinux.org/index.php?title=PRIME&amp;oldid=825135</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 16 January 2025, at 12:13.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

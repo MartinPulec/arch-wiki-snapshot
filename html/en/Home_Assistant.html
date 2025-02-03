@@ -145,6 +145,15 @@
 			<ul id="toc-ModuleNotFoundErrors_in_logs-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Permission_denied_error_loop" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Permission_denied_error_loop">
+				<div class="vector-toc-text">
+				<span class="vector-toc-numb">4.4</span>Permission denied error loop</div>
+			</a>
+			
+			<ul id="toc-Permission_denied_error_loop-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
@@ -346,6 +355,26 @@ CapabilityBoundingSet=CAP_NET_RAW</pre>
 </p>
 <p>If the first restart produces more ModuleNotFoundErrors, it might be necessary to a second restart. Home Assistant will detect that its modules are missing and automatically reinstall them.
 </p>
+<h3><span class="mw-headline" id="Permission_denied_error_loop">Permission denied error loop</span></h3>
+<p>If Home Assistant does not start up, and the journal logs contain:
+</p>
+<pre>home-assistant.service: Unable to locate executable '/var/lib/hass/.venv/bin/hass': Permission denied
+home-assistant.service: Failed at step EXEC spawning /var/lib/hass/.venv/bin/hass: Permission denied
+</pre>
+<p>This issue seems to be caused by the missing hass user/group, causing python modules to be installed with root permissions and the <code>/var/lib/hass/</code> folder is symlinked to <code>/var/lib/private/hass</code>.
+</p>
+<p>To solve this, add a system user and group <code>hass</code>:
+</p>
+<pre># useradd -U -r -s /usr/bin/nologin hass
+</pre>
+<p>Reset Home Assistant's Python libraries and reinstall them from scratch, by deleting the modules directories:
+</p>
+<pre># rm -r /var/lib/hass/ /var/lib/private/hass
+</pre>
+<p>Then <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Restart">restart</a> <code>home-assistant.service</code>.
+</p>
+<p>Now the <code>/var/lib/hass/</code> should be a folder (not a symlink) with user <code>hass</code> being the owner.
+</p>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul>
 <li><a rel="nofollow" class="external text" href="https://www.home-assistant.io/">Home Assistant homepage</a></li>
@@ -367,8 +396,8 @@ CapabilityBoundingSet=CAP_NET_RAW</pre>
 			
 <footer id="footer" class="mw-footer" role="contentinfo" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Home_Assistant&amp;oldid=817544">https://wiki.archlinux.org/index.php?title=Home_Assistant&amp;oldid=817544</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 30 September 2024, at 09:12.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Home_Assistant&amp;oldid=824572">https://wiki.archlinux.org/index.php?title=Home_Assistant&amp;oldid=824572</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 5 January 2025, at 15:46.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>
