@@ -420,7 +420,7 @@ IPv4Forwarding=yes
 <p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nftables">nftables</a></span> package. To enable NAT with <a href="../en/Nftables.html" title="Nftables">nftables</a>, you will have to create the <code>postrouting</code> chain in a new/existing table:
 </p>
 <pre># nft add table inet nat
-# nft add chain inet nat postrouting '{ type nat hook postrouting priority 100 ; }'
+# nft add chain inet nat postrouting '{ type nat hook postrouting priority srcnat ; }'
 </pre>
 <p>After that, you have to masquerade the <code>net0</code> addresses for <code>internet0</code>:
 </p>
@@ -431,6 +431,8 @@ IPv4Forwarding=yes
 <pre># nft add rule inet filter forward ct state related,established accept
 # nft add rule inet filter forward iifname net0 oifname internet0 accept
 </pre>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong> When using <a href="../en/Systemd-networkd.html" title="Systemd-networkd">systemd-networkd</a>, use <a href="../en/Nftables.html#Dynamic_named_sets_using_systemd-networkd" title="Nftables">dynamic named sets</a> (<code>NFTSet=</code>) to avoid hardcoding interface names in nftables rules.</div>
 <p>You can find more information on NAT in nftables in the <a rel="nofollow" class="external text" href="https://wiki.nftables.org/wiki-nftables/index.php/Performing_Network_Address_Translation_(NAT)">nftables Wiki</a>. If you want to make these changes permanent, follow the instructions on <a href="../en/Nftables.html" title="Nftables">nftables</a>.
 </p>
 <h4><span class="mw-headline" id="With_firewalld">With firewalld</span></h4>
@@ -539,8 +541,8 @@ Do not forget to reload rules afterwards:
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Internet_sharing&amp;oldid=827753">https://wiki.archlinux.org/index.php?title=Internet_sharing&amp;oldid=827753</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 25 February 2025, at 11:47.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Internet_sharing&amp;oldid=829384">https://wiki.archlinux.org/index.php?title=Internet_sharing&amp;oldid=829384</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 18 March 2025, at 12:06.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

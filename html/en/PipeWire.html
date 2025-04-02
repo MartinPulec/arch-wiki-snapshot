@@ -354,10 +354,21 @@
 			</a>
 			
 			<ul id="toc-Pipewire_module-filter-chain-sublist" class="vector-toc-list">
-				<li id="toc-Systemwide_parametric_equalization" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Systemwide_parametric_equalization">
+				<li id="toc-LADSPA" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#LADSPA">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">4.1.1</span>
+					<span>LADSPA</span>
+				</div>
+			</a>
+			
+			<ul id="toc-LADSPA-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Systemwide_parametric_equalization" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Systemwide_parametric_equalization">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">4.1.2</span>
 					<span>Systemwide parametric equalization</span>
 				</div>
 			</a>
@@ -788,15 +799,15 @@
 			<ul id="toc-No_sound_devices_show_up_in_KDE_Plasma-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Device_volume_for_SDDM_users_is_not_restored_on_login" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Device_volume_for_SDDM_users_is_not_restored_on_login">
+		<li id="toc-Device_volume_for_SDDM_and_LightDM_users_is_not_restored_on_login" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Device_volume_for_SDDM_and_LightDM_users_is_not_restored_on_login">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">5.1.27</span>
-					<span>Device volume for SDDM users is not restored on login</span>
+					<span>Device volume for SDDM and LightDM users is not restored on login</span>
 				</div>
 			</a>
 			
-			<ul id="toc-Device_volume_for_SDDM_users_is_not_restored_on_login-sublist" class="vector-toc-list">
+			<ul id="toc-Device_volume_for_SDDM_and_LightDM_users_is_not_restored_on_login-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 		<li id="toc-Terminal_bell_not_working" class="vector-toc-list-item vector-toc-level-3">
@@ -1326,6 +1337,12 @@ $ wpctl status
 <h3><span class="mw-headline" id="Pipewire_module-filter-chain">Pipewire module-filter-chain</span></h3>
 <p>Pipewire has an internal module called <a rel="nofollow" class="external text" href="https://gitlab.freedesktop.org/pipewire/pipewire/-/wikis/Filter-Chain">filter-chain</a> that can create nodes to process audio input and output. See <code>/usr/share/pipewire/filter-chain/</code> for examples including equalization, virtual surround sound, LADSPA plugins and channel mixing.
 </p>
+<h4><span class="mw-headline" id="LADSPA">LADSPA</span></h4>
+<p>You can install many LADSPA plugins from the official repositories and use them in Pipewire filter chains.
+To list plugin labels and available controls provided by a specific file use <code>analyseplugin</code> from the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=ladspa">ladspa</a></span> package:
+</p>
+<pre>$ analyseplugin /usr/lib/ladspa/lsp-plugins-ladspa.so
+</pre>
 <h4><span class="mw-headline" id="Systemwide_parametric_equalization">Systemwide parametric equalization</span></h4>
 <p>Copy <code>/usr/share/pipewire/filter-chain/sink-eq6.conf</code> to <code>/etc/pipewire/pipewire.conf.d/</code> (or <code>~/.config/pipewire/pipewire.conf.d/</code>).
 </p>
@@ -2025,21 +2042,21 @@ ExecStart=/usr/lib/rtkit-daemon --no-canary</pre>
 </p>
 <p>Although this be resolved by manually restarting PipeWire, other issues can still occur such as being unable to screen share in Chromium (with <code>pipewire context failed</code>). <code>XDG_RUNTIME_DIR</code> is automatically set by <span class="plainlinks archwiki-template-man" title="$ man 8 pam_systemd"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/pam_systemd.8">pam_systemd(8)</a></span>, so you should remove any instances of it being set in your initialization files.
 </p>
-<h4><span class="mw-headline" id="Device_volume_for_SDDM_users_is_not_restored_on_login">Device volume for SDDM users is not restored on login</span></h4>
-<p>If you use SDDM and notice that your audio volume level is not properly restored after logging in, mask Pipewire for SDDM, since Wireplumber running under SDDM can interfere with your user's Wireplumber session.
+<h4><span class="mw-headline" id="Device_volume_for_SDDM_and_LightDM_users_is_not_restored_on_login">Device volume for SDDM and LightDM users is not restored on login</span></h4>
+<p>If you use <a href="../en/SDDM.html" title="SDDM">SDDM</a> or <a href="../en/LightDM.html" title="LightDM">LightDM</a> and notice that your audio volume level is not properly restored after logging in, mask PipeWire for the display manager's user, since WirePlumber running under the display manager can interfere with your user's WirePlumber session.
 </p>
-<pre># systemctl --user -M sddm@ mask pipewire.socket
+<pre># systemctl --user -M <i>user</i>@ mask pipewire.socket
 </pre>
-<p>For more details, see this <a rel="nofollow" class="external text" href="https://wiki.debian.org/PipeWire#Device_volume_for_SDDM_users_is_not_restored_on_login">Debian Wiki article</a>.
+<p>Replace <code><i>user</i></code> with <code>sddm</code> for SDDM or <code>lightdm</code> for LightDM.
 </p>
-<p><br>
+<p>For more details, see this <a rel="nofollow" class="external text" href="https://wiki.debian.org/PipeWire#Device_volume_for_SDDM_users_is_not_restored_on_login">Debian Wiki article</a>.
 </p>
 <h4><span class="mw-headline" id="Terminal_bell_not_working">Terminal bell not working</span></h4>
 <p>From PipeWire's perspective, one must have the module x11.bell loaded. This shall be the configuration default (see also in config files mentioned above). Check if you have package <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pipewire-x11-bell">pipewire-x11-bell</a></span> installed. Also, your window manager might influence the terminal bell, e.g., for xfwm, check in the xfwm-terminal settings that "Audible bell" is activated. Now, restart pipewire service:
 </p>
 <pre>$ systemctl --user restart pipewire
 </pre>
-<p>You can try if the termimal bell works with:
+<p>You can try if the terminal bell works with:
 </p>
 <pre>$ echo $'\a'
 </pre>
@@ -2089,8 +2106,8 @@ info: [pipewire] playing stream…
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PipeWire&amp;oldid=828049">https://wiki.archlinux.org/index.php?title=PipeWire&amp;oldid=828049</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 1 March 2025, at 09:03.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PipeWire&amp;oldid=828636">https://wiki.archlinux.org/index.php?title=PipeWire&amp;oldid=828636</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 10 March 2025, at 23:52.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -60,24 +60,40 @@
 			</div>
 		</a>
 		
-		<ul id="toc-Setting_up_Hurricane_Electric_tunnel-sublist" class="vector-toc-list">
-		</ul>
-	</li>
-	<li id="toc-systemd-networkd" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
-		<a class="vector-toc-link" href="#systemd-networkd">
-			<div class="vector-toc-text">
-				<span class="vector-toc-numb">3</span>
-				<span>systemd-networkd</span>
-			</div>
-		</a>
+			<button aria-controls="toc-Setting_up_Hurricane_Electric_tunnel-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle Setting up Hurricane Electric tunnel subsection</span>
+			</button>
 		
-		<ul id="toc-systemd-networkd-sublist" class="vector-toc-list">
-		</ul>
+		<ul id="toc-Setting_up_Hurricane_Electric_tunnel-sublist" class="vector-toc-list">
+			<li id="toc-Custom_systemd_unit" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Custom_systemd_unit">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">2.1</span>
+					<span>Custom systemd unit</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Custom_systemd_unit-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-systemd-networkd" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#systemd-networkd">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">2.2</span>
+					<span>systemd-networkd</span>
+				</div>
+			</a>
+			
+			<ul id="toc-systemd-networkd-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
 	</li>
 	<li id="toc-Using_the_tunneling_with_dynamic_IPv4_IP" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
 		<a class="vector-toc-link" href="#Using_the_tunneling_with_dynamic_IPv4_IP">
 			<div class="vector-toc-text">
-				<span class="vector-toc-numb">4</span>
+				<span class="vector-toc-numb">3</span>
 				<span>Using the tunneling with dynamic IPv4 IP</span>
 			</div>
 		</a>
@@ -91,7 +107,7 @@
 			<li id="toc-Updating_via_cron_job" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Updating_via_cron_job">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">4.1</span>
+					<span class="vector-toc-numb">3.1</span>
 					<span>Updating via cron job</span>
 				</div>
 			</a>
@@ -102,7 +118,7 @@
 		<li id="toc-Updating_via_ddclient" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Updating_via_ddclient">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">4.2</span>
+					<span class="vector-toc-numb">3.2</span>
 					<span>Updating via ddclient</span>
 				</div>
 			</a>
@@ -111,6 +127,17 @@
 			</ul>
 		</li>
 	</ul>
+	</li>
+	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#See_also">
+			<div class="vector-toc-text">
+				<span class="vector-toc-numb">4</span>
+				<span>See also</span>
+			</div>
+		</a>
+		
+		<ul id="toc-See_also-sublist" class="vector-toc-list">
+		</ul>
 	</li>
 </ul>
 </div>
@@ -198,13 +225,18 @@
 					
 					<div id="mw-content-text" class="mw-body-content">
 <div class="mw-content-ltr mw-parser-output" lang="en" dir="ltr">
-<p>Hurricane Electric offers a free <a rel="nofollow" class="external text" href="https://tunnelbroker.net/">tunnel broker</a> service that is relatively painless to use under Arch if you wish to add IPv6 connectivity to an IPv4-only host. Read the "Tunnel Broker" section of their <a rel="nofollow" class="external text" href="https://ipv6.he.net/certification/faq.php">FAQ</a> for a list of prerequisites.
+<p>This article introduces a method for obtaining an IPv6 address using <a href="https://en.wikipedia.org/wiki/6in4" class="extiw" title="wikipedia:6in4">6in4</a>, also known as SIT.
+</p>
+<p>The following sections will use the tunnel service provided by <a rel="nofollow" class="external text" href="https://he.net">Hurricane Electric</a> as a setup example. Hurricane Electric offers a free <a rel="nofollow" class="external text" href="https://tunnelbroker.net/">tunnel broker</a> service to add IPv6 connectivity to an IPv4-only host. Read the "Tunnel Broker" section of their <a rel="nofollow" class="external text" href="https://ipv6.he.net/certification/faq.php">FAQ</a> for a list of prerequisites.
 </p>
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Registering_for_a_tunnel">Registering for a tunnel</span></h2>
-<p>It is not that hard to do. Feel free to fill in the directions here if something seems tricky, but otherwise just go the tunnel broker site and complete the registration.
+<p>Registering for a tunnel on its <a rel="nofollow" class="external text" href="https://tunnelbroker.net/register.php">website</a>.
 </p>
 <h2><span class="mw-headline" id="Setting_up_Hurricane_Electric_tunnel">Setting up Hurricane Electric tunnel</span></h2>
+<p>There is some ways you can achieve this, such as using the <i>ip</i> command to test the tunnel manually, a custom systemd unit, or using a <a href="../en/Network_configuration.html#Network_Manager" title="Network configuration">Network Manager</a> like <a href="#systemd-networkd">#systemd-networkd</a>.
+</p>
+<h3><span class="mw-headline" id="Custom_systemd_unit">Custom systemd unit</span></h3>
 <p>Create the following systemd unit, replacing bold text with the IP addresses you got from Hurricane Electric:
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
@@ -229,7 +261,9 @@ ExecStop=/usr/bin/ip tunnel del he-ipv6
 WantedBy=multi-user.target</pre>
 <p>Then <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start/enable">start/enable</a> <code>he-ipv6.service</code>.
 </p>
-<h2><span class="mw-headline" id="systemd-networkd">systemd-networkd</span></h2>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong> To test you can run the above commands following <code>ExecStart</code> manually to setup a temporary tunnel. It will not persist after reboot.</div>
+<h3><span class="mw-headline" id="systemd-networkd">systemd-networkd</span></h3>
 <p>If <a href="../en/Systemd-networkd.html" title="Systemd-networkd">systemd-networkd</a> handles your network connections, it is probably a better idea to let it handle tunnel broker too (instead of using a <i>.service</i> file).
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/network/he-tunnel.netdev</pre>
@@ -272,6 +306,8 @@ From=2001:470:NNNN:NNNN::2/64
 # Routed IPv6 Prefixes|Routed 64&gt;/64 - OR - Routed IPv6 Prefixes|Routed 48&gt;/48
 From=2001:470:NNNN::/48
 </pre>
+<p>Replace all <i>NNNN</i> to your own address.
+</p>
 <p>And, <b>add this line to</b> <code>[Network]</code> <b>section</b> of your default Internet connection <i>.network</i> file:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/network/DEVICE.network</pre>
@@ -303,6 +339,8 @@ password=<i>UPDATEKEY</i>
 </pre>
 <p>And finally <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start/enable">start/enable</a> <code>ddclient.service</code>.
 </p>
+<h2><span class="mw-headline" id="See_also">See also</span></h2>
+<ul><li><a href="https://en.wikipedia.org/wiki/6in4" class="extiw" title="wikipedia:6in4">Wikipedia:6in4</a></li></ul>
 </div>
 </div>
 					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
@@ -316,8 +354,8 @@ password=<i>UPDATEKEY</i>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=IPv6_tunnel_broker_setup&amp;oldid=815834">https://wiki.archlinux.org/index.php?title=IPv6_tunnel_broker_setup&amp;oldid=815834</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 3 September 2024, at 12:19.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=IPv6_tunnel_broker_setup&amp;oldid=829054">https://wiki.archlinux.org/index.php?title=IPv6_tunnel_broker_setup&amp;oldid=829054</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 15 March 2025, at 20:52.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

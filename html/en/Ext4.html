@@ -228,7 +228,18 @@
 			</a>
 			
 			<ul id="toc-Use_the_journal_to_optimize_performance-sublist" class="vector-toc-list">
+				<li id="toc-External_journal_device" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#External_journal_device">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.5.1</span>
+					<span>External journal device</span>
+				</div>
+			</a>
+			
+			<ul id="toc-External_journal_device-sublist" class="vector-toc-list">
 			</ul>
+		</li>
+	</ul>
 		</li>
 	</ul>
 	</li>
@@ -449,16 +460,16 @@
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Filesystem              Inodes  IUsed  IFree  <b>IUse%</b>  Mounted on
 /dev/mapper/lvm-home    1.8M    1.1K   1.8M   <b>1%</b>     /home
 </pre>
-<p>To specify a different bytes-per-inode ratio, you can use the <code>-T <i>usage-type</i></code> option which hints at the expected usage of the filesystem using types defined in <code>/etc/mke2fs.conf</code>. Among those types are the bigger <code>largefile</code> and <code>largefile4</code> which offer more relevant ratios of one inode every 1 MiB and 4 MiB respectively. It can be used as such:
+<p>To specify a different bytes-per-inode ratio, use the <code>-T <i>usage-type</i></code> option which hints at the expected usage of the filesystem using types defined in <code>/etc/mke2fs.conf</code>. Among those types are the bigger <code>largefile</code> and <code>largefile4</code> which offer more relevant ratios of one inode every 1 MiB and 4 MiB respectively. It can be used as such:
 </p>
 <pre># mkfs.ext4 -T largefile /dev/<i>device</i>
 </pre>
 <p>The bytes-per-inode ratio can also be set directly via the <code>-i</code> option: <i>e.g.</i> use <code>-i 2097152</code> for a 2 MiB ratio and  <code>-i 6291456</code> for a 6 MiB ratio.
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> Conversely, if you are setting up a partition dedicated to host millions of small files like emails or newsgroup items, you can use smaller <i>usage-type</i> values such as <code>news</code> (one inode for every 4096 bytes) or <code>small</code> (same plus smaller inode and block sizes).</div>
+<strong>Tip:</strong> Conversely, if setting up a partition dedicated to host millions of small files like emails or newsgroup items, use smaller <i>usage-type</i> values such as <code>news</code> (one inode for every 4096 bytes) or <code>small</code> (same plus smaller inode and block sizes).</div>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> If you make a heavy use of symbolic links, make sure to keep the inode count high enough with a low bytes-per-inode ratio, because while not taking more space every new symbolic link consumes one new inode and therefore the filesystem may run out of them quickly.</div>
+<strong>Warning:</strong> If making heavy use of symbolic links, make sure to keep the inode count high enough with a low bytes-per-inode ratio, because while not taking more space every new symbolic link consumes one new inode and therefore the filesystem may run out of them quickly.</div>
 <h3><span class="mw-headline" id="Reserved_blocks">Reserved blocks</span></h3>
 <p>By default, 5% of the filesystem blocks will be reserved for the super-user, to avoid fragmentation and "<i>allow root-owned daemons to continue to function correctly after non-privileged processes are prevented from writing to the filesystem</i>" (from <span class="plainlinks archwiki-template-man" title="$ man 8 mke2fs"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/mke2fs.8">mke2fs(8)</a></span>).
 </p>
@@ -484,7 +495,7 @@
 </p>
 <pre># tune2fs -r $((<i>ngigs</i> * 1024**3 / <i>blocksize</i>)) /dev/<i>device</i>
 </pre>
-<p><code><i>blocksize</i></code> is the block size of the filesystem in bytes. This is almost always 4096, but you can check to be sure:
+<p><code><i>blocksize</i></code> is the block size of the filesystem in bytes. This is almost always 4096; check to be sure:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># tune2fs -l /dev/<i>device</i> | grep 'Block size:'</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Block size:               4096
@@ -493,7 +504,7 @@
 </p>
 <pre># tune2fs -r (math 'ngigs * 1024^3 / blocksize') /dev/<i>device</i>
 </pre>
-<p>These commands can be applied to currently-mounted filesystems, the changes taking effect immediately. You can use <span class="plainlinks archwiki-template-man" title="$ man 8 findmnt"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/findmnt.8">findmnt(8)</a></span> to find the device name:
+<p>These commands can be applied to currently-mounted filesystems and changes will take effect immediately. Use <span class="plainlinks archwiki-template-man" title="$ man 8 findmnt"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/findmnt.8">findmnt(8)</a></span> to find the device name:
 </p>
 <pre># tune2fs -m 1 "$(findmnt -no SOURCE <i>/the/mount/point</i>)"
 </pre>
@@ -527,7 +538,7 @@
 <strong>Note:</strong> Except for the relative novelty of ext4 (which can be seen as a risk), <b>there is no major drawback to this technique</b>.</div>
 <h4><span class="mw-headline" id="Procedure">Procedure</span></h4>
 <ol>
-<li>Edit <code>/etc/fstab</code> and change the 'type' from ext2/ext3 to ext4 for any partitions you would like to mount as ext4.</li>
+<li>Edit <code>/etc/fstab</code> and change the 'type' from ext2/ext3 to ext4 for any partitions to mount as ext4.</li>
 <li>Re-mount the affected partitions.</li>
 </ol>
 <h3>
@@ -552,8 +563,8 @@
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> 
 <ul>
-<li>If you convert the system's root filesystem, ensure that the 'fallback' initramfs is available at reboot. Alternatively, add <code>ext4</code> according to <a href="../en/Mkinitcpio.html#MODULES" title="Mkinitcpio">Mkinitcpio#MODULES</a> and <a href="../en/Mkinitcpio.html#Image_creation_and_activation" class="mw-redirect" title="Regenerate the initramfs">regenerate the initramfs</a> before starting.</li>
-<li>If you decide to convert a separate <code>/boot</code> partition, ensure the <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> supports booting from ext4.</li>
+<li>If converting the system's root filesystem, ensure that the 'fallback' initramfs is available at reboot. Alternatively, add <code>ext4</code> according to <a href="../en/Mkinitcpio.html#MODULES" title="Mkinitcpio">Mkinitcpio#MODULES</a> and <a href="../en/Mkinitcpio.html#Image_creation_and_activation" class="mw-redirect" title="Regenerate the initramfs">regenerate the initramfs</a> before starting.</li>
+<li>If converting a separate <code>/boot</code> partition, ensure the <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> supports booting from ext4.</li>
 </ul>
 </div>
 <p>In the following steps <code>/dev/sdxX</code> denotes the path to the partition to be converted, such as <code>/dev/sda1</code>.
@@ -564,7 +575,7 @@
 <li>Edit <code>/etc/fstab</code> and change the 'type' from ext3 to ext4 for any partitions that are to be converted to ext4.</li>
 <li>Boot the live medium (if necessary). The conversion process with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=e2fsprogs">e2fsprogs</a></span> must be done when the drive is not mounted. If converting a root partition, the simplest way to achieve this is to boot from some other live medium.</li>
 <li>Ensure the partition is <i>not</i> mounted</li>
-<li>If you want to convert a ext2 partition, the first conversion step is to add a <a href="../en/File_systems.html#Journaling" title="File systems">journal</a> by running <code>tune2fs -j /dev/sdxX</code> as root; making it a ext3 partition.</li>
+<li>If converting an ext2 partition, the first conversion step is to add a <a href="../en/File_systems.html#Journaling" title="File systems">journal</a> by running <code>tune2fs -j /dev/sdxX</code> as root; making it a ext3 partition.</li>
 <li>Run <code>tune2fs -O extent,uninit_bg,dir_index /dev/sdxX</code> as root. This command converts the ext3 filesystem to ext4 (irreversibly).</li>
 <li>Run <code>fsck -f /dev/sdxX</code> as root.
 <ul><li>This step is necessary, otherwise the filesystem <b>will be unreadable</b>. This <i>fsck</i> run is needed to return the filesystem to a consistent state. It will find checksum errors in the group descriptors - this is expected. The <code>-f</code> option asks <i>fsck</i> to force checking even if the file system seems clean. The <code>-p</code> option may be used on top to "automatically repair" (otherwise, the user will be asked for input for each error).</li></ul>
@@ -610,6 +621,7 @@ The following <a href="../en/Fstab.html" title="Fstab">fstab</a> illustrates the
 <strong>Note:</strong> The <code>journal_async_commit</code> mount option <a rel="nofollow" class="external text" href="https://patchwork.ozlabs.org/patch/414750/">does not work with</a> the default mount option <code>data=ordered</code>, therefore explicitly mount <code><i>ext4_device</i></code> with a different mode; see <span class="plainlinks archwiki-template-man" title="$ man 5 ext4"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/ext4.5#data=">ext4(5) § data=</a></span>.</div>
 <p>A further option is to to use a newer journal format, see <a href="#Enabling_fast_commit">#Enabling fast_commit</a>.
 </p>
+<h4><span class="mw-headline" id="External_journal_device">External journal device</span></h4>
 <p>If using the non-default <code>data=</code> options, a dedicated device for the journal may also speed up file operations in some cases. For example, when a relatively slow device is used for the data itself and another (faster but smaller) device for the journal. To set up a separate journal device:
 </p>
 <pre># mke2fs -O journal_dev /dev/<i>journal_device</i>
@@ -618,8 +630,31 @@ The following <a href="../en/Fstab.html" title="Fstab">fstab</a> illustrates the
 </p>
 <pre># tune2fs -J device=/dev/<i>journal_device</i> /dev/<i>ext4_device</i>
 </pre>
-<p>You can replace <code>tune2fs</code> with <code>mkfs.ext4</code> if you also want to make a new filesystem on <code><i>ext4_device</i></code>.
+<p>Replace <code>tune2fs</code> with <code>mkfs.ext4</code> if wanting to make a new filesystem on <code><i>ext4_device</i></code>.
 </p>
+<p>Add the <code><i>journal_device</i></code> as a dependency of the <code><i>ext4_device</i></code> using the <code>x-systemd.requires</code> mount option in <code>/etc/fstab</code>:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/fstab</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">/dev/<i>ext4_device</i>    /    ext4    defaults,<b>x-systemd.requires=/dev/<i>journal_device</i></b>    0    1</pre>
+<p>This prevents issues if <code><i>journal_device</i></code> needs any setup (e.g. it is encrypted).
+</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> Both the <code>UUID</code> and the devnum of the journal device are saved to the ext4 filesystem. When loading the journal device, only the devnum is used, causing issues as the devnum changes when disks are rearranged. Linux will refuse to mount the filesystem if the devnum points to the wrong device, but the below workarounds may still be helpful:
+<p>Ignore the saved devnum and force loading of the journal by path using the <code>journal_path</code> mount option:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/fstab</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">/dev/<i>ext4_device</i>    /    ext4    defaults,x-systemd.requires=/dev/<i>journal_device</i>,<b>journal_path=/dev/<i>journal_device</i></b>    0    1</pre>
+<p><code>e2fsck</code> will look up the journal device using the <code>UUID</code> and fix the saved devnum if it goes out of sync. However, it will consider this as corruption and trigger an unnecessary full filesystem scan <a rel="nofollow" class="external autonumber" href="https://github.com/tytso/e2fsprogs/pull/26">[5]</a>. This can be disabled in <code>e2fsck</code>'s <a rel="nofollow" class="external text" href="https://man.archlinux.org/man/e2fsck.conf.5.en">config file</a>:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/e2fsck.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[problems]
+# PR_0_EXTERNAL_JOURNAL_HINT: Superblock hint for external superblock should be xxxx
+0x000033 = {
+    # Tell e2fsck that if this problem is encountered, it can be fixed but should
+    # not be considered corruption, the filesystem should still be marked clean.
+    not_a_fix = true
+}</pre>
+</div>
 <h2><span class="mw-headline" id="Tips_and_tricks">Tips and tricks</span></h2>
 <h3><span class="mw-headline" id="Using_file-based_encryption">Using file-based encryption</span></h3>
 <p>Since Linux 4.1, ext4 natively supports file encryption, see the <a href="../en/Fscrypt.html" title="Fscrypt">fscrypt</a> article.  Encryption is applied at the directory level, and different directories can use different encryption keys.  This is different from both <a href="../en/Dm-crypt.html" title="Dm-crypt">dm-crypt</a>, which is block-device level encryption, and from <a href="../en/ECryptfs.html" title="ECryptfs">eCryptfs</a>, which is a stacked cryptographic filesystem.
@@ -632,7 +667,7 @@ The following <a href="../en/Fstab.html" title="Fstab">fstab</a> illustrates the
 <div>
 <b>Reason:</b> <code>crc32c_intel</code> support deprecates with Linux 6.14 (Discuss in <a href="../en/Talk:Ext4.html#crc32c_intel_is_obsolete" title="Talk:Ext4">Talk:Ext4#crc32c_intel is obsolete</a>)</div>
 </div>
-<p>If the CPU supports SSE 4.2, make sure the <code>crc32c_intel</code> <a href="../en/Kernel_module.html" title="Kernel module">kernel module</a> is loaded in order to enable the hardware accelerated CRC32C algorithm <a rel="nofollow" class="external autonumber" href="https://ext4.wiki.kernel.org/index.php/Ext4_Metadata_Checksums#Benchmarking">[5]</a>. If not, load the <code>crc32c_generic</code> module instead.
+<p>If the CPU supports SSE 4.2, make sure the <code>crc32c_intel</code> <a href="../en/Kernel_module.html" title="Kernel module">kernel module</a> is loaded in order to enable the hardware accelerated CRC32C algorithm <a rel="nofollow" class="external autonumber" href="https://ext4.wiki.kernel.org/index.php/Ext4_Metadata_Checksums#Benchmarking">[6]</a>. If not, load the <code>crc32c_generic</code> module instead.
 </p>
 <p>To read more about metadata checksums, see the <a rel="nofollow" class="external text" href="https://ext4.wiki.kernel.org/index.php/Ext4_Metadata_Checksums">ext4 wiki</a>.
 </p>
@@ -668,7 +703,7 @@ The following <a href="../en/Fstab.html" title="Fstab">fstab</a> illustrates the
 </p>
 <h3><span class="mw-headline" id="Enabling_fast_commit">Enabling fast_commit</span></h3>
 <p>The ext4 "fast commits" feature introduces a new, lighter-weight journaling method.
-It is expected to significantly increase the performance of the ext4 filesystem,<a rel="nofollow" class="external autonumber" href="https://lwn.net/Articles/842385/">[6]</a>
+It is expected to significantly increase the performance of the ext4 filesystem,<a rel="nofollow" class="external autonumber" href="https://lwn.net/Articles/842385/">[7]</a>
 </p>
 <p>To enable on the feature on a new filesystem, include <code>fast_commit</code> in the <code>-O</code> file system options argument.
 </p>
@@ -699,7 +734,7 @@ It is expected to significantly increase the performance of the ext4 filesystem,
 </p>
 <pre># tune2fs -O casefold <i>/dev/path/to/disk</i>
 </pre>
-<p>Now you can enable the case-insensitive <a href="../en/File_permissions_and_attributes.html#File_attributes" class="mw-redirect" title="File attribute">attribute</a> in any directory:
+<p>Enable the case-insensitive <a href="../en/File_permissions_and_attributes.html#File_attributes" class="mw-redirect" title="File attribute">attribute</a> in any directory:
 </p>
 <pre>$ chattr +F <i>/mnt/partition/case-insensitive-directory</i>
 </pre>
@@ -711,7 +746,7 @@ It is expected to significantly increase the performance of the ext4 filesystem,
 <li><a rel="nofollow" class="external text" href="https://ext4.wiki.kernel.org/">Official ext4 wiki (archived)</a></li>
 <li>
 <a rel="nofollow" class="external text" href="https://lwn.net/Articles/639427/">Ext4 Encryption</a> LWN article</li>
-<li>Kernel commits for ext4 encryption <a rel="nofollow" class="external autonumber" href="https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=6162e4b0bedeb3dac2ba0a5e1b1f56db107d97ec">[7]</a> <a rel="nofollow" class="external autonumber" href="https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=8663da2c0919896788321cd8a0016af08588c656">[8]</a>
+<li>Kernel commits for ext4 encryption <a rel="nofollow" class="external autonumber" href="https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=6162e4b0bedeb3dac2ba0a5e1b1f56db107d97ec">[8]</a> <a rel="nofollow" class="external autonumber" href="https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=8663da2c0919896788321cd8a0016af08588c656">[9]</a>
 </li>
 <li><a rel="nofollow" class="external text" href="https://e2fsprogs.sourceforge.net/e2fsprogs-release.html">e2fsprogs Changelog</a></li>
 <li><a rel="nofollow" class="external text" href="https://ext4.wiki.kernel.org/index.php/Ext4_Metadata_Checksums">Ext4 Metadata Checksums</a></li>
@@ -734,8 +769,8 @@ It is expected to significantly increase the performance of the ext4 filesystem,
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Ext4&amp;oldid=826939">https://wiki.archlinux.org/index.php?title=Ext4&amp;oldid=826939</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 12 February 2025, at 19:18.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Ext4&amp;oldid=828484">https://wiki.archlinux.org/index.php?title=Ext4&amp;oldid=828484</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 8 March 2025, at 20:52.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -324,13 +324,15 @@
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> It is highly recommended to set the codeset of your locale to <code>.UTF-8</code>. Otherwise, conversion from UTF-8 to non-Unicode encoding can result in a loss of information. </div>
 <h3><span class="mw-headline" id="Incorrect_archive_encoding">Incorrect archive encoding</span></h3>
-<p>On older versions of Windows (XP, Vista, and 7), File Explorer uses different encoding when creating a zip archive with certain locales. To extract properly, use <code>unzip -O</code> followed with the target encoding. E.g: CP936 is a common encoding in old versions of Windows.
+<p>Zip archives sometimes use encodings other than Unicode for the filenames. This is a known issue with Zip archives created in legacy versions of Windows (XP, Vista, and 7), where File Explorer will prioritize a character set that more closely matches the system locale even if it uses a non-Latin writing system.
+</p>
+<p>The <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=unzip">unzip</a></span> 6.0 package is built with patches to enable character set conversion, but it will still default to the assumption that filenames are UTF8-encoded. To extract properly, use <code>unzip -O</code> followed by the target encoding, e.g. CP936 is a common encoding in old versions of Windows:
 </p>
 <pre>$ unzip -O CP936 <i>file.zip</i>
 </pre>
 <p>If unsure about the needed charset, dry-run without extraction by adding the <code>-l</code> flag:
 </p>
-<pre>$ unzip -lO SJIS <i>file.zip</i>
+<pre>$ unzip -lO CP936 <i>file.zip</i>
 </pre>
 <p>Japanese versions of Windows encode ZIP archives with Shift-JIS. Use <i>shift-jis</i>:
 </p>
@@ -340,7 +342,7 @@
 </p>
 <pre>$ unzip -O gbk <i>file</i>.zip
 </pre>
-<p>Alternatively, use <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/unzip-natspec/">unzip-natspec</a></span><sup><small>AUR</small></sup> for auto-detecting the targeted encoding.
+<p>Alternatively, you can install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/unzip-natspec/">unzip-natspec</a></span><sup><small>AUR</small></sup>, which will auto-detect the correct encoding for filenames.
 </p>
 <h3><span class="mw-headline" id="Incorrect_file_name_encoding">Incorrect file name encoding</span></h3>
 <p>Use <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=convmv">convmv</a></span> for encoding-conversion <code>mv</code>:
@@ -434,8 +436,8 @@ remote_charsets=gb2312
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Character_encoding&amp;oldid=819079">https://wiki.archlinux.org/index.php?title=Character_encoding&amp;oldid=819079</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 16 October 2024, at 12:00.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Character_encoding&amp;oldid=830254">https://wiki.archlinux.org/index.php?title=Character_encoding&amp;oldid=830254</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 31 March 2025, at 07:56.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

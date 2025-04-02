@@ -84,15 +84,37 @@
 			</a>
 			
 			<ul id="toc-Hibernate_on_low_battery_level-sublist" class="vector-toc-list">
-				<li id="toc-Testing_events" class="vector-toc-list-item vector-toc-level-4">
-			<a class="vector-toc-link" href="#Testing_events">
+				<li id="toc-udev" class="vector-toc-list-item vector-toc-level-4">
+			<a class="vector-toc-link" href="#udev">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">1.1.2.1</span>
+					<span>udev</span>
+				</div>
+			</a>
+			
+			<ul id="toc-udev-sublist" class="vector-toc-list">
+				<li id="toc-Testing_events" class="vector-toc-list-item vector-toc-level-5">
+			<a class="vector-toc-link" href="#Testing_events">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">1.1.2.1.1</span>
 					<span>Testing events</span>
 				</div>
 			</a>
 			
 			<ul id="toc-Testing_events-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+		</li>
+		<li id="toc-UPower" class="vector-toc-list-item vector-toc-level-4">
+			<a class="vector-toc-link" href="#UPower">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">1.1.2.2</span>
+					<span>UPower</span>
+				</div>
+			</a>
+			
+			<ul id="toc-UPower-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -421,8 +443,9 @@
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=batsignal">batsignal</a></span> is a lightweight battery monitor daemon that uses libnotify to warn of low battery levels.</li>
 </ul>
 <h4><span class="mw-headline" id="Hibernate_on_low_battery_level">Hibernate on low battery level</span></h4>
-<p>If your battery sends events to <a href="../en/Udev.html" title="Udev">udev</a> whenever it (dis)charges by 1%, you can use this udev rule to automatically hibernate the system when battery level is critical, and thus prevent all unsaved work from being lost.
+<p>If your battery sends events to <a href="../en/Udev.html" title="Udev">udev</a> whenever it (dis)charges by 1%, you can use this udev rule to automatically hibernate the system when battery level is critical, and thus prevent all unsaved work from being lost. Alternatively, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=upower">upower</a></span> can also take action when battery level is at a configurable critical level if <code>upower.service</code> is <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enabled">enabled</a>.
 </p>
+<h5><span class="mw-headline" id="udev">udev</span></h5>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> Not all batteries report discharge events. Test by running <code>udevadm monitor --property</code> while on battery and see if any events are reported. You should wait at least 1% drop. If no events are reported and <code>/sys/class/power_supply/BAT0/alarm</code> is non-zero then the battery will likely trigger an event when <code>BAT0/energy_now</code> drops below the alarm value, and the udev rule will work as long as the percentage math works out. Some laptops have an option for this disabled in BIOS by default.</div>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/udev/rules.d/99-lowbat.rules</pre>
@@ -458,12 +481,23 @@ acpi -b | awk -F'[,:%]' '{print $2, $3}' | {
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> Unplugging a battery or peripheral device may break your script since it can cause remaining batteries to be renamed, i.e. when <code>Battery 0</code> is unplugged, <code>Battery 1</code> becomes <code>Battery 0</code> automatically, and so on.</div>
-<h5><span class="mw-headline" id="Testing_events">Testing events</span></h5>
+<h6><span class="mw-headline" id="Testing_events">Testing events</span></h6>
 <p>One way to test udev rules is to have them create a file when they are run. For example:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/udev/rules.d/98-discharging.rules</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">SUBSYSTEM=="power_supply", ATTR{status}=="Discharging", RUN+="/usr/bin/touch /home/archie/discharging"</pre>
 <p>This creates a file at <code>/home/archie/discharging</code> when the laptop charger is unplugged. You can test whether the rule worked by unplugging your laptop and looking for this file. For more advanced udev rule testing, see <a href="../en/Udev.html#Testing_rules_before_loading" title="Udev">Udev#Testing rules before loading</a>.
+</p>
+<h5><span class="mw-headline" id="UPower">UPower</span></h5>
+<p>Configure UPower, for example:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/UPower/UPower.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">UsePercentageForPolicy=true
+
+PercentageLow=20.0
+PercentageCritical=10.0
+PercentageAction=5.0</pre>
+<p><a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">Enable</a> and <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start">start</a> <code>upower.service</code> afterwards.
 </p>
 <h3><span class="mw-headline" id="Suspend_and_hibernate">Suspend and hibernate</span></h3>
 <p>Manually suspending the operating system, either to memory (standby) or to disk (hibernate) sometimes provides the most efficient way to optimize battery life, depending on the usage pattern of the laptop.
@@ -584,8 +618,8 @@ acpi -b | awk -F'[,:%]' '{print $2, $3}' | {
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Laptop&amp;oldid=821384">https://wiki.archlinux.org/index.php?title=Laptop&amp;oldid=821384</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 25 November 2024, at 08:49.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Laptop&amp;oldid=830172">https://wiki.archlinux.org/index.php?title=Laptop&amp;oldid=830172</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 30 March 2025, at 13:01.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

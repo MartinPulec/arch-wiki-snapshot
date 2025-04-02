@@ -150,6 +150,44 @@
 		</li>
 	</ul>
 	</li>
+	<li id="toc-Tips_and_tricks" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#Tips_and_tricks">
+			<div class="vector-toc-text">
+				<span class="vector-toc-numb">4</span>
+				<span>Tips and tricks</span>
+			</div>
+		</a>
+		
+			<button aria-controls="toc-Tips_and_tricks-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle Tips and tricks subsection</span>
+			</button>
+		
+		<ul id="toc-Tips_and_tricks-sublist" class="vector-toc-list">
+			<li id="toc-Applications_and_autostart" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Applications_and_autostart">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">4.1</span>
+					<span>Applications and autostart</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Applications_and_autostart-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+	</li>
+	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#See_also">
+			<div class="vector-toc-text">
+				<span class="vector-toc-numb">5</span>
+				<span>See also</span>
+			</div>
+		</a>
+		
+		<ul id="toc-See_also-sublist" class="vector-toc-list">
+		</ul>
+	</li>
 </ul>
 </div>
 
@@ -248,29 +286,31 @@
 <h3><span class="mw-headline" id="Service_startup_notification_and_vars_set_by_compositor">Service startup notification and vars set by compositor</span></h3>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> If managed compositors already set <code>WAYLAND_DISPLAY</code> (and other useful environment variables) into the systemd activation environment, then you can skip this section and you do not need to use <code>uwsm finalize</code>.</div>
-<p>In order to find the current compositor wayland applications need the <code>WAYLAND_DISPLAY</code> (or <code>DISPLAY</code> variable, if they are intended to run through <a href="../en/Wayland.html#Xwayland" title="Wayland">Xwayland</a>). Therefore this and other useful environment variables should be put into the systemd/dbus activation environment once the compositor has set their value.
+<p>In order to find the current compositor, a Wayland application run as a systemd service needs the <code>WAYLAND_DISPLAY</code> environment variable (or <code>DISPLAY</code> if they are intended to run through <a href="../en/Wayland.html#Xwayland" title="Wayland">Xwayland</a>). Therefore this and other useful environment variables should be put into the systemd/dbus activation environment once the compositor has set their values.
 </p>
-<p>The command <code>uwsm finalize</code> puts <code>WAYLAND_DISPLAY</code>, <code>DISPLAY</code> and other environment variables listed via the whitespace-separated <code>UWSM_FINALIZE_VARNAMES</code> list into the activation environment. Therefore you need to execute this command after the compositor is ready.
+<p>The command <code>uwsm finalize</code> puts <code>WAYLAND_DISPLAY</code>, <code>DISPLAY</code> and other environment variables listed via the white-space separated <code>UWSM_FINALIZE_VARNAMES</code> list into the activation environment. It is recommended to execute this command after the compositor is ready.
 </p>
-<p>If other variables set by the compositors are needed in your activation environment, then you can also pass them as arguments:
+<p>If other variables set by the compositors are needed in the activation environment, they can be passed as arguments to <code>uwsm finalize</code> or put into a white-space separated list in <code>UWSM_FINALIZE_VARNAMES</code>. See the examples below:
 </p>
-<pre>exec uwsm finalize <i>VAR1</i> <i>VAR2</i> <i>...</i>
+<pre>exec uwsm finalize <i>VAR1 VAR2 ...</i>
+export UWSM_FINALIZE_VARNAMES=<i>VAR1 VAR2 ...</i>
 </pre>
 <h3><span class="mw-headline" id="Environment_variables">Environment variables</span></h3>
-<p>All environment variables set in <code>${XDG_CONFIG_HOME}/uwsm/env</code> file are sourced by <i>uwsm</i> and available to all managed compositors and graphical applications run inside such a session.
+<p>All environment variables set in <code>${XDG_CONFIG_HOME}/uwsm/env</code> are sourced by <i>uwsm</i> and available to all managed compositors and graphical applications run inside such a session.
 </p>
 <p>If you need certain environment variables to be set only for a specific <i>compositor</i> (and graphical applications in that graphical session), then put them in <code>${XDG_CONFIG_HOME}/uwsm/env-<i>compositor</i></code> instead.
 </p>
-<p>All these files should set environment variables with the following format:
+<p>An example of such a file can be seen below:
 </p>
-<pre>export <i>KEY1</i>=<i>VAR1</i>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.config/uwsm/env</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">export <i>KEY1</i>=<i>VAR1</i>
 export <i>KEY2</i>=<i>VAR2</i>
 export <i>KEY3</i>=<i>VAR3</i>
 <i>...</i></pre>
-<p>and should not contain comments.
-</p>
 <h2><span class="mw-headline" id="Usage">Usage</span></h2>
 <h3><span class="mw-headline" id="Startup">Startup</span></h3>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> Environment preloader no longer sources POSIX shell profile if environment from the context of <code>uwsm start</code> was successfully used.</div>
 <p><i>uwsm</i> can be started both by TTY and by a <a href="../en/Display_manager.html" title="Display manager">display manager</a>.
 </p>
 <h4><span class="mw-headline" id="TTY">TTY</span></h4>
@@ -303,8 +343,30 @@ Type=Application</pre>
 <h3><span class="mw-headline" id="Session_termination">Session termination</span></h3>
 <p>If you want to terminate the current uwsm session, then you should use either <code>loginctl terminate-user ""</code> (terminates the entire user session) or <code>uwsm stop</code> (executes code after <code>uwsm start</code> or terminates user session, if it replaced the <a href="../en/Command-line_shell.html#Login_shell" class="mw-redirect" title="Login shell">login shell</a>).
 </p>
-<div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> Do not use a compositor's native exit mechanism or kill its process directly. This will yank the compositor from under all the clients and interfere with ordered unit deactivation sequence.</div>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> Do not use a compositor's native exit mechanism or kill its process directly. This will yank the compositor from under all the clients and interfere with ordered unit deactivation sequence.</div>
+<h2><span class="mw-headline" id="Tips_and_tricks">Tips and tricks</span></h2>
+<h3><span class="mw-headline" id="Applications_and_autostart">Applications and autostart</span></h3>
+<p>By default uwsm launches compositors through a custom systemd service in <code>session.slice</code>. Many Wayland compositors allow you to start other applications that would then be launched inside the compositor service, which would uselessly consume compositor resources or even interfere with notification sockets.
+</p>
+<p>To start applications as separate systemd scope units you can use <code>uwsm app</code>, which can launch both executables
+</p>
+<pre>uwsm app -- <i>/my/program/path</i>
+</pre>
+<p>and <a href="../en/Desktop_entries.html" title="Desktop entries">desktop entries</a>
+</p>
+<pre>uwsm app -- <i>myprogram</i>.desktop
+</pre>
+<p>By default uwsm puts launched scope units in <code>app-graphical.slice</code> slice. If you want to put them in <code>background-graphical.slice</code> or <code>session-graphical.slice</code>, then you should respectively use options <code>-s b</code>, <code>-s s</code>:
+</p>
+<pre>uwsm app -s b -- <i>background-app</i>.desktop
+</pre>
+<p>Instead of <code>uwsm app</code> (which run as a Python script) you can instead use <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/app2unit-git/">app2unit-git</a></span><sup><small>AUR</small></sup>, which is generally faster since it is a shell script. You can use it as a drop-in replacement of <code>uwsm app</code> by setting the <code>APP2UNIT_SLICES</code> environment variable as follows:
+</p>
+<pre>APP2UNIT_SLICES='a=app-graphical.slice b=background-graphical.slice s=session-graphical.slice'
+</pre>
+<h2><span class="mw-headline" id="See_also">See also</span></h2>
+<ul><li><span class="plainlinks archwiki-template-man" title="$ man 1 uwsm"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/uwsm.1">uwsm(1)</a></span></li></ul>
 </div>
 </div>
 					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
@@ -318,8 +380,8 @@ Type=Application</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Universal_Wayland_Session_Manager&amp;oldid=827693">https://wiki.archlinux.org/index.php?title=Universal_Wayland_Session_Manager&amp;oldid=827693</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 24 February 2025, at 11:56.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Universal_Wayland_Session_Manager&amp;oldid=830250">https://wiki.archlinux.org/index.php?title=Universal_Wayland_Session_Manager&amp;oldid=830250</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 31 March 2025, at 07:13.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

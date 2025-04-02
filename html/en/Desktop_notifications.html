@@ -293,7 +293,9 @@
 <p>In order to receive notifications sent via <a href="#Libnotify">libnotify</a>, a notification server is required.
 </p>
 <h3><span class="mw-headline" id="Built-in">Built-in</span></h3>
-<p><a href="../en/Cinnamon.html" title="Cinnamon">Cinnamon</a>, <a href="../en/Category:Deepin.html" class="mw-redirect" title="Deepin">Deepin</a>, <a href="../en/Enlightenment.html" title="Enlightenment">Enlightenment</a>, <a href="../en/GNOME.html" title="GNOME">GNOME</a>, <a href="../en/GNOME/Flashback.html" class="mw-redirect" title="GNOME Flashback">GNOME Flashback</a> and <a href="../en/KDE.html#Plasma" class="mw-redirect" title="KDE Plasma">KDE Plasma</a> use their own implementations to display notifications, and it cannot be replaced. Their notification servers are started automatically on login to receive notifications from applications via DBus.
+<p><a href="../en/Cinnamon.html" title="Cinnamon">Cinnamon</a>, <a href="../en/Category:Deepin.html" class="mw-redirect" title="Deepin">Deepin</a>, <a href="../en/Enlightenment.html" title="Enlightenment">Enlightenment</a>, <a href="../en/GNOME.html" title="GNOME">GNOME</a>, and <a href="../en/GNOME/Flashback.html" class="mw-redirect" title="GNOME Flashback">GNOME Flashback</a> use their own implementations to display notifications, and may not be able to be replaced since their notification servers are started automatically on login to receive notifications from applications via DBus.
+</p>
+<p>On <a href="../en/KDE.html#Plasma" class="mw-redirect" title="KDE Plasma">KDE Plasma</a> if you enter the configuration for the System Tray you can disable the built-in notification server under System Services by changing the drop-down next to Notifications to Disabled. You can then add your preferred notification server in the System Settings menu under System / Autostart by adding a new Autostart application. You will need to log out and back in to take effect.
 </p>
 <h3><span class="mw-headline" id="Standalone">Standalone</span></h3>
 <p>In other desktop environments, a notification server needs to be manually installed and launched using e.g. <a href="../en/XDG_Autostart.html" title="XDG Autostart">XDG Autostart</a>.
@@ -408,13 +410,13 @@ done</pre>
 <h3>
 <span id="Include_Buttons_or_listen_for_close.2Fon-click_of_the_notification"></span><span class="mw-headline" id="Include_Buttons_or_listen_for_close/on-click_of_the_notification">Include Buttons or listen for close/on-click of the notification</span>
 </h3>
-<p>With the <a rel="nofollow" class="external text" href="https://github.com/phuhl/notify-send.py">notify-send.py</a> script, actions can be used to display buttons or to listen for the default-action of the notification (usually, when the user clicks on it) and the close-action. When the <i>action-icons</i> hint is set to true and the notification daemon supports this, the buttons will display icons instead of text. The script prints the action identifier or "close" to the command line when the corresponding event has occured. To listen for the default action (on-click), one has to use the action-identfier "default".
+<p>With the <a rel="nofollow" class="external text" href="https://github.com/phuhl/notify-send.py">notify-send.py</a> script, actions can be used to display buttons or to listen for the default-action of the notification (usually, when the user clicks on it) and the close-action. When the <i>action-icons</i> hint is set to true and the notification daemon supports this, the buttons will display icons instead of text. The script prints the action identifier or "close" to the command line when the corresponding event has occured. To listen for the default action (on-click), one has to use the action-identifier "default".
 </p>
 <p>Example with icons on buttons:
 </p>
 <pre>notify-send.py "Buttons" "Do you like em?" --hint boolean:action-icons:true --action yes:face-cool no:face-sick</pre>
 <h3><span class="mw-headline" id="Multiple_notification_servers_with_D-Bus_services">Multiple notification servers with D-Bus services</span></h3>
-<p>As described in the section <a href="#Standalone">Standalone</a>, users can create a D-Bus service so that a notification server can be launched automatically. Some implementations already include the D-Bus service files. However, this causes a problem when multiple notification servers are installed and when some of them come with the service files. For example, installing both <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dunst">dunst</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mako">mako</a></span> without explicitly specifying the desired server, D-Bus then chooses one for the users, and the decision is out of users' control. To avoid the situation, you can override the service used by creating a <code>org.freedesktop.Notifications.service</code> (see <a href="#Standalone">#Standalone</a>) and pointing to the service you want to use, then restarting the session.
+<p>As described in the section <a href="#Standalone">Standalone</a>, users can create a D-Bus service so that a notification server can be launched automatically. Some implementations already include the D-Bus service files. However, this causes a problem when multiple notification servers are installed and when some of them come with the service files. For example, installing both <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dunst">dunst</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mako">mako</a></span> without explicitly specifying the desired server, D-Bus then chooses one for the users, and the decision is out of users' control. To avoid the situation, you can override the service used by creating an <code>org.freedesktop.Notifications.service</code> (see <a href="#Standalone">#Standalone</a>) and pointing to the service you want to use, then restarting the session.
 </p>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
 <h3><span class="mw-headline" id="Applications_hanging_for_exactly_one_minute">Applications hanging for exactly one minute</span></h3>
@@ -453,7 +455,6 @@ Jul 01 09:41:49 laptop dbus-daemon[866]: [session uid=1000 pid=866] Activated se
 <a href="../Special:Categories.html" title="Special:Categories">Categories</a>: <ul>
 <li><a href="../en/Category:X_server.html" title="Category:X server">X server</a></li>
 <li><a href="../en/Category:Notification.html" title="Category:Notification">Notification</a></li>
-<li><a href="../en/Category:Development.html" title="Category:Development">Development</a></li>
 <li><a href="../en/Category:Lists_of_software.html" title="Category:Lists of software">Lists of software</a></li>
 </ul>
 </div></div>
@@ -465,8 +466,8 @@ Jul 01 09:41:49 laptop dbus-daemon[866]: [session uid=1000 pid=866] Activated se
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Desktop_notifications&amp;oldid=825677">https://wiki.archlinux.org/index.php?title=Desktop_notifications&amp;oldid=825677</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 21 January 2025, at 18:23.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Desktop_notifications&amp;oldid=829357">https://wiki.archlinux.org/index.php?title=Desktop_notifications&amp;oldid=829357</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 17 March 2025, at 22:22.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

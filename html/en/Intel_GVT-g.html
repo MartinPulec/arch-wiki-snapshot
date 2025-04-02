@@ -55,27 +55,49 @@
 			</button>
 		
 		<ul id="toc-Prerequisite-sublist" class="vector-toc-list">
-			<li id="toc-libvirt_QEMU_hook" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#libvirt_QEMU_hook">
+			<li id="toc-With_mdevctl" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#With_mdevctl">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">1.1</span>
-					<span>libvirt QEMU hook</span>
+					<span>With mdevctl</span>
 				</div>
 			</a>
 			
-			<ul id="toc-libvirt_QEMU_hook-sublist" class="vector-toc-list">
+			<ul id="toc-With_mdevctl-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-systemd_service_at_boot" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#systemd_service_at_boot">
+		<li id="toc-Without_mdevctl" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Without_mdevctl">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">1.2</span>
-					<span>systemd service at boot</span>
+					<span>Without mdevctl</span>
 				</div>
 			</a>
 			
-			<ul id="toc-systemd_service_at_boot-sublist" class="vector-toc-list">
+			<ul id="toc-Without_mdevctl-sublist" class="vector-toc-list">
+				<li id="toc-Option_1:_libvirt_QEMU_hook" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Option_1:_libvirt_QEMU_hook">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">1.2.1</span>
+					<span>Option 1: libvirt QEMU hook</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Option_1:_libvirt_QEMU_hook-sublist" class="vector-toc-list">
 			</ul>
+		</li>
+		<li id="toc-Option_2:_systemd_service_at_boot" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Option_2:_systemd_service_at_boot">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">1.2.2</span>
+					<span>Option 2: systemd service at boot</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Option_2:_systemd_service_at_boot-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
 		</li>
 	</ul>
 	</li>
@@ -610,11 +632,36 @@
 <a href="../en/Kernel_module.html#Automatic_module_loading" title="Kernel module">Enable</a> kernel modules: <code>kvmgt</code>, <code>vfio-iommu-type1</code> and <code>mdev</code>.</li>
 <li>Set the i915 <a href="../en/Kernel_module.html#Setting_module_options" class="mw-redirect" title="Kernel module parameter">kernel module parameter</a> <code>enable_gvt=1</code> to enable GPU virtualization.</li>
 <li>Add <code>i915.enable_guc=0</code> to <a href="../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a>, see warning at <a href="../en/Intel_graphics.html#Enable_GuC_/_HuC_firmware_loading" title="Intel graphics">Intel graphics#Enable GuC / HuC firmware loading</a>.</li>
-<li>Find the PCI address of your GPU <code>$GVT_PCI</code> (e.g. <code>0000:00:02.0</code>) by running <code>lspci -D -nn</code>.</li>
-<li>Generate a virtual GPU GUID (<code>$GVT_GUID</code> in commands below) which you will use to create and assign the virtual GPU. A single virtual GPU can be assigned only to a single virtual machine - create as many GUIDs as you want virtual GPUs. (You can do so by running <code>uuidgen</code>.)</li>
+<li>(optional) for better performance in DMA-BUF (especially if used with <a rel="nofollow" class="external text" href="https://github.com/qemu/qemu/commit/67036ce24594cd04690e83a4cb005672cf2a9668">60 FPS Qemu patch</a>) disable framebuffer compression by adding <code>i915.enable_fbc=0</code> to <a href="../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a>
+</li>
 </ul>
 <p>After rebooting with the <code>i915.enable_gvt=1</code> flag, you should be able to create virtual GPUs.
 </p>
+<h3><span class="mw-headline" id="With_mdevctl">With mdevctl</span></h3>
+<p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/mdevctl/">mdevctl</a></span><sup><small>AUR</small></sup>.
+</p>
+<ul><li>You can list the types of virtual GPUs which can be created on your system like this:</li></ul>
+<pre>$ mdevctl types
+</pre>
+<p>The <a rel="nofollow" class="external text" href="https://github.com/intel/gvt-linux/wiki/GVTg_Setup_Guide#53-create-vgpu-kvmgt-only">lower-numbered types</a> are capable of higher resolutions, larger video memory allocations and will be able to use more GPU time slices.
+</p>
+<ul><li>Define a new virtual GPU and set it to auto-start (at boot), replacing type and parent (most likely the same as in the example) with one from the previous step:</li></ul>
+<pre># mdevctl define --auto --uuid $(uuidgen) --parent 0000:00:02.0 --type i915-GVTg_V4_1
+</pre>
+<ul><li>To get an overview of the defined devices:</li></ul>
+<pre>$ mdevctl list -d
+</pre>
+<ul><li>Finally start the device using UUID from the previous step:</li></ul>
+<pre># mdevctl start --uuid 8629ed0d-f6a9-458c-a54c-5650e39180e2
+</pre>
+<ul><li>You may need to restart libvirtd daemon to get the devices to show up.</li></ul>
+<h3><span class="mw-headline" id="Without_mdevctl">Without mdevctl</span></h3>
+<p>Use this section if for some reason you don't want to or cannot use the mdevctl instructions above.
+</p>
+<ul>
+<li>Find the PCI address of your GPU <code>$GVT_PCI</code> (e.g. <code>0000:00:02.0</code>) by running <code>lspci -D -nn</code>.</li>
+<li>Generate a virtual GPU GUID (<code>$GVT_GUID</code> in commands below) which you will use to create and assign the virtual GPU. A single virtual GPU can be assigned only to a single virtual machine - create as many GUIDs as you want virtual GPUs. (You can do so by running <code>uuidgen</code>.)</li>
+</ul>
 <p>You can list the types of virtual GPUs which can be created on your system like this:
 </p>
 <pre>$ ls /sys/devices/pci0000\:00/$GVT_PCI/mdev_supported_types
@@ -637,7 +684,9 @@
 </p>
 <pre># echo 1 &gt; /sys/devices/pci0000\:00/$GVT_PCI/$GVT_GUID/remove
 </pre>
-<h3><span class="mw-headline" id="libvirt_QEMU_hook">libvirt QEMU hook</span></h3>
+<p>Continue with one of the two options below based on your preference.
+</p>
+<h4><span class="mw-headline" id="Option_1:_libvirt_QEMU_hook">Option 1: libvirt QEMU hook</span></h4>
 <p>With libvirt, a <a rel="nofollow" class="external text" href="https://www.libvirt.org/hooks.html">libvirt QEMU hook</a> can be used to automatically create the virtual GPU when the machine is started, and to remove it when the machine is stopped. Replace the variables with the values you found above and the DOMAIN with the name of the machine.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/libvirt/hooks/qemu</pre>
@@ -664,7 +713,7 @@ fi
 </li>
 </ul>
 </div>
-<h3><span class="mw-headline" id="systemd_service_at_boot">systemd service at boot</span></h3>
+<h4><span class="mw-headline" id="Option_2:_systemd_service_at_boot">Option 2: systemd service at boot</span></h4>
 <p>Alternatively to a QEMU hook, you can let systemd create the virtual GPU at boot. This does not rely on libvirt and appears to have no GPU performance drawbacks on the host machine as long as the virtual GPU is not used by a virtual machine.
 </p>
 <p>Create a <a href="../en/Bash.html" title="Bash">bash</a> script and place the <i>echo</i> command to create the virtual GPU determined in <a href="#Prerequisite">Prerequisite</a> inside. Make it <a href="../en/Help:Reading.html#Make_executable" class="mw-redirect" title="Executable">executable</a>. Ensure that the script cannot be modified by unprivileged users as it will be run as root at boot.
@@ -737,15 +786,15 @@ User=root
 <h3>
 <span id="Using_DMA-BUF_with_UEFI.2FOVMF"></span><span class="mw-headline" id="Using_DMA-BUF_with_UEFI/OVMF">Using DMA-BUF with UEFI/OVMF</span>
 </h3>
-<p>As stated above, DMA-BUF display will not work with UEFI-based guests using (unmodified) OVMF because it will not create the necessary ACPI OpRegion exposed via QEMU's nonstandard fw_cfg interface. See <a rel="nofollow" class="external text" href="https://bugzilla.tianocore.org/show_bug.cgi?id=935">this OVMF bug</a><sup title="Last check status: SSL error">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2025-01-19 ⓘ]</sup> for details of this issue.
+<p>As stated above, DMA-BUF display will not work with UEFI-based guests using (unmodified) OVMF because it will not create the necessary ACPI OpRegion exposed via QEMU's nonstandard fw_cfg interface. See <a rel="nofollow" class="external text" href="https://bugzilla.tianocore.org/show_bug.cgi?id=935">this OVMF bug</a><sup title="Last check status: domain name not resolved">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2025-03-15 ⓘ]</sup> for details of this issue.
 </p>
 <p>According to <a rel="nofollow" class="external text" href="https://github.com/intel/gvt-linux/issues/23#issuecomment-468125999">this GitHub comment</a>, the OVMF bug report suggests several solutions to the problem. It is possible to:
 </p>
 <ul>
 <li>
-<a rel="nofollow" class="external text" href="https://bugzilla.tianocore.org/attachment.cgi?id=165">patch</a><sup title="Last check status: SSL error">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2025-01-19 ⓘ]</sup> OVMF (<a rel="nofollow" class="external text" href="https://bugzilla.tianocore.org/show_bug.cgi?id=935#c4">details</a><sup title="Last check status: SSL error">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2025-01-19 ⓘ]</sup>) to add an Intel-specific quirk (most straightforward but non-upstreamable solution);</li>
+<a rel="nofollow" class="external text" href="https://bugzilla.tianocore.org/attachment.cgi?id=165">patch</a><sup title="Last check status: domain name not resolved">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2025-03-15 ⓘ]</sup> OVMF (<a rel="nofollow" class="external text" href="https://bugzilla.tianocore.org/show_bug.cgi?id=935#c4">details</a><sup title="Last check status: domain name not resolved">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2025-03-15 ⓘ]</sup>) to add an Intel-specific quirk (most straightforward but non-upstreamable solution);</li>
 <li>
-<a rel="nofollow" class="external text" href="https://bugzilla.tianocore.org/attachment.cgi?id=168">patch</a><sup title="Last check status: SSL error">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2025-01-19 ⓘ]</sup> the host kernel (<a rel="nofollow" class="external text" href="https://bugzilla.tianocore.org/show_bug.cgi?id=935#c12">details</a><sup title="Last check status: SSL error">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2025-01-19 ⓘ]</sup>) to automatically provide an option ROM for the virtual GPU containing basically the same code but in option ROM format;</li>
+<a rel="nofollow" class="external text" href="https://bugzilla.tianocore.org/attachment.cgi?id=168">patch</a><sup title="Last check status: domain name not resolved">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2025-03-15 ⓘ]</sup> the host kernel (<a rel="nofollow" class="external text" href="https://bugzilla.tianocore.org/show_bug.cgi?id=935#c12">details</a><sup title="Last check status: domain name not resolved">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2025-03-15 ⓘ]</sup>) to automatically provide an option ROM for the virtual GPU containing basically the same code but in option ROM format;</li>
 <li>
 <a rel="nofollow" class="external text" href="http://120.25.59.132:3000/vbios_gvt_uefi.rom">extract the OpROM</a> from the kernel patch (<a rel="nofollow" class="external text" href="https://www.reddit.com/r/VFIO/comments/av736o/creating_a_clover_bios_nonuefi_install_for_qemu/ehdz6mf/">source</a>) and feed it to QEMU as an override.</li>
 </ul>
@@ -1036,8 +1085,8 @@ For example, for the "Coffee Lake" (CFL) platform support, see <a rel="nofollow"
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Intel_GVT-g&amp;oldid=825562">https://wiki.archlinux.org/index.php?title=Intel_GVT-g&amp;oldid=825562</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 19 January 2025, at 17:27.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Intel_GVT-g&amp;oldid=830234">https://wiki.archlinux.org/index.php?title=Intel_GVT-g&amp;oldid=830234</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 30 March 2025, at 22:39.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

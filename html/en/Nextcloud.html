@@ -967,9 +967,7 @@
 <p>The Nextcloud package complies with the <a href="../en/Web_application_package_guidelines.html" title="Web application package guidelines">web application package guidelines</a>. Among other things this mandates that the web application be run with a dedicated user - in this case <code>nextcloud</code>. This is one of the reasons why the application server comes into play here. For the very same reason it is not possible anymore to execute Nextcloud's PHP code directly in the Apache process by means of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=php-apache">php-apache</a></span>.
 </p>
 <h2><span class="mw-headline" id="Installation">Installation</span></h2>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> The package <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nextcloud">nextcloud</a></span> (by means of a dependency on meta package <i>php-interpreter</i>) offers the choice to build an installation of Nextcloud on top of either <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=php">php</a></span> or on top of package <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=php-legacy">php-legacy</a></span>. It is highly recommended to choose <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=php-legacy">php-legacy</a></span> to be on the safe side (and for your peace of mind). See <a href="#Migrating_to_php-legacy">Migrating to php-legacy</a> for details. For the remainder of this article we assume an installation using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=php-legacy">php-legacy</a></span>.</div>
-<p>Install the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nextcloud">nextcloud</a></span> package. When asked choose <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=php-legacy">php-legacy</a></span> as your PHP version. This will pull in quite a few dependent packages. Most of the <a rel="nofollow" class="external text" href="https://docs.nextcloud.com/server/stable/admin_manual/installation/php_configuration.html">required PHP extensions</a> will be taken care of this way. Additionally, you have to install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=php-legacy-gd">php-legacy-gd</a></span> (preferrably as dependent package with pacman option <code>--asdeps</code>).
+<p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nextcloud">nextcloud</a></span> package. This will pull in quite a few dependent packages. Most of the <a rel="nofollow" class="external text" href="https://docs.nextcloud.com/server/stable/admin_manual/installation/php_configuration.html">required PHP extensions</a> will be taken care of this way.
 </p>
 <p>It is recommended to also install the packages
 </p>
@@ -979,7 +977,7 @@
 <li>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=php-legacy-imagick">php-legacy-imagick</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=librsvg">librsvg</a></span> for preview generation</li>
 </ul>
-<p>(also with  <code>--asdeps</code>). Other optional dependencies will be covered later depending on your concrete setup (e.g. what database you choose).
+<p>(preferrably as <a href="../en/Pacman.html#Installation_reason" title="Pacman">dependent package</a>). Other optional dependencies will be covered later depending on your concrete setup (e.g. what database you choose).
 </p>
 <p>Mind that some modules (namely <i>bcmath</i>, <i>exif</i>, <i>gmp</i>, <i>intl</i> and <i>sysvsem</i>) come with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=php-legacy">php-legacy</a></span>. So no explicit installation is required for those.
 </p>
@@ -1022,7 +1020,7 @@ extension=imagick</pre>
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/webapps/nextcloud/php.ini</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">open_basedir=/var/lib/nextcloud:/tmp:/usr/share/webapps/nextcloud:/etc/webapps/nextcloud:/dev/urandom:/usr/lib/php-legacy/modules:/var/log/nextcloud:/proc/meminfo:/proc/cpuinfo</pre>
-<p>Depending on what additional extensions you configure you may need to extend this list, e.g. <code>/run/redis</code> in case you opt for <a href="../en/Redis.html" title="Redis">Redis</a>.
+<p>Depending on what additional extensions you configure you may need to extend this list, e.g. <code>/run/redis</code> in case you opt for <a href="../en/Valkey.html" class="mw-redirect" title="Redis">Redis</a>.
 </p>
 <p>It is not necessary to configure <i>opcache</i> here as this <code>php.ini</code> is only used by the <code>occ</code> command line tool and the background job, i.e. by short running PHP processes.
 </p>
@@ -1622,9 +1620,14 @@ apc.enable_cli = 1</pre>
 <p>When the issue has been resolved the <code>path</code> can be changed back to <code>/var/lib/nextcloud/apps</code>.
 </p>
 <h3><span class="mw-headline" id="Migrating_to_php-legacy">Migrating to php-legacy</span></h3>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-cut.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is being considered for removal.</b></p>
+<div>
+<b>Reason:</b> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nextcloud">nextcloud</a></span> now requires <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=php-legacy">php-legacy</a></span> and can no longer be used with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=php">php</a></span>. <a rel="nofollow" class="external autonumber" href="https://gitlab.archlinux.org/archlinux/packaging/packages/nextcloud/-/commit/8868e35a64444d3d8dedaed1e4e23f1b1e7cc241">[7]</a> (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Nextcloud.html">Talk:Nextcloud</a>)</div>
+</div>
 <p>In the past it had happened several times that the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=php">php</a></span> package was updated to the latest PHP version in a timely manner (in line with Arch Linux' rolling release philosophy) but Nextcloud not being compatible with this brand new version - breaking existing installations and causing lots of efforts for maintainers and users of package <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nextcloud">nextcloud</a></span>. When package <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=php">php</a></span> switched from version 8.1 to version 8.2 this was about to happen once again.
 </p>
-<p>To avoid this frequent hassle a new <a rel="nofollow" class="external text" href="https://archlinux.org/packages/?q=php-legacy">set of php-legacy</a> packages has been <a rel="nofollow" class="external text" href="https://archlinux.org/news/php-82-update-and-introduction-of-legacy-branch/">introduced</a> by that time. These will follow the oldest but still <a rel="nofollow" class="external text" href="https://www.php.net/supported-versions.php">actively supported PHP</a> branch. Package <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nextcloud">nextcloud</a></span> has been modified to depend on meta package <i>php-interpreter</i> which is provided by <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=php">php</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=php-legacy">php-legacy</a></span>. This way users of package <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nextcloud">nextcloud</a></span> have the choice to build their Nextcloud installation either on top of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=php">php</a></span> or on top of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=php-legacy">php-legacy</a></span>.
+<p>To avoid this frequent hassle a new <a rel="nofollow" class="external text" href="https://archlinux.org/packages/?q=php-legacy">set of php-legacy</a> packages has been <a rel="nofollow" class="external text" href="https://archlinux.org/news/php-82-update-and-introduction-of-legacy-branch/">introduced</a> by that time. These will follow the oldest but still <a rel="nofollow" class="external text" href="https://www.php.net/supported-versions.php">actively supported PHP</a> branch.
 </p>
 <p>It is highly recommended to go for <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=php-legacy">php-legacy</a></span>. With this only slightly aged version of PHP it will be very unlikely that a system upgrade renders an existing Nextcloud installation unusable.
 </p>
@@ -1820,7 +1823,7 @@ drwx------  2 nextcloud nextcloud 4096 17. Apr 01:04 sessions/
 <p>If you get the following message in your administration settings:
 </p>
 <dl><dd>You are accessing your instance over a secure connection, however your instance is generating insecure URLs. This most likely means that you are behind a reverse proxy and the overwrite config variables are not set correctly. Please read the documentation page about this.</dd></dl>
-<p>Add the following in your configuration file: <a rel="nofollow" class="external autonumber" href="https://help.nextcloud.com/t/instance-over-a-secure-connection-however-your-instance-is-generating-insecure-urls/134108">[7]</a>
+<p>Add the following in your configuration file: <a rel="nofollow" class="external autonumber" href="https://help.nextcloud.com/t/instance-over-a-secure-connection-however-your-instance-is-generating-insecure-urls/134108">[8]</a>
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/webapps/nextcloud/config/config.php</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">'trusted_proxies' =&gt; ['192.168.1.0'],
@@ -1857,12 +1860,16 @@ mysql&gt; exit;
 </ul>
 </div>
 </div>
-					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
+					<div id="catlinks" class="catlinks" data-mw="interface">
+<div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Categories</a>: <ul>
 <li><a href="../en/Category:File_sharing.html" title="Category:File sharing">File sharing</a></li>
 <li><a href="../en/Category:Web_applications.html" title="Category:Web applications">Web applications</a></li>
 </ul>
-</div></div>
+</div>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Sections_flagged_with_Template:Remove.html" title="Category:Sections flagged with Template:Remove">Sections flagged with Template:Remove</a></li></ul>
+</div>
+</div>
 				</div>
 			</main>
 			
@@ -1871,8 +1878,8 @@ mysql&gt; exit;
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Nextcloud&amp;oldid=825882">https://wiki.archlinux.org/index.php?title=Nextcloud&amp;oldid=825882</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 24 January 2025, at 17:50.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Nextcloud&amp;oldid=829658">https://wiki.archlinux.org/index.php?title=Nextcloud&amp;oldid=829658</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 23 March 2025, at 10:13.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -331,7 +331,7 @@
 <p>From <a href="https://en.wikipedia.org/wiki/File_system" class="extiw" title="wikipedia:File system">Wikipedia</a>:
 </p>
 <dl><dd>In computing, a file system or filesystem controls how data is stored and retrieved. Without a file system, information placed in a storage medium would be one large body of data with no way to tell where one piece of information stops and the next begins. By separating the data into pieces and giving each piece a name, the information is easily isolated and identified. Taking its name from the way paper-based information systems are named, each group of data is called a "file". The structure and logic rules used to manage the groups of information and their names is called a "file system".</dd></dl>
-<p>Individual drive partitions can be set up using one of the many different available file systems. Each has its own advantages, disadvantages, and unique idiosyncrasies. A brief overview of supported filesystems follows; the links are to Wikipedia pages that provide much more information.
+<p>Individual drive partitions can be set up using one of the many different available file systems. Each has its own advantages, disadvantages, and unique idiosyncrasies. A brief overview of supported file systems follows; the links are to Wikipedia pages that provide much more information.
 </p>
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Types_of_file_systems">Types of file systems</span></h2>
@@ -457,7 +457,7 @@
 <td>
 <a rel="nofollow" class="external text" href="https://docs.kernel.org/filesystems/f2fs.html">f2fs.html</a>
 </td>
-<td>Flash-based devices
+<td>Flash-based devices. Cannot be shrunk.
 </td>
 </tr>
 <tr>
@@ -634,7 +634,7 @@
 <td>
 <a rel="nofollow" class="external text" href="https://docs.kernel.org/filesystems/udf.html">udf.html</a>
 </td>
-<td>
+<td>ISO/IEC 13346 file system for disc images and DVDs/Blu-rays.
 </td>
 </tr>
 <tr>
@@ -728,15 +728,15 @@
 </tbody>
 </table>
 <h3><span class="mw-headline" id="Journaling">Journaling</span></h3>
-<p>All the above file systems with the exception of exFAT, ext2, FAT16/32, Reiser4 (optional), Bcachefs, Btrfs, and ZFS, use <a href="https://en.wikipedia.org/wiki/Journaling_file_system" class="extiw" title="wikipedia:Journaling file system">journaling</a>. Journaling provides fault-resilience by logging changes before they are committed to the file system. In the event of a system crash or power failure, such file systems are faster to bring back online and less likely to become corrupted. The logging takes place in a dedicated area of the file system.
+<p>The ext3/4, HFS+, JFS, NTFS, ReiserFS, and XFS file systems use <a href="https://en.wikipedia.org/wiki/Journaling_file_system" class="extiw" title="wikipedia:Journaling file system">journaling</a>. Journaling provides fault-resilience by logging changes before they are committed to the file system. In the event of a system crash or power failure, such file systems are faster to bring back online and less likely to become corrupted. The logging takes place in a dedicated area of the file system.
 </p>
-<p>Not all journaling techniques are the same. Ext3 and ext4 offer data-mode journaling, which logs both data and meta-data, as well as possibility to journal only meta-data changes. Data-mode journaling comes with a speed penalty and is not enabled by default. In the same vein, Reiser4 offers so-called <a rel="nofollow" class="external text" href="https://reiser4.wiki.kernel.org/index.php/Reiser4_transaction_models">"transaction models"</a> which not only change the features it provides, but in its journaling mode. It uses a different journaling techniques: a special model called <a rel="nofollow" class="external text" href="https://reiser4.wiki.kernel.org/index.php/V4#Wandering_Logs">wandering logs</a> which eliminates the need to write to the disk twice, <b>write-anywhere</b>—a pure copy-on-write approach (mostly equivalent to btrfs' default but with a fundamentally different "tree" design) and a combined approach called <b>hybrid</b> which heuristically alternates between the two former.
+<p>ext3/4 offer data-mode journaling, which can optionally log data in addition to the metadata. Data-mode journaling comes with a speed penalty, because it does two write operations: first to the journal and then to the disk. Therefore, data-mode journaling is not enabled by default. The trade-off between system speed and data safety should be considered when choosing the file system type and features.
 </p>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> Reiser4 does provide an almost equivalent to ext4's default journaling behavior (meta-data only) with the use of the <b>node41</b> plugin, which also features meta-data and inline checksums, optionally combined with the wandering logs behaviour it provides depending on what transaction model is chosen at mount time.</div>
-<p>The other file systems provide ordered-mode journaling, which only logs meta-data. While all journaling will return a file system to a valid state after a crash, data-mode journaling offers the greatest protection against corruption and data loss. There is a compromise in system performance, however, because data-mode journaling does two write operations: first to the journal and then to the disk (which Reiser4 avoids with its "wandering logs" feature). The trade-off between system speed and data safety should be considered when choosing the file system type. Reiser4 is the only file system that by design operates on full atomicity and also provides checksums for both meta-data and inline data (operations entirely occur, or they entirely do not and does not corrupt or destroy data due to operations half-occurring) and by design is therefore much less prone to data loss than other file systems like <a href="../en/Btrfs.html" title="Btrfs">Btrfs</a>.
+<p>In the same vein, Reiser4 offers configurable <a rel="nofollow" class="external text" href="https://reiser4.wiki.kernel.org/index.php/Reiser4_transaction_models">"transaction models"</a>: a special model called <a rel="nofollow" class="external text" href="https://reiser4.wiki.kernel.org/index.php/V4#Wandering_Logs">wandering logs</a>, which eliminates the need to write to the disk twice; <b>write-anywhere</b>, a pure copy-on-write approach; and a combined approach called <b>hybrid</b> which heuristically alternates between the two.
 </p>
-<p>File systems based on copy-on-write (also known as write-anywhere), such as Reiser4, Btrfs, Bcachefs and ZFS, have no need to use traditional journal to protect metadata, because they are never updated in-place. Although Btrfs still has a journal-like log tree, it is only used to speed-up fdatasync/fsync.
+<p>File systems based on copy-on-write (also known as write-anywhere), such as Reiser4, Btrfs, Bcachefs and ZFS, by design operate on full atomicity and also provide checksums for both metadata and inline data (operations entirely occur, or they entirely do not, and in properly functioning hardware data does not corrupt due to operations half-occurring). Therefore, these file systems are by design much less prone to data loss than other file systems and have no need to use traditional journal to protect metadata, because they are never updated in-place. Although Btrfs still has a journal-like log tree, it is only used to speed-up fdatasync/fsync.
+</p>
+<p>FAT, exFAT, ext2, and HFS provide neither journaling nor atomicity, They are for temporary or legacy use and not recommended for use when reliable storage is needed.
 </p>
 <h3><span class="mw-headline" id="FUSE-based_file_systems">FUSE-based file systems</span></h3>
 <p>See <a href="../en/FUSE.html" title="FUSE">FUSE</a>.
@@ -827,7 +827,7 @@
 <ul><li>
 <b><a href="https://en.wikipedia.org/wiki/Tahoe-LAFS" class="extiw" title="wikipedia:Tahoe-LAFS">Tahoe-LAFS</a></b> — Tahoe Least-Authority File Store is a free and open, secure, decentralized, fault-tolerant, peer-to-peer distributed data store and distributed file system.</li></ul>
 <dl><dd>
-<a rel="nofollow" class="external free" href="https://tahoe-lafs.org/">https://tahoe-lafs.org/</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/tahoe-lafs/">tahoe-lafs</a></span><sup><small>AUR</small></sup>
+<a rel="nofollow" class="external free" href="https://tahoe-lafs.org/">https://tahoe-lafs.org/</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/tahoe-lafs/">tahoe-lafs</a></span><sup><small>AUR</small></sup><sup>[<a href="../en/Help:Procedures.html#Fix_broken_package_links" title="Help:Procedures">broken link</a>: package not found]</sup>
 </dd></dl>
 <h3><span class="mw-headline" id="Shared-disk_file_system">Shared-disk file system</span></h3>
 <ul><li>
@@ -977,7 +977,10 @@ The options can be changed, either by:
 <li><a href="../en/Category:Lists.html" title="Category:Lists">Lists</a></li>
 </ul>
 </div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_with_missing_package_links.html" title="Category:Pages with missing package links">Pages with missing package links</a></li></ul>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
+<li><a href="../en/Category:Pages_with_missing_package_links.html" title="Category:Pages with missing package links">Pages with missing package links</a></li>
+<li><a href="../en/Category:Pages_with_broken_package_links.html" title="Category:Pages with broken package links">Pages with broken package links</a></li>
+</ul>
 </div>
 </div>
 				</div>
@@ -988,8 +991,8 @@ The options can be changed, either by:
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=File_systems&amp;oldid=827337">https://wiki.archlinux.org/index.php?title=File_systems&amp;oldid=827337</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 18 February 2025, at 17:16.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=File_systems&amp;oldid=828985">https://wiki.archlinux.org/index.php?title=File_systems&amp;oldid=828985</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 15 March 2025, at 15:22.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

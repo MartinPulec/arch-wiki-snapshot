@@ -327,15 +327,15 @@
 			<ul id="toc-Boot_parameter-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Manual_(default)" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Manual_(default)">
+		<li id="toc-Manual" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Manual">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">5.3.2</span>
-					<span>Manual (default)</span>
+					<span>Manual</span>
 				</div>
 			</a>
 			
-			<ul id="toc-Manual_(default)-sublist" class="vector-toc-list">
+			<ul id="toc-Manual-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 		<li id="toc-Assisted" class="vector-toc-list-item vector-toc-level-3">
@@ -755,7 +755,7 @@
 <p>If the <code>amdgpu</code> driver is not in use, follow instructions in the next section.
 </p>
 <h4><span class="mw-headline" id="Load_amdgpu_driver">Load amdgpu driver</span></h4>
-<p>The <a href="../en/Kernel_module.html#Setting_module_options" class="mw-redirect" title="Module parameter">module parameters</a> of both <code>amdgpu</code> and <code>radeon</code> modules are <code>cik_support=</code> and <code>si_support=</code>. 
+<p>The <a href="../en/Kernel_module.html#Setting_module_options" class="mw-redirect" title="Module parameter">module parameters</a> of both <code>amdgpu</code> and <code>radeon</code> modules are <code>cik_support=</code> and <code>si_support=</code>.
 </p>
 <p>They need to be set as kernel parameters or in a <i>modprobe</i> configuration file, and depend on the cards GCN version.
 </p>
@@ -827,7 +827,7 @@ EndSection</pre>
 </p>
 <pre>Option "TearFree" "true"
 </pre>
-<p>You can also enable TearFree temporarily with <a href="../en/Xrandr.html" title="Xrandr">xrandr</a>: 
+<p>You can also enable TearFree temporarily with <a href="../en/Xrandr.html" title="Xrandr">xrandr</a>:
 </p>
 <pre>$ xrandr --output <i>output</i> --set TearFree on
 </pre>
@@ -920,6 +920,11 @@ EndSection</pre>
 <a rel="nofollow" class="external free" href="https://github.com/Eraden/amdgpud">https://github.com/Eraden/amdgpud</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/amdguid-wayland-bin/">amdguid-wayland-bin</a></span><sup><small>AUR</small></sup>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/amdguid-glow-bin/">amdguid-glow-bin</a></span><sup><small>AUR</small></sup>
 </dd></dl>
 <ul><li>
+<b>Radeon Profile</b> — A Qt5 tool to read and change current clocks of AMD Radeon cards.</li></ul>
+<dl><dd>
+<a rel="nofollow" class="external free" href="https://github.com/emerge-e-world/radeon-profile">https://github.com/emerge-e-world/radeon-profile</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/radeon-profile-git/">radeon-profile-git</a></span><sup><small>AUR</small></sup>
+</dd></dl>
+<ul><li>
 <b>TuxClocker</b> — A Qt5 monitoring and overclocking tool.</li></ul>
 <dl><dd>
 <a rel="nofollow" class="external free" href="https://github.com/Lurkki14/tuxclocker">https://github.com/Lurkki14/tuxclocker</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/tuxclocker/">tuxclocker</a></span><sup><small>AUR</small></sup>
@@ -967,12 +972,12 @@ EndSection</pre>
 </p>
 <pre>$ printf 'amdgpu.ppfeaturemask=0x%x\n' "$(($(cat /sys/module/amdgpu/parameters/ppfeaturemask) | 0x4000))"
 </pre>
-<h4>
-<span id="Manual_.28default.29"></span><span class="mw-headline" id="Manual_(default)">Manual (default)</span>
-</h4>
+<h4><span class="mw-headline" id="Manual">Manual</span></h4>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> In sysfs, paths like <code>/sys/class/drm/...</code> are just symlinks and may change between reboots. Persistent locations can be found in <code>/sys/devices/</code>, e.g. <code>/sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/</code>. Adjust the commands accordingly for a reliable result.</div>
 <p>For in-depth information on all possible options, read the kernel documentation for <a rel="nofollow" class="external text" href="https://docs.kernel.org/gpu/amdgpu/thermal.html#pp-od-clk-voltage">amdgpu thermal control</a>.
+</p>
+<p>To enable manual overclocking, select the <code>manual</code> performance level as described in <a href="#Performance_levels">#Performance levels</a>.
 </p>
 <p>To set the GPU clock for the maximum P-state 7 on e.g. a Polaris GPU to 1209MHz and 900mV voltage, run:
 </p>
@@ -984,13 +989,13 @@ EndSection</pre>
 </pre>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> Double check the entered values, as mistakes might instantly cause fatal hardware damage!</div>
-<p>To apply, run: 
+<p>To apply, run:
 </p>
 <pre># echo "c" &gt; /sys/class/drm/card0/device/pp_od_clk_voltage
 </pre>
 <p>To check if it worked out, read out clocks and voltage under 3D load:
 </p>
-<pre># watch -n 0.5  cat /sys/kernel/debug/dri/0/amdgpu_pm_info
+<pre># watch -n 0.5 cat /sys/kernel/debug/dri/0/amdgpu_pm_info
 </pre>
 <p>You can reset to the default values using:
 </p>
@@ -1000,9 +1005,9 @@ EndSection</pre>
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ cat /sys/class/drm/card0/device/pp_dpm_mclk</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">0: 96Mhz *
-1: 456Mhz 
-2: 675Mhz 
-3: 1000Mhz 
+1: 456Mhz
+2: 675Mhz
+3: 1000Mhz
 </pre>
 <pre># echo "manual" &gt; /sys/class/drm/card0/device/power_dpm_force_performance_level
 # echo "3" &gt;  /sys/class/drm/card0/device/pp_dpm_mclk
@@ -1011,7 +1016,7 @@ EndSection</pre>
 </p>
 <pre># echo "5 6 7" &gt; /sys/class/drm/card0/device/pp_dpm_sclk
 </pre>
-<p>To set the allowed maximum power consumption of the GPU to e.g. 50 Watts, run: 
+<p>To set the allowed maximum power consumption of the GPU to e.g. 50 Watts, run:
 </p>
 <pre># echo <b>50</b>000000 &gt; /sys/class/drm/card0/device/hwmon/hwmon0/power1_cap
 </pre>
@@ -1026,6 +1031,11 @@ EndSection</pre>
 <dl><dd>
 <a rel="nofollow" class="external free" href="https://github.com/sibradzic/amdgpu-clocks">https://github.com/sibradzic/amdgpu-clocks</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/amdgpu-clocks-git/">amdgpu-clocks-git</a></span><sup><small>AUR</small></sup>
 </dd></dl>
+<ul><li>
+<b>ruby-amdgpu_fan</b> — A CLI for interacting with the amdgpu Linux driver written in Ruby.</li></ul>
+<dl><dd>
+<a rel="nofollow" class="external free" href="https://github.com/HarlemSquirrel/amdgpu-fan-rb">https://github.com/HarlemSquirrel/amdgpu-fan-rb</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/ruby-amdgpu_fan/">ruby-amdgpu_fan</a></span><sup><small>AUR</small></sup>
+</dd></dl>
 <h5><span class="mw-headline" id="GUI_tools">GUI tools</span></h5>
 <ul><li>
 <b>TuxClocker</b> — A Qt5 monitoring and overclocking tool.</li></ul>
@@ -1038,13 +1048,16 @@ EndSection</pre>
 <a rel="nofollow" class="external free" href="https://gitlab.com/corectrl/corectrl">https://gitlab.com/corectrl/corectrl</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=corectrl">corectrl</a></span>
 </dd></dl>
 <ul><li>
-<b>LACT</b> — A GTK tool to view information and control your AMD GPU.</li></ul>
+<b>LACT</b> — A GTK tool to view information and control your AMD GPU. Conflicts with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=power-profiles-daemon">power-profiles-daemon</a></span>; disable <code>amdgpu_dpm</code> in the latter to avoid the conflict. <a rel="nofollow" class="external autonumber" href="https://github.com/ilya-zlobintsev/LACT?tabreadme-ov-file#power-profiles-daemon-note">[1]</a>
+</li></ul>
 <dl><dd>
 <a rel="nofollow" class="external free" href="https://github.com/ilya-zlobintsev/LACT">https://github.com/ilya-zlobintsev/LACT</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lact">lact</a></span>
 </dd></dl>
-<div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> LACT daemon conflicts with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=power-profiles-daemon">power-profiles-daemon</a></span>. You can disable <code>amdgpu_dpm</code> in the latter to avoid the conflict. <a rel="nofollow" class="external text" href="https://github.com/ilya-zlobintsev/LACT?tabreadme-ov-file#power-profiles-daemon-note">(1)</a>
-</div>
+<ul><li>
+<b>Radeon Profile</b> — A Qt5 tool to read and change current clocks of AMD Radeon cards.</li></ul>
+<dl><dd>
+<a rel="nofollow" class="external free" href="https://github.com/emerge-e-world/radeon-profile">https://github.com/emerge-e-world/radeon-profile</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/radeon-profile-git/">radeon-profile-git</a></span><sup><small>AUR</small></sup>
+</dd></dl>
 <h4><span class="mw-headline" id="Startup_on_boot">Startup on boot</span></h4>
 <p>One way is to use systemd units, if you want your settings to apply automatically upon boot, consider looking at this <a rel="nofollow" class="external text" href="https://www.reddit.com/r/Amd/comments/agwroj/how_to_overclock_your_amd_gpu_on_linux/">Reddit thread</a> to configure and apply your settings on boot.
 </p>
@@ -1107,7 +1120,6 @@ EndSection</pre>
 <p>To avoid the usage of the scaler which is built in the display, and use the GPU own scaler instead, when not using the native resolution of the monitor, execute:
 </p>
 <pre>$ xrandr --output <i>output</i> --set "scaling mode" <i>scaling_mode</i>
-
 </pre>
 <p>Possible values for <code>"scaling mode"</code> are: <code>None</code>, <code>Full</code>, <code>Center</code>, <code>Full aspect</code>.
 </p>
@@ -1138,19 +1150,9 @@ EndSection</pre>
 EndSection
 </pre>
 <h3><span class="mw-headline" id="Screen_artifacts_and_frequency_problem">Screen artifacts and frequency problem</span></h3>
-<p><a href="../en/ATI.html#Dynamic_power_management" title="ATI">Dynamic power management</a> may cause screen artifacts to appear when displaying to monitors at higher frequencies (anything above 60Hz) due to issues in the way GPU clock speeds are managed<a rel="nofollow" class="external autonumber" href="https://bugs.freedesktop.org/show_bug.cgi?id=96868">[1]</a><a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/drm/amd/-/issues/234">[2]</a>.
+<p><a href="../en/ATI.html#Dynamic_power_management" title="ATI">Dynamic power management</a> may cause screen artifacts to appear when displaying to monitors at higher frequencies (anything above 60Hz) due to issues in the way GPU clock speeds are managed<a rel="nofollow" class="external autonumber" href="https://bugs.freedesktop.org/show_bug.cgi?id=96868">[2]</a><a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/drm/amd/-/issues/234">[3]</a>.
 </p>
-<p>A workaround <a rel="nofollow" class="external autonumber" href="https://bugs.freedesktop.org/show_bug.cgi?id=96868#c13">[3]</a> is saving <code>high</code> or <code>low</code> in <code>/sys/class/drm/card0/device/power_dpm_force_performance_level</code>.
-</p>
-<p>To make it persistent, you may create a <a href="../en/Udev.html" title="Udev">udev</a> rule:
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/udev/rules.d/30-amdgpu-pm.rules</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">KERNEL=="card0", SUBSYSTEM=="drm", DRIVERS=="amdgpu", ATTR{device/power_dpm_force_performance_level}="high"</pre>
-<p>To determine the <code>KERNEL</code> name execute: 
-</p>
-<pre>$ find /sys/class/drm/ -regextype awk -regex '.+/card[0-9]+' -printf '%f\n'
-</pre>
-<p>There is also a GUI solution <a rel="nofollow" class="external autonumber" href="https://github.com/marazmista/radeon-profile">[4]</a> where you can manage the "power_dpm" with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/radeon-profile-git/">radeon-profile-git</a></span><sup><small>AUR</small></sup> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/radeon-profile-daemon-git/">radeon-profile-daemon-git</a></span><sup><small>AUR</small></sup>.
+<p>A workaround <a rel="nofollow" class="external autonumber" href="https://bugs.freedesktop.org/show_bug.cgi?id=96868#c13">[4]</a> is to set the <code>high</code> or <code>low</code> performance level as described in <a href="#Performance_levels">#Performance levels</a>.
 </p>
 <p>Changing the kernel version can also help eliminate this issue. For example, it appears to be fixed in 6.12.9.
 </p>
@@ -1193,7 +1195,7 @@ EndSection
 <p>If you encounter issues where the kernel driver is loaded, but the discrete graphics card still is not available for games or becomes disabled during use (similar to <a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/drm/amd/-/issues/1820">[9]</a>), you can workaround the issue by setting the <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a> <code>amdgpu.runpm=0</code>, which prevents the dGPU from being powered down dynamically at runtime.
 </p>
 <h3><span class="mw-headline" id="kfd:_amdgpu:_TOPAZ_not_supported_in_kfd">kfd: amdgpu: TOPAZ not supported in kfd</span></h3>
-<p>In the system journal or the kernel message keyring a critical level error message 
+<p>In the system journal or the kernel message keyring a critical level error message
 </p>
 <pre>kfd: amdgpu: TOPAZ not supported in kfd
 </pre>
@@ -1202,7 +1204,7 @@ EndSection
 <h3>
 <span id="High_idle_power_draw_due_to_MCLK_locked_at_MAX_.281000MHz.29.2C_or_MIN_.2896MHz.29_causing_low_game_performance_.28on_6.4_kernel.29"></span><span class="mw-headline" id="High_idle_power_draw_due_to_MCLK_locked_at_MAX_(1000MHz),_or_MIN_(96MHz)_causing_low_game_performance_(on_6.4_kernel)">High idle power draw due to MCLK locked at MAX (1000MHz), or MIN (96MHz) causing low game performance (on 6.4 kernel)</span>
 </h3>
-<p>On high resolutions and refresh rates, the MCLK (vram / memory clock) may be locked at the highest clock rate (1000MHz) <a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/drm/amd/-/issues/1403">[12]</a> <a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/drm/amd/-/issues/2646">[13]</a> causing higher GPU idle power draw. On Linux kernel 6.4.x, MCLK clocks at the lowest (96MHz), causing low performance in games <a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/drm/amd/-/issues/2657">[14]</a> <a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/drm/amd/-/issues/2611">[15]</a>. 
+<p>On high resolutions and refresh rates, the MCLK (vram / memory clock) may be locked at the highest clock rate (1000MHz) <a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/drm/amd/-/issues/1403">[12]</a> <a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/drm/amd/-/issues/2646">[13]</a> causing higher GPU idle power draw. On Linux kernel 6.4.x, MCLK clocks at the lowest (96MHz), causing low performance in games <a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/drm/amd/-/issues/2657">[14]</a> <a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/drm/amd/-/issues/2611">[15]</a>.
 </p>
 <p>This is likely due to a monitor not using Coordinated Video Timings (CVT) with a low V-Blank value for the affected resolutions and refresh rates, see <a rel="nofollow" class="external text" href="https://gist.github.com/Rend0e/3bddac4285dc1f4fbe303f326f36f6cc">this gist</a> for a workaround.
 </p>
@@ -1280,8 +1282,8 @@ blacklist hid_sensor_magn_3d
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=AMDGPU&amp;oldid=828007">https://wiki.archlinux.org/index.php?title=AMDGPU&amp;oldid=828007</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 1 March 2025, at 08:12.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=AMDGPU&amp;oldid=830296">https://wiki.archlinux.org/index.php?title=AMDGPU&amp;oldid=830296</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 1 April 2025, at 10:46.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

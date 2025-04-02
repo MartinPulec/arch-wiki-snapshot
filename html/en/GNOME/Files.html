@@ -334,6 +334,17 @@
 			<ul id="toc-Run_as_a_Program_doesn't_work_without_gnome-console-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Open_directory_in_an_arbitrary_terminal" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Open_directory_in_an_arbitrary_terminal">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">4.7</span>
+					<span>Open directory in an arbitrary terminal</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Open_directory_in_an_arbitrary_terminal-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 </ul>
@@ -724,6 +735,33 @@ wezterm -e $@
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=gnome-console">gnome-console</a></span> will keep window open with output until manually closed once the child program finishes. Different terminal emulators (like wezterm) will close immediately after the program that is being run exits. Use something like <code>read -n 1 -s -r -p "Press any key to continue"</code> at the end of above script to pause it until any button is pressed.</div>
+<h3><span class="mw-headline" id="Open_directory_in_an_arbitrary_terminal">Open directory in an arbitrary terminal</span></h3>
+<p>It is possible to open a directory in a terminal emulator with "Open with..." right click menu entry. But the XDG desktop entry of the terminal is expected to contain appropriate <code>Exec</code> and <code>MimeType</code> values.
+</p>
+<p>Following example shows how to create additional desktop entry for Alacritty terminal emulator which will be recognized by "Open with...".
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.local/share/applications/alacritty-directory.desktop</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Desktop Entry]
+Type=Application
+
+# Flag `working-directory` takes argument
+Exec=alacritty --working-directory %f
+# MimeType contains special type `inode/directory;`
+MimeType=inode/directory;
+
+Icon=Alacritty
+Terminal=false
+Categories=System;TerminalEmulator;
+Name=Open in Alacritty
+GenericName=Terminal
+StartupNotify=true
+StartupWMClass=Alacritty</pre>
+<p>Run <code>update-desktop-database ~/.local/share/applications/</code> to apply changes.
+</p>
+<p>If a terminal app became default file manager, it can be fixed with command <code>xdg-mime default org.gnome.Nautilus.desktop inode/directory</code>.
+</p>
+<p>Check flags and desktop entry file of your preferred terminal application to adopt the example.
+</p>
 </div>
 </div>
 					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
@@ -740,8 +778,8 @@ wezterm -e $@
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GNOME/Files&amp;oldid=826266">https://wiki.archlinux.org/index.php?title=GNOME/Files&amp;oldid=826266</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 2 February 2025, at 21:15.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GNOME/Files&amp;oldid=830212">https://wiki.archlinux.org/index.php?title=GNOME/Files&amp;oldid=830212</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 30 March 2025, at 18:03.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

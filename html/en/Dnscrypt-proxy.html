@@ -384,6 +384,8 @@
 </p>
 <pre>server_names = ['cloudflare', 'cloudflare-ipv6']
 </pre>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> This example uses Cloudflare's public DNS resolver. Replace it with a DNS resolver you trust. See <a href="../en/Domain_name_resolution.html#Third-party_DNS_services" title="Domain name resolution">Domain name resolution#Third-party DNS services</a>.</div>
 <p>A full list of resolvers is located at the <a rel="nofollow" class="external text" href="https://download.dnscrypt.info/resolvers-list/v3/public-resolvers.md">upstream page</a> or <a rel="nofollow" class="external text" href="https://raw.githubusercontent.com/DNSCrypt/dnscrypt-resolvers/master/v3/public-resolvers.md">Github</a>. If <i>dnscrypt-proxy</i> has run successfully on the system before, <code>/var/cache/dnscrypt-proxy/public-resolvers.md</code> will also contain a list. Look at the description for servers note which validate <a href="../en/DNSSEC.html" title="DNSSEC">DNSSEC</a>, do not log, and are uncensored. These requirements can be configured globally with the <code>require_dnssec</code>, <code>require_nolog</code>, <code>require_nofilter</code> options.
 </p>
 <h3><span class="mw-headline" id="Modify_resolv.conf_and_coordinate_with_other_local_domain_name_resolvers">Modify resolv.conf and coordinate with other local domain name resolvers</span></h3>
@@ -481,7 +483,7 @@ log_file = '/var/log/dnscrypt-proxy/blocked-names.log'
 <p>It is recommended to run <i>dnscrypt-proxy</i> as a forwarder for a local DNS cache if not using <i>dnscrypt-proxy's</i> cache feature; otherwise, every single query will make a round-trip to the upstream resolver. Any local DNS caching program should work. In addition to setting up <i>dnscrypt-proxy</i>, you must setup your local DNS cache program.
 </p>
 <h4><span class="mw-headline" id="Change_port">Change port</span></h4>
-<p>In order to forward queries from a local DNS cache, <i>dnscrypt-proxy</i> should listen on a port different from the default <code>53</code>, since the DNS cache itself needs to listen on <code>53</code> and query <i>dnscrypt-proxy</i> on a different port. Port number <code>53000</code> is used as an example in this section. In this example, the port number is larger than 1024 so <i>dnscrypt-proxy</i> is not required to be run by root.
+<p>In order to forward queries from a local DNS cache, <i>dnscrypt-proxy</i> should listen on a port different from the default <code>53</code>, since the DNS cache itself needs to listen on <code>53</code> and query <i>dnscrypt-proxy</i> on a different port. Port number <code>54</code> is used as an example in this section.
 </p>
 <p>There are two methods for changing the default port:
 </p>
@@ -492,21 +494,21 @@ log_file = '/var/log/dnscrypt-proxy/blocked-names.log'
 <pre>[Socket]
 ListenStream=
 ListenDatagram=
-ListenStream=127.0.0.1:53000
-ListenStream=[::1]:53000
-ListenDatagram=127.0.0.1:53000
-ListenDatagram=[::1]:53000
+ListenStream=127.0.0.1:54
+ListenStream=[::1]:54
+ListenDatagram=127.0.0.1:54
+ListenDatagram=[::1]:54
 </pre>
-<p>When queries are forwarded from the local DNS cache to <code>53000</code>, <code>dnscrypt-proxy.socket</code> will start <code>dnscrypt-proxy.service</code>.
+<p>When queries are forwarded from the local DNS cache to <code>54</code>, <code>dnscrypt-proxy.socket</code> will start <code>dnscrypt-proxy.service</code>.
 </p>
 <p><b>Service method</b>
 </p>
 <p>Edit the <code>listen_addresses</code> option in <code>/etc/dnscrypt-proxy/dnscrypt-proxy.toml</code> with the following:
 </p>
-<pre>listen_addresses = ['127.0.0.1:53000', '[::1]:53000']
+<pre>listen_addresses = ['127.0.0.1:54', '[::1]:54']
 </pre>
 <h4><span class="mw-headline" id="Example_local_DNS_cache_configurations">Example local DNS cache configurations</span></h4>
-<p>The following configurations should work with <i>dnscrypt-proxy</i> and assume that it is listening on port <code>53000</code>.
+<p>The following configurations should work with <i>dnscrypt-proxy</i> and assume that it is listening on port <code>54</code>.
 </p>
 <h5><span class="mw-headline" id="Unbound">Unbound</span></h5>
 <p>Configure <a href="../en/Unbound.html" title="Unbound">Unbound</a> to your liking (in particular, see <a href="../en/Unbound.html#Local_DNS_server" title="Unbound">Unbound#Local DNS server</a>) and add the following lines to the end of the <code>server</code> section in <code>/etc/unbound/unbound.conf</code>:
@@ -514,8 +516,8 @@ ListenDatagram=[::1]:53000
 <pre>  do-not-query-localhost: no
 forward-zone:
   name: "."
-  forward-addr: ::1@53000
-  forward-addr: 127.0.0.1@53000
+  forward-addr: ::1@54
+  forward-addr: 127.0.0.1@54
 </pre>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> If you are setting up a server, add <code>interface: 0.0.0.0@53</code> and <code>access-control: <i>your-network</i>/<i>subnet-mask</i> allow</code> inside the <code>server:</code> section so that the other computers can connect to the server. A client must be configured with <code>nameserver <i>address-of-your-server</i></code> in <code>/etc/resolv.conf</code>.</div>
@@ -526,8 +528,8 @@ forward-zone:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/dnsmasq.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">no-resolv
-server=::1#53000
-server=127.0.0.1#53000
+server=::1#54
+server=127.0.0.1#54
 listen-address=::1,127.0.0.1</pre>
 <p>If you configured <i>dnscrypt-proxy</i> to use a resolver with enabled <a href="../en/DNSSEC.html" title="DNSSEC">DNSSEC</a> validation, make sure to enable it also in dnsmasq:
 </p>
@@ -557,7 +559,7 @@ dnssec</pre>
 server {
     label = "dnscrypt-proxy";
     ip = 127.0.0.1;
-    port = 53000;
+    port = 54;
     timeout = 4;
     proxy_only = on;
 }
@@ -616,8 +618,8 @@ rst.x4055.x4049.x3827.rs.dns-oarc.net.
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dnscrypt-proxy&amp;oldid=824017">https://wiki.archlinux.org/index.php?title=Dnscrypt-proxy&amp;oldid=824017</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 26 December 2024, at 15:59.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dnscrypt-proxy&amp;oldid=830158">https://wiki.archlinux.org/index.php?title=Dnscrypt-proxy&amp;oldid=830158</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 30 March 2025, at 07:29.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

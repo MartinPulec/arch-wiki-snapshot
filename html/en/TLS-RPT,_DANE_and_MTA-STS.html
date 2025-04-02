@@ -334,10 +334,12 @@ For DANE-TA, the choice is discussed in <a href="https://tools.ietf.org/html/rfc
 <strong>Note:</strong> It is possible to use a matching type of 2 in order to use SHA2-512 instead of SHA2-256. This is not recommended, as <a href="https://tools.ietf.org/html/rfc6698#section-6" class="extiw" title="rfc:6698">RFC 6698</a> makes implementing SHA2-512 support optional, and not all resolvers may support it. <a href="https://tools.ietf.org/html/rfc7672#section-3.1.1" class="extiw" title="rfc:7672">RFC 7672</a> also discourages this and recommends using SHA2-256 TLSA records instead.</div>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> On its own, DANE-EE could be deployed with a self-signed or untrusted certificate, and even an expired one. Similarly, DANE-TA could be used with any CA. However, as MTA-STS puts requirements on the certificate presented, it is necessary to present a valid certificate meeting the requirements above when both technologies are deployed, as a sender is allowed to use either one.</div>
-<p>Depending on the DNS provider, it may be possible to automatise the publication of this record. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/gotlsaflare/">gotlsaflare</a></span><sup><small>AUR</small></sup> for example allows for publishing the record to the Cloudflare DNS service. Given the multitude of providers out there, it is not possible to give any specific instructions for this step.
+<p>Depending on the DNS provider, it may be possible to automate the publication of this record. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/gotlsaflare/">gotlsaflare</a></span><sup><small>AUR</small></sup> for example allows for publishing the record to the Cloudflare DNS service. Given the multitude of providers out there, it is not possible to give any specific instructions for this step. 
+</p>
+<p>There is also the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/dns_tools/">dns_tools</a></span><sup><small>AUR</small></sup> package for managing DNS servers that are using DNSSEC and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/ssl-mgr/">ssl-mgr</a></span><sup><small>AUR</small></sup> for creating and renewing <a rel="nofollow" class="external text" href="https://letsencrypt.org/">Let's Encrypt</a> certificates, creating and updating DANE TLSA records and for rolling the keys when certificates are renewed. For more information on these, see the documentation <a rel="nofollow" class="external text" href="https://github.com/gene-git/dns_tools">dns_tools docs</a> and <a rel="nofollow" class="external text" href="https://github.com/gene-git/ssl-mgr">ssl-mgr docs</a>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> Since DNS records are cached for a time given by the TTL, updating a TLSA record has to be done step-by-step where first the new record is added, the TTL is waited out and then finally the previous record is deleted and the mail server switched to the new certificate.</div>
+<strong>Warning:</strong> Since DNS records are cached for a time given by the TTL, updating a TLSA record has to be done step-by-step where first the new record is added, the TTL is waited out and then finally the previous record is deleted and the mail server switched to the new certificate. This process is known as performing a key roll</div>
 <h3><span class="mw-headline" id="TLS-RPT">TLS-RPT</span></h3>
 <p>SMTP TLS Reporting (TLS-RPT) defined in <a href="https://tools.ietf.org/html/rfc8460" class="extiw" title="rfc:8460">RFC 8460</a> is a standard for reporting mail delivery problems related to TLS encryption failures and successful connections.
 </p>
@@ -411,10 +413,10 @@ smtp_tlsrpt_socket_name = /run/tlsrpt/tlsrpt-collectd.socket
 </p>
 <pre>hosts_try_dane = *
 </pre>
-<p>Further information on this topic can be found in the Exim documentation <a rel="nofollow" class="external text" href="https://www.exim.org/exim-html-current/doc/html/spec_html/ch-encrypted_smtp_connections_using_tlsssl.html#SECDANE">here</a>.
+<p>Further information on this topic can be found in the <a rel="nofollow" class="external text" href="https://www.exim.org/exim-html-current/doc/html/spec_html/ch-encrypted_smtp_connections_using_tlsssl.html#SECDANE">Exim documentation</a>.
 </p>
 <h3><span class="mw-headline" id="Stalwart">Stalwart</span></h3>
-<p>Stalwart has all three of DANE, MTA-STS and TLS-RPT built-in already. Please see their documentation <a rel="nofollow" class="external text" href="https://stalw.art/docs/category/transport-security">here</a> for instructions on how to enable and configure them.
+<p>Stalwart has all three of DANE, MTA-STS and TLS-RPT built-in already. Please see their documentation <a rel="nofollow" class="external text" href="https://stalw.art/docs/category/transport-security">for instructions</a> on how to enable and configure them.
 </p>
 </div>
 </div>
@@ -429,8 +431,8 @@ smtp_tlsrpt_socket_name = /run/tlsrpt/tlsrpt-collectd.socket
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=TLS-RPT,_DANE_and_MTA-STS&amp;oldid=827970">https://wiki.archlinux.org/index.php?title=TLS-RPT,_DANE_and_MTA-STS&amp;oldid=827970</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 28 February 2025, at 14:25.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=TLS-RPT,_DANE_and_MTA-STS&amp;oldid=828807">https://wiki.archlinux.org/index.php?title=TLS-RPT,_DANE_and_MTA-STS&amp;oldid=828807</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 13 March 2025, at 17:47.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

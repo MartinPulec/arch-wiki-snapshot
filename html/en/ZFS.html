@@ -407,10 +407,32 @@
 			</a>
 			
 			<ul id="toc-Unlock_at_login_time:_PAM-sublist" class="vector-toc-list">
-				<li id="toc-SSH" class="vector-toc-list-item vector-toc-level-4">
-			<a class="vector-toc-link" href="#SSH">
+				<li id="toc-PAM_module" class="vector-toc-list-item vector-toc-level-4">
+			<a class="vector-toc-link" href="#PAM_module">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">6.1.2.1</span>
+					<span>PAM module</span>
+				</div>
+			</a>
+			
+			<ul id="toc-PAM_module-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Custom_script" class="vector-toc-list-item vector-toc-level-4">
+			<a class="vector-toc-link" href="#Custom_script">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">6.1.2.2</span>
+					<span>Custom script</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Custom_script-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-SSH" class="vector-toc-list-item vector-toc-level-4">
+			<a class="vector-toc-link" href="#SSH">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">6.1.2.3</span>
 					<span>SSH</span>
 				</div>
 			</a>
@@ -419,7 +441,7 @@
 				<li id="toc-SSH_Key_&amp;_Password_when_required" class="vector-toc-list-item vector-toc-level-5">
 			<a class="vector-toc-link" href="#SSH_Key_&amp;_Password_when_required">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">6.1.2.1.1</span>
+					<span class="vector-toc-numb">6.1.2.3.1</span>
 					<span>SSH Key &amp; Password when required</span>
 				</div>
 			</a>
@@ -430,7 +452,7 @@
 		<li id="toc-SSH_Key_&amp;_Password" class="vector-toc-list-item vector-toc-level-5">
 			<a class="vector-toc-link" href="#SSH_Key_&amp;_Password">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">6.1.2.1.2</span>
+					<span class="vector-toc-numb">6.1.2.3.2</span>
 					<span>SSH Key &amp; Password</span>
 				</div>
 			</a>
@@ -1355,6 +1377,7 @@
 # zfs set relatime=on zroot
 </pre>
 </li>
+<li>You can check the file from step 3 to make sure it is populated. The pool will now be mounted on boot. Reboot to see it mounted, or <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Restart">restart</a> <code>zfs-zed.service</code>.</li>
 </ol>
 <h4><span class="mw-headline" id="fstab">fstab</span></h4>
 <p>If your filesystem uses legacy mount, then you should specify the mountpoint in the <a href="../en/Fstab.html" title="Fstab">fstab</a> file. The device field should be the name (full path) of your filesystem and the dump and fsck fields should be left as 0.
@@ -1661,19 +1684,52 @@ WantedBy=zfs-mount.service</pre>
 <p><a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable/start">Enable/start</a> <code>zfs-load-key.service</code>.
 </p>
 <h4><span class="mw-headline" id="Unlock_at_login_time:_PAM">Unlock at login time: PAM</span></h4>
-<p>If you are not encrypting the root volume, but only the home volume or a user-specific volume, another idea is to <a rel="nofollow" class="external text" href="https://blog.trifork.com/2020/05/22/linux-homedir-encryption/">wait until login to decrypt it</a><sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-11-06 ⓘ]</sup>.  The advantages of this method are that the system boots uninterrupted, and that when the user logs in, the same password can be used both to authenticate and to decrypt the home volume, so that the password is only entered once.
+<p>If you are not encrypting the root volume, but only the home volume or a user-specific volume, another idea is to <a rel="nofollow" class="external text" href="https://trifork.nl/blog/linux-homedir-encryption/">wait until login to decrypt it</a>. The advantages of this method are that the system boots uninterrupted, and that when the user logs in, the same password can be used both to authenticate and to decrypt the home volume, so that the password is only entered once.
 </p>
+<p>There are two methods for unlocking the home dataset: <a href="#PAM_module">#PAM module</a> or <a href="#Custom_script">#Custom script</a>. Both methods assume your datasets are structured similar to:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ zfs list -o name,mountpoint,canmount,encryption</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">NAME                   MOUNTPOINT        CANMOUNT  ENCRYPTION
+rpool                  /                 on        off
+rpool/home             /home             off       off
+rpool/home/user        /home/user        on        aes-256-gcm
+rpool/home/user/child  /home/user/child  on        aes-256-gcm</pre>
+<p>Replace <code>rpool/home</code>, <code>user</code>, and <code>child</code> with the values from your setup.
+</p>
+<h5><span class="mw-headline" id="PAM_module">PAM module</span></h5>
+<p>OpenZFS includes a PAM module since <a rel="nofollow" class="external text" href="https://github.com/openzfs/zfs/releases/tag/zfs-2.0.0">2.0.0</a>. It supports child datasets since <a rel="nofollow" class="external text" href="https://github.com/openzfs/zfs/releases/tag/zfs-2.3.1">2.3.1</a>.
+</p>
+<p>First, use the following:
+</p>
+<pre># zfs set org.openzfs.systemd:ignore=on rpool/home</pre>
+<p>This stops systemd from automatically mounting <code>rpool/home</code>. This property will be inherited by all child datasets.
+</p>
+<p>Then create the following file:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pam.d/zfs-key</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">auth       optional                    pam_zfs_key.so homes=rpool/home runstatedir=/run/pam_zfs_key mount_recursively
+session    [success=1 default=ignore]  pam_succeed_if.so service = systemd-user quiet
+session    optional                    pam_zfs_key.so homes=rpool/home runstatedir=/run/pam_zfs_key mount_recursively
+password   optional                    pam_zfs_key.so homes=rpool/home runstatedir=/run/pam_zfs_key mount_recursively</pre>
+<p><code>mount_recursively</code> may be ommited if there are no child datasets in any of the users' datasets.
+</p>
+<p>Finally, add the following to the beginning of <code>/etc/pam.d/system-auth</code> and <code>/etc/pam.d/su-l</code>:
+</p>
+<pre>auth       include      zfs-key
+session    include      zfs-key
+password   include      zfs-key</pre>
+<h5><span class="mw-headline" id="Custom_script">Custom script</span></h5>
 <p>First set the mountpoint to legacy to avoid having it mounted by <code>zfs mount -a</code>:
 </p>
-<pre># zfs set mountpoint=legacy zroot/data/home</pre>
+<pre># zfs set mountpoint=legacy rpool/home</pre>
 <p>Ensure that it is in /etc/fstab so that <code>mount /home</code> will work:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/fstab</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">zroot/data/home         /home           zfs             rw,xattr,posixacl,noauto        0 0</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">rpool/home         /home           zfs             rw,xattr,posixacl,noauto        0 0</pre>
 <p>Alternatively, you can keep using ZFS mounts if you use both:
 </p>
-<pre># zfs set canmount=noauto zroot/data/home
-# zfs set org.openzfs.systemd:ignore=on zroot/data/home</pre>
+<pre># zfs set canmount=noauto rpool/home
+# zfs set org.openzfs.systemd:ignore=on rpool/home</pre>
 <p>The first will stop ZFS automatically mounting it, and the second systemd, but you will still be able to manually (or through the following scripts) mount it. If you have child datasets, <code>org.openzfs.systemd:ignore=on</code> will be inherited, but you will need to set <code>canmount=noauto</code> on each as it is not inheritable, otherwise they will try to mount without a mountpoint.
 </p>
 <p>On a single-user system, with only one <code>/home</code> volume having the same encryption password as the user's password, it can be decrypted at login as follows: first create <code>/usr/local/bin/mount-zfs-homedir</code>
@@ -1683,7 +1739,7 @@ WantedBy=zfs-mount.service</pre>
 set -eu
 
 # $PAM_USER will be the username of the user, you can use it for per-user home volumes.
-HOME_VOLUME="zroot/data/home" 
+HOME_VOLUME="rpool/home" 
 
 if [ "$(zfs get keystatus "${HOME_VOLUME}" -Ho value)" != "available" ]; then
   PASSWORD=$(cat -)
@@ -2611,6 +2667,7 @@ SMB1 disabled -- no workgroup available
 <li><a rel="nofollow" class="external text" href="https://github.com/danboid/creating-ZFS-disks-under-Linux">How to create cross platform ZFS disks under Linux</a></li>
 <li><a rel="nofollow" class="external text" href="https://blog.heckel.xyz/2017/01/08/zfs-encryption-openzfs-zfs-on-linux/">How-To: Using ZFS Encryption at Rest in OpenZFS (ZFS on Linux, ZFS on FreeBSD, …)</a></li>
 <li><a rel="nofollow" class="external text" href="https://archzfs.leibelt.de/">Archzfs iso download page: Frequently updated and downloadable archzfs linux iso with full OpenZFS support since 2016</a></li>
+<li><a rel="nofollow" class="external text" href="https://www.reddit.com/r/zfs/comments/om2233/comment/h8rgo1t/?utm_source=share&amp;utm_medium=web3x&amp;utm_name=web3xcss&amp;utm_term=1&amp;utm_content=share_button">reddit: pam_zfs_key</a></li>
 </ul>
 </div>
 </div>
@@ -2619,7 +2676,6 @@ SMB1 disabled -- no workgroup available
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:File_systems.html" title="Category:File systems">File systems</a></li></ul>
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
-<li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
 <li><a href="../en/Category:Pages_with_broken_section_links.html" title="Category:Pages with broken section links">Pages with broken section links</a></li>
 </ul>
@@ -2633,8 +2689,8 @@ SMB1 disabled -- no workgroup available
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=ZFS&amp;oldid=827738">https://wiki.archlinux.org/index.php?title=ZFS&amp;oldid=827738</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 25 February 2025, at 10:04.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=ZFS&amp;oldid=829960">https://wiki.archlinux.org/index.php?title=ZFS&amp;oldid=829960</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 27 March 2025, at 18:33.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

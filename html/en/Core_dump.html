@@ -301,15 +301,8 @@ ProcessSizeMax=0</pre>
 <p>See <span class="plainlinks archwiki-template-man" title="$ man 8 systemd-coredump"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-coredump.8#Disabling_coredump_processing">systemd-coredump(8) § Disabling coredump processing</a></span>.
 </p>
 <h3><span class="mw-headline" id="Using_PAM_limits">Using PAM limits</span></h3>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
-<div>
-<b>Reason:</b> <a href="../en/Limits.conf.html#core" title="Limits.conf">limits.conf#core</a> recommends setting a soft limit so that core dumps can be temporarily enabled with <code>ulimit -c unlimited</code>. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Core_dump.html">Talk:Core dump</a>)</div>
-</div>
-<p>The maximum core dump size for users logged in via <a href="../en/PAM.html" title="PAM">PAM</a> is enforced by <a href="../en/Limits.conf.html" title="Limits.conf">limits.conf</a>. Setting it to zero disables core dumps entirely. <a rel="nofollow" class="external autonumber" href="https://www.cyberciti.biz/faq/linux-disable-core-dumps/">[2]</a>
+<p>See <a href="../en/Limits.conf.html#core" title="Limits.conf">limits.conf#core</a>.
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/security/limits.conf</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">* hard core 0</pre>
 <h3><span class="mw-headline" id="Using_ulimit">Using ulimit</span></h3>
 <p><a href="../en/Command-line_shell.html" title="Command-line shell">Command-line shells</a> such as <i>bash</i> or <i>zsh</i> provide a builtin <i>ulimit</i> command which can be used to report or set resource limits of the shell and the processes started by the shell. See <span class="plainlinks archwiki-template-man" title="$ man 1 bash"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/bash.1#SHELL_BUILTIN_COMMANDS">bash(1) § SHELL BUILTIN COMMANDS</a></span> or <span class="plainlinks archwiki-template-man" title="$ man 1 zshbuiltins"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/zshbuiltins.1">zshbuiltins(1)</a></span> for details.
 </p>
@@ -322,20 +315,8 @@ ProcessSizeMax=0</pre>
 <p>For programs not using the <i>ulimit</i> setting of the crashed process, <code>dumpable</code> <span class="plainlinks archwiki-template-man" title="$ man 2 prctl"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/prctl.2">prctl(2)</a></span> can be used to disable coredump processing for selected processes.
 </p>
 <h2><span class="mw-headline" id="Making_a_core_dump">Making a core dump</span></h2>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-clear.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs language, wiki syntax or style improvements. See <a href="../en/Help:Style.html" title="Help:Style">Help:Style</a> for reference.</b></p>
-<div>
-<b>Reason:</b> Partially duplicates <a href="../en/Debugging/Getting_traces.html#Attaching_to_an_existing_process" title="Debugging/Getting traces">Debugging/Getting traces#Attaching to an existing process</a> and misses the info on ptrace scope. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Core_dump.html">Talk:Core dump</a>)</div>
-</div>
-<p>To generate a core dump of an arbitrary process, first <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=gdb">gdb</a></span> package. Then find the PID of the running process, for example with <i>pgrep</i>:
+<p>To generate a core dump of an arbitrary process, first <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=gdb">gdb</a></span> package. Then attach to this process by following <a href="../en/Debugging/Getting_traces.html#Attaching_to_an_existing_process" title="Debugging/Getting traces">Debugging/Getting traces#Attaching to an existing process</a>.
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ pgrep -f <i>firefox</i></pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">2071 firefox
-</pre>
-<p>Attach to the process:
-</p>
-<pre>$ gdb -p 2071
-</pre>
 <p>Then at the <code>(gdb)</code> prompt:
 </p>
 <pre>(gdb) generate-core-file
@@ -385,19 +366,12 @@ Saved corefile core.2071
 </ul>
 </div>
 </div>
-					<div id="catlinks" class="catlinks" data-mw="interface">
-<div id="mw-normal-catlinks" class="mw-normal-catlinks">
+					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Categories</a>: <ul>
 <li><a href="../en/Category:Development.html" title="Category:Development">Development</a></li>
 <li><a href="../en/Category:Security.html" title="Category:Security">Security</a></li>
 </ul>
-</div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li>
-</ul>
-</div>
-</div>
+</div></div>
 				</div>
 			</main>
 			
@@ -406,8 +380,8 @@ Saved corefile core.2071
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Core_dump&amp;oldid=826053">https://wiki.archlinux.org/index.php?title=Core_dump&amp;oldid=826053</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 28 January 2025, at 05:04.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Core_dump&amp;oldid=829324">https://wiki.archlinux.org/index.php?title=Core_dump&amp;oldid=829324</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 17 March 2025, at 13:39.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

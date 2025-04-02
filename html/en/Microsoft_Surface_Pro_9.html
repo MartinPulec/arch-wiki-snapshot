@@ -228,11 +228,21 @@
 </ul>
 <h2><span class="mw-headline" id="Secure_Boot">Secure Boot</span></h2>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> Replacing the Microsoft's platform keys with your own (e.g. using <a href="../en/Unified_Extensible_Firmware_Interface/Secure_Boot.html#Assisted_process_with_sbctl" class="mw-redirect" title="Sbctl">sbctl</a> is safe and does not brick the laptop).</div>
-<p>See <a href="../en/Unified_Extensible_Firmware_Interface/Secure_Boot.html" class="mw-redirect" title="Secure Boot">Secure Boot</a> for general setup.
+<strong>Note:</strong> Replacing  Microsoft's platform keys with your own (e.g. using <a href="../en/Unified_Extensible_Firmware_Interface/Secure_Boot.html#Assisted_process_with_sbctl" class="mw-redirect" title="Sbctl">sbctl</a>) is safe and does not brick the laptop).</div>
+<p>It is possible to set the tablet to use only user-provided keys in UEFI setup utility, but the default options allow only either using MS keys, or MS + 3rd Party CA, or disabling the Secure Boot.
 </p>
-<p>It is not possible to easily set the tablet to use only user-provided keys in UEFI setup utility, allowing only either using MS keys, or MS + 3rd Party CA, or disabling the Secure Boot. When running <code>sbctl enroll-keys</code> with your own keys only and rebooting your tablet, UEFI enables the hidden option to use only third-party CAs and keys automatically which then can be seen in the Secure Boot status. Never select any other option if you want to keep using your own keys.
+<p>The procedure of setting up the secure boot is as follows:
 </p>
+<ul>
+<li>Disable Secure Boot</li>
+<li>Follow <a href="../en/Unified_Extensible_Firmware_Interface/Secure_Boot.html" class="mw-redirect" title="Secure Boot">Secure Boot</a> for general setup until the key enrollment.</li>
+<li>Make sure that enrolling keys is the last action you'd do with the Secure Boot before shutting down the machine. In other words, for example, either <code>sbctl enroll-keys</code> (only 3rd Party CA only), or <code>sbctl enroll-keys -m</code> (MS + 3rd Party CA) commands must be entered before shutting down.</li>
+<li>Shutdown the tablet. Do not reboot, do not reboot into the UEFI firmware setup directly.</li>
+<li>Turn the tablet back on and hold "Volume Down" key.</li>
+<li>Navigate to the "Security" section in the menu. If it says that it needs the reboot to access the settings, select the "Reboot to UEFI" option on the same page.</li>
+<li>After the reboot, navigate to the "Security" section again. Verify that the Secure Boot is enabled automatically. If the text says "Secure Boot is Enabled with custom key configuration", then it means that UEFI enabled the hidden option to use only third-party CAs and keys automatically. Never select any other option there if you want to keep using your own keys.</li>
+<li>Reboot to the operating system and verify that the Secure Boot is enabled. E.g. <code>sbctl status</code> should tell that the Secure Boot is enabled.</li>
+</ul>
 </div>
 </div>
 					<div id="catlinks" class="catlinks" data-mw="interface">
@@ -250,8 +260,8 @@
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Microsoft_Surface_Pro_9&amp;oldid=804309">https://wiki.archlinux.org/index.php?title=Microsoft_Surface_Pro_9&amp;oldid=804309</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 23 March 2024, at 10:58.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Microsoft_Surface_Pro_9&amp;oldid=830092">https://wiki.archlinux.org/index.php?title=Microsoft_Surface_Pro_9&amp;oldid=830092</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 29 March 2025, at 13:09.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -184,7 +184,18 @@
 			</a>
 			
 			<ul id="toc-HP_Docking-sublist" class="vector-toc-list">
+				<li id="toc-Systemd_+_Udev" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Systemd_+_Udev">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">4.3.1</span>
+					<span>Systemd + Udev</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Systemd_+_Udev-sublist" class="vector-toc-list">
 			</ul>
+		</li>
+	</ul>
 		</li>
 		<li id="toc-HPFall_(HP_3D_DriveGaurd)" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#HPFall_(HP_3D_DriveGaurd)">
@@ -436,6 +447,8 @@
 <strong>Warning:</strong> Without configuring software the fan speed will sit at its lowest speed setting and thermal shutdowns are frequent. It is important that it is configured before any heavy load is put on the system.</div>
 <p>Fan control requires additional software to be configured. Install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/nbfc-linux/">nbfc-linux</a></span><sup><small>AUR</small></sup> read <a href="../en/Fan_speed_control.html" title="Fan speed control">Fan speed control</a> for more information.
 </p>
+<pre># sudo nbfc config -s "HP EliteBook 850 G3"
+</pre>
 <h3><span class="mw-headline" id="Cellular">Cellular</span></h3>
 <p><a href="../en/NetworkManager.html#Mobile_broadband_support" title="NetworkManager">NetworkManager</a> uses <a href="../en/Mobile_broadband_modem.html#ModemManager" class="mw-redirect" title="ModemManager">ModemManager</a> for mobile broadband connection support. 
 </p>
@@ -473,7 +486,7 @@ echo 3 &gt; /sys/bus/usb/devices/1-3/bConfigurationValue</pre>
 <p>The keyboard nipple/pointer is tested and works, both the rows of touch-pad mouse click buttons works.
 </p>
 <h3><span class="mw-headline" id="Battery">Battery</span></h3>
-<p>HP Intelligent charging is unsupported to change battery health configurations on the fly while powered on, but battery health configurations (Maximize for Duration/Health, Let HP Manage..) could be set from BIOS menu. Setting charging thresholds on the fly is also unsupported.
+<p>Setting charging thresholds on the fly is unsupported. HP Intelligent charging can be used on windows to change battery health configurations on the fly while powered on. However battery health configurations (Maximize for Duration/Health, Let HP Manage..) could be set in the firmware setup. Maybe a UEFI variable + reboot mechanism of some sort can be developed as a workaround.
 </p>
 <h3><span class="mw-headline" id="HP_Docking">HP Docking</span></h3>
 <p>The docking port on the right side of the device below the sim card slot is and older docking standard that is now discontinued. To recognize whether the device is docked or not the path to the device can be found out by running:
@@ -496,10 +509,46 @@ echo 3 &gt; /sys/bus/usb/devices/1-3/bConfigurationValue</pre>
 </tr>
 </tbody>
 </table>
+<h4>
+<span id="Systemd_.2B_Udev"></span><span class="mw-headline" id="Systemd_+_Udev">Systemd + Udev</span>
+</h4>
+<p>Below commands guides on how to setup docked and mobile <a href="../en/Systemd.html#Targets" title="Systemd">targets</a> with <a href="../en/Udev.html" title="Udev">udev</a> on a systemd configured system to aid with other tasks in the system. This can flexibly be used to for example mount file systems when docked or de/activate other systemd units that match the device profile when docked / mobile.
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/docked.target</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Unit]
+Description=Laptop Docked Target</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/mobile.target</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Unit]
+Description=Laptop Mobile Target</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/udev/rules.d/99-dock-detect.rules</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># trigger an action(a) when the SMSC USB5534 hub in the dock is added
+
+SUBSYSTEM=="usb", ACTION=="add",    ATTR{idVendor}=="0424", ATTR{idProduct}=="5434",      RUN+="/bin/systemctl start docked.target"
+SUBSYSTEM=="usb", ACTION=="remove", DEVPATH=="/devices/pci0000:00/0000:00:14.0/usb2/2-4", RUN+="/bin/systemctl stop  docked.target"
+
+SUBSYSTEM=="usb", ACTION=="add",    ATTR{idVendor}=="0424", ATTR{idProduct}=="5434",      RUN+="/bin/systemctl stop  mobile.target"
+SUBSYSTEM=="usb", ACTION=="remove", DEVPATH=="/devices/pci0000:00/0000:00:14.0/usb2/2-4", RUN+="/bin/systemctl start mobile.target"</pre>
+<p>Here is an example use case where <a href="../en/Hpfall.html" title="Hpfall">hpfall</a> can be deactivated when the system is docked.
+</p>
+<pre># sudo systemctl edit hpfall.service
+</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"></pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">### Anything between here and the comment below will become the contents of the drop-in file
+
+[Unit]
+Requires=mobile.target
+BindsTo=mobile.target
+
+[Install]
+WantedBy=multi-user.target mobile.target
+
+### Edits below this comment will be discarded</pre>
+<p><br>
+</p>
 <h3>
 <span id="HPFall_.28HP_3D_DriveGaurd.29"></span><span class="mw-headline" id="HPFall_(HP_3D_DriveGaurd)">HPFall (HP 3D DriveGaurd)</span>
 </h3>
-<p>The laptop built to work with hard drives has an accelerometer to unload the drive head to prevent damage to the hard drive. If you have a harddrive the same feature is implemented by <a href="../en/Hpfall.html" title="Hpfall">hpfall</a> and is tested and works, follow the guide in <a href="../en/Hpfall.html" title="Hpfall">hpfall</a> to configure. The accelerometer can also be used for other purposes, values can be read using the jstest utility from the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=joyutils">joyutils</a></span>
+<p>The laptop built to work with hard drives has an accelerometer to unload the drive head to prevent damage to the hard drive. If you have a harddrive the same feature is implemented by <a href="../en/Hpfall.html" title="Hpfall">hpfall</a> and is tested and works, follow the guide in <a href="../en/Hpfall.html" title="Hpfall">hpfall</a> to configure. The accelerometer can also be used for other purposes, values can be read using the jstest utility from the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=joyutils">joyutils</a></span>.
 </p>
 <pre>$ jstest /dev/input/js0
 </pre>
@@ -611,8 +660,8 @@ echo 3 &gt; /sys/bus/usb/devices/1-3/bConfigurationValue</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=HP_EliteBook_850_G3&amp;oldid=821819">https://wiki.archlinux.org/index.php?title=HP_EliteBook_850_G3&amp;oldid=821819</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 30 November 2024, at 08:52.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=HP_EliteBook_850_G3&amp;oldid=829797">https://wiki.archlinux.org/index.php?title=HP_EliteBook_850_G3&amp;oldid=829797</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 25 March 2025, at 08:11.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

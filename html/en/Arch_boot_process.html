@@ -174,8 +174,24 @@
 			</div>
 		</a>
 		
+			<button aria-controls="toc-initramfs-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle initramfs subsection</span>
+			</button>
+		
 		<ul id="toc-initramfs-sublist" class="vector-toc-list">
-		</ul>
+			<li id="toc-Running_without_initramfs" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Running_without_initramfs">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">5.1</span>
+					<span>Running without initramfs</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Running_without_initramfs-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
 	</li>
 	<li id="toc-Early_userspace" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
 		<a class="vector-toc-link" href="#Early_userspace">
@@ -706,7 +722,26 @@
 </ol>
 </li>
 </ol>
-<p>Also, the Linux <a href="../en/Kernel.html" title="Kernel">kernel</a> <a rel="nofollow" class="external text" href="https://github.com/torvalds/linux/blob/1b907d0507354b74a4f2c286380cd6059af79248/fs/namespace.c#L4222">pins</a> the original root it is started from. If an initramfs is not used, the real root file system could end up failing to be cleanly unmounted during shutdown.
+<h3><span class="mw-headline" id="Running_without_initramfs">Running without initramfs</span></h3>
+<p>Since 6.13.8 <a href="../en/Kernel.html#Officially_supported_kernels" title="Kernel">officially supported kernels</a> have <a href="../en/Btrfs.html" title="Btrfs">Btrfs</a> and <a href="../en/Ext4.html" title="Ext4">Ext4</a> drivers built-in <a rel="nofollow" class="external autonumber" href="https://gitlab.archlinux.org/archlinux/packaging/packages/linux/-/commit/a7e2a17f9c0e55937ea3e18c4d5b905a8e4f8047">[4]</a>. 
+</p>
+<p>This makes it possible for the kernel to use a root partition with these file systems directly and load the rest of external modules needed from there. Although, there are some quirks to keep in mind:
+</p>
+<ul>
+<li>
+<a href="../en/Systemd.html#GPT_partition_automounting" title="Systemd">GPT partition automounting</a> could not be used, so <code>root</code> <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a> is always required.</li>
+<li>
+<a href="../en/Persistent_block_device_naming.html" title="Persistent block device naming">Persistent block device naming</a> for <code>root</code> is restricted to <code>PARTUUID</code> and <code>PARTLABEL</code> only <a rel="nofollow" class="external autonumber" href="https://github.com/torvalds/linux/blob/v6.14/block/early-lookup.c#L216-L243">[5]</a>.</li>
+<li>
+<a href="../en/File_systems.html#Mount_a_file_system" class="mw-redirect" title="Mount">Mount</a> options for <code>rootflags</code> are limited, e.g. <code>noatime</code> would not work <a rel="nofollow" class="external autonumber" href="https://bugzilla.kernel.org/show_bug.cgi?id=61601">[6]</a>. To mitigate possible side effects, you could make the initial mount read-only using <code>rootflags=ro</code>. Desired options could be applied later on remount via <a href="../en/Fstab.html" title="Fstab">fstab</a>.</li>
+<li>
+<span class="plainlinks archwiki-template-man" title="$ man 8 systemd-gpt-auto-generator"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-gpt-auto-generator.8">systemd-gpt-auto-generator(8)</a></span> is pointless without initramfs and has issues <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/16953">[7]</a>, disable it by setting <code>systemd.gpt_auto=no</code>.</li>
+</ul>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> Only regular SCSI/SATA/AHCI drives have built-in modules at the moment. Other storage kinds (<a href="../en/Solid_state_drive/NVMe.html" class="mw-redirect" title="NVMe">NVMe</a>, <a href="../en/USB_storage_devices.html" title="USB storage devices">USB</a>, <a href="https://en.wikipedia.org/wiki/Device_mapper" class="extiw" title="w:Device mapper">device mapper</a> etc.) would not work. <a href="../en/LVM.html" title="LVM">LVM</a> or encryption also can not be used without initramfs as they require userspace utilities to work.</div>
+<p>Another thing you really need initramfs for is <a href="../en/Microcode.html#Early_loading" title="Microcode">early microcode loading</a>. But it is not necessary to build full image for that, Arch provides <a href="../en/Microcode.html#Microcode_in_a_separate_initramfs_file" title="Microcode">microcode in separate initramfs files</a>, which could be used independently.
+</p>
+<p>If no initramfs image is provided, the kernel always contains still an empty image to start from <a rel="nofollow" class="external autonumber" href="https://docs.kernel.org/filesystems/ramfs-rootfs-initramfs.html#populating-initramfs">[8]</a>. So there should be no issues with root partition <a rel="nofollow" class="external text" href="https://github.com/torvalds/linux/blob/1b907d0507354b74a4f2c286380cd6059af79248/fs/namespace.c#L4222">pinning</a>.
 </p>
 <h2><span class="mw-headline" id="Early_userspace">Early userspace</span></h2>
 <p>The <i>early userspace</i> stage, a.k.a. the <i>initramfs stage</i>, takes place in rootfs consisting of the files provided by the <a href="#initramfs">#initramfs</a>. Early userspace starts by the kernel executing the <code>/init</code> binary as PID 1.
@@ -783,8 +818,8 @@
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Arch_boot_process&amp;oldid=827594">https://wiki.archlinux.org/index.php?title=Arch_boot_process&amp;oldid=827594</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 23 February 2025, at 10:12.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Arch_boot_process&amp;oldid=830319">https://wiki.archlinux.org/index.php?title=Arch_boot_process&amp;oldid=830319</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 1 April 2025, at 17:49.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -701,6 +701,7 @@
 <li><a href="../en/Systemd/User.html" title="Systemd/User">systemd/User</a></li>
 <li><a href="../en/Systemd/Timers.html" title="Systemd/Timers">systemd/Timers</a></li>
 <li><a href="../en/Systemd/Journal.html" title="Systemd/Journal">systemd/Journal</a></li>
+<li><a href="../en/Systemd/Sandboxing.html" title="Systemd/Sandboxing">systemd/Sandboxing</a></li>
 <li><a href="../en/Systemd/FAQ.html" title="Systemd/FAQ">systemd/FAQ</a></li>
 <li><a href="../en/Init.html" title="Init">init</a></li>
 <li><a href="../en/Udev.html" title="Udev">udev</a></li>
@@ -1361,12 +1362,12 @@ w+   /proc/acpi/wakeup     -    -    -    -   LID0
 <ul><li>
 <b>systemadm</b> — Graphical browser for <i>systemd</i> units. It can show the list of units, possibly filtered by type.</li></ul>
 <dl><dd>
-<a rel="nofollow" class="external free" href="https://cgit.freedesktop.org/systemd/systemd-ui/">https://cgit.freedesktop.org/systemd/systemd-ui/</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=systemd-ui">systemd-ui</a></span>
+<a rel="nofollow" class="external free" href="https://github.com/systemd/systemd-ui">https://github.com/systemd/systemd-ui</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=systemd-ui">systemd-ui</a></span>
 </dd></dl>
 <ul><li>
 <b>SystemdGenie</b> — <i>systemd</i> management utility based on KDE technologies.</li></ul>
 <dl><dd>
-<a rel="nofollow" class="external free" href="https://invent.kde.org/system/systemdgenie">https://invent.kde.org/system/systemdgenie</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=systemdgenie">systemdgenie</a></span>
+<a rel="nofollow" class="external free" href="https://apps.kde.org/systemdgenie/">https://apps.kde.org/systemdgenie/</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=systemdgenie">systemdgenie</a></span>
 </dd></dl>
 <h3><span class="mw-headline" id="Running_services_after_the_network_is_up">Running services after the network is up</span></h3>
 <p>To delay a service until after the network is up, include the following dependencies in the <i>.service</i> file:
@@ -1415,24 +1416,8 @@ After=network-online.target nss-lookup.target
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> Enabling all units by default may cause problems with packages that contain two or more mutually exclusive units. <i>systemctl preset</i> is designed to be used by distributions and spins or system administrators. In the case where two conflicting units would be enabled, you should explicitly specify which one is to be disabled in a preset configuration file as specified in the <span class="plainlinks archwiki-template-man" title="$ man 5 systemd.preset"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd.preset.5">systemd.preset(5)</a></span> man page.</div>
 <h3><span class="mw-headline" id="Sandboxing_application_environments">Sandboxing application environments</span></h3>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-go-next.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is a candidate for moving to <a href="/index.php?title=Systemd/Sandboxing&amp;action=edit&amp;redlink=1" class="new" title="Systemd/Sandboxing (page does not exist)">systemd/Sandboxing</a>.</b></p>
-<div>
-<b>Notes:</b> The topic is broad enough for a dedicated page. See <a href="../User:NetSysFire/systemd_sandboxing.html" title="User:NetSysFire/systemd sandboxing">User:NetSysFire/systemd sandboxing</a> for a proposed draft. (Discuss in <a href="../en/Talk:Security.html#systemd_unit_hardening_and_system.conf_tweaks" title="Talk:Security">Talk:Security#systemd unit hardening and system.conf tweaks</a>)</div>
-</div>
-<p>A unit file can be created as a sandbox to isolate applications and their processes within a hardened virtual environment. <i>systemd</i> leverages <a href="https://en.wikipedia.org/wiki/Linux_namespaces" class="extiw" title="wikipedia:Linux namespaces">namespaces</a>, a list of allowed/denied <a href="../en/Capabilities.html" title="Capabilities">capabilities</a>, and <a href="../en/Cgroups.html" class="mw-redirect" title="Control groups">control groups</a> to container processes through an extensive execution environment configuration—<span class="plainlinks archwiki-template-man" title="$ man 5 systemd.exec"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd.exec.5">systemd.exec(5)</a></span>.
+<p>See <a href="../en/Systemd/Sandboxing.html" title="Systemd/Sandboxing">systemd/Sandboxing</a>.
 </p>
-<p>The enhancement of an existing <i>systemd</i> unit file with application sandboxing typically requires trial-and-error tests accompanied by the generous use of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=strace">strace</a></span>, <a href="https://en.wikipedia.org/wiki/Standard_streams#Standard_error_.28stderr.29" class="extiw" title="wikipedia:Standard streams">stderr</a> and <span class="plainlinks archwiki-template-man" title="$ man 1 journalctl"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/journalctl.1">journalctl(1)</a></span> error logging and output facilities. You may want to first search upstream documentation for already done tests to base trials on. To get a starting point for possible hardening options, run 
-</p>
-<pre>$ systemd-analyze security <i>unit</i>
-</pre>
-<p>Some examples of how sandboxing with <i>systemd</i> can be deployed:
-</p>
-<ul><li>
-<code>CapabilityBoundingSet</code> defines a list of <span class="plainlinks archwiki-template-man" title="$ man 7 capabilities"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/capabilities.7">capabilities(7)</a></span> that are allowed or denied for a unit. See <span class="plainlinks archwiki-template-man" title="$ man 5 systemd.exec"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd.exec.5#CAPABILITIES">systemd.exec(5) § CAPABILITIES</a></span>.
-<ul><li>The <code>CAP_SYS_ADM</code> capability, for example, which should be one of the <a rel="nofollow" class="external text" href="https://lwn.net/Articles/486306/">goals of a secure sandbox</a>: <code>CapabilityBoundingSet=~ CAP_SYS_ADM</code>
-</li></ul>
-</li></ul>
 <h3><span class="mw-headline" id="Notifying_about_failed_services">Notifying about failed services</span></h3>
 <p>In order to notify about service failures, an <code>OnFailure=</code> directive needs to be added to the according service file, for example by using a <a href="#Drop-in_files">drop-in configuration file</a>. Adding this directive to every service unit can be achieved with a top-level drop-in configuration file. For details about top-level drop-ins, see <span class="plainlinks archwiki-template-man" title="$ man 5 systemd.unit"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd.unit.5">systemd.unit(5)</a></span>.
 </p>
@@ -1626,7 +1611,6 @@ Environment=SYSTEMD_LOG_LEVEL=debug
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Move.html" title="Category:Pages or sections flagged with Template:Move">Pages or sections flagged with Template:Move</a></li>
 </ul>
 </div>
 </div>
@@ -1638,8 +1622,8 @@ Environment=SYSTEMD_LOG_LEVEL=debug
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Systemd&amp;oldid=827981">https://wiki.archlinux.org/index.php?title=Systemd&amp;oldid=827981</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 28 February 2025, at 17:07.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Systemd&amp;oldid=829805">https://wiki.archlinux.org/index.php?title=Systemd&amp;oldid=829805</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 25 March 2025, at 08:23.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

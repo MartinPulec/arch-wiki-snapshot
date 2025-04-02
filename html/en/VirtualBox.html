@@ -1137,6 +1137,17 @@
 			<ul id="toc-VirtuaBox_UI_elements_are_improperly_rendered_with_Kvantum_installed-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-VirtualBox_VM_is_taking_exclusive_control_of_an_audio_device,_preventing_PipeWire_from_accessing_it_while_the_VM_is_running" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#VirtualBox_VM_is_taking_exclusive_control_of_an_audio_device,_preventing_PipeWire_from_accessing_it_while_the_VM_is_running">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">5.29</span>
+					<span>VirtualBox VM is taking exclusive control of an audio device, preventing PipeWire from accessing it while the VM is running</span>
+				</div>
+			</a>
+			
+			<ul id="toc-VirtualBox_VM_is_taking_exclusive_control_of_an_audio_device,_preventing_PipeWire_from_accessing_it_while_the_VM_is_running-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1">
@@ -2249,12 +2260,32 @@ bcdboot D:\Windows /s S: /f UEFI
 <p>Then follow the same method as in <a href="#Run_a_native_Windows_installation_inside_VirtualBox">#Run a native Windows installation inside VirtualBox</a> for the configuration and virtual disk attachement.
 </p>
 <h3><span class="mw-headline" id="Set_guest_starting_resolution">Set guest starting resolution</span></h3>
-<p>You can change the BIOS/UEFI booting resolution using <code>VBoxManage</code> tool. For example:
+<p>Typically after installing Guest Additions, a fullscreen Arch guest running X will be set to the optimal resolution for your display; however, the virtual console's framebuffer will be set to a standard, often smaller, resolution detected from VirtualBox's custom VESA driver.
 </p>
-<pre>$ VBoxManage setextradata "Your Virtual Machine Name" "VBoxInternal2/EfiGraphicsResolution" "2560x1440"
+<p>To use the virtual consoles at optimal resolution, Arch needs to recognize that resolution as valid, which in turn requires VirtualBox to pass this information along to the guest OS.
+</p>
+<p>First, check if your desired resolution is not already recognized by running the command (<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=hwinfo">hwinfo</a></span> need to be installed):
+</p>
+<pre>hwinfo --framebuffer
 </pre>
-<p>Recommended resolutions are 1280x720, 1920x1080, 2048x1080, 2560x1440, 3840x2160, 1280x800, 1280x1024, 1440x900, 1600x900.
+<p>If the optimal resolution does not show up, then you will need to run the <code>VBoxManage</code> tool on the host machine and add "extra resolutions" to your virtual machine (on a Windows host, go to the VirtualBox installation directory to find <code>VBoxManage.exe</code>). For example:
 </p>
+<pre>$ VBoxManage setextradata "Arch Linux" "CustomVideoMode1" "1360x768x24"
+</pre>
+<p>The parameters "Arch Linux" and "1360x768x24" in the example above should be replaced with your VM name and the desired framebuffer resolution. Incidentally, this command allows for defining up to 16 extra resolutions ("CustomVideoMode1" through "CustomVideoMode16"). Recommended resolutions are 1280x720, 1920x1080, 2048x1080, 2560x1440, 3840x2160, 1280x800, 1280x1024, 1440x900, 1600x900.
+</p>
+<p>Afterwards, restart the virtual machine and run <code>hwinfo --framebuffer</code> once more to verify that the new resolutions have been recognized by your guest system (which does not guarantee they will all work, depending on your hardware limitations).
+</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> As of VirtualBox 5.2, <code>hwinfo --framebuffer</code> might not show any output, but you should still be able to set a custom resolution following this procedure.</div>
+<p>Finally, add a <code>video=<i>resolution</i></code> <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a> to set the framebuffer to the new resolution, for example:
+</p>
+<pre>video=1360x768
+</pre>
+<p>Additionally you may want to configure your <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> to use the same resolution. If you use GRUB, see <a href="../en/GRUB/Tips_and_tricks.html#Setting_the_framebuffer_resolution" title="GRUB/Tips and tricks">GRUB/Tips and tricks#Setting the framebuffer resolution</a>.
+</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> Neither the kernel parameter <code>vga</code> nor the boot loader's resolution settings (e.g. GRUB's <code>GRUB_GFXPAYLOAD_LINUX</code>) will fix the framebuffer, since they are overriden by virtue of Kernel Mode Setting. The framebuffer resolution must be set by the kernel parameter <code>video</code> as described above.</div>
 <h3><span class="mw-headline" id="SSH_from_host_to_guest">SSH from host to guest</span></h3>
 <p>The network tab of the virtual machine settings contains, in "Advanced", a tool to create port forwarding.
 It is possible to use it to forward the Guest ssh port <code>22</code> to a Host port, e.g. <code>3022</code> :
@@ -2462,6 +2493,21 @@ To not affect the other Qt applications (which usually work well with Wayland), 
 <ul><li>This makes an exception for virtualbox windows to be ignored.</li></ul>
 </li>
 </ul>
+<h3>
+<span id="VirtualBox_VM_is_taking_exclusive_control_of_an_audio_device.2C_preventing_PipeWire_from_accessing_it_while_the_VM_is_running"></span><span class="mw-headline" id="VirtualBox_VM_is_taking_exclusive_control_of_an_audio_device,_preventing_PipeWire_from_accessing_it_while_the_VM_is_running">VirtualBox VM is taking exclusive control of an audio device, preventing PipeWire from accessing it while the VM is running</span>
+</h3>
+<p>By default, VirtualBox should auto-select the best audio driver. However, on PipeWire systems this often falls back to ALSA (see <a rel="nofollow" class="external text" href="https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/1672">Pipewire issue</a>).
+</p>
+<p>It could cause journal records like these:
+</p>
+<pre>pipewire[2370]: spa.audioadapter: params Spa:Enum:ParamId:EnumFormat: 1:0 (convert format) Device or reso&gt;
+pipewire[2370]: pw.node: (alsa_output.pci-0000_00_1f.3-platform-skl_hda_dsp_generic.HiFi__Speaker__sink-6&gt;
+pipewire[2370]: spa.alsa: '_ucm0001.hw:sofhdadsp': playback open failed: Device or resource busy
+</pre>
+<p>The solution is to configure VirtualBox to use the PulseAudio backend (which PipeWire will handle <a href="../en/PipeWire.html#PulseAudio_clients" title="PipeWire">via pipewire-pulse</a>):
+</p>
+<pre>$ VBoxManage modifyvm "<i>Your VM Name</i>" --audio-driver pulse --audio-controller hda
+</pre>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul><li>
 <a rel="nofollow" class="external text" href="https://www.virtualbox.org/manual/UserManual.html">User Guide</a> on a single HTML page</li></ul>
@@ -2488,8 +2534,8 @@ To not affect the other Qt applications (which usually work well with Wayland), 
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=VirtualBox&amp;oldid=827340">https://wiki.archlinux.org/index.php?title=VirtualBox&amp;oldid=827340</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 18 February 2025, at 20:39.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=VirtualBox&amp;oldid=829457">https://wiki.archlinux.org/index.php?title=VirtualBox&amp;oldid=829457</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 19 March 2025, at 11:29.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

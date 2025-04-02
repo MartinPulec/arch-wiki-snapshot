@@ -546,7 +546,7 @@ Address=('10.0.0.1/24')</pre>
 <h3>
 <span id="ADSL_connection.2FPPPoE"></span><span class="mw-headline" id="ADSL_connection/PPPoE">ADSL connection/PPPoE</span>
 </h3>
-<p>Using rp-pppoe, we can connect an ADSL modem to the <code>extern0</code> interface of the firewall and have Arch manage the connection. Make sure to put the modem in <i>bridged</i> mode though (either half-bridge or RFC1483), otherwise, the modem will act as a router too. <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=rp-pppoe">rp-pppoe</a></span> package.
+<p>Using <a href="../en/Ppp.html" title="Ppp">ppp</a>, we can connect an ADSL modem to the <code>extern0</code> interface of the firewall and have Arch manage the connection. Make sure to put the modem in <i>bridged</i> mode though (either half-bridge or RFC1483), otherwise, the modem will act as a router too. <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=ppp">ppp</a></span> package.
 </p>
 <p>It should be noted that if you use only PPPoE to connect to the internet (i.e. you do not have another WAN port, except for the one that connects to your modem) you do not need to set up the <code>extern0-profile</code> as the external pseudo-interface will be ppp0.
 </p>
@@ -581,7 +581,8 @@ Address=('10.0.0.1/24')</pre>
 <td><a rel="nofollow" class="external text" href="https://github.com/Akkadius/glass-isc-dhcp">Glass-ISC-DHCP</a></td>
 <td>?</td>
 <td>File</td>
-<td>Superseded by Kea.
+<td>
+<a rel="nofollow" class="external text" href="https://www.isc.org/blogs/isc-dhcp-eol/">Unmaintained since 2022</a>. Superseded by Kea.
 </td>
 </tr>
 <tr>
@@ -596,10 +597,10 @@ Address=('10.0.0.1/24')</pre>
 </td>
 </tr>
 <tr>
-<td><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=kea">kea</a></span></td>
+<td><a href="../en/Kea.html" title="Kea">Kea</a></td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
-<td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
+<td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;"><a rel="nofollow" class="external text" href="https://gitlab.isc.org/isc-projects/kea/-/issues/879">No</a></td>
 <td><a rel="nofollow" class="external text" href="https://github.com/isc-projects/stork">Stork</a></td>
 <td>REST, RADIUS, NETCONF</td>
 <td>File, MySQL, PostgreSQL, Cassandra</td>
@@ -694,7 +695,7 @@ dhcp-range=10.0.0.2,10.0.0.255,255.255.255.0,1h # defines a DHCP-range for the L
 <div>
 <b>Reason:</b> Add an offline method to generate an ULA. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Router.html">Talk:Router</a>)</div>
 </div>
-<p>For internal networking the block <code>fc00::/7</code> has been reserved. These addresses are guaranteed to be unique and non-routable from the open Internet. Addresses that belong to the <code>fc00::/7</code> block are called <a href="https://en.wikipedia.org/wiki/Unique_local_address" class="extiw" title="wikipedia:Unique local address">Unique Local Addresses</a>. To get started <a rel="nofollow" class="external text" href="https://www.simpledns.com/private-ipv6.aspx">generate a ULA /64 block</a> to use in your network. For this example we will use <code>fd00:aaaa:bbbb:cccc::/64</code>. Firstly, we must assign a static IPv6 on the internal interface. Modify the <code>intern0-profile</code> we created above to include the following line:
+<p>For internal networking the block <code>fc00::/7</code> has been reserved. These addresses are guaranteed to be unique and non-routable from the open Internet. Addresses that belong to the <code>fc00::/7</code> block are called <a href="https://en.wikipedia.org/wiki/Unique_local_address" class="extiw" title="wikipedia:Unique local address">Unique Local Addresses</a>. To get started <a rel="nofollow" class="external text" href="https://www.simpledns.com/private-ipv6.aspx">generate a ULA /64 block</a><sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2025-03-15 ⓘ]</sup> to use in your network. For this example we will use <code>fd00:aaaa:bbbb:cccc::/64</code>. Firstly, we must assign a static IPv6 on the internal interface. Modify the <code>intern0-profile</code> we created above to include the following line:
 </p>
 <pre> Address6=('fd00:aaaa:bbbb:cccc::1/64')
 </pre>
@@ -755,6 +756,7 @@ dhcp-range=10.0.0.2,10.0.0.255,255.255.255.0,1h # defines a DHCP-range for the L
 <ul>
 <li><a href="../en/Simple_stateful_firewall.html" title="Simple stateful firewall">Simple stateful firewall</a></li>
 <li><a href="../en/Internet_sharing.html" title="Internet sharing">Internet sharing</a></li>
+<li><a rel="nofollow" class="external text" href="https://routersecurity.org/">Router Security</a></li>
 </ul>
 </div>
 </div>
@@ -769,6 +771,7 @@ dhcp-range=10.0.0.2,10.0.0.255,255.255.255.0,1h # defines a DHCP-range for the L
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Merge.html" title="Category:Pages or sections flagged with Template:Merge">Pages or sections flagged with Template:Merge</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
+<li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li>
 </ul>
 </div>
 </div>
@@ -780,8 +783,8 @@ dhcp-range=10.0.0.2,10.0.0.255,255.255.255.0,1h # defines a DHCP-range for the L
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Router&amp;oldid=815710">https://wiki.archlinux.org/index.php?title=Router&amp;oldid=815710</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 1 September 2024, at 14:26.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Router&amp;oldid=830285">https://wiki.archlinux.org/index.php?title=Router&amp;oldid=830285</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 1 April 2025, at 02:07.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

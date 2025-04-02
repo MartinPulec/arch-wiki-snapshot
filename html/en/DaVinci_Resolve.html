@@ -373,6 +373,17 @@
 			<ul id="toc-Unable_to_start_(libpango/glib)-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Unable_to_start_(wayland)" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Unable_to_start_(wayland)">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.18</span>
+					<span>Unable to start (wayland)</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Unable_to_start_(wayland)-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1">
@@ -889,6 +900,12 @@ wmclassmatch=1</pre>
 </p>
 <pre>$ ffmpeg -i input.mp4 -c:v copy -c:a pcm_s32le output.mp4
 </pre>
+<p>If your space is limited, you could use this option (still x4..5 increase in file size) - but bear in mind, this is a lossy format so you could possibly get compression artefacts at later stages - for example, due to color correction - and <b>lose your work</b> :
+</p>
+<pre>$ ffmpeg -i input.mp4 -c:v mpeg4 -q:v 2 -c:a alac output.mp4
+</pre>
+<p>You could also use alac codec for initial recording in OBS, and then copy audio with "-c:a copy" as ffmpeg parameter, to avoid encoding.
+</p>
 <p>You can automate this task using <a href="../en/Incron.html" title="Incron">incron</a>. It will automatically convert files appeared in specified folder. See setup example on <a rel="nofollow" class="external text" href="https://passthroughpo.st/painless-linux-video-production-part-3-organization-and-workflow/#:~:text=Auto%2DTranscode%20Your%20Footage">this article</a>. Another alternative is to write a resolve script for that purpose. See documentation for Resolve Scripting (linked in the see also section) for more information.
 </p>
 <h4><span class="mw-headline" id="Workaround_for_DaVinci_Resolve_Studio">Workaround for DaVinci Resolve Studio</span></h4>
@@ -1034,8 +1051,18 @@ Another workaround is to remove a few libs from Resolve's directory. This way Re
 /opt/resolve/libs/libgio-2.0.so*
 /opt/resolve/libs/libgmodule-2.0.so*
 </pre>
-<p><br>
+<h3>
+<span id="Unable_to_start_.28wayland.29"></span><span class="mw-headline" id="Unable_to_start_(wayland)">Unable to start (wayland)</span>
+</h3>
+<p>In a <a href="../en/Wayland.html" title="Wayland">wayland</a> session, environment variable <code>QT_QPA_PLATFORM=wayland</code> may be already set to enable other QT programs to launch with Wayland support. However, DaVinci Resolve will fail to launch with the following error:
 </p>
+<pre>qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
+</pre>
+<p>DaVinci Resolve can instead be forced to use <a href="../en/Xorg.html" class="mw-redirect" title="X11">X11</a> when launched with:
+</p>
+<pre>QT_QPA_PLATFORM=xcb /opt/resolve/bin/resolve
+</pre>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul>
 <li>
@@ -1068,8 +1095,8 @@ Another workaround is to remove a few libs from Resolve's directory. This way Re
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=DaVinci_Resolve&amp;oldid=827445">https://wiki.archlinux.org/index.php?title=DaVinci_Resolve&amp;oldid=827445</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 20 February 2025, at 22:31.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=DaVinci_Resolve&amp;oldid=830144">https://wiki.archlinux.org/index.php?title=DaVinci_Resolve&amp;oldid=830144</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 30 March 2025, at 00:43.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

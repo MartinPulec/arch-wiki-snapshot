@@ -66,10 +66,21 @@
 			</button>
 		
 		<ul id="toc-Configuration-sublist" class="vector-toc-list">
-			<li id="toc-Restrict_access_to_localhost" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Restrict_access_to_localhost">
+			<li id="toc-Enable_rndc_access" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Enable_rndc_access">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">2.1</span>
+					<span>Enable rndc access</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Enable_rndc_access-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Restrict_access_to_localhost" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Restrict_access_to_localhost">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">2.2</span>
 					<span>Restrict access to localhost</span>
 				</div>
 			</a>
@@ -80,7 +91,7 @@
 		<li id="toc-Set_up_DNS_forwarding" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Set_up_DNS_forwarding">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">2.2</span>
+					<span class="vector-toc-numb">2.3</span>
 					<span>Set up DNS forwarding</span>
 				</div>
 			</a>
@@ -91,7 +102,7 @@
 		<li id="toc-Serve_DNS_over_TLS_or_HTTPS" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Serve_DNS_over_TLS_or_HTTPS">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">2.3</span>
+					<span class="vector-toc-numb">2.4</span>
 					<span>Serve DNS over TLS or HTTPS</span>
 				</div>
 			</a>
@@ -126,15 +137,26 @@
 			<ul id="toc-Creating_a_zonefile-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Configuring_master_server" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Configuring_master_server">
+		<li id="toc-Configuring_primary_server" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Configuring_primary_server">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">3.2</span>
-					<span>Configuring master server</span>
+					<span>Configuring primary server</span>
 				</div>
 			</a>
 			
-			<ul id="toc-Configuring_master_server-sublist" class="vector-toc-list">
+			<ul id="toc-Configuring_primary_server-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Configuring_secondary_server" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Configuring_secondary_server">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.3</span>
+					<span>Configuring secondary server</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Configuring_secondary_server-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -340,30 +362,83 @@
 <p>To use the DNS server locally, use the <code>127.0.0.1</code> nameserver (meaning clients like Firefox resolve via 127.0.0.1), see <a href="../en/Domain_name_resolution.html" title="Domain name resolution">Domain name resolution</a>. This will however require you to <a href="#Allow_recursion">#Allow recursion</a> while a firewall might block outside queries to your local named.
 </p>
 <h2><span class="mw-headline" id="Configuration">Configuration</span></h2>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
+<div>
+<b>Reason:</b> Add instruction for configuring BIND as the local DNS server in <code>/etc/resolv.conf</code> (both directly and also via <a href="../en/Openresolv.html" title="Openresolv">openresolv</a>). (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:BIND.html">Talk:BIND</a>)</div>
+</div>
 <p>BIND is configured in <code>/etc/named.conf</code>. The available options are documented in <span class="plainlinks archwiki-template-man" title="$ man 5 named.conf"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/named.conf.5">named.conf(5)</a></span>.
 </p>
 <p><a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Reload">Reload</a> the <code>named.service</code> unit to apply configuration changes.
 </p>
+<h3><span class="mw-headline" id="Enable_rndc_access">Enable rndc access</span></h3>
+<p>In order to control BIND using <span class="plainlinks archwiki-template-man" title="$ man 8 rndc"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/rndc.8">rndc(8)</a></span>, you need to set up TSIG key for it and tell BIND to allow name server control with that key.
+</p>
+<p>First, generate TSIG key for this purpose:
+</p>
+<pre>$ tsig-keygen console
+key "console" {
+    algorithm hmac-sha256;
+    secret "<i>secret</i>";
+};
+</pre>
+<p>Copy the output to both <code>/etc/named.conf</code> and <code>/etc/rndc.conf</code>.
+</p>
+<p>In <code>/etc/rndc.conf</code>, append default name server connection:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/rndc.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">...
+options {
+    default-key "console";
+    default-server 127.0.0.1;
+    default-port 953;
+};
+</pre>
+<p>Allow <code>rndc</code> control from localhost in
+<code>/etc/named.conf</code>:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/named.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">...
+controls {
+    inet 127.0.0.1 port 953 allow { 127.0.0.1; } keys { "console"; };
+};
+...
+</pre>
+<p>Now you can use <code>rndc</code> to control the local DNS server. For example, to check server status:
+</p>
+<pre>$ rndc status </pre>
+<p>Reloading server configuration can also be done by:
+</p>
+<pre># rndc reload </pre>
 <h3><span class="mw-headline" id="Restrict_access_to_localhost">Restrict access to localhost</span></h3>
-<p>BIND by default listens on port 53 of all interfaces and IP addresses. To only allow connections from localhost add the following line to the <code>options</code> section in <code>/etc/named.conf</code>:
+<p>BIND by default listens on port <code>53</code> of all interfaces and IP addresses. To only allow connections from localhost, add the following line to the <code>options</code> section in <code>/etc/named.conf</code>:
 </p>
 <pre>listen-on { 127.0.0.1; };
 listen-on-v6 { ::1; };
+allow-recursion { 127.0.0.1; ::1; };
 </pre>
 <h3><span class="mw-headline" id="Set_up_DNS_forwarding">Set up DNS forwarding</span></h3>
-<p>To make BIND forward DNS queries to another DNS server add the <code>forwarders</code> clause to the <code>options</code> section.
+<p>To make BIND forward DNS queries to another DNS server, add the <code>forwarders</code> clause to the <code>options</code> section.
 </p>
-<p>Example to make BIND forward to the Google Public DNS servers:
+<p>For example, to make BIND forward to the Google Public DNS servers using DNS over TLS:
 </p>
-<pre>forwarders {
-    8.8.8.8; 2001:4860:4860::8888;
-    8.8.4.4; 2001:4860:4860::8844;
+<pre>tls google {
+    remote-hostname "dns.google";
+};
+
+options {
+...
+    forward only;
+    forwarders port 853 tls google {
+        8.8.8.8; 2001:4860:4860::8888;
+        8.8.4.4; 2001:4860:4860::8844;
+    };
 };
 </pre>
-<p>(As of 9.18, only plaintext DNS servers are supported as forwarders.)
-</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> This example uses Google Public DNS. Replace it with a DNS resolver you trust. See <a href="../en/Domain_name_resolution.html#Third-party_DNS_services" title="Domain name resolution">Domain name resolution#Third-party DNS services</a>.</div>
 <h3><span class="mw-headline" id="Serve_DNS_over_TLS_or_HTTPS">Serve DNS over TLS or HTTPS</span></h3>
-<p>To enable serving DNS over TLS or HTTPS in BIND 9.18, define a <a rel="nofollow" class="external text" href="https://downloads.isc.org/isc/bind9/9.18.0/doc/arm/html/reference.html#tls">tls</a> block specifying your certificate, then add <a rel="nofollow" class="external text" href="https://downloads.isc.org/isc/bind9/9.18.0/doc/arm/html/reference.html#interfaces">listen-on</a> clauses enabling DNS over TLS and HTTPS listeners (as well as a standard DNS listener).
+<p>To enable serving DNS over TLS or HTTPS in BIND, define a <a rel="nofollow" class="external text" href="https://downloads.isc.org/isc/bind9/cur/9.20/doc/arm/html/reference.html#tls-block-grammar">tls</a> block specifying your certificate, then add <a rel="nofollow" class="external text" href="https://downloads.isc.org/isc/bind9/cur/9.20/doc/arm/html/reference.html#interfaces">listen-on</a> clauses enabling DNS over TLS and HTTPS listeners (as well as a standard DNS listener).
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/named.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">tls mycert {
@@ -380,9 +455,9 @@ options {
     listen-on    tls mycert { any; };
     listen-on-v6 tls mycert { any; };
     
-    // Add a DNS over HTTPS listener on custom port
-    listen-on    port 9443 tls mycert http default { any; };
-    listen-on-v6 port 9443 tls mycert http default { any; };
+    // Add a DNS over HTTPS listener on standard HTTPS port 443
+    listen-on    tls mycert http default { any; };
+    listen-on-v6 tls mycert http default { any; };
     
     // If needed, add a cleartext HTTP listener for a reverse proxy
     //listen-on    port 8443 tls none http default { 127.0.0.1; };
@@ -390,7 +465,7 @@ options {
 };
 ...
 </pre>
-<p>Note that <code>tls{}</code> is defined at the top level, <i>not</i> inside the <code>options{}</code> block.
+<p>Note that <code>tls{</code>} is defined at the top level, <i>not</i> inside the <code>options{</code>} block.
 </p>
 <h2><span class="mw-headline" id="A_configuration_template_for_running_a_domain">A configuration template for running a domain</span></h2>
 <p>Following is a simple home nameserver being set up, using <i>domain.tld</i> as the domain being served world-wide like this wiki's <i>archlinux.org</i> domain is.
@@ -436,16 +511,36 @@ smtp            CNAME   mail</pre>
 </p>
 <p>Serial must be <b>incremented</b> manually before reloading named every time you change a resource record for the zone. Otherwise secondary servers (replicas or slaves) will not re-transfer the zone: they only do it if the serial is <b>greater</b> than that of the last time they transferred the zone. This example uses the somewhat common <code>YYYYMMDDXX</code> format, but this is not required; the serial number can also just start at 1.
 </p>
-<h3><span class="mw-headline" id="Configuring_master_server">Configuring master server</span></h3>
+<h3><span class="mw-headline" id="Configuring_primary_server">Configuring primary server</span></h3>
 <p>Add your zone to <code>/etc/named.conf</code>:
 </p>
 <pre> zone "domain.tld" IN {
-         type master;
+         type primary;
          file "domain.tld.zone";
          allow-update { none; };
  };
 </pre>
 <p><a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Reload">Reload</a> the <code>named.service</code> unit to apply the configuration change.
+</p>
+<h3><span class="mw-headline" id="Configuring_secondary_server">Configuring secondary server</span></h3>
+<p>In case you have two or more servers, you can set up all but one of them as secondary, where the zone is retrieved from primary via AXFR transfer.
+</p>
+<p>On primary, explicitly allow zone transfers from secondary:
+</p>
+<pre>zone "domain.tld" IN {
+        ...
+        allow-transfer { 198.51.100.5; 20001:db8:113::4; };
+};
+</pre>
+<p>On secondary, add the zone to <code>/etc/named.conf</code>:
+</p>
+<pre>zone "domain.tld" IN {
+        type secondary;
+        file "domain.tld.zone";
+        primaries { 203.0.113.4; 2001:db8:113::4; };
+};
+</pre>
+<p><a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Reload">Reload</a> <code>named.service</code> or use <span class="plainlinks archwiki-template-man" title="$ man 8 rndc"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/rndc.8">rndc(8)</a></span> to reload both primary and secondary servers configuration.
 </p>
 <h2><span class="mw-headline" id="Allow_recursion">Allow recursion</span></h2>
 <p>If you are running your own DNS server, you might as well use it for all DNS lookups, or even <a href="#Serve_the_root_zone_locally">#Serve the root zone locally</a> by yourself. The former will require the ability to do <i>recursive</i> lookups. In order to prevent <a rel="nofollow" class="external text" href="https://www.us-cert.gov/ncas/alerts/TA13-088A">DNS Amplification Attacks</a>, recursion is turned off by default for most resolvers. The default Arch <code>/etc/named.conf</code> file allows for recursion only on the loopback interface:
@@ -467,39 +562,99 @@ smtp            CNAME   mail</pre>
 };
 </pre>
 <h2><span class="mw-headline" id="Configuring_BIND_to_serve_DNSSEC_signed_zones">Configuring BIND to serve DNSSEC signed zones</span></h2>
-<p><a href="../en/DNSSEC.html" title="DNSSEC">DNSSEC</a> validation is enabled by default. Do not forget to check that "edns" is not disabled.
+<p>BIND makes it easy to serve <a href="../en/DNSSEC.html" title="DNSSEC">DNSSEC</a>-signed zones with <i>Key and Signing Policy</i> (KASP) facility, where it takes care of zone signing and key management automatically for you using user-defined policy.
 </p>
-<p>On master DNS server:
+<p>Create separate directory to store keys, writable by the server:
 </p>
-<ul><li>generate KSK and ZSK keys:</li></ul>
-<pre> $ dnssec-keygen -a NSEC3RSASHA1 -b 2048 -n ZONE example.com
- $ dnssec-keygen -f KSK -a NSEC3RSASHA1 -b 4096 -n ZONE example.com
+<pre># mkdir /var/named/keys
+# chown named:named /var/named/keys
 </pre>
-<ul><li>change zone configuration:</li></ul>
-<pre> zone "example.com" {
-       type master;
-       allow-transfer { ... };
-       auto-dnssec maintain;
-       inline-signing yes;
-       key-directory "master/";
-       file "master/example.com.zone";
- };
+<p>Instruct BIND to store keys in aforementioned directory:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/named.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">options {
+    ...
+    key-directory "/var/named/keys";
+    ...
+};
 </pre>
-<p>Now bind will sign zone automatically. (This example assumes that all required files are in <code>/var/named/master/</code>)
+<p>Now zones can be signed by applying the desired policy. In most cases, you can apply up-to-date DNSSEC best practices with <code>default</code> policy:
 </p>
-<p>Then you should pass DS records (from <code>dsset-example.com.</code> file) to parent zone owner probably using your registrar website. It glues parent zone with your KSK.
-</p>
-<p>KSK (and corresponding DS records) should be changed rarely because it needs manual intervention, ZSK can be changed more often because this key is usually shorter to be faster in signature checking.
-</p>
-<p>You can schedule old ZSK key expiration and generate new one using:
-</p>
-<pre> $ dnssec-settime -I +172800 -D +345600 Kexample.com.+000+111111.key
- $ dnssec-keygen -S Kexample.com.+000+111111.key -i 152800
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/named.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">zone "domain.tld" IN {
+        ...
+        dnssec-policy default;
+};
 </pre>
-<p>Bind should automatically use new ZSK key at appropriate time.
+<p>This will sign the zone with single <code>ecdsap256sha256</code> combined signing key (CSK) with unlimited key lifetime, signed via <code>inline-signing</code> where the server generates the signed zone separately without having to set-up dynamic DNS.
 </p>
-<p>There are external mechanisms such as OpenDNSSEC with fully-automatic key rollover available.
+<p>If needed, a custom policy can be defined with <code>dnssec-policy</code> block. For example, the <code>main</code> policy signs the zone with traditional key signing key (KSK, rotated yearly) and zone signing key (ZSK, rotated monthly) split, alongside with timing parameters and NSEC3 denial-of-existence:
 </p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/named.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">dnssec-policy main {
+    keys {
+        ksk lifetime P1Y algorithm ecdsap256sha256;
+        zsk lifetime P1M algorithm ecdsap256sha256;
+    };
+    publish-safety 1h;
+    retire-safety 1h;
+    purge-keys 1h;
+    signatures-refresh P3D;
+    signatures-validity P3W;
+    signatures-validity-dnskey P3W;
+    inline-signing yes;
+    nsec3param iterations 0 optout no salt-length 0;
+};
+...
+</pre>
+<p>The custom policy can be applied in the same way as default policy earlier:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/named.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">zone "domain.tld" IN {
+    ...
+    dnssec-policy main;
+};
+</pre>
+<p>Increment the zone's serial and reload the server configuration.
+</p>
+<p>The last step is to establish chain of trust with parent zone. First, check DNSSEC status of the zone:
+</p>
+<pre>$ rndc dnssec -status domain.tld
+dnssec-policy: main
+current time:  Tue Mar 25 08:51:53 2025
+
+key: 58785 (ECDSAP256SHA256), KSK
+  published:      yes - since Tue Mar 25 08:47:23 2025
+  key signing:    yes - since Tue Mar 25 08:47:23 2025
+
+  Next rollover scheduled on Wed Mar 25 06:42:23 2026
+  - goal:           omnipresent
+  - dnskey:         rumoured
+  - ds:             hidden
+  - key rrsig:      rumoured
+
+key: 5017 (ECDSAP256SHA256), ZSK
+  published:      yes - since Tue Mar 25 08:47:23 2025
+  zone signing:   yes - since Tue Mar 25 08:47:23 2025
+
+  Next rollover scheduled on Fri Apr 25 06:42:23 2025
+  - goal:           omnipresent
+  - dnskey:         rumoured
+  - zone rrsig:     rumoured
+</pre>
+<p>Here, the KSK key ID is 58785. Yours will be different.
+</p>
+<p>Generate the DS record (replace key ID as appropriate):
+</p>
+<pre>$ dnssec-dsfromkey -2 /var/named/keys/Kdomain.tld.+013+<i>58785</i>
+domain.tld. IN DS <i>58785</i> 13 2 <i>hash</i>
+</pre>
+<p>Submit DS to the parent zone (for example, by filling the web form on your registrar).
+</p>
+<p>When you've confirmed that the DS record has been published in the parent zone, you can signal BIND as such by:
+</p>
+<pre>$ rndc dnssec -checkds -key <i>58785</i> published domain.tld
+</pre>
 <h2><span class="mw-headline" id="Automatically_listen_on_new_interfaces">Automatically listen on new interfaces</span></h2>
 <p>By default bind scan for new interfaces and stop listening on interfaces which no longer exist every hour. You can tune this value by adding :
 </p>
@@ -585,8 +740,8 @@ smtp            CNAME   mail</pre>
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Domain_Name_System.html" title="Category:Domain Name System">Domain Name System</a></li></ul>
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
 </ul>
 </div>
 </div>
@@ -598,8 +753,8 @@ smtp            CNAME   mail</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=BIND&amp;oldid=827912">https://wiki.archlinux.org/index.php?title=BIND&amp;oldid=827912</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 28 February 2025, at 00:35.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=BIND&amp;oldid=830009">https://wiki.archlinux.org/index.php?title=BIND&amp;oldid=830009</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 28 March 2025, at 07:52.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

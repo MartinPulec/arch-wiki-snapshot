@@ -218,21 +218,10 @@
 			<ul id="toc-Failing_to_start_Samba_SMB/CIFS_server-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-No_events_caught_by_aa-logprof" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#No_events_caught_by_aa-logprof">
-				<div class="vector-toc-text">
-					<span class="vector-toc-numb">5.2</span>
-					<span>No events caught by aa-logprof</span>
-				</div>
-			</a>
-			
-			<ul id="toc-No_events_caught_by_aa-logprof-sublist" class="vector-toc-list">
-			</ul>
-		</li>
 		<li id="toc-Login_impossible_after_upgrading_to_AppArmor_v4" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Login_impossible_after_upgrading_to_AppArmor_v4">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">5.3</span>
+					<span class="vector-toc-numb">5.2</span>
 					<span>Login impossible after upgrading to AppArmor v4</span>
 				</div>
 			</a>
@@ -243,7 +232,7 @@
 		<li id="toc-Differences_between_Linux_distributions" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Differences_between_Linux_distributions">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">5.4</span>
+					<span class="vector-toc-numb">5.3</span>
 					<span>Differences between Linux distributions</span>
 				</div>
 			</a>
@@ -552,11 +541,6 @@ write-cache</pre>
 </h3>
 <p>See <a href="../en/Samba.html#Permission_issues_on_AppArmor" title="Samba">Samba#Permission issues on AppArmor</a>.
 </p>
-<h3><span class="mw-headline" id="No_events_caught_by_aa-logprof">No events caught by aa-logprof</span></h3>
-<p><a href="../en/Audit_framework.html" title="Audit framework">Audit framework</a> logs may have the special character <code>0x1d</code><a rel="nofollow" class="external autonumber" href="https://github.com/linux-audit/audit-userspace/issues/3">[5]</a>. There is a <a rel="nofollow" class="external text" href="https://gitlab.com/apparmor/apparmor/-/issues/271">AppArmor bug report</a>, but a workaround is to run:
-</p>
-<pre># aa-logprof -f &lt;(sed 's/\x1d.*//' &lt; /var/log/audit/audit.log)
-</pre>
 <h3><span class="mw-headline" id="Login_impossible_after_upgrading_to_AppArmor_v4">Login impossible after upgrading to AppArmor v4</span></h3>
 <p>In rare cases, after upgrading to AppArmor version 4, <a rel="nofollow" class="external text" href="https://gitlab.archlinux.org/archlinux/packaging/packages/apparmor/-/issues/2">it becomes impossible to log into any system account</a>.
 </p>
@@ -578,7 +562,7 @@ kernel: audit: type=1400 audit(1730844640.468:172): apparmor="DENIED" operation=
 <h3><span class="mw-headline" id="Differences_between_Linux_distributions">Differences between Linux distributions</span></h3>
 <p>Information you find often is about AppArmor on Ubuntu, which can be confusing, since Ubuntu carries a lot of kernel patches regarding AppArmor. Other distributions may also carry their own kernel patches, while Arch Linux uses a close-to-mainline kernel.
 </p>
-<p>For example, while <span class="plainlinks archwiki-template-man" title="$ man 5 apparmor.d"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/apparmor.d.5">apparmor.d(5)</a></span> already documents <code>dbus</code> rules, they require support from AppArmor userspace tools, kernel and D-Bus daemon<a rel="nofollow" class="external autonumber" href="https://security.stackexchange.com/questions/200496/apparmor-how-to-enable-dbus-feature-of-apparmor-dbus-mediation-in-the-linu">[6]</a>. The corresponding kernel patch<a rel="nofollow" class="external autonumber" href="https://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/oracular/commit/?id=938de00f4fc19da963a67bfca3526f493c6460e4">[7]</a> is applied by Ubuntu, but not included in mainline Linux and <a href="../en/Kernel.html#Officially_supported_kernels" title="Kernel">official Arch kernels</a>. (Support also varies by <a href="../en/D-Bus.html#Implementations" class="mw-redirect" title="Dbus">D-Bus implementation</a>.)
+<p>For example, while <span class="plainlinks archwiki-template-man" title="$ man 5 apparmor.d"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/apparmor.d.5">apparmor.d(5)</a></span> already documents <code>dbus</code> rules, they require support from AppArmor userspace tools, kernel and D-Bus daemon<a rel="nofollow" class="external autonumber" href="https://security.stackexchange.com/questions/200496/apparmor-how-to-enable-dbus-feature-of-apparmor-dbus-mediation-in-the-linu">[5]</a>. The corresponding kernel patch<a rel="nofollow" class="external autonumber" href="https://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/oracular/commit/?id=938de00f4fc19da963a67bfca3526f493c6460e4">[6]</a> is applied by Ubuntu, but not included in mainline Linux and <a href="../en/Kernel.html#Officially_supported_kernels" title="Kernel">official Arch kernels</a>. (Support also varies by <a href="../en/D-Bus.html#Implementations" class="mw-redirect" title="Dbus">D-Bus implementation</a>.)
 </p>
 <p>AppArmor-specific kernel patches applied by Ubuntu can be found at (replace <code><i>oracular</i></code> with the codename of the Ubuntu version you are interested in):
 </p>
@@ -621,8 +605,8 @@ kernel: audit: type=1400 audit(1730844640.468:172): apparmor="DENIED" operation=
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=AppArmor&amp;oldid=826071">https://wiki.archlinux.org/index.php?title=AppArmor&amp;oldid=826071</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 28 January 2025, at 14:49.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=AppArmor&amp;oldid=828351">https://wiki.archlinux.org/index.php?title=AppArmor&amp;oldid=828351</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 6 March 2025, at 15:43.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

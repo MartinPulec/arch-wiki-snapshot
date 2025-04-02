@@ -236,6 +236,17 @@
 			<ul id="toc-Kernel_panic_when_updating_and/or_rebooting_the_system-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-GSP_firmware" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#GSP_firmware">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">2.5</span>
+					<span>GSP firmware</span>
+				</div>
+			</a>
+			
+			<ul id="toc-GSP_firmware-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-Visual_issues" class="vector-toc-list-item vector-toc-level-1">
@@ -759,7 +770,7 @@ archlinux kernel: NVRM: Xid (PCI:0000:08:00): 13, pid='&lt;unknown&gt;', name=&l
 <h2><span class="mw-headline" id="Crashes_and_hangs">Crashes and hangs</span></h2>
 <h3><span class="mw-headline" id="Crashing_in_general">Crashing in general</span></h3>
 <ul>
-<li>Try <a href="../../en/Vulkan.html#GSP_firmware" title="Vulkan">disabling the GSP firmware</a>.</li>
+<li>Try <a href="#GSP_firmware">disabling the GSP firmware</a>.</li>
 <li>Try disabling <code>RenderAccel</code> in xorg.conf.</li>
 <li>If Xorg outputs an error about <code>"conflicting memory type"</code> or <code>"failed to allocate primary buffer: out of memory"</code>, or crashes with a "Signal 11" while using nvidia-96xx drivers, add <code>nopat</code> to your <a href="../../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a>.</li>
 <li>If the NVIDIA compiler complains about different versions of GCC between the current one and the one used for compiling the kernel, add in <code>/etc/profile</code>:</li>
@@ -790,6 +801,13 @@ This is reflected in the absence of environments when using Nvidia GPUs even wit
 <p>This is a known bug that is present in the NVIDIA 550 series drivers. <a rel="nofollow" class="external autonumber" href="https://forums.developer.nvidia.com/t/series-550-freezes-laptop/284772">[5]</a> As of yet the cause is unknown however it only appears to affect laptops. See <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?id=293400&amp;p=3">BBS#293400</a> for more details.
 </p>
 <p>To workaround this issue, switch to <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nvidia-open-dkms">nvidia-open-dkms</a></span> if supported by the hardware, otherwise use <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/nvidia-535xx-dkms/">nvidia-535xx-dkms</a></span><sup><small>AUR</small></sup> instead.
+</p>
+<h3><span class="mw-headline" id="GSP_firmware">GSP firmware</span></h3>
+<p>The use of the <a rel="nofollow" class="external text" href="https://download.nvidia.com/XFree86/Linux-x86_64/555.42.02/README/gsp.html">GSP firmware</a>, enabled by default since version 555 of the NVIDIA driver released in June 2024, is known to cause <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?pid=2181317">a range of issues</a> including <a href="../../en/Vulkan.html" title="Vulkan">Vulkan</a> failures and system crashes. 
+</p>
+<p>To disable it, use the <code>NVreg_EnableGpuFirmware=0</code> <a href="../../en/Kernel_module.html#Setting_module_options" class="mw-redirect" title="Module parameter">module parameter</a> for the <code>nvidia</code> kernel module. This only works with the proprietary NVIDIA driver: see <a href="../../en/NVIDIA.html#Installation" title="NVIDIA">NVIDIA#Installation</a> if switching from the open source driver.
+</p>
+<p>Do not forget to <a href="../../en/Mkinitcpio.html#Image_creation_and_activation" class="mw-redirect" title="Regenerate the initramfs">regenerate the initramfs</a> if needed. To have this new kernel module option take effect, reboot.
 </p>
 <h2><span class="mw-headline" id="Visual_issues">Visual issues</span></h2>
 <h3><span class="mw-headline" id="Avoid_screen_tearing">Avoid screen tearing</span></h3>
@@ -1101,8 +1119,8 @@ __EGL_VENDOR_LIBRARY_FILENAMES=/usr/share/glvnd/egl_vendor.d/50_mesa.json
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=NVIDIA/Troubleshooting&amp;oldid=827209">https://wiki.archlinux.org/index.php?title=NVIDIA/Troubleshooting&amp;oldid=827209</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 16 February 2025, at 13:20.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=NVIDIA/Troubleshooting&amp;oldid=829439">https://wiki.archlinux.org/index.php?title=NVIDIA/Troubleshooting&amp;oldid=829439</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 18 March 2025, at 19:56.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

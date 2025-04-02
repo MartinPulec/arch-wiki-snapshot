@@ -284,17 +284,17 @@ MNESIA_BASE=/var/lib/rabbitmq/mnesia</pre>
 <p>Follow <a rel="nofollow" class="external text" href="https://www.rabbitmq.com/access-control.html">RabbitMQ documentation</a> and add your user and virtual host:
 </p>
 <pre>$ cd /var/lib/rabbitmq
-$ su rabbitmq -c 'rabbitmqctl add_user myuser mypassword'
-$ su rabbitmq -c 'rabbitmqctl add_vhost myvhost'
-$ su rabbitmq -c 'rabbitmqctl set_user_tags myuser mytag'
-$ su rabbitmq -c 'rabbitmqctl set_permissions -p myvhost myuser ".*" ".*" ".*"'
+[rabbitmq]$ rabbitmqctl add_user myuser mypassword
+[rabbitmq]$ rabbitmqctl add_vhost myvhost
+[rabbitmq]$ rabbitmqctl set_user_tags myuser mytag
+[rabbitmq]$ rabbitmqctl set_permissions -p myvhost myuser ".*" ".*" ".*"
 </pre>
 <p>Read the <a rel="nofollow" class="external text" href="https://www.rabbitmq.com/admin-guide.html#access-control">RabbitMQ admin guide</a> to understand the above.
 </p>
-<p>If issuing <code>su rabbitmq -c "rabbitmqctl status"</code> results in <code>badrpc,nodedown</code> visit <a rel="nofollow" class="external text" href="http://www.somic.org/2009/02/19/on-rabbitmqctl-and-badrpcnodedown/">this blog post</a> for more information how to fix the problem.
+<p>If issuing <code>rabbitmqctl status</code> results in <code>badrpc,nodedown</code> visit <a rel="nofollow" class="external text" href="http://www.somic.org/2009/02/19/on-rabbitmqctl-and-badrpcnodedown/">this blog post</a> for more information how to fix the problem.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> You may also want to run <code>su rabbitmq -c "erl"</code> and as a result you should get an erlang prompt with no errors</div>
+<strong>Note:</strong> You may also want to run <code>erl</code> and as a result you should get an erlang prompt with no errors</div>
 <h3><span class="mw-headline" id="Security">Security</span></h3>
 <p>You may want to read a security section from <a rel="nofollow" class="external text" href="https://docs.celeryproject.org/en/latest/userguide/security.html">relevant Celery documentation</a>
 </p>
@@ -304,16 +304,13 @@ $ su rabbitmq -c 'rabbitmqctl set_permissions -p myvhost myuser ".*" ".*" ".*"'
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">test.py</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">from celery import Celery
-    
-    app = Celery('tasks', backend='amqp', broker='amqp://myuser:mypassword@localhost:5672/myvhost')
-    
-    @app.task
-    def add(x, y):
-        return x + y</pre>
-<p><code>amqp://myuser:mypassword@localhost:5672/myvhost
-</code>
-</p>
-<p>Use the same credentials/vhost you have created when configuring RabbitMQ
+
+app = Celery('tasks', backend='amqp', broker='amqp://myuser:mypassword@localhost:5672/myvhost')
+
+@app.task
+def add(x, y):
+    return x + y</pre>
+<p><code>amqp://myuser:mypassword@localhost:5672/myvhost</code> - Use the same credentials/vhost you have created when configuring RabbitMQ
 </p>
 <p><code>backend='amqp'</code> - this parameter is optional since RabbitMQ is the default broker utilised by celery.
 </p>
@@ -326,7 +323,6 @@ $ su rabbitmq -c 'rabbitmqctl set_permissions -p myvhost myuser ".*" ".*" ".*"'
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">call.py</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">from test import add
-    
     add.delay(4, 4)</pre>
 <p>Run it:
 </p>
@@ -350,7 +346,7 @@ from celery import Celery
 app = Celery('tasks', backend='amqp', broker='amqp://myuser:mypassword@localhost:5672/myvhost')
 
 if __name__ == '__main__':
- app.start()</pre>
+    app.start()</pre>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/lib/python3.5/site-packages/test_task/test_task.py</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">from __future__ import absolute_import
 
@@ -358,7 +354,7 @@ from test_task.celery import app
 
 @app.task
 def add(x, y):
- return x + y</pre>
+    return x + y</pre>
 <p>At this point if you issue <code>python</code> in your console you should be able to issue following without any error:
 </p>
 <pre>&gt;&gt;&gt; from test_task import celery
@@ -391,8 +387,8 @@ def add(x, y):
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Python_celery&amp;oldid=729864">https://wiki.archlinux.org/index.php?title=Python_celery&amp;oldid=729864</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 16 May 2022, at 12:37.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Python_celery&amp;oldid=829377">https://wiki.archlinux.org/index.php?title=Python_celery&amp;oldid=829377</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 18 March 2025, at 11:07.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

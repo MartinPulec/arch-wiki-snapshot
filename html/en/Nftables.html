@@ -1118,10 +1118,9 @@ table inet my_table {
 		iif lo accept comment "Accept any localhost traffic"
 		ct state invalid drop comment "Drop invalid connections"
 		fib daddr . iif type != { local, broadcast, multicast } drop comment "Drop packets if the destination IP address is not configured on the incoming interface (strong host model)"
-		ct state established,related accept comment "Accept traffic originated from us"
+		ct state { established, related } accept comment "Accept traffic originated from us"
 
-		meta l4proto ipv6-icmp accept comment "Accept ICMPv6"
-		meta l4proto icmp accept comment "Accept ICMP"
+		meta l4proto { icmp, ipv6-icmp } accept comment "Accept ICMP"
 		ip protocol igmp accept comment "Accept IGMP"
 
 		udp dport mdns ip6 daddr ff02::fb accept comment "Accept mDNS"
@@ -1183,10 +1182,9 @@ table inet my_table {
 		iif lo accept comment "Accept any localhost traffic"
 		ct state invalid drop comment "Drop invalid connections"
 		fib daddr . iif type != { local, broadcast, multicast } drop comment "Drop packets if the destination IP address is not configured on the incoming interface (strong host model)"
-		ct state established,related accept comment "Accept traffic originated from us"
+		ct state { established, related } accept comment "Accept traffic originated from us"
 
-		meta l4proto ipv6-icmp accept comment "Accept ICMPv6"
-		meta l4proto icmp accept comment "Accept ICMP"
+		meta l4proto { icmp, ipv6-icmp } accept comment "Accept ICMP"
 		ip protocol igmp accept comment "Accept IGMP"
 
 		udp dport mdns ip6 daddr ff02::fb accept comment "Accept mDNS"
@@ -1228,10 +1226,9 @@ table inet my_table {
 		meta l4proto icmp icmp type echo-request limit rate over 10/second burst 4 packets drop comment "No ping floods"
 		meta l4proto ipv6-icmp icmpv6 type echo-request limit rate over 10/second burst 4 packets drop comment "No ping floods"
 
-		ct state established,related accept comment "Accept traffic originated from us"
+		ct state { established, related } accept comment "Accept traffic originated from us"
 
-		meta l4proto ipv6-icmp accept comment "Accept ICMPv6"
-		meta l4proto icmp accept comment "Accept ICMP"
+		meta l4proto { icmp, ipv6-icmp } accept comment "Accept ICMP"
 		ip protocol igmp accept comment "Accept IGMP"
 
 		tcp dport ssh ct state new limit rate 15/minute accept comment "Avoid brute force on SSH"
@@ -1260,20 +1257,17 @@ table inet my_table {
 </p>
 <pre>table inet my_table {
   chain my_input { # this chain serves as a dispatcher
-    type filter hook input priority filter;
+    type filter hook input priority filter; policy drop;
 
     iif lo accept comment "always accept loopback"
     iifname enp2s0 jump my_input_public
     iifname enp3s0 jump my_input_private
-
-    reject with icmpx port-unreachable comment "refuse traffic from all other interfaces"
   }
   chain my_input_public { # rules applicable to public interface interface
     ct state {established,related} accept
     ct state invalid drop
     udp dport bootpc accept
     tcp dport bootpc accept
-    reject with icmpx port-unreachable comment "all other traffic"
   }
   chain my_input_private {
     ct state {established,related} accept
@@ -1383,7 +1377,7 @@ table inet my_table {
 <h3><span class="mw-headline" id="Saving_current_rule_set">Saving current rule set</span></h3>
 <p>The output of <code>nft list ruleset</code> command is a valid input file for it as well. Current rule set can be saved to file and later loaded back in.
 </p>
-<pre>$ nft -s list ruleset | tee <i>filename</i>
+<pre># nft -s list ruleset | tee <i>filename</i>
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> <code>nft list</code> does not output variable definitions, if you had any in your original file they will be lost. Any variables used in rules will be replaced by their value.</div>
@@ -1412,7 +1406,7 @@ table inet my_table {
 </pre>
 <p>Related and established traffic will be accepted:
 </p>
-<pre># nft add rule inet my_table my_input ct state related,established accept
+<pre># nft add rule inet my_table my_input ct state '{ related, established }' accept
 </pre>
 <p>All loopback interface traffic will be accepted:
 </p>
@@ -1424,8 +1418,7 @@ table inet my_table {
 </pre>
 <p>Accept ICMP and IGMP:
 </p>
-<pre># nft add rule inet my_table my_input meta l4proto ipv6-icmp accept
-# nft add rule inet my_table my_input meta l4proto icmp accept
+<pre># nft add rule inet my_table my_input meta l4proto '{ icmp, ipv6-icmp }' accept
 # nft add rule inet my_table my_input ip protocol igmp accept
 </pre>
 <p>New udp traffic will jump to the UDP chain:
@@ -1435,12 +1428,6 @@ table inet my_table {
 <p>New tcp traffic will jump to the TCP chain:
 </p>
 <pre># nft add rule inet my_table my_input 'meta l4proto tcp tcp flags &amp; (fin|syn|rst|ack) == syn ct state new jump my_tcp_chain'
-</pre>
-<p>Reject all traffic that was not processed by other rules:
-</p>
-<pre># nft add rule inet my_table my_input meta l4proto udp reject
-# nft add rule inet my_table my_input meta l4proto tcp reject with tcp reset
-# nft add rule inet my_table my_input counter reject with icmpx port-unreachable
 </pre>
 <p>At this point you should decide what ports you want to open to incoming connections, which are handled by the TCP and UDP chains. For example to open connections for a web server add:
 </p>
@@ -1484,7 +1471,7 @@ table inet my_table {
 <p>In another shell "include" the file inside the interactive shell:
 </p>
 <pre># nft -i
-include "/root/nftables.trace"
+nft&gt; include "/root/nftables.trace"
 </pre>
 <p>Example, adjust to your needs:
 </p>
@@ -1520,7 +1507,7 @@ add rule ip temp-trace icmp-prerouting <i>ip protocol icmp</i> <b>meta nftrace s
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> The translator covers a large portion, but not all, of the iptables language. Some iptables rules work in conjunction and the translator needs context to properly translate, so do not panic if some lines translate into nothing.</div>
 <h3><span class="mw-headline" id="Dynamic_named_sets_using_systemd-networkd">Dynamic named sets using systemd-networkd</span></h3>
-<p><a href="../en/Systemd-networkd.html" title="Systemd-networkd">systemd-networkd</a>'s connections can use the <code>NFTSet=</code> option (see <span class="plainlinks archwiki-template-man" title="$ man 5 systemd.network"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd.network.5#%5BADDRESS%5D_SECTION_OPTIONS">systemd.network(5) § [ADDRESS] SECTION OPTIONS</a></span>) to populate predefined named sets with host IP addresses, network prefixes and interface indexes. This allows to avoid hardcoding them in <code>/etc/nftables.conf</code>.
+<p><a href="../en/Systemd-networkd.html" title="Systemd-networkd">systemd-networkd</a>'s connections can use the <code>NFTSet=</code> option to populate predefined named sets with host IP addresses, network prefixes and interface indexes. This allows to avoid hardcoding them in <code>/etc/nftables.conf</code>. The <code>NFTSet=</code> option is supported in <code>[Address]</code>, <code>[DHCPv4]</code>, <code>[DHCPv6]</code> and <code>[IPv6AcceptRA]</code> sections. See <span class="plainlinks archwiki-template-man" title="$ man 5 systemd.network"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd.network.5#%5BADDRESS%5D_SECTION_OPTIONS">systemd.network(5) § [ADDRESS] SECTION OPTIONS</a></span>.
 </p>
 <p>For example, to process connections from a local network (where IP addresses are assigned via DHCP or SLAAC) in a separate <code>my_input_lan</code> chain:
 </p>
@@ -1646,8 +1633,8 @@ ExecStartPre=ip route add default via 10.0.0.1 dev eth0</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Nftables&amp;oldid=826976">https://wiki.archlinux.org/index.php?title=Nftables&amp;oldid=826976</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 13 February 2025, at 10:45.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Nftables&amp;oldid=829720">https://wiki.archlinux.org/index.php?title=Nftables&amp;oldid=829720</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 24 March 2025, at 07:57.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

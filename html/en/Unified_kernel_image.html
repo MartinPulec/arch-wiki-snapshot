@@ -395,7 +395,7 @@
 <p><a href="../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a> will assemble the UKI itself unless <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=systemd-ukify">systemd-ukify</a></span> is installed. In which case, UKI creation will be offloaded to <i>ukify</i> unless this is explicitly disabled with the  <code>--no-ukify</code> option.
 </p>
 <h4><span class="mw-headline" id="Kernel_command_line">Kernel command line</span></h4>
-<p>mkinitcpio supports reading <a href="../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a> from command line files in the <code>/etc/cmdline.d</code> directory. Mkinitcpio will concatenate the contents of all files with a <code>.conf</code> extension in this directory and use them to generate the kernel command line. Any lines in the command line file that start with a <b>#</b> character are treated as comments and ignored by mkinitcpio. Take care to <b>remove entries</b> pointing to microcode and initramfs.
+<p>mkinitcpio supports reading <a href="../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a> from command line files in the <code>/etc/cmdline.d</code> directory. Mkinitcpio will concatenate the contents of all files with a <i>.conf</i> extension in this directory and use them to generate the kernel command line. Any lines in the command line file that start with a <code>#</code> character are treated as comments and ignored by mkinitcpio. Take care to <b>remove entries</b> pointing to microcode and initramfs.
 </p>
 <p>For example:
 </p>
@@ -478,7 +478,7 @@ fallback_options="-S autodetect"</pre>
 <p>Optionally, remove any leftover <code>initramfs-*.img</code> from <code>/boot</code> or <code>/efi</code>.
 </p>
 <h3><span class="mw-headline" id="kernel-install">kernel-install</span></h3>
-<p>Make sure kernel-install is properly <a href="../en/Kernel-install.html#Automatically" title="Kernel-install">set up</a>.
+<p>Kernel-install is another alternative that is part of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=systemd">systemd</a></span> and requires <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=systemd-ukify">systemd-ukify</a></span> to build unified kernel images. Make sure kernel-install is properly <a href="../en/Kernel-install.html#Automatically" title="Kernel-install">set up</a>.
 </p>
 <p>To generate UKIs, install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=systemd-ukify">systemd-ukify</a></span> and set the <code>kernel-install</code> <i>layout</i> to <code>uki</code>:
 </p>
@@ -612,24 +612,16 @@ done</pre>
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">limine.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">/Arch Linux
-  protocol: efi_chainload
-  image_path: boot():/EFI/Linux/arch-linux.efi</pre>
-<p><br>
-<b>Example 2: Booting a UKI from another EFI partition</b>
+  protocol: efi
+  path: boot():/EFI/Linux/arch-linux.efi</pre>
+<p><b>Example 2: Booting a UKI from another partition</b>
 </p>
-<p>If a UKI file is located on a different EFI partition on another disk, use <code>uuid(<i>partition UUID</i>)</code> instead.
-</p>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> The partition UUID is <b>not</b> the filesystem UUID. To find the partition UUID as <code>PARTUUID</code>, use:
-<pre>$ lsblk -o NAME,FSTYPE,PARTUUID,PARTTYPENAME,MOUNTPOINT,SIZE,LABEL
-</pre>
-</div>
-<p><br>
+<p>If a UKI file is located on a different <a href="../en/FAT.html" class="mw-redirect" title="FAT32">FAT32</a> partition, use <code>guid(<i>PARTUUID</i>)</code> with the <a href="../en/Persistent_block_device_naming.html#by-partuuid" class="mw-redirect" title="PARTUUID">PARTUUID</a> instead:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">limine.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">/Arch Linux
-  protocol: efi_chainload
-  image_path: uuid(<i>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</i>):/EFI/Linux/arch-linux.efi</pre>
+  protocol: efi
+  path: guid(<i>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</i>):/EFI/Linux/arch-linux.efi</pre>
 <p>For more details about supported paths and configuration options, see the <a rel="nofollow" class="external text" href="https://github.com/limine-bootloader/limine/blob/v8.x/CONFIG.md#Paths">Limine Paths documentation</a>.
 </p>
 <h3><span class="mw-headline" id="systemd-boot">systemd-boot</span></h3>
@@ -644,10 +636,10 @@ done</pre>
     ostype Linux
     loader \EFI\Linux\arch-linux.efi
 }</pre>
-<p>Recall that no kernel parameters from <code><i>esp</i>/EFI/refind_linux.conf</code> will be passed when booting this way. If the UKI was generated without a <code>.cmdline</code> section, specify the kernel parameters in the menu entry with an <code>options</code> line.
+<p>Keep in mind that no kernel parameters from <code><i>esp</i>/EFI/refind_linux.conf</code> will be passed when booting this way. If the UKI was generated without a <code>.cmdline</code> section, specify the kernel parameters in the menu entry with an <code>options</code> line.
 </p>
 <h3><span class="mw-headline" id="GRUB">GRUB</span></h3>
-<p>Similar to rEFInd, <a href="../en/GRUB.html" title="GRUB">GRUB</a> can chainload EFI UKIs as described in <a href="../en/GRUB.html#Chainloading_a_unified_kernel_image" title="GRUB">GRUB#Chainloading a unified kernel image</a>.
+<p><a href="../en/GRUB.html" title="GRUB">GRUB</a> can chainload UKIs as described in <a href="../en/GRUB.html#Chainloading_a_unified_kernel_image" title="GRUB">GRUB#Chainloading a unified kernel image</a>.
 </p>
 <h3><span class="mw-headline" id="Directly_from_UEFI">Directly from UEFI</span></h3>
 <p><a href="../en/Unified_Extensible_Firmware_Interface.html#efibootmgr" class="mw-redirect" title="Efibootmgr">efibootmgr</a> can be used to create a UEFI boot entry for the <i>.efi</i> file:
@@ -681,8 +673,8 @@ done</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Unified_kernel_image&amp;oldid=827048">https://wiki.archlinux.org/index.php?title=Unified_kernel_image&amp;oldid=827048</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 14 February 2025, at 11:09.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Unified_kernel_image&amp;oldid=828655">https://wiki.archlinux.org/index.php?title=Unified_kernel_image&amp;oldid=828655</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 11 March 2025, at 12:57.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

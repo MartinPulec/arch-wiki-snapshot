@@ -720,7 +720,15 @@ The physical buttons in Kensington Slimblade Trackball layout are:
 <h4><span class="mw-headline" id="libinput-gestures">libinput-gestures</span></h4>
 <p>For <a href="https://en.wikipedia.org/wiki/Extended_Window_Manager_Hints" class="extiw" title="w:Extended Window Manager Hints">EWMH</a> (see also <a rel="nofollow" class="external text" href="https://www.freedesktop.org/wiki/Specifications/wm-spec/">wm-spec</a>) compliant window managers, the <a rel="nofollow" class="external text" href="https://github.com/bulletmark/libinput-gestures">libinput-gestures</a> utility can be used meanwhile. The program reads libinput gestures (through <code>libinput debug-events</code>) from the touchpad and maps them to gestures according to a configuration file. Hence, it offers some flexibility within the boundaries of libinput's built-in recognition.
 </p>
-<p>To use it, install the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/libinput-gestures/">libinput-gestures</a></span><sup><small>AUR</small></sup> package. You can use the default system-wide configured swipe and pinch gestures or define your own in a personal configuration file, see the <a rel="nofollow" class="external text" href="https://github.com/bulletmark/libinput-gestures/blob/master/README.md">README</a> for details.
+<p>To use it, install the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/libinput-gestures/">libinput-gestures</a></span><sup><small>AUR</small></sup> package. 
+</p>
+<p><i>libinput-gestures</i> needs access to the touchpad device. Traditionally, you can set this by adding yourself to the <code>input</code> group, but the more modern and safer approach is to <a href="../en/Udev.html#Allowing_regular_users_to_use_devices" title="Udev">manage access dynamically</a> using udev, logind and acls. For this to work, create a file:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/udev/rules.d/71-touchpad.rules</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">ENV{ID_INPUT_TOUCHPAD}=="1", TAG+="uaccess"</pre>
+<p>The number at the beginning of the file is important: at index 70, the device property <code>ENV{ID_INPUT_TOUCHPAD</code> might be unset, and the <code>uaccess</code> tag needs to be added before index 73 for <span class="plainlinks archwiki-template-man" title="$ man 8 systemd-logind"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-logind.8">systemd-logind(8)</a></span>.
+</p>
+<p>You can use the default system-wide configured swipe and pinch gestures or define your own in a personal configuration file, see the <a rel="nofollow" class="external text" href="https://github.com/bulletmark/libinput-gestures/blob/master/README.md">README</a> for details.
 </p>
 <p>If using <a href="../en/Touchegg.html" title="Touchegg">touchegg</a>, uninstall the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/libinput-gestures/">libinput-gestures</a></span><sup><small>AUR</small></sup> package to prevent conflicts (see <a rel="nofollow" class="external autonumber" href="https://github.com/JoseExposito/gnome-shell-extension-x11gestures/issues/41">[8]</a>).
 </p>
@@ -909,8 +917,8 @@ ModelTabletModeNoSuspend=0</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Libinput&amp;oldid=820584">https://wiki.archlinux.org/index.php?title=Libinput&amp;oldid=820584</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 11 November 2024, at 18:30.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Libinput&amp;oldid=830113">https://wiki.archlinux.org/index.php?title=Libinput&amp;oldid=830113</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 29 March 2025, at 15:41.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

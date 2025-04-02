@@ -612,7 +612,7 @@
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
 <div>
-<b>Reason:</b> The intro and <i>Background</i> section ignore the server perspective. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:SSH_keys.html">Talk:SSH keys</a>)</div>
+<b>Reason:</b> The intro and <i>Background</i> section ignore the server perspective. (Discuss in <a href="../en/Talk:SSH_keys.html#Server_perspective_is_ignored" title="Talk:SSH keys">Talk:SSH keys#Server perspective is ignored</a>)</div>
 </div>
 <p>SSH keys can serve as a means of identifying yourself to an SSH server using <a href="https://en.wikipedia.org/wiki/Public-key_cryptography" class="extiw" title="wikipedia:Public-key cryptography">public-key cryptography</a> and <a href="https://en.wikipedia.org/wiki/Challenge-response_authentication" class="extiw" title="wikipedia:Challenge-response authentication">challenge-response authentication</a>. The major advantage of key-based authentication is that, in contrast to password authentication, it is not prone to <a href="https://en.wikipedia.org/wiki/Brute-force_attack" class="extiw" title="wikipedia:Brute-force attack">brute-force attacks</a>, and you do not expose valid credentials if the server has been compromised (see <a href="https://tools.ietf.org/html/rfc4251#section-9.4.4" class="extiw" title="rfc:4251">RFC 4251 9.4.4</a>).
 </p>
@@ -744,11 +744,6 @@ The key's randomart image is:
 <h4>
 <span id="FIDO.2FU2F"></span><span class="mw-headline" id="FIDO/U2F">FIDO/U2F</span>
 </h4>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
-<div>
-<b>Reason:</b> <a rel="nofollow" class="external text" href="https://www.openssh.com/txt/release-8.2">OpenSSH version 8.2</a> adds support for FIDO2 resident keys, allowing SSH Keys to be stored on the hardware token. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:SSH_keys.html">Talk:SSH keys</a>)</div>
-</div>
 <p>FIDO/<a href="../en/Universal_2nd_Factor.html" class="mw-redirect" title="U2F">U2F</a> <a href="https://en.wikipedia.org/wiki/Security_token" class="extiw" title="wikipedia:Security token">hardware authenticator</a> support was added in <a rel="nofollow" class="external text" href="https://www.openssh.com/txt/release-8.2">OpenSSH version 8.2</a> for both of the elliptic curve signature schemes mentioned above. It allows for a hardware token attached via USB or other means to act a second factor alongside the private key.
 </p>
 <p>The <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=libfido2">libfido2</a></span> is required for hardware token support.
@@ -900,7 +895,7 @@ Identity added: /home/user/.ssh/id_ed25519 (/home/user/.ssh/id_ed25519)
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> To make all <code>ssh</code> clients, including <code>git</code> store keys in the agent on first use, add the configuration setting <code>AddKeysToAgent yes</code> to <code>~/.ssh/config</code>. Other possible values are <code>confirm</code>, <code>ask</code> and <code>no</code> (default).</div>
-<p>In order to start the agent automatically and make sure that only one <code>ssh-agent</code> process runs at a time, add the following to your <code>~/.bashrc</code>:
+<p>In order to start the agent automatically and make sure that only one <code>ssh-agent</code> process runs at a time, <code>touch $XDG_RUNTIME_DIR/ssh-agent.env</code> and add the following to your <code>~/.bashrc</code>:
 </p>
 <pre>if ! pgrep -u "$USER" ssh-agent &gt; /dev/null; then
     ssh-agent -t 1h &gt; "$XDG_RUNTIME_DIR/ssh-agent.env"
@@ -909,7 +904,7 @@ if [ ! -f "$SSH_AUTH_SOCK" ]; then
     source "$XDG_RUNTIME_DIR/ssh-agent.env" &gt;/dev/null
 fi
 </pre>
-<p>This will run a <code>ssh-agent</code> process if there is not one already, and save the output thereof. If there is one running already, we retrieve the cached <code>ssh-agent</code> output and evaluate it which will set the necessary environment variables. The lifetime of the unlocked keys is set to 1 hour.
+<p>This will run an <code>ssh-agent</code> process if there is not one already, and save the output thereof. If there is one running already, we retrieve the cached <code>ssh-agent</code> output and evaluate it which will set the necessary environment variables. The lifetime of the unlocked keys is set to 1 hour.
 </p>
 <p>There also exist a number of front-ends to <code>ssh-agent</code> and alternative agents described later in this section which avoid this problem.
 </p>
@@ -936,7 +931,7 @@ if [[ -z "${SSH_CONNECTION}" ]]; then
     export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 fi
 ...</pre>
-<p>In this way, <code>SSH_AUTH_SOCK</code> is only set when the current session is <b>not</b> a SSH login. And when this is a SSH session, <code>SSH_AUTH_SOCK</code> on the remote machine is then set by the local machine to make the forwarding work.
+<p>In this way, <code>SSH_AUTH_SOCK</code> is only set when the current session is <b>not</b> an SSH login. And when this is a SSH session, <code>SSH_AUTH_SOCK</code> on the remote machine is then set by the local machine to make the forwarding work.
 </p>
 <h4><span class="mw-headline" id="ssh-agent_as_a_wrapper_program">ssh-agent as a wrapper program</span></h4>
 <p>An alternative way to start ssh-agent (with, say, each X session) is described in <a rel="nofollow" class="external text" href="https://upc.lbl.gov/docs/user/sshagent.shtml">this ssh-agent tutorial by UC Berkeley Labs</a>. A basic use case is if you normally begin X with the <code>startx</code> command, you can instead prefix it with <code>ssh-agent</code> like so:
@@ -1062,7 +1057,7 @@ exec openbox-session</pre>
 </p>
 <ul>
 <li>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=seahorse">seahorse</a></span> (provides <code>/usr/lib/seahorse/ssh-askpass</code>) uses the <a href="../en/GTK.html" title="GTK">GTK</a> library. .</li>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=seahorse">seahorse</a></span> (provides <code>/usr/lib/seahorse/ssh-askpass</code>) uses the <a href="../en/GTK.html" title="GTK">GTK</a> library.</li>
 <li>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/gnome-ssh-askpass3/">gnome-ssh-askpass3</a></span><sup><small>AUR</small></sup> uses the <a href="../en/GTK.html" title="GTK">GTK</a> library.</li>
 <li>
@@ -1153,7 +1148,7 @@ session   optional  pam_permit.so
 </ul>
 <p>See <a href="../en/KeePass.html#Plugin_installation_in_KeePass" title="KeePass">KeePass#Plugin installation in KeePass</a> or <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=keepass-plugin-keeagent">keepass-plugin-keeagent</a></span> package.
 </p>
-<p>This agent can be used directly, by matching KeeAgent socket: <code>KeePass -&gt; Tools -&gt; Options -&gt; KeeAgent -&gt; Agent mode socket file -&gt; %XDG_RUNTIME_DIR%/keeagent.socket</code>-
+<p>This agent can be used directly, by matching KeeAgent socket: <code>KeePass -&gt; Tools -&gt; Options -&gt; KeeAgent -&gt; Agent mode socket file -&gt; %XDG_RUNTIME_DIR%/keeagent.socket</code>
 and environment variable:
 <code>export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR"'/keeagent.socket'</code>.
 </p>
@@ -1226,8 +1221,8 @@ $ chmod 600 ~/.ssh/authorized_keys
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=SSH_keys&amp;oldid=827891">https://wiki.archlinux.org/index.php?title=SSH_keys&amp;oldid=827891</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 27 February 2025, at 11:20.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=SSH_keys&amp;oldid=828382">https://wiki.archlinux.org/index.php?title=SSH_keys&amp;oldid=828382</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 7 March 2025, at 13:04.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

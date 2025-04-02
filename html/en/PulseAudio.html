@@ -135,10 +135,21 @@
 			<ul id="toc-default.pa-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-system.pa" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#system.pa">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">2.1.3</span>
+					<span>system.pa</span>
+				</div>
+			</a>
+			
+			<ul id="toc-system.pa-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 		<li id="toc-client.conf" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#client.conf">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">2.1.3</span>
+					<span class="vector-toc-numb">2.1.4</span>
 					<span>client.conf</span>
 				</div>
 			</a>
@@ -701,15 +712,15 @@
 			<ul id="toc-Switch_on_connect-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Script_for_switching_analog_outputs" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Script_for_switching_analog_outputs">
+		<li id="toc-Script_for_switching_output_ports" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Script_for_switching_output_ports">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">9.5</span>
-					<span>Script for switching analog outputs</span>
+					<span>Script for switching output ports</span>
 				</div>
 			</a>
 			
-			<ul id="toc-Script_for_switching_analog_outputs-sublist" class="vector-toc-list">
+			<ul id="toc-Script_for_switching_output_ports-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 		<li id="toc-Disable_muting_media_on_entering_voice_call_(module-role-cork)" class="vector-toc-list-item vector-toc-level-2">
@@ -967,11 +978,6 @@
 <a rel="nofollow" class="external free" href="https://github.com/futpib/pagraphcontrol#readme">https://github.com/futpib/pagraphcontrol#readme</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/pagraphcontrol-git/">pagraphcontrol-git</a></span><sup><small>AUR</small></sup>
 </dd></dl>
 <ul><li>
-<b>PulseAudio Manager</b> — Simple GTK frontend for PulseAudio. Discontinued development.</li></ul>
-<dl><dd>
-<a rel="nofollow" class="external free" href="http://0pointer.de/lennart/projects/paman/">http://0pointer.de/lennart/projects/paman/</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/paman/">paman</a></span><sup><small>AUR</small></sup><sup>[<a href="../en/Help:Procedures.html#Fix_broken_package_links" title="Help:Procedures">broken link</a>: package not found]</sup>
-</dd></dl>
-<ul><li>
 <b>PulseAudio Preferences</b> — Simple GTK configuration dialog for PulseAudio.</li></ul>
 <dl><dd>
 <a rel="nofollow" class="external free" href="https://freedesktop.org/software/pulseaudio/paprefs/">https://freedesktop.org/software/pulseaudio/paprefs/</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=paprefs">paprefs</a></span>
@@ -1127,6 +1133,8 @@
 <h4><span class="mw-headline" id="default.pa">default.pa</span></h4>
 <p>This file is a startup script and is used to configure modules. It is actually parsed and read after the daemon has finished initializing and additional commands can be sent at runtime using <span class="plainlinks archwiki-template-man" title="$ man 1 pactl"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/pactl.1">pactl(1)</a></span> or <span class="plainlinks archwiki-template-man" title="$ man 1 pacmd"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/pacmd.1">pacmd(1)</a></span>. The startup script can also be provided on the command line by starting PulseAudio in a terminal using <code>pulseaudio -nC</code>. This will make the daemon load the CLI module and will accept the configuration directly from the command line, and output resulting information or error messages on the same terminal. This can be useful when debugging the daemon or just to test various modules before setting them permanently on disk. The manual page is quite self-explanatory, consult <span class="plainlinks archwiki-template-man" title="$ man 5 pulse-cli-syntax"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/pulse-cli-syntax.5">pulse-cli-syntax(5)</a></span> for the details of the syntax.
 </p>
+<p>The default configuration also loads <code>module-gsettings</code> to apply settings specified by <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=paprefs">paprefs</a></span>.
+</p>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> 
 <ul>
@@ -1135,6 +1143,9 @@
 <li>Edit <code>~/.config/pulse/default.pa</code> to insert/alter the set-default-sink command using the sink's name as the numbering cannot be guaranteed repeatable.</li>
 </ul>
 </div>
+<h4><span class="mw-headline" id="system.pa">system.pa</span></h4>
+<p>This file is a startup script used in place of <code>default.pa</code> when PulseAudio is running in system-wide mode.
+</p>
 <h4><span class="mw-headline" id="client.conf">client.conf</span></h4>
 <p>This is the configuration file read by every PulseAudio client application. It is used to configure runtime options for individual clients. It can be used to set and configure the default sink and source statically as well as allowing (or disallowing) clients to automatically start the server if not currently running. If autospawn is enabled, clients will automatically start PulseAudio if it is not already running when a client attempts to connect to it. This can be useful if you do not want PulseAudio to always be running to conserve system resources. Otherwise, you really should have it start with your X11 session.
 </p>
@@ -1183,7 +1194,9 @@
 </tbody>
 </table>
 <h4><span class="mw-headline" id="X11_properties">X11 properties</span></h4>
-<p>PulseAudio also uses window properties on the root window of the X11 server to help find the daemon. Since environment variables cannot be modified after child processes are started, X11 properties are more flexible because they are more easily changed because they are globally shared. As long as applications receive a <code>DISPLAY=</code> environment variable, it can read the most up-to-date values. X11 properties can be queried using <code>xprop -root</code>, or with <code>pax11publish -d</code> to read pulse-specific properties. <code>pax11publish</code> can also be used to update the properties from environment variables (<code>pax11publish -e</code>, or <code>pax11publish -r</code> to remove them entirely). If possible, it is recommended to let PulseAudio do it by itself using the module-x11-publish module or the <code>start-pulseaudio-x11</code> command. The following table is there only for completeness, you should not ever need to manually set these variables by hand.
+<p>When using SSH X11 forwarding (i.e. when the <code>DISPLAY</code> and <code>SSH_CONNECTION</code> <a href="../en/Environment_variables.html" title="Environment variables">environment variables</a> are present), libpulse clients also use window properties on the root window of the X11 server to help find the daemon.
+</p>
+<p>X11 properties can be queried using <code>xprop -root</code>, or with <code>pax11publish -d</code> to read pulse-specific properties. <code>pax11publish</code> can also be used to update the properties from environment variables (<code>pax11publish -e</code>, or <code>pax11publish -r</code> to remove them entirely). If possible, it is recommended to let PulseAudio do it by itself using the <code>module-x11-publish</code> module or the <code>start-pulseaudio-x11</code> command.
 </p>
 <table class="wikitable">
 <tbody>
@@ -1194,7 +1207,7 @@
 </tr>
 <tr>
 <td><code>PULSE_SERVER</code></td>
-<td>String value (<code>xprop -root -f PULSE_SERVER 8s -set PULSE_SERVER "unix:/tmp/pulse-sock"</code>), works the same as the environment variable of the same name.
+<td>String value (<code>xprop -root -f PULSE_SERVER 8s -set PULSE_SERVER 127.0.0.1:4713</code> or <code>pax11publish -e -S 127.0.0.1:4713</code>), works the same as the environment variable of the same name.
 </td>
 </tr>
 <tr>
@@ -1210,8 +1223,8 @@
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> 
 <ul>
-<li>To disable <code>pulseaudio.socket</code>, make sure that <code>$XDG_CONFIG_HOME/systemd/user/</code> exists and <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Mask">mask</a> the <code>pulseaudio.socket</code> <a href="../en/Systemd/User.html" class="mw-redirect" title="User unit">user unit</a>. This will allow you to have <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pulseaudio">pulseaudio</a></span> installed without applications using it, e.g. you don't need sound or you are using an alternate sound server.
-<ul><li>This systemd-based approach takes precedence over the <code>autospawn</code> option described in <span class="plainlinks archwiki-template-man" title="$ man 5 pulse-client.conf"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/pulse-client.conf.5">pulse-client.conf(5)</a></span>. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pulseaudio">pulseaudio</a></span> comes with option disabled by default, so you need not worry about setting it yourself. <a rel="nofollow" class="external autonumber" href="https://gitlab.archlinux.org/archlinux/packaging/packages/pulseaudio/-/blob/main/PKGBUILD?ref_type=heads#L145">[3]</a>
+<li>To disable <code>pulseaudio.socket</code>, <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Mask">mask</a> the <code>pulseaudio.socket</code> <a href="../en/Systemd/User.html" class="mw-redirect" title="User unit">user unit</a>. This will allow you to have <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pulseaudio">pulseaudio</a></span> installed without applications using it, e.g. you do not need sound or you are using an alternate sound server.
+<ul><li>This systemd-based approach takes precedence over the <code>autospawn</code> option described in <span class="plainlinks archwiki-template-man" title="$ man 5 pulse-client.conf"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/pulse-client.conf.5">pulse-client.conf(5)</a></span>. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pulseaudio">pulseaudio</a></span> comes with option disabled by default, so you need not worry about setting it yourself. <a rel="nofollow" class="external autonumber" href="https://gitlab.archlinux.org/archlinux/packaging/packages/pulseaudio/-/blob/17.0+r43+g3e2bb8a1e-1/PKGBUILD?ref_type=tags#L173">[3]</a>
 </li></ul>
 </li>
 <li>Many <a href="../en/Desktop_environment.html" class="mw-redirect" title="Desktop environments">desktop environments</a> support <a href="../en/XDG_Autostart.html" title="XDG Autostart">XDG Autostart</a>. In those desktop environments, PulseAudio will be launched automatically regardless of the socket activation status.</li>
@@ -1297,13 +1310,11 @@ ctl.!default {
 <strong>Note:</strong> This section describes alternative configuration, which is generally <b>not</b> recommended.</div>
 <p>You may want to use ALSA directly in most of your applications while still being able to use applications which require PulseAudio at the same time. The following steps allow you to make PulseAudio use dmix instead of grabbing ALSA hardware device.
 </p>
-<ul><li>Remove package <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pulseaudio-alsa">pulseaudio-alsa</a></span>, which provides compatibility layer between ALSA applications and PulseAudio. After this your ALSA applications will use ALSA directly without being hooked by Pulse.</li></ul>
-<ul><li>Create a configuration file in <code>/etc/pulse/default.pa.d/</code> to unload the autodetection modules and load back-end drivers statically. Add <b>device</b> parameters as follows:</li></ul>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pulse/default.pa.d/load-audio-drivers-statically.pa</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">unload-module module-udev-detect
-unload-module module-detect
-load-module module-alsa-sink <b>device=dmix</b>
-load-module module-alsa-source <b>device=dsnoop</b></pre>
+<ul><li>Remove the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pulseaudio-alsa">pulseaudio-alsa</a></span> package, which provides compatibility layer between ALSA applications and PulseAudio. After this your ALSA applications will use ALSA directly without being hooked by PulseAudio.</li></ul>
+<ul><li>In <code>/etc/pulse/default.pa</code>, comment or delete the <code>load-module module-udev-detect</code> line and add the following lines:</li></ul>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pulse/default.pa</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">load-module module-alsa-sink device=dmix
+load-module module-alsa-source device=dsnoop</pre>
 <ul><li>
 <i>Optional:</i> If you use <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=kmix">kmix</a></span> you may want to control ALSA volume instead of PulseAudio volume: set <code>KMIX_PULSEAUDIO_DISABLE=1</code> as an <a href="../en/Environment_variables.html" class="mw-redirect" title="Environment variable">environment variable</a>.</li></ul>
 <ul><li>Now, reboot your computer and try running ALSA and PulseAudio applications at the same time. They both should produce sound simultaneously.</li></ul>
@@ -1315,27 +1326,27 @@ load-module module-alsa-source <b>device=dsnoop</b></pre>
 <p>Install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=ossp">ossp</a></span> package and start <code>osspd.service</code>.
 </p>
 <h4><span class="mw-headline" id="padsp_wrapper">padsp wrapper</span></h4>
-<p>Programs using OSS can work with PulseAudio by starting it with padsp (included with PulseAudio):
+<p>Programs using OSS can work with PulseAudio by starting it with <span class="plainlinks archwiki-template-man" title="$ man 1 padsp"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/padsp.1">padsp(1)</a></span> (included with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=libpulse">libpulse</a></span>):
 </p>
-<pre>$ padsp OSSprogram
+<pre>$ padsp <i>OSSprogram</i>
 </pre>
 <p>A few examples:
 </p>
 <pre>$ padsp aumix
 $ padsp sox foo.wav -t ossdsp /dev/dsp
 </pre>
-<p>You can also add a custom wrapper script like this:  
+<p>You can also add a custom wrapper script like this:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/usr/local/bin/OSSProgram</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/usr/local/bin/<i>OSSprogram</i></pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">#!/bin/sh
-exec padsp /usr/bin/OSSprogram "$@"
+exec padsp /usr/bin/<i>OSSprogram</i> "$@"
 </pre>
 <p>Make sure <code>/usr/local/bin</code> comes before <code>/usr/bin</code> in your <code>PATH</code>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> This does not work when the module-udev-detect has the option <code>tsched=0</code>.</div>
+<strong>Note:</strong> Some applications (e.g. <a href="../en/List_of_games.html#Real-time" title="List of games">Factorio</a> with the OSS audio driver) do not work when the <code>module-udev-detect</code> has the option <code>tsched=0</code>.</div>
 <h3><span class="mw-headline" id="GStreamer">GStreamer</span></h3>
-<p>Install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=gst-plugins-good">gst-plugins-good</a></span>, or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/gstreamer0.10-good-plugins/">gstreamer0.10-good-plugins</a></span><sup><small>AUR</small></sup><sup>[<a href="../en/Help:Procedures.html#Fix_broken_package_links" title="Help:Procedures">broken link</a>: package not found]</sup> if your intended program has a legacy <a href="../en/GStreamer.html" title="GStreamer">GStreamer</a> implementation.
+<p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=gst-plugins-good">gst-plugins-good</a></span> provides the <a rel="nofollow" class="external text" href="https://gstreamer.freedesktop.org/documentation/pulseaudio/index.html">pulseaudio</a> plugin for applications using <a href="../en/GStreamer.html" title="GStreamer">GStreamer</a>.
 </p>
 <h3><span class="mw-headline" id="OpenAL">OpenAL</span></h3>
 <p>
@@ -1368,24 +1379,22 @@ OpenAL Soft should use PulseAudio by default, but can be explicitly configured t
 <p>Install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pulseaudio-equalizer-ladspa">pulseaudio-equalizer-ladspa</a></span>, an equalizer based on LADSPA <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=swh-plugins">swh-plugins</a></span>. Launch <code>pulseaudio-equalizer-gtk</code> GUI and tweak the parameters to match your expectations.
 </p>
 <h4><span class="mw-headline" id="Integrated_module">Integrated module</span></h4>
-<p>PulseAudio has an integrated 10-band equalizer system. In order to use it, install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pulseaudio-equalizer">pulseaudio-equalizer</a></span> and read the following instructions.
+<p>PulseAudio has an integrated 10-band equalizer system. In order to use it, install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pulseaudio-equalizer">pulseaudio-equalizer</a></span> and load <code>module-equalizer-sink</code>:
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> PulseAudio equalizer module is considered <a rel="nofollow" class="external text" href="https://lists.freedesktop.org/archives/pulseaudio-discuss/2014-March/020174.html">unstable and might be removed from PulseAudio</a>.</div>
-<p>Load the equalizer sink and dbus-protocol module
-</p>
 <pre>$ pactl load-module module-equalizer-sink
-$ pactl load-module module-dbus-protocol
 </pre>
+<p>Also load <code>module-dbus-protocol</code> if your configuration does not load it by default.
+</p>
 <p>To start the GUI, run <code>qpaeq</code>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> If qpaeq has no effect, install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pavucontrol">pavucontrol</a></span> and change "ALSA Playback on" to "FFT based equalizer on ..." while the media player is running.</div>
-<p>To load the equalizer and dbus module on every boot, create a <i>.pa</i> file in <code>/etc/pulse/default.pa.d/</code> or edit <code>~/.config/pulse/default.pa</code> and add the following lines:
+<strong>Note:</strong> If <i>qpaeq</i> has no effect, install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pavucontrol">pavucontrol</a></span> and change "ALSA Playback on" to "FFT based equalizer on ..." while the media player is running.</div>
+<p>To load the equalizer module on every boot, create a <i>.pa</i> file in <code>/etc/pulse/default.pa.d/</code> or edit <code>~/.config/pulse/default.pa</code> and add the following lines:
 </p>
-<pre>### Load the integrated PulseAudio equalizer and D-Bus module
+<pre>### Load the integrated PulseAudio equalizer
 load-module module-equalizer-sink
-load-module module-dbus-protocol
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> The equalizer sink needs to be loaded after the master sink is already available.</div>
@@ -1733,17 +1742,17 @@ fi
 <p>Refer to <a href="../en/QEMU.html#Creating_an_audio_backend" title="QEMU">QEMU#Creating an audio backend</a> for a detailed guide on how to configure pulseaudio within <a href="../en/QEMU.html" title="QEMU">QEMU</a>.
 </p>
 <h3><span class="mw-headline" id="AlsaMixer.app">AlsaMixer.app</span></h3>
-<p>Make <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/alsamixer.app/">alsamixer.app</a></span><sup><small>AUR</small></sup> dockapp for the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/windowmaker/">windowmaker</a></span><sup><small>AUR</small></sup> use pulseaudio, e.g.:
+<p>Install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pulseaudio-alsa">pulseaudio-alsa</a></span> and make <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/alsamixer.app/">alsamixer.app</a></span><sup><small>AUR</small></sup> dockapp for the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/windowmaker/">windowmaker</a></span><sup><small>AUR</small></sup> use PulseAudio, e.g.:
 </p>
 <pre>$ AlsaMixer.app --device pulse
 </pre>
-<p>Here is a two examples where the first one is for ALSA and the other one is for pulseaudio. You can run multiple instances of it. Use the <code>-w</code> option to choose which of the control buttons to bind to the mouse wheel.
+<p>Here is a two examples where the first one is for ALSA and the other one is for PulseAudio. You can run multiple instances of it. Use the <code>-w</code> option to choose which of the control buttons to bind to the mouse wheel.
 </p>
-<pre># AlsaMixer.app -3 Mic -1 Master -2 PCM --card 0 -w 1
-# AlsaMixer.app --device pulse -1 Capture -2 Master -w 2
+<pre>$ AlsaMixer.app -3 Mic -1 Master -2 PCM --card 0 -w 1
+$ AlsaMixer.app --device pulse -1 Capture -2 Master -w 2
 </pre>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> It can use only those output sinks that set as default.</div>
+<p>See <a href="#ALSA">#ALSA</a> for details.
+</p>
 <h3><span class="mw-headline" id="XMMS2">XMMS2</span></h3>
 <p>Make it switch to PulseAudio output:
 </p>
@@ -1829,13 +1838,13 @@ fi
 <p>To run PulseAudio in a system mode, first we need to set up users and groups needed by system-wide PulseAudio server instance <a rel="nofollow" class="external autonumber" href="https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/User/SystemWide/">[14]</a>:
 </p>
 <ol>
-<li>Add user pulse. PulseAudio daemon switches to this user after starting. <pre># useradd -d /var/run/pulse -s /usr/bin/nologin -G audio pulse</pre>
+<li>Add user <code>pulse</code>. PulseAudio daemon switches to this user after starting. <pre># useradd -d /var/run/pulse -s /usr/bin/nologin -G audio pulse</pre>
 </li>
-<li>Optionally add user pulse to the bluetooth group, if you have it (bluez) and want PulseAudio to use bluetooth. <pre># usermod -aG bluetooth pulse</pre>
+<li>Optionally add user <code>pulse</code> to the <code>bluetooth</code> group, if you have it (BlueZ) and want PulseAudio to use Bluetooth. <pre># usermod -aG bluetooth pulse</pre>
 </li>
-<li>Add group pulse-access. This group is used by PulseAudio server for access control. <pre># groupadd pulse-access</pre>
+<li>Add group <code>pulse-access</code>. This group is used by PulseAudio server for access control. <pre># groupadd pulse-access</pre>
 </li>
-<li>Add users to pulse-access group, if you want them to have access to the system-wide PulseAudio instance. <pre># usermod -aG pulse-access root</pre>
+<li>Add users to <code>pulse-access</code> group, if you want them to have access to the system-wide PulseAudio instance. <pre># usermod -aG pulse-access root</pre>
 </li>
 </ol>
 <p>Create the service <code>pulseaudio.service</code> in <code>/etc/systemd/system</code> containing the following:
@@ -1843,13 +1852,13 @@ fi
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/pulseaudio.service</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Unit]
 Description=Sound Service
- 
+
 [Service]
 # Note that notify will only work if --daemonize=no
 Type=notify
 ExecStart=/usr/bin/pulseaudio --daemonize=no --exit-idle-time=-1 --disallow-exit=true --system --disallow-module-loading
 Restart=always
- 
+
 [Install]
 WantedBy=default.target</pre>
 <div class="archwiki-template-box archwiki-template-box-tip">
@@ -1857,6 +1866,8 @@ WantedBy=default.target</pre>
 <p>Then <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> <code>pulseaudio.service</code> at the system level. You will also need to disable the user-level PulseAudio service across the whole system by <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Mask">masking</a> the <code>pulseaudio.socket</code> with the <code>--global</code> flag.
 </p>
 <p>This is necessary even if you are accessing the system over SSH, to make sure the user-level PulseAudio service will never start.
+</p>
+<p>When PulseAudio starts in the system mode, <code>/etc/pulse/system.pa</code> is used instead of <code>default.pa</code>, so be sure to to put any necessary settings in <code>system.pa</code>.
 </p>
 <h3><span class="mw-headline" id="Selecting_the_Server">Selecting the Server</span></h3>
 <p>For a single shell or command you can set the environment variable <code>$PULSE_SERVER</code> to the host name or IP address of the desired PulseAudio server.
@@ -1942,41 +1953,45 @@ load-module module-x11-bell</pre>
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> This does not work with some devices, see <a href="../en/PulseAudio/Troubleshooting.html#ALSA_channels_mute_when_headphones_are_plugged/unplugged_improperly" title="PulseAudio/Troubleshooting">PulseAudio/Troubleshooting#ALSA channels mute when headphones are plugged/unplugged improperly</a>.</div>
-<h3><span class="mw-headline" id="Script_for_switching_analog_outputs">Script for switching analog outputs</span></h3>
-<p>Some sound cards present the option of multiple analog outputs, being switchable through using Pulseaudio profiles. But switching manually can become a chore, so you can use the following commands to switch it:
+<h3><span class="mw-headline" id="Script_for_switching_output_ports">Script for switching output ports</span></h3>
+<p>Some sound cards present the option of multiple analog outputs, being switchable through using PulseAudio ports. But switching manually can become a chore, so you can automate this with the <i>pactl</i> command.
 </p>
-<pre>$ pactl set-sink-port 'number of the card' 'port'
+<p>List available ports:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ LC_ALL=C.UTF-8 pactl list sinks</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Sink #0
+	...
+	Ports:
+		analog-output-speaker: Speakers (type: Speaker, priority: 10000, availability unknown)
+		analog-output-headphones: Headphones (type: Headphones, priority: 9900, not available)
+	Active Port: analog-output-speaker</pre>
+<p>Current port can be obtained through:
+</p>
+<pre>$ LC_ALL=C.UTF-8 pactl list sinks | grep "Active Port" | cut -d ' ' -f 3-
 </pre>
-<p>This will set the default output to whatever port you chose.
-Example:
+<p>Switch the active port:
 </p>
-<pre>$ pactl set-sink-port 0 "analog-output;output-speaker" 
-</pre>
-<p>The values can be easily obtained using:
-</p>
-<pre>$ pactl list
-</pre>
-<p>Current output can be obtained through:
-</p>
-<pre>$ pactl list sinks | grep "active profile"| cut -d ' ' -f 3-
+<pre>$ pactl set-sink-port <i>sink-index</i> <i>port</i>
 </pre>
 <p>This process can be automated through a simple script. This script then can be given a shortcut by the user:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/pa.sh (or anything the user wants)</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">#!/bin/sh
-# This script uses kdialog notification to warn the user of the currently swapped to profile. User could adapt it to their needs or change it.
 
-CURRENT_PROFILE=$(pactl list sinks | grep "active profile"| cut -d ' ' -f 3-)
+# This script uses notify-send from the libnotify package to warn the user of the currently swapped to port.
+# User could adapt it to their needs or change it.
 
-if [ "$CURRENT_PROFILE" = "analog-output;output-speaker" ] ; then
-        pactl set-sink-port 0 "analog-output;output-headphones-1"
-        kdialog --title "Pulseaudio" --passivepopup "Headphone" 2 &amp; 
-else 
-        pactl set-sink-port 0 "analog-output;output-speaker"      
-        kdialog --title "Pulseaudio" --passivepopup  "Speaker" 2 &amp;
+CURRENT_PORT=$(LC_ALL=C.UTF-8 pactl list sinks | grep "Active Port" | cut -d ' ' -f 3-)
+
+if [ "$CURRENT_PORT" = "analog-output-speaker" ] ; then
+  pactl set-sink-port 0 "analog-output-headphones"
+  notify-send --expire-time=2000 "PulseAudio" "Headphones"
+else
+  pactl set-sink-port 0 "analog-output-speaker"
+  notify-send --expire-time=2000 "PulseAudio" "Speakers"
 fi
 </pre>
-<p>This script is intended to swap between two profiles. First checking the current profile then swapping it. Users are required to change the field 'active profile' according to the language pactl reports. Users might need to change the number of the card and the output to fit their machine.
+<p>This script is intended to swap between two ports. First checking the current port then swapping it. Users might need to change the sink index number and the port names to fit their machine.
 </p>
 <h3>
 <span id="Disable_muting_media_on_entering_voice_call_.28module-role-cork.29"></span><span class="mw-headline" id="Disable_muting_media_on_entering_voice_call_(module-role-cork)">Disable muting media on entering voice call (module-role-cork)</span>
@@ -2005,7 +2020,6 @@ fi
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Sound.html" title="Category:Sound">Sound</a></li></ul>
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
-<li><a href="../en/Category:Pages_with_broken_package_links.html" title="Category:Pages with broken package links">Pages with broken package links</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Out_of_date.html" title="Category:Pages or sections flagged with Template:Out of date">Pages or sections flagged with Template:Out of date</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Merge.html" title="Category:Pages or sections flagged with Template:Merge">Pages or sections flagged with Template:Merge</a></li>
 </ul>
@@ -2019,8 +2033,8 @@ fi
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PulseAudio&amp;oldid=828036">https://wiki.archlinux.org/index.php?title=PulseAudio&amp;oldid=828036</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 1 March 2025, at 08:15.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PulseAudio&amp;oldid=830274">https://wiki.archlinux.org/index.php?title=PulseAudio&amp;oldid=830274</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 31 March 2025, at 20:58.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

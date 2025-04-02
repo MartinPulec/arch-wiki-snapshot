@@ -175,10 +175,21 @@
 			</button>
 		
 		<ul id="toc-Privacy_and_security-sublist" class="vector-toc-list">
-			<li id="toc-Application-level_DNS" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Application-level_DNS">
+			<li id="toc-Encrypted_Client_Hello" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Encrypted_Client_Hello">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">5.1</span>
+					<span>Encrypted Client Hello</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Encrypted_Client_Hello-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Application-level_DNS" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Application-level_DNS">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">5.2</span>
 					<span>Application-level DNS</span>
 				</div>
 			</a>
@@ -186,15 +197,15 @@
 			<ul id="toc-Application-level_DNS-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Oblivious_DNS" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Oblivious_DNS">
+		<li id="toc-Oblivious_DNS_over_HTTPS" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Oblivious_DNS_over_HTTPS">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">5.2</span>
-					<span>Oblivious DNS</span>
+					<span class="vector-toc-numb">5.3</span>
+					<span>Oblivious DNS over HTTPS</span>
 				</div>
 			</a>
 			
-			<ul id="toc-Oblivious_DNS-sublist" class="vector-toc-list">
+			<ul id="toc-Oblivious_DNS_over_HTTPS-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -207,8 +218,24 @@
 			</div>
 		</a>
 		
+			<button aria-controls="toc-Third-party_DNS_services-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle Third-party DNS services subsection</span>
+			</button>
+		
 		<ul id="toc-Third-party_DNS_services-sublist" class="vector-toc-list">
-		</ul>
+			<li id="toc-Third-party_DNS_client_software" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Third-party_DNS_client_software">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">6.1</span>
+					<span>Third-party DNS client software</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Third-party_DNS_client_software-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
 	</li>
 	<li id="toc-DNS_servers" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
 		<a class="vector-toc-link" href="#DNS_servers">
@@ -485,14 +512,29 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 </ul>
 </div>
 <h2><span class="mw-headline" id="Privacy_and_security">Privacy and security</span></h2>
-<p>The DNS protocol is unencrypted and does not account for confidentiality, integrity or authentication, so if you use an untrusted network or a malicious ISP, your DNS queries can be eavesdropped and the responses <a href="https://en.wikipedia.org/wiki/Man-in-the-middle_attack" class="extiw" title="wikipedia:Man-in-the-middle attack">manipulated</a>. Furthermore, DNS servers can conduct <a href="https://en.wikipedia.org/wiki/DNS_hijacking" class="extiw" title="wikipedia:DNS hijacking">DNS hijacking</a>.
+<p>The <a href="https://en.wikipedia.org/wiki/Domain_Name_System#Conventional:_DNS_over_UDP_and_TCP_ports_53_.28Do53.29" class="extiw" title="wikipedia:Domain Name System">DNS protocol</a> (Do53) is unencrypted and does not account for confidentiality, integrity or authentication, so if you use an untrusted network or a malicious ISP, your DNS queries can be eavesdropped and the responses <a href="https://en.wikipedia.org/wiki/Man-in-the-middle_attack" class="extiw" title="wikipedia:Man-in-the-middle attack">manipulated</a>. Furthermore, DNS servers can conduct <a href="https://en.wikipedia.org/wiki/DNS_hijacking" class="extiw" title="wikipedia:DNS hijacking">DNS hijacking</a>.
 </p>
-<p>You need to trust your DNS server to treat your queries confidentially. DNS servers are provided by ISPs and <a href="#Third-party_DNS_services">third-parties</a>. Alternatively you can run your own <a href="#DNS_servers">recursive name server</a>, which however takes more effort. If you use a <a href="../en/Network_configuration.html#Network_managers" class="mw-redirect" title="DHCP">DHCP</a> client in untrusted networks, be sure to set static name servers to avoid using and being subject to arbitrary DNS servers. To secure your communication with a remote DNS server you can use an encrypted protocol, like <a href="https://en.wikipedia.org/wiki/DNS_over_TLS" class="extiw" title="wikipedia:DNS over TLS">DNS over TLS</a> (<a href="https://tools.ietf.org/html/rfc7858" class="extiw" title="rfc:7858">RFC 7858</a>), <a href="https://en.wikipedia.org/wiki/DNS_over_HTTPS" class="extiw" title="wikipedia:DNS over HTTPS">DNS over HTTPS</a> (<a href="https://tools.ietf.org/html/rfc8484" class="extiw" title="rfc:8484">RFC 8484</a>), or <a href="https://en.wikipedia.org/wiki/DNSCrypt" class="extiw" title="wikipedia:DNSCrypt">DNSCrypt</a>, provided that both the upstream server and your <a href="#DNS_servers">resolver</a> support the protocol. An alternative can be a dedicated software to encrypt and decrypt the communication, such as <a href="../en/Stunnel.html" title="Stunnel">stunnel</a>. To verify that responses are actually from <a href="https://en.wikipedia.org/wiki/Authoritative_name_server" class="extiw" title="wikipedia:Authoritative name server">authoritative name servers</a>, you can validate <a href="../en/DNSSEC.html" title="DNSSEC">DNSSEC</a>, provided that both the upstream server(s) and your <a href="#DNS_servers">resolver</a> support it.
+<p>You need to trust your DNS server to treat your queries confidentially. DNS servers are provided by ISPs and <a href="#Third-party_DNS_services">third-parties</a>. Alternatively you can run your own <a href="#DNS_servers">recursive name server</a> (a.k.a recursive resolver, a.k.a DNS recursor), which however takes more effort. Mind that the communication between recursive resolvers and authoritative servers is not encrypted. If you use a <a href="../en/Network_configuration.html#Network_managers" class="mw-redirect" title="DHCP">DHCP</a> client in untrusted networks, be sure to set static name servers to avoid using and being subject to arbitrary DNS servers, or alternatively, use a <a href="../en/Category:Virtual_Private_Network.html" class="mw-redirect" title="VPN">VPN</a> to connect to a secure network and use its DNS servers. To secure your communication with a remote DNS server you can use an encrypted protocol, provided that both the upstream server and your <a href="#DNS_servers">local resolver</a> support the protocol. Common encrypted DNS protocols are:
 </p>
-<p>Although one may use an encrypted DNS resolver, the browser still leaks the domain names in the <a href="https://en.wikipedia.org/wiki/Server_Name_Indication" class="extiw" title="wikipedia:Server Name Indication">Server Name Indication</a> when requesting the website certificate. This leak can be checked using the <a href="../en/Wireshark.html" title="Wireshark">Wireshark</a> filter <code>tls.handshake.extensions_server_name_len &gt; 0</code>, or using the command line below. A proposed solution is to use the <a href="https://en.wikipedia.org/wiki/Server_Name_Indication#Encrypted_Client_Hello" class="extiw" title="wikipedia:Server Name Indication">Encrypted Client Hello (ECH)</a>, a TLS 1.3 protocol extension.
+<ul>
+<li>
+<a href="https://en.wikipedia.org/wiki/DNS_over_TLS" class="extiw" title="wikipedia:DNS over TLS">DNS over TLS</a> (DoT)—<a href="https://tools.ietf.org/html/rfc7858" class="extiw" title="rfc:7858">RFC 7858</a>,</li>
+<li>
+<a href="https://en.wikipedia.org/wiki/DNS_over_HTTPS" class="extiw" title="wikipedia:DNS over HTTPS">DNS over HTTPS</a> (DoH)—<a href="https://tools.ietf.org/html/rfc8484" class="extiw" title="rfc:8484">RFC 8484</a>,</li>
+<li>
+<a href="https://en.wikipedia.org/wiki/DNS_over_QUIC" class="extiw" title="wikipedia:DNS over QUIC">DNS over QUIC</a> (DoQ)—<a href="https://tools.ietf.org/html/rfc9250" class="extiw" title="rfc:9250">RFC 9250</a>,</li>
+<li>
+<a href="https://en.wikipedia.org/wiki/DNSCrypt" class="extiw" title="wikipedia:DNSCrypt">DNSCrypt</a>.</li>
+</ul>
+<p>To verify that responses are actually from <a href="https://en.wikipedia.org/wiki/Authoritative_name_server" class="extiw" title="wikipedia:Authoritative name server">authoritative name servers</a>, you can validate <a href="../en/DNSSEC.html" title="DNSSEC">DNSSEC</a>, provided that both the upstream server(s) and your local resolver support it.
+</p>
+<h3><span class="mw-headline" id="Encrypted_Client_Hello">Encrypted Client Hello</span></h3>
+<p>Although one may use an encrypted DNS resolver, a TLS connection still leaks the domain names in the <a href="https://en.wikipedia.org/wiki/Server_Name_Indication" class="extiw" title="wikipedia:Server Name Indication">Server Name Indication</a> when requesting the domain certificate. This leak can be checked using the <a href="../en/Wireshark.html" title="Wireshark">Wireshark</a> filter <code>tls.handshake.extensions_server_name_len &gt; 0</code>, or using the following <i>tshark</i> command:
 </p>
 <pre># tshark -p -Tfields -e tls.handshake.extensions_server_name -Y 'tls.handshake.extensions_server_name_len&gt;0'
 </pre>
+<p>A proposed solution is to use the <a href="https://en.wikipedia.org/wiki/Server_Name_Indication#Encrypted_Client_Hello" class="extiw" title="wikipedia:Server Name Indication">Encrypted Client Hello (ECH)</a>, a TLS 1.3 protocol extension.
+</p>
 <h3><span class="mw-headline" id="Application-level_DNS">Application-level DNS</span></h3>
 <p>Be aware that some client software, such as major web browsers<a rel="nofollow" class="external autonumber" href="https://support.mozilla.org/en-US/kb/firefox-dns-over-https">[2]</a><a rel="nofollow" class="external autonumber" href="https://www.chromium.org/developers/dns-over-https">[3]</a>, are starting to implement DNS over HTTPS. While the encryption of queries may often be seen as a bonus, it also means the software sidetracks queries around the system resolver configuration.<a rel="nofollow" class="external autonumber" href="https://blog.powerdns.com/2019/09/25/centralised-doh-is-bad-for-privacy-in-2019-and-beyond/">[4]</a>
 </p>
@@ -502,13 +544,23 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 </p>
 <p>Mozilla <a rel="nofollow" class="external text" href="https://support.mozilla.org/en-US/kb/configuring-networks-disable-dns-over-https">has proposed</a> universally disabling application-level DNS if the system resolver cannot resolve the domain <code>use-application-dns.net</code>. Currently, this is only implemented in Firefox.
 </p>
-<h3><span class="mw-headline" id="Oblivious_DNS">Oblivious DNS</span></h3>
-<p>Oblivious DNS (<a href="https://tools.ietf.org/html/rfc9230" class="extiw" title="rfc:9230">RFC:9230</a>) is a system which addresses a number of DNS privacy concerns. See <a rel="nofollow" class="external text" href="https://blog.cloudflare.com/oblivious-dns/">Cloudflare's article</a> for more information.
+<h3><span class="mw-headline" id="Oblivious_DNS_over_HTTPS">Oblivious DNS over HTTPS</span></h3>
+<p>Oblivious DNS over HTTPS (<a href="https://tools.ietf.org/html/rfc9230" class="extiw" title="rfc:9230">RFC:9230</a>) is a system which addresses a number of DNS privacy concerns. See <a rel="nofollow" class="external text" href="https://blog.cloudflare.com/oblivious-dns/">Cloudflare's article</a> for more information. It added DNS over HTTPS (DoH) to the academic <a href="https://en.wikipedia.org/wiki/DNS_over_HTTPS#Oblivious_DNS_over_HTTPS" class="extiw" title="wikipedia:DNS over HTTPS">Oblivious DNS</a> design. See the <a rel="nofollow" class="external text" href="https://blog.apnic.net/2020/12/16/improving-the-privacy-of-dns-and-doh-with-oblivion/">Improving the privacy of DNS and DoH with oblivion</a> article for a discussion of the differences.
 </p>
 <h2><span class="mw-headline" id="Third-party_DNS_services">Third-party DNS services</span></h2>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> Before using a third-party DNS service, check its privacy policy for information on how user data is handled. User data has value and can be sold to other parties.</div>
-<p>There are various <a href="https://en.wikipedia.org/wiki/Public_recursive_name_server#List_of_public_DNS_service_operators" class="extiw" title="wikipedia:Public recursive name server">third-party DNS services</a> available, some of which also have dedicated software:
+<strong>Note:</strong> 
+<ul>
+<li>Before using a third-party DNS service, check its privacy policy for information on how user data is handled. User data has value and can be sold to other parties.</li>
+<li>It is highly advised to use an <a href="#Privacy_and_security">encrypted protocol</a> when connecting to third-party DNS services.</li>
+</ul>
+</div>
+<p>There are various third-party DNS services. Wikipedia has a list of <a href="https://en.wikipedia.org/wiki/Public_recursive_name_server#Notable_public_DNS_service_operators" class="extiw" title="wikipedia:Public recursive name server">"notable" public DNS service operators</a> while the curl project's wiki has a more extensive list of <a rel="nofollow" class="external text" href="https://github.com/curl/curl/wiki/DNS-over-HTTPS#publicly-available-servers">publicly available DNS over HTTPS servers</a> (a lot of which also support DNS over TLS). The <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=systemd">systemd</a></span> package <a rel="nofollow" class="external text" href="https://gitlab.archlinux.org/archlinux/packaging/packages/systemd/-/blob/6a2bc5773a560688e6c12ab4bcfec87df6092ec1/PKGBUILD#L124-133">configures fallback</a> DNS for <i>systemd-resolved</i> when no DNS servers are configured (manually or via DHCP/RA).
+</p>
+<p>You can use <a rel="nofollow" class="external text" href="https://github.com/cleanbrowsing/dnsperftest">dnsperftest</a> to test the performance of the most popular DNS resolvers from your location. <a rel="nofollow" class="external text" href="https://www.dnsperf.com/#!dns-resolvers">dnsperf.com</a> provides global benchmarks between providers.
+</p>
+<h3><span class="mw-headline" id="Third-party_DNS_client_software">Third-party DNS client software</span></h3>
+<p>Some DNS services also provide dedicated software:
 </p>
 <ul><li>
 <b><a href="../en/Cloudflared.html" title="Cloudflared">cloudflared</a></b> — A DNS client for Cloudflare DNS over HTTPS</li></ul>
@@ -525,8 +577,6 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 <dl><dd>
 <a rel="nofollow" class="external free" href="https://github.com/nextdns/nextdns">https://github.com/nextdns/nextdns</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/nextdns/">nextdns</a></span><sup><small>AUR</small></sup>
 </dd></dl>
-<p>You can use <a rel="nofollow" class="external text" href="https://github.com/cleanbrowsing/dnsperftest">dnsperftest</a> to test the performance of the most popular DNS resolvers from your location. <a rel="nofollow" class="external text" href="https://www.dnsperf.com/#!dns-resolvers">dnsperf.com</a> provides global benchmarks between providers.
-</p>
 <h2><span class="mw-headline" id="DNS_servers">DNS servers</span></h2>
 <p>DNS servers can be <a href="https://en.wikipedia.org/wiki/Authoritative_name_server" class="extiw" title="wikipedia:Authoritative name server">authoritative</a> and <a href="https://en.wikipedia.org/wiki/Name_server#Recursive_query" class="extiw" title="wikipedia:Name server">recursive</a>. If they are neither, they are called <b>stub resolvers</b> and simply forward all queries to another recursive name server. Stub resolvers are typically used to introduce DNS caching on the local host or network. Note that the same can also be achieved with a fully-fledged name server. This section compares the available DNS servers, for a more detailed comparison, refer to <a href="https://en.wikipedia.org/wiki/Comparison_of_DNS_server_software" class="extiw" title="wikipedia:Comparison of DNS server software">Wikipedia:Comparison of DNS server software</a>.
 </p>
@@ -573,8 +623,7 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;"><a href="../en/Openresolv.html#Subscribers" title="Openresolv">Yes</a></td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
-<td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;">Server<sup>1</sup>
-</td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;">Server</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">
 <a rel="nofollow" class="external text" href="https://gitlab.isc.org/isc-projects/bind9/-/issues/3635">No</a>
@@ -609,8 +658,8 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
-<td>?</td>
-<td>?</td>
+<td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
+<td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;">Server</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;"><a rel="nofollow" class="external text" href="https://github.com/m13253/dns-over-https/issues/104">No</a></td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
@@ -659,7 +708,7 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 <a href="../en/Dnsmasq.html" title="Dnsmasq">dnsmasq</a>
 </th>
 <td><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dnsmasq">dnsmasq</a></span></td>
-<td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;">Partial<sup>2</sup>
+<td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;">Partial<sup>1</sup>
 </td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
@@ -714,7 +763,7 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 <a href="../en/Pdnsd.html" title="Pdnsd">pdnsd</a>
 </th>
 <td><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pdnsd">pdnsd</a></span></td>
-<td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;">Partial<sup>2</sup>
+<td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;">Partial<sup>1</sup>
 </td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Permanent</td>
@@ -772,7 +821,7 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 </td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
-<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes<sup>3</sup>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes<sup>2</sup>
 </td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;"><a rel="nofollow" class="external text" href="https://github.com/folbricht/routedns/issues/123">No</a></td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
@@ -807,7 +856,7 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 <td><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=stubby">stubby</a></span></td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
-<td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
+<td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;"><a rel="nofollow" class="external text" href="https://github.com/getdnsapi/stubby/issues/139">No</a></td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;">Server</td>
@@ -826,7 +875,7 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
-<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
+<td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;"><a rel="nofollow" class="external text" href="https://github.com/systemd/systemd/issues/25676#issuecomment-1634810897">Experimental</a></td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;"><a href="../en/Systemd-resolved.html#Automatically" class="mw-redirect" title="Systemd-resolvconf">Yes</a></td>
 <td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;">Resolver and <a rel="nofollow" class="external text" href="https://github.com/systemd/systemd/issues/4621#issuecomment-260050033">limited server</a>
 </td>
@@ -844,7 +893,7 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 <td><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=unbound">unbound</a></span></td>
 <td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;">Partial</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
-<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes<sup>3</sup>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes<sup>2</sup>
 </td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;"><a href="../en/Openresolv.html#Subscribers" title="Openresolv">Yes</a></td>
@@ -853,17 +902,20 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;"><a rel="nofollow" class="external text" href="https://github.com/NLnetLabs/unbound/issues/308">Server</a></td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">
-<a rel="nofollow" class="external text" href="https://github.com/NLnetLabs/unbound/issues/743">No</a>
+<a rel="nofollow" class="external text" href="https://github.com/NLnetLabs/unbound/issues/743">No</a><sup>3</sup>
 </td>
 </tr>
 </tbody>
 </table>
 </div>
 <ol>
-<li>BIND can serve both DNS over TLS and DNS over HTTPS (see <a rel="nofollow" class="external text" href="https://downloads.isc.org/isc/bind9/9.18.0/doc/arm/html/reference.html#tls">tls{}</a> and <a rel="nofollow" class="external text" href="https://downloads.isc.org/isc/bind9/9.18.0/doc/arm/html/reference.html#interfaces">listen-on</a>), but cannot yet forward queries to a DNS over TLS/DNS over HTTPS upstream. The <i>dig</i> tool can make queries over DNS over TLS and DNS over HTTPS (using <code>+tls</code> and <code>+https</code> options), though <a rel="nofollow" class="external text" href="https://gitlab.isc.org/isc-projects/bind9/-/issues/3163">without any certificate checks</a>.</li>
 <li>From <a href="https://en.wikipedia.org/wiki/Comparison_of_DNS_server_software#cite_note-masqauth-32" class="extiw" title="wikipedia:Comparison of DNS server software">Wikipedia</a>: limited authoritative support, intended for internal network use rather than public Internet use.</li>
-<li>Supports persistent cache using the <a href="../en/Redis.html" title="Redis">Redis</a> backend.</li>
+<li>Supports persistent cache using the <a href="../en/Valkey.html" class="mw-redirect" title="Redis">Redis</a> backend.</li>
+<li>Unbound's DNS over QUIC server feature requires for <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=unbound">unbound</a></span> to be built with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=libngtcp2">libngtcp2</a></span> which in turn needs to be built with a patched OpenSSL.<a rel="nofollow" class="external autonumber" href="https://github.com/NLnetLabs/unbound/pull/871">[5]</a>
+</li>
 </ol>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong> DNS servers that do not support DNS over TLS can use <a href="../en/Stunnel.html" title="Stunnel">stunnel</a> to add TLS encryption. For resolver functionality this requires the ability to force using TCP when forwarding.</div>
 <h3><span class="mw-headline" id="Authoritative-only_servers">Authoritative-only servers</span></h3>
 <table class="wikitable sortable" style="text-align:center">
 <tbody>
@@ -900,7 +952,7 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/maradns/">maradns</a></span><sup><small>AUR</small></sup>
 </td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
-<td>?
+<td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No
 </td>
 </tr>
 <tr>
@@ -940,7 +992,6 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 <a href="https://tools.ietf.org/html/rfc7706" class="extiw" title="rfc:7706">RFC:7706</a> - Decreasing Access Time to Root Servers by Running One on Loopback</li>
 <li>
 <a rel="nofollow" class="external text" href="http://linux-ip.net/pages/diagrams.html#domain-name-system-overview">Domain name system overview</a> - Diagram about DNS</li>
-<li><a href="../en/Domain_name_resolution.html#Third-party_DNS_services" class="mw-redirect" title="Alternative DNS services">Alternative DNS services</a></li>
 <li><a rel="nofollow" class="external text" href="https://www.copahost.com/blog/what-does-dns-stand-for/">What does DNS stand for</a></li>
 </ul>
 </div>
@@ -966,8 +1017,8 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Domain_name_resolution&amp;oldid=819490">https://wiki.archlinux.org/index.php?title=Domain_name_resolution&amp;oldid=819490</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 23 October 2024, at 15:11.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Domain_name_resolution&amp;oldid=830112">https://wiki.archlinux.org/index.php?title=Domain_name_resolution&amp;oldid=830112</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 29 March 2025, at 15:33.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

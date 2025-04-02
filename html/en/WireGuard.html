@@ -882,23 +882,7 @@ private UDWG4VWI+RzAGzNSnlC+0X4d3nk9goWPs/NRC5tX524=  public 9lESlieIFOlJFV6dG7O
 <div>
 <b>Reason:</b> Add instructions on how to <i>route everything over VPN</i>.<a rel="nofollow" class="external autonumber" href="https://www.wireguard.com/netns/">[1]</a> There is <a href="#systemd-networkd:_routing_all_traffic_over_WireGuard">#systemd-networkd: routing all traffic over WireGuard</a> already. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:WireGuard.html">Talk:WireGuard</a>)</div>
 </div>
-<p>To route all traffic through a peer, set the AllowedIPs to all known IP addresses, i.e. "AllowedIPs = 0.0.0.0/0, ::0"
-</p>
-<p>In a simple wg-quick conf it would be something like this:
-</p>
-<p><b>Peer B setup:</b>
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/wireguard/wg0.conf</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Interface]
-Address = 10.0.0.2/24, fdc9:281f:04d7:9ee9::2/64
-PrivateKey = DEADBEEF
-DNS = 10.0.0.12
-
-[Peer]
-PublicKey = <i>PEER_C_PUBLIC_KEY</i>
-AllowedIPs = 0.0.0.0/0, ::/0
-Endpoint = 10.1.2.3:52180</pre>
-<p>Further explanation and some python to work out how to exclude ranges can found <i>here</i>.<a rel="nofollow" class="external autonumber" href="https://github.com/ZerGo0/WireGuard-Allowed-IPs-Excluder">[2]</a>
+<p>To route all traffic through a peer, add the <a href="https://en.wikipedia.org/wiki/Default_route" class="extiw" title="wikipedia:Default route">default route</a> to <code>allowed-ips</code>, i.e. <code>allowed-ips 0.0.0.0/0,::/0</code>.
 </p>
 <h4><span class="mw-headline" id="DNS">DNS</span></h4>
 <p>To use a peer as a DNS server, add its WireGuard tunnel IP address(es) to <a href="../en/Domain_name_resolution.html" class="mw-redirect" title="/etc/resolv.conf">/etc/resolv.conf</a>. For example, to use peer B as the DNS server:
@@ -954,7 +938,7 @@ peer: 9jalV3EEBnVXahro0pRMQ+cHlmjE33Slo9tddzCVtCw=
 peer: 2RzKFbGMx5g7fG0BrWCI7JIpGvcwGkqUaCoENYueJw4=
   allowed ips: 10.0.0.3/32, fdc9:281f:04d7:9ee9::3</pre>
 <h3><span class="mw-headline" id="Persistent_configuration">Persistent configuration</span></h3>
-<p>Persistent configuration can be achieved using <code>wg-quick@.service</code>, which is shipped with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=wireguard-tools">wireguard-tools</a></span>, or using a network manager. Network managers that support WireGuard are <a href="../en/Systemd-networkd.html" title="Systemd-networkd">systemd-networkd</a>, <a href="../en/Netctl.html" title="Netctl">netctl</a><a rel="nofollow" class="external autonumber" href="https://gitlab.archlinux.org/archlinux/netctl/blob/master/docs/examples/wireguard">[3]</a>, <a href="../en/NetworkManager.html" title="NetworkManager">NetworkManager</a> and <a href="../en/ConnMan.html" title="ConnMan">ConnMan</a><a rel="nofollow" class="external autonumber" href="https://git.kernel.org/pub/scm/network/connman/connman.git/tree/doc/vpn-config-format.txt">[4]</a>.
+<p>Persistent configuration can be achieved using <code>wg-quick@.service</code>, which is shipped with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=wireguard-tools">wireguard-tools</a></span>, or using a network manager. Network managers that support WireGuard are <a href="../en/Systemd-networkd.html" title="Systemd-networkd">systemd-networkd</a>, <a href="../en/Netctl.html" title="Netctl">netctl</a><a rel="nofollow" class="external autonumber" href="https://gitlab.archlinux.org/archlinux/netctl/blob/master/docs/examples/wireguard">[2]</a>, <a href="../en/NetworkManager.html" title="NetworkManager">NetworkManager</a> and <a href="../en/ConnMan.html" title="ConnMan">ConnMan</a><a rel="nofollow" class="external autonumber" href="https://git.kernel.org/pub/scm/network/connman/connman.git/tree/doc/vpn-config-format.txt">[3]</a>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> 
@@ -962,7 +946,7 @@ peer: 2RzKFbGMx5g7fG0BrWCI7JIpGvcwGkqUaCoENYueJw4=
 <li>
 <a href="../en/Netctl.html" title="Netctl">netctl</a> relies on <span class="plainlinks archwiki-template-man" title="$ man 8 wg"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/wg.8">wg(8)</a></span> from <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=wireguard-tools">wireguard-tools</a></span> and <code>/etc/wireguard/<i>interfacename</i>.conf</code> configuration files for establishing WireGuard connections.</li>
 <li>
-<a href="../en/ConnMan.html" title="ConnMan">ConnMan</a> has a very limited support for WireGuard. It can connect to only one peer.<a rel="nofollow" class="external autonumber" href="https://git.kernel.org/pub/scm/network/connman/connman.git/commit/?id=95b25140bec7c4d9b6ae4e479dc1b94b7d409b39">[5]</a>
+<a href="../en/ConnMan.html" title="ConnMan">ConnMan</a> has a very limited support for WireGuard. It can connect to only one peer.<a rel="nofollow" class="external autonumber" href="https://git.kernel.org/pub/scm/network/connman/connman.git/commit/?id=95b25140bec7c4d9b6ae4e479dc1b94b7d409b39">[4]</a>
 </li>
 </ul>
 </div>
@@ -1008,7 +992,7 @@ PublicKey = <i>PEER_C_PUBLIC_KEY</i>
 PresharedKey = <i>PEER_A-PEER_C-PRESHARED_KEY</i>
 AllowedIPs = 10.0.0.3/32, fdc9:281f:04d7:9ee9::3/128</pre>
 <ul>
-<li>To <i>route all traffic</i> through the tunnel to a specific peer, add the <a href="https://en.wikipedia.org/wiki/Default_route" class="extiw" title="wikipedia:Default route">default route</a> (<code>0.0.0.0/0</code> for IPv4 and <code>::/0</code> for IPv6) to <code>AllowedIPs</code>. E.g. <code>AllowedIPs = 0.0.0.0/0, ::/0</code>. wg-quick will automatically take care of setting up correct routing and fwmark<a rel="nofollow" class="external autonumber" href="https://www.wireguard.com/netns/#routing-all-your-traffic">[6]</a> so that networking still functions.</li>
+<li>To <i>route all traffic</i> through the tunnel to a specific peer, add the <a href="https://en.wikipedia.org/wiki/Default_route" class="extiw" title="wikipedia:Default route">default route</a> (<code>0.0.0.0/0</code> for IPv4 and <code>::/0</code> for IPv6) to <code>AllowedIPs</code>. E.g. <code>AllowedIPs = 0.0.0.0/0, ::/0</code>. wg-quick will automatically take care of setting up correct routing and fwmark<a rel="nofollow" class="external autonumber" href="https://www.wireguard.com/netns/#routing-all-your-traffic">[5]</a> so that networking still functions.</li>
 <li>To use a peer as a DNS server, set <code>DNS = <i>wireguard_internal_ip_address_of_peer</i></code> in the <code>[Interface]</code> section. <a href="https://en.wikipedia.org/wiki/Search_domain" class="extiw" title="wikipedia:Search domain">Search domains</a> are also set with the <code>DNS =</code> option. Separate all values in the list with commas.</li>
 </ul>
 <p><b>Peer B setup:</b>
@@ -1068,15 +1052,13 @@ PrivateKey=<i>PEER_A_PRIVATE_KEY</i>
 [WireGuardPeer]
 PublicKey=<i>PEER_B_PUBLIC_KEY</i>
 PresharedKey=<i>PEER_A-PEER_B-PRESHARED_KEY</i>
-AllowedIPs=10.0.0.2/32
-AllowedIPs=fdc9:281f:04d7:9ee9::2/128
+AllowedIPs=10.0.0.2/32,fdc9:281f:04d7:9ee9::2/128
 Endpoint=peer-b.example:51902
 
 [WireGuardPeer]
 PublicKey=<i>PEER_C_PUBLIC_KEY</i>
 PresharedKey=<i>PEER_A-PEER_C-PRESHARED_KEY</i>
-AllowedIPs=10.0.0.3/32
-AllowedIPs=fdc9:281f:04d7:9ee9::3/128</pre>
+AllowedIPs=10.0.0.3/32,fdc9:281f:04d7:9ee9::3/128</pre>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/network/99-wg0.network</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Match]
 Name=wg0
@@ -1086,23 +1068,32 @@ Address=10.0.0.1/24
 Address=fdc9:281f:04d7:9ee9::1/64</pre>
 <ul>
 <li>To use a peer as a DNS server, specify its WireGuard tunnel's IP address(es) in the <i>.network</i> file using the <code>DNS=</code> option. For <a href="https://en.wikipedia.org/wiki/Search_domain" class="extiw" title="wikipedia:Search domain">search domains</a> use the <code>Domains=</code> option. See <span class="plainlinks archwiki-template-man" title="$ man 5 systemd.network"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd.network.5#%5BNETWORK%5D_SECTION_OPTIONS">systemd.network(5) § [NETWORK] SECTION OPTIONS</a></span> for details.</li>
-<li>To use a peer as the <b>only</b> DNS server set <code>DNSDefaultRoute=true</code> and <code>Domains=~</code> in the <code>[Network]</code> section of <i>.network</i> file's.</li>
-<li>To route additional subnets add them as <code>[Route]</code> sections in the <i>.network</i> file. For example:</li>
+<li>To use a peer as the <b>only</b> DNS server set <code>DNSDefaultRoute=true</code> and <code>Domains=~.</code> in the <code>[Network]</code> section of <i>.network</i> file's.</li>
+<li>To automatically create routes for everything in <code>AllowedIPs</code>, add <code>RouteTable=main</code> to the <code>[WireGuard]</code> or <code>[WireGuardPeer]</code> sections in the <i>.netdev</i> file. Alternatively, additional routes can be specified manually using <code>[Route]</code> sections in the <i>.network</i> file.</li>
 </ul>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/network/99-wg0.network</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">...
-[Route]
-Destination=192.168.35.0/24
-Scope=link
-
-[Route]
-Destination=fd7b:d0bd:7a6e::/64
-Scope=link</pre>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> In order to prevent the leaking of private keys, it is recommended to set the permissions of the <i>.netdev</i> file:
+<strong>Warning:</strong> In order to prevent the leaking of private and preshared keys, it is recommended to set the permissions of the <i>.netdev</i> file:
 <pre># chown root:systemd-network /etc/systemd/network/99-wg*.netdev
 # chmod 0640 /etc/systemd/network/99-wg*.netdev
 </pre>
+<p>Alternatively, the keys can be stored in separate files and referenced with <code>PrivateKeyFile=</code>, <code>PresharedKeyFile=</code> and <code>PublicKeyFile=</code>, or they can be stored encrypted using <a href="../en/Systemd-creds.html" title="Systemd-creds">systemd-creds</a>. See <a href="#Using_systemd_credentials_for_private_keys_(systemd-networkd)">#Using systemd credentials for private keys (systemd-networkd)</a>.
+</p>
+</div>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong> To use the WireGuard interface name or IP addresses in <a href="../en/Nftables.html#Dynamic_named_sets_using_systemd-networkd" title="Nftables">nftables rules via systemd-networkd's NFTSet option</a>, specify the addresses in <code>[Address]</code> sections instead of the <code>[Network]</code> section. E.g.:
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/network/99-wg0.network</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">...
+[Address]
+Address=10.0.0.1/24
+NFTSet=address:inet:my_table:wg_ipv4_address
+NFTSet=prefix:inet:my_table:wg_ipv4_prefix
+NFTSet=ifindex:inet:my_table:wg_ifindex
+
+[Address]
+Address=fdc9:281f:04d7:9ee9::1/64
+NFTSet=address:inet:my_table:wg_ipv6_address
+NFTSet=prefix:inet:my_table:wg_ipv6_prefix
+NFTSet=ifindex:inet:my_table:wg_ifindex</pre>
 </div>
 <p><b>Peer B setup:</b>
 </p>
@@ -1119,15 +1110,13 @@ PrivateKey=<i>PEER_B_PRIVATE_KEY</i>
 [WireGuardPeer]
 PublicKey=<i>PEER_A_PUBLIC_KEY</i>
 PresharedKey=<i>PEER_A-PEER_B-PRESHARED_KEY</i>
-AllowedIPs=10.0.0.1/32
-AllowedIPs=fdc9:281f:04d7:9ee9::1/128
+AllowedIPs=10.0.0.1/32,fdc9:281f:04d7:9ee9::1/128
 Endpoint=198.51.100.101:51871
 
 [WireGuardPeer]
 PublicKey=<i>PEER_C_PUBLIC_KEY</i>
 PresharedKey=<i>PEER_B-PEER_C-PRESHARED_KEY</i>
-AllowedIPs=10.0.0.3/32
-AllowedIPs=fdc9:281f:04d7:9ee9::3/128</pre>
+AllowedIPs=10.0.0.3/32,fdc9:281f:04d7:9ee9::3/128</pre>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/network/99-wg0.network</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Match]
 Name=wg0
@@ -1150,15 +1139,13 @@ PrivateKey=<i>PEER_C_PRIVATE_KEY</i>
 [WireGuardPeer]
 PublicKey=<i>PEER_A_PUBLIC_KEY</i>
 PresharedKey=<i>PEER_A-PEER_C-PRESHARED_KEY</i>
-AllowedIPs=10.0.0.1/32
-AllowedIPs=fdc9:281f:04d7:9ee9::1/128
+AllowedIPs=10.0.0.1/32,fdc9:281f:04d7:9ee9::1/128
 Endpoint=198.51.100.101:51871
 
 [WireGuardPeer]
 PublicKey=<i>PEER_B_PUBLIC_KEY</i>
 PresharedKey=<i>PEER_B-PEER_C-PRESHARED_KEY</i>
-AllowedIPs=10.0.0.2/32
-AllowedIPs=fdc9:281f:04d7:9ee9::2/128
+AllowedIPs=10.0.0.2/32,fdc9:281f:04d7:9ee9::2/128
 Endpoint=peer-b.example:51902</pre>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/network/99-wg0.network</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Match]
@@ -1168,6 +1155,11 @@ Name=wg0
 Address=10.0.0.3/24
 Address=fdc9:281f:04d7:9ee9::3/64</pre>
 <h4><span class="mw-headline" id="systemd-networkd:_routing_all_traffic_over_WireGuard">systemd-networkd: routing all traffic over WireGuard</span></h4>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
+<div>
+<b>Reason:</b> Add IPv6 addresses to the tunnel and route ::/0. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:WireGuard.html">Talk:WireGuard</a>)</div>
+</div>
 <p>In this example, Peer B connects to Peer A with a public IP address. Peer B routes all its traffic over the WireGuard tunnel and uses Peer A for handling DNS requests.
 </p>
 <p><b>Peer A setup</b>
@@ -1191,18 +1183,15 @@ AllowedIPs=10.0.0.2/32</pre>
 Name=wg0
 
 [Network]
-Address=10.0.0.1/24</pre>
+Address=10.0.0.1/24
+IPMasquerade=ipv4</pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> Enable <a href="../en/Internet_sharing.html#Enable_packet_forwarding" title="Internet sharing">IP Forwarding</a> and IP masquerading rules on Peer A in order to provide working internet to Peer B.
-<p>Assumes <a href="../en/Uncomplicated_Firewall.html" class="mw-redirect" title="Ufw">ufw</a>, but <a href="../en/Iptables.html" title="Iptables">iptables</a> can do the same by using the rules outlined in the <a href="#Server_configuration">Server configuration</a> section:
-</p>
-<pre>$ ufw route allow in on wg0 out on enp5s0
-</pre>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/ufw/before.rules</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">*nat
-:POSTROUTING ACCEPT [0:0]
--A POSTROUTING -s 10.0.0.0/24 -o enp5s0 -j MASQUERADE
-COMMIT</pre>
+<strong>Note:</strong> The <code>IPMasquerade=ipv4</code> option enables IP forwarding on the WireGuard interface and sets up firewall rules for IP masquerading for it in order for Peer A to provide working internet to Peer B. Additionally:
+<ul>
+<li>Enable <a href="../en/Internet_sharing.html#Enable_packet_forwarding" title="Internet sharing">IP forwarding</a> for the interface that is used for connecting to the Internet (i.e. add <code>IPv4Forwarding=yes</code> to its <i>.network</i> file).</li>
+<li>Make sure that <a href="../en/Internet_sharing.html#Enable_NAT" title="Internet sharing">the firewall does not block forwarding</a>.</li>
+<li>Configure the local DNS server to accept connections to the WireGuard interface IP address. For systemd-resolved see <a href="../en/Systemd-resolved.html#Additional_listening_interfaces" title="Systemd-resolved">systemd-resolved#Additional listening interfaces</a>.</li>
+</ul>
 </div>
 <p><b>Peer B setup:</b>
 </p>
@@ -1221,13 +1210,14 @@ FirewallMark=0x8888
 PublicKey=<i>PEER_A_PUBLIC_KEY</i>
 PresharedKey=<i>PEER_A-PEER_B-PRESHARED_KEY</i>
 AllowedIPs=0.0.0.0/0
-Endpoint=198.51.100.101:51871</pre>
+Endpoint=198.51.100.101:51871
+RouteTable=1000</pre>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/network/50-wg0.network</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Match]
 Name=wg0
 
 [Network]
-Address=10.0.0.2/24
+Address=10.0.0.2/32
 DNS=10.0.0.1
 DNSDefaultRoute=true
 Domains=~.
@@ -1241,22 +1231,16 @@ Priority=10
 # Exempt the endpoint IP address so that wireguard can still connect to it.
 [RoutingPolicyRule]
 To=198.51.100.101/32
-Priority=5
-
-[Route]
-Destination=0.0.0.0/0
-Table=1000</pre>
+Priority=5</pre>
 <p><b>Exempting specific addresses</b>
 </p>
 <p>In order to exempt specific addresses (such as private LAN addresses) from routing over the WireGuard tunnel, add them to another RoutingPolicyRule with higher priority.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/network/50-wg0.network</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">...
-
 [RoutingPolicyRule]
 To=192.168.0.0/24
 Priority=9
-
 ...</pre>
 <p><b>Route for specific user</b>
 </p>
@@ -1264,9 +1248,8 @@ Priority=9
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/network/99-wg0.network</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">...
-
 [RoutingPolicyRule]
-Table=8677
+Table=1000
 User=transmission
 Priority=30001
 Family=both
@@ -1277,15 +1260,6 @@ User=transmission
 SuppressPrefixLength=0
 Priority=30000
 Family=both
-
-...</pre>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/network/99-wg0.netdev</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">...
-
-[WireGuard]
-PrivateKey='PEER_PRIVATE_KEY'
-RouteTable=8677
-
 ...</pre>
 <h4><span class="mw-headline" id="Netctl">Netctl</span></h4>
 <p><a href="../en/Netctl.html" title="Netctl">Netctl</a> has native support for setting up WireGuard interfaces. A typical set of WireGuard netctl profile configuration files would look like this:
@@ -1489,7 +1463,7 @@ address1=fdc9:281f:04d7:9ee9::3/64
 method=manual</pre>
 <h2><span class="mw-headline" id="Specific_use-case:_VPN_server">Specific use-case: VPN server</span></h2>
 <div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Merge-arrows-2.svg" decoding="async" width="36" height="40" class="mw-file-element"></span></span><b>This article or section is a candidate for merging with <a href="#Routing_all_traffic_over_WireGuard">#Routing all traffic over WireGuard</a>.</b></p>
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Merge-arrows-2.svg" decoding="async" width="36" height="40" class="mw-file-element"></span></span><b>This article or section is a candidate for merging with <a href="#wg-quick">#wg-quick</a>.</b></p>
 <div>
 <b>Notes:</b> Same use case. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:WireGuard.html">Talk:WireGuard</a>)</div>
 </div>
@@ -1664,7 +1638,7 @@ PresharedKey = @network.wireguard.psk.wg0
 </p>
 <p>One needs to run the <code>/usr/share/wireguard-tools/examples/reresolve-dns/reresolve-dns.sh /etc/wireguard/wg.conf</code> periodically to recover from an endpoint that has changed its IP.
 </p>
-<p>One way of doing so is by updating all WireGuard endpoints once every thirty seconds<a rel="nofollow" class="external autonumber" href="https://git.zx2c4.com/WireGuard/tree/contrib/examples/reresolve-dns/README">[7]</a> via a systemd timer:
+<p>One way of doing so is by updating all WireGuard endpoints once every thirty seconds<a rel="nofollow" class="external autonumber" href="https://git.zx2c4.com/WireGuard/tree/contrib/examples/reresolve-dns/README">[6]</a> via a systemd timer:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/wireguard_reresolve-dns.timer</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Unit]
@@ -1679,7 +1653,7 @@ WantedBy=timers.target</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Unit]
 Description=Reresolve DNS of all WireGuard endpoints
 Wants=network-online.target
-After=network-online.target
+After=network-online.target nss-lookup.target
 
 [Service]
 Type=oneshot
@@ -1810,7 +1784,7 @@ esac</pre>
 <p>If not already running, start and enable <code>NetworkManager-dispatcher.service</code>. Also make sure that NetworkManager is not managing routes for <code>wg0</code>, see <a href="#Routes_are_periodically_reset">#Routes are periodically reset</a>.
 </p>
 <h3><span class="mw-headline" id="Connection_lost_after_sleep_using_systemd-networkd">Connection lost after sleep using systemd-networkd</span></h3>
-<p><a href="../en/Systemd.html" title="Systemd">systemd</a> version 253 introduced a change in how network interfaces are reconfigured when resuming from a suspended state<a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/commit/a39a9ac8065c29330207838b70fe388bde2bc254">[8]</a>. In doing so, network connections managed by <a href="../en/Systemd-networkd.html" title="Systemd-networkd">systemd-networkd</a> will lose connection to the wireguard interface.  Unless a kill switch is configured, this risks exposing the public IP address after resuming from suspension. To fix this, uncomment and change the value to <code>no</code> for <code>ManageForeignRoutingPolicyRules</code> in <code>/etc/systemd/networkd.conf</code>. <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/26665#issuecomment-1454353725">[9]</a>
+<p><a href="../en/Systemd.html" title="Systemd">systemd</a> version 253 introduced a change in how network interfaces are reconfigured when resuming from a suspended state<a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/commit/a39a9ac8065c29330207838b70fe388bde2bc254">[7]</a>. In doing so, network connections managed by <a href="../en/Systemd-networkd.html" title="Systemd-networkd">systemd-networkd</a> will lose connection to the wireguard interface.  Unless a kill switch is configured, this risks exposing the public IP address after resuming from suspension. To fix this, uncomment and change the value to <code>no</code> for <code>ManageForeignRoutingPolicyRules</code> in <code>/etc/systemd/networkd.conf</code>. <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/26665#issuecomment-1454353725">[8]</a>
 </p>
 <p>Review the <a href="../en/Systemd-networkd.html" title="Systemd-networkd">systemd-networkd</a> page in full to become informed of any other potential side effects of this change, if any.
 </p>
@@ -1844,8 +1818,8 @@ esac</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=WireGuard&amp;oldid=827335">https://wiki.archlinux.org/index.php?title=WireGuard&amp;oldid=827335</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 18 February 2025, at 16:56.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=WireGuard&amp;oldid=829390">https://wiki.archlinux.org/index.php?title=WireGuard&amp;oldid=829390</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 18 March 2025, at 12:31.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

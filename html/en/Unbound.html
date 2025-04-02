@@ -527,6 +527,11 @@
 <p>Additionally, the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=expat">expat</a></span> package is required for <a href="#DNSSEC_validation">#DNSSEC validation</a>.
 </p>
 <h2><span class="mw-headline" id="Configuration">Configuration</span></h2>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
+<div>
+<b>Reason:</b> Add instructions for configuring persistent cache with <a href="../en/Valkey.html" class="mw-redirect" title="Redis">Redis</a>. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Unbound.html">Talk:Unbound</a>)</div>
+</div>
 <p>A default configuration is already included at <code>/etc/unbound/unbound.conf</code>. The following sections highlight different settings for the configuration file. See <span class="plainlinks archwiki-template-man" title="$ man 5 unbound.conf"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/unbound.conf.5">unbound.conf(5)</a></span> for other settings and more details.
 </p>
 <p>Unless otherwise specified, any options listed in this section are to be placed under the <code>server</code> section in the configuration like so:
@@ -577,8 +582,11 @@ resolv_conf_options="edns0 trust-ad"</pre>
 <p>To use <a href="../en/DNSSEC.html" title="DNSSEC">DNSSEC</a> validation, the following setting for the server trust anchor should be under <code>server:</code>:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/unbound/unbound.conf</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">  trust-anchor-file: trusted-key.key</pre>
-<p>This setting is done by default<a rel="nofollow" class="external autonumber" href="https://github.com/archlinux/svntogit-community/commit/79f1ebebd72b53d3b597f6dc48b84f3d76dd9a0c/trunk/conf">[1]</a>. <code>/etc/unbound/trusted-key.key</code> is copied from <code>/etc/trusted-key.key</code>, which is provided by the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dnssec-anchors">dnssec-anchors</a></span> dependency, whose <a href="../en/PKGBUILD.html" title="PKGBUILD">PKGBUILD</a> generates the file with <span class="plainlinks archwiki-template-man" title="$ man 8 unbound-anchor"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/unbound-anchor.8">unbound-anchor(8)</a></span>.
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">	trust-anchor-file: "/etc/unbound/trusted-key.key"
+</pre>
+<p>This setting is already enabled in the default configuration file.
+</p>
+<p><code>/etc/unbound/trusted-key.key</code> is copied from <code>/etc/trusted-key.key</code>, which is provided by the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dnssec-anchors">dnssec-anchors</a></span> dependency, whose <a href="../en/PKGBUILD.html" title="PKGBUILD">PKGBUILD</a> generates the file with <span class="plainlinks archwiki-template-man" title="$ man 8 unbound-anchor"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/unbound-anchor.8">unbound-anchor(8)</a></span>.
 </p>
 <p>DNSSEC validation will only be done if the DNS server being queried supports it. If general <a href="#Forwarding_queries">#Forwarding queries</a> have been set to DNS servers that do not support DNSSEC, their answers, whatever they are, should be considered insecure since no DNSSEC validation could be performed.
 </p>
@@ -617,7 +625,7 @@ private_interfaces="*"
 unbound_conf=/etc/unbound/resolvconf.conf</pre>
 <p>Run <code>resolvconf -u</code> to generate the file.
 </p>
-<p>Configure Unbound to read the openresolv's generated file and allow replies with <a href="https://en.wikipedia.org/wiki/Private_network" class="extiw" title="wikipedia:Private network">private IP address ranges</a><a rel="nofollow" class="external autonumber" href="https://roy.marples.name/projects/openresolv/configuration/resolvers/unbound/">[2]</a>:
+<p>Configure Unbound to read the openresolv's generated file and allow replies with <a href="https://en.wikipedia.org/wiki/Private_network" class="extiw" title="wikipedia:Private network">private IP address ranges</a><a rel="nofollow" class="external autonumber" href="https://roy.marples.name/projects/openresolv/configuration/resolvers/unbound/">[1]</a>:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/unbound/unbound.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">include: "/etc/unbound/resolvconf.conf"
@@ -705,7 +713,7 @@ local-data: "1.0.0.127.in-addr.arpa. 10800 IN PTR localhost."
 unbound_conf=/etc/unbound/resolvconf.conf</pre>
 <p>Run <code>resolvconf -u</code> to generate the file.
 </p>
-<p>Finally configure Unbound to read the openresolv's generated file<a rel="nofollow" class="external autonumber" href="https://roy.marples.name/projects/openresolv/configuration/resolvers/unbound/">[3]</a>:
+<p>Finally configure Unbound to read the openresolv's generated file<a rel="nofollow" class="external autonumber" href="https://roy.marples.name/projects/openresolv/configuration/resolvers/unbound/">[2]</a>:
 </p>
 <pre>include: "/etc/unbound/resolvconf.conf"
 </pre>
@@ -717,6 +725,13 @@ unbound_conf=/etc/unbound/resolvconf.conf</pre>
   forward-addr: 8.8.8.8
   forward-addr: 8.8.4.4
 </pre>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> 
+<ul>
+<li>This example uses Google Public DNS. Replace it with a DNS resolver you trust. See <a href="../en/Domain_name_resolution.html#Third-party_DNS_services" title="Domain name resolution">Domain name resolution#Third-party DNS services</a>.</li>
+<li>It is highly advised to use an <a href="#Privacy_and_security">encrypted protocol</a> when connecting to third-party DNS services. See <a href="#Forwarding_using_DNS_over_TLS">#Forwarding using DNS over TLS</a>.</li>
+</ul>
+</div>
 <h4><span class="mw-headline" id="Forwarding_using_DNS_over_TLS">Forwarding using DNS over TLS</span></h4>
 <p>To use <a href="../en/Domain_name_resolution.html#Privacy_and_security" class="mw-redirect" title="DNS over TLS">DNS over TLS</a>, you will need to enable the <code>tls-system-cert</code> option, allow unbound to forward TLS requests and also specify any number of servers that allow DNS over TLS. 
 </p>
@@ -733,6 +748,8 @@ forward-zone:
         forward-tls-upstream: yes
         forward-addr: 1.1.1.1@853#cloudflare-dns.com
 </pre>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> This example uses Cloudflare's public DNS resolver. Replace it with a DNS resolver you trust. See <a href="../en/Domain_name_resolution.html#Third-party_DNS_services" title="Domain name resolution">Domain name resolution#Third-party DNS services</a>.</div>
 <h3><span class="mw-headline" id="Access_control">Access control</span></h3>
 <p>You can specify the interfaces to answer queries from by IP address. The default, is to listen on <i>localhost</i>.
 </p>
@@ -795,15 +812,14 @@ forward-zone:
 <h4><span class="mw-headline" id="Using_unbound-control">Using unbound-control</span></h4>
 <p>Some of the commands that can be used with <i>unbound-control</i> are:
 </p>
-<ul><li>print statistics without resetting them</li></ul>
-<pre> # unbound-control stats_noreset
-</pre>
-<ul><li>dump cache to stdout</li></ul>
-<pre> # unbound-control dump_cache
-</pre>
-<ul><li>flush cache and reload configuration</li></ul>
-<pre> # unbound-control reload
-</pre>
+<ul>
+<li>print statistics without resetting them: <pre># unbound-control stats_noreset</pre>
+</li>
+<li>dump cache to stdout: <pre># unbound-control dump_cache</pre>
+</li>
+<li>flush cache and reload configuration: <pre># unbound-control reload</pre>
+</li>
+</ul>
 <p>Please refer to <span class="plainlinks archwiki-template-man" title="$ man 8 unbound-control"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/unbound-control.8">unbound-control(8)</a></span> for a detailed look at the operations it supports.
 </p>
 <h2><span class="mw-headline" id="Tips_and_tricks">Tips and tricks</span></h2>
@@ -902,15 +918,15 @@ serve-expired-client-timeout: 1800  # RFC 8767 recommended value
 <h3><span class="mw-headline" id="First_lookup_fails_after_start">First lookup fails after start</span></h3>
 <p>Without a storage backend configured, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=unbound">unbound</a></span> will start with a completely empty cache on every boot and every service (re)start. With an empty cache the first request will fire of a relatively large amount of queries to upstream/remote DNS servers. That number of requests will quickly hit an <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=unbound">unbound</a></span> quotum. The default <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=unbound">unbound</a></span> 1.22.0 configuration limits the number of upstream queries to 128. Even <a rel="nofollow" class="external text" href="https://github.com/NLnetLabs/unbound/commit/fd1a1d5fa0f012e8eeaa0ecc89da52d9ca25c216">a future release with a default of 200</a> will not solve this issue completely.
 </p>
-<p>The result is that your first DNS lookup will fail, and the second lookup succeeds. With error logging enabled, you will see a message like: 
+<p>The result is that your first DNS lookup will fail, and the second lookup succeeds. With error logging enabled, you will see a message like:
 </p>
 <pre>error: SERVFAIL &lt;1.1.1.1.in-addr.arpa. PTR IN&gt;: all servers for this domain failed, at zone 1.1.1.in-addr.arpa. no server to query no addresses for nameservers}}
 </pre>
-<p>In debug mode the log will show something like: 
+<p>In debug mode the log will show something like:
 </p>
 <pre>debug: request 1.1.1.1.in-addr.arpa. has exceeded the maximum global quota on number of upstream queries 131}}
 </pre>
-<p>Change your unbound.conf and restart <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=unbound">unbound</a></span>, to increase the default quotum to <a rel="nofollow" class="external text" href="https://www.mail-archive.com/unbound-users@lists.nlnetlabs.nl/msg01850.html">a more relaxed value according to other users experiencing this issue</a>, for example: 
+<p>Change your unbound.conf and restart <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=unbound">unbound</a></span>, to increase the default quotum to <a rel="nofollow" class="external text" href="https://www.mail-archive.com/unbound-users@lists.nlnetlabs.nl/msg01850.html">a more relaxed value according to other users experiencing this issue</a>, for example:
 </p>
 <pre>max-global-quota: 300
 </pre>
@@ -933,7 +949,10 @@ serve-expired-client-timeout: 1800  # RFC 8767 recommended value
 <div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Domain_Name_System.html" title="Category:Domain Name System">Domain Name System</a></li></ul>
 </div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li></ul>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
+</ul>
 </div>
 </div>
 				</div>
@@ -944,8 +963,8 @@ serve-expired-client-timeout: 1800  # RFC 8767 recommended value
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Unbound&amp;oldid=825619">https://wiki.archlinux.org/index.php?title=Unbound&amp;oldid=825619</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 20 January 2025, at 12:51.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Unbound&amp;oldid=830176">https://wiki.archlinux.org/index.php?title=Unbound&amp;oldid=830176</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 30 March 2025, at 13:19.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -90,15 +90,15 @@
 		<ul id="toc-Boot_the_installer-sublist" class="vector-toc-list">
 		</ul>
 	</li>
-	<li id="toc-MBR_Install_Example_Using_mdadm_on_and_Intel_FakeRAID" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
-		<a class="vector-toc-link" href="#MBR_Install_Example_Using_mdadm_on_and_Intel_FakeRAID">
+	<li id="toc-MBR_install_example_using_mdadm_and_Intel_FakeRAID" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#MBR_install_example_using_mdadm_and_Intel_FakeRAID">
 			<div class="vector-toc-text">
 				<span class="vector-toc-numb">4</span>
-				<span>MBR Install Example Using mdadm on and Intel FakeRAID</span>
+				<span>MBR install example using mdadm and Intel FakeRAID</span>
 			</div>
 		</a>
 		
-		<ul id="toc-MBR_Install_Example_Using_mdadm_on_and_Intel_FakeRAID-sublist" class="vector-toc-list">
+		<ul id="toc-MBR_install_example_using_mdadm_and_Intel_FakeRAID-sublist" class="vector-toc-list">
 		</ul>
 	</li>
 	<li id="toc-Load_dmraid" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
@@ -322,7 +322,7 @@
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:View-refresh-red.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is out of date.</b></p>
 <div>
-<b>Reason:</b> The installation steps do not reflect the current Arch Linux installation procedure. Need to be updated. Btw, it appears that Intel now recommends mdadm instead of dmraid (see Discussion). Update in progress.  See "MBR Install" below for an example of an install using the MBR disk partition layout using intel FakeRAID and mdadm... (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Install_Arch_Linux_with_Fake_RAID.html">Talk:Install Arch Linux with Fake RAID</a>)</div>
+<b>Reason:</b> The installation steps do not reflect the current Arch Linux installation procedure. Need to be updated. Btw, it appears that Intel now recommends mdadm instead of dmraid. See <a href="#MBR_install_example_using_mdadm_and_Intel_FakeRAID">#MBR install example using mdadm and Intel FakeRAID</a> for an example of an install using the MBR disk partition layout using intel FakeRAID and mdadm. (Discuss in <a href="../en/Talk:Install_Arch_Linux_with_Fake_RAID.html#Out_of_date_page?_(use_mdadm_instead_of_dmraid)" title="Talk:Install Arch Linux with Fake RAID">Talk:Install Arch Linux with Fake RAID#Out of date page? (use mdadm instead of dmraid)</a>)</div>
 </div>
 <h2><span class="mw-headline" id="Preparation">Preparation</span></h2>
 <div class="archwiki-template-box archwiki-template-box-warning">
@@ -351,97 +351,97 @@
 <h2><span class="mw-headline" id="Boot_the_installer">Boot the installer</span></h2>
 <p>See <a href="../en/Installation_guide.html#Pre-installation" title="Installation guide">Installation guide#Pre-installation</a> for details.
 </p>
-<h2><span class="mw-headline" id="MBR_Install_Example_Using_mdadm_on_and_Intel_FakeRAID">MBR Install Example Using mdadm on and Intel FakeRAID</span></h2>
+<h2><span class="mw-headline" id="MBR_install_example_using_mdadm_and_Intel_FakeRAID">MBR install example using mdadm and Intel FakeRAID</span></h2>
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-clear.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs language, wiki syntax or style improvements. See <a href="../en/Help:Style.html" title="Help:Style">Help:Style</a> for reference.</b></p>
 <div>
 <b>Reason:</b> see <a href="../en/Help:Style.html" title="Help:Style">Help:Style</a> (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Install_Arch_Linux_with_Fake_RAID.html">Talk:Install Arch Linux with Fake RAID</a>)</div>
 </div>
-<p>This is here because I spent hours making this work because there is so much information out there on different ways to do it, plus outdated information.  It may need integrated into this page better, with more explanation and Arch Linux WIKI syntax but I am wrapping this up ATM.  This is a basic command line dump that shows a successful RAID setup using the MBR partition structure.
+<p>This is here because I spent hours making this work because there is so much information out there on different ways to do it, plus outdated information. It may need integrated into this page better with more explanation but I am wrapping this up at the moment. This is a basic command line dump that shows a successful RAID setup using the MBR partition structure.
 </p>
-<p>It looks like once you create the Array in the intel util it writes the raid metadata.  So assembling/creating an array does not need to happen.  I named my array ZERO in the intel util and you can see it in this example.
+<p>It looks like once you create the array in the intel util it writes the RAID metadata. So assembling/creating an array does not need to happen.  I named my array ZERO in the intel util and you can see it in this example.
 </p>
 <p>I am leaving the entire install example as it shows when to configure things during the install.  You are going to have to modify some things to make them work, do not copy and paste!
 </p>
-<pre>ls /dev/md/
-parted /dev/md/ZERO_0
-mklabel msdos
-mkpart primary ext4 1MiB 100MiB
-set 1 boot on
-mkpart primary ext4 100MiB 16.5GiB
-mkpart primary linux-swap 16.5GiB 100%
+<pre># ls /dev/md/
+# parted /dev/md/ZERO_0
+# mklabel msdos
+# mkpart primary ext4 1MiB 100MiB
+# set 1 boot on
+# mkpart primary ext4 100MiB 16.5GiB
+# mkpart primary linux-swap 16.5GiB 100%
 </pre>
 <p>Just to see changes:
 </p>
-<pre>fdisk -l /dev/md/ZERO_0
+<pre># fdisk -l /dev/md/ZERO_0
 </pre>
-<p>Create Filesystem/swap/activate swap
+<p>Create filesystem/swap and activate swap:
 </p>
-<pre>mkfs.ext4 /dev/md/ZERO_0p1
-mkfs.ext4 /dev/md/ZERO_0p2
-mkswap /dev/md/ZERO_0p3
-swapon /dev/md/ZERO_0p3
-mount /dev/md/ZERO_0p2 /mnt
-mkdir -p /mnt/boot
-mount /dev/md/ZERO_0p1 /mnt/boot/
-nano /etc/pacman.conf
+<pre># mkfs.ext4 /dev/md/ZERO_0p1
+# mkfs.ext4 /dev/md/ZERO_0p2
+# mkswap /dev/md/ZERO_0p3
+# swapon /dev/md/ZERO_0p3
+# mount /dev/md/ZERO_0p2 /mnt
+# mkdir -p /mnt/boot
+# mount /dev/md/ZERO_0p1 /mnt/boot/
 </pre>
-<p>Uncomment multilib on x64 (why not)(do it after chroot too)
+<p><a href="../en/Help:Reading.html#Append,_add,_create,_edit" class="mw-redirect" title="Textedit">Edit</a> <code>/etc/pacman.conf</code> and uncomment multilib on x64 (why not)(do it after chroot too).
+Then:
 </p>
-<pre>pacstrap -K -i /mnt base base-devel
-genfstab -U /mnt &gt; /mnt/etc/fstab
-cat /mnt/etc/fstab
-nano /mnt/etc/fstab
+<pre># pacstrap -K -i /mnt base base-devel
+# genfstab -U /mnt &gt; /mnt/etc/fstab
 </pre>
-<p>replace UUIDs with (This may be optional):
+<p><a href="../en/Help:Reading.html#Append,_add,_create,_edit" class="mw-redirect" title="Textedit">Edit</a> <code>/mnt/etc/fstab</code> and replace UUIDs with (this may be optional):
 </p>
 <pre>/dev/md/ZERO_0p1
 /dev/md/ZERO_0p2
 /dev/md/ZERO_0p3
-mdadm --detail --scan &gt;&gt; /mnt/etc/mdadm.conf
 </pre>
-<p>Chroot in for config
+<p>Then run:
 </p>
-<pre>arch-chroot /mnt /bin/bash
-nano /etc/locale.gen
+<pre># mdadm --detail --scan &gt;&gt; /mnt/etc/mdadm.conf
 </pre>
-<p>en_US.UTF-8 UTF-8
+<p>Chroot in for config:
 </p>
-<pre>nano /etc/locale.conf
+<pre># arch-chroot /mnt /bin/bash
 </pre>
-<p>LANG=en_US.UTF-8
+<p><a href="../en/Help:Reading.html#Append,_add,_create,_edit" class="mw-redirect" title="Textedit">Edit</a> <code>/etc/locale.gen</code> and uncomment <code>en_US.UTF-8 UTF-8</code> and other needed UTF-8 <a href="../en/Locale.html" title="Locale">locales</a>. Generate the locales by running:
 </p>
-<pre>locale-gen en_US en_US.UTF-8
-tzselect
-ln -sf /usr/share/zoneinfo/America/Chicago /etc/localtime
+<pre># locale-gen
 </pre>
-<p>Work on some grub stuff
+<p><a href="../en/Help:Reading.html#Append,_add,_create,_edit" class="mw-redirect" title="Create">Create</a> the <span class="plainlinks archwiki-template-man" title="$ man 5 locale.conf"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/locale.conf.5">locale.conf(5)</a></span> file, and <a href="../en/Locale.html#Setting_the_system_locale" title="Locale">set the LANG variable</a> accordingly:
 </p>
-<pre>pacman -Sv grub
-nano /etc/default/grub 
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/locale.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">LANG=<i>en_US.UTF-8</i></pre>
+<p>Set the <a href="../en/System_time.html#Time_zone" class="mw-redirect" title="Time zone">time zone</a>:
+</p>
+<pre># ln -sf /usr/share/zoneinfo/<i>Region</i>/<i>City</i> /etc/localtime
 </pre>
-<ul><li>Uncomment GRUB_DISABLE_LINUX_UUID=true</li></ul>
-<p>Raid Stuff
+<p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=grub">grub</a></span>.
+<a href="../en/Help:Reading.html#Append,_add,_create,_edit" class="mw-redirect" title="Textedit">Edit</a> <code>/etc/default/grub</code> and uncomment <code>GRUB_DISABLE_LINUX_UUID=true</code>
 </p>
 <p>Add <code>mdadm_udev</code> to the <code>HOOKS</code> array in <code>/etc/mkinitcpio.conf</code>:
 </p>
 <pre>HOOKS=(base udev autodetect microcode modconf kms keyboard keymap consolefont block <b>mdadm_udev</b> filesystems fsck)
 </pre>
-<p><a href="../en/Mkinitcpio.html#Image_creation_and_activation" class="mw-redirect" title="Regenerate the initramfs">Regenerate the initramfs</a>.
+<p><a href="../en/Mkinitcpio.html#Image_creation_and_activation" class="mw-redirect" title="Regenerate the initramfs">Regenerate the initramfs</a>. Then:
 </p>
-<pre>grub-install --recheck /dev/md/ZERO_0
-grub-mkconfig -o /boot/grub/grub.cfg
+<pre># grub-install --recheck /dev/md/ZERO_0
+# grub-mkconfig -o /boot/grub/grub.cfg
 </pre>
-<pre>cat /boot/grub/grub.cfg
+<p><a href="../en/Help:Reading.html#Append,_add,_create,_edit" class="mw-redirect" title="Create">Create</a> the <a href="../en/Network_configuration.html#Set_the_hostname" class="mw-redirect" title="Hostname">hostname</a> file:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/hostname</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"><i>yourhostname</i>
 </pre>
-<pre>echo your-hostname &gt; /etc/hostname
-nano /etc/hosts
-systemctl enable dhcpcd@enp13s0.service
-exit
-umount -R /mnt
-reboot
+<p>Update <code>/etc/hosts</code> file appropriately. Then:
+</p>
+<pre># systemctl enable dhcpcd@enp13s0.service
+# exit
+# umount -R /mnt
+# reboot
 </pre>
-<p>Remove CD
+<p>Remove the installation medium.
 </p>
 <h2><span class="mw-headline" id="Load_dmraid">Load dmraid</span></h2>
 <div class="noprint archwiki-template-message">
@@ -461,7 +461,7 @@ reboot
 </p>
 <pre>/dev/mapper/control            &lt;- Created by device-mapper; if present, device-mapper is likely functioning
 /dev/mapper/sil_aiageicechah   &lt;- A RAID set on a Silicon Image SATA RAID controller
-/dev/mapper/sil_aiageicechah1  &lt;- First partition on this RAID Set
+/dev/mapper/sil_aiageicechah1  &lt;- First partition on this RAID set
 </pre>
 <p>If there is only one file (<code>/dev/mapper/control</code>), check if your controller chipset module is loaded with <code>lsmod</code>. If it is, then <i>dmraid</i> does not support this controller or there are no RAID sets on the system (check RAID BIOS setup again). If correct, then you may be forced to use <a href="../en/LVM_on_software_RAID.html" class="mw-redirect" title="Installing with Software RAID or LVM">software RAID</a> (this means no dual-booted RAID system on this controller).
 </p>
@@ -566,8 +566,8 @@ Error: Unable to determine major/minor number of root device '/dev/mapper/nvidia
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Install_Arch_Linux_with_Fake_RAID&amp;oldid=822056">https://wiki.archlinux.org/index.php?title=Install_Arch_Linux_with_Fake_RAID&amp;oldid=822056</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 3 December 2024, at 12:53.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Install_Arch_Linux_with_Fake_RAID&amp;oldid=828722">https://wiki.archlinux.org/index.php?title=Install_Arch_Linux_with_Fake_RAID&amp;oldid=828722</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 12 March 2025, at 20:56.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

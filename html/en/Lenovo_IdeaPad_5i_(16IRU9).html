@@ -309,8 +309,25 @@
 <p>Bluetooth works just by following the <a href="../en/Bluetooth.html" title="Bluetooth">Bluetooth</a> instructions.  Sometimes Bluetooth will not enable due to no default controller being found; if so, see <a href="../en/Bluetooth.html#bluetoothctl:_No_default_controller_available" title="Bluetooth">Bluetooth#bluetoothctl: No default controller available</a>.
 </p>
 <h2><span class="mw-headline" id="Hibernation">Hibernation</span></h2>
-<p>Resuming from hibernation works, but the system is unresponsive for 30 seconds if an external monitor is connected when hibernation is initiated.
+<p>Hibernation works, but the system is unresponsive for 30 seconds if an external monitor is connected when hibernation is initiated.  This occurs if the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sof-firmware">sof-firmware</a></span> package is installed.  A workaround is to add <code>snd_hda_codec_hdmi.enable_silent_stream=N</code> to the <i>modprobe</i> configuration file or the <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel command line">kernel command line</a>, or use <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=systemd">systemd</a></span> to remove the sound card when hibernation begins and add the card back when hibernation ends:
 </p>
+<pre>[Unit]
+Description=Disable and reconnect Intel Raptor Lake-P/U/H cAVS sound device on hibernation
+Before=sleep.target
+StopWhenUnneeded=yes
+
+[Service]
+User=root
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/bash -c "echo 1 &gt; /sys/bus/pci/devices/$(lspci -D | grep 'Raptor Lake-P/U/H cAVS' | cut -d' ' -f1)/remove"
+ExecStart=/usr/bin/sleep 1.0s
+ExecStop=/usr/bin/sleep 0.5s
+ExecStop=/usr/bin/bash -c "echo 1 &gt; /sys/bus/pci/rescan"
+
+[Install]
+WantedBy=sleep.target
+</pre>
 <h2><span class="mw-headline" id="Battery_conservation">Battery conservation</span></h2>
 <p>The <a href="../en/Laptop/Lenovo.html#Battery_conservation_mode" title="Laptop/Lenovo">battery conservation mode</a> works.  Unlike other Lenovo models, the charge limit threshold appears to be  approximately 80% of the battery capacity.
 </p>
@@ -470,8 +487,8 @@ the <a href="../en/Lenovo_IdeaPad_5_15are05.html#Power_management" title="Lenovo
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Lenovo_IdeaPad_5i_(16IRU9)&amp;oldid=828050">https://wiki.archlinux.org/index.php?title=Lenovo_IdeaPad_5i_(16IRU9)&amp;oldid=828050</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 1 March 2025, at 09:53.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Lenovo_IdeaPad_5i_(16IRU9)&amp;oldid=829467">https://wiki.archlinux.org/index.php?title=Lenovo_IdeaPad_5i_(16IRU9)&amp;oldid=829467</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 19 March 2025, at 16:17.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

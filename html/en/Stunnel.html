@@ -104,21 +104,10 @@
 			</button>
 		
 		<ul id="toc-Tips_and_Tricks-sublist" class="vector-toc-list">
-			<li id="toc-DNS_over_TLS" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#DNS_over_TLS">
-				<div class="vector-toc-text">
-					<span class="vector-toc-numb">3.1</span>
-					<span>DNS over TLS</span>
-				</div>
-			</a>
-			
-			<ul id="toc-DNS_over_TLS-sublist" class="vector-toc-list">
-			</ul>
-		</li>
-		<li id="toc-Encrypting_NFSv4_with_Stunnel_TLS" class="vector-toc-list-item vector-toc-level-2">
+			<li id="toc-Encrypting_NFSv4_with_Stunnel_TLS" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Encrypting_NFSv4_with_Stunnel_TLS">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">3.2</span>
+					<span class="vector-toc-numb">3.1</span>
 					<span>Encrypting NFSv4 with Stunnel TLS</span>
 				</div>
 			</a>
@@ -248,10 +237,10 @@
 </p>
 <p>A client is one to accept non TLS encrypted data. Stunnel will TLS encrypts its data and connects to the stunnel server. The stunnel server accepts TLS encrypted data and extracts it. It then connects to where the data should be sent to.
 </p>
-<p>The default <code>debug</code> value is 5, which is very verbose. After verifying correct operation, it is worth explicitly setting lower value in the configuration file.
+<p>The default <code>debug</code> value is <code>notice</code>, which is very verbose. After verifying correct operation, it is worth explicitly setting lower value in the configuration file.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/stunnel/stunnel.conf</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">debug = 3</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">debug = err</pre>
 <p>For better security, it is advised to explicitly set an appropriate uid and gid, other then root, for the global section and the per service sections. The configuration tokens <code>setuid</code> and <code>setgid</code> are available for this purpose.
 </p>
 <h3>
@@ -268,30 +257,36 @@
  357 273 277   ;       B   O   M</pre>
 <p>Note that when printing the file to the screen, such as with <code>cat</code>, or when editing the file with a text editor, the BOM bytes are usually not displayed. They should be there, though. Which is why you might want to verify that they are still there after editing is completed with the above <code>od</code>, or similar, command.
 </p>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong> When using <a href="../en/Kate.html" title="Kate">Kate</a>, add a comment containing <code>kate: bom on;</code> in the the first or last 10 lines and the UTF-8 BOM will be automatically added to the file.</div>
 <h3><span class="mw-headline" id="Authentication">Authentication</span></h3>
 <p>At least one of the client and the server, and optionally both, should be authenticated. Either a pre shared secret, or a key and certificate pair, can be used for authentication. A pre shared secret has to be transferred to all involved machines a priory by other means, such as <a href="../en/SCP_and_SFTP.html" title="SCP and SFTP">SCP and SFTP</a>. When such transfer is acceptable, pre shared key is the fastest method. Its speed might help mitigating attacks. A simple configuration for a single server with a single client that are using a pre shared secret is:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">client:/etc/stunnel/stunnel.conf</pre>
+<p><b>Client:</b>
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/stunnel/stunnel.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">; BOM composed of non printable characters. It is here, before the semicolon!
 setuid = stunnel
 setgid = stunnel
 
 [trivial client]
 client     = yes
-accept     = 127.0.0.1:&lt;src_port&gt;
-connect    = &lt;server_host&gt;:&lt;server_port&gt;
+accept     = 127.0.0.1:<i>src_port</i>
+connect    = <i>server_host</i>:<i>server_port</i>
 debug      = 3
 PSKsecrets = /etc/stunnel/psk.txt
 setuid     = stunnel
 setgid     = stunnel</pre>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">server:/etc/stunnel/stunnel.conf</pre>
+<p><b>Server:</b>
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/stunnel/stunnel.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">; BOM composed of non printable characters. It is here, before the semicolon!
 setuid = stunnel
 setgid = stunnel
 
 [trivial server]
-accept     = &lt;server_port&gt;
-connect    = &lt;dst_port&gt;
+accept     = <i>server_port</i>
+connect    = <i>dst_port</i>
 ciphers    = PSK
 debug      = 3
 PSKsecrets = /etc/stunnel/psk.txt
@@ -300,20 +295,18 @@ setgid     = stunnel</pre>
 <p>where <code>/etc/stunnel/psk.txt</code> could be created on one machine by
 </p>
 <pre># openssl rand -base64 -out /etc/stunnel/psk.txt 180
-# sed --in-place '1s/^/psk:/' /etc/stunnel/psk.txt
+# sed --in-place --null-data 's/\n//g;1s/^/psk:/' /etc/stunnel/psk.txt
+# chmod 640 /etc/stunnel/psk.txt
 </pre>
-<p>and copied to the other machine by secure means before starting stunnel. The <a href="../en/File_permissions_and_attributes.html" class="mw-redirect" title="Permissions">permissions</a> for each <code>psk.txt</code> file should be set appropriately. The psk string from the <code>sed</code> command is just a random name for the sake of the example. Do read <span class="plainlinks archwiki-template-man" title="$ man 8 stunnel"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/stunnel.8">stunnel(8)</a></span>.
+<p>and copied to the other machine by secure means before starting stunnel. The <a href="../en/File_permissions_and_attributes.html" class="mw-redirect" title="Permissions">permissions</a> for each <code>psk.txt</code> file should be set appropriately, neither world-readable nor world-writable. The psk string from the <code>sed</code> command is just a random name for the sake of the example. Do read <span class="plainlinks archwiki-template-man" title="$ man 8 stunnel"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/stunnel.8">stunnel(8)</a></span>.
 </p>
 <h2><span class="mw-headline" id="Tips_and_Tricks">Tips and Tricks</span></h2>
-<h3><span class="mw-headline" id="DNS_over_TLS">DNS over TLS</span></h3>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Merge-arrows-2.svg" decoding="async" width="36" height="40" class="mw-file-element"></span></span><b>This article or section is a candidate for merging with <a href="../en/DNS_over_HTTPS_servers.html#DNS_over_TLS_configuration_via_stunnel" title="DNS over HTTPS servers">DNS over HTTPS servers#DNS over TLS configuration via stunnel</a>.</b></p>
-<div>
-<b>Notes:</b> Some configuration examples are provided there. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Stunnel.html">Talk:Stunnel</a>)</div>
-</div>
-<p><a href="../en/BIND.html" title="BIND">BIND</a> does not offer builtin facilities for encryption of queries and answers. Bind knowledge base suggests using stunnel. See <a rel="nofollow" class="external free" href="https://kb.isc.org/docs/aa-01386">https://kb.isc.org/docs/aa-01386</a>. The link mentions <a href="../en/Unbound.html" title="Unbound">unbound</a> at the bottom of the page. A user that have only shell accounts on both the client and the server can still tunnel DNS traffic even when both the resolver and the NS do not support DNS over TLS.
-</p>
 <h3><span class="mw-headline" id="Encrypting_NFSv4_with_Stunnel_TLS">Encrypting NFSv4 with Stunnel TLS</span></h3>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-cut.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is being considered for removal.</b></p>
+<div>
+<b>Reason:</b> <a href="../en/NFS.html#TLS_encryption" title="NFS">NFS supports TLS</a> without needing to use Stunnel. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Stunnel.html">Talk:Stunnel</a>)</div>
+</div>
 <p>See <a rel="nofollow" class="external text" href="https://www.linuxjournal.com/content/encrypting-nfsv4-stunnel-tls">Encrypting NFSv4 with Stunnel TLS</a>
 </p>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
@@ -329,7 +322,7 @@ setgid     = stunnel</pre>
 <div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Transport_Layer_Security.html" title="Category:Transport Layer Security">Transport Layer Security</a></li></ul>
 </div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Merge.html" title="Category:Pages or sections flagged with Template:Merge">Pages or sections flagged with Template:Merge</a></li></ul>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Sections_flagged_with_Template:Remove.html" title="Category:Sections flagged with Template:Remove">Sections flagged with Template:Remove</a></li></ul>
 </div>
 </div>
 				</div>
@@ -340,8 +333,8 @@ setgid     = stunnel</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Stunnel&amp;oldid=767919">https://wiki.archlinux.org/index.php?title=Stunnel&amp;oldid=767919</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 17 February 2023, at 12:45.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Stunnel&amp;oldid=830106">https://wiki.archlinux.org/index.php?title=Stunnel&amp;oldid=830106</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 29 March 2025, at 14:10.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

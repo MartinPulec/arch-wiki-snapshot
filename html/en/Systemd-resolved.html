@@ -139,7 +139,29 @@
 			</a>
 			
 			<ul id="toc-DNS_over_TLS-sublist" class="vector-toc-list">
+				<li id="toc-Global_DNS_over_TLS" class="vector-toc-list-item vector-toc-level-4">
+			<a class="vector-toc-link" href="#Global_DNS_over_TLS">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">2.1.3.1</span>
+					<span>Global DNS over TLS</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Global_DNS_over_TLS-sublist" class="vector-toc-list">
 			</ul>
+		</li>
+		<li id="toc-Per-link_DNS_over_TLS" class="vector-toc-list-item vector-toc-level-4">
+			<a class="vector-toc-link" href="#Per-link_DNS_over_TLS">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">2.1.3.2</span>
+					<span>Per-link DNS over TLS</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Per-link_DNS_over_TLS-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
 		</li>
 		<li id="toc-Additional_listening_interfaces" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Additional_listening_interfaces">
@@ -399,6 +421,7 @@ Domains=~.</pre>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> 
 <ul>
+<li>It is highly advised to use an <a href="#Privacy_and_security">encrypted protocol</a> when connecting to third-party DNS services. See <a href="#DNS_over_TLS">#DNS over TLS</a>.</li>
 <li>Without the <code>Domains=~.</code> option in <span class="plainlinks archwiki-template-man" title="$ man 5 resolved.conf"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/resolved.conf.5">resolved.conf(5)</a></span>, <i>systemd-resolved</i> might use the per-link DNS servers, if any of them set <code>Domains=~.</code> in the per-link configuration.</li>
 <li>This option will not affect queries of domain names that match the more specific search domains specified in per-link configuration, they will still be resolved using their respective per-link DNS servers.</li>
 </ul>
@@ -448,23 +471,34 @@ DNSSEC=true</pre>
 -- Data from: network
 </pre>
 <h4><span class="mw-headline" id="DNS_over_TLS">DNS over TLS</span></h4>
+<h5><span class="mw-headline" id="Global_DNS_over_TLS">Global DNS over TLS</span></h5>
 <p>DNS over TLS is disabled by default. To enable it change the <code>DNSOverTLS</code> setting in the <code>[Resolve]</code> section in <span class="plainlinks archwiki-template-man" title="$ man 5 resolved.conf"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/resolved.conf.5">resolved.conf(5)</a></span>. To enable validation of your DNS provider's server certificate, include their hostname in the <code>DNS</code> setting in the format <code><i>ip_address</i>#<i>hostname</i></code>. For example:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/resolved.conf.d/dns_over_tls.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Resolve]
-DNS=9.9.9.9#dns.quad9.net
-DNSOverTLS=yes</pre>
+DNS=9.9.9.9#dns.quad9.net 149.112.112.112#dns.quad9.net 2620:fe::fe#dns.quad9.net 2620:fe::9#dns.quad9.net
+DNSOverTLS=yes
+Domains=~.</pre>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> 
 <ul>
+<li>This example uses Quad9. Replace it with a DNS resolver you trust. See <a href="../en/Domain_name_resolution.html#Third-party_DNS_services" title="Domain name resolution">Domain name resolution#Third-party DNS services</a>.</li>
 <li>With <code>DNSOverTLS=yes</code>, the DNS server used must support DNS over TLS. Otherwise all DNS requests will fail.</li>
 <li>Alternatively, it is possible to use DNS over TLS only if the server supports it with <code>DNSOverTLS=opportunistic</code>. If the used DNS server does not support DNS over TLS, systemd-resolved will fall back to regular unencrypted DNS.</li>
+<li>See the note in <a href="#Manually">#Manually</a> for specifics about using custom DNS servers globally.</li>
 </ul>
 </div>
 <p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=ngrep">ngrep</a></span> can be used to test if DNS over TLS is working since DNS over TLS always uses port 853 and never port 53. The command <code>ngrep port 53</code> should produce no output when a hostname is resolved with DNS over TLS and <code>ngrep port 853</code> should produce encrypted output.
 </p>
 <p><a href="../en/Wireshark.html" title="Wireshark">Wireshark</a> can be used for more detailed packet inspection of DNS over TLS queries.
 </p>
+<h5><span class="mw-headline" id="Per-link_DNS_over_TLS">Per-link DNS over TLS</span></h5>
+<p>Enabling DNS over TLS for specific connections depends on the <a href="../en/Network_configuration.html#Network_managers" class="mw-redirect" title="Network manager">network manager</a>:
+</p>
+<ul>
+<li>For <a href="../en/Systemd-networkd.html" title="Systemd-networkd">systemd-networkd</a>, set the <code>DNSOverTLS=yes</code> setting in the <code>[Network]</code> section of a <i>.network</i> file. If necessary, configure custom DNS servers with the <code>DNS=</code> setting. See <span class="plainlinks archwiki-template-man" title="$ man 5 systemd.network"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd.network.5">systemd.network(5)</a></span>.</li>
+<li>For <a href="../en/NetworkManager.html" title="NetworkManager">NetworkManager</a>, set <code>dns-over-tls=2</code> in the <code>[connection]</code> section of a <i>.nmconnection</i> file (e.g. by running <code>nmcli connection modify <i>interface_name</i> connection.dns-over-tls 2</code>); see <span class="plainlinks archwiki-template-man" title="$ man 5 nm-settings"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/nm-settings.5">nm-settings(5)</a></span>. To set custom DNS servers, see <a href="../en/NetworkManager.html#Setting_custom_DNS_servers_in_a_connection" title="NetworkManager">NetworkManager#Setting custom DNS servers in a connection</a>.</li>
+</ul>
 <h4><span class="mw-headline" id="Additional_listening_interfaces">Additional listening interfaces</span></h4>
 <p><i>systemd-resolved</i> answers DNS requests to local applications via loopback interface per default. To make <i>systemd-resolved</i> answer DNS requests on additional interfaces or addresses than the default one, set the option <code>DNSStubListenerExtra</code> for every additional interface in <span class="plainlinks archwiki-template-man" title="$ man 5 resolved.conf"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/resolved.conf.5">resolved.conf(5)</a></span>. For example:
 </p>
@@ -571,8 +605,8 @@ UseDomains=true</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Systemd-resolved&amp;oldid=823402">https://wiki.archlinux.org/index.php?title=Systemd-resolved&amp;oldid=823402</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 17 December 2024, at 14:15.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Systemd-resolved&amp;oldid=830017">https://wiki.archlinux.org/index.php?title=Systemd-resolved&amp;oldid=830017</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 28 March 2025, at 07:59.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

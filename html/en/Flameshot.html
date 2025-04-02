@@ -121,10 +121,21 @@
 			<ul id="toc-Flameshot_starts_with_an_error_on_Sway_/_wlroots-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Flameshot_starts_with_an_error_on_Gnome_Wayland" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Flameshot_starts_with_an_error_on_Gnome_Wayland">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">2.6</span>
+					<span>Flameshot starts with an error on Gnome Wayland</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Flameshot_starts_with_an_error_on_Gnome_Wayland-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 		<li id="toc-Flameshot_does_not_work_on_all_monitors_of_a_multi-monitor_setup_in_KDE_Plasma_on_wayland" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Flameshot_does_not_work_on_all_monitors_of_a_multi-monitor_setup_in_KDE_Plasma_on_wayland">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">2.6</span>
+					<span class="vector-toc-numb">2.7</span>
 					<span>Flameshot does not work on all monitors of a multi-monitor setup in KDE Plasma on wayland</span>
 				</div>
 			</a>
@@ -135,7 +146,7 @@
 		<li id="toc-Flameshot_does_not_work_on_all_monitors_of_a_multi-monitor_setup_in_Sway" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Flameshot_does_not_work_on_all_monitors_of_a_multi-monitor_setup_in_Sway">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">2.7</span>
+					<span class="vector-toc-numb">2.8</span>
 					<span>Flameshot does not work on all monitors of a multi-monitor setup in Sway</span>
 				</div>
 			</a>
@@ -146,12 +157,23 @@
 		<li id="toc-Flameshot_does_not_generate_thumbnails_in_KDE_Dolphin" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Flameshot_does_not_generate_thumbnails_in_KDE_Dolphin">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">2.8</span>
+					<span class="vector-toc-numb">2.9</span>
 					<span>Flameshot does not generate thumbnails in KDE Dolphin</span>
 				</div>
 			</a>
 			
 			<ul id="toc-Flameshot_does_not_generate_thumbnails_in_KDE_Dolphin-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Global_shortcuts_do_not_work_on_Gnome_Wayland" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Global_shortcuts_do_not_work_on_Gnome_Wayland">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">2.10</span>
+					<span>Global shortcuts do not work on Gnome Wayland</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Global_shortcuts_do_not_work_on_Gnome_Wayland-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -313,6 +335,25 @@ flameshot: info: Screenshot aborted.
 </p>
 <p>More information can be found on the <a rel="nofollow" class="external text" href="https://github.com/flameshot-org/flameshot/blob/master/docs/Sway%20and%20wlroots%20support.md">Sway wiki page</a>
 </p>
+<h3><span class="mw-headline" id="Flameshot_starts_with_an_error_on_Gnome_Wayland">Flameshot starts with an error on Gnome Wayland</span></h3>
+<p>When trying to take a screenshot the first time, Flameshot will request permissions and the Gnome portal will show a permission prompt. If permissions have been denied once, flameshot will never display the dialog again and display the following error:
+</p>
+<pre>flameshot: error: Unable to capture screen
+flameshot: error: Unable to capture screen
+flameshot: info: Screenshot aborted.
+</pre>
+<p>Permissions can be shown by the <code>flatpak permissions</code> command (note the <code>no</code> here):
+</p>
+<pre>$ flatpak permissions
+Table      Object     App Permissions Data
+screenshot screenshot     no          0x00
+</pre>
+<p>To reset the permission and ask again, run the following command (note the single quotes at the end relates to the empty "App" column, it may change if flatpak has a non-empty application ID):
+</p>
+<pre>$ flatpak permission-reset ''
+Table      Object     App Permissions Data
+screenshot screenshot     no          0x00
+</pre>
 <h3><span class="mw-headline" id="Flameshot_does_not_work_on_all_monitors_of_a_multi-monitor_setup_in_KDE_Plasma_on_wayland">Flameshot does not work on all monitors of a multi-monitor setup in KDE Plasma on wayland</span></h3>
 <p>The flameshot overlay only shows on one of several monitors. A <a rel="nofollow" class="external text" href="https://github.com/flameshot-org/flameshot/issues/3073#issuecomment-1740187784">workaround has been suggested</a> in the flameshot github repository. 
 </p>
@@ -341,7 +382,20 @@ flameshot: info: Screenshot aborted.
 </p>
 <pre>kf.service.services: KServiceTypeTrader: serviceType "ThumbCreator" not found
 </pre>
-<p>Installing <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=kio5-extras">kio5-extras</a></span> solves this problem. <a rel="nofollow" class="external autonumber" href="https://forums.opensuse.org/t/dolphin-cant-create-photo-thumbnails-servicetype-thumbcreator-not-found/170259/4.">[1]</a>
+<p>Installing <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=kio5-extras">kio5-extras</a></span> solves this problem. <a rel="nofollow" class="external autonumber" href="https://forums.opensuse.org/t/dolphin-cant-create-photo-thumbnails-servicetype-thumbcreator-not-found/170259/4.">[1]</a><sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2025-03-15 ⓘ]</sup>
+</p>
+<h3><span class="mw-headline" id="Global_shortcuts_do_not_work_on_Gnome_Wayland">Global shortcuts do not work on Gnome Wayland</span></h3>
+<p>Create a wrapper script that sets the correct environment variable:
+</p>
+<pre>cat &gt; $HOME/flameshot-gui &lt;&lt;EOF
+#!/bin/sh
+export QT_QPA_PLATFORM=wayland
+/usr/bin/flameshot gui
+EOF
+
+chmod +x $HOME/flameshot-gui
+</pre>
+<p>Open the Settings window, go to "Keyboard" &gt; "View and Customize Shortcuts" &gt; "Custom Shortcuts", and click the "+" button. Select the shortcut you want and enter the path to the wrapper script in the "Command" button.
 </p>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul>
@@ -351,9 +405,13 @@ flameshot: info: Screenshot aborted.
 </ul>
 </div>
 </div>
-					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
+					<div id="catlinks" class="catlinks" data-mw="interface">
+<div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Multimedia.html" title="Category:Multimedia">Multimedia</a></li></ul>
-</div></div>
+</div>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li></ul>
+</div>
+</div>
 				</div>
 			</main>
 			
@@ -362,8 +420,8 @@ flameshot: info: Screenshot aborted.
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Flameshot&amp;oldid=826140">https://wiki.archlinux.org/index.php?title=Flameshot&amp;oldid=826140</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 30 January 2025, at 15:07.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Flameshot&amp;oldid=829661">https://wiki.archlinux.org/index.php?title=Flameshot&amp;oldid=829661</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 23 March 2025, at 10:51.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

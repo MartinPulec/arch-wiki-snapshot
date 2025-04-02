@@ -353,27 +353,17 @@
 <code>/etc/profile</code> initializes variables for login shells <i>only</i>. It does, however, run scripts (e.g. those in <code>/etc/profile.d/</code>) and can be used by all <a href="https://en.wikipedia.org/wiki/Bourne_shell" class="extiw" title="wikipedia:Bourne shell">Bourne shell</a> compatible shells.</li>
 <li>Shell specific configuration files - Global configuration files of your <a href="../en/Command-line_shell.html" class="mw-redirect" title="Shell">shell</a>, initializes variables and runs scripts. For example <a href="../en/Bash.html#Configuration_files" title="Bash">Bash#Configuration files</a> (e.g. <code>~/.bashrc</code>) or <a href="../en/Zsh.html#Startup/Shutdown_files" title="Zsh">Zsh#Startup/Shutdown files</a> (e.g. <code>~/.zshrc</code>).</li>
 </ul>
-<p>In this example, we will create a function to add several directories (e.g. <code>~/bin</code> and <code>~/scripts</code>) to <code>PATH</code> for the respective user. To do this, just put this in your preferred global environment variable configuration file (<code>/etc/profile</code> or <code>/etc/bash.bashrc</code>):
+<p>The following Bash helper function can be used to append a number of directories to the <code>PATH</code> environment variable. Add the function at the top of the file where you define your environment (e.g. <code>~/.environment</code> or <code>~/.bashrc</code>.
 </p>
-<pre>set_path(){
-
-    # Check if user id is 1000 or higher
-    [ "$(id -u)" -ge 1000 ] || return
-
-    for i in "$@";
-    do
-        # Check if the directory exists
-        [ -d "$i" ] || continue
-
-        # Check if it is not already in your $PATH.
-        echo "$PATH" | grep -Eq "(^|:)$i(:|$)" &amp;&amp; continue
-
-        # Then append it to $PATH and export it
-        export PATH="${PATH}:$i"
-    done
+<p>The function will only add directories that actually exist on the filesystem, and it will avoid creating duplicate entries.
+</p>
+<pre>add_paths() {
+  for d in "$@"; do
+    [[ -d "$d" &amp;&amp; ! "$PATH" =~ (^|:)$d(:|$) ]] &amp;&amp; PATH="$PATH:$d"
+  done
 }
 
-set_path ~/bin ~/scripts
+add_paths ~/bin ~/scripts
 </pre>
 <p>One method for sharing environment variables between different shells is to create a file <b>without any comments, blank lines, or spaces (bash)</b> that can be read directly by <code>envsubst</code> (inspired by <a rel="nofollow" class="external autonumber" href="https://unix.stackexchange.com/questions/176322/share-environment-variables-between-bash-and-fish">[1]</a>):
 </p>
@@ -386,7 +376,7 @@ XDG_STATE_HOME=$HOME/.local/state</pre>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.bashrc</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">export $(envsubst &lt; .env)</pre>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.config/fish/config.fish</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">export (envsubst &lt; .env)</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">set export (envsubst &lt; .env)</pre>
 <h4><span class="mw-headline" id="Using_pam_env">Using pam_env</span></h4>
 <p>The <a href="../en/PAM.html" title="PAM">PAM</a> module <span class="plainlinks archwiki-template-man" title="$ man 8 pam_env"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/pam_env.8">pam_env(8)</a></span> loads the variables to be set in the environment from the following files in order: <code>/etc/security/pam_env.conf</code> and <code>/etc/environment</code>.
 </p>
@@ -516,7 +506,7 @@ set +o allexport
 <ul><li>
 <code>XDG_CURRENT_DESKTOP</code> is a <a href="../en/Category:Freedesktop.org.html" class="mw-redirect" title="Freedesktop.org">freedesktop.org</a> variable containing a colon separated list of strings that the current <a href="../en/Desktop_environment.html" title="Desktop environment">desktop environment</a> identifies as <a rel="nofollow" class="external autonumber" href="https://specifications.freedesktop.org/mime-apps-spec/latest/file.html">[4]</a>. Standardized values for actively developed environments are <code>GNOME</code>, <code>GNOME-Flashback</code>, <code>KDE</code>, <code>LXDE</code>, <code>LXQt</code>, <code>MATE</code>, <code>TDE</code>, <code>Unity</code>, <code>XFCE</code>, <code>EDE</code>, <code>Cinnamon</code>, <code>Pantheon</code>, and <code>DDE</code> <a rel="nofollow" class="external autonumber" href="https://specifications.freedesktop.org/menu-spec/latest/onlyshowin-registry.html">[5]</a>.
 <ul>
-<li>Cinnamon was registered <a rel="nofollow" class="external text" href="https://cgit.freedesktop.org/xdg/desktop-file-utils/commit/?id=be0c630a19aa1788ef731def911770ce497d6ba3">later</a>  than the rest of the desktop environments. As a result, some software may still be expecting its pre-registration value <code>X-CINNAMON</code>, such as <a href="../en/Qt.html" title="Qt">Qt</a><a rel="nofollow" class="external autonumber" href="https://github.com/qt/qtbase/blob/dev/src/gui/platform/unix/qgenericunixthemes.cpp#L1502">[6]</a>.</li>
+<li>Cinnamon was registered <a rel="nofollow" class="external text" href="https://gitlab.freedesktop.org/xdg/desktop-file-utils/-/commit/be0c630a19aa1788ef731def911770ce497d6ba3">later</a>  than the rest of the desktop environments. As a result, some software may still be expecting its pre-registration value <code>X-CINNAMON</code>, such as <a href="../en/Qt.html" title="Qt">Qt</a><a rel="nofollow" class="external autonumber" href="https://github.com/qt/qtbase/blob/dev/src/gui/platform/unix/qgenericunixtheme.cpp#L156">[6]</a>.</li>
 <li>
 <code>Hyprland</code> is informally recognized for <a href="../en/Hyprland.html" title="Hyprland">Hyprland</a>.</li>
 </ul>
@@ -597,8 +587,8 @@ http_proxy="http://192.168.0.1:80"
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Environment_variables&amp;oldid=827968">https://wiki.archlinux.org/index.php?title=Environment_variables&amp;oldid=827968</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 28 February 2025, at 14:13.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Environment_variables&amp;oldid=829908">https://wiki.archlinux.org/index.php?title=Environment_variables&amp;oldid=829908</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 26 March 2025, at 17:39.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

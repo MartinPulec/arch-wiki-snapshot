@@ -558,8 +558,10 @@
 <pre># sync; umount /mnt/usb
 </pre>
 <h4><span class="mw-headline" id="EFI">EFI</span></h4>
-<p>To have grub write its EFI image to <code><i>esp</i>/EFI/BOOT/BOOTX64.efi</code>, which the boot firmware will be able to find without any UEFI boot entry, use <code>--removable</code> when you run <code>grub-install</code>.
+<p>For removable installations you have to use <code>--removable</code> and specify both <code>--boot-directory</code> and <code>--efi-directory</code>. <a rel="nofollow" class="external autonumber" href="https://www.gnu.org/software/grub/manual/grub/html_node/Installing-GRUB-using-grub_002dinstall.html#Installing-GRUB-using-grub_002dinstall">[1]</a>
 </p>
+<pre># grub-install --target=x86_64-efi --bootloader-id=GRUB --efi-directory=<i>/mnt/usb</i> --boot-directory=<i>/mnt/usb</i>/boot --removable
+</pre>
 <h3><span class="mw-headline" id="Install_to_partition_or_partitionless_disk">Install to partition or partitionless disk</span></h3>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> GRUB <b>strongly discourages</b> installation to a partition boot sector or a partitionless disk as GRUB Legacy or Syslinux does. This setup is prone to breakage, especially during updates, and is <b>not supported</b> by the Arch developers.</div>
@@ -702,7 +704,7 @@ GRUB_FONT="/path/to/font.pf2"
 <p>Your splash image will usually not be displayed when using a theme.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> If the hard drive is encrypted, you need to put the theme files in <code>/boot/grub/themes</code>, as grub is unable to access anything on the encrypted device before it is luksOpen-ed. See <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=288619">[1]</a>.</div>
+<strong>Note:</strong> If the hard drive is encrypted, you need to put the theme files in <code>/boot/grub/themes</code>, as grub is unable to access anything on the encrypted device before it is luksOpen-ed. See <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=288619">[2]</a>.</div>
 <h3><span class="mw-headline" id="Menu_colors">Menu colors</span></h3>
 <p>You can set the menu colors in GRUB. The available colors for GRUB can be found in <a rel="nofollow" class="external text" href="https://www.gnu.org/software/grub/manual/grub/html_node/color_005fnormal.html">the GRUB Manual</a>.
 Here is an example:
@@ -780,7 +782,7 @@ Only a superuser or users specified with the <code>--user</code> switch will be 
 </p>
 <pre>GRUB_FORCE_HIDDEN_MENU="true"
 </pre>
-<p>Then create the file <code>/etc/grub.d/31_hold_shift</code> containing  <a rel="nofollow" class="external autonumber" href="https://gist.githubusercontent.com/anonymous/8eb2019db2e278ba99be/raw/257f15100fd46aeeb8e33a7629b209d0a14b9975/gistfile1.sh">[2]</a>, make it <a href="../../en/Help:Reading.html#Make_executable" class="mw-redirect" title="Executable">executable</a>, and regenerate the grub configuration:
+<p>Then create the file <code>/etc/grub.d/31_hold_shift</code> containing  <a rel="nofollow" class="external autonumber" href="https://gist.githubusercontent.com/anonymous/8eb2019db2e278ba99be/raw/257f15100fd46aeeb8e33a7629b209d0a14b9975/gistfile1.sh">[3]</a>, make it <a href="../../en/Help:Reading.html#Make_executable" class="mw-redirect" title="Executable">executable</a>, and regenerate the grub configuration:
 </p>
 <pre># grub-mkconfig -o /boot/grub/grub.cfg
 </pre>
@@ -972,7 +974,7 @@ configfile grub.cfg</pre>
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
 <div>
-<b>Reason:</b> Is this the same as <a href="../../en/Multiboot_USB_drive.html#Hybrid_UEFI_GPT_+_BIOS_GPT/MBR_boot" title="Multiboot USB drive">Multiboot USB drive#Hybrid UEFI GPT + BIOS GPT/MBR boot</a>? Does it work without hybrid MBR? (Discuss in <a rel="nofollow" class="external text" href="../../en/Talk:GRUB/Tips_and_tricks.html">Talk:GRUB/Tips and tricks</a>)</div>
+<b>Reason:</b> Is this the same as <a href="../../en/Multiboot_USB_drive.html#Hybrid_UEFI_GPT_+_BIOS_GPT/MBR_boot" title="Multiboot USB drive">Multiboot USB drive#Hybrid UEFI GPT + BIOS GPT/MBR boot</a>? Does it work without hybrid MBR? (Discuss in <a href="../../en/Talk:GRUB/Tips_and_tricks.html#Section_12.4:_UEFI_and_BIOS_installation" title="Talk:GRUB/Tips and tricks">Talk:GRUB/Tips and tricks#Section 12.4: UEFI and BIOS installation</a>)</div>
 </div>
 <p>If your arch installation should be bootable on both UEFI and BIOS systems, install <a href="../../en/GRUB.html" title="GRUB">GRUB</a> using both methods. Partition the disk as GPT, create an <a href="../../en/EFI_system_partition.html" title="EFI system partition">EFI system partition</a> and a BIOS boot partition as well, mount the ESP at <code>/efi</code> and run the GRUB install commands for both ways.
 </p>
@@ -1030,8 +1032,8 @@ configfile grub.cfg</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GRUB/Tips_and_tricks&amp;oldid=827974">https://wiki.archlinux.org/index.php?title=GRUB/Tips_and_tricks&amp;oldid=827974</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 28 February 2025, at 16:28.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GRUB/Tips_and_tricks&amp;oldid=829340">https://wiki.archlinux.org/index.php?title=GRUB/Tips_and_tricks&amp;oldid=829340</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 17 March 2025, at 16:48.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

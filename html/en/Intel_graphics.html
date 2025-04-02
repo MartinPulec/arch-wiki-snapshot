@@ -754,7 +754,7 @@
 </p>
 <p>The <a class="mw-selflink-fragment" href="#Testing_the_new_experimental_Xe_driver">new experimental</a> <code>xe</code> driver enables Guc and Huc functionality by default.
 </p>
-<p>For the <code>i915</code> driver, GuC functionality is controlled by the <code>i915.enable_guc</code> <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a>. Its usage is as follows:
+<p>For the <code>i915</code> driver, GuC functionality is controlled by the <code>enable_guc</code> <a href="../en/Kernel_module.html#Setting_module_options" class="mw-redirect" title="Kernel module parameter">kernel module parameter</a>. Its usage is as follows:
 </p>
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
@@ -811,10 +811,10 @@
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> Manually enabling GuC / HuC firmware loading taints the kernel <a rel="nofollow" class="external text" href="https://bugs.freedesktop.org/show_bug.cgi?id=111918">even when the feature is not supported</a>. Moreover, enabling GuC/HuC firmware loading can cause issues on some systems; disable it if you experience freezing (for example, after resuming from hibernation).</div>
-<p>Set the <code>i915.enable_guc</code> <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a>, for example with:
+<p>Set the <code>enable_guc=</code> <a href="../en/Kernel_module.html#Setting_module_options" class="mw-redirect" title="Kernel module parameter">kernel module parameter</a>. For example, with:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/modprobe.d/i915.conf</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">options i915 enable_guc=2</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">options i915 enable_guc=3</pre>
 <p><a href="../en/Mkinitcpio.html#Image_creation_and_activation" class="mw-redirect" title="Regenerate the initramfs">Regenerate the initramfs</a>, on next boot you can verify both GuC and HuC are enabled by using <a href="../en/Core_utilities.html#Essentials" class="mw-redirect" title="Dmesg">dmesg</a>:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># dmesg | grep -i -e 'huc' -e 'guc'</pre>
@@ -831,7 +831,7 @@
 # less /sys/kernel/debug/dri/*/gt0/uc/huc_info
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> Using <a href="../en/Intel_GVT-g.html" title="Intel GVT-g">GVT-g graphics virtualization</a> by setting <code>i915.enable_gvt=1</code> is not supported as of linux 4.20.11 when GuC/HuC is also enabled. The i915 module would fail to initialize as shown in system journal.
+<strong>Note:</strong> Using <a href="../en/Intel_GVT-g.html" title="Intel GVT-g">GVT-g graphics virtualization</a> by setting <code>enable_gvt=1</code> is not supported as of Linux 4.20.11 when GuC/HuC is also enabled. The i915 module would fail to initialize as shown in system journal.
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># journalctl</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">... kernel: [drm:intel_gvt_init [i915]] *ERROR* i915 GVT-g loading failed due to Graphics virtualization is not yet supported with GuC submission
 ... kernel: i915 0000:00:02.0: [drm:i915_driver_load [i915]] Device initialization failed (-5)
@@ -1003,21 +1003,8 @@ has subsequently been removed completely since Linux 6.7<a rel="nofollow" class=
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> You can use this variable to report any known OpenGL version, even if it is not supported by the GPU. Some applications might no longer crash, some may start crashing - you probably do not want to set this variable globally.</div>
 <h3><span class="mw-headline" id="Monitoring">Monitoring</span></h3>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Merge-arrows-2.svg" decoding="async" width="36" height="40" class="mw-file-element"></span></span><b>This article or section is a candidate for merging with <a href="../en/Hardware_video_acceleration.html#Verification" title="Hardware video acceleration">Hardware video acceleration#Verification</a>.</b></p>
-<div>
-<b>Notes:</b> This overlaps the content at the previously linked page and would probably be a better fit in a generic page instead of this one dedicated to Intel GPUs. Otherwise, <a href="../en/Hardware_video_acceleration.html#Verification" title="Hardware video acceleration">Hardware video acceleration#Verification</a> should be modified to link to each dedicated page instead of duplicating content. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Intel_graphics.html">Talk:Intel graphics</a>)</div>
-</div>
-<ul><li>
-<b>intel_gpu_top</b> — A top-like task monitor for Intel GPUs (requires root permissions).</li></ul>
-<dl><dd>
-<a rel="nofollow" class="external free" href="https://gitlab.freedesktop.org/drm/igt-gpu-tools">https://gitlab.freedesktop.org/drm/igt-gpu-tools</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=intel-gpu-tools">intel-gpu-tools</a></span>
-</dd></dl>
-<ul><li>
-<b>nvtop</b> — GPUs process monitoring for AMD, Intel and NVIDIA (currently has very basic support for Intel GPUs).</li></ul>
-<dl><dd>
-<a rel="nofollow" class="external free" href="https://github.com/Syllo/nvtop">https://github.com/Syllo/nvtop</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nvtop">nvtop</a></span>
-</dd></dl>
+<p>See <a href="../en/Hardware_video_acceleration.html#Verification" title="Hardware video acceleration">Hardware video acceleration#Verification</a>.
+</p>
 <h3><span class="mw-headline" id="Setting_brightness_and_gamma">Setting brightness and gamma</span></h3>
 <p>See <a href="../en/Backlight.html" title="Backlight">Backlight</a>.
 </p>
@@ -1187,6 +1174,8 @@ Jun 16 17:54:03 hostname kernel: RIP  [&lt;          (null)&gt;]           (null
 <h3><span class="mw-headline" id="Screen_flickering">Screen flickering</span></h3>
 <p>Panel Self Refresh (PSR), a power saving feature used by Intel iGPUs is known to cause flickering in some instances <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/49628">FS#49628</a> <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/49371">FS#49371</a> <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/50605">FS#50605</a>. A temporary solution is to disable this feature using the <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a> <code>i915.enable_psr=0</code> or <code>xe.enable_psr=0</code>.
 </p>
+<p>This can solve error messages like <code>[i915] *ERROR* CPU pipe A FIFO underrun</code>.
+</p>
 <h3><span class="mw-headline" id="OpenGL_2.1_with_i915_driver">OpenGL 2.1 with i915 driver</span></h3>
 <p>The classic mesa driver for Gen 3 GPUs included in the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mesa-amber">mesa-amber</a></span> package reports OpenGL 2.0 by default, because the hardware is not fully compatible with OpenGL 2.1.<a rel="nofollow" class="external autonumber" href="https://www.phoronix.com/scan.php?page=news_item&amp;px=Mesa-i915-OpenGL-2-Drop">[34]</a> OpenGL 2.1 support can be enabled manually by setting <code>/etc/drirc</code> or <code>~/.drirc</code> options like:
 </p>
@@ -1240,7 +1229,7 @@ Jun 16 17:54:03 hostname kernel: RIP  [&lt;          (null)&gt;]           (null
 </p>
 <p><code>i915.enable_dc=0</code> disables GPU power management. This does solve random hangs on certain Intel systems, notably Goldmount and Kaby Lake Refresh chips. Using this parameter does result in higher power use and shorter battery life on laptops/notebooks.
 </p>
-<p><code>intel_idle.max_cstate=1</code> limits the processors sleep states, it prevents the processor from going into deep sleep states. That is absolutely not ideal and does result in higher power use and lower battery life. However, it does solve random hangs on many Intel systems. Use this if you have a Intel Baytrail or a Kaby Lake Refresh chip. Intel "Baytrail" chips were known to randomly hang without this kernel parameter due to a <a rel="nofollow" class="external text" href="https://bugzilla.kernel.org/show_bug.cgi?id=109051#c752">hardware flaw</a>, theoretically fixed <a rel="nofollow" class="external text" href="https://cgit.freedesktop.org/drm-intel/commit/?id=a75d035fedbdecf83f86767aa2e4d05c8c4ffd95">2019-04-26</a>.
+<p><code>intel_idle.max_cstate=1</code> limits the processors sleep states, it prevents the processor from going into deep sleep states. That is absolutely not ideal and does result in higher power use and lower battery life. However, it does solve random hangs on many Intel systems. Use this if you have a Intel Baytrail or a Kaby Lake Refresh chip. Intel "Baytrail" chips were known to randomly hang without this kernel parameter due to a <a rel="nofollow" class="external text" href="https://bugzilla.kernel.org/show_bug.cgi?id=109051#c752">hardware flaw</a>, theoretically fixed <a rel="nofollow" class="external text" href="https://gitlab.freedesktop.org/drm/i915/kernel/-/commit/a75d035fedbdecf83f86767aa2e4d05c8c4ffd95">2019-04-26</a>.
 More information about the max_cstate parameter can be found in the <a rel="nofollow" class="external text" href="https://docs.kernel.org/admin-guide/pm/intel_idle.html#kernel-command-line-options-and-module-parameters">kernel documentation</a> and about the cstates in general on a <a rel="nofollow" class="external text" href="https://gist.github.com/wmealing/2dd2b543c4d3cff6cab7">writeup on GitHub</a>.
 </p>
 <p>If you try adding <code>intel_idle.max_cstate=1 i915.enable_dc=0 ahci.mobile_lpm_policy=1</code> in the hope of fixing frequent hangs and that solves the issue you should later remove one by one to see which of them actually helped you solve the issue. Running with cstates and display power management disabled is not advisable if the actual problem is related to SATA power management and <code>ahci.mobile_lpm_policy=1</code> is the one that actually solves it.
@@ -1438,8 +1427,8 @@ done
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Intel_graphics&amp;oldid=825629">https://wiki.archlinux.org/index.php?title=Intel_graphics&amp;oldid=825629</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 20 January 2025, at 18:03.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Intel_graphics&amp;oldid=829557">https://wiki.archlinux.org/index.php?title=Intel_graphics&amp;oldid=829557</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 21 March 2025, at 16:19.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

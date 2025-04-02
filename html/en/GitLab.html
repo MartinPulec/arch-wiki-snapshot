@@ -606,7 +606,7 @@
 </p>
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Installation">Installation</span></h2>
-<p>GitLab requires <a href="../en/Redis.html" title="Redis">Redis</a> and a database backend. If you plan to run it on the same machine, first install <a href="../en/PostgreSQL.html" title="PostgreSQL">PostgreSQL</a>.
+<p>GitLab requires <a href="../en/Valkey.html" class="mw-redirect" title="Redis">Redis</a> and a database backend. If you plan to run it on the same machine, first install <a href="../en/PostgreSQL.html" title="PostgreSQL">PostgreSQL</a>.
 </p>
 <p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=gitlab">gitlab</a></span> package.
 </p>
@@ -788,7 +788,7 @@ bind 'tcp://127.0.0.1:8080'</pre>
   active_record_encryption_key_derivation_salt: "<i>32-alphanumeric-chars</i>"
 </pre>
 <h3><span class="mw-headline" id="Redis">Redis</span></h3>
-<p>In order to provide sufficient performance you will need a cache database. <a href="../en/Redis.html#Installation" title="Redis">Install</a> and <a href="../en/Redis.html#Configuration" title="Redis">configure</a> a Redis instance, being careful to the section dedicated to listening via a socket.
+<p>In order to provide sufficient performance you will need a cache database. <a href="../en/Valkey.html#Installation" class="mw-redirect" title="Redis">Install</a> and <a href="../en/Valkey.html#Configuration" class="mw-redirect" title="Redis">configure</a> a Redis instance, being careful to the section dedicated to listening via a socket.
 </p>
 <p>Add the <code>gitlab</code> user to the <code>redis</code> <a href="../en/Users_and_groups.html#Group_management" class="mw-redirect" title="User group">user group</a> and update this configuration file:
 </p>
@@ -849,7 +849,7 @@ production:
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> Since <a rel="nofollow" class="external text" href="https://docs.gitlab.com/ee/install/installation.html#configure-gitlab-db-settings">GitLab 15.9</a>, <code>database.yml</code> with only a <code>main:</code> section is deprecated. In GitLab 17.0 and later, you must have two sections in your <code>database.yml</code>: <code>main:</code> and <code>ci:</code>. The <code>ci:</code> connection <b>must be to the same database</b> as <code>main:</code>.</div>
 <h3><span class="mw-headline" id="Initialize_Gitlab_database">Initialize Gitlab database</span></h3>
-<p>Start the <a href="../en/Redis.html" title="Redis">Redis</a> server and the <code>gitlab-gitaly.service</code> before initializing the database.
+<p>Start the <a href="../en/Valkey.html" class="mw-redirect" title="Redis">Redis</a> server and the <code>gitlab-gitaly.service</code> before initializing the database.
 </p>
 <p>Initialize the database and activate advanced features:
 </p>
@@ -1102,7 +1102,7 @@ RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> Allowing access to GitLab from hosts other than localhost is not recommended before completing the installation and setting the root password. See <a href="#Start_and_test_GitLab">#Start and test GitLab</a>.</div>
 <h2><span class="mw-headline" id="Start_and_test_GitLab">Start and test GitLab</span></h2>
-<p>Make sure <a href="../en/PostgreSQL.html" title="PostgreSQL">PostgreSQL</a> and <a href="../en/Redis.html" title="Redis">Redis</a> are running and setup correctly.
+<p>Make sure <a href="../en/PostgreSQL.html" title="PostgreSQL">PostgreSQL</a> and <a href="../en/Valkey.html" class="mw-redirect" title="Redis">Redis</a> are running and setup correctly.
 </p>
 <p>Then <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start">start</a>/<a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> <code>gitlab.target</code>.
 </p>
@@ -1260,7 +1260,7 @@ $ sudo -u gitlab $(cat environment | xargs) bundle exec rake gitlab:backup:creat
 $ sudo -u gitlab $(cat environment | xargs) bundle exec rake gitlab:backup:restore BACKUP=1556571328_2019_04_29_11.10.2
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong>  Backup folder is set in <code>config/gitlab.yml</code>. GitLab backup and restore are documented here: <a rel="nofollow" class="external text" href="https://github.com/gitlabhq/gitlabhq/blob/master/doc/administration/backup_restore/backup_gitlab.md">Backup</a> and <a rel="nofollow" class="external text" href="https://github.com/gitlabhq/gitlabhq/blob/master/doc/administration/backup_restore/restore_gitlab.mdd">Restore</a><sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-07-30 ⓘ]</sup>
+<strong>Note:</strong>  Backup folder is set in <code>config/gitlab.yml</code>. GitLab backup and restore are documented here: <a rel="nofollow" class="external text" href="https://github.com/gitlabhq/gitlabhq/blob/master/doc/administration/backup_restore/backup_gitlab.md">Backup</a> and <a rel="nofollow" class="external text" href="https://github.com/gitlabhq/gitlabhq/blob/master/doc/administration/backup_restore/restore_gitlab.md">Restore</a>
 </div>
 <h3><span class="mw-headline" id="Enable_fast_SSH_key_lookup">Enable fast SSH key lookup</span></h3>
 <p>Enable Fast SSH Key Lookup as explained in this page: <a rel="nofollow" class="external free" href="https://docs.gitlab.com/ee/administration/operations/fast_ssh_key_lookup.html">https://docs.gitlab.com/ee/administration/operations/fast_ssh_key_lookup.html</a>
@@ -1364,7 +1364,6 @@ $ sudo -u gitlab $(cat environment | xargs) bundle exec rake cache:clear
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
-<li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li>
 <li><a href="../en/Category:Sections_flagged_with_Template:Remove.html" title="Category:Sections flagged with Template:Remove">Sections flagged with Template:Remove</a></li>
 </ul>
 </div>
@@ -1377,8 +1376,8 @@ $ sudo -u gitlab $(cat environment | xargs) bundle exec rake cache:clear
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GitLab&amp;oldid=826079">https://wiki.archlinux.org/index.php?title=GitLab&amp;oldid=826079</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 28 January 2025, at 22:10.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GitLab&amp;oldid=829275">https://wiki.archlinux.org/index.php?title=GitLab&amp;oldid=829275</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 16 March 2025, at 21:22.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

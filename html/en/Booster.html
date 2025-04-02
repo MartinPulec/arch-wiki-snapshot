@@ -110,6 +110,28 @@
 			<ul id="toc-Regenerate_booster_images-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Removing_modules" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Removing_modules">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">2.4</span>
+					<span>Removing modules</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Removing_modules-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Stripping_modules" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Stripping_modules">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">2.5</span>
+					<span>Stripping modules</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Stripping_modules-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-Boot_loader_configuration" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
@@ -329,9 +351,9 @@ Booster is inspired by the <a rel="nofollow" class="external text" href="https:/
 <p>The configuration file helps to override the default behaviour. See <span class="plainlinks archwiki-template-man" title="$ man 1 booster"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/booster.1#CONFIG_FILE">booster(1) § CONFIG FILE</a></span> for detailed information.
 </p>
 <h3><span class="mw-headline" id="Early_module_loading">Early module loading</span></h3>
-<p>There are situations when some kernel modules need to be loaded early, at initramfs stage.
+<p>You can load some modules at initramfs stage forcibly.
 </p>
-<p>For example, if you need to load the <code>nvidia</code> module, then use the following configuration setting:
+<p>For example, if you need <a href="../en/Kernel_mode_setting.html#Early_KMS_start" title="Kernel mode setting">Kernel_mode_setting#Early_KMS_start</a> to avoid graphical session run before NVIDIA GPU is initialized, use the following configuration setting:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/booster.yaml</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">modules_force_load: nvidia,nvidia_modeset,nvidia_uvm,nvidia_drm
@@ -362,6 +384,20 @@ extra_files: fido2-assert
 <h3><span class="mw-headline" id="Regenerate_booster_images">Regenerate booster images</span></h3>
 <p>Once you are done with configuring Booster, you need to update Booster images at <code>/boot</code>. An image can be generated manually with <code>booster build booster-foo.img</code> or using a convenience script <code>/usr/lib/booster/regenerate_images</code> that iterates over all installed kernels and generates a Booster image for each of them.
 </p>
+<h3><span class="mw-headline" id="Removing_modules">Removing modules</span></h3>
+<p>You can remove modules from initramfs via the <code>-</code> sign. An example to choose every modules manually and doing as same as <a href="../en/Mkinitcpio/Minimal_initramfs.html" title="Mkinitcpio/Minimal initramfs">Mkinitcpio/Minimal initramfs</a> to improve boot performance is
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/booster.yaml</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">modules: -*,btrfs,nvme
+</pre>
+<h3><span class="mw-headline" id="Stripping_modules">Stripping modules</span></h3>
+<p>You can reduce size of by initramfs by stripping modules.
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/booster.yaml</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">strip: true
+</pre>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> The setting may remove sign of modules required by kernel rockdown <a href="../en/Security.html#Kernel_lockdown_mode" title="Security">Security#Kernel lockdown mode</a> which is enabled when secure boot <a href="../en/Unified_Extensible_Firmware_Interface/Secure_Boot.html" title="Unified Extensible Firmware Interface/Secure Boot">Unified Extensible Firmware Interface/Secure Boot</a> is enabled.</div>
 <h2><span class="mw-headline" id="Boot_loader_configuration">Boot loader configuration</span></h2>
 <p>Once the image is generated it is time to configure the <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a>.
 </p>
@@ -417,8 +453,8 @@ options root=UUID=08f83949-bcbb-47bb-bc17-089aaa59e17e rw</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Booster&amp;oldid=824344">https://wiki.archlinux.org/index.php?title=Booster&amp;oldid=824344</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 31 December 2024, at 22:27.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Booster&amp;oldid=828976">https://wiki.archlinux.org/index.php?title=Booster&amp;oldid=828976</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 15 March 2025, at 15:03.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

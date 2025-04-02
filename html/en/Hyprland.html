@@ -929,7 +929,7 @@ bind = , XF86MonBrightnessDown, exec, brightnessctl s 5%-</pre>
 <h2><span class="mw-headline" id="Usage">Usage</span></h2>
 <h3><span class="mw-headline" id="Starting">Starting</span></h3>
 <h4><span class="mw-headline" id="Universal_Wayland_Session_Manager">Universal Wayland Session Manager</span></h4>
-<p><a href="../en/Universal_Wayland_Session_Manager.html" title="Universal Wayland Session Manager">Uwsm</a> <a rel="nofollow" class="external text" href="https://wiki.hyprland.org/Useful-Utilities/Systemd-start/">is a recommended way to start Hyprland session on systemd distros</a>, in particular Arch Linux. It wraps Hyprland and accordingly configured applications and daemons through Systemd unit files, allowing you to control them with <i>systemctl</i>.
+<p>Hyprland <a rel="nofollow" class="external text" href="https://wiki.hyprland.org/Useful-Utilities/Systemd-start/">recommends</a> to start the session with the <a href="../en/Universal_Wayland_Session_Manager.html" title="Universal Wayland Session Manager">Universal Wayland Session Manager</a>. It wraps the compositor and accordingly configured applications and daemons through systemd unit files, allowing you to control them with <i>systemctl</i>.
 </p>
 <p>You can start Hyprland with uwsm both in TTY via the following script in your <code>~/.profile</code>
 </p>
@@ -950,12 +950,11 @@ fi
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong>  If you choose to start Hyprland via <i>uwsm</i> then you should accordingly adjust your configuration. In particular: 
 <ul><li>
-<b>you must avoid using the <code>exit</code> dispatcher or terminate the Hyprland process directly since this would interfer with the normal shutdown process</b>. Use instead <code>uwsm stop</code> or <code>loginctl terminate-user ""</code> to terminate Hyprland and exit user session, for example<br>
-</li></ul>
+<b>you must avoid using the <code>exit</code> dispatcher or terminate the Hyprland process directly since this would interfer with the normal shutdown process</b>. Use instead <code>uwsm stop</code> or <code>loginctl terminate-user ""</code> to terminate Hyprland and exit user session, for example:</li></ul>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.config/hypr/hyprland.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">bind = $mainMod, M, exec, uwsm stop</pre>
-<ul><li>don't put environment variables in <code>hyprland.conf</code>, but use instead <i>uwsm</i> files <code>~/.config/uwsm/env</code> for variables common to all graphical sessions managed by uwsm (GTK, Qt, xcursor, ...) and <code>~/.config/uwsm/env-hyprland</code> for Hyprland exclusive environment variables (<code>HYPR*</code> and <code>AQ_*</code> variables for example). The format of these files is <code>export <i>KEY</i>=<i>VALUE</i></code> on each line without comments. It is strongly suggested, if you use multiple GPUs, to put the environment variable <code>AQ_DRM_DEVICES</code> inside <code>env-hyprland</code> in order to avoid conflicts with other compositors.</li></ul>
-Read the <a rel="nofollow" class="external text" href="https://wiki.hyprland.org/Useful-Utilities/Systemd-start/">the related page in Hyprland's wiki</a> for additional informations about configuration with uwsm.</div>
+<ul><li>Do not put environment variables in <code>hyprland.conf</code>, but use instead <i>uwsm</i> files <code>~/.config/uwsm/env</code> for variables common to all graphical sessions managed by uwsm (GTK, Qt, xcursor, ...) and <code>~/.config/uwsm/env-hyprland</code> for Hyprland exclusive environment variables (<code>HYPR*</code> and <code>AQ_*</code> variables for example). The format of these files is <code>export <i>KEY</i>=<i>VALUE</i></code> on each line without comments. It is strongly suggested, if you use multiple GPUs, to put the environment variable <code>AQ_DRM_DEVICES</code> inside <code>env-hyprland</code> in order to avoid conflicts with other compositors.</li></ul>
+Read the <a rel="nofollow" class="external text" href="https://wiki.hyprland.org/Useful-Utilities/Systemd-start/">related page in Hyprland's wiki</a> for additional information about configuration with uwsm.</div>
 <h4><span class="mw-headline" id="Terminal">Terminal</span></h4>
 <p>You can start Hyprland from a TTY with the following command
 </p>
@@ -1553,20 +1552,27 @@ bind = SUPER, V, exec, cliphist list | wofi --dmenu | cliphist decode | wl-copy
 <p>Put these lines of code into your configuration file (replace &lt;device_name&gt; with the name of your device queried above) to turn the device on/off:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.config/hypr/hyprland.conf</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">device:&lt;device_name&gt; {
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">device {
+  name = &lt;device_name&gt;
   enabled = {true/false}
 }</pre>
 <p>To dynamically switch the device on/off use hyprctl:
 </p>
-<pre>$ hyprctl keyword "device:&lt;device_name&gt;:enabled" {true|false}
+<pre>$ hyprctl keyword "device[&lt;device_name&gt;]:enabled" {true|false}
 </pre>
 <p>You can also create a keybinding, e.g.:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.config/hypr/hyprland.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">...
-bind = $mainMod, t, exec, hyprctl keyword "device:pixa3854:00-093a:0274-touchpad:enabled" false
-bind = $mainMod Shift, t, exec, hyprctl keyword "device:pixa3854:00-093a:0274-touchpad:enabled" true
+bind = $mainMod, t, exec, hyprctl keyword "device[pixa3854:00-093a:0274-touchpad]:enabled" false
+bind = $mainMod Shift, t, exec, hyprctl keyword "device[pixa3854:00-093a:0274-touchpad]:enabled" true
 ...</pre>
+<p><b>Note:</b> Prior to Hyprland v0.34(?), the following legacy syntax was used:
+</p>
+<p><code>device:&lt;device_name&gt;:enabled</code>
+</p>
+<p>This older format has been removed. Also, earlier configuration files did not use a block-based <code>device { name = &lt;device_name&gt; ... }</code> structure, but a <code>device:&lt;device_name&gt; { ... }</code> structure.
+</p>
 <h3><span class="mw-headline" id="Separate_dconf_profile">Separate dconf profile</span></h3>
 <p>In case you do not want to poison settings for other GTK-based DEs, you can use a separate <code>dconf</code> profile. For example:
 </p>
@@ -1617,8 +1623,8 @@ env = DCONF_PROFILE, hyprland
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Hyprland&amp;oldid=827709">https://wiki.archlinux.org/index.php?title=Hyprland&amp;oldid=827709</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 24 February 2025, at 17:43.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Hyprland&amp;oldid=830186">https://wiki.archlinux.org/index.php?title=Hyprland&amp;oldid=830186</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 30 March 2025, at 14:04.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>
