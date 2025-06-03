@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Flashing BIOS from Linux - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -333,6 +333,17 @@
 			<ul id="toc-Lenovo-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Acer" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Acer">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">7.4</span>
+					<span>Acer</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Acer-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 </ul>
@@ -452,12 +463,12 @@
 <p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/biosdisk-git/">biosdisk-git</a></span><sup><small>AUR</small></sup> package.
 </p>
 <h3><span class="mw-headline" id="Usage">Usage</span></h3>
-<p>To use the biosdisk utility to create a BIOS flash image, first download the latest raw BIOS image for your system from your manufacturer's website. Make sure, however, that you always get the BIOS executable and NOT the Windows executable. You then have one of two options: create a ISO or install the image for your bootloader.
+<p>To use the biosdisk utility to create a BIOS flash image, first download the latest raw BIOS image for your system from your manufacturer's website. Make sure, however, that you always get the BIOS executable and NOT the Windows executable. You then have one of two options: create a ISO or install the image for your <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a>.
 </p>
 <ul><li>The mkimage action will create a ISO image on the user's hard drive. Usage is the following:</li></ul>
 <pre># biosdisk mkimage [-o option] [-i destination] /path/to/.exe 
 </pre>
-<ul><li>The install action will create the biosdisk image, copy the image file to /boot, and then update the bootloader with an entry for the image. Then all the user has to do is boot the system and select the image to flash the BIOS; this will load the biosdisk image directly from the hard drive and flash the BIOS.</li></ul>
+<ul><li>The install action will create the biosdisk image, copy the image file to /boot, and then update the boot loader with an entry for the image. Then all the user has to do is boot the system and select the image to flash the BIOS; this will load the biosdisk image directly from the hard drive and flash the BIOS.</li></ul>
 <pre># biosdisk install [-o option] [--name=] /path/to/.exe
 </pre>
 <h2><span class="mw-headline" id="Flashrom">Flashrom</span></h2>
@@ -703,7 +714,7 @@ initrd /flashbios.img
 </p>
 <pre>$ geteltorito.pl -o &lt;image&gt;.img &lt;image&gt;.iso
 </pre>
-<p>Copy the image to the usb thumbdrive:
+<p>Copy the image to an <a href="../en/USB_flash_installation_medium.html" title="USB flash installation medium">USB flash installation medium</a>:
 </p>
 <pre># dd if=&lt;image&gt;.img of=&lt;destination&gt; bs=512K
 </pre>
@@ -853,13 +864,34 @@ FW Version: 11.8.80.3746</pre>
 <li>Alternatively, some models use an <i>.fd</i> file.</li>
 </ul>
 </li>
-<li>With the UEFI capsule in hand, the next step is to try to install it manually. Mentioned in that blog, <a href="../en/Fwupd.html" title="Fwupd">fwupd</a> can help with this. <i>fwupdate</i> is not provided in the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=fwupd">fwupd</a></span> package, but <i>fwupdtool</i> accomplishes the same task. First, identify the device ID of the firmware: <pre># fwupdtool get-devices</pre>
+<li>With the UEFI capsule in hand, the next step is to try to install it manually. Mentioned in that blog, <a href="../en/Fwupd.html" title="Fwupd">fwupd</a> can help with this. <i>fwupdate</i> is not provided in the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=fwupd">fwupd</a></span> package, but <i>fwupdtool</i> accomplishes the same task. First, identify the device ID of the firmware (<i>Device ID</i> under <i>System Firmware</i>): <pre># fwupdtool get-devices</pre>
 </li>
 <li>Finding the ID in the devices output, use it with a manual install: <pre># fwupdtool install-blob <i>BIOS.ext</i> <i>DEVICE-ID</i></pre>
 </li>
 <li>Reboot when prompted. The screen may go completely black: wait for it to finish installing.</li>
-<li>The EFI boot list is cleared after the update. First, update your UEFI settings to your previous ones.</li>
-<li>Finally, use an external boot media to reinstall your bootloader.</li>
+<li>The UEFI boot entries in NVRAM are cleared after the update. The <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> files in the EFI system are not touched, so you simply need to recreate your previous UEFI boot entries. First, update your UEFI settings to your previous ones.</li>
+<li>Finally, boot an external boot media and either reinstall your boot loader or use <a href="../en/Unified_Extensible_Firmware_Interface.html#efibootmgr" class="mw-redirect" title="Efibootmgr">efibootmgr</a> to recreate the UEFI boot entry for your boot loader.</li>
+</ol>
+<h3><span class="mw-headline" id="Acer">Acer</span></h3>
+<p>Acer firmware updates are very analogous to <a href="#Lenovo">#Lenovo</a> ones in that the only downloads available are Windows executable files and that the firmware updates are not available on the LVFS either. However, the update image can be extracted from these files and installed using <i>fwupdtool</i> just as well:
+</p>
+<ol>
+<li>Find the drivers download page by pasting your device model or serial number on this page: <a rel="nofollow" class="external free" href="https://www.acer.com/us-en/support/drivers-and-manuals">https://www.acer.com/us-en/support/drivers-and-manuals</a>
+</li>
+<li>Expand <i>BIOS/Firmware</i> section and download the ZIP file for the latest version, in our example <i>BIOS_Acer_1.08_A_A.zip</i>
+</li>
+<li>Unpack it: <pre># unzip BIOS_Acer_1.08_A_A.zip</pre>
+</li>
+<li>Inside of it, you will find an .exe file such as <i>JH4SH108.exe</i>, we will extract it using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=7zip">7zip</a></span>: <pre># 7z x JH4SH108.exe -oOutputDir</pre>
+</li>
+<li>In the unpacked folder <i>OutputDir</i>, we should find <i>abobios.bin</i> – this is the UEFI capsule to install</li>
+<li>Then, identify the device ID of the firmware (<i>Device ID</i> under <i>System Firmware</i>): <pre># fwupdtool get-devices</pre>
+</li>
+<li>Finding the ID in the devices output, use it with a manual install: <pre># fwupdtool install-blob <i>abobios.bin</i> <i>DEVICE-ID</i></pre>
+</li>
+<li>Reboot when prompted. You should see a screen with flashing progress of the <i>Insyde H2OFFT (Flash Firmware Tool)</i> tool. Verify that the <i>BIOS Model Name</i> of old and new BIOS exactly matches up (in this example's case, <i>JH4SH</i>, with new BIOS version <i>V1.08</i>)</li>
+<li>The UEFI boot order in the NVRAM is cleared after the update (aside from <i>Windows Boot Manager</i>, if it was installed). The <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> files in the EFI system and the boot entries in the NVRAM are not touched, so you simply need to change the boot order list to match what you had before.</li>
+<li>Finally, boot an external boot media and either reinstall your boot loader or use <a href="../en/Unified_Extensible_Firmware_Interface.html#efibootmgr" class="mw-redirect" title="Efibootmgr">efibootmgr</a> to set the boot order and place your boot loader entry as the first one to boot.</li>
 </ol>
 </div>
 </div>
@@ -874,8 +906,8 @@ FW Version: 11.8.80.3746</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Flashing_BIOS_from_Linux&amp;oldid=829080">https://wiki.archlinux.org/index.php?title=Flashing_BIOS_from_Linux&amp;oldid=829080</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 15 March 2025, at 22:13.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Flashing_BIOS_from_Linux&amp;oldid=832087">https://wiki.archlinux.org/index.php?title=Flashing_BIOS_from_Linux&amp;oldid=832087</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 14 April 2025, at 18:06.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

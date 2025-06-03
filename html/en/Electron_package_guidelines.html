@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Electron package guidelines - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -55,10 +55,21 @@
 			</button>
 		
 		<ul id="toc-Using_the_system_electron-sublist" class="vector-toc-list">
-			<li id="toc-Building_compiled_extensions_against_the_system_electron" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Building_compiled_extensions_against_the_system_electron">
+			<li id="toc-Editing_version_on_package.json" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Editing_version_on_package.json">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">1.1</span>
+					<span>Editing version on package.json</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Editing_version_on_package.json-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Building_compiled_extensions_against_the_system_electron" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Building_compiled_extensions_against_the_system_electron">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">1.2</span>
 					<span>Building compiled extensions against the system electron</span>
 				</div>
 			</a>
@@ -69,7 +80,7 @@
 		<li id="toc-Using_electron-builder_with_system_electron" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Using_electron-builder_with_system_electron">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">1.2</span>
+					<span class="vector-toc-numb">1.3</span>
 					<span>Using electron-builder with system electron</span>
 				</div>
 			</a>
@@ -99,6 +110,17 @@
 		</a>
 		
 		<ul id="toc-Directory_structure-sublist" class="vector-toc-list">
+		</ul>
+	</li>
+	<li id="toc-Getting_major_version_from_binary" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#Getting_major_version_from_binary">
+			<div class="vector-toc-text">
+				<span class="vector-toc-numb">4</span>
+				<span>Getting major version from binary</span>
+			</div>
+		</a>
+		
+		<ul id="toc-Getting_major_version_from_binary-sublist" class="vector-toc-list">
 		</ul>
 	</li>
 </ul>
@@ -197,12 +219,17 @@
 </p>
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Using_the_system_electron">Using the system electron</span></h2>
-<p>Arch Linux provides global <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=electron">electron</a></span> and versioned <a rel="nofollow" class="external text" href="https://archlinux.org/packages/?q=electron">electron*</a> packages that can be used to run an electron application via a shellscript wrapper:
+<p>Arch Linux provides versioned <a rel="nofollow" class="external text" href="https://archlinux.org/packages/?q=electron">electron*</a> packages and an <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=electron">electron</a></span> metapackage for the latest version. They can be used to run an electron application via a shell script wrapper:
 </p>
 <pre>#!/bin/sh
 
-exec electron /path/to/<i>appname</i>/ "$@"</pre>
+exec /usr/bin/electron34 /path/to/<i>appname</i>/ "$@"</pre>
 <p>The <code><i>appname</i>/</code> directory, or alternatively a file bundle called <code><i>appname</i>.asar</code>, can be found in a prebuilt electron application as the <code>resources/app/</code> folder (or <code>resources/app.asar</code>). Everything else is just a copy of the electron runtime and can be removed from the final package.
+</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> Applications that require <code>ELECTRON_RUN_AS_NODE=1</code>, e.g. <a href="../en/Visual_Studio_Code.html" title="Visual Studio Code">Visual Studio Code</a>, cannot use <code>/usr/bin/electron*</code>. See <a rel="nofollow" class="external text" href="https://gitlab.archlinux.org/archlinux/packaging/packages/code">code.sh</a>.</div>
+<h3><span class="mw-headline" id="Editing_version_on_package.json">Editing version on package.json</span></h3>
+<p>It is dangerous to edit version of Electron in <code>package.json</code> or <code>package-lock.json</code> using <code>sed</code>. You can use <code>npm pkg set devDependencies.electron=$(cat /usr/lib/electron*/version)</code> instead.
 </p>
 <h3><span class="mw-headline" id="Building_compiled_extensions_against_the_system_electron">Building compiled extensions against the system electron</span></h3>
 <p>Some electron applications have compiled native extensions which link to the electron runtime, and must be built using the correct electron version. Since npm/yarn will always build against a private prebuilt copy of electron, patch the electron dependency from <code>package.json</code> to reference the same version as the system electron dependency. The build system will download the prebuilt copy it requires, compile the native extensions, and package everything into a final distribution, but this can be pruned during the <code>package()</code> step as usual.
@@ -228,11 +255,10 @@ HOME="$srcdir/.electron-gyp" npm install
 </p>
 <ul>
 <li>
-<code>electronDist</code> to <code>/usr/lib/electron</code> for <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=electron">electron</a></span> or <code>/usr/lib/electron2</code> for <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/electron2/">electron2</a></span><sup><small>AUR</small></sup>
+<code>electronDist</code> to　<code>/usr/lib/electron34</code> for <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=electron34">electron34</a></span>
 </li>
 <li>
-<code>electronVersion</code> to the contents of <code>/usr/lib/electron/version</code> without the leading <code>v</code>
-</li>
+<code>electronVersion</code> to the contents of <code>/usr/lib/electron34/version</code> (without the leading <code>v</code> if exists)</li>
 </ul>
 <p>Packages that apply this: <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/rocketchat-desktop/">rocketchat-desktop</a></span><sup><small>AUR</small></sup> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/ubports-installer-git/">ubports-installer-git</a></span><sup><small>AUR</small></sup>
 </p>
@@ -244,6 +270,11 @@ HOME="$srcdir/.electron-gyp" npm install
 </pre>
 <p>Note that you have to specify all these options or it will not work.
 </p>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
+<div>
+<b>Reason:</b> Current setting still copies Electron from $electronDist . It is expired to add the method to stop it.  (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Electron_package_guidelines.html">Talk:Electron package guidelines</a>)</div>
+</div>
 <h2><span class="mw-headline" id="Architecture">Architecture</span></h2>
 <p>See <a href="../en/PKGBUILD.html#arch" title="PKGBUILD">PKGBUILD#arch</a>.
 </p>
@@ -256,13 +287,21 @@ HOME="$srcdir/.electron-gyp" npm install
 </p>
 <p>If the package contains a prebuilt copy of electron, copy the final distribution in its entirety to <code>/opt/<i>appname</i></code>.
 </p>
+<h2><span class="mw-headline" id="Getting_major_version_from_binary">Getting major version from binary</span></h2>
+<p>Prebuild or <a href="../en/Nonfree_applications_package_guidelines.html" title="Nonfree applications package guidelines">Nonfree</a> application hides version of electron from <code>package.json</code>, <code>package-lock.json</code>, and <code>version</code> files. In such case, you may get version by replacing <code>app</code> or <code>app.asar</code> with <code>/usr/lib/electron/resources/default_app.asar</code> and running <code><i>pathto/electron-binary</i> --version</code>.
+</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> Avoid doing it at PKGBUILD. This should be last resort to make packages with system-wide electron.</div>
 </div>
 </div>
 					<div id="catlinks" class="catlinks" data-mw="interface">
 <div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Arch_package_guidelines.html" title="Category:Arch package guidelines">Arch package guidelines</a></li></ul>
 </div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li></ul>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
+<li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
+</ul>
 </div>
 </div>
 				</div>
@@ -273,8 +312,8 @@ HOME="$srcdir/.electron-gyp" npm install
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Electron_package_guidelines&amp;oldid=818361">https://wiki.archlinux.org/index.php?title=Electron_package_guidelines&amp;oldid=818361</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 12 October 2024, at 12:41.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Electron_package_guidelines&amp;oldid=834543">https://wiki.archlinux.org/index.php?title=Electron_package_guidelines&amp;oldid=834543</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 25 May 2025, at 15:58.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

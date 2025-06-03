@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Python package guidelines - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -190,6 +190,17 @@
 			</a>
 			
 			<ul id="toc-Fix_reproducibility_issue_with_meson-python-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Running_tests_with_an_installed_package" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Running_tests_with_an_installed_package">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">6.6</span>
+					<span>Running tests with an installed package</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Running_tests_with_an_installed_package-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -433,6 +444,7 @@ Make sure you're either building from a fully intact git repository or PyPI tarb
 <ul>
 <li>Avoid using <code>tox</code> to run testsuites as it is explicitly designed to test repeatable configurations downloaded from PyPI while <code>tox</code> is running, and does <b>not</b> test the version that will be installed by the package. This defeats the purpose of having a <i>check</i> function at all.</li>
 <li>Avoid adding pytest plugins for linting, coverage or type checking to <b>checkdepends</b> (see the <a href="#Disable_pytest_options">#Disable pytest options</a> section for details). This makes bootstrapping harder and these tests are not required for distribution packaging as they do not test functionality.</li>
+<li>Avoid using relative paths when setting a custom <code>PYTHONPATH</code> for tests, as it may lead to non-obvious error cases. Use absolute paths instead.</li>
 </ul>
 </div>
 <p>Most Python projects providing a testsuite use the unittest runner or nosetests or pytest (provided by <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=python">python</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=python-nose">python-nose</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=python-pytest">python-pytest</a></span>, respectively) to run tests with <code>test</code> in the name of the file or directory containing the testsuite. In general, simply running <code>nosetests</code> or <code>pytest</code> is enough to run the testsuite.
@@ -496,6 +508,13 @@ To disable pytest options such as <code>addopts</code> it is preferred to use an
 </p>
 <pre>python -m build --wheel --no-isolation -Cbuild-dir=build
 </pre>
+<h3><span class="mw-headline" id="Running_tests_with_an_installed_package">Running tests with an installed package</span></h3>
+<p>Some packages require being installed to have the tests run successfully. In such cases, such as for example <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=python-narwhals">python-narwhals</a></span>, you can create a <i>virtual environment</i> to install the built package and run the tests there.
+</p>
+<pre>python -m venv --system-site-packages test-env
+test-env/bin/python -m installer dist/*.whl
+test-env/bin/python -P -m pytest
+</pre>
 </div>
 </div>
 					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
@@ -509,8 +528,8 @@ To disable pytest options such as <code>addopts</code> it is preferred to use an
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Python_package_guidelines&amp;oldid=830262">https://wiki.archlinux.org/index.php?title=Python_package_guidelines&amp;oldid=830262</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 31 March 2025, at 13:35.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Python_package_guidelines&amp;oldid=834537">https://wiki.archlinux.org/index.php?title=Python_package_guidelines&amp;oldid=834537</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 25 May 2025, at 15:32.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

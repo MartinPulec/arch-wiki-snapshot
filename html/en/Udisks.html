@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>udisks - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -426,13 +426,6 @@ btrfs_defaults=compress=zstd</pre>
 <dl><dd>
 <a rel="nofollow" class="external free" href="https://github.com/berbae/udisksvm">https://github.com/berbae/udisksvm</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/udisksvm/">udisksvm</a></span><sup><small>AUR</small></sup>
 </dd></dl>
-<ul><li>
-<b>udevil</b> — Includes <a rel="nofollow" class="external text" href="https://igurublog.wordpress.com/downloads/script-devmon">devmon</a>.</li></ul>
-<dl><dd>
-<a rel="nofollow" class="external free" href="https://github.com/IgnorantGuru/udevil">https://github.com/IgnorantGuru/udevil</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/udevil/">udevil</a></span><sup><small>AUR</small></sup>
-</dd></dl>
-<dl><dd><div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> <i>devmon</i> only uses <i>udisks2</i> for mounting (in this order) if <i>udevil</i> or <i>pmount</i> miss the SUID permission. To remove this permission, run <code>chmod -s /usr/bin/<i>udevil</i></code> as root.</div></dd></dl>
 <h4><span class="mw-headline" id="udevadm_monitor">udevadm monitor</span></h4>
 <p>You may use <code>udevadm monitor</code> to monitor block events and mount drives when a new block device is created. Stale mount points are automatically removed by <i>udisksd</i>, such that no special action is required on deletion.
 </p>
@@ -525,6 +518,11 @@ StandbyTimeout=240</pre>
 <p>Other possible workarounds could be setting the timeout below the polling interval (10 minutes) or forcing a manual spindown using <code>hdparm -y /dev/<i>sdx</i></code>.
 </p>
 <h3><span class="mw-headline" id="NTFS_mount_failing">NTFS mount failing</span></h3>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
+<div>
+<b>Reason:</b> As stated in the <code>/etc/udisks2/mount_options.conf.example</code> file, these are the builtin mount options (i.e. the defaults). They do not need to be explicitly set. KDE may not land on the setting. (Discuss in <a href="../en/Talk:Udisks.html#udisk2_with_NTFS_support" title="Talk:Udisks">Talk:Udisks#udisk2 with NTFS support</a>)</div>
+</div>
 <p>If mounting a ntfs partition fails with the error:
 </p>
 <pre>Error mounting /dev/sdXY at [...]: wrong fs type, bad option, bad superblock on /dev/sdXY, missing codepage or helper program, or other error
@@ -537,11 +535,6 @@ StandbyTimeout=240</pre>
 </p>
 <p>1: Install NTFS-3G, and restart your machine.
 </p>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
-<div>
-<b>Reason:</b> As stated in the <code>/etc/udisks2/mount_options.conf.example</code> file, these are the builtin mount options (i.e. the defaults). They do not need to be explicitly set. (Discuss in <a href="../en/Talk:Udisks.html#udisk2_with_NTFS_support" title="Talk:Udisks">Talk:Udisks#udisk2 with NTFS support</a>)</div>
-</div>
 <p>2: Configure udisks2. By default, udisks2 is not configured on an Arch system, and no defaults are defined for non-native filesystems. The easiest way to do so, is to copy <code>/etc/udisks2/mount.options.conf.example</code> to <code>/etc/udisks2/mount.options.conf</code> and uncomment the following lines:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/udisks2/mount_options.conf</pre>
@@ -626,8 +619,8 @@ udisksctl power-off -b "/dev/disk/by-uuid/${uuids[0]}"</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Udisks&amp;oldid=827830">https://wiki.archlinux.org/index.php?title=Udisks&amp;oldid=827830</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 26 February 2025, at 10:33.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Udisks&amp;oldid=833644">https://wiki.archlinux.org/index.php?title=Udisks&amp;oldid=833644</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 11 May 2025, at 06:26.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

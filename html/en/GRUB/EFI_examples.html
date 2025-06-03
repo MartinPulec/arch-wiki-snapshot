@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>GRUB/EFI examples - ArchWiki</title>
 <link rel="stylesheet" href="../../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -445,7 +445,7 @@
 <h3>
 <span id="Aspire_V3-571G_.28Possibly_other_Aspire_One_laptops_as_well.29"></span><span class="mw-headline" id="Aspire_V3-571G_(Possibly_other_Aspire_One_laptops_as_well)">Aspire V3-571G (Possibly other Aspire One laptops as well)</span>
 </h3>
-<p>Some variations of this laptop have a only partial EFI compatibility due to originally shipping with Windows 7 only. Later revisions of this laptop shipped with more complete UEFI compatibility. Due to this the earlier revisions can only boot GRUB if it is placed where the Windows bootloader binary is expected (<code><i>esp</i>/EFI/BOOT/bootx64.efi</code>). However the binary can only be booted manually from the boot menu (on key <b>F12</b>), likely because it is missing Microsoft signatures. A solution to this problem is to upgrade to the newer version of the system firmware, however the process is not straight forward as earlier revisions of the machine are locked out of upgrading for some reason.
+<p>Some variations of this laptop have a only partial EFI compatibility due to originally shipping with Windows 7 only. Later revisions of this laptop shipped with more complete UEFI compatibility. Due to this the earlier revisions can only boot GRUB if it is placed where the Windows <a href="../../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> binary is expected (<code><i>esp</i>/EFI/BOOT/bootx64.efi</code>). However the binary can only be booted manually from the boot menu (on key <b>F12</b>), likely because it is missing Microsoft signatures. A solution to this problem is to upgrade to the newer version of the system firmware, however the process is not straight forward as earlier revisions of the machine are locked out of upgrading for some reason.
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> This can potentially render your machine permanently inoperational if done incorrectly! Proceed with caution.</div>
@@ -609,7 +609,7 @@ Shell&gt; exit
 </p>
 <ul>
 <li>Instead of using the <code>grub-efi-x86_64</code> target, <code>grub-efi-i386</code> has to be used</li>
-<li>The <code>bcfg</code> command is not available for pre-UEFI (v2.0) firmware. A <code>startup.nsh</code> file can be used on the root of the <a href="../../en/EFI_system_partition.html" title="EFI system partition">EFI system partition</a> containing the path to the bootloader. For example: <code>FS0:\EFI\GRUB\grubia32.efi</code> has to be placed in the <code>startup.nsh</code> file on the root of the EFI system partition.</li>
+<li>The <code>bcfg</code> command is not available for pre-UEFI (v2.0) firmware. A <code>startup.nsh</code> file can be used on the root of the <a href="../../en/EFI_system_partition.html" title="EFI system partition">EFI system partition</a> containing the path to the <a href="../../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a>. For example: <code>FS0:\EFI\GRUB\grubia32.efi</code> has to be placed in the <code>startup.nsh</code> file on the root of the EFI system partition.</li>
 <li>The <code>grub.cfg</code> file has to be placed in the same directory as the grub EFI binary, otherwise GRUB will not find it and enter the interactive shell.</li>
 </ul>
 <h2><span class="mw-headline" id="Lenovo">Lenovo</span></h2>
@@ -621,7 +621,7 @@ Shell&gt; exit
 <p>This is a workaround for what is likely a bug in the UEFI implementation.
 </p>
 <h3><span class="mw-headline" id="M92p_ThinkCentre">M92p ThinkCentre</span></h3>
-<p>This system whitelists UEFI boot entries. It will boot from a entry called "Red Hat Enterprise Linux" or "Windows Boot Manager"(Jan. 2021). So specify the bootloader-id appropriately:
+<p>This system whitelists UEFI boot entries. It will boot from a entry called "Red Hat Enterprise Linux" or "Windows Boot Manager"(Jan. 2021). So specify the <code>bootloader-id</code> appropriately:
 </p>
 <pre># grub-install --target=x86_64-efi --efi-directory=<i>esp</i> --bootloader-id="Red Hat Enterprise Linux" --recheck --debug
 </pre>
@@ -638,11 +638,11 @@ First, list your boot entries:
 </p>
 <pre># efibootmgr -Bb 0000
 </pre>
-<p>Now create a new bootentry which points to your desired bootloader on your hard drive. Be aware: -p defines on which partition your EFI system partition lies.
+<p>Now create a new boot entry which points to your desired <a href="../../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> on your hard drive. Be aware: -p defines on which partition your EFI system partition lies.
 </p>
 <pre># efibootmgr -c -d /dev/sda -p 1 -L "Windows Boot Manager" -l "\EFI\boot\grubx64.efi"
 </pre>
-<p>This will set up your EFI to boot the entry "Windows Boot Manager" and load the grub bootloader.
+<p>This will set up your EFI to boot the entry "Windows Boot Manager" and load the grub boot loader.
 </p>
 <h3><span class="mw-headline" id="X270_Thinkpad">X270 Thinkpad</span></h3>
 <div class="noprint archwiki-template-message">
@@ -673,8 +673,8 @@ First, list your boot entries:
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GRUB/EFI_examples&amp;oldid=808647">https://wiki.archlinux.org/index.php?title=GRUB/EFI_examples&amp;oldid=808647</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 18 May 2024, at 11:34.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GRUB/EFI_examples&amp;oldid=832094">https://wiki.archlinux.org/index.php?title=GRUB/EFI_examples&amp;oldid=832094</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 14 April 2025, at 19:12.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>XScreenSaver - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -402,7 +402,7 @@ xscreensaver-auth.default.Dialog.background: black
 ! Main text color. You can also use HEX color codes.
 xscreensaver-auth.default.Dialog.foreground: #ffffff
 </pre>
-<p>You can view a list of the available X resources in <code>/usr/share/X11/app-defaults/XScreenSaver</code>.
+<p>You can view a list of the available X resources in <code>/usr/lib/X11/app-defaults/XScreenSaver</code>.
 </p>
 <p>Do not forget to <a href="../en/X_resources.html#Load_resource_file" title="X resources">reload the resource file</a> after changes.
 </p>
@@ -422,7 +422,6 @@ passwdTimeout:	0:00:30
 fade:		True
 unfade:		False
 fadeSeconds:	0:00:03
-fadeTicks:	20
 dpmsEnabled:	True
 dpmsStandby:	2:00:00
 dpmsSuspend:	2:00:00
@@ -435,34 +434,30 @@ dpmsOff:	4:00:00
 <h2><span class="mw-headline" id="Usage">Usage</span></h2>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> To start XScreenSaver without the splash screen, use the <code>--no-splash</code> switch. See <span class="plainlinks archwiki-template-man" title="$ man 1 xscreensaver"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/xscreensaver.1">xscreensaver(1)</a></span> for a full list of options.</div>
-<p>In the <a href="../en/Xfce.html" title="Xfce">Xfce</a>, <a href="../en/LXDE.html" title="LXDE">LXDE</a> and <a href="../en/LXQt.html" title="LXQt">LXQt</a> environments, XScreenSaver is autostarted automatically if it is available - no further action is required.
+<p>In the <a href="../en/LXDE.html" title="LXDE">LXDE</a> and <a href="../en/LXQt.html" title="LXQt">LXQt</a> environments, XScreenSaver is autostarted automatically if it is available - no further action is required.
 </p>
-<p>In <a href="../en/KDE.html#Plasma" class="mw-redirect" title="KDE Plasma">KDE Plasma</a>, screen saver and locker features are handled by <i>ksmserver</i>, which conflicts with XScreenSaver. To disable it, you need to <a href="../en/KDE.html#systemd_startup" title="KDE">enable systemd startup for KDE</a> and then edit the <code>plasma-ksmserver.service</code> <a href="../en/Systemd/User.html" class="mw-redirect" title="User unit">user unit</a>:
+<p>For other environments, see <a href="../en/Autostarting.html" title="Autostarting">Autostarting</a>.
+</p>
+<p>In <a href="../en/KDE.html#Plasma" class="mw-redirect" title="KDE Plasma">KDE Plasma</a>, screen saver and locker features are handled by <i>ksmserver</i>, which conflicts with XScreenSaver. To disable it, <a href="../en/Systemd.html#Editing_provided_units" class="mw-redirect" title="Edit">edit</a> the <code>plasma-ksmserver.service</code> <a href="../en/Systemd/User.html" class="mw-redirect" title="User unit">user unit</a>:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.config/systemd/user/plasma-ksmserver.service.d/override.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Service]
 ExecStart=
 ExecStart=/usr/bin/ksmserver --no-lockscreen</pre>
-<p>Then logout and login again, and XScreenSaver should work properly now. See <span class="plainlinks archwiki-template-man" title="$ man 1 xscreensaver"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/xscreensaver.1#INSTALLING_XSCREENSAVER_ON_KDE">xscreensaver(1) § INSTALLING XSCREENSAVER ON KDE</a></span> for more information.
+<p>Also open KDE System Settings and disable <i>Power Management &gt; Turn off screen</i>.
 </p>
-<p>For other environments, see <a href="../en/Autostarting.html" title="Autostarting">Autostarting</a>.
+<p>Then logout and login again, and XScreenSaver should work properly now. See <span class="plainlinks archwiki-template-man" title="$ man 1 xscreensaver"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/xscreensaver.1#INSTALLING_XSCREENSAVER_ON_KDE">xscreensaver(1) § INSTALLING XSCREENSAVER ON KDE</a></span> for more information.
 </p>
 <p>To immediately trigger <i>xscreensaver</i>, if it is running, and lock the screen, execute the following command:
 </p>
 <pre>$ xscreensaver-command -lock
 </pre>
 <h3><span class="mw-headline" id="Lock_on_suspend">Lock on suspend</span></h3>
-<p>XScreenSaver ships with a small utility named <i>xscreensaver-systemd</i>, which handles the <code>PrepareForSleep</code> signal from <a href="../en/Systemd.html" title="Systemd">systemd</a> using <a href="../en/D-Bus.html" title="D-Bus">D-Bus</a> and automatically locks the screen on suspend and hibernate. It is started automatically with <i>xscreensaver</i>, no further action required. See <span class="plainlinks archwiki-template-man" title="$ man 6 xscreensaver-systemd"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/xscreensaver-systemd.6">xscreensaver-systemd(6)</a></span> for more information.
-</p>
-<p>However, it does not handle other systemd signals such as <code>loginctl lock-session</code>. To handle it, you can use <a href="../en/Power_management.html#xss-lock" title="Power management">xss-lock</a>. Use the <code>--ignore-sleep</code> option because the suspend/hibernate events are already handled by <i>xscreensaver-systemd</i>.
-</p>
-<pre>$ xss-lock --ignore-sleep -- xscreensaver-command -lock
-</pre>
-<p>You may want to set XScreenSaver's fade out time to 0.
+<p>XScreenSaver ships with a small utility named <i>xscreensaver-systemd</i>, which handles signals from <a href="../en/Systemd.html" title="Systemd">systemd</a> using <a href="../en/D-Bus.html" title="D-Bus">D-Bus</a> and automatically locks the screen on suspend and hibernate. It is started automatically with <i>xscreensaver</i>, no further action required. See <span class="plainlinks archwiki-template-man" title="$ man 6 xscreensaver-systemd"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/xscreensaver-systemd.6">xscreensaver-systemd(6)</a></span> for more information.
 </p>
 <h3><span class="mw-headline" id="User_switching_from_the_lock_screen">User switching from the lock screen</span></h3>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> When switching users using a display manager such as GDM or LightDM, XScreenSaver will not lock the original session—it can be accessed without a password simply by switching TTYs to the session in question. If you are using LightDM, as a workaround, install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=light-locker">light-locker</a></span> and run it alongside XScreenSaver. Alternatively, use a different screen locking program altogether—see <a href="../en/List_of_applications/Security.html#Screen_lockers" title="List of applications/Security">List of applications/Security#Screen lockers</a>.</div>
+<strong>Warning:</strong> When switching users using a display manager, some display managers such as LXDM do not send the lock signal, so XScreenSaver will not lock the original session — it can be accessed without a password simply by switching TTYs to the session in question. If this is the case for your display manager, run <code>xscreensaver-command -lock</code> or <code>loginctl lock-session</code> manually or use a different screen locking program altogether — see <a href="../en/List_of_applications/Security.html#Screen_lockers" title="List of applications/Security">List of applications/Security#Screen lockers</a>.</div>
 <p>By default, XScreenSaver's <i>New Login</i> button in the lock screen will call <code>gdmflexiserver -ls</code> to switch users. <a href="../en/Display_manager.html" title="Display manager">Display managers</a> other than <a href="../en/GDM.html" title="GDM">GDM</a> that support user switching require a different command.
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
@@ -552,8 +547,8 @@ end)
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=XScreenSaver&amp;oldid=827174">https://wiki.archlinux.org/index.php?title=XScreenSaver&amp;oldid=827174</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 16 February 2025, at 09:11.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=XScreenSaver&amp;oldid=831388">https://wiki.archlinux.org/index.php?title=XScreenSaver&amp;oldid=831388</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 6 April 2025, at 17:31.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

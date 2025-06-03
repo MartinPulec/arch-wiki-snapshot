@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>RTorrent/RuTorrent - ArchWiki</title>
 <link rel="stylesheet" href="../../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -60,8 +60,24 @@
 			</div>
 		</a>
 		
+			<button aria-controls="toc-Configuration-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle Configuration subsection</span>
+			</button>
+		
 		<ul id="toc-Configuration-sublist" class="vector-toc-list">
-		</ul>
+			<li id="toc-RPC_Changes" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#RPC_Changes">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">2.1</span>
+					<span>RPC Changes</span>
+				</div>
+			</a>
+			
+			<ul id="toc-RPC_Changes-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
 	</li>
 	<li id="toc-Web_server_configuration" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
 		<a class="vector-toc-link" href="#Web_server_configuration">
@@ -353,6 +369,21 @@
 <h2><span class="mw-headline" id="Configuration">Configuration</span></h2>
 <p>See upstream wiki <a rel="nofollow" class="external text" href="https://github.com/Novik/ruTorrent/wiki/Config">here</a>. By default the configuration files are symlinked to  <code>/etc/webapps/rutorrent/conf</code>.
 </p>
+<h3><span class="mw-headline" id="RPC_Changes">RPC Changes</span></h3>
+<p>As of rtorrent v0.15.2 and ruTorrent v5.1.7, you must now disable JSON-RPC and enable the httprpc plugin for ruTorrent to function.
+</p>
+<p><b>rtorrent.rc</b>
+</p>
+<pre>network.rpc.use_xmlrpc.set = true
+network.rpc.use_jsonrpc.set = false
+</pre>
+<p>The <code>httprpc</code> plugin should be enabled by default, but if you have disabled it in ruTorrent's <code>plugins.ini</code>, you must remove the lines, or add:
+</p>
+<p><b>plugins.ini</b>
+</p>
+<pre>[httprpc]
+enabled = yes
+</pre>
 <h2><span class="mw-headline" id="Web_server_configuration">Web server configuration</span></h2>
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../../File:Tango-edit-clear.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs language, wiki syntax or style improvements. See <a href="../../en/Help:Style.html" title="Help:Style">Help:Style</a> for reference.</b></p>
@@ -444,68 +475,6 @@ $scgi_host = "unix:///home/rtorrentuser/rpc.socket";
 </p>
 <pre>server.modules += ( "mod_fastcgi" )
 server.modules += ( "mod_scgi" )</pre>
-<p>We need to tell lighttpd how to treat files like css, images (jpg etc.), js. Otherwise it will not know what to do with them, and you may get a dialog to download the file or rutorrent will just not work properly.
-</p>
-<p>Here is a long list of filetypes, it is probably overkill as most of them are not needed, but easier to cover them all.
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/lighttpd/lighttpd.conf</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">mimetype.assign             = (
-      ".rpm"          =&gt;      "application/x-rpm",
-      ".pdf"          =&gt;      "application/pdf",
-      ".sig"          =&gt;      "application/pgp-signature",
-      ".spl"          =&gt;      "application/futuresplash",
-      ".class"        =&gt;      "application/octet-stream",
-      ".ps"           =&gt;      "application/postscript",
-      ".torrent"      =&gt;      "application/x-bittorrent",
-      ".dvi"          =&gt;      "application/x-dvi",
-      ".gz"           =&gt;      "application/x-gzip",
-      ".pac"          =&gt;      "application/x-ns-proxy-autoconfig",
-      ".swf"          =&gt;      "application/x-shockwave-flash",
-      ".tar.gz"       =&gt;      "application/x-tgz",
-      ".tgz"          =&gt;      "application/x-tgz",
-      ".tar"          =&gt;      "application/x-tar",
-      ".zip"          =&gt;      "application/zip",
-      ".mp3"          =&gt;      "audio/mpeg",
-      ".m3u"          =&gt;      "audio/x-mpegurl",
-      ".wma"          =&gt;      "audio/x-ms-wma",
-      ".wax"          =&gt;      "audio/x-ms-wax",
-      ".ogg"          =&gt;      "application/ogg",
-      ".wav"          =&gt;      "audio/x-wav",
-      ".gif"          =&gt;      "image/gif",
-      ".jar"          =&gt;      "application/x-java-archive",
-      ".jpg"          =&gt;      "image/jpeg",
-      ".jpeg"         =&gt;      "image/jpeg",
-      ".png"          =&gt;      "image/png",
-      ".xbm"          =&gt;      "image/x-xbitmap",
-      ".xpm"          =&gt;      "image/x-xpixmap",
-      ".xwd"          =&gt;      "image/x-xwindowdump",
-      ".css"          =&gt;      "text/css",
-      ".html"         =&gt;      "text/html",
-      ".htm"          =&gt;      "text/html",
-      ".js"           =&gt;      "text/javascript",
-      ".asc"          =&gt;      "text/plain",
-      ".c"            =&gt;      "text/plain",
-      ".cpp"          =&gt;      "text/plain",
-      ".log"          =&gt;      "text/plain",
-      ".conf"         =&gt;      "text/plain",
-      ".text"         =&gt;      "text/plain",
-      ".txt"          =&gt;      "text/plain",
-      ".dtd"          =&gt;      "text/xml",
-      ".xml"          =&gt;      "text/xml",
-      ".mpeg"         =&gt;      "video/mpeg",
-      ".mpg"          =&gt;      "video/mpeg",
-      ".mov"          =&gt;      "video/quicktime",
-      ".qt"           =&gt;      "video/quicktime",
-      ".avi"          =&gt;      "video/x-msvideo",
-      ".asf"          =&gt;      "video/x-ms-asf",
-      ".asx"          =&gt;      "video/x-ms-asf",
-      ".wmv"          =&gt;      "video/x-ms-wmv",
-      ".bz2"          =&gt;      "application/x-bzip",
-      ".tbz"          =&gt;      "application/x-bzip-compressed-tar",
-      ".tar.bz2"      =&gt;      "application/x-bzip-compressed-tar",
-      # default mime type
-      ""              =&gt;      "application/octet-stream",
-     )</pre>
 <p>Next we add the configuration for scgi to connect to rtorrent. Make sure to use the same port as when configuring rtorrent.
 </p>
 <pre>scgi.server = ( "/RPC2" =&gt;
@@ -538,32 +507,14 @@ server.modules += ( "mod_scgi" )</pre>
 <p>The binaries are stat, id, php, curl, gzip. If these are installed somewhere other than <code>/usr/bin</code>, then you may need to append that to the line also.
 </p>
 <h4><span class="mw-headline" id="rutorrent">rutorrent</span></h4>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
-<div>
-<b>Reason:</b> Why download rutorrent if we already have installed the AUR package? (Discuss in <a rel="nofollow" class="external text" href="../../en/Talk:RTorrent/RuTorrent.html">Talk:RTorrent/RuTorrent</a>)</div>
-</div>
-<p>We will download rutorrent to lighttpd http directory.
+<p>Create a link from your web root to rutorrent
 </p>
-<pre>   # cd /srv/http
-   # wget https://github.com/Novik/ruTorrent/archive/v3.9.tar.gz
-   # tar xvfx rutorrent-3.9.tar.gz
-   # mv ruTorrent-3.9/ rutorrent/
-   # chown -R http rutorrent/
-   # rm rutorrent-3.9.tar.gz
+<pre>ln -s /usr/share/webapps/rutorrent/ /srv/http/rutorrent
 </pre>
-<p>These should download and extract rutorrent to <code>/srv/http</code>. You may need to change rutorrent-3.6 to the desired version from the rutorrent website.
-</p>
-<p>rutorrent's configuration files are in <code>/srv/http/rutorrent/conf/</code>.
-</p>
 <p>We need to edit <code>/srv/http/rutorrent/conf/config.php</code>, and change the port to the one we used in rtorrent and lighttpd.
 </p>
 <pre>$scgi_port = 5050;
 $scgi_host = "127.0.0.1";
-</pre>
-<p>Change the owner of the rutorrent to http (the user that lighttpd runs as by default).
-</p>
-<pre># chown -R http rutorrent
 </pre>
 <h4><span class="mw-headline" id="Testing">Testing</span></h4>
 <p>rutorrent should now be set up.
@@ -697,8 +648,8 @@ $scgi_host = "127.0.0.1";
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=RTorrent/RuTorrent&amp;oldid=718971">https://wiki.archlinux.org/index.php?title=RTorrent/RuTorrent&amp;oldid=718971</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 18 February 2022, at 09:11.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=RTorrent/RuTorrent&amp;oldid=833434">https://wiki.archlinux.org/index.php?title=RTorrent/RuTorrent&amp;oldid=833434</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 7 May 2025, at 05:14.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

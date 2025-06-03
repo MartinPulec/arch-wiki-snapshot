@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>sysctl - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -555,7 +555,7 @@
 <div>
 <b>Reason:</b> This section seems motivated by the Cloudflare blog post, but <a rel="nofollow" class="external text" href="https://github.com/redhat-performance/tuned/blob/master/profiles/network-throughput/tuned.conf#L10">Red Hat's tuned profile</a> suggests even smaller values and claims "this seems only necessary at 40Gb speeds". Hence, these settings do not seem useful for commodity hardware. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Sysctl.html">Talk:Sysctl</a>)</div>
 </div>
-<p>The default the Linux network stack is not configured for high speed large file transfer across WAN links (i.e. handle more network packets) and setting the correct values may save memory resources:
+<p>By default the Linux network stack is not configured for high speed large file transfer across WAN links (i.e. handle more network packets) and setting the correct values may save memory resources:
 </p>
 <pre>net.core.rmem_default = 1048576
 net.core.rmem_max = 16777216
@@ -620,6 +620,11 @@ net.ipv4.udp_wmem_min = 8192
 <pre>net.ipv4.tcp_slow_start_after_idle = 0
 </pre>
 <h4><span class="mw-headline" id="Change_TCP_keepalive_parameters">Change TCP keepalive parameters</span></h4>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:View-refresh-red.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is out of date.</b></p>
+<div>
+<b>Reason:</b> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=filesystem">filesystem</a></span> 2025.05.03-1 sets <code>net.ipv4.tcp_keepalive_time</code> to <code>120</code> in <code>/usr/lib/sysctl.d/10-arch.conf</code>. See <a rel="nofollow" class="external autonumber" href="https://rfc.archlinux.page/0051-tcp-keepalive/">[4]</a>. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Sysctl.html">Talk:Sysctl</a>)</div>
+</div>
 <p><a href="https://en.wikipedia.org/wiki/Keepalive#TCP_keepalive" class="extiw" title="wikipedia:Keepalive">TCP keepalive</a> is a mechanism for TCP connections that help to determine whether the other end has stopped responding or not. TCP will send the keepalive probe that contains null data to the network peer several times after a period of idle time. If the peer does not respond, the socket will be closed automatically. By default, TCP keepalive process waits for two hours (7200 secs) for socket activity before sending the first keepalive probe, and then resend it every 75 seconds. As long as there is TCP/IP socket communications going on and active, no keepalive packets are needed.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
@@ -639,13 +644,13 @@ net.ipv4.tcp_keepalive_probes = 6
 </p>
 <h4><span class="mw-headline" id="TCP_timestamps">TCP timestamps</span></h4>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> TCP timestamps protect against wrapping sequence numbers (at gigabit speeds) and round trip time calculation implemented in TCP. It is not recommended to turn off TCP timestamps as it may cause a security risk <a rel="nofollow" class="external autonumber" href="https://access.redhat.com/sites/default/files/attachments/20150325_network_performance_tuning.pdf">[4]</a>.</div>
+<strong>Warning:</strong> TCP timestamps protect against wrapping sequence numbers (at gigabit speeds) and round trip time calculation implemented in TCP. It is not recommended to turn off TCP timestamps as it may cause a security risk <a rel="nofollow" class="external autonumber" href="https://access.redhat.com/sites/default/files/attachments/20150325_network_performance_tuning.pdf">[5]</a>.</div>
 <p>Disabling timestamp generation will reduce spikes and may give a performance boost on gigabit networks:
 </p>
 <pre>net.ipv4.tcp_timestamps = 0
 </pre>
 <h4><span class="mw-headline" id="TCP_Selective_Acknowledgement">TCP Selective Acknowledgement</span></h4>
-<p>TCP Selective Acknowledgement (TCP SACK), controlled by the boolean <code>tcp_sack</code>, allows the receiving side to give the sender more detail about lost segments, reducing volume of retransmissions. This is useful on high latency networks, but disable this to improve throughput on high-speed LANs. Also disable <code>tcp_dsack</code>, if you aren't sending SACK you certainly don't want to send duplicates! Forward Acknowledgement works on top of SACK and will be disabled if SACK is. <a rel="nofollow" class="external autonumber" href="https://cromwell-intl.com/open-source/performance-tuning/tcp.html">[5]</a>
+<p>TCP Selective Acknowledgement (TCP SACK), controlled by the boolean <code>tcp_sack</code>, allows the receiving side to give the sender more detail about lost segments, reducing volume of retransmissions. This is useful on high latency networks, but disable this to improve throughput on high-speed LANs. Also disable <code>tcp_dsack</code>, if you aren't sending SACK you certainly don't want to send duplicates! Forward Acknowledgement works on top of SACK and will be disabled if SACK is. <a rel="nofollow" class="external autonumber" href="https://cromwell-intl.com/open-source/performance-tuning/tcp.html">[6]</a>
 </p>
 <pre>net.ipv4.tcp_sack = 1
 </pre>
@@ -675,7 +680,7 @@ net.ipv4.tcp_congestion_control = bbr
 <p>For some use-cases, for example using the system as a <a href="../en/Router.html" title="Router">router</a>, other parameters may be useful or required as well.
 </p>
 <h4><span class="mw-headline" id="TCP_SYN_cookie_protection">TCP SYN cookie protection</span></h4>
-<p>Helps protect against SYN flood attacks. Only kicks in when <code>net.ipv4.tcp_max_syn_backlog</code> is reached. More details at, for example, <a rel="nofollow" class="external autonumber" href="https://cateee.net/lkddb/web-lkddb/SYN_COOKIES.html">[6]</a>. As of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span> 5.10, it is set by default.
+<p>Helps protect against SYN flood attacks. Only kicks in when <code>net.ipv4.tcp_max_syn_backlog</code> is reached. More details at, for example, <a rel="nofollow" class="external autonumber" href="https://cateee.net/lkddb/web-lkddb/SYN_COOKIES.html">[7]</a>. As of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span> 5.10, it is set by default.
 </p>
 <pre>net.ipv4.tcp_syncookies = 1
 </pre>
@@ -683,7 +688,7 @@ net.ipv4.tcp_congestion_control = bbr
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
 <div>
-<b>Reason:</b> This does not seem to be part of the TCP standard? The description may not be accurate. <a rel="nofollow" class="external autonumber" href="https://serverfault.com/questions/787624/why-isnt-net-ipv4-tcp-rfc1337-enabled-by-default">[7]</a> (Discuss in <a href="../en/Talk:Sysctl.html#net.ipv4.tcp_rfc1337" title="Talk:Sysctl">Talk:Sysctl#net.ipv4.tcp_rfc1337</a>)</div>
+<b>Reason:</b> This does not seem to be part of the TCP standard? The description may not be accurate. <a rel="nofollow" class="external autonumber" href="https://serverfault.com/questions/787624/why-isnt-net-ipv4-tcp-rfc1337-enabled-by-default">[8]</a> (Discuss in <a href="../en/Talk:Sysctl.html#net.ipv4.tcp_rfc1337" title="Talk:Sysctl">Talk:Sysctl#net.ipv4.tcp_rfc1337</a>)</div>
 </div>
 <p>Protect against tcp time-wait assassination hazards, drop RST packets for sockets in the time-wait state. Not widely supported outside of Linux,  but conforms to RFC:
 </p>
@@ -692,7 +697,7 @@ net.ipv4.tcp_congestion_control = bbr
 <h4><span class="mw-headline" id="Reverse_path_filtering">Reverse path filtering</span></h4>
 <p>By enabling reverse path filtering, the kernel will do source validation of the packets received from all the interfaces on the machine. This can protect from attackers that are using IP spoofing methods to do harm.
 </p>
-<p>The kernel's default value is <code>0</code> (no source validation), but systemd ships <code>/usr/lib/sysctl.d/50-default.conf</code> that sets <code>net.ipv4.conf.all.rp_filter</code> to <code>2</code> (loose mode)<a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/pull/10971">[8]</a>.
+<p>The kernel's default value is <code>0</code> (no source validation), but systemd ships <code>/usr/lib/sysctl.d/50-default.conf</code> that sets <code>net.ipv4.conf.all.rp_filter</code> to <code>2</code> (loose mode)<a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/pull/10971">[9]</a>.
 </p>
 <p>The following will set the reverse path filtering mechanism to value <code>1</code> (strict mode):
 </p>
@@ -704,7 +709,7 @@ net.ipv4.conf.all.rp_filter = 1
 <h4><span class="mw-headline" id="Log_martian_packets">Log martian packets</span></h4>
 <p>A <a href="https://en.wikipedia.org/wiki/Martian_packet" class="extiw" title="wikipedia:Martian packet">martian packet</a> is an IP packet which specifies a source or destination address that is reserved for special-use by Internet Assigned Numbers Authority (IANA). See <a href="https://en.wikipedia.org/wiki/Reserved_IP_addresses" class="extiw" title="wikipedia:Reserved IP addresses">Reserved IP addresses</a> for more details.
 </p>
-<p>Often martian and unroutable packet may be used for a dangerous purpose. Logging these packets for further inspection may be useful <a rel="nofollow" class="external autonumber" href="https://www.cyberciti.biz/faq/linux-log-suspicious-martian-packets-un-routable-source-addresses/">[9]</a>:
+<p>Often martian and unroutable packet may be used for a dangerous purpose. Logging these packets for further inspection may be useful <a rel="nofollow" class="external autonumber" href="https://www.cyberciti.biz/faq/linux-log-suspicious-martian-packets-un-routable-source-addresses/">[10]</a>:
 </p>
 <pre>net.ipv4.conf.default.log_martians = 1
 net.ipv4.conf.all.log_martians = 1
@@ -787,7 +792,7 @@ net.ipv6.icmp.echo_ignore_all = 1
 </p>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
 <h3><span class="mw-headline" id="Small_periodic_system_freezes">Small periodic system freezes</span></h3>
-<p>Set dirty bytes to small enough value (for example 4M):
+<p>Set dirty bytes to small enough value (for example 4 MiB):
 </p>
 <pre>vm.dirty_background_bytes = 4194304
 vm.dirty_bytes = 4194304
@@ -832,8 +837,8 @@ vm.dirty_bytes = 4194304
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Sysctl&amp;oldid=830310">https://wiki.archlinux.org/index.php?title=Sysctl&amp;oldid=830310</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 1 April 2025, at 16:47.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Sysctl&amp;oldid=834787">https://wiki.archlinux.org/index.php?title=Sysctl&amp;oldid=834787</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 29 May 2025, at 09:03.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

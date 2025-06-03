@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>nftables - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -1197,7 +1197,7 @@ table inet my_table {
 
 		tcp dport ipp accept comment "Accept IPP/IPPS on port 631"
 
-		tcp dport { http, https, 8008, 8080 } accept comment "Accept HTTP (ports 80, 443, 8008, 8080)"
+		meta l4proto { tcp, udp } th dport { http, https, 8008, 8080 } accept comment "Accept HTTP (ports 80, 443, 8008, 8080)"
 
 		udp sport bootpc udp dport bootps ip saddr 0.0.0.0 ip daddr 255.255.255.255 accept comment "Accept DHCPDISCOVER (for DHCP-Proxy)"
 	}
@@ -1335,7 +1335,7 @@ table inet my_table {
 
     chain input {
         type filter hook input priority filter;
-        ct state new tcp dport 443 update @https { ip saddr counter }
+        ct state new meta l4proto { tcp, udp } th dport 443 update @https { ip saddr counter }
     }
 }
 </pre>
@@ -1359,10 +1359,10 @@ table inet my_table {
 
     chain input {
         type filter hook input priority filter; policy accept;
-        ct state new tcp dport 443 \
+        ct state new meta l4proto { tcp, udp } th dport 443 \
                 meter flood_ipv4 size 128000 { ip saddr timeout 10s limit rate over 10/second } \
                 add @blackhole_ipv4 { ip saddr timeout 1m }
-        ct state new tcp dport 443 \
+        ct state new meta l4proto { tcp, udp } th dport 443 \
                 meter flood_ipv6 size 128000 { ip6 saddr and ffff:ffff:ffff:ffff:: timeout 10s limit rate over 10/second } \
                 add @blackhole_ipv6 { ip6 saddr and ffff:ffff:ffff:ffff:: timeout 1m }
 
@@ -1436,6 +1436,7 @@ table inet my_table {
 <p>To accept HTTPS connections for a webserver on port 443:
 </p>
 <pre># nft add rule inet my_table my_tcp_chain tcp dport 443 accept
+# nft add rule inet my_table my_udp_chain udp dport 443 accept
 </pre>
 <p>To accept SSH traffic on port 22:
 </p>
@@ -1633,8 +1634,8 @@ ExecStartPre=ip route add default via 10.0.0.1 dev eth0</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Nftables&amp;oldid=829720">https://wiki.archlinux.org/index.php?title=Nftables&amp;oldid=829720</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 24 March 2025, at 07:57.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Nftables&amp;oldid=834037">https://wiki.archlinux.org/index.php?title=Nftables&amp;oldid=834037</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 17 May 2025, at 10:35.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

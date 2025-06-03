@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Laptop/ASUS - ArchWiki</title>
 <link rel="stylesheet" href="../../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -110,21 +110,10 @@
 			<ul id="toc-GNOME_extension-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-systemd_service" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#systemd_service">
-				<div class="vector-toc-text">
-					<span class="vector-toc-numb">2.5</span>
-					<span>systemd service</span>
-				</div>
-			</a>
-			
-			<ul id="toc-systemd_service-sublist" class="vector-toc-list">
-			</ul>
-		</li>
 		<li id="toc-udev_rule" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#udev_rule">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">2.6</span>
+					<span class="vector-toc-numb">2.5</span>
 					<span>udev rule</span>
 				</div>
 			</a>
@@ -135,7 +124,7 @@
 		<li id="toc-Persist_after_hibernation" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Persist_after_hibernation">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">2.7</span>
+					<span class="vector-toc-numb">2.6</span>
 					<span>Persist after hibernation</span>
 				</div>
 			</a>
@@ -417,37 +406,6 @@ Not charging
 <h3><span class="mw-headline" id="GNOME_extension">GNOME extension</span></h3>
 <p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/gnome-shell-extension-battery-health-charging-git/">gnome-shell-extension-battery-health-charging-git</a></span><sup><small>AUR</small></sup> is a <a href="../../en/GNOME.html#Extensions" title="GNOME">GNOME extension</a> that "<i>provides a graphical user interface for setting a laptop’s charging limit (charging threshold) within a Gnome environment</i>". It supports <a rel="nofollow" class="external text" href="https://maniacx.github.io/Battery-Health-Charging/device-compatibility/asus">ASUS laptops</a> and many other brands. See its <a rel="nofollow" class="external text" href="https://maniacx.github.io/Battery-Health-Charging/">official website</a> for details and screenshots.
 </p>
-<h3><span class="mw-headline" id="systemd_service">systemd service</span></h3>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../../File:View-refresh-red.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is out of date.</b></p>
-<div>
-<b>Reason:</b> This manual method was suggested before more reliable solutions were developed, and should be abandoned in their favor. (Discuss in <a rel="nofollow" class="external text" href="../../en/Talk:Laptop/ASUS.html">Talk:Laptop/ASUS</a>)</div>
-</div>
-<p>In order to automatically change the value at boot, <a href="../../en/Help:Reading.html#Append,_add,_create,_edit" class="mw-redirect" title="Create">create</a> the following <a href="../../en/Systemd.html#Writing_unit_files" title="Systemd">systemd service</a>:
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/battery-charge-threshold.service</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Unit]
-Description=Set the battery charge threshold
-After=multi-user.target
-StartLimitBurst=0
-
-[Service]
-Type=oneshot
-Restart=on-failure
-ExecStart=/bin/bash -c 'echo <i>value</i> &gt; /sys/class/power_supply/BAT0/charge_control_end_threshold'
-
-[Install]
-WantedBy=multi-user.target</pre>
-<p>and then <a href="../../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> it.
-</p>
-<p><code>Restart=on-failure</code> and <code>StartLimitBurst=0</code> are used to work around the service failing with a <code>/bin/bash: /sys/class/power_supply/BAT0/charge_control_end_threshold: Permission denied</code> error.
-</p>
-<p>This error is due to the service being started before <a rel="nofollow" class="external text" href="https://github.com/torvalds/linux/blob/master/drivers/platform/x86/asus-wmi.c">asus-wmi</a> could be loaded by the kernel (noted as <code>kernel: battery: new extension: ASUS Battery Extension</code> in the <a href="../../en/Systemd/Journal.html" class="mw-redirect" title="Journal">journal</a>), making it impossible to write there.
-</p>
-<p>The combination of those two options allows unlimited restart of the service for <code>DefaultStartLimitIntervalSec</code> (set to 10 seconds by default in <code>/etc/systemd/system.conf</code>), leaving enough time for the sysfs path to become available and writable and thus ensuring the fastest execution of the service.
-</p>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> As of 2020-12-01, this is the only functional workaround as neither path-based activation or systemd-tmpfiles were working.</div>
 <h3><span class="mw-headline" id="udev_rule">udev rule</span></h3>
 <p>The battery's <code>charge_control_end_threshold</code> power supply class attribute does not initially exist. It is added to the <span class="plainlinks archwiki-template-man" title="$ man 5 sysfs"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/sysfs.5">sysfs(5)</a></span> directory by the <code>asus-nb-wmi</code> <a href="../../en/Kernel_module.html" title="Kernel module">kernel module</a>. Create a <a href="../../en/Udev.html#About_udev_rules" class="mw-redirect" title="Udev rule">udev rule</a> for <code>asus-nb-wmi</code> to set the battery's charge threshold:
 </p>
@@ -720,10 +678,10 @@ esac
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td data-sort-value="5" style="background: inherit; color: inherit; vertical-align: middle; text-align: center;">–</td>
+<td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
+<td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
-<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
-<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
-<td>Easiest method to control the monitor backlight is to use <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=acpilight">acpilight</a></span>
+<td>Easiest method to control the monitor backlight is to use <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/acpilight/">acpilight</a></span><sup><small>AUR</small></sup>
 </td>
 <td>
 </td>
@@ -732,12 +690,12 @@ esac
 <td>Vivobook GO 15 E1504G</td>
 <td>2024-12-25</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
-<td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
+<td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;">Untested</td>
 <td data-sort-value="5" style="background: inherit; color: inherit; vertical-align: middle; text-align: center;">–</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;">Untested</td>
-<td>The Wi-Fi and Bluetooth device is a MediaTek MT7902 which does not have a kernel driver on any distro. I am not sure about sound.</td>
+<td>The Wi-Fi and Bluetooth device is a MediaTek MT7902 which doesn't have drivers in the Linux kernel nor is supported by MediaTek on Linux</td>
 <td>
 </td>
 </tr>
@@ -1181,7 +1139,7 @@ esac
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td>
-<a href="../../en/ASUS_ROG_STRIX_G17_(2022).html#Recording" title="ASUS ROG STRIX G17 (2022)">Awful microphone</a> and also <a href="../../en/ASUS_ROG_STRIX_G17_(2022).html#Wi-Fi_and_Bluetooth" title="ASUS ROG STRIX G17 (2022)">Minor Wi-Fi Problems</a>
+<a href="../../en/ASUS_ROG_STRIX_G17_(2022).html#Recording" title="ASUS ROG STRIX G17 (2022)">Awful microphone</a> and also <a href="../../en/ASUS_ROG_STRIX_G17_(2022).html#Wi-Fi_and_Bluetooth" title="ASUS ROG STRIX G17 (2022)">minor Wi-Fi Problems</a>
 </td>
 <td>
 <a href="../../en/ASUS_Linux.html" title="ASUS Linux">ASUS Linux</a> works great. RGB control supported.
@@ -1198,12 +1156,7 @@ esac
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td>
 </td>
-<td>
-<ul>
-<li>Kernel 6.7 fixes audio issues. More details about the old <a rel="nofollow" class="external text" href="https://asus-linux.org/guides/cirrus-amps/">workaround</a> for audio issues.</li>
-<li>In case of suspend-to-ram issue, downgrade UEFI to v310 (see <a rel="nofollow" class="external text" href="https://rog.asus.com/laptops/rog-zephyrus/rog-zephyrus-g14-2023-series/helpdesk_bios/">here</a>)</li>
-<li>Bluetooth working in 6.6.0-rc1</li>
-</ul>
+<td>In case of suspend-to-ram issue, downgrade UEFI to v310 (see <a rel="nofollow" class="external text" href="https://rog.asus.com/laptops/rog-zephyrus/rog-zephyrus-g14-2023-series/helpdesk_bios/">here</a>)
 </td>
 </tr>
 <tr>
@@ -1221,9 +1174,7 @@ esac
 </td>
 <td>
 <ul>
-<li>Kernel 6.7 fixes audio issues. More details about the old <a rel="nofollow" class="external text" href="https://asus-linux.org/guides/cirrus-amps/">workaround</a> for audio issues.</li>
 <li>In case of suspend-to-ram issue, downgrade UEFI to v310 (see <a rel="nofollow" class="external text" href="https://rog.asus.com/laptops/rog-zephyrus/rog-zephyrus-g14-2023-series/helpdesk_bios/">here</a>)</li>
-<li>Bluetooth working in 6.6.0-rc1</li>
 <li>Screen flickering issues may occur with certain resolutions and refresh rates in some Linux kernel versions.</li>
 </ul>
 </td>
@@ -1240,13 +1191,12 @@ esac
 <td>
 <ul>
 <li>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/rog-control-center/">rog-control-center</a></span><sup><small>AUR</small></sup> works great, you can toggle the MiniLED mode of the display, too</li>
-<li>screen autorotation works with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=iio-sensor-proxy">iio-sensor-proxy</a></span>
-</li>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/rog-control-center/">rog-control-center</a></span><sup><small>AUR</small></sup> works great, you can toggle the MiniLED mode of the display too</li>
+<li>
+<a href="../../en/Tablet_PC.html#Automatic_rotation" title="Tablet PC">Tablet PC#Automatic rotation</a> works</li>
 </ul>
 </td>
 <td>
-<ul><li>Audio works starting with 6.7.0, before that one needs to add a BIOS patch to provide missing _DSD entries, (see <a rel="nofollow" class="external text" href="https://asus-linux.org/guides/cirrus-amps/">here</a>)</li></ul>
 </td>
 </tr>
 <tr>
@@ -1278,7 +1228,6 @@ esac
 <ul>
 <li>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nvidia">nvidia</a></span> version 555+ required</li>
-<li>As of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nvidia">nvidia</a></span> 555.58.02, requires <a href="../../en/GDM.html#Wayland_and_the_proprietary_NVIDIA_driver" title="GDM">GDM udev rule</a> in addition to <a href="../../en/NVIDIA/Tips_and_tricks.html#Preserve_video_memory_after_suspend" title="NVIDIA/Tips and tricks">preserving video memory</a> for Wayland to be available.</li>
 <li>Recommend <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nvidia-open">nvidia-open</a></span> to avoid crashes with the standard driver.</li>
 </ul>
 </td>
@@ -1294,6 +1243,19 @@ esac
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td></td>
 <td>For OLED screen brightness, see <a href="../../en/Backlight.html#Color_correction" title="Backlight">Backlight#Color correction</a>.
+</td>
+</tr>
+<tr>
+<td>ROG Zephyrus G14 2025 (GA403WW)</td>
+<td>2025-05-26</td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
+<td data-sort-value="5" style="background: inherit; color: inherit; vertical-align: middle; text-align: center;">–</td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
+<td></td>
+<td>
 </td>
 </tr>
 </tbody>
@@ -1372,7 +1334,7 @@ esac
 <td></td>
 <td>
 <ul>
-<li>Suspend-to-RAM is <a rel="nofollow" class="external text" href="https://gitlab.freedesktop.org/drm/amd/-/issues/3212">broken</a> on BIOS versions 311-313. The latest working BIOS version is 309, but it breaks suspend-to-RAM on Windows. BIOS version 316 was available for a short time and <a rel="nofollow" class="external text" href="https://gitlab.freedesktop.org/drm/amd/-/issues/3212#note_2719042">addressed the issue</a>; however, it was removed from the ASUS helpdesk for unknown reasons.</li>
+<li>Suspend-to-RAM is <a rel="nofollow" class="external text" href="https://gitlab.freedesktop.org/drm/amd/-/issues/3212">broken</a> in BIOS versions 311-313. The issue is <a rel="nofollow" class="external text" href="https://gitlab.freedesktop.org/drm/amd/-/issues/3212#note_2719042">addressed</a> in BIOS version 316 and later.</li>
 <li>For Steam gaming start games with <code>DRI_PRIME=1</code>, for gaming and desktop graphic glitch issues see <a href="../../en/AMDGPU.html#Tear_free_rendering" title="AMDGPU">AMDGPU#Tear free rendering</a>
 </li>
 <li>If you experience green artifacts on eDP display, disable Panel self refresh v1 with the following kernel parameter <code>amdgpu.dcdebugmask=0x10</code>
@@ -1460,6 +1422,19 @@ Need to edit bumblebee service to boot : <a rel="nofollow" class="external free
 <td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;">Untested</td>
 <td>Touchpad misses gestures, Touchscreen misses multi-touch support</td>
 <td>Avoid some power management features due to Kernel Bug 102091.
+</td>
+</tr>
+<tr>
+<td>UX32A</td>
+<td>2014-03-14</td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
+<td data-sort-value="5" style="background: inherit; color: inherit; vertical-align: middle; text-align: center;">–</td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
+<td></td>
+<td>See <a href="../../en/ASUS_Zenbook_Prime_UX31A.html#Keyboard_backlight" title="ASUS Zenbook Prime UX31A">ASUS Zenbook Prime UX31A#Keyboard backlight</a>
 </td>
 </tr>
 <tr>
@@ -1603,12 +1578,12 @@ Need to edit bumblebee service to boot : <a rel="nofollow" class="external free
 <td>UX3402ZA</td>
 <td>2023-01-31</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
-<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes*</td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td data-sort-value="5" style="background: inherit; color: inherit; vertical-align: middle; text-align: center;">–</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
-<td>* internal speakers work with a <a rel="nofollow" class="external text" href="https://gist.github.com/lamperez/862763881c0e1c812392b5574727f6ff">patched ACPI table</a> <br>* as of kernel 6.7 the internal speakers work without the patched ACPI table <br> * fingerprint works but <a href="../../en/Fprint.html#Enrolling_works_but_verifying_does_not" title="Fprint">might require some patience when swiping</a>
+<td>Fingerprint works but <a href="../../en/Fprint.html#Enrolling_works_but_verifying_does_not" title="Fprint">might require some patience when swiping</a>
 </td>
 <td>
 </td>
@@ -1676,7 +1651,7 @@ Need to edit bumblebee service to boot : <a rel="nofollow" class="external free
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
-<td>For Audio use Kernel &gt;=6.7</td>
+<td></td>
 <td>
 </td>
 </tr>
@@ -1696,15 +1671,15 @@ Need to edit bumblebee service to boot : <a rel="nofollow" class="external free
 </tr>
 <tr>
 <td>UX5406(SA)</td>
-<td>2025-01-12</td>
+<td>2025-04-17</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
-<td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;">Partial*</td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;"><a href="../../en/Advanced_Linux_Sound_Architecture.html#Firmware" class="mw-redirect" title="Sound Open Firmware">Yes*</a></td>
 <td data-sort-value="5" style="background: inherit; color: inherit; vertical-align: middle; text-align: center;">–</td>
-<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes**</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
-<td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;">Untested</td>
-<td>**Wireless not working in live CD. A usb ethernet adapter can be used.</td>
-<td>*<a href="../../en/Advanced_Linux_Sound_Architecture.html#Firmware" class="mw-redirect" title="Sound Open Firmware">SOF</a> is required. Microphone not working yet, see <a rel="nofollow" class="external text" href="https://github.com/thesofproject/sof/issues/9759">thesofproject/sof#9759</a>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Hibernate: Untested</td>
+<td></td>
+<td>
 </td>
 </tr>
 </tbody>
@@ -1810,6 +1785,20 @@ Need to edit bumblebee service to boot : <a rel="nofollow" class="external free
 <td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;">Untested</td>
 <td></td>
 <td>
+</td>
+</tr>
+<tr>
+<td>1001PXD</td>
+<td>2025-04-10</td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes*</td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
+<td data-sort-value="5" style="background: inherit; color: inherit; vertical-align: middle; text-align: center;">–</td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
+<td>
+<code>acpi_osi=</code> needed for hotkeys and <code>eeepc_laptop</code> module related features (like SHE).</td>
+<td>*Add <code>snd-hda-intel model=lifebook</code> to <code>/etc/modprobe.d/alsa-base.conf</code>
 </td>
 </tr>
 <tr>
@@ -2098,6 +2087,19 @@ Need to edit bumblebee service to boot : <a rel="nofollow" class="external free
 </td>
 </tr>
 <tr>
+<td>U31SD</td>
+<td>2012-12-30</td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
+<td></td>
+<td>
+</td>
+</tr>
+<tr>
 <td>K55VM</td>
 <td>2013-04-01</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
@@ -2364,7 +2366,7 @@ Need to edit bumblebee service to boot : <a rel="nofollow" class="external free
 <td>Use <code>acpi_osi= acpi_backlight=native</code> for changing backlight with <code>Fn+F5</code>/<code>Fn+F6</code>
 </td>
 <td>
-<a href="../../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/broadcom-wl-dkms-248/">broadcom-wl-dkms-248</a></span><sup><small>AUR</small></sup><sup>[<a href="../../en/Help:Procedures.html#Fix_broken_package_links" title="Help:Procedures">broken link</a>: package not found]</sup> for Wi-Fi (LED will not work but the proprietary KMS driver leads to sporadic OS freezes).
+<a href="../../en/Broadcom_wireless.html#broadcom-wl" title="Broadcom wireless">broadcom-wl</a> (causes freezes)
 </td>
 </tr>
 <tr>
@@ -2484,14 +2486,14 @@ Need to edit bumblebee service to boot : <a rel="nofollow" class="external free
 </tr>
 <tr>
 <td><a href="../../en/ASUS_K55VD.html" title="ASUS K55VD">K55VD</a></td>
-<td>2021-11-27</td>
+<td>2024-04-19</td>
 <td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;">Partial*</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
-<td colspan="2">*<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/nvidia-390xx-dkms/">nvidia-390xx-dkms</a></span><sup><small>AUR</small></sup> fails with both <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-lts">linux-lts</a></span>
+<td>
 </td>
 </tr>
 <tr>
@@ -2515,11 +2517,7 @@ Need to edit bumblebee service to boot : <a rel="nofollow" class="external free
 <div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../../en/Category:ASUS.html" title="Category:ASUS">ASUS</a></li></ul>
 </div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
-<li><a href="../../en/Category:Pages_or_sections_flagged_with_Template:Out_of_date.html" title="Category:Pages or sections flagged with Template:Out of date">Pages or sections flagged with Template:Out of date</a></li>
-<li><a href="../../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li>
-<li><a href="../../en/Category:Pages_with_broken_package_links.html" title="Category:Pages with broken package links">Pages with broken package links</a></li>
-</ul>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li></ul>
 </div>
 </div>
 				</div>
@@ -2530,8 +2528,8 @@ Need to edit bumblebee service to boot : <a rel="nofollow" class="external free
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Laptop/ASUS&amp;oldid=829927">https://wiki.archlinux.org/index.php?title=Laptop/ASUS&amp;oldid=829927</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 27 March 2025, at 00:15.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Laptop/ASUS&amp;oldid=834640">https://wiki.archlinux.org/index.php?title=Laptop/ASUS&amp;oldid=834640</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 26 May 2025, at 15:19.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

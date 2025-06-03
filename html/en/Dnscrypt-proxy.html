@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>dnscrypt-proxy - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -389,7 +389,7 @@
 <p>A full list of resolvers is located at the <a rel="nofollow" class="external text" href="https://download.dnscrypt.info/resolvers-list/v3/public-resolvers.md">upstream page</a> or <a rel="nofollow" class="external text" href="https://raw.githubusercontent.com/DNSCrypt/dnscrypt-resolvers/master/v3/public-resolvers.md">Github</a>. If <i>dnscrypt-proxy</i> has run successfully on the system before, <code>/var/cache/dnscrypt-proxy/public-resolvers.md</code> will also contain a list. Look at the description for servers note which validate <a href="../en/DNSSEC.html" title="DNSSEC">DNSSEC</a>, do not log, and are uncensored. These requirements can be configured globally with the <code>require_dnssec</code>, <code>require_nolog</code>, <code>require_nofilter</code> options.
 </p>
 <h3><span class="mw-headline" id="Modify_resolv.conf_and_coordinate_with_other_local_domain_name_resolvers">Modify resolv.conf and coordinate with other local domain name resolvers</span></h3>
-<p>Modify the <a href="../en/Domain_name_resolution.html" class="mw-redirect" title="Resolv.conf">resolv.conf</a> file and replace the current set of resolver addresses with the address for <a href="../en/Network_configuration.html#localhost_is_resolved_over_the_network" title="Network configuration">localhost</a> and options<a rel="nofollow" class="external autonumber" href="https://github.com/jedisct1/dnscrypt-proxy/wiki/Installation-linux#step-4-change-the-system-dns-settings">[5]</a>:
+<p>Modify the <a href="../en/Domain_name_resolution.html" class="mw-redirect" title="Resolv.conf">resolv.conf</a> file and replace the current set of resolver addresses with the loopback IP addresses and options<a rel="nofollow" class="external autonumber" href="https://github.com/jedisct1/dnscrypt-proxy/wiki/Installation-linux#step-4-change-the-system-dns-settings">[5]</a>:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/resolv.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">nameserver ::1
@@ -404,11 +404,11 @@ They can be used, if they are configured to bind to different addresses than <i>
 <strong>Tip:</strong> If using <a href="#Unbound">#Unbound</a> as your local DNS cache this section can be ignored, as <i>unbound</i> runs on port 53 by default.</div>
 <p>To see if any programs are using port <code>53</code>, run:
 </p>
-<pre> $ ss -lp 'sport = :domain'
+<pre>$ ss -lp 'sport = :domain'
 </pre>
-<p>If the output contains more than the first line of column names, you need to disable whatever service is using port <code>53</code>. For example, <a href="../en/NetworkManager.html#Unit_dbus-org.freedesktop.resolve1.service_not_found" title="NetworkManager">NetworkManager may try to activate a resolver automatically</a>, but other network managers may have analogous components. You are ready to proceed once the above command outputs nothing more than the following line:
+<p>If the output contains more than the first line of column names, you need to disable whatever service is using port <code>53</code>. For example, <a href="../en/NetworkManager.html#Unit_dbus-org.freedesktop.resolve1.service_not_found" title="NetworkManager">NetworkManager may try to activate a resolver automatically</a>, but other network managers may have analogous components. You are ready to proceed once the above command outputs nothing more than the header line:
 </p>
-<pre> Netid               State                 Recv-Q                Send-Q                                 Local Address:Port                                   Peer Address:Port
+<pre>Netid State   Recv-Q  Send-Q   Local Address:Port     Peer Address:Port Process
 </pre>
 <h3><span class="mw-headline" id="Start_systemd_service">Start systemd service</span></h3>
 <p>Finally, <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start/enable">start/enable</a> the <code>dnscrypt-proxy.service</code> unit or <code>dnscrypt-proxy.socket</code>, depending on which method you chose above.
@@ -583,6 +583,11 @@ source {
 <pre>options edns0
 </pre>
 <h4><span class="mw-headline" id="Test_EDNS0">Test EDNS0</span></h4>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:View-refresh-red.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is out of date.</b></p>
+<div>
+<b>Reason:</b> OARC's DNS Reply Size Test Server has been decommissioned. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Dnscrypt-proxy.html">Talk:Dnscrypt-proxy</a>)</div>
+</div>
 <p>Make use of the <a rel="nofollow" class="external text" href="https://www.dns-oarc.net/oarc/services/replysizetest">DNS Reply Size Test Server</a>, use the <i>drill</i> command line tool to issue a TXT query for the name <i>rs.dns-oarc.net</i>:
 </p>
 <pre>$ drill rs.dns-oarc.net TXT
@@ -607,6 +612,7 @@ rst.x4055.x4049.x3827.rs.dns-oarc.net.
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
 <li><a href="../en/Category:Sections_flagged_with_Template:Remove.html" title="Category:Sections flagged with Template:Remove">Sections flagged with Template:Remove</a></li>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Out_of_date.html" title="Category:Pages or sections flagged with Template:Out of date">Pages or sections flagged with Template:Out of date</a></li>
 </ul>
 </div>
 </div>
@@ -618,8 +624,8 @@ rst.x4055.x4049.x3827.rs.dns-oarc.net.
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dnscrypt-proxy&amp;oldid=830158">https://wiki.archlinux.org/index.php?title=Dnscrypt-proxy&amp;oldid=830158</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 30 March 2025, at 07:29.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dnscrypt-proxy&amp;oldid=833928">https://wiki.archlinux.org/index.php?title=Dnscrypt-proxy&amp;oldid=833928</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 14 May 2025, at 14:44.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>dm-verity - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -462,7 +462,7 @@
 </p>
 <h3><span class="mw-headline" id="Partitioning">Partitioning</span></h3>
 <ol>
-<li>EFI system partition for the boot loader (<code>LABEL=ESP</code>);</li>
+<li>EFI system partition for the <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> (<code>LABEL=ESP</code>);</li>
 <li>XBOOTLDR partition (<code>LABEL=XBOOT</code>) <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> Using systemd's XBOOTLDR partition type allows you to keep the boot loader and kernels separate. This can be useful for creating images used to install or update embedded systems and servers, but it requires you to use <a href="../en/Systemd-boot.html" title="Systemd-boot">systemd-boot</a>. It is recommended to also put the Type 1 boot loader entries into this partition.</div>
 </li>
@@ -558,10 +558,10 @@
 </p>
 <p>Verity protection is useless if a virus or attacker can replace the <code>kernel.efi</code> containing the embedded roothash which would allow any root filesystem to be booted. Signing the kernel image for Secure Boot will prevent the kernel image from being replaced and ensure integrity of the root filesystem as long as the firmware is secure.
 </p>
-<p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/sbupdate-git/">sbupdate-git</a></span><sup><small>AUR</small></sup> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sbctl">sbctl</a></span> can be used to maintain your unified kernel images and keep your bootloader signed. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/sbupdate-git/">sbupdate-git</a></span><sup><small>AUR</small></sup> will also handle your kernel command line. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sbctl">sbctl</a></span> can be used to create Secure Boot keys.
+<p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/sbupdate-git/">sbupdate-git</a></span><sup><small>AUR</small></sup> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sbctl">sbctl</a></span> can be used to maintain your unified kernel images and keep your <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> signed. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/sbupdate-git/">sbupdate-git</a></span><sup><small>AUR</small></sup> will also handle your kernel command line. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sbctl">sbctl</a></span> can be used to create Secure Boot keys.
 </p>
 <h4><span class="mw-headline" id="Unified_kernel_image">Unified kernel image</span></h4>
-<p>UKIs bundle together at minimum the linux kernel, an initramfs, CPU microcode, and a cmdline. The advantage to using an UKI is that it prevents changes to both the kernel, initramfs and cmdline when the UKI is signed and used with secureboot. If the cmdline section of the UKI is left blank, it can be supplied by a bootloader like systemd-boot. Otherwise it can only be changed by rebuilding and resigning a new UKI.
+<p>UKIs bundle together at minimum the linux kernel, an initramfs, CPU microcode, and a cmdline. The advantage to using an UKI is that it prevents changes to both the kernel, initramfs and cmdline when the UKI is signed and used with secureboot. If the cmdline section of the UKI is left blank, it can be supplied by a boot loader like systemd-boot. Otherwise it can only be changed by rebuilding and resigning a new UKI.
 </p>
 <p>UKIs can be directly booted by UEFI if kernel efistub is enabled or if shim/preloader is used.
 </p>
@@ -594,7 +594,7 @@
 <p>You may also need to add tpm2 support to your initramfs or include the module if using dracut. See <a href="../en/Systemd-cryptenroll.html#Trusted_Platform_Module" title="Systemd-cryptenroll">systemd-cryptenroll#Trusted Platform Module</a> for more information.
 </p>
 <h4><span class="mw-headline" id="systemd-boot">systemd-boot</span></h4>
-<p>If you use <a href="../en/Systemd-boot.html" title="Systemd-boot">systemd-boot</a> as your bootloader, it will measure the <code>kernel.efi</code> into PCR 4. This can be used to prevent decryption of root if the kernel image, initramfs, or kernel command line is changed.
+<p>If you use <a href="../en/Systemd-boot.html" title="Systemd-boot">systemd-boot</a> as your boot loader, it will measure the <code>kernel.efi</code> into PCR 4. This can be used to prevent decryption of root if the kernel image, initramfs, or kernel command line is changed.
 </p>
 <h3><span class="mw-headline" id="Mandatory_access_control">Mandatory access control</span></h3>
 <p>During runtime, methods such as OverlayFS, tmpfs, and bind mounts can still be used to get write access on the folders within <code>root</code>. For this reason, it is important to still harden the OS. Apparmor, SELinux and other access control mechanisms are useful for this.
@@ -661,8 +661,8 @@
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-verity&amp;oldid=828341">https://wiki.archlinux.org/index.php?title=Dm-verity&amp;oldid=828341</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 6 March 2025, at 09:58.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-verity&amp;oldid=832081">https://wiki.archlinux.org/index.php?title=Dm-verity&amp;oldid=832081</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 14 April 2025, at 17:46.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

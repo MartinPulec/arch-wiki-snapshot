@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>NVMe over Fabrics - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -364,9 +364,10 @@ HOOKS=(... net nvme-of block ...)</pre>
 nvme nvme0: failed to connect queue: 3 ret=6
 could not add new controller: failed to write to nvme-fabrics device
 </pre>
-<p>Check dmesg on the controller for this error:
+<p>Check on the controller:
 </p>
-<pre>kworker/5:1H: page allocation failure: order:6, mode:0x40dc0(GFP_KERNEL|__GFP_COMP|__GFP_ZERO), nodemask=(null),cpuset=/,mems_allowed=0
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">dmesg</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">kworker/5:1H: page allocation failure: order:6, mode:0x40dc0(GFP_KERNEL|__GFP_COMP|__GFP_ZERO), nodemask=(null),cpuset=/,mems_allowed=0
 CPU: 5 PID: ... Comm: kworker/5:1H Tainted: P           OE      ...
 Hardware name: ...
 Workqueue: nvmet_tcp_wq nvmet_tcp_io_work [nvmet_tcp]
@@ -394,15 +395,15 @@ Call Trace:
  ret_from_fork_asm+0x1b/0x30
  &lt;/TASK&gt;
 </pre>
-<p>If the stack traces match, you are running into <a rel="nofollow" class="external text" href="https://lists.infradead.org/pipermail/linux-nvme/2024-August/049534.html">this bug</a>. To serve a new TCP connection, the NVMe target / controller allocates a relatively large contiguous buffer in kernel space. If kernel memory is full (or fragmented), such a large contiguous region may not be available. This used to cause a kernel crash that was fixed in recent kernels, but as of Feburary 2025 this still prevents new TCP connections to the controller. A patch for that is pending but <a rel="nofollow" class="external text" href="https://lists.infradead.org/pipermail/linux-nvme/2024-December/052841.html">stuck in review</a>.
+<p>If the stack traces match, you are running into a <a rel="nofollow" class="external text" href="https://lists.infradead.org/pipermail/linux-nvme/2024-August/049534.html">linux-nvme bug</a>. To serve a new TCP connection, the NVMe target / controller allocates a relatively large contiguous buffer in kernel space. If kernel memory is full (or fragmented), such a large contiguous region may not be available. This used to cause a kernel crash that was fixed in recent kernels, but as of February 2025 this still prevents new TCP connections to the controller. A patch for that is pending but <a rel="nofollow" class="external text" href="https://lists.infradead.org/pipermail/linux-nvme/2024-December/052841.html">stuck in review</a>.
 </p>
 <p>To work around this issue, you can use the following command to free up kernel memory on the controller prior to connection:
 </p>
-<pre>echo 3 | sudo tee /proc/sys/vm/drop_caches
+<pre># echo 3 &gt; /proc/sys/vm/drop_caches
 </pre>
 <p>Another option that seems to work is to create and delete a large file in tmpfs:
 </p>
-<pre>dd if=/dev/urandom of=/tmp/random-buffer bs=1M count=4096 status=progress; rm -f /tmp/random-buffer
+<pre># dd if=/dev/urandom of=/tmp/random-buffer bs=1M count=4096 status=progress; rm -f /tmp/random-buffer
 </pre>
 <p>If that does not help, a reboot might be necessary.
 </p>
@@ -422,8 +423,8 @@ Call Trace:
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=NVMe_over_Fabrics&amp;oldid=828116">https://wiki.archlinux.org/index.php?title=NVMe_over_Fabrics&amp;oldid=828116</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 2 March 2025, at 13:49.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=NVMe_over_Fabrics&amp;oldid=833198">https://wiki.archlinux.org/index.php?title=NVMe_over_Fabrics&amp;oldid=833198</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 2 May 2025, at 15:36.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

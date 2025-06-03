@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Unbound - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -567,7 +567,7 @@ resolv_conf_options="edns0 trust-ad"</pre>
 <p>You can now setup <i>unbound</i> such that it is <a href="#Forwarding_queries">#Forwarding queries</a>, perhaps all queries, to the DNS servers of your choice.
 </p>
 <h3><span class="mw-headline" id="Root_hints">Root hints</span></h3>
-<p>For recursively querying a host that is not cached as an address, the resolver needs to start at the top of the server tree and query the root servers, to know where to go for the top level domain for the address being queried. Unbound comes with default builtin hints. Therefore, if the package is updated regularly, no manual intervention is required. Otherwise, it is good practice to use a root-hints file since the builtin hints may become outdated. 
+<p>For recursively querying a host that is not cached as an address, the resolver needs to start at the top of the server tree and query the root servers, to know where to go for the top level domain for the address being queried. Unbound comes with default builtin hints. Therefore, if the package is updated regularly, no manual intervention is required. Otherwise, it is good practice to use a root-hints file since the builtin hints may become outdated.
 </p>
 <p>First point <i>unbound</i> to the <code>root.hints</code> file:
 </p>
@@ -729,11 +729,11 @@ unbound_conf=/etc/unbound/resolvconf.conf</pre>
 <strong>Note:</strong> 
 <ul>
 <li>This example uses Google Public DNS. Replace it with a DNS resolver you trust. See <a href="../en/Domain_name_resolution.html#Third-party_DNS_services" title="Domain name resolution">Domain name resolution#Third-party DNS services</a>.</li>
-<li>It is highly advised to use an <a href="#Privacy_and_security">encrypted protocol</a> when connecting to third-party DNS services. See <a href="#Forwarding_using_DNS_over_TLS">#Forwarding using DNS over TLS</a>.</li>
+<li>It is highly advised to use an <a href="../en/Domain_name_resolution.html#Privacy_and_security" title="Domain name resolution">encrypted protocol</a> when connecting to third-party DNS services. See <a href="#Forwarding_using_DNS_over_TLS">#Forwarding using DNS over TLS</a>.</li>
 </ul>
 </div>
 <h4><span class="mw-headline" id="Forwarding_using_DNS_over_TLS">Forwarding using DNS over TLS</span></h4>
-<p>To use <a href="../en/Domain_name_resolution.html#Privacy_and_security" class="mw-redirect" title="DNS over TLS">DNS over TLS</a>, you will need to enable the <code>tls-system-cert</code> option, allow unbound to forward TLS requests and also specify any number of servers that allow DNS over TLS. 
+<p>To use <a href="../en/Domain_name_resolution.html#Privacy_and_security" class="mw-redirect" title="DNS over TLS">DNS over TLS</a>, you will need to enable the <code>tls-system-cert</code> option, allow unbound to forward TLS requests and also specify any number of servers that allow DNS over TLS.
 </p>
 <p>For each server you will need to specify the connection port using <code>@</code> and its domain name with <code>#</code>. The domain name is required for TLS authentication and also allows setting stub-zones and using the <code>unbound-control forward control</code> command with domain names. There should not be any spaces in the <code>forward-addr</code> specification.
 </p>
@@ -756,7 +756,10 @@ forward-zone:
 <p>To listen on all interfaces, use the following:
 </p>
 <pre>interface: 0.0.0.0
+interface: ::0
 </pre>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning:</strong> Unless you specifically want to run an open DNS resolver, do not configure the resolver to listen on a public (internet-facing) IP addresses or all IP addresses (<code>0.0.0.0</code> and <code>::</code>).</div>
 <p>To control which systems can access the server by IP address, use the <code>access-control</code> option:
 </p>
 <pre>access-control: <i>subnet</i> <i>action</i>
@@ -824,7 +827,7 @@ forward-zone:
 </p>
 <h2><span class="mw-headline" id="Tips_and_tricks">Tips and tricks</span></h2>
 <h3><span class="mw-headline" id="Domain_blacklisting">Domain blacklisting</span></h3>
-<p>To blacklist a domain, use <code>local-zone: "<i>domainname</i>" always_refuse</code>. 
+<p>To blacklist a domain, use <code>local-zone: "<i>domainname</i>" always_refuse</code>.
 </p>
 <p>Save the blacklist as a separate file (e.g. <code>/etc/unbound/blacklist.conf</code>) for ease of management and include it from <code>/etc/unbound/unbound.conf</code>. For example:
 </p>
@@ -875,7 +878,7 @@ Description=Run root.hints monthly
 [Timer]
 OnCalendar=monthly
 Persistent=true
- 
+
 [Install]
 WantedBy=timers.target</pre>
 <p><a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start/enable">Start/enable</a> the <code>roothints.timer</code> systemd timer.
@@ -911,7 +914,7 @@ serve-expired-client-timeout: 1800  # RFC 8767 recommended value
 <p>However it is not possible to arbitrarily increase <code>num-threads</code> above <code>1</code> without causing <i>unbound</i> to start with warnings in the logs about exceeding the number of file descriptors. In reality for most users running on small networks or on a single machine it should be unnecessary to seek performance enhancement by increasing <code>num-threads</code> above <code>1</code>. If you do wish to do so then refer to <a rel="nofollow" class="external text" href="https://nlnetlabs.nl/documentation/unbound/howto-optimise/">official documentation</a> and the following rule of thumb should work:
 </p>
 <dl><dd>Set <code>num-threads</code> equal to the number of CPU cores on the system. E.g. for 4 CPUs with 2 cores each, use 8.</dd></dl>
-<p>Set the <code>outgoing-range</code> to as large a value as possible, see the sections in the referred web page above on how to overcome the limit of <code>1024</code> in total. This services more clients at a time. With 1 core, try <code>950</code>. With 2 cores, try <code>450</code>. With 4 cores try <code>200</code>. The <code>num-queries-per-thread</code> is best set at half the number of the <code>outgoing-range</code>. 
+<p>Set the <code>outgoing-range</code> to as large a value as possible, see the sections in the referred web page above on how to overcome the limit of <code>1024</code> in total. This services more clients at a time. With 1 core, try <code>950</code>. With 2 cores, try <code>450</code>. With 4 cores try <code>200</code>. The <code>num-queries-per-thread</code> is best set at half the number of the <code>outgoing-range</code>.
 </p>
 <p>Because of the limit on <code>outgoing-range</code> thus also limits <code>num-queries-per-thread</code>, it is better to compile with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=libevent">libevent</a></span>, so that there is no <code>1024</code> limit on <code>outgoing-range</code>. If you need to compile this way for a heavy duty DNS server then you will need to compile the programme from source instead of using the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=unbound">unbound</a></span> package.
 </p>
@@ -963,8 +966,8 @@ serve-expired-client-timeout: 1800  # RFC 8767 recommended value
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Unbound&amp;oldid=830176">https://wiki.archlinux.org/index.php?title=Unbound&amp;oldid=830176</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 30 March 2025, at 13:19.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Unbound&amp;oldid=834713">https://wiki.archlinux.org/index.php?title=Unbound&amp;oldid=834713</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 27 May 2025, at 14:08.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Lenovo ThinkPad P15 Gen 1 - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -101,6 +101,28 @@
 		<ul id="toc-Firmware-sublist" class="vector-toc-list">
 		</ul>
 	</li>
+	<li id="toc-GDM/GNOME_Shell_gets_stuck_at_boot" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#GDM/GNOME_Shell_gets_stuck_at_boot">
+			<div class="vector-toc-text">
+				<span class="vector-toc-numb">5</span>
+				<span>GDM/GNOME Shell gets stuck at boot</span>
+			</div>
+		</a>
+		
+		<ul id="toc-GDM/GNOME_Shell_gets_stuck_at_boot-sublist" class="vector-toc-list">
+		</ul>
+	</li>
+	<li id="toc-Problems_with_s2idle/S0ix_sleep_mode" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#Problems_with_s2idle/S0ix_sleep_mode">
+			<div class="vector-toc-text">
+				<span class="vector-toc-numb">6</span>
+				<span>Problems with s2idle/S0ix sleep mode</span>
+			</div>
+		</a>
+		
+		<ul id="toc-Problems_with_s2idle/S0ix_sleep_mode-sublist" class="vector-toc-list">
+		</ul>
+	</li>
 </ul>
 </div>
 
@@ -171,7 +193,7 @@
 <div>
 <b>Reason:</b> No function keys section, other missing information such as PCI/USB IDs (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Lenovo_ThinkPad_P15_Gen_1.html">Talk:Lenovo ThinkPad P15 Gen 1</a>)</div>
 </div>
-<table class="wikitable" style="float: right;">
+<table class="wikitable archwiki-table-laptop">
 
 <tbody>
 <tr>
@@ -212,7 +234,7 @@
 </tr>
 <tr>
 <td>Webcam</td>
-<td><code>04f2:b6be</code></td>
+<td><code>04f2:b6be, 13d3:56ff</code></td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes
 </td>
 </tr>
@@ -230,7 +252,7 @@
 </tr>
 <tr>
 <td>SD-card reader</td>
-<td></td>
+<td><code>10ec:525a</code></td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes
 </td>
 </tr>
@@ -254,6 +276,8 @@
 </tr>
 </tbody>
 </table>
+<p><br>
+</p>
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Discrete_GPU">Discrete GPU</span></h2>
 <p>This model uses <a href="../en/PRIME.html" title="PRIME">PRIME</a> for combining the integrated and the dedicated GPU. As the external graphic ports are wired to the discrete GPU, drivers for the discrete GPU need to be present in order to use them. However, no special X.org configuration should be necessary, as <a href="../en/Xrandr.html" title="Xrandr">xrandr</a> should detect the ports automatically. If not, follow the instructions in <a href="../en/PRIME.html#Reverse_PRIME" title="PRIME">PRIME#Reverse PRIME</a>.
@@ -360,6 +384,28 @@ profile = Performance</pre>
 <h2><span class="mw-headline" id="Firmware">Firmware</span></h2>
 <p>This Device has <a href="../en/Fwupd.html" title="Fwupd">fwupd</a> support.
 </p>
+<h2>
+<span id="GDM.2FGNOME_Shell_gets_stuck_at_boot"></span><span class="mw-headline" id="GDM/GNOME_Shell_gets_stuck_at_boot">GDM/GNOME Shell gets stuck at boot</span>
+</h2>
+<p>This seems to be due to GNOME's attempt to use some kind of hybrid graphics setup which causes problems, if both the Intel iGPU and NVIDIA dGPU are enabled. Either disable use of the Intel iGPU in the UEFI and only use NVIDIA, or set DRI_PRIME=0 in the /etc/environment file to force GNOME to not attempt to use a secondary GPU.
+</p>
+<p>Another problem is that GDM may load earlier than KMS driver code. The solution for this is to add the relevant driver modules to the initrd. For example in mkinitcpio.conf, this would be:
+</p>
+<p>When using the nvidia or nvidia-open drivers:
+</p>
+<p>MODULES=(i915 nvidia nvidia_modeset nvidia_uvm nvidia_drm)
+</p>
+<p>And when using the nouveau driver:
+</p>
+<p>MODULES=(i915 nouveau)
+</p>
+<h2>
+<span id="Problems_with_s2idle.2FS0ix_sleep_mode"></span><span class="mw-headline" id="Problems_with_s2idle/S0ix_sleep_mode">Problems with s2idle/S0ix sleep mode</span>
+</h2>
+<p>While s2idle/S0ix is supported by the hardware, it seems to assume that the laptop is only suspended by closing the lid. If you suspend using "systemctl suspend" or through a GUI menu, the laptop can't be woken up again using the keyboard, power button etc. and only closing and opening the lid wakes it up.
+</p>
+<p>It is unclear if this is a Linux kernel/userspace bug, or a bug in the laptop firmware. Either way, it is buggy behaviour. It's recommended to use S3 suspend for now for more predictable behaviour.
+</p>
 </div>
 </div>
 					<div id="catlinks" class="catlinks" data-mw="interface">
@@ -377,8 +423,8 @@ profile = Performance</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Lenovo_ThinkPad_P15_Gen_1&amp;oldid=790865">https://wiki.archlinux.org/index.php?title=Lenovo_ThinkPad_P15_Gen_1&amp;oldid=790865</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 24 October 2023, at 07:53.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Lenovo_ThinkPad_P15_Gen_1&amp;oldid=834912">https://wiki.archlinux.org/index.php?title=Lenovo_ThinkPad_P15_Gen_1&amp;oldid=834912</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 30 May 2025, at 19:26.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

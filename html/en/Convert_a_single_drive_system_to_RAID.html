@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Convert a single drive system to RAID - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -433,7 +433,7 @@ unused devices: &lt;none&gt;
 </p>
 <h2><span class="mw-headline" id="Boot_on_the_new_disk">Boot on the new disk</span></h2>
 <h3><span class="mw-headline" id="Update_the_boot_loader">Update the boot loader</span></h3>
-<p>Create a new entry in the boot loader to load the system from the RAID array in the new disk.
+<p>Create a new entry in the <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> to load the system from the RAID array in the new disk.
 </p>
 <h4><span class="mw-headline" id="GRUB_legacy">GRUB legacy</span></h4>
 <div class="noprint archwiki-template-message">
@@ -483,10 +483,10 @@ kernel /vmlinuz-linux root=/dev/md0 md=0,/dev/sda1,/dev/sdb1
 </p>
 <pre>   GRUB_DISABLE_SUBMENU=y
 </pre>
-<p>to <code>/etc/default/grub</code> and regenerate <code>grub.cfg</code>. Now you can simply add an entry containing either the device files (e.g. <code>/dev/md0</code>, <code>/dev/md1</code> or simply use the <b>UUID</b> for each of the raid filesystems. After having done so, the easiest way to add an entry to boot from the degraded arrays is simply to copy the <i>"Arch Linux, with Linux linux"</i> entry and change the UUID's to match your arrays as shown in <code>/dev/disk/by-uuid</code>.
+<p>to <code>/etc/default/grub</code> and regenerate <code>grub.cfg</code>. Now you can simply add an entry containing either the device files (e.g. <code>/dev/md0</code>, <code>/dev/md1</code> or simply use the <b>UUID</b> for each of the raid filesystems. After having done so, the easiest way to add an entry to boot from the degraded arrays is simply to copy the <i>"Arch Linux, with Linux linux"</i> entry and change the UUID to match your arrays as shown in <code>/dev/disk/by-uuid</code>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> Another alternative that avoids the uuid-shuffle, is to chroot your degraded array after it has been created and file copied to each of the respective arrays (e.g. <code>/</code>, <code>/boot</code>, and <code>/home</code>). You can add the <code>mdadm_udev</code> hook to <code>/etc/mkinitcpio.conf</code>, regenerate the initramfs. install the bootloader and generate a <code>grub.cfg</code> within the chroot environment. If you then toggle the primary drive for boot, you can boot the degraded array.</div>
+<strong>Note:</strong> Another alternative that avoids the uuid-shuffle, is to chroot your degraded array after it has been created and file copied to each of the respective arrays (e.g. <code>/</code>, <code>/boot</code>, and <code>/home</code>). You can add the <code>mdadm_udev</code> hook to <code>/etc/mkinitcpio.conf</code>, regenerate the initramfs. install the <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> and generate a <code>grub.cfg</code> within the chroot environment. If you then toggle the primary drive for boot, you can boot the degraded array.</div>
 <h3><span class="mw-headline" id="Alter_fstab">Alter fstab</span></h3>
 <p>You need to tell fstab on the <b>new</b> disk where to find the new device. It is recommended to use <a href="../en/Persistent_block_device_naming.html" title="Persistent block device naming">Persistent block device naming</a>.
 </p>
@@ -518,7 +518,7 @@ kernel /vmlinuz-linux root=/dev/md0 md=0,/dev/sda1,/dev/sdb1
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
 <div>
-<b>Reason:</b> Support more boot loaders, simplify. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Convert_a_single_drive_system_to_RAID.html">Talk:Convert a single drive system to RAID</a>)</div>
+<b>Reason:</b> Support more <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loaders</a>, simplify. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Convert_a_single_drive_system_to_RAID.html">Talk:Convert a single drive system to RAID</a>)</div>
 </div>
 <h4><span class="mw-headline" id="GRUB_Legacy_2">GRUB Legacy</span></h4>
 <p>Start GRUB:
@@ -551,7 +551,7 @@ grub&gt; quit
 <h3><span class="mw-headline" id="Verify_success">Verify success</span></h3>
 <p>Reboot the computer, making sure it boots from the new RAID disk (<code>/dev/sdb</code>) and not the original disk (<code>/dev/sda</code>). You may need to change the boot device priorities in your BIOS to do this.
 </p>
-<p>Once the boot loader on the <b>new</b> disk loads, make sure you select to boot the new system entry you created earlier.
+<p>Once the <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> on the <b>new</b> disk loads, make sure you select to boot the new system entry you created earlier.
 </p>
 <p>Verify you have booted from the RAID array by looking at the output of mount. Also check mdstat again only to confirm which disk is in the array.
 </p>
@@ -630,8 +630,8 @@ unused devices: &lt;none&gt;
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Convert_a_single_drive_system_to_RAID&amp;oldid=822909">https://wiki.archlinux.org/index.php?title=Convert_a_single_drive_system_to_RAID&amp;oldid=822909</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 14 December 2024, at 07:37.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Convert_a_single_drive_system_to_RAID&amp;oldid=832070">https://wiki.archlinux.org/index.php?title=Convert_a_single_drive_system_to_RAID&amp;oldid=832070</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 14 April 2025, at 17:18.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

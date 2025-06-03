@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Creating packages - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -484,8 +484,6 @@ $ make
 </p>
 <p>To start building a new package, first create a new directory for the package and change current directory into this one. Then, a <code>PKGBUILD</code> file needs to be created: a prototype <code>PKGBUILD</code> found in <code>/usr/share/pacman/</code> can be used or you can start from a <code>PKGBUILD</code> from another package. The latter may be a good choice if a similar package already exists.
 </p>
-<p>Example <code>PKGBUILD</code>s are located in <code>/usr/share/pacman/</code>.
-</p>
 <h3><span class="mw-headline" id="PKGBUILD_variables">PKGBUILD variables</span></h3>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> The main article is <a href="../en/PKGBUILD.html" title="PKGBUILD">PKGBUILD</a>, also see <span class="plainlinks archwiki-template-man" title="$ man 5 PKGBUILD"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/PKGBUILD.5#OPTIONS_AND_DIRECTIVES">PKGBUILD(5) § OPTIONS AND DIRECTIVES</a></span>.</div>
@@ -556,12 +554,14 @@ make
 </h4>
 <p>The final step is to put the compiled files in a directory where <i>makepkg</i> can retrieve them to create a package.  This by default is the <code>pkg</code> directory—a simple fakeroot environment. The <code>pkg</code> directory replicates the hierarchy of the root file system of the software's installation paths. If you have to manually place files under the root of your filesystem, you should install them in the <code>pkg</code> directory under the same directory structure.  For example, if you want to install a file to <code>/usr/bin</code>, it should instead be placed under <code>$pkgdir/usr/bin</code>. Very few install procedures require the user to copy dozens of files manually. Instead, for most software, calling <code>make install</code> will do so. The final line should look like the following in order to correctly install the software in the <code>pkg</code> directory:
 </p>
-<pre>make DESTDIR="$pkgdir/" install
+<pre>make DESTDIR="$pkgdir" install
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> It is sometimes the case where <code>DESTDIR</code> is not used in the <code>Makefile</code>; you may need to use <code>prefix</code> instead. If the package is built with <i>autoconf</i> / <i>automake</i>, use <code>DESTDIR</code>; this is what is <a rel="nofollow" class="external text" href="https://www.gnu.org/software/automake/manual/automake.html#Install">documented</a> in the manuals. If <code>DESTDIR</code> does not work, try building with <code>make prefix="$pkgdir/usr/" install</code>. If that does not work, you will have to look further into the install commands that are executed by "<code>make &lt;...&gt; install</code>".</div>
+<strong>Note:</strong> It is sometimes the case where <code>DESTDIR</code> is not used in the <code>Makefile</code>; you may need to use <code>prefix</code> instead. If the package is built with <i>autoconf</i> / <i>automake</i>, use <code>DESTDIR</code>; this is what is <a rel="nofollow" class="external text" href="https://www.gnu.org/software/automake/manual/automake.html#Install">documented</a> in the manuals. If <code>DESTDIR</code> does not work, try building with <code>make prefix="$pkgdir/usr" install</code>. If that does not work, you will have to look further into the install commands that are executed by "<code>make &lt;...&gt; install</code>".</div>
 <p><code>makepkg --repackage</code> runs only the <code>package()</code> function, so it creates a package without building. This may save time e.g. if you have changed just the <code>depends</code> variable of the package.
 </p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> Moving files (e.g. by using <code>mv</code>) produced by the <code>build()</code> function from <code>$srcdir</code> to <code>$pkgdir</code> breaks the <code>--repackage</code> option of <i>makepkg</i>.</div>
 <h2><span class="mw-headline" id="Testing_the_PKGBUILD_and_package">Testing the PKGBUILD and package</span></h2>
 <p>As you are writing the <code>build()</code> function, you will want to test your changes frequently to ensure there are no bugs. You can do this using the <code>makepkg</code> command in the directory containing the <code>PKGBUILD</code> file. With a properly formatted <code>PKGBUILD</code>, makepkg will create a package; with a broken or unfinished <code>PKGBUILD</code>, it will raise an error.
 </p>
@@ -589,6 +589,11 @@ $ namcap <i>pkgname</i>.pkg.tar.zst
 <p>Get into the habit of checking your packages with <i>namcap</i> to avoid having to fix the simplest mistakes after package submission.
 </p>
 <h3><span class="mw-headline" id="Using_pkgctl_to_build_in_a_clean_chroot_environment">Using pkgctl to build in a clean chroot environment</span></h3>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Merge-arrows-2.svg" decoding="async" width="36" height="40" class="mw-file-element"></span></span><b>This article or section is a candidate for merging with <a href="../en/Arch_build_system.html#Build_package" title="Arch build system">Arch build system#Build package</a>.</b></p>
+<div>
+<b>Notes:</b> This page is not about the build system. There is also <a href="#Set_up_clean_chroot">#Set up clean chroot</a> and <a href="../DeveloperWiki:Building_in_a_clean_chroot.html" title="DeveloperWiki:Building in a clean chroot">DeveloperWiki:Building in a clean chroot</a>. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Creating_packages.html">Talk:Creating packages</a>)</div>
+</div>
 <p>You can use <code>pkgctl</code> from <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=devtools">devtools</a></span> to check if the package can be built where no other packages are already installed. While in the PKGBUILD directory:
 </p>
 <pre>$ pkgctl build
@@ -635,7 +640,7 @@ $ namcap <i>pkgname</i>.pkg.tar.zst
 <a href="../en/Node.js.html" title="Node.js">Node.js</a>: <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/nodejs-npm2arch/">nodejs-npm2arch</a></span><sup><small>AUR</small></sup>
 </li>
 <li>
-<a href="../en/Perl.html" title="Perl">Perl</a>: <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=perl-cpanplus-dist-arch">perl-cpanplus-dist-arch</a></span>
+<a href="../en/Perl.html" title="Perl">Perl</a>: <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/perl-cpanplus-dist-arch/">perl-cpanplus-dist-arch</a></span><sup><small>AUR</small></sup>
 </li>
 <li>
 <a href="../en/Python.html" title="Python">Python</a>: <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/pipman-git/">pipman-git</a></span><sup><small>AUR</small></sup>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/pip2arch-git/">pip2arch-git</a></span><sup><small>AUR</small></sup>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/python-pypi2pkgbuild/">python-pypi2pkgbuild</a></span><sup><small>AUR</small></sup>
@@ -664,12 +669,16 @@ $ namcap <i>pkgname</i>.pkg.tar.zst
 </ul>
 </div>
 </div>
-					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
+					<div id="catlinks" class="catlinks" data-mw="interface">
+<div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Categories</a>: <ul>
 <li><a href="../en/Category:About_Arch.html" title="Category:About Arch">About Arch</a></li>
 <li><a href="../en/Category:Package_development.html" title="Category:Package development">Package development</a></li>
 </ul>
-</div></div>
+</div>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Merge.html" title="Category:Pages or sections flagged with Template:Merge">Pages or sections flagged with Template:Merge</a></li></ul>
+</div>
+</div>
 				</div>
 			</main>
 			
@@ -678,8 +687,8 @@ $ namcap <i>pkgname</i>.pkg.tar.zst
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Creating_packages&amp;oldid=830294">https://wiki.archlinux.org/index.php?title=Creating_packages&amp;oldid=830294</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 1 April 2025, at 08:11.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Creating_packages&amp;oldid=834185">https://wiki.archlinux.org/index.php?title=Creating_packages&amp;oldid=834185</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 19 May 2025, at 08:54.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>fprint - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -214,6 +214,17 @@
 			<ul id="toc-Enrolling_works_but_verifying_does_not-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Unable_to_enroll_as_user" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Unable_to_enroll_as_user">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">4.9</span>
+					<span>Unable to enroll as user</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Unable_to_enroll_as_user-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 </ul>
@@ -347,7 +358,7 @@
 <ul><li>
 <b>libfprint-elanmoc2-newdrvs</b> — <b>Experimental</b> for <code>04f3:0c4c</code> or a <code>04f3:0c00</code>, waiting <a rel="nofollow" class="external text" href="https://gitlab.freedesktop.org/Depau/libfprint/-/merge_requests/1">merge</a>.</li></ul>
 <dl><dd>
-<a rel="nofollow" class="external free" href="https://gitlab.freedesktop.org/geodic/libfprint/-/tree/elanmoc2">https://gitlab.freedesktop.org/geodic/libfprint/-/tree/elanmoc2</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/libfprint-elanmoc2-newdrvs-git/">libfprint-elanmoc2-newdrvs-git</a></span><sup><small>AUR</small></sup>
+<a rel="nofollow" class="external free" href="https://gitlab.freedesktop.org/geodic/libfprint/-/tree/elanmoc2">https://gitlab.freedesktop.org/geodic/libfprint/-/tree/elanmoc2</a><sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2025-04-05 ⓘ]</sup> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/libfprint-elanmoc2-newdrvs-git/">libfprint-elanmoc2-newdrvs-git</a></span><sup><small>AUR</small></sup>
 </dd></dl>
 <p>This list is not exhaustive. See many more forks for other devices in the AUR.
 </p>
@@ -373,6 +384,11 @@ auth      include   system-login
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> This setting is a security breach for su and sudo as it allows background processes to obtain permissions without prompting the user. See: <a rel="nofollow" class="external text" href="https://nvd.nist.gov/vuln/detail/cve-2024-37408">CVE-2024-37408</a>
+<p>Put this right before <code>auth sufficient pam_fprintd.so</code> to disallow fingerprint with sudo/su when it can't show a prompt. 
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># Disallow fingerprint in sudo/su without tty</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">auth       [success=1 default=ignore]  pam_succeed_if.so    service in sudo:su:su-l tty in :unknown
+</pre>
 </div>
 <p>You can also modify other files in <code>/etc/pam.d/{login,su,sudo,gdm,lightdm}</code> in the same way. For example <code>/etc/pam.d/polkit-1</code> for <a href="../en/Polkit.html" title="Polkit">polkit</a> based authentication (GNOME &amp; many other desktop environments). If <code>/etc/pam.d/polkit-1</code> does not exist, copy it from <code>/usr/lib/pam.d/polkit-1</code>. KDE already has fingerprint authentication configured in <code>/etc/pam.d/kde-fingerprint</code> so you do not need to edit that file.
 </p>
@@ -470,7 +486,7 @@ fprintd[2936592]: Ignoring device due to initialization error: unsupported firmw
 <h3><span class="mw-headline" id="Fingerprint_authentication_is_not_taking_effect_in_the_Polkit_agent.">Fingerprint authentication is not taking effect in the Polkit agent.</span></h3>
 <p>After adding fingerprint rules to Linux PAM, fingerprint recognition only works for <a href="../en/SDDM.html" title="SDDM">SDDM</a> and <a href="../en/Sudo.html" title="Sudo">sudo</a>, but not for <a href="../en/Polkit.html" title="Polkit">polkit</a>. 
 </p>
-<p>Copy the <code>50-default.rules</code> file to <code>/etc/</code> and change group name <code>wheel</code> to your user group.
+<p>Copy the <code>50-default.rules</code> file to <code>/etc/polkit-1/rules.d/</code> and change group name <code>wheel</code> to your user group.
 </p>
 <pre># cp /usr/share/polkit-1/rules.d/50-default.rules /etc/polkit-1/rules.d/
 </pre>
@@ -491,10 +507,11 @@ fprintd[2936592]: Ignoring device due to initialization error: unsupported firmw
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">ACTION=="add", SUBSYSTEM=="usb", DRIVERS=="usb", ATTRS{idVendor}=="06cb", ATTRS{idProduct}=="00fc", ATTR{power/persist}="1", RUN="/usr/bin/chmod 444 %S%p/../power/persist"
 </pre>
 <h3><span class="mw-headline" id="Sleeping_while_fprintd_is_still_running_breaks_fprintd">Sleeping while fprintd is still running breaks fprintd</span></h3>
-<p>Fprintd waits 30 seconds after a successful login before quitting, so sleeping during that time period may cause fprintd to break. If that happens, create and <a href="/index.php?title=Template:Enable&amp;action=edit&amp;redlink=1" class="new" title="Template:Enable (page does not exist)">Template:Enable</a> the following systemd service:
+<p>Fprintd waits 30 seconds after a successful login before quitting, so sleeping during that time period may cause fprintd to break. If that happens, create and <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> the following systemd service:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/kill-printd.service</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Description=Kill fprintd before sleep
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Unit]
+Description=Kill fprintd before sleep
 Before=sleep.target
 
 [Service]
@@ -510,13 +527,27 @@ WantedBy=sleep.target
 </p>
 <p>See also <a rel="nofollow" class="external free" href="https://gitlab.freedesktop.org/libfprint/libfprint/-/issues/174">https://gitlab.freedesktop.org/libfprint/libfprint/-/issues/174</a>
 </p>
+<h3><span class="mw-headline" id="Unable_to_enroll_as_user">Unable to enroll as user</span></h3>
+<p>If you get an error like <code>EnrollStart failed: GDBus.Error:net.reactivated.Fprint.Error.PermissionDenied: Not Authorized: net.reactivated.fprint.device.enroll</code>, a simple workaround is to run the enroll command as root:
+</p>
+<p><code>sudo fprintd-enroll "$(whoami)"</code>
+</p>
+<p>It is important to pass the name of a regular user, otherwise the fingerprint will be associated with the root user, which is counterproductive to most usecases.
+</p>
+<p>If you get an "enroll-duplicate" error, that finger has already been enrolled as root.  You can either enroll a different finger or remove that finger from the root user with <code>fprintd-delete</code>.
+</p>
+<p>After this you should be able to run <code>fprintd-verify</code> as a regular user with no permission errors.
+</p>
 </div>
 </div>
 					<div id="catlinks" class="catlinks" data-mw="interface">
 <div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Input_devices.html" title="Category:Input devices">Input devices</a></li></ul>
 </div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Merge.html" title="Category:Pages or sections flagged with Template:Merge">Pages or sections flagged with Template:Merge</a></li></ul>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
+<li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Merge.html" title="Category:Pages or sections flagged with Template:Merge">Pages or sections flagged with Template:Merge</a></li>
+</ul>
 </div>
 </div>
 				</div>
@@ -527,8 +558,8 @@ WantedBy=sleep.target
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Fprint&amp;oldid=828427">https://wiki.archlinux.org/index.php?title=Fprint&amp;oldid=828427</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 8 March 2025, at 01:40.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Fprint&amp;oldid=834339">https://wiki.archlinux.org/index.php?title=Fprint&amp;oldid=834339</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 23 May 2025, at 04:00.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

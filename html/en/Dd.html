@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>dd - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -137,15 +137,15 @@
 			</button>
 		
 		<ul id="toc-Backup_and_restore_MBR-sublist" class="vector-toc-list">
-			<li id="toc-Remove_bootloader" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Remove_bootloader">
+			<li id="toc-Remove_boot_loader" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Remove_boot_loader">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">3.1</span>
-					<span>Remove bootloader</span>
+					<span>Remove boot loader</span>
 				</div>
 			</a>
 			
-			<ul id="toc-Remove_bootloader-sublist" class="vector-toc-list">
+			<ul id="toc-Remove_boot_loader-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -404,7 +404,7 @@
 </p>
 <pre># dd if=/dev/sda of=/dev/sdb bs=64K conv=noerror,sync status=progress
 </pre>
-<p>This will clone the entire drive, including the partition table, bootloader, all partitions, UUIDs, and data.
+<p>This will clone the entire drive, including the partition table, <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a>, all partitions, UUIDs, and data.
 </p>
 <ul>
 <li>
@@ -474,7 +474,7 @@
 <p>The MBR is stored in the first 512 bytes of the disk. It consists of 4 parts:
 </p>
 <ol>
-<li>The first 440 bytes contain the bootstrap code (boot loader).</li>
+<li>The first 440 bytes contain the bootstrap code (<a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a>).</li>
 <li>The next 6 bytes contain the disk signature.</li>
 <li>The next 64 bytes contain the partition table (4 entries of 16 bytes each, one entry for each primary partition).</li>
 <li>The last 2 bytes contain a boot signature.</li>
@@ -492,7 +492,7 @@
 <pre># dd if=/<i>path/to/mbr_file.img</i> of=/dev/sd<i>X</i> bs=512 count=1
 </pre>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> Restoring the MBR with a mismatching partition table will make your data unreadable and nearly impossible to recover. If you simply need to reinstall the bootloader, see their respective pages as they also employ the <a rel="nofollow" class="external text" href="https://www.pixelbeat.org/docs/disk/">DOS compatibility region</a>: <a href="../en/GRUB.html" title="GRUB">GRUB</a> or <a href="../en/Syslinux.html" title="Syslinux">Syslinux</a>.</div>
+<strong>Warning:</strong> Restoring the MBR with a mismatching partition table will make your data unreadable and nearly impossible to recover. If you simply need to reinstall the boot loader, see their respective pages as they also employ the <a rel="nofollow" class="external text" href="https://www.pixelbeat.org/docs/disk/">DOS compatibility region</a>: <a href="../en/GRUB.html" title="GRUB">GRUB</a> or <a href="../en/Syslinux.html" title="Syslinux">Syslinux</a>.</div>
 <p>If you only want to restore the boot loader, but not the primary partition table entries, just restore the first 440 bytes of the MBR:
 </p>
 <pre># dd if=<i>/path/to/mbr_file.img</i> of=/dev/sd<i>X</i> bs=440 count=1
@@ -501,7 +501,7 @@
 </p>
 <pre># dd if=<i>/path/to/mbr_file.img</i> of=/dev/sd<i>X</i> bs=1 skip=446 count=64
 </pre>
-<h3><span class="mw-headline" id="Remove_bootloader">Remove bootloader</span></h3>
+<h3><span class="mw-headline" id="Remove_boot_loader">Remove boot loader</span></h3>
 <p>To erase the MBR bootstrap code (may be useful if you have to do a full reinstall of another operating system), only the first 440 bytes need to be zeroed:
 </p>
 <pre># dd if=/dev/zero of=/dev/sd<i>X</i> bs=440 count=1
@@ -671,7 +671,7 @@ $ exec 9&lt;&amp;-</pre>
 <pre>$ dd if=/dev/urandom of=new-file-filled-by-urandom.bin bs=40M count=1 iflag=fullblock
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> When reading from a pipe or a special device file like we just mentioned below to copy a portion of file in a fixed length with <code>count=<i>n</i></code> option being specified, it is suggested to, or always strongly recommended to add the <code>iflag=fullblock</code> option to the <i>dd</i> command if in case of <a href="../en/Securely_wipe_disk.html" title="Securely wipe disk">wiping</a> a <a href="#Remove_bootloader">portion of device</a> or <a href="../en/Securely_wipe_disk/Tips_and_tricks.html#Wipe_a_single_file" title="Securely wipe disk/Tips and tricks">file</a>.</div>
+<strong>Note:</strong> When reading from a pipe or a special device file like we just mentioned below to copy a portion of file in a fixed length with <code>count=<i>n</i></code> option being specified, it is suggested to, or always strongly recommended to add the <code>iflag=fullblock</code> option to the <i>dd</i> command if in case of <a href="../en/Securely_wipe_disk.html" title="Securely wipe disk">wiping</a> a <a href="#Remove_boot_loader">portion of device</a> or <a href="../en/Securely_wipe_disk/Tips_and_tricks.html#Wipe_a_single_file" title="Securely wipe disk/Tips and tricks">file</a>.</div>
 <p>When reading from a pipe, <a rel="nofollow" class="external text" href="https://unix.stackexchange.com/questions/556016/cat-dd-pipe-causes-partial-reads-without-iflag-fullblock-why-truncated-to-128">an alternative</a> to <code>iflag=fullblock</code> is to limit <code>bs</code> to the <code>PIPE_BUF</code> constant value as defined in <a rel="nofollow" class="external text" href="https://elixir.bootlin.com/linux/latest/A/ident/PIPE_BUF">linux/limits.h</a> to make the <span class="plainlinks archwiki-template-man" title="$ man 7 pipe"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/pipe.7">pipe(7)</a></span> I/O atomic.  For example, to prepare a text file filled up will random alphanumeric string in total length of 5 mebibytes:
 </p>
 <pre>$ LC_ALL=C tr -dc '[:alnum:]' &lt;/dev/urandom | dd of=passtext-5m.txt bs=<b>4k</b> count=1280
@@ -720,8 +720,8 @@ $ exec 9&lt;&amp;-</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dd&amp;oldid=820441">https://wiki.archlinux.org/index.php?title=Dd&amp;oldid=820441</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 9 November 2024, at 19:02.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dd&amp;oldid=832071">https://wiki.archlinux.org/index.php?title=Dd&amp;oldid=832071</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 14 April 2025, at 17:24.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

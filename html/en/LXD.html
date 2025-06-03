@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>LXD - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -195,15 +195,26 @@
 			</a>
 			
 			<ul id="toc-Access_the_containers_by_name_on_the_host-sublist" class="vector-toc-list">
-				<li id="toc-Other_solution" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Other_solution">
+				<li id="toc-Temporary_solution" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Temporary_solution">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">4.1.1</span>
-					<span>Other solution</span>
+					<span>Temporary solution</span>
 				</div>
 			</a>
 			
-			<ul id="toc-Other_solution-sublist" class="vector-toc-list">
+			<ul id="toc-Temporary_solution-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Permanent_solution" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Permanent_solution">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">4.1.2</span>
+					<span>Permanent solution</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Permanent_solution-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -668,34 +679,36 @@
 <h3><span class="mw-headline" id="Access_the_containers_by_name_on_the_host">Access the containers by name on the host</span></h3>
 <p>This assumes that you are using the default bridge that it is named <code>lxdbr0</code> and that you are using <a href="../en/Systemd-resolved.html" title="Systemd-resolved">systemd-resolved</a>.
 </p>
-<pre># systemd-resolve --interface lxdbr0 --set-domain '~lxd' --set-dns $(lxc network get lxdbr0 ipv4.address | cut -d / -f 1)
+<h4><span class="mw-headline" id="Temporary_solution">Temporary solution</span></h4>
+<p>As a temporary solution, you can set the local dns address to resolve an arbitrary domain, e.g. <code>lxd</code>.
+</p>
+<pre># resolvectl dns lxdbr0 $(lxc network get lxdbr0 ipv4.address | cut -d / -f 1)
+# resolvectl domain lxdbr0 '~lxd'
 </pre>
 <p>You can now access the containers by name:
 </p>
 <pre>$ ping <i>containername</i>.lxd
 </pre>
-<h4><span class="mw-headline" id="Other_solution">Other solution</span></h4>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
-<div>
-<b>Reason:</b> When does <i>systemd-resolve</i> stop working? Is there a bug report or some other reference? (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:LXD.html">Talk:LXD</a>)</div>
-</div>
-<p>It seems that the <i>systemd-resolve</i> solution stops working after some time.
+<p>This behavior will be reset if the <code>lxdbr0</code> bridge is managed by lxd (default behavior) and the bridge is reset, for example after a reboot of the host machine.
 </p>
-<p>Another solution is to use <a href="../en/Systemd-networkd.html" title="Systemd-networkd">systemd-networkd</a> with the following <code>lxd.network</code> (replace <code><i>x</i></code> and <code><i>y</i></code> to match your bridge IP):
+<h4><span class="mw-headline" id="Permanent_solution">Permanent solution</span></h4>
+<p>Refering to <a rel="nofollow" class="external text" href="https://documentation.ubuntu.com/lxd/stable-4.0/networks/#integration-with-systemd-resolved">the official documentation</a>, it is possible to set a systemd service that will set the local dns for the lxd bridge at startup. Replace <code>[N.N.N.N]</code> with the local <code>lxdbr0</code> IP address:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/network/lxd.network</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Match]
-Name=lxdbr0
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/lxd-dns-lxdbr0.service</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Unit]
+Description=LXD per-link DNS configuration for lxdbr0
+BindsTo=sys-subsystem-net-devices-lxdbr0.device
+After=sys-subsystem-net-devices-lxdbr0.device
 
-[Network]
-DNS=<i>10.x.y.1</i>
-Domains=~lxd
-IgnoreCarrierLoss=yes
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/resolvectl dns lxdbr0 [N.N.N.N]
+ExecStart=/usr/bin/resolvectl domain lxdbr0 '~lxd'
 
-[Address]
-Address=<i>10.x.y.1</i>/24
-Gateway=<i>10.x.y.1</i></pre>
+[Install]
+WantedBy=sys-subsystem-net-devices-lxdbr0.device</pre>
+<p>Then <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a>/<a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start">start</a> the service.
+</p>
 <h3><span class="mw-headline" id="Use_Wayland_and_Xorg_applications">Use Wayland and Xorg applications</span></h3>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> Always consider security implications, as some of the described methods may weaken the seperation between container and host.</div>
@@ -993,10 +1006,7 @@ Full execution log: '/home/your_user/.local/state/snapcraft/log/snapcraft-202311
 <div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Virtualization.html" title="Category:Virtualization">Virtualization</a></li></ul>
 </div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
-</ul>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li></ul>
 </div>
 </div>
 				</div>
@@ -1007,8 +1017,8 @@ Full execution log: '/home/your_user/.local/state/snapcraft/log/snapcraft-202311
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=LXD&amp;oldid=815641">https://wiki.archlinux.org/index.php?title=LXD&amp;oldid=815641</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 31 August 2024, at 08:29.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=LXD&amp;oldid=835030">https://wiki.archlinux.org/index.php?title=LXD&amp;oldid=835030</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 1 June 2025, at 13:42.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

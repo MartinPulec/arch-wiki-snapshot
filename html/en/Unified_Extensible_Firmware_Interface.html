@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Unified Extensible Firmware Interface - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -637,7 +637,7 @@
 </p>
 <pre>$ cat /sys/firmware/efi/fw_platform_size
 </pre>
-<p>It will return <code>64</code> for a 64-bit (x64) UEFI or <code>32</code> for a 32-bit (IA32) UEFI. If the file does not exist, then you have not <a href="../en/Installation_guide.html#Verify_the_boot_mode" title="Installation guide">booted in UEFI mode</a>.
+<p>It will return <code>64</code> for a 64-bit (x64) UEFI or <code>32</code> for a 32-bit (IA32) UEFI. If the file does not exist, you have not <a href="../en/Installation_guide.html#Verify_the_boot_mode" title="Installation guide">booted in UEFI mode</a>.
 </p>
 <h4><span class="mw-headline" id="From_macOS">From macOS</span></h4>
 <p>Pre-2008 <a href="../en/Mac.html" title="Mac">Macs</a> mostly have IA32 EFI firmware while &gt;=2008 Macs have mostly x64 EFI. All Macs capable of running Mac OS X Snow Leopard 64-bit Kernel have x64 EFI 1.x firmware.
@@ -646,14 +646,14 @@
 </p>
 <pre>$ ioreg -l -p IODeviceTree | grep firmware-abi
 </pre>
-<p>If the command returns <code>EFI32</code> then it is IA32 (32-bit) EFI firmware. If it returns <code>EFI64</code> then it is x64 EFI firmware. Most of the Macs do not have UEFI 2.x firmware as Apple's EFI implementation is not fully compliant with UEFI 2.x specification.
+<p>If the command returns <code>EFI32</code>, it is IA32 (32-bit) EFI firmware. If it returns <code>EFI64</code>, it is x64 EFI firmware. Most of the Macs do not have UEFI 2.x firmware as Apple's EFI implementation is not fully compliant with UEFI 2.x specification.
 </p>
 <h4><span class="mw-headline" id="From_Microsoft_Windows">From Microsoft Windows</span></h4>
 <p>64-bit versions of Windows do not support booting on a 32-bit UEFI. So, if you have a 32-bit version of Windows booted in UEFI mode, you have a 32-bit UEFI.
 </p>
 <p>To check the bitness run <code>msinfo32.exe</code>. In the <i>System Summary</i> section look at the values of "System Type" and "BIOS mode".
 </p>
-<p>For a 64-bit Windows on a 64-bit UEFI it will be <code>System Type: x64-based PC</code> and <code>BIOS mode: UEFI</code>, for a 32-bit Windows on a 32-bit UEFI - <code>System Type: x86-based PC</code> and <code>BIOS mode: UEFI</code>. If the "BIOS mode" is not <code>UEFI</code>, then Windows is not booted in UEFI mode.
+<p>For 64-bit Windows on a 64-bit UEFI, it will be <code>System Type: x64-based PC</code> and <code>BIOS mode: UEFI</code>. For 32-bit Windows on a 32-bit UEFI—<code>System Type: x86-based PC</code> and <code>BIOS mode: UEFI</code>. If the "BIOS mode" is not <code>UEFI</code>, Windows is not booted in UEFI mode.
 </p>
 <h2><span class="mw-headline" id="UEFI_variables">UEFI variables</span></h2>
 <p>UEFI defines variables through which an operating system can interact with the firmware. UEFI boot variables are used by the boot loader and used by the operating system only for early system start-up. UEFI runtime variables allow an operating system to manage certain settings of the firmware like the UEFI boot manager or managing the keys for UEFI Secure Boot protocol etc. You can get the list using:
@@ -676,11 +676,11 @@
 <p>If UEFI Variables support does not work even after the above conditions are satisfied, try the below workarounds:
 </p>
 <ol>
-<li>If listing of the UEFI variables (<code>efivar -l</code>) leads to <code>efivar: error listing variables: Function not implemented</code> and the system is booted into a <a href="../en/Realtime_kernel_patchset.html" class="mw-redirect" title="Realtime kernel">realtime kernel</a>, add <code>efi=runtime</code> to the <a href="../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a> and reboot (efivarfs functionality is disabled by default on those kernels).</li>
+<li>If listing of the UEFI variables (<code>efivar -l</code>) leads to <code>efivar: error listing variables: Function not implemented</code> and the system is booted into a <a href="../en/Realtime_kernel.html" title="Realtime kernel">realtime kernel</a>, add <code>efi=runtime</code> to the <a href="../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a> and reboot (efivarfs functionality is disabled by default on those kernels).</li>
 <li>See <a href="#Userspace_tools_are_unable_to_modify_UEFI_variable_data">#Userspace tools are unable to modify UEFI variable data</a> for more troubleshooting steps</li>
 </ol>
 <h4><span class="mw-headline" id="Mount_efivarfs">Mount efivarfs</span></h4>
-<p>If <code>efivarfs</code> is not automatically mounted at <code>/sys/firmware/efi/efivars</code> by <a href="../en/Systemd.html" title="Systemd">systemd</a> during boot, then you need to manually mount it to expose UEFI variables to <a href="#Userspace_tools">userspace tools</a> like <i>efibootmgr</i>:
+<p>If <code>efivarfs</code> is not automatically mounted at <code>/sys/firmware/efi/efivars</code> by <a href="../en/Systemd.html" title="Systemd">systemd</a> during boot, you need to manually mount it to expose UEFI variables to <a href="#Userspace_tools">userspace tools</a> like <i>efibootmgr</i>:
 </p>
 <pre># mount -t efivarfs efivarfs /sys/firmware/efi/efivars
 </pre>
@@ -692,7 +692,7 @@
 <p>There are few tools that can access/modify the UEFI variables, namely
 </p>
 <ul><li>
-<b>efivar</b> — Library and Tool to manipulate UEFI variables (used by efibootmgr)</li></ul>
+<b>efivar</b> — Library and tool to manipulate UEFI variables (used by efibootmgr)</li></ul>
 <dl><dd>
 <a rel="nofollow" class="external free" href="https://github.com/rhboot/efivar">https://github.com/rhboot/efivar</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=efivar">efivar</a></span>
 </dd></dl>
@@ -743,7 +743,7 @@
 </p>
 <pre># efibootmgr --create --disk /dev/sda --part 1 --loader '\EFI\refind\refind_x64.efi' --label 'rEFInd Boot Manager' --unicode
 </pre>
-<p>Get an overview of all boot entries:
+<p>Get an overview of all boot entries and the boot order:
 </p>
 <pre># efibootmgr --unicode
 </pre>
@@ -1154,8 +1154,8 @@ exec /usr/bin/efibootmgr -e 3 "$@"
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Unified_Extensible_Firmware_Interface&amp;oldid=827043">https://wiki.archlinux.org/index.php?title=Unified_Extensible_Firmware_Interface&amp;oldid=827043</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 14 February 2025, at 10:22.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Unified_Extensible_Firmware_Interface&amp;oldid=834920">https://wiki.archlinux.org/index.php?title=Unified_Extensible_Firmware_Interface&amp;oldid=834920</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 31 May 2025, at 07:14.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

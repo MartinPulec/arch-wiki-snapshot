@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Tablet PC - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -228,6 +228,17 @@
 			</a>
 			
 			<ul id="toc-With_rot8-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-With_Sway" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#With_Sway">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">4.5</span>
+					<span>With Sway</span>
+				</div>
+			</a>
+			
+			<ul id="toc-With_Sway-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -776,6 +787,20 @@ This integrates well with i3 or sway by using <code>exec rot8</code>.
  ...</pre>
 <p>rot8 will automatically detect orientation and rotate modern Linux desktop screen and input devices. For additional configuration see <a rel="nofollow" class="external autonumber" href="https://github.com/efernau/rot8">[1]</a>.
 </p>
+<h3><span class="mw-headline" id="With_Sway">With Sway</span></h3>
+<p>A simple <a href="../en/Sway.html" title="Sway">Sway</a> auto-rotate script could be implemented as follows (uses <i>monitor-sensor</i> from <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=iio-sensor-proxy">iio-sensor-proxy</a></span>):
+</p>
+<pre>#!/bin/bash
+monitor-sensor | mawk -W interactive '/Accelerometer orientation changed:/ { print $NF; fflush();}' | while read -r line
+do
+   case "$line" in
+       normal) swaymsg output eDP-1 transform 0 ;;
+       bottom-up) swaymsg output eDP-1 transform 180 ;;
+       right-up) swaymsg output eDP-1 transform 90 ;;
+       left-up) swaymsg output eDP-1 transform 270 ;;
+   esac
+done
+</pre>
 <h2><span class="mw-headline" id="Tablet_mode">Tablet mode</span></h2>
 <p>You can use <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/linuxflip-git/">linuxflip-git</a></span><sup><small>AUR</small></sup> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/detect-tablet-mode-git/">detect-tablet-mode-git</a></span><sup><small>AUR</small></sup> to configure laptop and tablet modes (e.g. enable/disable keyboard/touchpad/trackpoint, start/kill on-screen keyboard etc.)
 </p>
@@ -1049,8 +1074,8 @@ xidump -u stylus
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Tablet_PC&amp;oldid=828320">https://wiki.archlinux.org/index.php?title=Tablet_PC&amp;oldid=828320</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 5 March 2025, at 21:13.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Tablet_PC&amp;oldid=834606">https://wiki.archlinux.org/index.php?title=Tablet_PC&amp;oldid=834606</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 26 May 2025, at 08:31.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

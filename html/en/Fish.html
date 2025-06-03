@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>fish - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -651,8 +651,20 @@ the environment variables appended and declared in the <code>/etc/profile.d</cod
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.config/fish/config.fish</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># source /etc/profile with bash
 if status is-login
-    exec bash -c "test -e /etc/profile &amp;&amp; source /etc/profile;\
-    exec fish"
+    if not set -q __sourced_profile
+        set -x __sourced_profile 1
+        exec bash -c "\
+            test -e /etc/profile &amp;&amp; source /etc/profile
+            test -e $HOME/.bash_profile &amp;&amp; source $HOME/.bash_profile
+            exec fish --login
+        "
+    end
+    
+    # put your other configs below
+    
+    #
+    
+    set -e __sourced_profile
 end
 </pre>
 <p>This allows you to run <code>fish</code> as your login shell, while still having all the environment variables you would typically
@@ -682,8 +694,8 @@ have in a <code>bash</code> login session.
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Fish&amp;oldid=829484">https://wiki.archlinux.org/index.php?title=Fish&amp;oldid=829484</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 20 March 2025, at 04:10.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Fish&amp;oldid=834297">https://wiki.archlinux.org/index.php?title=Fish&amp;oldid=834297</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 22 May 2025, at 10:50.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

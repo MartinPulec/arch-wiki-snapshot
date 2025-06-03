@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>acme.sh - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -221,17 +221,20 @@
 <p>You can specify any domain with the <code>-d</code> option.
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> You might want to <a rel="nofollow" class="external text" href="https://community.letsencrypt.org/t/the-acme-sh-will-change-default-ca-to-zerossl-on-august-1st-2021/144052">specify</a> LetsEncrypt as your default CA, as acme.sh uses ZeroSSL as its default CA effective from August 1st, 2021.</div>
+<strong>Tip:</strong> You might want to <a rel="nofollow" class="external text" href="https://community.letsencrypt.org/t/the-acme-sh-will-change-default-ca-to-zerossl-on-august-1st-2021/144052">specify</a> Let's Encrypt as your default CA, as acme.sh uses ZeroSSL as its default CA effective from 2021-08-01.</div>
 <p>The <code>acme.sh</code> script support different modes. Examples for modes and options to be specified are:
 </p>
-<ul><li>Webroot mode:</li></ul>
-<dl><dd><pre>$ acme.sh --issue -d example.com -d www.example.com -d cp.example.com -d '*.example.com' -w /home/wwwroot/example.com</pre></dd></dl>
-<ul><li>Standalone mode, by adding <code>--standalone</code> if no web server is running (requires <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=socat">socat</a></span> installed):</li></ul>
-<dl><dd><pre>$ acme.sh --issue --standalone -d example.com -d www.example.com -d cp.example.com</pre></dd></dl>
-<ul><li>Nginx mode:</li></ul>
-<dl><dd><pre>$ acme.sh --issue --nginx -d example.com -d www.example.com -d cp.example.com</pre></dd></dl>
-<ul><li>DNS mode (see <a rel="nofollow" class="external text" href="https://github.com/acmesh-official/acme.sh/wiki/dnsapi">official wiki</a> for further information):</li></ul>
-<dl><dd><pre>$ acme.sh --issue -d example.com -d '*.example.com' --dns dns_he</pre></dd></dl>
+<ul>
+<li>Webroot mode: <pre>$ acme.sh --issue -d example.com -d www.example.com -d cp.example.com -d '*.example.com' -w /home/wwwroot/example.com</pre>
+</li>
+<li>Standalone mode, by adding <code>--standalone</code> if no web server is running (requires <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=socat">socat</a></span> installed): <pre>$ acme.sh --issue --standalone -d example.com -d www.example.com -d cp.example.com</pre>
+</li>
+<li>Nginx mode <pre>$ acme.sh --issue --nginx -d example.com -d www.example.com -d cp.example.com</pre>
+</li>
+<li>
+<a rel="nofollow" class="external text" href="https://github.com/acmesh-official/acme.sh/wiki/dnsapi">DNS mode</a>: <pre>$ acme.sh --issue -d example.com -d '*.example.com' --dns dns_he</pre>
+</li>
+</ul>
 <p>The project's wiki lists <a rel="nofollow" class="external text" href="https://github.com/acmesh-official/acme.sh/wiki/How-to-issue-a-cert">more examples</a>.
 </p>
 <h3>
@@ -239,11 +242,18 @@
 </h3>
 <p>Nginx:
 </p>
-<pre>$ acme.sh --install-cert -d example.com --key-file '/path/to/keyfile/in/nginx/example.key' --fullchain-file '/path/to/fullchain/nginx/example.cer' --reloadcmd "systemctl force-reload nginx"
+<pre>$ acme.sh --install-cert -d example.com \
+   --key-file         /path/to/keyfile/in/nginx/key.pem  \
+   --fullchain-file /path/to/fullchain/nginx/cert.pem \
+   --reloadcmd    "systemctl force-reload nginx"
 </pre>
 <p>Apache:
 </p>
-<pre>$ acme.sh --install-cert -d example.com --cert-file '/path/to/certfile/in/apache/example.cer' --key-file '/path/to/keyfile/in/apache/example.key' --fullchain-file '/path/to/fullchain/certfile/apache/example.fullchain.cer' --reloadcmd "systemctl force-reload nginx apache2"
+<pre>$ acme.sh --install-cert -d example.com \
+   --cert-file        /path/to/certfile/in/apache/cert.pem  \
+   --key-file         /path/to/keyfile/in/apache/key.pem  \
+   --fullchain-file /path/to/fullchain/certfile/apache/fullchain.pem \
+   --reloadcmd    "systemctl force-reload httpd"
 </pre>
 <h3><span class="mw-headline" id="Maintaining_a_cert">Maintaining a cert</span></h3>
 <p>The certs will be renewed every 60 days. To run <code>acme.sh</code> regularly, a <a rel="nofollow" class="external text" href="https://github.com/acmesh-official/acme.sh/wiki/Using-systemd-units-instead-of-cron">systemd timer</a> may be set up.
@@ -274,8 +284,8 @@
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Acme.sh&amp;oldid=805682">https://wiki.archlinux.org/index.php?title=Acme.sh&amp;oldid=805682</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 11 April 2024, at 07:46.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Acme.sh&amp;oldid=832316">https://wiki.archlinux.org/index.php?title=Acme.sh&amp;oldid=832316</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 19 April 2025, at 09:13.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

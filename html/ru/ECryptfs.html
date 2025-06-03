@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>eCryptfs (Русский) - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -408,13 +408,13 @@
 <p>В статье описывается базовое использование <a rel="nofollow" class="external text" href="https://launchpad.net/ecryptfs">eCryptfs</a>. Статья проведёт вас через процесс установки зашифрованной домашней директории,
 в которой вы можете хранить личные/секретные данные.
 </p>
-<p>Реализация eCryptfs отличается от реализации <a href="../en/Dm-crypt.html" class="mw-redirect" title="Dm-crypt (Русский)">dm-crypt</a>, которая предоставляет <i>слой шифрования блочного устройства</i>, в то время как eCryptfs является файловой системой — <a href="https://en.wikipedia.org/wiki/Filesystem-level_encryption" class="extiw" title="wikipedia:Filesystem-level encryption">стековая криптографическая файловая система</a>. О сравнении двух методов шифрования можно прочитать в статье <a href="../ru/Data-at-rest_encryption.html#%D0%A1%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5_%D1%82%D0%B8%D0%BF%D0%BE%D0%B2_%D1%88%D0%B8%D1%84%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F" title="Data-at-rest encryption (Русский)">Data-at-rest encryption (Русский)#Сравнение типов шифрования</a>. Отличительной особенностью eCryptfs является то, что шифрование работает поверх существующей файловой системы; eCryptfs может быть смонтирован на любой существующий каталог и не требует отдельного раздела (или предварительного выделения места).
+<p>Реализация eCryptfs отличается от реализации <a href="../ru/Dm-crypt.html" title="Dm-crypt (Русский)">dm-crypt</a>, которая предоставляет <i>слой шифрования блочного устройства</i>, в то время как eCryptfs является файловой системой — <a href="https://en.wikipedia.org/wiki/Filesystem-level_encryption" class="extiw" title="wikipedia:Filesystem-level encryption">стековая криптографическая файловая система</a>. О сравнении двух методов шифрования можно прочитать в статье <a href="../ru/Data-at-rest_encryption.html#%D0%A1%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5_%D1%82%D0%B8%D0%BF%D0%BE%D0%B2_%D1%88%D0%B8%D1%84%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F" title="Data-at-rest encryption (Русский)">Data-at-rest encryption (Русский)#Сравнение типов шифрования</a>. Отличительной особенностью eCryptfs является то, что шифрование работает поверх существующей файловой системы; eCryptfs может быть смонтирован на любой существующий каталог и не требует отдельного раздела (или предварительного выделения места).
 </p>
 <meta property="mw:PageProp/toc">
 <h2>
 <span id=".D0.9E.D1.81.D0.BD.D0.BE.D0.B2.D1.8B"></span><span class="mw-headline" id="Основы">Основы</span>
 </h2>
-<p>Как уже упоминалось выше, eCryptfs не требует создавать отдельный раздел или предварительно выделять место. Вместо этого вы можете смонтировать eCryptfs поверх любого отдельного каталога для его защиты. Это включает, например, весь домашний каталог пользователя или отдельные каталоги внутри него. Все метаданные, необходимые для работы с шифрованием, хранятся в заголовках файлов, поэтому зашифрованные данные можно легко перемещать, хранить для резервного копирования и восстанавливать. Есть и другие преимущества, но есть и недостатки, например, eCryptfs не подходит для шифрования разделов целиком, что также означает, что вы не можете с его помощью защитить подкачку (но вы, конечно, можете использовать его совместно с <a href="../en/Dm-crypt/Swap_encryption.html" title="Dm-crypt/Swap encryption">dm-crypt/Swap encryption</a>). Если вы только начинаете работать с шифрованием диска, шифрование подкачки и другие моменты, на которые стоит обратить внимание, рассматриваются в разделе <a href="../ru/Data-at-rest_encryption.html#%D0%9F%D0%BE%D0%B4%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%BA%D0%B0" title="Data-at-rest encryption (Русский)">Data-at-rest encryption (Русский)#Подготовка</a>.
+<p>Как уже упоминалось выше, eCryptfs не требует создавать отдельный раздел или предварительно выделять место. Вместо этого вы можете смонтировать eCryptfs поверх любого отдельного каталога для его защиты. Это включает, например, весь домашний каталог пользователя или отдельные каталоги внутри него. Все метаданные, необходимые для работы с шифрованием, хранятся в заголовках файлов, поэтому зашифрованные данные можно легко перемещать, хранить для резервного копирования и восстанавливать. Есть и другие преимущества, но есть и недостатки, например, eCryptfs не подходит для шифрования разделов целиком, что также означает, что вы не можете с его помощью защитить подкачку (но вы, конечно, можете использовать его совместно с <a href="../ru/Dm-crypt/Swap_encryption.html" title="Dm-crypt (Русский)/Swap encryption (Русский)">dm-crypt для шифрования подкачки</a>). Если вы только начинаете работать с шифрованием диска, шифрование подкачки и другие моменты, на которые стоит обратить внимание, рассматриваются в разделе <a href="../ru/Data-at-rest_encryption.html#%D0%9F%D0%BE%D0%B4%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%BA%D0%B0" title="Data-at-rest encryption (Русский)">Data-at-rest encryption (Русский)#Подготовка</a>.
 </p>
 <p>Несколько моментов для ознакомления с eCryptfs:
 </p>
@@ -918,8 +918,8 @@ $ ln -s ~/Private/mozilla ~/.mozilla
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=ECryptfs_(%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9)&amp;oldid=823136">https://wiki.archlinux.org/index.php?title=ECryptfs_(Русский)&amp;oldid=823136</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 15 December 2024, at 08:26.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=ECryptfs_(%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9)&amp;oldid=834914">https://wiki.archlinux.org/index.php?title=ECryptfs_(Русский)&amp;oldid=834914</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 30 May 2025, at 19:31.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

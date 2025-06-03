@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>S.M.A.R.T. - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -462,13 +462,13 @@ echo "$SMARTD_MESSAGE" | mail -s "$SMARTD_FAILTYPE" "$SMARTD_ADDRESS"
 # Notify user
 wall "$SMARTD_MESSAGE"
 </pre>
-<p>If you are running a desktop environment, you might also prefer having a popup to appear on your desktop. In this case, you can use this script (replace <code><i>X_user</i></code> and <code><i>X_userid</i></code> with the user and userid running X respectively) :
+<p>If you are running a desktop environment, you might also prefer having a popup to appear on your desktop. In this case, you can use this script (replace <code><i>user</i></code> with the user):
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/usr/local/bin/smartdnotify</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">#!/bin/sh
 
-sudo -u <i>X_user</i> DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/<i>X_userid</i>/bus notify-send "S.M.A.R.T Error ($SMARTD_FAILTYPE)" "$SMARTD_MESSAGE" --icon=dialog-warning -u critical</pre>
-<p>This requires <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=libnotify">libnotify</a></span> and a compatible <a href="../en/Desktop_notifications.html" class="mw-redirect" title="Desktop notification">desktop notification</a> server.
+systemd-run --machine=<i>user</i>@.host --user notify-send "S.M.A.R.T Error ($SMARTD_FAILTYPE)" "$SMARTD_MESSAGE" --icon=dialog-warning -u critical</pre>
+<p>This requires <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=libnotify">libnotify</a></span> and a compatible <a href="../en/Desktop_notifications.html#Notification_servers" title="Desktop notifications">desktop notification server</a>.
 </p>
 <p>You can also put your custom scripts into <code>/usr/share/smartmontools/smartd_warning.d/</code>:
 </p>
@@ -477,18 +477,13 @@ sudo -u <i>X_user</i> DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/<i
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/usr/share/smartmontools/smartd_warning.d/smartdnotify</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">#!/bin/sh
 
-IFS=$'\n'
-for LINE in `w -hs`
-do
-    USER=`echo $LINE | awk '{print $1}'`
-    USER_ID=`id -u $USER`
-    DISP_ID=`echo $LINE | awk '{print $8}'`
-    sudo -u $USER DISPLAY=$DISP_ID DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$USER_ID/bus notify-send "S.M.A.R.T Error ($SMARTD_FAILTYPE)" "$SMARTD_MESSAGE" --icon=dialog-warning -u critical
+for users in $(loginctl list-users --json short | jq -r '.[].user') ; do
+	systemd-run --machine="$users"@.host --user notify-send "S.M.A.R.T Error ($SMARTD_FAILTYPE)" "$SMARTD_MESSAGE" --icon=dialog-warning -u critical
 done</pre>
-<p>This script requires <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=libnotify">libnotify</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=procps-ng">procps-ng</a></span> and a compatible desktop environment.
+<p>This script requires <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=libnotify">libnotify</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=jq">jq</a></span> and a compatible <a href="../en/Desktop_notifications.html#Notification_servers" title="Desktop notifications">desktop notification server</a>.
 </p>
 <p>
-You can execute your custom scripts with </p>
+You can execute your custom scripts (remember to make them <a href="../en/Help:Reading.html#Make_executable" class="mw-redirect" title="Executable">executable</a>) with </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/smartd.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">DEVICESCAN -m @smartdnotify</pre>
 <h4><span class="mw-headline" id="Power_management">Power management</span></h4>
@@ -626,8 +621,8 @@ Device: /dev/sdb [SAT], no ATA CHECK POWER STATUS support, ignoring -n Directive
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=S.M.A.R.T.&amp;oldid=827250">https://wiki.archlinux.org/index.php?title=S.M.A.R.T.&amp;oldid=827250</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 17 February 2025, at 09:01.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=S.M.A.R.T.&amp;oldid=831597">https://wiki.archlinux.org/index.php?title=S.M.A.R.T.&amp;oldid=831597</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 10 April 2025, at 14:07.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

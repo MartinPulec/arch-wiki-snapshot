@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Unified kernel image - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -406,7 +406,7 @@
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-cut.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is being considered for removal.</b></p>
 <div>
-<b>Reason:</b> Duplicates <a href="../en/Kernel_parameters.html#Parameter_list" title="Kernel parameters">Kernel parameters#Parameter list</a>. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Unified_kernel_image.html">Talk:Unified kernel image</a>)</div>
+<b>Reason:</b> Duplicates <a href="../en/Kernel_parameters.html#Parameter_list" title="Kernel parameters">Kernel parameters#Parameter list</a>. (Discuss in <a href="../en/Talk:Unified_kernel_image.html#About_removing_btrfs_kernel_cmdline_notices" title="Talk:Unified kernel image">Talk:Unified kernel image#About removing btrfs kernel cmdline notices</a>)</div>
 </div>
 <ul>
 <li>If your root file system is on a non-default Btrfs subvolume, make sure to set necessary mount flags in <code>rootflags</code>. For example, if your system subvolume ID is <code>256</code>, you should add <code>rootflags=subvolid=256</code> to the kernel command line. See <a href="../en/Btrfs.html#Mounting_subvolume_as_root" title="Btrfs">Btrfs#Mounting subvolume as root</a>.</li>
@@ -456,6 +456,8 @@ default_options="--splash=/usr/share/systemd/bootctl/splash-arch.bmp"
 #fallback_image="/boot/initramfs-linux-fallback.img"
 fallback_uki="<i>esp</i>/EFI/Linux/arch-linux-fallback.efi"
 fallback_options="-S autodetect"</pre>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning:</strong> Placing the kernel (<code>ALL_kver</code>) in an unencrypted file system (e.g. in <code>/boot/</code> if the <a href="../en/EFI_system_partition.html" title="EFI system partition">EFI system partition</a> is mounted at <code>/boot</code>), exposes it to potential manipulation from bootable drives or other operating systems when dual-booting.</div>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> 
 <ul>
@@ -506,7 +508,7 @@ uki_generator=mkinitcpio</pre>
 <p>See <a href="../en/Dracut.html#Unified_kernel_image" title="Dracut">dracut#Unified kernel image</a> and <a href="../en/Dracut.html#Generate_a_new_initramfs_on_kernel_upgrade" title="Dracut">dracut#Generate a new initramfs on kernel upgrade</a>.
 </p>
 <h3><span class="mw-headline" id="ukify">ukify</span></h3>
-<p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=systemd-ukify">systemd-ukify</a></span> package. To use the automatic signing functions, additionally install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sbsigntools">sbsigntools</a></span>. Since <i>ukify</i> cannot generate an initramfs on its own, if required, it must be generated using, e.g., <a href="../en/Dracut.html" title="Dracut">dracut</a>, <a href="../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a> or <a href="../en/Booster.html" title="Booster">booster</a>.
+<p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=systemd-ukify">systemd-ukify</a></span> package. Since <i>ukify</i> cannot generate an initramfs on its own, if required, it must be generated using, e.g., <a href="../en/Dracut.html" title="Dracut">dracut</a>, <a href="../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a> or <a href="../en/Booster.html" title="Booster">booster</a>.
 </p>
 <p>A minimal working example can look something like this:
 </p>
@@ -597,8 +599,16 @@ done</pre>
 <p>Replace <code><i>/path/to/</i>db.key</code> and <code><i>/path/to/</i>db.crt</code> with the paths to the key pair you want to use for signing the image.
 </p>
 <h3><span class="mw-headline" id="ukify_2">ukify</span></h3>
-<p>Install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sbsigntools">sbsigntools</a></span> and specify <code>--secureboot-private-key</code> and <code>--secureboot-certificate</code> in <code>/etc/kernel/uki.conf</code>.
+<p>To automatically sign UKIs using <span class="plainlinks archwiki-template-man" title="$ man 1 systemd-sbsign"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-sbsign.1">systemd-sbsign(1)</a></span>, set the following in your configuration file:
 </p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/kernel/uki.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[UKI]
+SecureBootSigningTool=systemd-sbsign
+SignKernel=true
+SecureBootPrivateKey=<i>/etc/kernel/secure-boot-private-key.pem</i>
+SecureBootCertificate=<i>/etc/kernel/secure-boot-certificate.pem</i></pre>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> Signing with <span class="plainlinks archwiki-template-man" title="$ man 1 systemd-sbsign"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-sbsign.1">systemd-sbsign(1)</a></span> currently needs <code>SignKernel=true</code> to be set. See <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/35594#issuecomment-2800809523">[3]</a>.</div>
 <h2><span class="mw-headline" id="Booting">Booting</span></h2>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> When <a href="../en/Unified_Extensible_Firmware_Interface/Secure_Boot.html" class="mw-redirect" title="Secure Boot">Secure Boot</a> is active, unified kernel images with an embedded <code>.cmdline</code> ignore all command line options passed to them (either using a boot entry or interactively). When Secure Boot is not active, the options passed via the command line override the embedded <code>.cmdline</code>.</div>
@@ -673,8 +683,8 @@ done</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Unified_kernel_image&amp;oldid=828655">https://wiki.archlinux.org/index.php?title=Unified_kernel_image&amp;oldid=828655</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 11 March 2025, at 12:57.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Unified_kernel_image&amp;oldid=833929">https://wiki.archlinux.org/index.php?title=Unified_kernel_image&amp;oldid=833929</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 14 May 2025, at 14:55.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

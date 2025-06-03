@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>OpenSMTPD - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -108,17 +108,28 @@
 			<ul id="toc-Relay_only-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-	</ul>
-		</li>
-		<li id="toc-Simple_OpenSMTPD/mbox_configuration" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Simple_OpenSMTPD/mbox_configuration">
+		<li id="toc-/var/spool/mail/" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#/var/spool/mail/">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">2.2</span>
-					<span>Simple OpenSMTPD/mbox configuration</span>
+					<span class="vector-toc-numb">2.1.4</span>
+					<span>/var/spool/mail/</span>
 				</div>
 			</a>
 			
-			<ul id="toc-Simple_OpenSMTPD/mbox_configuration-sublist" class="vector-toc-list">
+			<ul id="toc-/var/spool/mail/-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+		</li>
+		<li id="toc-Simple_OpenSMTPD/maildir_configuration" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Simple_OpenSMTPD/maildir_configuration">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">2.2</span>
+					<span>Simple OpenSMTPD/maildir configuration</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Simple_OpenSMTPD/maildir_configuration-sublist" class="vector-toc-list">
 				<li id="toc-TLS" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#TLS">
 				<div class="vector-toc-text">
@@ -165,16 +176,49 @@
 		</li>
 	</ul>
 		</li>
-		<li id="toc-Test_the_configuration" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Test_the_configuration">
+		<li id="toc-DKIM" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#DKIM">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">2.3</span>
-					<span>Test the configuration</span>
+					<span>DKIM</span>
 				</div>
 			</a>
 			
-			<ul id="toc-Test_the_configuration-sublist" class="vector-toc-list">
+			<ul id="toc-DKIM-sublist" class="vector-toc-list">
+				<li id="toc-Create_private_keys_for_DKIM" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Create_private_keys_for_DKIM">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">2.3.1</span>
+					<span>Create private keys for DKIM</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Create_private_keys_for_DKIM-sublist" class="vector-toc-list">
 			</ul>
+		</li>
+		<li id="toc-Prepare_DNS_records" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Prepare_DNS_records">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">2.3.2</span>
+					<span>Prepare DNS records</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Prepare_DNS_records-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Configure_filter-dkimsign" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Configure_filter-dkimsign">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">2.3.3</span>
+					<span>Configure filter-dkimsign</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Configure_filter-dkimsign-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
 		</li>
 	</ul>
 	</li>
@@ -358,61 +402,70 @@
 <p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=opensmtpd">opensmtpd</a></span> package.
 </p>
 <h2><span class="mw-headline" id="Configuration">Configuration</span></h2>
-<p>OpenSMTPD is configured in <code>/etc/smtpd/</code>.
+<p>OpenSMTPD is configured in <code>/etc/smtpd/</code>. The main configuration file is <code>/etc/smtpd/smtpd.conf</code>; see <span class="plainlinks archwiki-template-man" title="$ man 5 smtpd.conf"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/smtpd.conf.5">smtpd.conf(5)</a></span> for its documentation.
 </p>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> Starting with OpenSMTPD <a rel="nofollow" class="external text" href="https://www.opensmtpd.org/announces/release-6.4.0.txt">version 6.4.0</a> the configuration file syntax has been completely reworked, breaking compatibility with previous configuration files. For instruction on migrating the configuration to the new syntax see <a rel="nofollow" class="external free" href="https://poolp.org/posts/2018-05-21/switching-to-opensmtpd-new-config/">https://poolp.org/posts/2018-05-21/switching-to-opensmtpd-new-config/</a>.</div>
+<p>Make sure to test the configuration using:
+</p>
+<pre># smtpd -n
+</pre>
+<p>If you get a message that says <code>configuration OK</code>—you are ready to <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start">start</a> or <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Restart">restart</a> <code>smtpd.service</code>. If not, work on any configuration errors and try again.
+</p>
 <h3><span class="mw-headline" id="Local_mail">Local mail</span></h3>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:View-refresh-red.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is out of date.</b></p>
-<div>
-<b>Reason:</b> OpenSMTPD 6.6.3p1 changed the default configuration to use <a href="https://en.wikipedia.org/wiki/Maildir" class="extiw" title="wikipedia:Maildir">Maildir</a> instead of <a href="https://en.wikipedia.org/wiki/Mbox" class="extiw" title="wikipedia:Mbox">mbox</a>. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:OpenSMTPD.html">Talk:OpenSMTPD</a>)</div>
-</div>
 <p>To have local mail working, for example for <a href="../en/Cron.html" title="Cron">cron</a> mails, it is enough to simply <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start">start</a> <code>smtpd.service</code>.
 </p>
-<p>The default configuration of OpenSMTPD is to do local retrieval and delivery of mail, and also relay outgoing mail. See <span class="plainlinks archwiki-template-man" title="$ man 5 smtpd.conf"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/smtpd.conf.5">smtpd.conf(5)</a></span>.
-</p>
-<p>To have your local mails go to the <code>/var/spool/mail/<i>username</i></code> i.e the path where most email clients expect the mails, use <code>action "local" maildir "/var/spool/mail/%{rcpt.user}" alias &lt;aliases&gt;</code> instead of <code>action "local" mbox alias &lt;aliases&gt;</code>
+<p>The default configuration of OpenSMTPD is to do local retrieval and delivery of mail to <a href="https://en.wikipedia.org/wiki/Maildir" class="extiw" title="wikipedia:Maildir">Maildir</a>, and also relay outgoing mail. See <span class="plainlinks archwiki-template-man" title="$ man 5 smtpd.conf"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/smtpd.conf.5">smtpd.conf(5)</a></span>.
 </p>
 <h4><span class="mw-headline" id="Local_mail_only">Local mail only</span></h4>
 <p>To do only local mail, the following is enough:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/smtpd/smtpd.conf</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">listen on lo
-action "local" mbox alias &lt;aliases&gt;
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">listen on localhost
+action "local" maildir alias &lt;aliases&gt;
 match for local action "local"
 </pre>
 <h4><span class="mw-headline" id="Hybrid_:_local_mail_and_relay">Hybrid : local mail and relay</span></h4>
 <p>These two lines in <code>/etc/smtpd/smtpd.conf</code> :
 </p>
-<pre>action "local" mbox alias &lt;aliases&gt;
-action "relay" relay host "smtp://smtp.foo.bar" mail-from "@foo.bar"
+<pre>action "local" maildir alias &lt;aliases&gt;
+action "relay" relay host "smtps://smtp.example.net" mail-from "@example.net"
 match for local action "local"
 match for any action "relay"
 </pre>
-<p>configure OpenSMTPD to :
+<p>configure OpenSMTPD to:
 </p>
-<ul><li>send local email <i>locally</i>, without going through a relay (useful for cron &amp; at mail notifications)</li></ul>
-<ul><li>use a relay to send a mail outside of localhost</li></ul>
-<p>Simply replace <i>smtp.foo.bar</i> by your ISP mail server, or another server at
-your convenience.
+<ul>
+<li>send local email <i>locally</i>, without going through a relay (useful for cron &amp; at mail notifications)</li>
+<li>use a relay to send a mail outside of localhost</li>
+</ul>
+<p>Simply replace <code>smtp.example.net</code> by your ISP mail server, or another server at your convenience.
 </p>
 <h4><span class="mw-headline" id="Relay_only">Relay only</span></h4>
 <p>To send all local emails through a relay invoke <a href="../en/Procmail.html" title="Procmail">procmail</a>:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/smtpd/smtpd.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">action "local" mda "procmail -f -" virtual &lt;aliases&gt;
-action "relay" relay host "smtps://label@smtp.foo.bar" auth &lt;secrets&gt; mail-from "@foo.bar"
+action "relay" relay host "smtps://label@smtp.example.net" auth &lt;secrets&gt; mail-from "@example.net"
 match for local action "local"
 match for any action "relay"
 </pre>
-<p>The aliases option is used for the local user mapping, for a simplified mapping you can use virtual aliases with a catch all: 
+<p>The aliases option is used for the local user mapping, for a simplified mapping you can use virtual aliases with a catch all:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/smtpd/aliases</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">@ foo@bar
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">@ user@example.net
+</pre>
+<h4>
+<span id=".2Fvar.2Fspool.2Fmail.2F"></span><span class="mw-headline" id="/var/spool/mail/">/var/spool/mail/</span>
+</h4>
+<p><a rel="nofollow" class="external text" href="http://mid.mail-archive.com/0d8e1cf973e52cb9e0b27372b9f96737%40poolp.org">OpenSMTPD 6.6.3p1</a> changed the default local mail configuration to use <a href="https://en.wikipedia.org/wiki/Maildir" class="extiw" title="wikipedia:Maildir">maildir</a> in <code>~/Maildir/</code> instead of <code>mbox</code> in <code>/var/spool/mail/<i>username</i></code> to avoid security issues.
+</p>
+<p>To have your local mails go to the <code>/var/spool/mail/<i>username</i></code> instead, replace <code>action "local" maildir alias &lt;aliases&gt;</code> with <code>action "local" maildir <b>"/var/spool/mail/%{user.username}"</b> alias &lt;aliases&gt;</code> in <code>/etc/smtpd/smtpd.conf</code>.
+</p>
+<p>Alternatively, set the <code>MAIL</code> <a href="../en/Environment_variables.html" class="mw-redirect" title="Environment variable">environment variable</a>, that is understood by most email clients, to point to <code>~/Maildir/</code>. E.g.:
+</p>
+<pre>export MAIL="${HOME}/Maildir/"
 </pre>
 <h3>
-<span id="Simple_OpenSMTPD.2Fmbox_configuration"></span><span class="mw-headline" id="Simple_OpenSMTPD/mbox_configuration">Simple OpenSMTPD/mbox configuration</span>
+<span id="Simple_OpenSMTPD.2Fmaildir_configuration"></span><span class="mw-headline" id="Simple_OpenSMTPD/maildir_configuration">Simple OpenSMTPD/maildir configuration</span>
 </h3>
 <h4><span class="mw-headline" id="TLS">TLS</span></h4>
 <p>To obtain a certificate, see <a href="../en/OpenSSL.html#Usage" title="OpenSSL">OpenSSL#Usage</a>.
@@ -425,59 +478,108 @@ match for any action "relay"
 # useradd -m shirley
 </pre>
 <ul>
-<li>OpenSMTPD will deliver messages to the user account's mbox file at <code>/var/spool/mail/<i>&lt;username&gt;</i></code>
+<li>OpenSMTPD will deliver messages to the user account's maildir in <code>/var/spool/mail/<i>username</i>/</code>
 </li>
-<li>Multiple SMTP email addresses can be routed to a given mbox if desired.</li>
+<li>Multiple SMTP email addresses can be routed to a given maildir if desired.</li>
 </ul>
 <h4><span class="mw-headline" id="Craft_a_simple_smtpd.conf_setup">Craft a simple smtpd.conf setup</span></h4>
-<ul><li>A working configuration can be had in as little as nine lines!</li></ul>
+<p>A working configuration can be had in as little as nine lines:
+</p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/smtpd/smtpd.conf</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">pki mx.domain.tld cert         "/etc/smtpd/tls/smtpd.crt"
-pki mx.domain.tld key          "/etc/smtpd/tls/smtpd.key"
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">pki mx.domain.example cert         "/etc/smtpd/tls/smtpd.crt"
+pki mx.domain.example key          "/etc/smtpd/tls/smtpd.key"
 
-table creds                    "/etc/smtpd/creds"
-table vdoms                    "/etc/smtpd/vdoms"
-table vusers                   "/etc/smtpd/vusers"
+table creds file:/etc/smtpd/creds
+table vdoms file:/etc/smtpd/vdoms
+table vusers file:/etc/smtpd/vusers
 
-listen on eth0 tls pki mx.domain.tld
-listen on eth0 port 465 smtps pki mx.domain.tld auth &lt;creds&gt;
-listen on eth0 port 587 tls-require pki mx.domain.tld auth &lt;creds&gt;
+listen on eth0 tls pki mx.domain.example
+listen on eth0 port 465 smtps pki mx.domain.example auth &lt;creds&gt;
+listen on eth0 port 587 tls-require pki mx.domain.example auth &lt;creds&gt;
 
-action receive	mbox virtual &lt;vusers&gt;
-action send relay
+action "receive" maildir "/var/spool/mail/%{user.username}" virtual &lt;vusers&gt;
+action "send" relay
 
-match from any for domain &lt;vdoms&gt; action receive
-match for any action send
+match from any for domain &lt;vdoms&gt; action "receive"
+match for any action "send"
 </pre>
 <h4><span class="mw-headline" id="Create_tables">Create tables</span></h4>
-<ul><li>For the domain table file; simply put one domain per line</li></ul>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/smtpd/vdoms</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">personaldomain.org
-businessname.com
-</pre>
-<ul><li>For the user table file; list one inbound SMTP email address per line and then map it to an mbox user account name, SMTP email address, or any combination of the two on the right, separated by commas.</li></ul>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/smtpd/vusers</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">roger@personaldomain.org          roger
-newsletters@personaldomain.org    roger,roger.rulz@gmail.com
-
-roger@businessname.com            roger
-shirley@businessname.com          shirley
-info@businessname.com             roger,shirley
-contact@businessname.com          info@businessname.com
-</pre>
-<ul><li>For the creds table file; put the user name in the 1st column and the password hash in the 2nd column</li></ul>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/smtpd/creds</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">roger                              &lt;password hash created using 'smtpctl encrypt' command&gt;
-shirley                            &lt;password hash created using 'smtpctl encrypt' command&gt;
-</pre>
-<h3><span class="mw-headline" id="Test_the_configuration">Test the configuration</span></h3>
-<pre># smtpd -n
-</pre>
-<p>If you get a message that says 'configuration OK' - you are ready to <a href="../en/Systemd.html" title="Systemd">rock and roll</a>. If not, work on any configuration errors and try again.
+<p>For the domain table file; simply put one domain per line:
 </p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/smtpd/vdoms</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">example.org
+example.com
+</pre>
+<p>For the user table file; list one inbound SMTP email address per line and then map it to an maildir user account name, SMTP email address, or any combination of the two on the right, separated by commas.
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/smtpd/vusers</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">roger@example.org          roger
+newsletters@example.org    roger,roger.rulz@mail.example
+
+roger@example.com          roger
+shirley@example.com        shirley
+info@example.com           roger,shirley
+contact@example.com        info@example.com
+</pre>
+<p>For the creds table file; put the user name in the 1st column and the password hash in the 2nd column
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/smtpd/creds</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">roger                              <i>password_hash_created_using_'smtpctl encrypt'_command</i>
+shirley                            <i>password_hash_created_using_'smtpctl encrypt'_command</i>
+</pre>
+<h3><span class="mw-headline" id="DKIM">DKIM</span></h3>
+<p>To sign messages with <a href="https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail" class="extiw" title="wikipedia:DomainKeys Identified Mail">DomainKeys Identified Mail</a> (DKIM), install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=opensmtpd-filter-dkimsign">opensmtpd-filter-dkimsign</a></span>.
+</p>
+<p><span class="plainlinks archwiki-template-man" title="$ man 8 filter-dkimsign"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/filter-dkimsign.8">filter-dkimsign(8)</a></span> supports RSA and Ed25519 keys. While <a href="https://tools.ietf.org/html/rfc8463" class="extiw" title="rfc:8463">RFC 8463</a> requires for verifiers to support Ed25519, not all of them do, so it may be best to use both Ed25519 and RSA.
+</p>
+<h4><span class="mw-headline" id="Create_private_keys_for_DKIM">Create private keys for DKIM</span></h4>
+<p>Create a directory for storing the keys:
+</p>
+<pre># install -dm750 -g smtpd /etc/smtpd/dkim
+</pre>
+<p>Create private keys using <a href="../en/OpenSSL.html" title="OpenSSL">OpenSSL</a>.
+</p>
+<p>Ed25519:
+</p>
+<pre># openssl genpkey -algorithm ed25519 -out /etc/smtpd/dkim/dkim_ed25519.key
+</pre>
+<p><a href="https://tools.ietf.org/html/rfc8301" class="extiw" title="rfc:8301">RFC 8301</a> mandates support for RSA keys ranging from 1024 bits to 4096 bits, so create a 4096 bit RSA key:
+</p>
+<pre># openssl genrsa -out /etc/smtpd/dkim/dkim_rsa4096.key 4096
+</pre>
+<p>Change the <a href="../en/File_permissions_and_attributes.html" class="mw-redirect" title="File permissions">file permissions</a> so that <i>filter-dkimsign</i>, which runs with the <code>smtpd</code> user and group permissions, can access it:
+</p>
+<pre># chown root:smtpd /etc/smtpd/dkim/dkim_*.key
+# chmod 640 /etc/smtpd/dkim/dkim_*.key
+</pre>
+<h4><span class="mw-headline" id="Prepare_DNS_records">Prepare DNS records</span></h4>
+<p>DKIM uses a TXT record with the domain name <code><i>selector</i>._domainkey.<i>domainname</i></code>, e.g. <code>selector1._domainkey.mydomain.example</code>. See <a href="https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail#Verification" class="extiw" title="wikipedia:DomainKeys Identified Mail">Wikipedia:DomainKeys Identified Mail#Verification</a> for more details. The following example will use <code>selector1._domainkey.domain.example</code> for the Ed25519 key and <code>selector2._domainkey.domain.example</code> for RSA.
+</p>
+<p>Use the following commands to get DNS record values from the public keys<a rel="nofollow" class="external autonumber" href="https://salsa.debian.org/debian/opensmtpd-filter-dkimsign/-/blob/debian/sid/debian/README.Debian">[1]</a>:
+</p>
+<pre># openssl pkey -in /etc/smtpd/dkim/dkim_ed25519.key -pubout | openssl asn1parse -offset 12 -noout -out /dev/stdout | openssl base64 | sed '1s/^/v=DKIM1;h=sha256;k=ed25519;p=/'
+# openssl pkey -in /etc/smtpd/dkim/dkim_rsa4096.key -pubout | sed '1s/.*/v=DKIM1;h=sha256;k=rsa;p=/;:nl;${s/-----.*//;q;};N;s/\n//g;b nl;'
+</pre>
+<p>Update you DNS records using these values.
+</p>
+<h4><span class="mw-headline" id="Configure_filter-dkimsign">Configure filter-dkimsign</span></h4>
+<p>Define the filters in <code>/etc/smtpd/smtpd.conf</code> and add the filter chain to all <code>listen</code> directives. Replace <code>mydomain.example</code> with your domain name and <code>selector1</code> and <code>selector2</code> with the <code>_domainkey</code> selectors matching with your DNS records.
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/smtpd/smtpd.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">...
+filter "dkimsign_ed25519" proc-exec "filter-dkimsign -t -a ed25519-sha256 -d mydomain.example -s selector1 -k /etc/smtpd/dkim/dkim_ed25519.key"
+filter "dkimsign_rsa4096" proc-exec "filter-dkimsign -t -a rsa-sha256 -d mydomain.example -s selector2 -k /etc/smtpd/dkim/dkim_rsa4096.key"
+filter "dkimsign" chain { "dkimsign_ed25519", "dkimsign_rsa4096" }
+...
+listen on mydomain.example port 465 smtps <b>filter "dkimsign"</b>
+listen on socket <b>filter "dkimsign"</b>
+...
+</pre>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong> <code>listen on socket</code> is enabled by default and typically does not need to be added manually, but in this case it needs to be added so that the filter can be applied to it.</div>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
 <h3><span class="mw-headline" id="Console_debugging">Console debugging</span></h3>
-<p>If you are having problems with mail delivery, try <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Stop">stopping</a> the <code>smtpd.service</code> and launching the daemon manually with the 'do not daemonize' and 'verbose output' options. Then watch the console for errors.
+<p>If you are having problems with mail delivery, try <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Stop">stopping</a> the <code>smtpd.service</code> and launching the daemon manually with the "do not daemonize" and "verbose output" options. Then watch the console for errors.
 </p>
 <pre># smtpd -dv
 </pre>
@@ -486,30 +588,30 @@ shirley                            &lt;password hash created using 'smtpctl encr
 </p>
 <pre># smtpd -dv -T smtp
 </pre>
-<p>Alternately, use the <code>smtpctl trace <i>&lt;subsystem&gt;</i></code> command if the daemon is already running. The trace output will appear in the console output above as well as the <a href="../en/Systemd/Journal.html" class="mw-redirect" title="Journalctl">journalctl</a> output for the smtpd.service. For example:
+<p>Alternately, use the <code>smtpctl trace <i>subsystem</i></code> command if the daemon is already running. The trace output will appear in the console output above as well as the <a href="../en/Systemd/Journal.html" class="mw-redirect" title="Journalctl">journalctl</a> output for the smtpd.service. For example:
 </p>
 <pre># smtpctl trace expand &amp;&amp; smtpctl trace lookup
 </pre>
-<p>...will trace both aliases/virtual/forward expansion and user/credentials lookups
+<p>...will trace both aliases/virtual/forward expansion and user/credentials lookups.
 </p>
 <h3><span class="mw-headline" id="Manual_Submission_port_authentication">Manual Submission port authentication</span></h3>
-<ul><li>Encode username and password in base64
-<dl><dd><pre>$ printf '\0%s\0%s' 'username' 'password' | base64</pre></dd></dl>
-</li></ul>
-<ul><li>Connect to submission port using <code>openssl s_client</code> command, using one of the following commands:
+<p>Encode username and password in base64
+</p>
+<pre>$ printf '\0%s\0%s' 'username' 'password' | base64
+</pre>
+<p>Connect to submission port using <code>openssl s_client</code> command, using one of the following commands:
+</p>
 <ul>
-<li>To connect via port 465 (implicit TLS):
-<dl><dd><pre>$ openssl s_client -host mx.domain.tld -port 465</pre></dd></dl>
+<li>To connect via port 465 (implicit TLS): <pre>$ openssl s_client -host mx.domain.example -port 465</pre>
 </li>
-<li>To connect via port 587 (STARTTLS):
-<dl><dd><pre>$ openssl s_client -host mx.domain.tld -port 587 -starttls smtp</pre></dd></dl>
+<li>To connect via port 587 (STARTTLS): <pre>$ openssl s_client -host mx.domain.example -port 587 -starttls smtp</pre>
 </li>
 </ul>
-</li></ul>
-<ul><li>enter <code>EHLO <i>myhostname</i></code> followed by <code>AUTH PLAIN</code>. Paste in the base64 string from step above after <code>334</code> response.</li></ul>
+<p>Enter <code>EHLO <i>myhostname</i></code> followed by <code>AUTH PLAIN</code>. Paste in the base64 string from step above after <code>334</code> response:
+</p>
 <pre>250 HELP
-EHLO test.domain.tld
-250-mx.hostname.tld Hello test.domain.tld [5.5.5.5], pleased to meet you
+EHLO test.domain.example
+250-mx.hostname.example Hello test.domain.example [127.0.0.1], pleased to meet you
 250-8BITMIME
 250-ENHANCEDSTATUSCODES
 250-SIZE 36700160
@@ -544,16 +646,12 @@ session required pam_unix.so
 </ul>
 </div>
 </div>
-					<div id="catlinks" class="catlinks" data-mw="interface">
-<div id="mw-normal-catlinks" class="mw-normal-catlinks">
+					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Categories</a>: <ul>
 <li><a href="../en/Category:Mail_server.html" title="Category:Mail server">Mail server</a></li>
 <li><a href="../en/Category:OpenBSD.html" title="Category:OpenBSD">OpenBSD</a></li>
 </ul>
-</div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Out_of_date.html" title="Category:Pages or sections flagged with Template:Out of date">Pages or sections flagged with Template:Out of date</a></li></ul>
-</div>
-</div>
+</div></div>
 				</div>
 			</main>
 			
@@ -562,8 +660,8 @@ session required pam_unix.so
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=OpenSMTPD&amp;oldid=818967">https://wiki.archlinux.org/index.php?title=OpenSMTPD&amp;oldid=818967</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 14 October 2024, at 08:35.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=OpenSMTPD&amp;oldid=834436">https://wiki.archlinux.org/index.php?title=OpenSMTPD&amp;oldid=834436</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 24 May 2025, at 08:29.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

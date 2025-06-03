@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Domain name resolution - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -175,15 +175,15 @@
 			</button>
 		
 		<ul id="toc-Privacy_and_security-sublist" class="vector-toc-list">
-			<li id="toc-Encrypted_Client_Hello" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Encrypted_Client_Hello">
+			<li id="toc-TLS_Server_Name_Indication" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#TLS_Server_Name_Indication">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">5.1</span>
-					<span>Encrypted Client Hello</span>
+					<span>TLS Server Name Indication</span>
 				</div>
 			</a>
 			
-			<ul id="toc-Encrypted_Client_Hello-sublist" class="vector-toc-list">
+			<ul id="toc-TLS_Server_Name_Indication-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 		<li id="toc-Application-level_DNS" class="vector-toc-list-item vector-toc-level-2">
@@ -421,7 +421,7 @@ This article explains how to configure domain name resolution and resolve domain
 <pre>$ getent ahosts <i>domain_name</i>
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> While most programs resolve domain names using NSS, some may read <code>/etc/resolv.conf</code> and/or <code>/etc/hosts</code> directly. See <a href="../en/Network_configuration.html#localhost_is_resolved_over_the_network" title="Network configuration">Network configuration#localhost is resolved over the network</a>.</div>
+<strong>Note:</strong> While most programs resolve domain names using NSS, some may read <code>/etc/resolv.conf</code> and/or <code>/etc/hosts</code> directly. See <a href="../en/Network_configuration.html#local_hostname_is_resolved_over_the_network" title="Network configuration">Network configuration#local hostname is resolved over the network</a>.</div>
 <h2><span class="mw-headline" id="Glibc_resolver">Glibc resolver</span></h2>
 <p>The glibc resolver reads <code>/etc/resolv.conf</code> for every resolution to determine the nameservers and options to use. 
 </p>
@@ -477,9 +477,9 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 <p>That way you can refer to local hosts such as <code>mainmachine1.example.org</code> as simply <code>mainmachine1</code> when using the <i>ssh</i> command, but the <a href="#Lookup_utilities">drill</a> command still requires the fully qualified domain names in order to perform lookups.
 </p>
 <h2><span class="mw-headline" id="Lookup_utilities">Lookup utilities</span></h2>
-<p>To query specific DNS servers and DNS/<a href="../en/DNSSEC.html" title="DNSSEC">DNSSEC</a> records you can use dedicated DNS lookup utilities. These tools implement DNS themselves and do not use <a href="#Name_Service_Switch">NSS</a>.
+<p>To query specific DNS servers and DNS/<a href="../en/DNSSEC.html" title="DNSSEC">DNSSEC</a> records you can use dedicated DNS lookup utilities or those shipped with DNS servers. These tools implement DNS themselves and do not use <a href="#Name_Service_Switch">NSS</a>.
 </p>
-<p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=ldns">ldns</a></span> provides <span class="plainlinks archwiki-template-man" title="$ man 1 drill"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/drill.1">drill(1)</a></span>, which is a tool designed to retrieve information out of the DNS.
+<p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=ldns">ldns</a></span> provides <span class="plainlinks archwiki-template-man" title="$ man 1 drill"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/drill.1">drill(1)</a></span>, which is a tool designed to retrieve information out of the DNS. It only supports unencrypted DNS.
 </p>
 <p>For example, to query a specific nameserver with <i>drill</i> for the TXT records of a domain:
 </p>
@@ -487,26 +487,29 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 </pre>
 <p>Unless a DNS server is specified, <i>drill</i> will use the nameservers defined in <code>/etc/resolv.conf</code>.
 </p>
-<div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> Some DNS servers ship with their own DNS lookup utilities. E.g.
+<p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/dnslookup/">dnslookup</a></span><sup><small>AUR</small></sup> provides <i>dnslookup</i> which supports all known DNS protocols.
+</p>
+<p>Some DNS server packages ship with DNS lookup utilities that can be used without running the DNS server:
+</p>
 <ul>
 <li>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=knot">knot</a></span> provides <span class="plainlinks archwiki-template-man" title="$ man 1 khost"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/khost.1">khost(1)</a></span> and <span class="plainlinks archwiki-template-man" title="$ man 1 kdig"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/kdig.1">kdig(1)</a></span>.</li>
 <li>
-<a href="../en/Unbound.html" title="Unbound">Unbound</a> has <span class="plainlinks archwiki-template-man" title="$ man 1 unbound-host"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/unbound-host.1">unbound-host(1)</a></span>.</li>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=unbound">unbound</a></span> provides <span class="plainlinks archwiki-template-man" title="$ man 1 unbound-host"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/unbound-host.1">unbound-host(1)</a></span>.</li>
 <li>
-<a href="../en/BIND.html" title="BIND">BIND</a> has <span class="plainlinks archwiki-template-man" title="$ man 1 dig"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/dig.1">dig(1)</a></span>, <span class="plainlinks archwiki-template-man" title="$ man 1 host"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/host.1">host(1)</a></span>, <span class="plainlinks archwiki-template-man" title="$ man 1 nslookup"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/nslookup.1">nslookup(1)</a></span> and a bunch of <code>dnssec-</code> tools.</li>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=bind">bind</a></span> provides <span class="plainlinks archwiki-template-man" title="$ man 1 dig"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/dig.1">dig(1)</a></span>, <span class="plainlinks archwiki-template-man" title="$ man 1 host"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/host.1">host(1)</a></span>, <span class="plainlinks archwiki-template-man" title="$ man 1 nslookup"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/nslookup.1">nslookup(1)</a></span> and a bunch of <code>dnssec-</code> tools.</li>
 <li>
-<a href="../en/Systemd-resolved.html" title="Systemd-resolved">systemd-resolved</a> has <span class="plainlinks archwiki-template-man" title="$ man 1 resolvectl"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/resolvectl.1">resolvectl(1)</a></span>, which provides a <code>query</code> sub-command for DNS lookup.</li>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=powerdns">powerdns</a></span> provides <span class="plainlinks archwiki-template-man" title="$ man 1 sdig"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/sdig.1">sdig(1)</a></span>.</li>
 </ul>
-</div>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong> <a href="../en/Systemd-resolved.html" title="Systemd-resolved">systemd-resolved</a> has <span class="plainlinks archwiki-template-man" title="$ man 1 resolvectl"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/resolvectl.1">resolvectl(1)</a></span>, which provides a <code>query</code> sub-command for DNS lookup. It can only be used with <i>systemd-resolved</i>.</div>
 <h2><span class="mw-headline" id="Resolver_performance">Resolver performance</span></h2>
 <p>The Glibc resolver does not cache queries. To implement local caching, use <a href="../en/Systemd-resolved.html" title="Systemd-resolved">systemd-resolved</a> or set up a local caching <a href="#DNS_servers">DNS server</a> and use it as the name server by setting <code>127.0.0.1</code> and <code>::1</code> as the name servers in <code>/etc/resolv.conf</code> or in <code>/etc/resolvconf.conf</code> if using <a href="../en/Openresolv.html" title="Openresolv">openresolv</a>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> 
 <ul>
-<li>The <i>drill</i> or <i>dig</i> <a href="#Lookup_utilities">lookup utilities</a> report the query time.</li>
+<li>The <i>drill</i>, <i>dig</i> and <i>kdig</i> <a href="#Lookup_utilities">lookup utilities</a> report the query time.</li>
 <li>A router usually sets its own caching resolver as the network's DNS server thus providing DNS cache for the whole network.</li>
 <li>If it takes too long to switch to the next DNS server you can try <a href="#Limit_lookup_time">decreasing the timeout</a>.</li>
 </ul>
@@ -514,7 +517,7 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 <h2><span class="mw-headline" id="Privacy_and_security">Privacy and security</span></h2>
 <p>The <a href="https://en.wikipedia.org/wiki/Domain_Name_System#Conventional:_DNS_over_UDP_and_TCP_ports_53_.28Do53.29" class="extiw" title="wikipedia:Domain Name System">DNS protocol</a> (Do53) is unencrypted and does not account for confidentiality, integrity or authentication, so if you use an untrusted network or a malicious ISP, your DNS queries can be eavesdropped and the responses <a href="https://en.wikipedia.org/wiki/Man-in-the-middle_attack" class="extiw" title="wikipedia:Man-in-the-middle attack">manipulated</a>. Furthermore, DNS servers can conduct <a href="https://en.wikipedia.org/wiki/DNS_hijacking" class="extiw" title="wikipedia:DNS hijacking">DNS hijacking</a>.
 </p>
-<p>You need to trust your DNS server to treat your queries confidentially. DNS servers are provided by ISPs and <a href="#Third-party_DNS_services">third-parties</a>. Alternatively you can run your own <a href="#DNS_servers">recursive name server</a> (a.k.a recursive resolver, a.k.a DNS recursor), which however takes more effort. Mind that the communication between recursive resolvers and authoritative servers is not encrypted. If you use a <a href="../en/Network_configuration.html#Network_managers" class="mw-redirect" title="DHCP">DHCP</a> client in untrusted networks, be sure to set static name servers to avoid using and being subject to arbitrary DNS servers, or alternatively, use a <a href="../en/Category:Virtual_Private_Network.html" class="mw-redirect" title="VPN">VPN</a> to connect to a secure network and use its DNS servers. To secure your communication with a remote DNS server you can use an encrypted protocol, provided that both the upstream server and your <a href="#DNS_servers">local resolver</a> support the protocol. Common encrypted DNS protocols are:
+<p>You need to trust your DNS server to treat your queries confidentially. DNS servers are provided by ISPs and <a href="#Third-party_DNS_services">third-parties</a>. Alternatively you can run your own <a href="#DNS_servers">recursive name server</a> (a.k.a recursive resolver, a.k.a DNS recursor), which however takes more effort. Mind that the communication between recursive resolvers and root servers<a rel="nofollow" class="external autonumber" href="https://root-servers.org/media/news/Statement_on_DNS_Encryption.pdf">[2]</a> or authoritative servers is not encrypted. If you use a <a href="../en/Network_configuration.html#Network_managers" class="mw-redirect" title="DHCP">DHCP</a> client in untrusted networks, be sure to set static name servers to avoid using and being subject to arbitrary DNS servers, or alternatively, use a <a href="../en/Category:Virtual_Private_Network.html" class="mw-redirect" title="VPN">VPN</a> to connect to a secure network and use its DNS servers. To secure your communication with a remote DNS server you can use an encrypted protocol, provided that both the upstream server and your <a href="#DNS_servers">local resolver</a> support the protocol. Common encrypted DNS protocols are:
 </p>
 <ul>
 <li>
@@ -528,15 +531,15 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 </ul>
 <p>To verify that responses are actually from <a href="https://en.wikipedia.org/wiki/Authoritative_name_server" class="extiw" title="wikipedia:Authoritative name server">authoritative name servers</a>, you can validate <a href="../en/DNSSEC.html" title="DNSSEC">DNSSEC</a>, provided that both the upstream server(s) and your local resolver support it.
 </p>
-<h3><span class="mw-headline" id="Encrypted_Client_Hello">Encrypted Client Hello</span></h3>
-<p>Although one may use an encrypted DNS resolver, a TLS connection still leaks the domain names in the <a href="https://en.wikipedia.org/wiki/Server_Name_Indication" class="extiw" title="wikipedia:Server Name Indication">Server Name Indication</a> when requesting the domain certificate. This leak can be checked using the <a href="../en/Wireshark.html" title="Wireshark">Wireshark</a> filter <code>tls.handshake.extensions_server_name_len &gt; 0</code>, or using the following <i>tshark</i> command:
+<h3><span class="mw-headline" id="TLS_Server_Name_Indication">TLS Server Name Indication</span></h3>
+<p>Although one may use an encrypted DNS resolver, a TLS connection still leaks the domain names in the <a href="https://en.wikipedia.org/wiki/Server_Name_Indication" class="extiw" title="wikipedia:Server Name Indication">Server Name Indication</a> (SNI) when requesting the domain certificate. This leak can be checked using the <a href="../en/Wireshark.html" title="Wireshark">Wireshark</a> filter <code>tls.handshake.extensions_server_name_len &gt; 0</code>, or using the following <i>tshark</i> command:
 </p>
 <pre># tshark -p -Tfields -e tls.handshake.extensions_server_name -Y 'tls.handshake.extensions_server_name_len&gt;0'
 </pre>
 <p>A proposed solution is to use the <a href="https://en.wikipedia.org/wiki/Server_Name_Indication#Encrypted_Client_Hello" class="extiw" title="wikipedia:Server Name Indication">Encrypted Client Hello (ECH)</a>, a TLS 1.3 protocol extension.
 </p>
 <h3><span class="mw-headline" id="Application-level_DNS">Application-level DNS</span></h3>
-<p>Be aware that some client software, such as major web browsers<a rel="nofollow" class="external autonumber" href="https://support.mozilla.org/en-US/kb/firefox-dns-over-https">[2]</a><a rel="nofollow" class="external autonumber" href="https://www.chromium.org/developers/dns-over-https">[3]</a>, are starting to implement DNS over HTTPS. While the encryption of queries may often be seen as a bonus, it also means the software sidetracks queries around the system resolver configuration.<a rel="nofollow" class="external autonumber" href="https://blog.powerdns.com/2019/09/25/centralised-doh-is-bad-for-privacy-in-2019-and-beyond/">[4]</a>
+<p>Be aware that some client software, such as major web browsers<a rel="nofollow" class="external autonumber" href="https://support.mozilla.org/en-US/kb/firefox-dns-over-https">[3]</a><a rel="nofollow" class="external autonumber" href="https://www.chromium.org/developers/dns-over-https">[4]</a>, are starting to implement DNS over HTTPS. While the encryption of queries may often be seen as a bonus, it also means the software sidetracks queries around the system resolver configuration.<a rel="nofollow" class="external autonumber" href="https://blog.powerdns.com/2019/09/25/centralised-doh-is-bad-for-privacy-in-2019-and-beyond/">[5]</a>
 </p>
 <p><a href="../en/Firefox.html" title="Firefox">Firefox</a> provides <a rel="nofollow" class="external text" href="https://support.mozilla.org/en-US/kb/firefox-dns-over-https#w_manually-enabling-and-disabling-dns-over-https">configuration options</a> to enable or disable DNS over HTTPS and select a DNS server. Mozilla has setup a <a href="../en/Firefox/Privacy.html#Disable/enforce_'Trusted_Recursive_Resolver'" title="Firefox/Privacy">Trusted Recursive Resolver (TRR)</a> programme with transparency information on their default providers. It is notable that Firefox supports and automatically enables the Encrypted Client Hello (ECH) for TRR providers, see <a href="../en/Firefox/Privacy.html#Encrypted_Client_Hello" title="Firefox/Privacy">Firefox/Privacy#Encrypted Client Hello</a>.
 </p>
@@ -580,11 +583,6 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 <h2><span class="mw-headline" id="DNS_servers">DNS servers</span></h2>
 <p>DNS servers can be <a href="https://en.wikipedia.org/wiki/Authoritative_name_server" class="extiw" title="wikipedia:Authoritative name server">authoritative</a> and <a href="https://en.wikipedia.org/wiki/Name_server#Recursive_query" class="extiw" title="wikipedia:Name server">recursive</a>. If they are neither, they are called <b>stub resolvers</b> and simply forward all queries to another recursive name server. Stub resolvers are typically used to introduce DNS caching on the local host or network. Note that the same can also be achieved with a fully-fledged name server. This section compares the available DNS servers, for a more detailed comparison, refer to <a href="https://en.wikipedia.org/wiki/Comparison_of_DNS_server_software" class="extiw" title="wikipedia:Comparison of DNS server software">Wikipedia:Comparison of DNS server software</a>.
 </p>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
-<div>
-<b>Reason:</b> Fill in the unknowns. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Domain_name_resolution.html">Talk:Domain name resolution</a>)</div>
-</div>
 <div style="overflow-x: scroll">
 <table class="wikitable sortable" style="text-align:center">
 <tbody>
@@ -603,12 +601,12 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 <th>
 <a href="https://en.wikipedia.org/wiki/Domain_Name_System_Security_Extensions#The_lookup_procedure" class="extiw" title="wikipedia:Domain Name System Security Extensions">Validates</a><br><a href="../en/DNSSEC.html" title="DNSSEC">DNSSEC</a>
 </th>
-<th><a href="https://en.wikipedia.org/wiki/Domain_Name_System" class="extiw" title="wikipedia:Domain Name System">DNS</a></th>
+<th><a href="https://en.wikipedia.org/wiki/Domain_Name_System#Conventional:_DNS_over_UDP_and_TCP_ports_53_.28Do53.29" class="extiw" title="wikipedia:Domain Name System">DNS</a></th>
 <th><a href="https://en.wikipedia.org/wiki/DNSCrypt" class="extiw" title="wikipedia:DNSCrypt">DNSCrypt</a></th>
 <th><a href="https://en.wikipedia.org/wiki/DNS_over_TLS" class="extiw" title="wikipedia:DNS over TLS">DNS<br>over TLS</a></th>
 <th><a href="https://en.wikipedia.org/wiki/DNS_over_HTTPS" class="extiw" title="wikipedia:DNS over HTTPS">DNS<br>over HTTPS</a></th>
 <th>
-<a rel="nofollow" class="external text" href="https://datatracker.ietf.org/doc/html/rfc9250">DNS<br>over QUIC</a>
+<a href="https://en.wikipedia.org/wiki/DNS_over_QUIC" class="extiw" title="wikipedia:DNS over QUIC">DNS<br>over QUIC</a>
 </th>
 </tr>
 <tr>
@@ -624,7 +622,7 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
-<td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;">Server</td>
+<td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;"><a rel="nofollow" class="external text" href="https://gitlab.isc.org/isc-projects/bind9/-/issues/3231">Server</a></td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">
 <a rel="nofollow" class="external text" href="https://gitlab.isc.org/isc-projects/bind9/-/issues/3635">No</a>
 </td>
@@ -644,7 +642,7 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
-<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
+<td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;">Server</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">
 <a rel="nofollow" class="external text" href="https://github.com/coredns/coredns/issues/5583">No</a>
 </td>
@@ -656,7 +654,7 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 <td><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dns-over-https">dns-over-https</a></span></td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
-<td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
+<td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;"><a rel="nofollow" class="external text" href="https://github.com/m13253/dns-over-https/issues/2">No</a></td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;">Server</td>
@@ -700,7 +698,8 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 <td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;">Resolver</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;"><a rel="nofollow" class="external text" href="https://github.com/DNSCrypt/dnscrypt-proxy/issues/1124">No</a></td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
-<td>?
+<td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">
+<a rel="nofollow" class="external text" href="https://github.com/DNSCrypt/dnscrypt-proxy/issues/1459#issuecomment-682135107">No</a>
 </td>
 </tr>
 <tr>
@@ -712,7 +711,9 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 </td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
-<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">
+<a href="../en/Dnsmasq.html#DNS_server" title="Dnsmasq">Yes</a><sup>2</sup>
+</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;"><a href="../en/Openresolv.html#Subscribers" title="Openresolv">Yes</a></td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
@@ -725,9 +726,7 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 <th>
 <a rel="nofollow" class="external text" href="https://github.com/AdguardTeam/dnsproxy">dnsproxy</a>
 </th>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/dnsproxy/">dnsproxy</a></span><sup><small>AUR</small></sup>
-</td>
+<td><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dnsproxy">dnsproxy</a></span></td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
@@ -784,13 +783,15 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
-<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">
+<a rel="nofollow" class="external text" href="https://doc.powerdns.com/recursor/yamlsettings.html#setting-yaml-dnssec-validation">Yes</a><sup>2</sup>
+</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;"><a href="../en/Openresolv.html#Subscribers" title="Openresolv">Yes</a></td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;"><a rel="nofollow" class="external text" href="https://github.com/PowerDNS/pdns/pull/10338">Partial</a></td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
-<td>?
+<td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No
 </td>
 </tr>
 <tr>
@@ -821,12 +822,12 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 </td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
-<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes<sup>2</sup>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes<sup>3</sup>
 </td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;"><a rel="nofollow" class="external text" href="https://github.com/folbricht/routedns/issues/123">No</a></td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
-<td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
+<td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;"><a rel="nofollow" class="external text" href="https://github.com/folbricht/routedns/issues/72">No</a></td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes
@@ -841,7 +842,7 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;"><a rel="nofollow" class="external text" href="https://github.com/pymumu/smartdns/issues/19">No</a></td>
-<td>?</td>
+<td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;">Resolver</td>
@@ -857,7 +858,9 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;"><a rel="nofollow" class="external text" href="https://github.com/getdnsapi/stubby/issues/139">No</a></td>
-<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">
+<a href="../en/Stubby.html#Enable_DNSSEC_validation" title="Stubby">Yes</a><sup>2</sup>
+</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;">Server</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
@@ -875,7 +878,9 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">No</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
-<td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;"><a rel="nofollow" class="external text" href="https://github.com/systemd/systemd/issues/25676#issuecomment-1634810897">Experimental</a></td>
+<td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;">
+<a href="../en/Systemd-resolved.html#DNSSEC" title="Systemd-resolved">Experimental</a><sup>2</sup>
+</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;"><a href="../en/Systemd-resolved.html#Automatically" class="mw-redirect" title="Systemd-resolvconf">Yes</a></td>
 <td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;">Resolver and <a rel="nofollow" class="external text" href="https://github.com/systemd/systemd/issues/4621#issuecomment-260050033">limited server</a>
 </td>
@@ -893,7 +898,7 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 <td><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=unbound">unbound</a></span></td>
 <td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;">Partial</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
-<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes<sup>2</sup>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes<sup>3</sup>
 </td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;"><a href="../en/Openresolv.html#Subscribers" title="Openresolv">Yes</a></td>
@@ -902,7 +907,7 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;"><a rel="nofollow" class="external text" href="https://github.com/NLnetLabs/unbound/issues/308">Server</a></td>
 <td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;">
-<a rel="nofollow" class="external text" href="https://github.com/NLnetLabs/unbound/issues/743">No</a><sup>3</sup>
+<a rel="nofollow" class="external text" href="https://github.com/NLnetLabs/unbound/issues/743">No</a><sup>4</sup>
 </td>
 </tr>
 </tbody>
@@ -910,8 +915,9 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 </div>
 <ol>
 <li>From <a href="https://en.wikipedia.org/wiki/Comparison_of_DNS_server_software#cite_note-masqauth-32" class="extiw" title="wikipedia:Comparison of DNS server software">Wikipedia</a>: limited authoritative support, intended for internal network use rather than public Internet use.</li>
+<li>DNSSEC validation is disabled by default and must be enabled in the configuration file.</li>
 <li>Supports persistent cache using the <a href="../en/Valkey.html" class="mw-redirect" title="Redis">Redis</a> backend.</li>
-<li>Unbound's DNS over QUIC server feature requires for <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=unbound">unbound</a></span> to be built with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=libngtcp2">libngtcp2</a></span> which in turn needs to be built with a patched OpenSSL.<a rel="nofollow" class="external autonumber" href="https://github.com/NLnetLabs/unbound/pull/871">[5]</a>
+<li>Unbound's DNS over QUIC server feature requires for <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=unbound">unbound</a></span> to be built with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=libngtcp2">libngtcp2</a></span> which in turn needs to be built with a patched OpenSSL.<a rel="nofollow" class="external autonumber" href="https://github.com/NLnetLabs/unbound/pull/871">[6]</a>
 </li>
 </ol>
 <div class="archwiki-template-box archwiki-template-box-tip">
@@ -922,7 +928,7 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 <tr>
 <th>Name</th>
 <th>Package</th>
-<th><a href="../en/DNSSEC.html" title="DNSSEC">DNSSEC</a></th>
+<th>DNSSEC<br>signing</th>
 <th>Geographic<br>balancing
 </th>
 </tr>
@@ -1017,8 +1023,8 @@ Nameservers listed first are tried first, up to three nameservers may be listed.
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Domain_name_resolution&amp;oldid=830112">https://wiki.archlinux.org/index.php?title=Domain_name_resolution&amp;oldid=830112</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 29 March 2025, at 15:33.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Domain_name_resolution&amp;oldid=834882">https://wiki.archlinux.org/index.php?title=Domain_name_resolution&amp;oldid=834882</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 30 May 2025, at 13:07.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

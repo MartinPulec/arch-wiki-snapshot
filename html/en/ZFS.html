@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>ZFS - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -1064,6 +1064,17 @@
 			<ul id="toc-Enabling_bclone_support-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Avoid_upgrading_to_incompatible_kernels_when_using_zfs-dkms" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Avoid_upgrading_to_incompatible_kernels_when_using_zfs-dkms">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">9.11</span>
+					<span>Avoid upgrading to incompatible kernels when using zfs-dkms</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Avoid_upgrading_to_incompatible_kernels_when_using_zfs-dkms-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1">
@@ -1180,7 +1191,7 @@
 <h2><span class="mw-headline" id="Concepts">Concepts</span></h2>
 <p>Unlike regular filesystems where a filesystem reside on a single block device, ZFS stores data in storage pools. Pools are composed of vdevs (virtual devices) which are themselves composed of block devices. Pools always write data to the vdev with most percentage of free space (so data are naturally striped across vdevs). Vdevs on the other hand can use more complex configurations such as RAIDZ and mirror. In the simplest configuration a pool can be created on a single vdev composed of a single partition, which behaves similar to regular filesystems.
 </p>
-<p>Once created, storage resources can be allocated from the pool. Such resources are groupd into units of what called datasets. There are 4 types of datasets:
+<p>Once created, storage resources can be allocated from the pool. Such resources are grouped into units of what is called datasets. There are 4 types of datasets:
 </p>
 <ol>
 <li>file system: File systems are basically a directory tree and can be mounted like regular filesystems into the system namespace.</li>
@@ -1188,14 +1199,14 @@
 <li>snapshot: A snapshot of a file system or a volume</li>
 <li>bookmark: A snapshot that does not hold data, used for incremental replication.</li>
 </ol>
-<p>Dataset are identified by a unique path with the following syntax:
+<p>Datasets are identified by a unique path with the following syntax:
 </p>
 <pre>pool(/segment)+((#|@)bookmark/snapshot name)?
 </pre>
 <p>where <code>#</code> is used for bookmarks and <code>@</code> is used for snapshots.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> This is a short summary of <span class="plainlinks archwiki-template-man" title="$ man 7 zpoolconcepts"><a rel="nofollow" class="external text" href="https://openzfs.github.io/openzfs-docs/man/master/7/zpoolconcepts.7.html">zpoolconcepts(7)</a></span> and <span class="plainlinks archwiki-template-man" title="$ man 7 zfsconcepts"><a rel="nofollow" class="external text" href="https://openzfs.github.io/openzfs-docs/man/master/7/zfsconcepts.7.html">zfsconcepts(7)</a></span>. It is highly recommended to read them to familarize with the concepts as well as technical terms not covered here.</div>
+<strong>Note:</strong> This is a short summary of <span class="plainlinks archwiki-template-man" title="$ man 7 zpoolconcepts"><a rel="nofollow" class="external text" href="https://openzfs.github.io/openzfs-docs/man/master/7/zpoolconcepts.7.html">zpoolconcepts(7)</a></span> and <span class="plainlinks archwiki-template-man" title="$ man 7 zfsconcepts"><a rel="nofollow" class="external text" href="https://openzfs.github.io/openzfs-docs/man/master/7/zfsconcepts.7.html">zfsconcepts(7)</a></span>. It is highly recommended to read them to get familiar with the concepts as well as technical terms not covered here.</div>
 <h2><span class="mw-headline" id="Complications_of_being_out-of-tree">Complications of being out-of-tree</span></h2>
 <p>Due to complex legal reasons, the Linux kernel maintainers refuse to accept ZFS into the linux kernel. As such, ZFS is developed as an out-of-tree module. A consequence of this arrangement is that kernel updates will break the kernel API that ZFS uses from time to time. Whenever this happens, ZFS would have to change their code to adapt to this new API. This means there will be a time period where ZFS does not work on the latest mainline kernel release.
 </p>
@@ -1880,6 +1891,8 @@ AuthenticationMethods publickey,password</pre>
 # zfs set acltype=posixacl &lt;nameofzpool&gt;
 # zfs set xattr=sa &lt;nameofzpool&gt;
 </pre>
+<p>Since version 2.3 <code>xattr=sa</code> is the default and will be displayed as <code>xattr=on</code><a rel="nofollow" class="external autonumber" href="https://github.com/openzfs/zfs/discussions/16996">[4]</a>.
+</p>
 <h3><span class="mw-headline" id="Databases">Databases</span></h3>
 <p>ZFS, unlike most other file systems, has a variable record size, or what is commonly referred to as a block size. By default, the recordsize on ZFS is 128KiB, which means it will dynamically allocate blocks of any size from 512B to 128KiB depending on the size of file being written. This can often help fragmentation and file access, at the cost that ZFS would have to allocate new 128KiB blocks each time only a few bytes are written to.
 </p>
@@ -2181,7 +2194,7 @@ WantedBy=multi-user.target</pre>
 </p>
 <pre># zpool add &lt;pool&gt; cache &lt;device-id&gt;
 </pre>
-<p>L2ARC is only a read cache, so redundancy is unnecessary. Since <a rel="nofollow" class="external text" href="https://github.com/openzfs/zfs/releases/tag/zfs-2.0.0">ZFS version 2.0.0</a>, L2ARC is persisted across reboots.<a rel="nofollow" class="external autonumber" href="https://github.com/openzfs/zfs/pull/9582">[4]</a>
+<p>L2ARC is only a read cache, so redundancy is unnecessary. Since <a rel="nofollow" class="external text" href="https://github.com/openzfs/zfs/releases/tag/zfs-2.0.0">ZFS version 2.0.0</a>, L2ARC is persisted across reboots.<a rel="nofollow" class="external autonumber" href="https://github.com/openzfs/zfs/pull/9582">[5]</a>
 </p>
 <p>L2ARC is generally only useful in workloads where the amount of hot data is <b>bigger</b> than system memory, but small enough to fit into L2ARC. The L2ARC is indexed by the ARC in system memory, consuming 70 bytes per record (default 128KiB). Thus, the equation for RAM usage is:
 </p>
@@ -2200,7 +2213,7 @@ WantedBy=multi-user.target</pre>
 <h3>
 <span id="I.2FO_Scheduler"></span><span class="mw-headline" id="I/O_Scheduler">I/O Scheduler</span>
 </h3>
-<p>While ZFS is expected to work well with modern schedulers including, <code>mq-deadline</code>, and <code>none</code>, experimenting with <a href="../en/Improving_performance.html#Changing_I/O_scheduler" title="Improving performance">manually setting</a> the I/O scheduler on ZFS disks may yield performance gains. The ZFS recomendation is "[...] users leave the default scheduler <a rel="nofollow" class="external text" href="https://github.com/openzfs/zfs/issues/9778#issuecomment-569347505">“unless you’re encountering a specific problem, or have clearly measured a performance improvement for your workload”</a>"<a rel="nofollow" class="external autonumber" href="https://openzfs.github.io/openzfs-docs/Performance%20and%20Tuning/Module%20Parameters.html#zfs-vdev-scheduler">[5]</a>
+<p>While ZFS is expected to work well with modern schedulers including, <code>mq-deadline</code>, and <code>none</code>, experimenting with <a href="../en/Improving_performance.html#Changing_I/O_scheduler" title="Improving performance">manually setting</a> the I/O scheduler on ZFS disks may yield performance gains. The ZFS recomendation is "[...] users leave the default scheduler <a rel="nofollow" class="external text" href="https://github.com/openzfs/zfs/issues/9778#issuecomment-569347505">“unless you’re encountering a specific problem, or have clearly measured a performance improvement for your workload”</a>"<a rel="nofollow" class="external autonumber" href="https://openzfs.github.io/openzfs-docs/Performance%20and%20Tuning/Module%20Parameters.html#zfs-vdev-scheduler">[6]</a>
 </p>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
 <h3><span class="mw-headline" id="Creating_a_zpool_fails">Creating a zpool fails</span></h3>
@@ -2209,7 +2222,7 @@ WantedBy=multi-user.target</pre>
 <pre># the kernel failed to rescan the partition table: 16
 # cannot label 'sdc': try using parted(8) and then provide a specific slice: -1
 </pre>
-<p>One reason this can occur is because ZFS expects pool creation to take less than 1 second<a rel="nofollow" class="external autonumber" href="https://github.com/openzfs/zfs/issues/2582">[6]</a><a rel="nofollow" class="external autonumber" href="https://github.com/openzfs/zfs/issues/1646">[7]</a>. This is a reasonable assumption under ordinary conditions, but in many situations it may take longer. Each drive will need to be cleared again before another attempt can be made.
+<p>One reason this can occur is because ZFS expects pool creation to take less than 1 second<a rel="nofollow" class="external autonumber" href="https://github.com/openzfs/zfs/issues/2582">[7]</a><a rel="nofollow" class="external autonumber" href="https://github.com/openzfs/zfs/issues/1646">[8]</a>. This is a reasonable assumption under ordinary conditions, but in many situations it may take longer. Each drive will need to be cleared again before another attempt can be made.
 </p>
 <pre># parted /dev/sda rm 1
 # parted /dev/sda rm 1
@@ -2473,7 +2486,7 @@ SMB1 disabled -- no workgroup available
 <pre># zfs get sharesmb
 </pre>
 <h3><span class="mw-headline" id="Encryption_in_ZFS_using_dm-crypt">Encryption in ZFS using dm-crypt</span></h3>
-<p>Before <a rel="nofollow" class="external text" href="https://github.com/openzfs/zfs/releases/tag/zfs-0.8.0">OpenZFS version 0.8.0</a>, ZFS did not support encryption directly (See <a href="#Native_encryption">#Native encryption</a>). Instead, zpools can be created on <a href="../en/Dm-crypt.html" title="Dm-crypt">dm-crypt</a> block devices. Since the zpool is created on the plain-text abstraction, it is possible to have the data encrypted while having all the advantages of ZFS like deduplication, compression, and data robustness. Furthermore, utilizing dm-crypt will encrypt the zpools metadata, which the native encryption can inherently not provide.<a rel="nofollow" class="external autonumber" href="https://openzfs.github.io/openzfs-docs/man/8/zfs-change-key.8.html#Encryption">[8]</a>
+<p>Before <a rel="nofollow" class="external text" href="https://github.com/openzfs/zfs/releases/tag/zfs-0.8.0">OpenZFS version 0.8.0</a>, ZFS did not support encryption directly (See <a href="#Native_encryption">#Native encryption</a>). Instead, zpools can be created on <a href="../en/Dm-crypt.html" title="Dm-crypt">dm-crypt</a> block devices. Since the zpool is created on the plain-text abstraction, it is possible to have the data encrypted while having all the advantages of ZFS like deduplication, compression, and data robustness. Furthermore, utilizing dm-crypt will encrypt the zpools metadata, which the native encryption can inherently not provide.<a rel="nofollow" class="external autonumber" href="https://openzfs.github.io/openzfs-docs/man/8/zfs-change-key.8.html#Encryption">[9]</a>
 </p>
 <p>dm-crypt, possibly via LUKS, creates devices in <code>/dev/mapper</code> and their name is fixed. So you just need to change <code>zpool create</code> commands to point to that names. The idea is configuring the system to create the <code>/dev/mapper</code> block devices and import the zpools from there. Since zpools can be created in multiple devices (raid, mirroring, striping, ...), it is important all the devices are encrypted otherwise the protection might be partially lost.
 </p>
@@ -2653,6 +2666,72 @@ SMB1 disabled -- no workgroup available
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">options zfs zfs_bclone_enabled=1</pre>
 <p>Check that is working, and how much space is being saved with the command: <code>zpool get all POOLNAME | grep clon</code>
 </p>
+<h3><span class="mw-headline" id="Avoid_upgrading_to_incompatible_kernels_when_using_zfs-dkms">Avoid upgrading to incompatible kernels when using zfs-dkms</span></h3>
+<p>When using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zfs-dkms/">zfs-dkms</a></span><sup><small>AUR</small></sup>, kernels can upgrade to incompatible versions and post-transaction hooks, such as rebuilding the ZFS module and regenerating initramfs, can encounter errors which go unnoticed until a user reboots.
+</p>
+<p>To avoid such kernel upgrades, one can create a Pacman <a href="../en/Pacman.html#Hooks" title="Pacman">pre-transaction hook</a>:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pacman.d/hooks/00-zfs-dkms-guard.hook</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = Path
+# target the LTS kernel
+Target = usr/lib/modules/*-lts/vmlinuz
+# ...or the mainline one
+# Target = !usr/lib/modules/*-rt*arch*/vmlinuz
+# Target = usr/lib/modules/*-arch*/vmlinuz
+# ...or all of them
+# Target = usr/lib/modules/*/vmlinuz
+
+[Action]
+Description = Avoid ZFS-incompatible LTS kernels
+When = PreTransaction
+Exec = /usr/local/bin/zfs_dkms_guard.sh
+AbortOnFail
+NeedsTargets</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/usr/local/bin/zfs_dkms_guard.sh</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">#!/usr/bin/env bash
+
+set -eo pipefail
+shopt -s inherit_errexit
+
+vercomp() {
+    readarray -td. one &lt;&lt;&lt;"$1"
+    readarray -td. two &lt;&lt;&lt;"$2"
+    for i in 0 1; do
+        if [[ "${one[$i]}" -lt "${two[$i]}" ]]; then
+            printf -- '-1'
+            return
+        fi
+        if [[ "${one[$i]}" -gt "${two[$i]}" ]]; then
+            printf '1'
+            return
+        fi
+    done
+    printf '0'
+}
+
+# requires ZFS &gt;= 0.8.0
+# https://github.com/openzfs/zfs/commit/928046b744a6d3f93f5ba1351a6d700a62535a00
+zfs_meta_file="$(grep '/META\b' &lt; &lt;(pacman -Qql zfs-dkms))"
+zfs_linux_min="$(awk '/Linux-Minimum/ { print $2 }' "$zfs_meta_file")"
+zfs_linux_max="$(awk '/Linux-Maximum/ { print $2 }' "$zfs_meta_file")"
+
+while read -r target_path; do
+    kernel_version="$(sed -E 's|.*lib/modules/([[:digit:]]+\.[[:digit:]]+).*|\1|' &lt;&lt;&lt;"$target_path")"
+    if [[ "$(vercomp "$kernel_version" "$zfs_linux_min")" -lt 0 ]]; then
+        printf 'Kernel version %s is below ZFS minimum compatible version %s!\n' "$kernel_version" "$zfs_linux_min" &gt;&amp;2
+        exit 1
+    fi
+    if [[ "$(vercomp "$kernel_version" "$zfs_linux_max")" -gt 0 ]]; then
+        printf 'Kernel version %s is above ZFS maximum compatible version %s!\n' "$kernel_version" "$zfs_linux_max" &gt;&amp;2
+        exit 1
+    fi
+done
+</pre>
+<p>Note this does <i>not</i> prevent ZFS upgrades leaving older kernels unsupported.
+</p>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul>
 <li><a rel="nofollow" class="external text" href="https://pthree.org/2012/12/04/zfs-administration-part-i-vdevs/">Aaron Toponce's 17-part blog on ZFS</a></li>
@@ -2689,8 +2768,8 @@ SMB1 disabled -- no workgroup available
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=ZFS&amp;oldid=829960">https://wiki.archlinux.org/index.php?title=ZFS&amp;oldid=829960</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 27 March 2025, at 18:33.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=ZFS&amp;oldid=834437">https://wiki.archlinux.org/index.php?title=ZFS&amp;oldid=834437</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 24 May 2025, at 10:33.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

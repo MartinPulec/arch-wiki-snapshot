@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>EFI system partition - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -323,6 +323,17 @@
 			<ul id="toc-Firmware_does_not_see_the_EFI_directory-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Hibernation_and_dual_boot_systems" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Hibernation_and_dual_boot_systems">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">6.3</span>
+					<span>Hibernation and dual boot systems</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Hibernation_and_dual_boot_systems-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
@@ -462,7 +473,7 @@
 <strong>Warning:</strong> The EFI system partition must be a physical partition in the main partition table of the disk, not under LVM or software RAID etc.</div>
 <p>The partition size should provide adequate space for storing boot loaders and other files required for booting.
 </p>
-<p>It is recommended to make the partition 1 GiB in size to ensure it has adequate space for multiple kernels or unified kernel images, a boot loader, firmware updates files and any other operating system or OEM files. If still in doubt, <b>4 GiB</b> ought to be enough for anybody, e.g., for tools like <a href="../en/Limine.html#Snapper_snapshot_integration_for_Btrfs" title="Limine">Limine bootloader with Snapper integration for Btrfs</a>, which supports creating multiple bootable snapshots.
+<p>It is recommended to make the partition 1 GiB in size to ensure it has adequate space for multiple kernels or unified kernel images, a boot loader, firmware updates files and any other operating system or OEM files. If still in doubt, <b>4 GiB</b> ought to be enough for anybody, e.g., for tools like <a href="../en/Limine.html#Snapper_snapshot_integration_for_Btrfs" title="Limine">Limine boot loader with Snapper integration for Btrfs</a>, which supports creating multiple bootable snapshots.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> It is possible to use a smaller partition, but mind the potential compatibility issues:
@@ -551,15 +562,18 @@ nls_ascii
 <li>This facilitates system maintenance and administration, as <code>/boot</code> is the default path where <a href="../en/Microcode.html" title="Microcode">microcode</a> packages place the CPU microcode initramfs files and where <a href="../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a> places <a href="../en/Kernel.html" title="Kernel">kernels</a> and <a href="../en/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs">initramfs</a> images.</li>
 <li>This ensures that the above files are accessible to most <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loaders</a>, as not all of them can access files on other volumes.</li>
 <li>This prevents setting file-specific <a href="../en/File_permissions_and_attributes.html" class="mw-redirect" title="Permissions">permissions</a> and/or <a href="../en/Extended_attributes.html" title="Extended attributes">extended attributes</a>, as FAT sets global permissions at mount time</li>
-<li>This increases the size requirement for the ESP, as files normally installed in <code>/boot</code> will join the EFI-related ones.</li>
-<li>In the case of dual-booting, this exposes the OS-specific boot files to potentially hazardous manipulation from other OSes.</li>
-<li>This makes <a href="../en/GRUB.html#Encrypted_/boot" title="GRUB">encrypting /boot</a> impossible, as EFI-related files have to be accessible by the firmware.</li>
+<li>This increases the size requirement for the ESP, as files normally installed in <code>/boot</code> will join the ones used for UEFI booting.</li>
+<li>This exposes the kernel and initramfs images to potentially hazardous manipulation from bootable drives or other operating systems when dual-booting.</li>
+<li>This makes <a href="../en/GRUB.html#Encrypted_/boot" title="GRUB">encrypting /boot</a> impossible, as the boot loader and its files have to be accessible by the firmware.</li>
+<li>This makes root volume snapshots (using <a href="../en/Btrfs.html" title="Btrfs">Btrfs</a>, <a href="../en/Bcachefs.html" title="Bcachefs">Bcachefs</a>, <a href="../en/ZFS.html" title="ZFS">ZFS</a>, <a href="../en/LVM.html" title="LVM">LVM</a>) less effective as <code>/boot</code> content would not be included. In case of kernel updates, returning to a snapshot with older kernel version would draw the system unbootable and require manually <a href="../en/Downgrading_packages.html#Downgrading_the_kernel" title="Downgrading packages">downgrading the kernel</a> using external media.</li>
 </ul>
 </li>
 <li>
 <a href="../en/File_systems.html#Mount_a_file_system" class="mw-redirect" title="Mount">mount</a> the ESP to <code>/efi</code>:
 <ul>
-<li>It ensures a separation of concerns between OS- and EFI-related files, which may include other OSes' files better left alone.</li>
+<li><div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> Only <a href="../en/GRUB.html" title="GRUB">GRUB</a> and <a href="../en/REFInd.html" title="REFInd">rEFInd</a> support this scheme at the moment.</div></li>
+<li>It ensures a separation of concerns between operating system and UEFI files, which may include other operating system files that are better left alone.</li>
 <li>It avoids increasing the size requirement of the ESP by not placing the files installed to <code>/boot</code> in it: only the EFI binaries (the boot loader (and optionally drivers) and/or the unified kernel image) will be stored on the ESP, which saves storage space.</li>
 <li>It allows to preserve Linux-specific filesystem permissions for files residing in <code>/boot</code>, avoiding FAT limitations.</li>
 <li>It allows to mount separately the ESP according to the need, <i>e.g.</i> only when upgrading the <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a>.</li>
@@ -891,6 +905,31 @@ Device       Start       End   Sectors  Size Type
 <h3><span class="mw-headline" id="Firmware_does_not_see_the_EFI_directory">Firmware does not see the EFI directory</span></h3>
 <p>If you give the FAT file system a <a href="../en/Persistent_block_device_naming.html#by-label" title="Persistent block device naming">volume name (i.e. file system label)</a>, be sure to name it something other than <code>EFI</code>. That can trigger a bug in some firmwares (due to the volume name matching the EFI directory name) that will cause the firmware to act like the EFI directory does not exist.
 </p>
+<h3><span class="mw-headline" id="Hibernation_and_dual_boot_systems">Hibernation and dual boot systems</span></h3>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
+<div>
+<b>Reason:</b> The issue potentially affects all mounted file systems, not just the ESP nor is exclusive to dual booting. (Discuss in <a href='../en/Talk:EFI_system_partition.html#Moving_"Hibernation_and_dual_boot_systems"_section' title="Talk:EFI system partition">Talk:EFI system partition#Moving "Hibernation and dual boot systems" section</a>)</div>
+</div>
+<p>If you're running a dual boot system (including but not limited to Windows) and want to be able to boot into your other system while your main Arch Linux is hibernated, you must take extra caution not to mount the ESP in both systems, as this will likely cause data corruption and I/O errors on usage. You can work around that by either using separate EFI system partitions, which is only possible if the systems reside on different disks, or by mounting the ESP at <code>/efi</code> and unmounting it before and remounting it after hibernating the system.
+</p>
+<p>For the latter you can create and <a href="../en/Systemd.html#Using_units" title="Systemd">enable</a> the following Systemd system service:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/efi-remount-on-hibernate.service</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Unit]
+Description=Unmount and remount EFI system partition on hibernation
+Before=hibernate.target hybrid-sleep.target suspend-then-hibernate.target
+StopWhenUnneeded=yes
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecCondition=/usr/bin/systemctl is-active --quiet efi.mount
+ExecStart=/usr/bin/systemctl stop efi.mount
+ExecStop=/usr/bin/systemctl start efi.mount
+
+[Install]
+WantedBy=hibernate.target hybrid-sleep.target suspend-then-hibernate.target</pre>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul>
 <li><a rel="nofollow" class="external text" href="https://blog.uncooperative.org/uefi/linux/shim/efi%20system%20partition/2014/02/06/the-efi-system-partition.html">The EFI system partition and the default boot behavior</a></li>
@@ -898,9 +937,13 @@ Device       Start       End   Sectors  Size Type
 </ul>
 </div>
 </div>
-					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
+					<div id="catlinks" class="catlinks" data-mw="interface">
+<div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Boot_process.html" title="Category:Boot process">Boot process</a></li></ul>
-</div></div>
+</div>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li></ul>
+</div>
+</div>
 				</div>
 			</main>
 			
@@ -909,8 +952,8 @@ Device       Start       End   Sectors  Size Type
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=EFI_system_partition&amp;oldid=826121">https://wiki.archlinux.org/index.php?title=EFI_system_partition&amp;oldid=826121</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 30 January 2025, at 12:09.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=EFI_system_partition&amp;oldid=834192">https://wiki.archlinux.org/index.php?title=EFI_system_partition&amp;oldid=834192</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 19 May 2025, at 11:30.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

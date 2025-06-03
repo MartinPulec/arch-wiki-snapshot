@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Power management/Suspend and hibernate - ArchWiki</title>
 <link rel="stylesheet" href="../../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -667,12 +667,12 @@ w    /sys/power/image_size  -    -    -    -   0
 <p>The suspend image cannot span multiple swap partitions and/or swap files. It must fully fit in one swap partition or one swap file.<a rel="nofollow" class="external autonumber" href="https://docs.kernel.org/power/swsusp.html">[2]</a>
 </p>
 <h3><span class="mw-headline" id="Configure_the_initramfs">Configure the initramfs</span></h3>
+<ul><li>When an initramfs with the <code>systemd</code> hook is used, a resume mechanism is already provided, and no further hooks need to be added.</li></ul>
 <ul><li>When using a busybox-based <a href="../../en/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs">initramfs</a>, which is the default, the <code>resume</code> hook is required in <code>/etc/mkinitcpio.conf</code>. Whether by label or by UUID, the swap partition is referred to with a udev device node, so the <code>resume</code> hook must go <i>after</i> the <code>udev</code> hook. This example was made starting from the default hook configuration:</li></ul>
 <dl><dd><pre>HOOKS=(base udev autodetect microcode modconf kms keyboard keymap consolefont block filesystems <b>resume</b> fsck)</pre></dd></dl>
 <dl><dd>Remember to <a href="../../en/Mkinitcpio.html#Image_creation_and_activation" class="mw-redirect" title="Regenerate the initramfs">regenerate the initramfs</a> for these changes to take effect.</dd></dl>
 <dl><dd><div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> If stacked storage is used for the swap space, e.g. <a href="../../en/Dm-crypt.html" title="Dm-crypt">dm-crypt</a>, <a href="../../en/RAID.html" title="RAID">RAID</a> or <a href="../../en/LVM.html" title="LVM">LVM</a>, the final mapped device must be available in the early userspace and before the resume process is initiated. I.e. the <code>resume</code> hook must be placed after hooks like <code>encrypt</code>, <code>lvm2</code>, etc. in such setups.</div></dd></dl>
-<ul><li>When an initramfs with the <code>systemd</code> hook is used, a resume mechanism is already provided, and no further hooks need to be added.</li></ul>
 <h3><span class="mw-headline" id="Pass_hibernate_location_to_initramfs">Pass hibernate location to initramfs</span></h3>
 <p>When the system hibernates, the memory image is dumped to the swap space, which also includes the state of mounted file systems. Therefore, the hibernate location must be made available to the initramfs, i.e. before the root file system is mounted for resuming from hibernate to work.
 </p>
@@ -687,6 +687,8 @@ w    /sys/power/image_size  -    -    -    -   0
 <li>
 <code>resume=/dev/archVolumeGroup/archLogicalVolume</code> – if swap is on a <a href="../../en/LVM.html" title="LVM">LVM</a> logical volume (UUID and Label should also work)</li>
 </ul>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> For a stacked block device such as an encrypted container (LUKS), RAID or LVM, the <code>resume=</code> parameter must point to the unlocked/mapped device (which contains the file system with the swap file if one is in use, also see the tip below).</div>
 <p>The kernel parameters will only take effect after rebooting. To hibernate right away, obtain the volume's major and minor device numbers from <a href="../../en/Device_file.html#lsblk" class="mw-redirect" title="Lsblk">lsblk</a> and echo them in format <code><i>major</i>:<i>minor</i></code> to <code>/sys/power/resume</code>.
 </p>
 <p>For example, if the swap device is <code>8:3</code>:
@@ -731,8 +733,6 @@ File size of /swapfile is 4294967296 (1048576 blocks of 4096 bytes)
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> The following command may be used to identify the backing device of the swap file: <code>findmnt -no UUID -T <i>swap_file</i></code>
 </div>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> For a stacked block device such as an encrypted container (LUKS), RAID or LVM, the <code>resume</code> parameter must point to the unlocked/mapped device that contains the file system with the swap file.</div>
 <h3><span class="mw-headline" id="Change_the_image_compression_algorithm_for_hibernation">Change the image compression algorithm for hibernation</span></h3>
 <p>Starting with Linux 6.9<a rel="nofollow" class="external autonumber" href="https://web.git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3fec6e5961b77af6a952b77f5c2ea26f7513b216">[5]</a>, the image compression algorithm for hibernation can be changed. The default compression algorithm is selected based on the compile time option <code>CONFIG_HIBERNATION_DEF_COMP</code>, but it can be overridden at boot time and runtime.
 </p>
@@ -750,7 +750,7 @@ hibernate.compressor=lz4
 <pre># echo lzo &gt; /sys/module/hibernate/parameters/compressor
 # echo lz4 &gt; /sys/module/hibernate/parameters/compressor
 </pre>
-<p>Currently <code>lzo</code> and <code>lz4</code> are the supported algorithms with LZO being the the default.
+<p>Currently <code>lzo</code> and <code>lz4</code> are the supported algorithms with LZO being the default.
 </p>
 <h3><span class="mw-headline" id="Maintaining_swap_file_for_hibernation_with_zram">Maintaining swap file for hibernation with zram</span></h3>
 <div class="archwiki-template-box archwiki-template-box-tip">
@@ -817,7 +817,7 @@ WantedBy=sleep.target</pre>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/user-resume@.service</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Unit]
 Description=User resume actions
-After=suspend.target
+After=suspend.target hibernate.target
 
 [Service]
 User=%I
@@ -825,7 +825,7 @@ Type=simple
 ExecStart=/usr/local/bin/ssh-connect.sh
 
 [Install]
-WantedBy=suspend.target</pre>
+WantedBy=suspend.target hibernate.target</pre>
 <p>Enable <code>user-suspend@<i>user</i>.service</code> and/or <code>user-resume@<i>user</i>.service</code> for the change to take effect.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
@@ -846,14 +846,14 @@ WantedBy=sleep.target</pre>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/root-resume.service</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Unit]
 Description=Local system resume actions
-After=suspend.target
+After=suspend.target hibernate.target
 
 [Service]
 Type=simple
 ExecStart=/usr/bin/systemctl restart mnt-media.automount
 
 [Install]
-WantedBy=suspend.target</pre>
+WantedBy=suspend.target hibernate.target</pre>
 <h4>
 <span id="Combined_sleep.2Fresume_unit"></span><span class="mw-headline" id="Combined_sleep/resume_unit">Combined sleep/resume unit</span>
 </h4>
@@ -1132,6 +1132,8 @@ LABEL="power_switch_my_end"</pre>
 </p>
 <pre>[Service]
 Environment=SYSTEMD_SLEEP_FREEZE_USER_SESSIONS=false</pre>
+<p>However, this drop-in can itself prevent the system from going to sleep.<a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/drm/amd/-/issues/4178">[14]</a>
+</p>
 </div>
 </div>
 					<div id="catlinks" class="catlinks" data-mw="interface">
@@ -1149,8 +1151,8 @@ Environment=SYSTEMD_SLEEP_FREEZE_USER_SESSIONS=false</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Power_management/Suspend_and_hibernate&amp;oldid=828418">https://wiki.archlinux.org/index.php?title=Power_management/Suspend_and_hibernate&amp;oldid=828418</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 7 March 2025, at 19:55.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Power_management/Suspend_and_hibernate&amp;oldid=833351">https://wiki.archlinux.org/index.php?title=Power_management/Suspend_and_hibernate&amp;oldid=833351</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 4 May 2025, at 22:03.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

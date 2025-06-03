@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Steam/Troubleshooting - ArchWiki</title>
 <link rel="stylesheet" href="../../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -1076,7 +1076,7 @@
 </p>
 <ul>
 <li>
-<code>steam-runtime</code> (alias <code>steam</code>), which overrides runtime libraries known to cause problems via the <code>LD_PRELOAD</code> <a href="../../en/Environment_variables.html" class="mw-redirect" title="Environment variable">environment variable</a> (see <span class="plainlinks archwiki-template-man" title="$ man 8 ld.so"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/ld.so.8">ld.so(8)</a></span>).</li>
+<code>/usr/bin/steam</code> (alias <code>steam</code>), which overrides runtime libraries known to cause problems via the <code>LD_PRELOAD</code> <a href="../../en/Environment_variables.html" class="mw-redirect" title="Environment variable">environment variable</a> (see <span class="plainlinks archwiki-template-man" title="$ man 8 ld.so"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/ld.so.8">ld.so(8)</a></span>).</li>
 <li>
 <code>/usr/lib/steam/steam</code>, the default Steam launch script</li>
 </ul>
@@ -1105,7 +1105,7 @@
 <pre>$ cd ~/.steam/root/ubuntu12_32
 $ file * | grep ELF | cut -d: -f1 | LD_LIBRARY_PATH=. xargs ldd | grep 'not found' | sort | uniq
 </pre>
-<p>Alternatively, run Steam with <code>steam-runtime</code> and use the following command to see which non-system libraries Steam is using (not all of these are part of the Steam runtime):
+<p>Alternatively, run Steam with <code>steam</code> and use the following command to see which non-system libraries Steam is using (not all of these are part of the Steam runtime):
 </p>
 <pre>$ for i in $(pgrep steam); do sed '/\.local/!d;s/.*  //g' /proc/$i/maps; done | sort | uniq
 </pre>
@@ -1251,7 +1251,7 @@ xerror_handler: X failed, continuing
 <h3>
 <span id="Steam_Library_won.27t_start"></span><span class="mw-headline" id="Steam_Library_won't_start">Steam Library won't start</span>
 </h3>
-<p>Opening the steam library either displays nothing, or a brief splash, but no window appears. Running <code>/usr/bin/steam-runtime</code> in a terminal window gives this error:
+<p>Opening the steam library either displays nothing, or a brief splash, but no window appears. Running <code>/usr/bin/steam</code> in a terminal window gives this error:
 </p>
 <pre>Assertion 'device' failed at src/libsystemd/sd-device/device-private.c:103, function device_get_tags_generation(). Aborting.
 </pre>
@@ -1322,7 +1322,7 @@ Usually located at ~/.local/share/applications/steam.desktop
 </p>
 <pre>$ LD_PRELOAD='/usr/$LIB/libasound.so.2 '${LD_PRELOAD} steam
 </pre>
-<p>If audio still will not work, adding the Pulseaudio-libs to the <code>LD_PRELOAD</code> variable may help:
+<p>If audio still will not work, adding the PulseAudio libraries to the <code>LD_PRELOAD</code> variable may help:
 </p>
 <pre>$ LD_PRELOAD='/usr/$LIB/libpulse.so.0 /usr/$LIB/libpulse-simple.so.0 '${LD_PRELOAD} steam
 </pre>
@@ -1392,8 +1392,6 @@ allow-moves=true
 </p>
 <pre>@fDownloadRateImprovementToAddAnotherConnection 1.0
 </pre>
-<p>You can also try running `steam` instead of `steam-runtime`.
-</p>
 <h3>
 <span id=".22Needs_to_be_online.22_error"></span><span class="mw-headline" id='"Needs_to_be_online"_error'>"Needs to be online" error</span>
 </h3>
@@ -1470,7 +1468,7 @@ allow-moves=true
 <h3><span class="mw-headline" id="Steam_fails_to_start_correctly">Steam fails to start correctly</span></h3>
 <p>One troubleshooting step is to run
 </p>
-<pre>$ steam-runtime --reset
+<pre>$ steam --reset
 </pre>
 <p>This can fix various issues that come with a broken install.
 </p>
@@ -1487,7 +1485,7 @@ allow-moves=true
 <ol>
 <li>Navigate to <i>Community &gt; Broadcasts</i>. If the page displays "<i>Updating Steam</i>" wait a few minutes to see if the process completes and cancel it after a while in case it does not. Now test if you are able to watch broadcasts, e.g. by clicking on one of the ones display under <i>Community &gt; Broadcasts</i>.</li>
 <li>Start a broadcast while in Big Picture mode (<i>View &gt; Big Picture Mode</i>). If a broadcast starts fine while in Big Picture mode check if it still works after switching back to the main interface.</li>
-<li>Trigger the Steam client to directly unlock H.264 decoding using the following command: <code>steam-runtime steam://unlockh264/</code>. The Steam client should start headless and run the unlock command. Wait a minute to be sure the process completes, then close and relaunch the Steam client.</li>
+<li>Trigger the Steam client to directly unlock H.264 decoding using the following command: <code>steam steam://unlockh264/</code>. The Steam client should start headless and run the unlock command. Wait a minute to be sure the process completes, then close and relaunch the Steam client.</li>
 </ol>
 <h3><span class="mw-headline" id="Using_system_titlebar_and_frame">Using system titlebar and frame</span></h3>
 <p>Currently steam client tries to manage its windows itself, but it does it improperly, see <a rel="nofollow" class="external text" href="https://github.com/ValveSoftware/steam-for-linux/issues/1040">steam-for-linux#1040</a>. As a workaround you can use <a rel="nofollow" class="external text" href="https://github.com/dscharrer/steamwm">steamwm</a> project. Run steam like this: <code>./steamwm.cpp steam</code>. Also the project provides a skin that removes unnative control buttons and frame, but leaves default skin decorations.
@@ -1552,15 +1550,19 @@ allow-moves=true
 </p>
 <h2><span class="mw-headline" id="Other_issues">Other issues</span></h2>
 <h3><span class="mw-headline" id="Steam_Library_in_NTFS_partition">Steam Library in NTFS partition</span></h3>
-<p>If your Steam library resides in NTFS partition it is probable that games residing there could not start.
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> The kernel <a href="../../en/NTFS.html" title="NTFS">NTFS</a> driver is vastly more performant than the <a href="../../en/NTFS-3G.html" title="NTFS-3G">NTFS-3G</a> <a href="../../en/FUSE.html" title="FUSE">FUSE</a> driver <a rel="nofollow" class="external autonumber" href="https://openbenchmarking.org/result/2009092-NE-NTFSCOMPA56">[6]</a>. So, for gaming scenario, it is better to uninstall <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=ntfs-3g">ntfs-3g</a></span> package as GUI file managers driven by <a href="../../en/Udisks.html" title="Udisks">udisks</a> prefer it when present.</div>
+<p>If your Steam library resides in <a href="../../en/NTFS.html" title="NTFS">NTFS</a> partition it is probable that games residing there could not start.
 </p>
-<p>The trouble is that Wine uses a colon in its <code>$WINEPREFIX/dosdevices</code> directory, and NTFS-3G, when mounted with the <code>windows_names</code> option, is instructed to not create such colon names which can confuse Windows. Not adding it is not that unsafe: Windows will act fine besides being unable to open the symlink (which it will not need to do anyways); <code>chkdsk</code> may delete the link, but it is easily recreated.
+<p>The trouble is that Wine uses a colon in its <code>$WINEPREFIX/dosdevices</code> directory, and when mounted with the <code>windows_names</code> option, is instructed to not create such colon names which can confuse Windows. Not adding it is not that unsafe: Windows will act fine besides being unable to open the symlink (which it will not need to do anyways); <code>chkdsk</code> may delete the link, but it is easily recreated.
 </p>
-<p>Better workaround: mount without <code>windows_names</code>. This option is often added by GUI file explorers via <a href="../../en/Udisks.html" title="Udisks">udisks</a>2 for caution, but adding a real Fstab line will give it a proper way to do so.
+<p>Better workaround: mount without <code>windows_names</code>. This option is often added by GUI file explorers via <a href="../../en/Udisks.html" title="Udisks">udisks</a> for caution, but adding a real <a href="../../en/Fstab.html" title="Fstab">fstab</a> line will give it a proper way to do so.
 </p>
 <ol>
-<li>Run <code>genfstab -U /</code> and extract the line containing the ntfs partition, e.g. <code>UUID=12345678ABCDEF00 /run/media/user/Gamez ntfs {options_omitted} 0 0</code>. Note the options are inaccurate because of fuse; if you want to see what <i>really</i> is in use, use <code>ps aux|grep ntfs</code> as root.</li>
-<li>Write the line into <code>/etc/fstab</code>, editing it to use the proper options without <code>windows_names</code>. With the earlier example, we would write <code>UUID=12345678ABCDEF00 /run/media/user/Gamez ntfs rw,allow_other,user_id=1000,big_writes 0 0</code> – assuming you are UID 1000.</li>
+<li>Run <code>genfstab -U /</code> and extract the line containing the ntfs partition, e.g. <pre>UUID=12345678ABCDEF00 /run/media/user/Gamez ntfs3 rw,uid=1000,gid=1000,windows_names 0 0</pre>
+</li>
+<li>Write the line into <code>/etc/fstab</code>, editing it to use the proper options without <code>windows_names</code>. With the earlier example, we would write <pre>UUID=12345678ABCDEF00 /run/media/user/Gamez ntfs3 rw,uid=1000,gid=1000 0 0</pre>
+</li>
 <li>Unmount the partition, then remount.</li>
 </ol>
 <p>Alternatively, disable udisks use of <code>windows_names</code> globally following instructions in <a href="../../en/Udisks.html#NTFS_file_creation_failing_(filename-dependent)" title="Udisks">udisks#NTFS file creation failing (filename-dependent)</a>.
@@ -1597,7 +1599,7 @@ $ ln -s /home/<i>user</i>/dir/compatdata/ <i>SteamLibrary</i>/steamapps/compatda
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> 
 <ul>
-<li>Steam for Linux does not follow system-level font configurations.<a rel="nofollow" class="external autonumber" href="https://github.com/ValveSoftware/steam-for-linux/issues/10422#issuecomment-1944396010">[6]</a> Thus, modify user-level configuration if you want change fontconfig for steam.</li>
+<li>Steam for Linux does not follow system-level font configurations.<a rel="nofollow" class="external autonumber" href="https://github.com/ValveSoftware/steam-for-linux/issues/10422#issuecomment-1944396010">[7]</a> Thus, modify user-level configuration if you want change fontconfig for steam.</li>
 <li>When Steam cannot find the Arial font, font-config likes to fall back onto the Helvetica bitmap font. Steam does not render this and possibly other bitmap fonts correctly, so either removing problematic fonts or <a href="../../en/Font_configuration.html#Disable_bitmap_fonts" title="Font configuration">disabling bitmap fonts</a> will most likely fix the issue without installing the Arial or ArialBold fonts. The font being used in place of Arial can be found with the command: <pre>$ fc-match -v Arial</pre>
 </li>
 </ul>
@@ -1643,9 +1645,9 @@ $ ./steam.sh --reset
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
 <div>
-<b>Reason:</b> Seems to be a general issue, e.g. <a rel="nofollow" class="external autonumber" href="https://github.com/ValveSoftware/Source-1-Games/issues/1685">[7]</a> (Discuss in <a rel="nofollow" class="external text" href="../../en/Talk:Steam/Troubleshooting.html">Talk:Steam/Troubleshooting</a>)</div>
+<b>Reason:</b> Seems to be a general issue, e.g. <a rel="nofollow" class="external autonumber" href="https://github.com/ValveSoftware/Source-1-Games/issues/1685">[8]</a> (Discuss in <a rel="nofollow" class="external text" href="../../en/Talk:Steam/Troubleshooting.html">Talk:Steam/Troubleshooting</a>)</div>
 </div>
-<p>If you are running 2K games such as Civilization 5 on <a href="../../en/XFS.html" title="XFS">XFS</a> partitions, then the game may not start or run properly due to how the game loads files as it starts. <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=185222">[8]</a>
+<p>If you are running 2K games such as Civilization 5 on <a href="../../en/XFS.html" title="XFS">XFS</a> partitions, then the game may not start or run properly due to how the game loads files as it starts. <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=185222">[9]</a>
 </p>
 <h3><span class="mw-headline" id="Steam_controller_not_being_detected_correctly">Steam controller not being detected correctly</span></h3>
 <p>See <a href="../../en/Gamepad.html#Steam_Controller" title="Gamepad">Gamepad#Steam Controller</a>.
@@ -1793,7 +1795,7 @@ exec "${@}"
 <p>For more details, see <a rel="nofollow" class="external text" href="https://github.com/ValveSoftware/steam-for-linux/issues/8114">steam-for-linux#8114</a>.
 </p>
 <h3><span class="mw-headline" id="Very_long_startup_and_slow_user_interface_response">Very long startup and slow user interface response</span></h3>
-<p>Steam's use of <code>steamloopback.host</code> in its Chromium backend to refer to itself. Due to the way <i>systemd-resolvd</i> attempts to resolve this host (via <code>mdns</code> by default for some users) this issue can hang the interface. This causes very long startups (if it ever starts) and a slow-responding (or not at all) user interface. This issue can temporary be addressed by editing <code>/etc/nsswitch.conf</code> to change <code>mdns</code> to <code>mdns_minimal</code> and restarting systemd-resolvd. For more details, see <a rel="nofollow" class="external autonumber" href="https://github.com/ValveSoftware/steam-for-linux/issues/10879">[9]</a>.
+<p>Steam's use of <code>steamloopback.host</code> in its Chromium backend to refer to itself. Due to the way <i>systemd-resolvd</i> attempts to resolve this host (via <code>mdns</code> by default for some users) this issue can hang the interface. This causes very long startups (if it ever starts) and a slow-responding (or not at all) user interface. This issue can temporary be addressed by editing <code>/etc/nsswitch.conf</code> to change <code>mdns</code> to <code>mdns_minimal</code> and restarting systemd-resolvd. For more details, see <a rel="nofollow" class="external autonumber" href="https://github.com/ValveSoftware/steam-for-linux/issues/10879">[10]</a>.
 </p>
 <p><br>
 </p>
@@ -1826,8 +1828,8 @@ exec "${@}"
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Steam/Troubleshooting&amp;oldid=829524">https://wiki.archlinux.org/index.php?title=Steam/Troubleshooting&amp;oldid=829524</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 20 March 2025, at 21:23.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Steam/Troubleshooting&amp;oldid=834172">https://wiki.archlinux.org/index.php?title=Steam/Troubleshooting&amp;oldid=834172</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 18 May 2025, at 20:03.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

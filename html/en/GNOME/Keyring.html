@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>GNOME/Keyring - ArchWiki</title>
 <link rel="stylesheet" href="../../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -540,7 +540,7 @@
 <strong>Tip:</strong> 
 <ul>
 <li>To use automatic unlocking with automatic login, you can set a blank password for the keyring. Note that the contents of the keyring are stored unencrypted in this case.</li>
-<li>Alternatively, if using GDM and LUKS, GDM can unlock your keyring if it matches your LUKS password. For this to work, you need to use the <a href="../../en/Mkinitcpio.html#Common_hooks" title="Mkinitcpio">systemd init in your mkinitcpio.conf</a> as well as the <a href="../../en/Dm-crypt/System_configuration.html#Using_systemd-cryptsetup-generator" title="Dm-crypt/System configuration">appropriate kernel parameters</a>. See <a rel="nofollow" class="external autonumber" href="https://reddit.com/r/Fedora/comments/jwnqq5/">[2]</a> for more details.</li>
+<li>Alternatively, if using GDM and LUKS, GDM can unlock your keyring if it matches your LUKS password. For this to work, you need to use the <a href="../../en/Mkinitcpio.html#Common_hooks" title="Mkinitcpio">systemd init in your mkinitcpio.conf</a> as well as the <a href="../../en/Dm-crypt/System_configuration.html#Using_systemd-cryptsetup-generator" title="Dm-crypt/System configuration">appropriate kernel parameters</a>, and you should make sure that your system's real-time clock is set to UTC rather than local time (see <a rel="nofollow" class="external autonumber" href="https://gitlab.gnome.org/GNOME/gdm/-/issues/701#note_1740585">[2]</a>). See <a rel="nofollow" class="external autonumber" href="https://reddit.com/r/Fedora/comments/jwnqq5/">[3]</a> for more details.</li>
 <li>If you desire to skip the PAM step, the keyring must be unlocked manually or via another method. See <a href="#Using_gnome-keyring-daemon_outside_desktop_environments_(KDE,_GNOME,_XFCE,_...)">#Using gnome-keyring-daemon outside desktop environments (KDE, GNOME, XFCE, ...)</a> and the <a rel="nofollow" class="external text" href="https://wiki.gnome.org/Projects/GnomeKeyring/RunningDaemon">GnomeKeyring wiki</a>.</li>
 </ul>
 </div>
@@ -605,7 +605,7 @@ Enter passphrase for ~/.private/id_rsa:
 <pre>$ ssh-add -D
 </pre>
 <h3><span class="mw-headline" id="Disabling">Disabling</span></h3>
-<p>If you wish to run an alternative SSH agent (e.g. <a href="../../en/SSH_keys.html#ssh-agent" title="SSH keys">ssh-agent</a> directly or <a href="../../en/GnuPG.html#gpg-agent" class="mw-redirect" title="Gpg-agent">gpg-agent</a>), it is a good idea to disable GNOME Keyring's ssh-agent wrapper. Doing so is not strictly necessary, since each agent listens on a different socket and <code>SSH_AUTH_SOCK</code> can be used to choose between them, but it can make debugging issues easier. Note that the GNOME implementation does not support many scripting features such BatchMode <a rel="nofollow" class="external autonumber" href="https://gitlab.gnome.org/GNOME/gcr/-/issues/117">[3]</a>.
+<p>If you wish to run an alternative SSH agent (e.g. <a href="../../en/SSH_keys.html#ssh-agent" title="SSH keys">ssh-agent</a> directly or <a href="../../en/GnuPG.html#gpg-agent" class="mw-redirect" title="Gpg-agent">gpg-agent</a>), it is a good idea to disable GNOME Keyring's ssh-agent wrapper. Doing so is not strictly necessary, since each agent listens on a different socket and <code>SSH_AUTH_SOCK</code> can be used to choose between them, but it can make debugging issues easier. Note that the GNOME implementation does not support many scripting features such BatchMode <a rel="nofollow" class="external autonumber" href="https://gitlab.gnome.org/GNOME/gcr/-/issues/117">[4]</a>.
 </p>
 <p>To disable gcr-ssh-agent, ensure <code>gcr-ssh-agent.socket</code> and <code>gcr-ssh-agent.service</code> are both disabled and stopped in systemd.
 </p>
@@ -712,7 +712,7 @@ UseIn=gnome;sway
 </p>
 <pre>gkr-pam: unable to locate daemon control file
 </pre>
-<p>This message "can be safely ignored" if there are no other related issues <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?pid=1940190#p1940190">[4]</a>.
+<p>This message "can be safely ignored" if there are no other related issues <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?pid=1940190#p1940190">[5]</a>.
 </p>
 <h3>
 <span id="No_such_secret_collection_at_path:_.2F"></span><span class="mw-headline" id="No_such_secret_collection_at_path:_/">No such secret collection at path: /</span>
@@ -721,7 +721,7 @@ UseIn=gnome;sway
 </p>
 <ul>
 <li>The <code>~/.local/share/keyrings/</code> directory does not exist. Create it if missing.</li>
-<li>A custom <code>~/.xinitrc</code> is used. This may be solved by adding the following line <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?pid=1640822#p1640822">[5]</a>
+<li>A custom <code>~/.xinitrc</code> is used. This may be solved by adding the following line <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?pid=1640822#p1640822">[6]</a>
 </li>
 </ul>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.xinitrc</pre>
@@ -777,8 +777,8 @@ UseIn=gnome;sway
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GNOME/Keyring&amp;oldid=830121">https://wiki.archlinux.org/index.php?title=GNOME/Keyring&amp;oldid=830121</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 29 March 2025, at 17:07.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GNOME/Keyring&amp;oldid=835036">https://wiki.archlinux.org/index.php?title=GNOME/Keyring&amp;oldid=835036</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 1 June 2025, at 15:53.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

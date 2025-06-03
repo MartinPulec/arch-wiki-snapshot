@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Dell XPS 13 (9360) - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -540,7 +540,7 @@
 <div>
 <b>Reason:</b> Some first person used (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Dell_XPS_13_(9360).html">Talk:Dell XPS 13 (9360)</a>)</div>
 </div>
-<table class="wikitable" style="float: right;">
+<table class="wikitable archwiki-table-laptop">
 
 <tbody>
 <tr>
@@ -893,13 +893,15 @@ w /sys/devices/platform/i8042/serio0/power/wakeup - - - - enabled
 Using the solution from <a rel="nofollow" class="external text" href="https://bugs.launchpad.net/dell-sputnik/+bug/1766825/comments/26">launchpad</a> helps in this case.
 </p>
 <h3><span class="mw-headline" id="Continuous_hissing_sound_with_headphones">Continuous hissing sound with headphones</span></h3>
-<p>Open alsamixer and set "Headphone Mic Boost" gain to 10 dB (See discussion on <a rel="nofollow" class="external text" href="https://www.reddit.com/r/Dell/comments/4j1zz4/headphones_have_static_noise_with_ubuntu_1604_on/">reddit</a>). Note that this does reduce the volume slightly.
+<p>Run <code>alsamixer</code> and set <i>Headphone Mic Boost</i> gain to 10 dB.
 </p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> This does reduce the volume slightly, see discussion on <a rel="nofollow" class="external text" href="https://www.reddit.com/r/Dell/comments/4j1zz4/headphones_have_static_noise_with_ubuntu_1604_on/">reddit</a>.</div>
 <p>You may also run the equivalent command:
 </p>
 <pre>$ amixer -c PCH cset 'name=Headphone Mic Boost Volume' 1
 </pre>
-<p>PulseAudio will rewrite these ALSA settings on each boot. So if you use PulseAudio you may change its config to make the setting permanent:
+<p><a href="../en/PulseAudio.html" title="PulseAudio">PulseAudio</a> will rewrite these <a href="../en/Advanced_Linux_Sound_Architecture.html" class="mw-redirect" title="ALSA">ALSA</a> settings on each boot. So if you use PulseAudio you may change its config to make the setting permanent:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/usr/share/alsa-card-profile/mixer/paths/analog-input-headphone-mic.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Element Headphone Mic Boost]
@@ -927,7 +929,7 @@ Target = pulseaudio
 Description = Set default Headphone Mic Boost volume to 1...
 When = PostTransaction
 Exec = /usr/bin/sed -i '/\[Element Headphone Mic Boost\]/,/^$/s/volume = .*/volume = 1/' /usr/share/alsa-card-profile/mixer/paths/analog-input-internal-mic.conf /usr/share/alsa-card-profile/mixer/paths/analog-input-headphone-mic.conf</pre>
-<p>Alternatively, you can avoid these changes to files under /usr by calling amixer at startup. The first solution would be to add the command above to the profile of your shell (<code>~/.bash_profile</code> in case of bash). Or you set up a systemd user service that is pulled in by PulseAudio:
+<p>Alternatively, you can avoid these changes to files under <code>/usr</code> by calling <span class="plainlinks archwiki-template-man" title="$ man 1 amixer"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/amixer.1">amixer(1)</a></span> at <a href="../en/Autostarting.html" title="Autostarting">autostarting</a>. The first solution would be to add the command above to your <a href="../en/Command-line_shell.html#Configuration_files" title="Command-line shell">shell configuration file</a>. Or you set up a <a href="../en/Systemd/User.html" title="Systemd/User">systemd/User</a> service that is pulled in by PulseAudio:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.config/systemd/user/headphones_hissing.service</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Unit]
@@ -943,7 +945,7 @@ ExecStart=amixer -c PCH cset 'name=Headphone Mic Boost Volume' 1
 WantedBy=pulseaudio.service</pre>
 <p><a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">Enable</a> the <a href="../en/Systemd/User.html" class="mw-redirect" title="User unit">user unit</a>. 
 </p>
-<p>To give these benefits to the other users on your system, you can set this globally, i.e. call amixer in <code>/etc/profile</code> and put the systemd unit in <code>/etc/systemd/user/headphones_hissing.service</code> and enable it globally by using the <code>--global</code> option respectively.
+<p>To give these benefits to the other users on your system, you can set this globally, i.e. call <i>amixer</i> in <code>/etc/profile</code> and put the systemd unit in <code>/etc/systemd/user/headphones_hissing.service</code> and enable it globally by using the <code>--global</code> option respectively.
 </p>
 <h2><span class="mw-headline" id="Fingerprint_sensor">Fingerprint sensor</span></h2>
 <p>Dell officially does not support fingerprint reader functionality <a rel="nofollow" class="external autonumber" href="https://www.dell.com/community/en/conversations/linux-general/xps-13-fingerprint-reader-linux-support/647f6e5ff4ccf8a8debb9ba1">[4]</a>, however an effort on reverse engineering the protocol of Validity <code>138a:0090</code>, <code>138a:0094</code>, <code>138a:0097</code> fingerprint readers can be found at github <a rel="nofollow" class="external autonumber" href="https://github.com/nmikhailov/Validity90">[5]</a>.
@@ -975,8 +977,8 @@ WantedBy=pulseaudio.service</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dell_XPS_13_(9360)&amp;oldid=830293">https://wiki.archlinux.org/index.php?title=Dell_XPS_13_(9360)&amp;oldid=830293</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 1 April 2025, at 07:21.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dell_XPS_13_(9360)&amp;oldid=831793">https://wiki.archlinux.org/index.php?title=Dell_XPS_13_(9360)&amp;oldid=831793</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 12 April 2025, at 15:53.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

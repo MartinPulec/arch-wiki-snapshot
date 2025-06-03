@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Xrdp - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -307,6 +307,17 @@
 			<ul id="toc-H.264_codec-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Cannot_use_podman" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Cannot_use_podman">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">4.13</span>
+					<span>Cannot use podman</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Cannot_use_podman-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
@@ -540,6 +551,15 @@ session     include     system-remote-login
 <p>xrdp since 0.10.2 offers H.264 as the preferred codec. The default is turned for performance and may cause video quality degradation or sluggish, depending on the GPU. You can tune this by editing 
 <code>/etc/xrdp/gfx.toml</code>. See <code>man gfx.toml</code> for the list of options. Usually, you could try <code>preset="medium"</code> if video quality is not good, or <code>order = ["RFX", "H.264"]</code> if you are in a good network and H.264 is causing more latency.
 </p>
+<h3><span class="mw-headline" id="Cannot_use_podman">Cannot use podman</span></h3>
+<p>podman relies on DBUS_SESSION_BUS_ADDRESS being correctly set, like <code>DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus</code> However, xrdp requires a new dbus-session and set it to a temporary location.
+</p>
+<p>The solution is to set it again in your <code>.bashrc</code>
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">.bashrc</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$UID/bus
+export XDG_RUNTIME_DIR=/run/user/$UID
+</pre>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul>
 <li>
@@ -560,8 +580,8 @@ session     include     system-remote-login
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Xrdp&amp;oldid=830322">https://wiki.archlinux.org/index.php?title=Xrdp&amp;oldid=830322</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 1 April 2025, at 18:02.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Xrdp&amp;oldid=834087">https://wiki.archlinux.org/index.php?title=Xrdp&amp;oldid=834087</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 17 May 2025, at 15:27.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

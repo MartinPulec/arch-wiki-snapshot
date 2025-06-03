@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Limine - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -200,29 +200,7 @@
 			</a>
 			
 			<ul id="toc-Boot_entry_automation-sublist" class="vector-toc-list">
-				<li id="toc-Dracut_support" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Dracut_support">
-				<div class="vector-toc-text">
-					<span class="vector-toc-numb">6.1.1</span>
-					<span>Dracut support</span>
-				</div>
-			</a>
-			
-			<ul id="toc-Dracut_support-sublist" class="vector-toc-list">
 			</ul>
-		</li>
-		<li id="toc-mkinitcpio_or_another_initramfs_tool" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#mkinitcpio_or_another_initramfs_tool">
-				<div class="vector-toc-text">
-					<span class="vector-toc-numb">6.1.2</span>
-					<span>mkinitcpio or another initramfs tool</span>
-				</div>
-			</a>
-			
-			<ul id="toc-mkinitcpio_or_another_initramfs_tool-sublist" class="vector-toc-list">
-			</ul>
-		</li>
-	</ul>
 		</li>
 		<li id="toc-Snapper_snapshot_integration_for_Btrfs" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Snapper_snapshot_integration_for_Btrfs">
@@ -390,7 +368,16 @@
 </p>
 <h2><span class="mw-headline" id="Deploying_the_boot_loader">Deploying the boot loader</span></h2>
 <h3><span class="mw-headline" id="UEFI_systems">UEFI systems</span></h3>
-<p>Deploying Limine on UEFI systems involves copying the <code>/usr/share/limine/BOOTX64.EFI</code> file to an EFI system partition, usually to <code><i>esp</i>/EFI/limine/BOOTX64.EFI</code>, but it can be given other filenames, as long as the UEFI BIOS is aware of them. Unlike <a href="../en/GRUB.html" title="GRUB">GRUB</a>, Limine does not add an entry for the bootloader in the NVRAM automatically. Use <a href="../en/Unified_Extensible_Firmware_Interface.html#efibootmgr" class="mw-redirect" title="Efibootmgr">efibootmgr</a> to setup an entry for Limine.
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> If installing on a system with a 32-bit EFI, one may replace the <code>BOOTX64.EFI</code> filename with <code>BOOTIA32.EFI</code>.</div>
+<p>Deploying Limine on UEFI systems involves copying the <code>/usr/share/limine/BOOTX64.EFI</code> file to the EFI system partition, and to make the UEFI BIOS aware of it.
+</p>
+<pre># mkdir -p <i>esp</i>/EFI/limine
+# cp /usr/share/limine/BOOTX64.EFI <i>esp</i>/EFI/limine/
+</pre>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong> If installing to removable media, it is recommended to copy the <code>BOOTX64.EFI</code> file to <code><i>esp</i>/EFI/BOOT/BOOTX64.EFI</code> instead, which is the default boot loader application search location, and to skip the rest of this section.</div>
+<p>Unlike <a href="../en/GRUB.html" title="GRUB">GRUB</a>, Limine does not add an entry for the bootloader in the NVRAM automatically. Use <a href="../en/Unified_Extensible_Firmware_Interface.html#efibootmgr" class="mw-redirect" title="Efibootmgr">efibootmgr</a> to setup an entry for Limine.
 </p>
 <p>To do so, one can do the following:
 </p>
@@ -480,6 +467,10 @@ To protect the config file you should embed its <code>b2sum</code> in the EFI ex
 <p>While not mandatory, it may be useful to set up a <a href="../en/Pacman.html#Hooks" class="mw-redirect" title="Pacman hook">pacman hook</a> to deploy Limine whenever it is upgraded.
 </p>
 <h3><span class="mw-headline" id="UEFI">UEFI</span></h3>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> Make sure to replace the ESP directory path if using something other than <code><i>esp</i>/EFI/limine</code> (e.g. <code><i>esp</i>/EFI/BOOT</code>).</div>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> If using a 32-bit EFI system, make sure to replace <code>BOOTX64.EFI</code> below with <code>BOOTIA32.EFI</code>.</div>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pacman.d/hooks/99-limine.hook</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Trigger]
 Operation = Install
@@ -509,31 +500,35 @@ Exec = /bin/sh -c "/usr/bin/limine bios-install <i>/dev/sdX</i> &amp;&amp; /usr/
 <code><i>/dev/sdX</i></code> is the <b>disk</b> (<b>not a partition</b>) where Limine was installed to in the previous steps.</li></ul>
 <h2><span class="mw-headline" id="Tips_and_tricks">Tips and tricks</span></h2>
 <h3><span class="mw-headline" id="Boot_entry_automation">Boot entry automation</span></h3>
-<h4><span class="mw-headline" id="Dracut_support">Dracut support</span></h4>
-<p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/limine-dracut-support/">limine-dracut-support</a></span><sup><small>AUR</small></sup> is designed for users who prefer <a href="../en/Dracut.html" title="Dracut">Dracut</a> for generating <a href="../en/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs">initramfs</a> or <a href="../en/Unified_kernel_image.html" class="mw-redirect" title="UKI">UKI</a>.  It simplifies kernel management by automating the addition and removal of kernels in the Limine bootloader.
+<p>To automate kernel integration (<a href="../en/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs">initramfs</a> or <a href="../en/Unified_kernel_image.html" class="mw-redirect" title="UKI">UKI</a>) with Limine, install:
+</p>
+<ul><li>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/limine-dracut-support/">limine-dracut-support</a></span><sup><small>AUR</small></sup> for <a href="../en/Dracut.html" title="Dracut">Dracut</a>
+</li></ul>
+<p><b>or</b>
+</p>
+<ul><li>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/limine-mkinitcpio-hook/">limine-mkinitcpio-hook</a></span><sup><small>AUR</small></sup> for <a href="../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a>
+</li></ul>
+<p>Both tools include pacman hooks for automatically handling kernel entries.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> 
-<p>When updating or reinstalling Limine, its EFI's image is automatically deployed to the ESP on UEFI system with x86_64 architecture.
+<p>When updating or reinstalling Limine, its EFI image is automatically deployed to the ESP on UEFI system with x86_64 architecture.
 </p>
 <hr>
-<p>This tool requires <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=jdk17-openjdk">jdk17-openjdk</a></span> <b>or newer</b>.  
-Check your Java version with
-<code>$ archlinux-java status</code>
-</p>
-<p>If your system is using an older version, install a newer one and set it as the default by running: 
-<code># archlinux-java set <i>&lt;java-17-openjdk or newer&gt;</i></code>
+<p>When using legacy BIOS or alternative CPU architectures such as ARM or RISC-V, automatic deployment of the EFI binary is disabled. In those cases, a specific Limine binary must be manually deployed to your boot partition.
 </p>
 </div>
 <p><b>Configurations:</b>
 </p>
-<p>Instead of editing <code>/etc/limine-entry-tool.conf</code>, modify <code>/etc/default/limine</code>, which takes precedence over <code>/etc/limine-entry-tool.conf</code>.
+<p>(Optional) Copy <code>/etc/limine-entry-tool.conf</code> to <code>/etc/default/limine</code> if not present.
 </p>
-<p>1. Edit <code>/etc/default/limine</code>
+<p>Edit <code>/etc/default/limine</code>:
 </p>
 <ul>
-<li>Set <code>ESP_PATH</code> to your <a href="../en/EFI_system_partition.html" class="mw-redirect" title="ESP">ESP</a> path. (or, if <code>bootctl --print-esp-path</code> automatically detects the ESP, you do not need to configure <code>ESP_PATH</code>).</li>
-<li>Set <code>KERNEL_CMDLINE[default]=</code> with your preferred <a href="../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a>.</li>
+<li>If <code>bootctl --print-esp-path</code> doesn't detect your ESP, manually set <code>ESP_PATH</code> to your <a href="../en/EFI_system_partition.html" class="mw-redirect" title="ESP">ESP</a>/boot mount point.</li>
+<li>(Optional) Set <code>KERNEL_CMDLINE[default]=</code> with your preferred <a href="../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a>.</li>
 </ul>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> 
@@ -544,8 +539,8 @@ Check your Java version with
 </ul>
 </div>
 <ul>
-<li>To save ESP space, set <code>DRACUT_FALLBACK</code> to <code>no</code> to disable automatic fallback generation for <a href="../en/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs">initramfs</a> or <a href="../en/Unified_kernel_image.html" class="mw-redirect" title="UKI">UKI</a>.</li>
-<li>If you prefer to boot with <a href="../en/Unified_kernel_image.html" class="mw-redirect" title="UKI">UKI</a>, set <code>DRACUT_UKI</code> to <code>yes</code>.</li>
+<li>(Optional) To save ESP space, set <code>DRACUT_FALLBACK</code> to <code>no</code> to disable automatic fallback generation by Dracut for <a href="../en/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs">initramfs</a> or <a href="../en/Unified_kernel_image.html" class="mw-redirect" title="UKI">UKI</a>.</li>
+<li>(Optional) If you prefer booting with <a href="../en/Unified_kernel_image.html" class="mw-redirect" title="UKI">UKI</a>, set <code>ENABLE_UKI</code> to <code>yes</code>.</li>
 </ul>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong>  <b>Advantages of UKI:</b>
@@ -555,35 +550,31 @@ Check your Java version with
 <li>If <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sbctl">sbctl</a></span> is installed and enabled, the tool can automatically sign the UKI with your Secure Boot key when updating or installing kernel.</li>
 </ul>
 </div>
-<li>Set <code>FIND_BOOTLOADERS</code> to <code>yes</code> to detect and add systemd-boot, rEFInd, or the default EFI loader to Limine if they are present in the same ESP.</li>
-<p>2. Run the following command to generate an initramfs or UKI and update <code><i>esp</i>/limine.conf</code>.
+<li>(Optional) Set <code>FIND_BOOTLOADERS</code> to <code>yes</code> to detect and add systemd-boot, rEFInd, or the default EFI loader to Limine if they are present in the same ESP.</li>
+<p>For more configuration options, refer to <a rel="nofollow" class="external text" href="https://gitlab.com/Zesko/limine-entry-tool/-/blob/master/README.md#configuration">limine-entry-tool README</a>
 </p>
-<pre># limine-update
-</pre>
-<p>For more configuration options, refer to <a rel="nofollow" class="external text" href="https://gitlab.com/Zesko/limine-entry-tool#configuration">the configuration of limine-entry-tool</a>
+<p><b>Commands:</b>
 </p>
-<h4><span class="mw-headline" id="mkinitcpio_or_another_initramfs_tool">mkinitcpio or another initramfs tool</span></h4>
-<p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/limine-entry-tool/">limine-entry-tool</a></span><sup><small>AUR</small></sup> does not include an <a href="../en/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs">initramfs</a> tool and <a href="../en/Pacman.html#Hooks" class="mw-redirect" title="Pacman hooks">pacman hooks</a> for automating the addition and removal of kernels.
-</p>
-<p>1. Edit <code>/etc/default/limine</code> to override any settings in <code>/etc/limine-entry-tool.conf</code>
-</p>
+<ul><li>
+<code>limine-install</code> installs Limine to your EFI system partition.</li></ul>
+<ul><li>
+<code>limine-update</code> updates Limine and generates an initramfs or UKI depending on your initramfs generator:
 <ul>
-<li>Set <code>ESP_PATH</code> to your <a href="../en/EFI_system_partition.html" class="mw-redirect" title="ESP">ESP</a> path. (or, if <code>bootctl --print-esp-path</code> automatically detects the ESP, configuring <code>ESP_PATH</code> is not required).</li>
-<li>Set <code>KERNEL_CMDLINE[default]=</code> with your preferred <a href="../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a>.</li>
+<li>For mkinitcpio: run <code>limine-mkinitcpio</code> instead of <code>mkinitcpio</code>
+</li>
+<li>For dracut: run <code>dracut-rebuild</code> instead of <code>dracut</code>
+</li>
 </ul>
+</li></ul>
+<ul><li>
+<code>limine-scan</code> detects active EFI boot entries (dual boot) and allows you to easily add them to Limine.</li></ul>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> 
-<ul>
-<li>If <code>KERNEL_CMDLINE[default]=</code> or <code>KERNEL_CMDLINE=</code> is not set, the tool will first attempt to read from the file <code>/etc/kernel/cmdline</code>. If unavailable, it will fall back to reading from <code>/proc/cmdline</code>.</li>
-<li>Optionally, <code>KERNEL_CMDLINE["<i>kernel name</i>"]=</code> corresponds to kernel entry name in the boot menu, allowing unique kernel cmdline/parameters per kernel entry.</li>
-</ul>
+<strong>Tip:</strong>  Managing kernels manually with limine-entry-tool
+<p>If you don't use an initramfs tool or use a different one like <a href="../en/Booster.html" title="Booster">booster</a>,
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/limine-entry-tool/">limine-entry-tool</a></span><sup><small>AUR</small></sup> does not provide initramfs generation and does not include automatic <a href="../en/Pacman.html#Hooks" class="mw-redirect" title="Pacman hooks">pacman hooks</a> for kernel management.
+You are free to create custom scripts using the <code>limine-entry-tool</code> command with your desired options to manage (add, update, and remove) boot entries.
+</p>
 </div>
-<p>2. Install an <a href="../en/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs">initramfs</a> tool of your choice (e.g., <a href="../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a>, <a href="../en/Dracut.html" title="Dracut">dracut</a>, <a href="../en/Booster.html" title="Booster">booster</a>, or another preferred tool).
-</p>
-<p>3. Write a script, such as <a href="../en/Pacman.html#Hooks" class="mw-redirect" title="Pacman hooks">pacman hooks</a> to automate kernel addition and removal using the <code>limine-entry-tool</code> command with desired options for managing boot entries in Limine boot menu.
-</p>
-<p>For further details, refer to <a rel="nofollow" class="external text" href="https://gitlab.com/Zesko/limine-entry-tool/-/blob/master/README.md">limine-entry-tool README</a>.
-</p>
 <h3><span class="mw-headline" id="Snapper_snapshot_integration_for_Btrfs">Snapper snapshot integration for Btrfs</span></h3>
 <p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/limine-snapper-sync/">limine-snapper-sync</a></span><sup><small>AUR</small></sup> tool provides integration between <a href="../en/Snapper.html" title="Snapper">Snapper</a> and the Limine bootloader. It is useful for:
 </p>
@@ -596,27 +587,28 @@ Check your Java version with
 <li>Testing read-only snapshots: Use <a href="../en/Overlay_filesystem.html" class="mw-redirect" title="Overlayfs">overlayfs</a> to test any installed packages on an immutable-like system without modifying the original data. Note that this does not mean testing the boot partition or a separate home subvolume/partition.</li>
 </ul>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> 
-<p>The OverlayFS functionality is available through <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/limine-dracut-support/">limine-dracut-support</a></span><sup><small>AUR</small></sup> for <a href="../en/Dracut.html" title="Dracut">dracut</a>.
+<strong>Tip:</strong> <b>Enable OverlayFS</b>
+<p>For <a href="../en/Dracut.html" title="Dracut">dracut</a>, OverlayFS works out of the box in <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/limine-dracut-support/">limine-dracut-support</a></span><sup><small>AUR</small></sup>.
 </p>
-<p>For <a href="../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a>, use the <code>grub-btrfs-overlayfs</code> hook, which is provided by <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=grub-btrfs">grub-btrfs</a></span>. Avoid using the systemd hook, as it is incompatible with grub-btrfs-overlayfs.
+<p>For <a href="../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a>, manually add the <code>btrfs-overlayfs</code> <a href="../en/Mkinitcpio.html#Common_hooks" title="Mkinitcpio">hook</a>, which is provided by <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/limine-mkinitcpio-hook/">limine-mkinitcpio-hook</a></span><sup><small>AUR</small></sup>.
+Do not enable the <code>systemd</code> hook - it is incompatible with <code>btrfs-overlayfs</code> .
 </p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> If you're using GNOME, be aware that <a href="../en/GDM.html" title="GDM">GDM</a> requires write access and cannot start from a read-only snapshot. You need an OverlayFS solution to provide a temporary writable layer. Alternatively, log in via TTY first.</div>
 </div>
 <h4><span class="mw-headline" id="Configurations">Configurations</span></h4>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> 
 <p>It is recommended to have an <a href="../en/EFI_system_partition.html" class="mw-redirect" title="ESP">ESP</a> size of more than <b>2 GiB</b>, depending on how many bootable snapshots and different kernel versions you wish to install.
 </p>
-<hr>
-<p>This tool requires <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=jdk17-openjdk">jdk17-openjdk</a></span> <b>or newer</b>.  
-Check your Java version with
-<code>$ archlinux-java status</code>
-</p>
-<p>If your system is using an older version, install a newer one and set it as the default by running: 
-<code># archlinux-java set <i>&lt;java-17-openjdk or newer&gt;</i></code>
+</div>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong> <b>Automatic boot configuration</b>
+<p>Use <code>limine-dracut-support</code> or <code>limine-mkinitcpio-hook</code> (see <a href="#Boot_entry_automation">#Boot entry automation</a>)  to automatically udate kernel boot entries in <code><i>esp</i>/limine.conf</code> whenever kernels are installed, updated, or removed. This allows you to skip the first configuration step below.
 </p>
 </div>
-<p>1. Configure <code><i>esp</i>/limine.conf</code> to include either the <code>//Snapshots</code> or <code>/Snapshots</code> keyword for auto-generated snapshot entries.
+<p><br>
+1. Configure <code><i>esp</i>/limine.conf</code> to include either the <code>//Snapshots</code> or <code>/Snapshots</code> keyword for auto-generated snapshot entries.
 </p>
 <p>An example:
 </p>
@@ -634,27 +626,20 @@ comment: machine-id=<i>yyyyyyyyyyyyyyyyyy</i>
     //Snapshots</pre>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> 
-<p>Choose only one keyword:
-</p>
-<ul><li>
-<code>//Snapshots</code> goes inside the OS boot entry block. (<b>default</b>, if not set)</li></ul>
-<p><b>or</b>
-</p>
-<ul><li>
-<code>/Snapshots</code> goes outside the block.</li></ul>
-<hr>
-<p>Including the machine-ID from <code>/etc/machine-id</code> is optional but helpful for automatic identification. Renaming the boot entry will not affect the tool.
+<p>Including the machine-ID from <code>/etc/machine-id</code> is optional but very helpful for automatic identification. Renaming OS names doesn't matter.
 </p>
 <hr>
 <p>Bootable files must be placed in the same ESP as limine.conf, as only the <code>boot():</code> function is supported.
 </p>
 </div>
-<p>2. Edit <code>/etc/default/limine</code>, which will override <code>/etc/limine-snapper-sync.conf</code>:
+<p>2. (Optional) Copy any configurations from <code>/etc/limine-snapper-sync.conf</code> to <code>/etc/default/limine</code> if they are not already present.
+</p>
+<p>Edit <code>/etc/default/limine</code>, which will override <code>/etc/limine-snapper-sync.conf</code>:
 </p>
 <ul>
-<li>Set <code>ESP_PATH</code> to your <a href="../en/EFI_system_partition.html" class="mw-redirect" title="ESP">ESP</a> path  (or, if <code>bootctl --print-esp-path</code> automatically detects the ESP, configuring <code>ESP_PATH</code> is not required).</li>
-<li>Set <code>MAX_SNAPSHOT_ENTRIES</code> to limit the number of snapshot entries. The default is 8.</li>
-<li>Set <code>LIMIT_USAGE_PERCENT</code> to stop creating new snapshot entries when the limit of ESP usage is exceeded. The default is 80.</li>
+<li>If <code>bootctl --print-esp-path</code> doesn't detect your ESP, manually set <code>ESP_PATH</code> to your <a href="../en/EFI_system_partition.html" class="mw-redirect" title="ESP">ESP</a>/boot mount point.</li>
+<li>(Optional) Set <code>MAX_SNAPSHOT_ENTRIES</code> to limit the number of snapshot entries. The default is 8.</li>
+<li>(Optional) Set <code>LIMIT_USAGE_PERCENT</code> to stop creating new snapshot entries when the limit of ESP usage is exceeded. The default is 85.</li>
 </ul>
 <ul><li>If using <b>custom</b> Snapper layout, make sure to configure the following:
 <ul>
@@ -667,22 +652,20 @@ comment: machine-id=<i>yyyyyyyyyyyyyyyyyy</i>
 <pre># limine-snapper-sync
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong>  If <code>limine-snapper-sync</code> shows an error that command <code>limine-reset-enroll</code> and <code>limine-enroll-config</code> not found, these commands are provided by <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/limine-dracut-support/">limine-dracut-support</a></span><sup><small>AUR</small></sup> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/limine-entry-tool-git/">limine-entry-tool-git</a></span><sup><small>AUR</small></sup>, which is not installed. 
-<p>This error can be safely ignored if you do not use them.  Alternatively, to prevent this error,  edit <code>/etc/limine-snapper-sync.conf</code> to remove <code>COMMANDS_BEFORE_SAVE="limine-reset-enroll"</code> and <code>COMMANDS_AFTER_SAVE="limine-enroll-config"</code>
+<strong>Note:</strong>  If it shows an error that command <code>limine-reset-enroll</code> and <code>limine-enroll-config</code> not found, these commands are provided by either <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/limine-dracut-support/">limine-dracut-support</a></span><sup><small>AUR</small></sup>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/limine-mkinitcpio-hook/">limine-mkinitcpio-hook</a></span><sup><small>AUR</small></sup> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/limine-entry-tool/">limine-entry-tool</a></span><sup><small>AUR</small></sup>, which is not installed. 
+<p>This error can be safely ignored if you do not use them.  Alternatively, to prevent this error,  edit <code>/etc/limine-snapper-sync.conf</code> to remove two lines:
 </p>
+<pre><code>COMMANDS_BEFORE_SAVE="limine-reset-enroll"</code> 
+<code>COMMANDS_AFTER_SAVE="limine-enroll-config"</code>
+</pre>
 </div>  
 <p>4. If everything works, then <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> <code>limine-snapper-sync.service</code> to automatically synchronize boot entries with the Snapper snapshot list.
 </p>
 <pre># systemctl enable --now limine-snapper-sync.service
 </pre>
-<p>5. Optionally, install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=snap-pac">snap-pac</a></span>. It triggers Snapper to create snapshots during system updates, which limine-snapper-sync then synchronizes to generate related snapshot entries in Limine.
+<p>5. (Optional) Install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=snap-pac">snap-pac</a></span>. It triggers Snapper to create snapshots during system updates, which limine-snapper-sync then synchronizes to generate related snapshot entries in Limine.
 </p>
-<div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> <b>for <a href="../en/Dracut.html" title="Dracut">dracut</a> users:</b>
-<p>Install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/limine-dracut-support/">limine-dracut-support</a></span><sup><small>AUR</small></sup> to automatically manage boot entries in <code>limine.conf</code> on the ESP when installing, updating, or uninstalling kernels. See <a href="#Dracut_support">Dracut support</a> for more details.
-</p>
-</div>
-<p>For further details, refer to the <a rel="nofollow" class="external text" href="https://gitlab.com/Zesko/limine-snapper-sync">limine-snapper-sync README and more configuration options</a>.
+<p>For further details and additional configuration options, refer to <a rel="nofollow" class="external text" href="https://gitlab.com/Zesko/limine-snapper-sync/-/blob/master/README.md">limine-snapper-sync README</a>.
 </p>
 <h4><span class="mw-headline" id="Commands">Commands</span></h4>
 <ul>
@@ -718,8 +701,8 @@ comment: machine-id=<i>yyyyyyyyyyyyyyyyyy</i>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Limine&amp;oldid=830181">https://wiki.archlinux.org/index.php?title=Limine&amp;oldid=830181</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 30 March 2025, at 13:30.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Limine&amp;oldid=833895">https://wiki.archlinux.org/index.php?title=Limine&amp;oldid=833895</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 14 May 2025, at 05:29.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

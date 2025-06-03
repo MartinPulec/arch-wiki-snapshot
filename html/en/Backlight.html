@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Backlight - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -557,7 +557,6 @@ SUBSYSTEM=="backlight", ACTION=="add", KERNEL=="acpi_video0", ATTR{brightness}="
 <li>Users of NVIDIA's proprietary drivers may need to add <code>Option "RegistryDwords" "RMUseSwI2c=0x01; RMI2cSpeed=100"</code> to the <code>Device</code> section in the <a href="../en/NVIDIA.html#Xorg_configuration" title="NVIDIA">Xorg configuration</a> or the <code>NVreg_RegistryDwords=RMUseSwI2c=0x01;RMI2cSpeed=100</code> <a href="../en/Kernel_module.html#Setting_module_options" class="mw-redirect" title="Kernel module parameter">kernel module parameter</a> for the <code>nvidia</code> module. See <a rel="nofollow" class="external autonumber" href="https://forums.developer.nvidia.com/t/gddccontrol-issues-with-nvidia-drivers-i2c-monitor-display-ddc-dp-hdmi-failing/30427/33">[2]</a> and <a rel="nofollow" class="external autonumber" href="https://forums.developer.nvidia.com/t/gddccontrol-issues-with-nvidia-drivers-i2c-monitor-display-ddc-dp-hdmi-failing/30427/61">[3]</a>.</li>
 <li>
 <code>ddcutil</code> will fail to set some VCP features if there is a feature enabled on the monitor which already automatically adjusts them (e.g. <a href="https://en.wikipedia.org/wiki/Contrast_ratio#Dynamic_contrast_.28DC.29" class="extiw" title="wikipedia:Contrast ratio">Dynamic Contrast Ratio</a> or BenQ's <i>Eye Care</i> technology).</li>
-<li>To facilitate binding screen brightness control to a keyboard shortcut, it may be convenient to enable non-superuser access to the relevant <i>I2C</i> devices. This can be achieved by adding a group <code>i2c</code> and configuring <a href="../en/Udev.html" title="Udev">udev</a> to set this group as the owner of the <i>I2C</i> devices. See <a rel="nofollow" class="external autonumber" href="https://raspberrypi.stackexchange.com/a/4472">[4]</a>.</li>
 <li>If <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=ddcutil">ddcutil</a></span> is installed, it provides the <code>/usr/share/ddcutil/data/90-nvidia-i2c.conf</code> file, which can be copied to <code>/etc/X11/xorg.conf.d/</code> instead of manually editing <a href="../en/Xorg.html" title="Xorg">Xorg</a> configuration files. It also provides <code>/usr/share/ddcutil/data/60-ddcutil-i2c.rules</code> and <code>/usr/share/ddcutil/data/60-ddcutil-usb.rules</code> for <a href="../en/Udev.html" title="Udev">udev</a> rules.</li>
 </ul>
 </div>
@@ -611,7 +610,7 @@ SUBSYSTEM=="backlight", ACTION=="add", KERNEL=="acpi_video0", ATTR{brightness}="
 </tr>
 <tr>
 <td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=acpilight">acpilight</a></span>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/acpilight/">acpilight</a></span><sup><small>AUR</small></sup>
 </td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes
 </td>
@@ -711,7 +710,7 @@ SUBSYSTEM=="backlight", ACTION=="add", KERNEL=="acpi_video0", ATTR{brightness}="
 </td>
 <td>GPL-3.0-or-later
 </td>
-<td>Manages screen temperature (<a href="../en/Xorg.html" title="Xorg">Xorg</a> only) and smoothly dims brightness after a timeout. Supports ambient light sensors <a rel="nofollow" class="external autonumber" href="https://github.com/FedeDP/Clightd/wiki/Sensors">[5]</a>. Can turn webcam into an ambient light sensor.
+<td>Manages screen temperature (<a href="../en/Xorg.html" title="Xorg">Xorg</a> only) and smoothly dims brightness after a timeout. Supports ambient light sensors <a rel="nofollow" class="external autonumber" href="https://github.com/FedeDP/Clightd/wiki/Sensors">[4]</a>. Can turn webcam into an ambient light sensor.
 </td>
 </tr>
 <tr>
@@ -880,7 +879,7 @@ SUBSYSTEM=="backlight", ACTION=="add", KERNEL=="acpi_video0", ATTR{brightness}="
 <strong>Note:</strong> 
 <ul>
 <li>xbacklight only works with <a href="../en/Intel_graphics.html" class="mw-redirect" title="Intel">Intel</a>. Other drivers did not add support for the RandR backlight property.</li>
-<li>xbacklight currently does not work with the modesetting driver <a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/xorg/xserver/issues/47">[6]</a>.</li>
+<li>xbacklight currently does not work with the modesetting driver <a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/xorg/xserver/issues/47">[5]</a>.</li>
 </ul>
 </div>
 <p>To set brightness to 50% of maximum:
@@ -1069,7 +1068,7 @@ $ gdbus call --session --dest org.gnome.SettingsDaemon.Power --object-path /org/
 <h3>
 <span id="Unable_to_control_eDP_Panel_brightness_.28Intel_i915_only.29"></span><span class="mw-headline" id="Unable_to_control_eDP_Panel_brightness_(Intel_i915_only)">Unable to control eDP Panel brightness (Intel i915 only)</span>
 </h3>
-<p>Embedded Display Port (eDP) v1.2 introduced a new display panel control protocol for backlight and other controls that works through the AUX channel <a rel="nofollow" class="external autonumber" href="https://www.vesa.org/wp-content/uploads/2010/12/DisplayPort-DevCon-Presentation-eDP-Dec-2010-v3.pdf">[7]</a>
+<p>Embedded Display Port (eDP) v1.2 introduced a new display panel control protocol for backlight and other controls that works through the AUX channel <a rel="nofollow" class="external autonumber" href="https://www.vesa.org/wp-content/uploads/2010/12/DisplayPort-DevCon-Presentation-eDP-Dec-2010-v3.pdf">[6]</a>
 </p>
 <p>By default the i915 driver tries to use PWM to control backlight brightness, which might not work.
 </p>
@@ -1135,7 +1134,7 @@ MODULES=(i915 pwm-lpss-platform)
 <pre>$ xfce4-power-manager -c
 </pre>
 <h3><span class="mw-headline" id="xbacklight_returns_:_No_outputs_have_backlight_property">xbacklight returns : No outputs have backlight property</span></h3>
-<p>Depending on the video card installed, sometimes xbacklight from <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xorg-xbacklight">xorg-xbacklight</a></span> returns the message "No outputs have backlight property". Installing <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=acpilight">acpilight</a></span> provides an alternative xbacklight that may work as expected.
+<p>Depending on the video card installed, sometimes xbacklight from <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xorg-xbacklight">xorg-xbacklight</a></span> returns the message "No outputs have backlight property". Installing <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/acpilight/">acpilight</a></span><sup><small>AUR</small></sup> provides an alternative xbacklight that may work as expected.
 </p>
 <h3><span class="mw-headline" id="Backlight_is_always_at_full_brightness_after_a_reboot_with_amdgpu_driver">Backlight is always at full brightness after a reboot with amdgpu driver</span></h3>
 <p>Due to a <a rel="nofollow" class="external text" href="https://bugzilla.kernel.org/show_bug.cgi?id=203905">bug</a> introduced recently in the amdgpu driver, the backlight's <code>actual_brightness</code> value is reported as a 16-bit integer, which is outside the 8-bit range specified in <code>max_brightness</code>. This causes the <code>systemd-backlight</code> service to attempt to restore, at boot time, a value that is too large and ends being truncated to maximum brightness (255).
@@ -1224,8 +1223,8 @@ SUBSYSTEM=="backlight", ENV{ID_BACKLIGHT_CLAMP}="0"</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Backlight&amp;oldid=829057">https://wiki.archlinux.org/index.php?title=Backlight&amp;oldid=829057</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 15 March 2025, at 22:06.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Backlight&amp;oldid=832735">https://wiki.archlinux.org/index.php?title=Backlight&amp;oldid=832735</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 26 April 2025, at 08:42.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

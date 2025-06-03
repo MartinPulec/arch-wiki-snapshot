@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>PCI passthrough via OVMF - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -1218,6 +1218,17 @@
 			<ul id="toc-Operating_system_hangs-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-GPU_timeouts_when_running_games_in_the_virtual_machine" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#GPU_timeouts_when_running_games_in_the_virtual_machine">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">10.25</span>
+					<span>GPU timeouts when running games in the virtual machine</span>
+				</div>
+			</a>
+			
+			<ul id="toc-GPU_timeouts_when_running_games_in_the_virtual_machine-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1">
@@ -1479,7 +1490,7 @@ function bind_vfio {
   echo "$gpu_vd" &gt; /sys/bus/pci/drivers/vfio-pci/new_id
   echo "$aud_vd" &gt; /sys/bus/pci/drivers/vfio-pci/new_id
 }
- 
+
 function unbind_vfio {
   echo "$gpu_vd" &gt; "/sys/bus/pci/drivers/vfio-pci/remove_id"
   echo "$aud_vd" &gt; "/sys/bus/pci/drivers/vfio-pci/remove_id"
@@ -1968,7 +1979,7 @@ fi</pre>
 </p>
 <h3><span class="mw-headline" id="Virtio_disk">Virtio disk</span></h3>
 <div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Merge-arrows-2.svg" decoding="async" width="36" height="40" class="mw-file-element"></span></span><b>This article or section is a candidate for merging with <a href="../en/QEMU.html#Installing_virtio_drivers" title="QEMU">QEMU#Installing virtio drivers</a>.</b></p>
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Merge-arrows-2.svg" decoding="async" width="36" height="40" class="mw-file-element"></span></span><b>This article or section is a candidate for merging with <a href="../en/QEMU.html#Using_virtio_drivers" title="QEMU">QEMU#Using virtio drivers</a>.</b></p>
 <div>
 <b>Notes:</b> Off-topic. (Discuss in <a href="../en/Talk:PCI_passthrough_via_OVMF.html#Moving_virtio_disk_section_to_QEMU" title="Talk:PCI passthrough via OVMF">Talk:PCI passthrough via OVMF#Moving virtio disk section to QEMU</a>)</div>
 </div>
@@ -2156,7 +2167,7 @@ fi
 
 modprobe -i vfio-pci</pre>
 <h5><span class="mw-headline" id="Passthrough_IOMMU_Group_based_of_GPU">Passthrough IOMMU Group based of GPU</span></h5>
-<p>Simplifying the passthrough of other necessary devices from selected GPU(s). 
+<p>Simplifying the passthrough of other necessary devices from selected GPU(s).
 Things like the graphicscard's onboard Audio, USB and RGB controllers.
 </p>
 <pre>#!/bin/sh
@@ -2196,7 +2207,7 @@ modprobe -i vfio-pci</pre>
 <p>It is possible to make a virtual machine share the monitor, and optionally a keyboard and a mouse with a help of <a rel="nofollow" class="external text" href="https://looking-glass.io/">Looking Glass</a>.
 </p>
 <h4><span class="mw-headline" id="Adding_IVSHMEM_Device_to_virtual_machines">Adding IVSHMEM Device to virtual machines</span></h4>
-<p>Looking glass works by creating a shared memory buffer between a host and a guest. This is a lot faster than streaming frames via localhost, but requires additional setup. 
+<p>Looking glass works by creating a shared memory buffer between a host and a guest. This is a lot faster than streaming frames via localhost, but requires additional setup.
 </p>
 <p>With your virtual machine turned off open the machine configuration
 </p>
@@ -2330,7 +2341,7 @@ virsh attach-device win10 /home/$USER/.VFIOinput/input_keyboard.xml</pre>
 <h3>
 <span id="Bypassing_the_IOMMU_groups_.28ACS_override_patch.29"></span><span class="mw-headline" id="Bypassing_the_IOMMU_groups_(ACS_override_patch)">Bypassing the IOMMU groups (ACS override patch)</span>
 </h3>
-<p>If you find your PCI devices grouped among others that you do not wish to pass through, you may be able to separate them using Alex Williamson's ACS override patch. Make sure you understand <a rel="nofollow" class="external text" href="https://vfio.blogspot.com/2014/08/iommu-groups-inside-and-out.html">the potential risk</a> of doing so. 
+<p>If you find your PCI devices grouped among others that you do not wish to pass through, you may be able to separate them using Alex Williamson's ACS override patch. Make sure you understand <a rel="nofollow" class="external text" href="https://vfio.blogspot.com/2014/08/iommu-groups-inside-and-out.html">the potential risk</a> of doing so.
 </p>
 <p>You will need a kernel with the patch applied. The easiest method to acquiring this is through the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-zen">linux-zen</a></span> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/linux-vfio/">linux-vfio</a></span><sup><small>AUR</small></sup> package.
 </p>
@@ -2370,13 +2381,13 @@ virsh attach-device win10 /home/$USER/.VFIOinput/input_keyboard.xml</pre>
 <li>QEMU's default SeaBIOS can be used instead of OVMF, but it is not recommended as it can cause issues with passthrough setups.</li>
 </ul>
 </div>
-<p>It is recommended to study the QEMU article for ways to enhance the performance by using the <a href="../en/QEMU.html#Installing_virtio_drivers" title="QEMU">virtio drivers</a> and other further configurations for the setup.
+<p>It is recommended to study the QEMU article for ways to enhance the performance by using the <a href="../en/QEMU.html#Using_virtio_drivers" title="QEMU">virtio drivers</a> and other further configurations for the setup.
 </p>
 <p>You also might have to use the <code>-cpu host,kvm=off</code> parameter to forward the host's CPU model info to the virtual machine and fool the virtualization detection used by Nvidia's and possibly other manufacturers' device drivers trying to block the full hardware usage inside a virtualized system.
 </p>
 <h2><span class="mw-headline" id="Passing_through_other_devices">Passing through other devices</span></h2>
 <h3><span class="mw-headline" id="USB_controller">USB controller</span></h3>
-<p>If your motherboard has multiple USB controllers mapped to multiple groups, it is possible to pass those instead of USB devices. Passing an actual controller over an individual USB device provides the following advantages : 
+<p>If your motherboard has multiple USB controllers mapped to multiple groups, it is possible to pass those instead of USB devices. Passing an actual controller over an individual USB device provides the following advantages :
 </p>
 <ul>
 <li>If a device disconnects or changes ID over the course of an given operation (such as a phone undergoing an update), the virtual machine will not suddenly stop seeing it.</li>
@@ -2409,17 +2420,16 @@ Bus 002 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub</pre>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> If your USB controller does not support resetting, is not in an isolated group, or is otherwise unable to be passed through then it may still be possible to accomplish similar results through <a href="../en/Udev.html" title="Udev">udev</a> rules. See <a rel="nofollow" class="external autonumber" href="https://github.com/olavmrk/usb-libvirt-hotplug">[5]</a> which allows any device connected to specified USB ports to be automatically attached to a virtual machine.</div>
 <h3><span class="mw-headline" id="Passing_audio_from_virtual_machine_to_host_via_PipeWire_directly">Passing audio from virtual machine to host via PipeWire directly</span></h3>
-<p>This is preferable to passing audio to the pipewire's pulseaudio emulation layer. 
+<p>This is preferable to passing audio to the pipewire's pulseaudio emulation layer.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ virsh edit <i>vmname</i></pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"> 
-    &lt;devices&gt; 
-    ... 
-      &lt;audio id="1" type="pipewire" runtimeDir="/run/user/1000"&gt; 
-        &lt;input name="qemuinput"/&gt; 
-        &lt;output name="qemuoutput"/&gt; 
-      &lt;/audio&gt; 
-    &lt;/devices&gt;</pre> 
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">    &lt;devices&gt;
+    ...
+      &lt;audio id="1" type="pipewire" runtimeDir="/run/user/1000"&gt;
+        &lt;input name="qemuinput"/&gt;
+        &lt;output name="qemuoutput"/&gt;
+      &lt;/audio&gt;
+    &lt;/devices&gt;</pre>
 <p>(Please change the runtimeDir value from 1000 accordingly to your desktop user uid)
 </p>
 <p>To resolve 'Failed to initialize PW context' error you can modify the qemu configuration to use your user.
@@ -2479,7 +2489,7 @@ Bus 002 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub</pre>
     &lt;qemu:arg value='usb-audio,id=sound0,audiodev=audio1,multi=on'/&gt;
   &lt;/qemu:commandline&gt;
 &lt;/domain&gt;</pre>
-<p>The <code>audiodev</code> tag has to be set to match the audio backend's <code>id</code> element. <code>id='1'</code> corresponds to <code>audio1</code> and so on. 
+<p>The <code>audiodev</code> tag has to be set to match the audio backend's <code>id</code> element. <code>id='1'</code> corresponds to <code>audio1</code> and so on.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> 
@@ -2568,11 +2578,11 @@ See the project page for more details and instructions on other methods.
 <p>Now refer to <a href="#Adding_IVSHMEM_Device_to_virtual_machines">#Adding IVSHMEM Device to virtual machines</a> to configure the host to create the shared memory file on boot, replacing <code>looking-glass</code> with <code>scream-ivshmem</code>.
 </p>
 <h5><span class="mw-headline" id="Configuring_the_Windows_guest_for_IVSHMEM">Configuring the Windows guest for IVSHMEM</span></h5>
-<p>The correct driver must be installed for the IVSHMEM device on the guest. 
+<p>The correct driver must be installed for the IVSHMEM device on the guest.
 See <a href="#Installing_the_IVSHMEM_Host_to_Windows_guest">#Installing the IVSHMEM Host to Windows guest</a>. Ignore the part about <code>looking-glass-host</code>.
 </p>
-<p>Install the <a rel="nofollow" class="external text" href="https://github.com/duncanthrax/scream/releases">Scream</a> virtual audio driver on the guest. 
-If you have secure boot enabled for your virtual machine, you may need to disable it. 
+<p>Install the <a rel="nofollow" class="external text" href="https://github.com/duncanthrax/scream/releases">Scream</a> virtual audio driver on the guest.
+If you have secure boot enabled for your virtual machine, you may need to disable it.
 </p>
 <p>Using the registry editor, set the DWORD <code>HKLM\SYSTEM\CurrentControlSet\Services\Scream\Options\UseIVSHMEM</code> to the size of the IVSHMEM device in MB.
 Note that scream identifies its IVSHMEM device using its size, so make sure there is only one device of that size (the suggested default is <code>2</code> for 2MB).
@@ -2646,7 +2656,7 @@ IOMMU group 13
 <h2><span class="mw-headline" id="Complete_setups_and_examples">Complete setups and examples</span></h2>
 <p>For many reasons users may seek to see <a href="../en/PCI_passthrough_via_OVMF/Examples.html" title="PCI passthrough via OVMF/Examples">complete passthrough setup examples</a>.
 </p>
-<p>These examples offer a supplement to existing hardware compatibility lists. Additionally, if you have trouble configuring a certain mechanism in your setup, you might find these examples very valuable. Users there have described their setups in detail, and some have provided examples of their configuration files as well. 
+<p>These examples offer a supplement to existing hardware compatibility lists. Additionally, if you have trouble configuring a certain mechanism in your setup, you might find these examples very valuable. Users there have described their setups in detail, and some have provided examples of their configuration files as well.
 </p>
 <p>We encourage those who successfully build their system from this resource to help improve it by contributing their builds. Due to the many different hardware manufacturers involved, the seemingly significant lack of sufficient documentation, as well as other issues due to the nature of this process, community contributions are necessary.
 </p>
@@ -2784,8 +2794,7 @@ Valid ROM signature found @fa00h, PCIR offset 1ch
      &lt;rom file='/path/to/your/gpu/bios.bin'/&gt;
      ...
    &lt;/hostdev&gt;</pre>
-<p>One should compare VBIOS versions between host and guest systems using <a rel="nofollow" class="external text" href="https://www.techpowerup.com/download/nvidia-nvflash/">nvflash</a> (Linux versions under <i>Show more versions</i>) or 
-<a rel="nofollow" class="external text" href="https://www.techpowerup.com/download/techpowerup-gpu-z/">GPU-Z</a> (in Windows guest). To check the currently loaded VBIOS:
+<p>One should compare VBIOS versions between host and guest systems using <a rel="nofollow" class="external text" href="https://www.techpowerup.com/download/nvidia-nvflash/">nvflash</a> (Linux versions under <i>Show more versions</i>) or <a rel="nofollow" class="external text" href="https://www.techpowerup.com/download/techpowerup-gpu-z/">GPU-Z</a> (in Windows guest). To check the currently loaded VBIOS:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ ./nvflash --version</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">...
@@ -2815,7 +2824,7 @@ UEFI Signer(s)        : Microsoft Corporation UEFI CA 2011
 <strong>Warning:</strong> Failure during flashing may "brick" your GPU - recovery may be possible, but rarely easy and often requires additional hardware. <b>DO NOT</b> flash VBIOS images for other GPU models (different boards may use different VBIOSes, clocks, fan configuration). If it breaks, you get to keep all the pieces.</div>
 <p>In order to avoid the irreparable damage to your graphics adapter it is necessary to unload the NVIDIA kernel driver first:
 </p>
-<pre># modprobe -r nvidia_modeset nvidia 
+<pre># modprobe -r nvidia_modeset nvidia
 </pre>
 <p>Flashing the VBIOS can be done with:
 </p>
@@ -2940,7 +2949,7 @@ You can workaround this by:
 </pre>
 <p>This can be mitigated by disconnecting the passed-through GPU from your monitor. You may reconnect the passed-through GPU to a monitor after the host has booted.
 </p>
-<p>If you do not want to plug the cable in each time you boot the host. You can disable the framebuffer in your boot loader to bypass this message. For <a href="../en/Unified_Extensible_Firmware_Interface.html" class="mw-redirect" title="UEFI">UEFI</a> systems you can add <code>video=efifb:off</code> as a kernel parameter. For legacy support, use <code>video=vesafb:off</code> instead or in conjunction. Note that doing this may cause issues with <a href="../en/Xorg.html" title="Xorg">Xorg</a>. 
+<p>If you do not want to plug the cable in each time you boot the host. You can disable the framebuffer in your boot loader to bypass this message. For <a href="../en/Unified_Extensible_Firmware_Interface.html" class="mw-redirect" title="UEFI">UEFI</a> systems you can add <code>video=efifb:off</code> as a kernel parameter. For legacy support, use <code>video=vesafb:off</code> instead or in conjunction. Note that doing this may cause issues with <a href="../en/Xorg.html" title="Xorg">Xorg</a>.
 </p>
 <p>If you encounter problems with <a href="../en/Xorg.html" title="Xorg">Xorg</a>, the following solution may help (remember to substitute with your own values if needed).
 </p>
@@ -3005,11 +3014,17 @@ ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x1002", ATTR{device}=="0x73bf",
 </ul>
 <p>At the very least, VEGA cards seem to be picky about those settings and won't actually work unless you change them.
 </p>
+<h3><span class="mw-headline" id="GPU_timeouts_when_running_games_in_the_virtual_machine">GPU timeouts when running games in the virtual machine</span></h3>
+<p>Starting with recent kernels (6.12+ for AMD, 5.x for Intel), split lock detection is enabled by default. This causes a forced 10ms pause for the process creating the split lock which can result in GPU timeouts and similar virtual machine hanging. This behavior can be disabled by running:
+</p>
+<pre># sysctl -w kernel.split_lock_mitigate=0
+</pre>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul>
 <li><a rel="nofollow" class="external text" href="https://www.redhat.com/archives/vfio-users/">VFIO users mailing list</a></li>
 <li><a rel="nofollow" class="external text" href="https://www.reddit.com/r/VFIO">/r/VFIO: A subreddit focused on vfio</a></li>
 <li><a rel="nofollow" class="external text" href="https://github.com/intel/gvt-linux/wiki/GVTd_Setup_Guide">GVT-d: passthrough of an entire integrated GPU</a></li>
+<li><a rel="nofollow" class="external text" href="https://gitlab.com/qemu-project/qemu/-/blob/master/docs/igd-assign.txt">Intel Graphics Device (IGD) assignment with vfio-pci</a></li>
 </ul>
 </div>
 </div>
@@ -3034,8 +3049,8 @@ ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x1002", ATTR{device}=="0x73bf",
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PCI_passthrough_via_OVMF&amp;oldid=827018">https://wiki.archlinux.org/index.php?title=PCI_passthrough_via_OVMF&amp;oldid=827018</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 14 February 2025, at 00:10.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PCI_passthrough_via_OVMF&amp;oldid=834453">https://wiki.archlinux.org/index.php?title=PCI_passthrough_via_OVMF&amp;oldid=834453</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 24 May 2025, at 21:55.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>SSH keys - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -679,7 +679,7 @@ The key's randomart image is:
 </ol>
 <p><a rel="nofollow" class="external text" href="https://blog.cloudflare.com/a-relatively-easy-to-understand-primer-on-elliptic-curve-cryptography/">Elliptic curve cryptography</a> (ECC) algorithms are a <a href="https://en.wikipedia.org/wiki/Elliptic_curve_cryptography#History" class="extiw" title="wikipedia:Elliptic curve cryptography">more recent addition</a> to public key cryptosystems. One of their main advantages is their ability to provide <a href="https://en.wikipedia.org/wiki/Elliptic_curve_cryptography#Rationale" class="extiw" title="wikipedia:Elliptic curve cryptography">the same level of security with smaller keys</a>, which makes for less computationally intensive operations (<i>i.e.</i> faster key creation, encryption and decryption) and reduced storage and transmission requirements.
 </p>
-<p>DSA keys are <a rel="nofollow" class="external text" href="https://archlinux.org/news/openssh-70p1-deprecates-ssh-dss-keys/">deprecated</a> due to their security weaknesses and SSH implementations are removing support for them. OpenSSH 9.8 is built without support for DSA keys by default, Dropbear 2022.83 disabled DSA key support and libssh 0.11.0 removed support for DSA keys entirely. Therefore the choice of <a href="https://en.wikipedia.org/wiki/cryptosystem" class="extiw" title="wikipedia:cryptosystem">cryptosystem</a> lies within RSA or one of the two types of ECC.
+<p>DSA keys are <a rel="nofollow" class="external text" href="https://archlinux.org/news/openssh-70p1-deprecates-ssh-dss-keys/">deprecated</a> due to their security weaknesses and most SSH implementations do not support them anymore. Dropbear 2022.83 disabled DSA key support while OpenSSH 10.0 and libssh 0.11.0 removed support for DSA keys entirely. Therefore the choice of <a href="https://en.wikipedia.org/wiki/cryptosystem" class="extiw" title="wikipedia:cryptosystem">cryptosystem</a> lies within RSA or one of the two types of ECC.
 </p>
 <p>The default Ed25519 will give you the best security and good performance. ECDSA is slower than Ed25519, but faster than RSA; concerns exist about its security (see below). RSA keys will give you the greatest compatibility with old servers, but it requires a larger key size to provide sufficient security.
 </p>
@@ -695,7 +695,7 @@ The key's randomart image is:
 <h4><span class="mw-headline" id="Ed25519">Ed25519</span></h4>
 <p><a rel="nofollow" class="external text" href="https://ed25519.cr.yp.to/">Ed25519</a> was introduced in <a rel="nofollow" class="external text" href="https://www.openssh.com/txt/release-6.5">OpenSSH 6.5</a> of January 2014: "<i>Ed25519 is an elliptic curve signature scheme that offers better security than ECDSA and DSA and good performance</i>". Its main strengths are its speed, its constant-time run time (and resistance against side-channel attacks), and its lack of nebulous hard-coded constants.<a rel="nofollow" class="external autonumber" href="https://git.libssh.org/projects/libssh.git/tree/doc/curve25519-sha256@libssh.org.txt">[1]</a> See also <a rel="nofollow" class="external text" href="https://blog.mozilla.org/warner/2011/11/29/ed25519-keys/">this blog post</a> by a Mozilla developer on how it works.
 </p>
-<p>It is implemented in <a href="https://en.wikipedia.org/wiki/EdDSA#Software" class="extiw" title="wikipedia:EdDSA">many applications and libraries</a> and is the <a rel="nofollow" class="external text" href="https://www.libssh.org/2013/11/03/openssh-introduces-curve25519-sha256libssh-org-key-exchange/">default key exchange algorithm</a> (which is different from key <i>signature</i>) in OpenSSH.
+<p>It is implemented in <a href="https://en.wikipedia.org/wiki/EdDSA#Software" class="extiw" title="wikipedia:EdDSA">many applications and libraries</a> and is the default key type in <span class="plainlinks archwiki-template-man" title="$ man 1 ssh-keygen"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/ssh-keygen.1">ssh-keygen(1)</a></span> and <span class="plainlinks archwiki-template-man" title="$ man 1 dropbearkey"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/dropbearkey.1">dropbearkey(1)</a></span>.
 </p>
 <p><span class="plainlinks archwiki-template-man" title="$ man 1 ssh-keygen"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/ssh-keygen.1">ssh-keygen(1)</a></span> defaults to Ed25519 therefore there is no need to specify it with the <code>-t ed25519</code> option. The key pairs can be simply generated with:
 </p>
@@ -1015,7 +1015,8 @@ Enter passphrase for PKCS#11:
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> 
 <ul>
-<li>Keychain is able to manage <a href="../en/GnuPG.html" class="mw-redirect" title="GPG">GPG</a> keys in the same fashion. By default it attempts to start <i>ssh-agent</i> only, but you can modify this behavior using the <code>--agents</code> option, <i>e.g.</i> <code>--agents ssh,gpg</code>. See <span class="plainlinks archwiki-template-man" title="$ man 1 keychain"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/keychain.1">keychain(1)</a></span>.</li>
+<li>Keychain is able to manage <a href="../en/GnuPG.html" class="mw-redirect" title="GPG">GPG</a> keys in the same fashion. For keychain versions up to 2.9.0 the default is to attempt to start <i>ssh-agent</i> only, but you can modify this behavior using the <code>--agents</code> option, <i>e.g.</i> <code>--agents ssh,gpg</code>. See <span class="plainlinks archwiki-template-man" title="$ man 1 keychain"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/keychain.1">keychain(1)</a></span>.</li>
+<li>As of Keychain 2.9.0, the <code>--agents</code> option is deprecated. See <span class="plainlinks archwiki-template-man" title="$ man 1 keychain"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/keychain.1">keychain(1)</a></span>.</li>
 <li>If you are on Wayland, you might have to add <code>--inherit any-once</code> as per <a rel="nofollow" class="external text" href="https://github.com/funtoo/keychain/issues/148">keychain issue 148</a>.</li>
 </ul>
 </div>
@@ -1221,8 +1222,8 @@ $ chmod 600 ~/.ssh/authorized_keys
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=SSH_keys&amp;oldid=828382">https://wiki.archlinux.org/index.php?title=SSH_keys&amp;oldid=828382</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 7 March 2025, at 13:04.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=SSH_keys&amp;oldid=834540">https://wiki.archlinux.org/index.php?title=SSH_keys&amp;oldid=834540</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 25 May 2025, at 15:51.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>hdparm - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -406,18 +406,56 @@
 <h3><span class="mw-headline" id="Write_cache">Write cache</span></h3>
 <p>Write caching is the process of temporarily caching files in the <a href="https://en.wikipedia.org/wiki/Disk_buffer" class="extiw" title="wikipedia:Disk buffer">drive's embedded memory</a> before writing them to the disk, which is essentially a performance boost. Write cache is a feature provided by most hard drives, and it is enabled by default in most cases. To check if that's the case, run:
 </p>
-<pre>$ hdparm -W /dev/<i>sdX</i>
+<pre># hdparm -W /dev/<i>sdX</i>
 </pre>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> While write cache is a free performance boost, it also comes with a downside. Enabling write cache increases the risk of data loss when the power is suddenly lost.</div>
 <p>If it is disabled, one may enable it with:
 </p>
-<pre>$ hdparm -W 1 /dev/<i>sdX</i>
+<pre># hdparm -W 1 /dev/<i>sdX</i>
 </pre>
 <p>Conversely, to disable it, use:
 </p>
-<pre>$ hdparm -W 0 /dev/<i>sdX</i>
+<pre># hdparm -W 0 /dev/<i>sdX</i>
 </pre>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> Changes to the write-cache setting might not be persistent, and might change when the system sleeps, hibernates, or reboots. It is worth double-checking that your desired settings are applied.</div>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
+<div>
+<b>Reason:</b> Re-applying the setting on all disks every 30 seconds is useless. Find out what resets the setting and either disable it or run <i>hdparm</i> only after specific events like reboot or suspend. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Hdparm.html">Talk:Hdparm</a>)</div>
+</div>
+<p>For an example of forcing disk write caches to be persistently disabled on a machine, we can create a local script <code>/usr/local/sbin/write-cache-disabler</code> that uses hdparm and <span class="plainlinks archwiki-template-man" title="$ man 8 lsblk"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/lsblk.8">lsblk(8)</a></span> to periodically probe all attached disks and apply the desired setting. This will disable write caches on boot when the service is first ran, and can catch within 30 seconds any infrequent cases that re-enable the write cache, i.e. disk additions and system suspensions.
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/usr/local/sbin/write-cache-disabler</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">#!/bin/sh
+set -e
+
+while true; do
+        lsblk --raw --scsi --paths -o name \
+        | tail --lines='+2' \
+        | (while read -r name; do 
+                hdparm -W "$name" \
+                | (grep --fixed-strings --quiet -e '1 (on)' \
+                   &amp;&amp; hdparm -W 0 "$name" \
+                   || true)
+        done)
+        sleep 30
+done</pre>
+<p>Make sure the script is executable with <code>chmod u+x /usr/local/sbin/write-cache-disabler</code>. We can then run this daemon under <a href="../en/Systemd.html" title="Systemd">systemd</a> by creating a local <a href="../en/Systemd.html#Writing_unit_files" title="Systemd">unit</a>:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/write-cache-disabler.service</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Unit]
+Description=Write cache disabler daemon
+
+[Service]
+Type=simple
+ExecStart=/usr/local/sbin/write-cache-disabler
+
+[Install]
+WantedBy=multi-user.target</pre>
+<p><a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">Enable</a> <code>write-cache-disabler.service</code> to start it at boot.
+</p>
 <h3><span class="mw-headline" id="Power_off_a_hard_disk_drive">Power off a hard disk drive</span></h3>
 <p>A typical usage case, where such a feature is looked for, is with disks connected to a cheap external USB/SATA/FireWire enclosure, or bridge. If it does not properly issue a stop command to the drive when turning off the power switch, the drive is forced to do an emergency head retract. Regularly doing that will, sooner or later, break the drive. One solution is, after one is sure the data has been written to the media, to run a command to power off the drive:
 </p>
@@ -535,12 +573,16 @@ WantedBy=sleep.target</pre>
 <a rel="nofollow" class="external free" href="https://sourceforge.net/projects/hdparm/">https://sourceforge.net/projects/hdparm/</a> - hdparm on SourceForge</li></ul>
 </div>
 </div>
-					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
+					<div id="catlinks" class="catlinks" data-mw="interface">
+<div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Categories</a>: <ul>
 <li><a href="../en/Category:File_systems.html" title="Category:File systems">File systems</a></li>
 <li><a href="../en/Category:Storage.html" title="Category:Storage">Storage</a></li>
 </ul>
-</div></div>
+</div>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li></ul>
+</div>
+</div>
 				</div>
 			</main>
 			
@@ -549,8 +591,8 @@ WantedBy=sleep.target</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Hdparm&amp;oldid=802353">https://wiki.archlinux.org/index.php?title=Hdparm&amp;oldid=802353</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 5 March 2024, at 18:14.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Hdparm&amp;oldid=833880">https://wiki.archlinux.org/index.php?title=Hdparm&amp;oldid=833880</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 14 May 2025, at 05:21.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

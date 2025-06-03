@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>GRUB - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -850,6 +850,17 @@
 			<ul id='toc-GRUB_is_installed,_but_receive_"ERROR_CODE_1962_-_No_operating_system_found"_message_on_older_Lenovo_machines-sublist' class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Warning_to_perform_grub-install/grub-mkconfig_at_each_grub_update" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Warning_to_perform_grub-install/grub-mkconfig_at_each_grub_update">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">7.17</span>
+					<span>Warning to perform grub-install/grub-mkconfig at each grub update</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Warning_to_perform_grub-install/grub-mkconfig_at_each_grub_update-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1">
@@ -971,7 +982,7 @@
 <p><a rel="nofollow" class="external text" href="https://www.gnu.org/software/grub/">GRUB</a> (GRand Unified Bootloader) is a <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a>. The current GRUB is also referred to as <b>GRUB 2</b>. The original GRUB, or <a href="../en/GRUB_Legacy.html" title="GRUB Legacy">GRUB Legacy</a>, corresponds to versions 0.9x. This page exclusively describes GRUB 2.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> In the entire article <code><i>esp</i></code> denotes the mountpoint of the <a href="../en/EFI_system_partition.html" title="EFI system partition">EFI system partition</a> aka ESP.</div>
+<strong>Note:</strong> In the entire article <code><i>esp</i></code> denotes the mount point of the <a href="../en/EFI_system_partition.html" title="EFI system partition">EFI system partition</a> aka ESP.</div>
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Supported_file_systems">Supported file systems</span></h2>
 <p>GRUB bundles its own support for <a rel="nofollow" class="external text" href="https://www.gnu.org/software/grub/manual/grub/html_node/Features.html#Features">multiple file systems</a>, notably <a href="../en/FAT.html" class="mw-redirect" title="FAT32">FAT32</a>, <a href="../en/Ext4.html" title="Ext4">ext4</a>, <a href="../en/Btrfs.html" title="Btrfs">Btrfs</a> or <a href="../en/XFS.html" title="XFS">XFS</a>. See <a href="#Unsupported_file_systems">#Unsupported file systems</a> for some caveats.
@@ -1016,7 +1027,7 @@
 </div></dd>
 <dd><pre># grub-install --target=x86_64-efi --efi-directory=<i>esp</i> --bootloader-id=GRUB</pre></dd>
 </dl></dd></dl>
-<p>After the above installation completed, the main GRUB directory is located at <code>/boot/grub/</code>. Read <a href="../en/GRUB/Tips_and_tricks.html#Alternative_install_method" title="GRUB/Tips and tricks">/Tips and tricks#Alternative install method</a> for how to specify an alternative location. Note that <code>grub-install</code> also tries to <a href="#Create_a_GRUB_entry_in_the_firmware_boot_manager">create an entry in the firmware boot manager</a>, named <code>GRUB</code> in the above example – this will, however, fail if your boot entries are full; use <a href="../en/Unified_Extensible_Firmware_Interface.html#efibootmgr" class="mw-redirect" title="Efibootmgr">efibootmgr</a> to remove unnecessary entries.
+<p>After the above installation completed, the main GRUB directory is located at <code>/boot/grub/</code>. Read <a href="../en/GRUB/Tips_and_tricks.html#Alternative_install_method" title="GRUB/Tips and tricks">/Tips and tricks#Alternative install method</a> for how to specify an alternative location. Note that <code>grub-install</code> also tries to <a href="#Create_a_GRUB_entry_in_the_firmware_boot_manager">create an entry in the firmware boot manager</a>, named <code>GRUB</code> in the above example – this will, however, fail if your boot entries are full or the systems prevents the boot order from being manipulated (e.g. Thinkpad BIOSs have a setting called "Boot Order Lock" which needs to be disabled for efibootmgr to be able to add/remove entries); use <a href="../en/Unified_Extensible_Firmware_Interface.html#efibootmgr" class="mw-redirect" title="Efibootmgr">efibootmgr</a> to remove unnecessary entries.
 </p>
 <p>Remember to <a href="#Generate_the_main_configuration_file">#Generate the main configuration file</a> after finalizing the configuration.
 </p>
@@ -1040,7 +1051,7 @@ If you execute a UEFI update, this update might delete the existing UEFI boot en
 <strong>Warning:</strong> 
 <ul>
 <li>Incorrectly configuring <a href="../en/Unified_Extensible_Firmware_Interface/Secure_Boot.html" class="mw-redirect" title="Secure Boot">Secure Boot</a> can render your system unbootable. If for any reason you cannot boot after enabling secure boot then you should disable it in firmware and reboot the system.</li>
-<li>Loading unnecessary modules in your bootloader has the potential to present a security risk, only use these commands if you need them.</li>
+<li>Loading unnecessary modules in your <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> has the potential to present a security risk, only use these commands if you need them.</li>
 </ul>
 </div>
 <h4><span class="mw-headline" id="CA_Keys">CA Keys</span></h4>
@@ -1093,9 +1104,9 @@ If you execute a UEFI update, this update might delete the existing UEFI boot en
 </ul>
 <p>You must construct your list of GRUB modules in the form of a shell variable that we denote as <code>GRUB_MODULES</code>. You can use the <a rel="nofollow" class="external text" href="https://git.launchpad.net/~ubuntu-core-dev/grub/+git/ubuntu/tree/debian/build-efi-images">latest Ubuntu script</a> as a starting point, and trim away modules that are not necessary on your system. Omitting modules will make the boot process relatively faster, and save some space on the ESP partition.
 </p>
-<p>You also need a <a rel="nofollow" class="external text" href="https://github.com/rhboot/shim/blob/main/SBAT.md">Secure Boot Advanced Targeting (SBAT)</a> file/section included in the EFI binary, to improve the security; if GRUB is launched from the UEFI shim loader.  This SBAT file/section contains metadata about the GRUB binary (version, maintainer, developer, upstream URL) and makes it easier for shim to block certain GRUB versions from being loaded if they have security vulnerabilities<a rel="nofollow" class="external autonumber" href="https://eclypsium.com/2020/07/29/theres-a-hole-in-the-boot/#additional">[1]</a><a rel="nofollow" class="external autonumber" href="https://wiki.ubuntu.com/SecurityTeam/KnowledgeBase/GRUB2SecureBootBypass2021">[2]</a>, as explained in the <a rel="nofollow" class="external text" href="https://github.com/rhboot/shim/blob/main/SBAT.md">UEFI shim bootloader secure boot life-cycle improvements</a> document from shim.
+<p>You also need a <a rel="nofollow" class="external text" href="https://github.com/rhboot/shim/blob/main/SBAT.md">Secure Boot Advanced Targeting (SBAT)</a> file/section included in the EFI binary, to improve the security; if GRUB is launched from the UEFI shim loader.  This SBAT file/section contains metadata about the GRUB binary (version, maintainer, developer, upstream URL) and makes it easier for shim to block certain GRUB versions from being loaded if they have security vulnerabilities<a rel="nofollow" class="external autonumber" href="https://eclypsium.com/2020/07/29/theres-a-hole-in-the-boot/#additional">[1]</a><a rel="nofollow" class="external autonumber" href="https://wiki.ubuntu.com/SecurityTeam/KnowledgeBase/GRUB2SecureBootBypass2021">[2]</a>, as explained in the <a rel="nofollow" class="external text" href="https://github.com/rhboot/shim/blob/main/SBAT.md">UEFI shim boot loader secure boot life-cycle improvements</a> document from shim.
 </p>
-<p>The first-stage UEFI bootloader shim will fail to launch <code>grubx64.efi</code> if the SBAT section from <code>grubx64.efi</code> is missing!
+<p>The first-stage UEFI <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> shim will fail to launch <code>grubx64.efi</code> if the SBAT section from <code>grubx64.efi</code> is missing!
 </p>
 <p>If GRUB is installed, a sample SBAT <i>.csv</i> file is provided under <code>/usr/share/grub/sbat.csv</code>.
 </p>
@@ -1170,7 +1181,7 @@ If you execute a UEFI update, this update might delete the existing UEFI boot en
 <h4><span class="mw-headline" id="Generate_the_main_configuration_file">Generate the main configuration file</span></h4>
 <p>After the installation, the main configuration file <code>/boot/grub/grub.cfg</code> needs to be generated. The generation process can be influenced by a variety of options in <code>/etc/default/grub</code> and scripts in <code>/etc/grub.d/</code>. For the list of options in <code>/etc/default/grub</code> and a concise description of each refer to GNU's <a rel="nofollow" class="external text" href="https://www.gnu.org/software/grub/manual/grub/html_node/Simple-configuration.html">documentation</a>.
 </p>
-<p>If you have not done additional configuration, the automatic generation will determine the root filesystem of the system to boot for the configuration file. For that to succeed it is important that the system is either booted or chrooted into.
+<p>If you have not done additional configuration, the automatic generation will determine the root filesystem of the system to boot for the configuration file. For that to succeed it is important that the system is either booted or <a href="../en/Chroot.html" title="Chroot">chrooted</a> into.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> 
@@ -1470,10 +1481,10 @@ fi</pre>
 <h6>
 <span id="Windows_installed_in_UEFI.2FGPT_mode"></span><span class="mw-headline" id="Windows_installed_in_UEFI/GPT_mode">Windows installed in UEFI/GPT mode</span>
 </h6>
-<p>This mode determines where the Windows boot loader resides and chain-loads it after GRUB when the menu entry is selected. The main task here is finding the EFI system partition and running the bootloader from it.
+<p>This mode determines where the Windows boot loader resides and chain-loads it after GRUB when the menu entry is selected. The main task here is finding the EFI system partition and running the <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> from it.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> This menuentry will work only in UEFI boot mode and only if the Windows bitness matches the UEFI bitness. It will not work in BIOS installed GRUB. See <a href="../en/Dual_boot_with_Windows.html#Windows_UEFI_vs_BIOS_limitations" title="Dual boot with Windows">Dual boot with Windows#Windows UEFI vs BIOS limitations</a> and <a href="../en/Dual_boot_with_Windows.html#Bootloader_UEFI_vs_BIOS_limitations" title="Dual boot with Windows">Dual boot with Windows#Bootloader UEFI vs BIOS limitations</a> for more information.</div>
+<strong>Note:</strong> This menuentry will work only in UEFI boot mode and only if the Windows bitness matches the UEFI bitness. It will not work in BIOS installed GRUB. See <a href="../en/Dual_boot_with_Windows.html#Windows_UEFI_vs_BIOS_limitations" title="Dual boot with Windows">Dual boot with Windows#Windows UEFI vs BIOS limitations</a> and <a href="../en/Dual_boot_with_Windows.html#Boot_loader_UEFI_vs_BIOS_limitations" title="Dual boot with Windows">Dual boot with Windows#Boot loader UEFI vs BIOS limitations</a> for more information.</div>
 <pre>if [ "${grub_platform}" == "efi" ]; then
 	menuentry "Microsoft Windows Vista/7/8/8.1 UEFI/GPT" {
 		insmod part_gpt
@@ -1507,7 +1518,7 @@ fi</pre>
 <p>Throughout this section, it is assumed your Windows partition is <code>/dev/sda1</code>. A different partition will change every instance of <code>hd0,msdos1</code>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> These menu entries will work only in BIOS boot mode. It will not work in UEFI installed GRUB. See <a href="../en/Dual_boot_with_Windows.html#Windows_UEFI_vs_BIOS_limitations" title="Dual boot with Windows">Dual boot with Windows#Windows UEFI vs BIOS limitations</a> and <a href="../en/Dual_boot_with_Windows.html#Bootloader_UEFI_vs_BIOS_limitations" title="Dual boot with Windows">Dual boot with Windows#Bootloader UEFI vs BIOS limitations</a> .</div>
+<strong>Note:</strong> These menu entries will work only in BIOS boot mode. It will not work in UEFI installed GRUB. See <a href="../en/Dual_boot_with_Windows.html#Windows_UEFI_vs_BIOS_limitations" title="Dual boot with Windows">Dual boot with Windows#Windows UEFI vs BIOS limitations</a> and <a href="../en/Dual_boot_with_Windows.html#Boot_loader_UEFI_vs_BIOS_limitations" title="Dual boot with Windows">Dual boot with Windows#Boot loader UEFI vs BIOS limitations</a> .</div>
 <p>In both examples <code><i>XXXX-XXXX</i></code> is the filesystem UUID which can be found with command <code>lsblk --fs</code>.
 </p>
 <p>For Windows Vista/7/8/8.1/10:
@@ -1556,7 +1567,7 @@ Also you would better keep plugged in both the target hard drive and your bootab
 <h2><span class="mw-headline" id="Using_the_command_shell">Using the command shell</span></h2>
 <p>Since the MBR is too small to store all GRUB modules, only the menu and a few basic commands reside there. The majority of GRUB functionality remains in modules in <code>/boot/grub/</code>, which are inserted as needed. In error conditions (e.g. if the partition layout changes) GRUB may fail to boot. When this happens, a command shell may appear.
 </p>
-<p>GRUB offers multiple shells/prompts. If there is a problem reading the menu but the bootloader is able to find the disk, you will likely be dropped to the "normal" shell:
+<p>GRUB offers multiple shells/prompts. If there is a problem reading the menu but the <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> is able to find the disk, you will likely be dropped to the "normal" shell:
 </p>
 <pre>grub&gt;
 </pre>
@@ -1583,7 +1594,7 @@ A common scenario may be to boot Windows / Linux stored on a drive/partition via
 </p>
 <p><i>Chainloading</i> means to load another boot-loader from the current one, ie, chain-loading.
 </p>
-<p>The other bootloader may be embedded at the start of a partitioned disk (MBR), at the start of a partition or a partitionless disk (VBR), or as an EFI binary in the case of UEFI.
+<p>The other <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> may be embedded at the start of a partitioned disk (MBR), at the start of a partition or a partitionless disk (VBR), or as an EFI binary in the case of UEFI.
 </p>
 <h4>
 <span id="Chainloading_a_partition.27s_VBR"></span><span class="mw-headline" id="Chainloading_a_partition's_VBR">Chainloading a partition's VBR</span>
@@ -1618,8 +1629,8 @@ set root=(hd0,gpt4)
 chainloader (${root})/EFI/Microsoft/Boot/bootmgfw.efi
 boot
 </pre>
-<p><code>insmod fat</code> is used for loading the FAT file system module for accessing the Windows bootloader on the EFI system partition.
-<code>(hd0,gpt4)</code> or <code>/dev/sda4</code> is the EFI system partition in this example.
+<p><code>insmod fat</code> is used for loading the FAT file system module for accessing the Windows <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> on the UEFI system partition.
+<code>(hd0,gpt4)</code> or <code>/dev/sda4</code> is the UEFI system partition in this example.
 The entry in the <code>chainloader</code> line specifies the path of the <i>.efi</i> file to be chain-loaded.
 </p>
 <h4><span class="mw-headline" id="Normal_loading">Normal loading</span></h4>
@@ -1681,7 +1692,7 @@ Boot0001* GRUB  HD(2,GPT,4dabbedf-191b-4432-bc09-8bcbd1d7dabf,0x109000,0x32000)/
 Boot0002* Linux-Firmware-Updater        HD(2,GPT,5dabbedf-191b-4432-bc09-8bcbd1d7dabf,0x109000,0x32000)/File(\EFI\arch\fwupdx64.efi)
 Boot0003* Linux Boot Manager    HD(2,GPT,4dabbedf-191b-4432-bc09-8bcbd1d7dabf,0x109000,0x32000)/File(\EFI\systemd\systemd-bootx64.efi)
 </pre>
-<p>If <code>BootOrder</code> has <i>grub</i> as the first entry, install another bootloader to put it in front, such as <a href="../en/Systemd-boot.html" title="Systemd-boot">systemd-boot</a> above. <i>grub</i> can then be removed using its <i>bootnum</i>.
+<p>If <code>BootOrder</code> has <i>grub</i> as the first entry, install another <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> to put it in front, such as <a href="../en/Systemd-boot.html" title="Systemd-boot">systemd-boot</a> above. <i>grub</i> can then be removed using its <i>bootnum</i>.
 </p>
 <pre># efibootmgr --delete-bootnum -b 1
 </pre>
@@ -1692,7 +1703,7 @@ Boot0003* Linux Boot Manager    HD(2,GPT,4dabbedf-191b-4432-bc09-8bcbd1d7dabf,0x
 </p>
 <p><code>grub-install</code> creates the <code>/boot/grub</code> directory that needs to be removed manually. Though some users will want to keep it, should they want to install <i>grub</i> again.
 </p>
-<p>After migrating to UEFI/GPT one may want to <a href="../en/Dd.html#Remove_bootloader" title="Dd">remove the MBR boot code using dd</a>.
+<p>After migrating to UEFI/GPT one may want to <a href="../en/Dd.html#Remove_boot_loader" title="Dd">remove the MBR boot code using dd</a>.
 </p>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
 <h3><span class="mw-headline" id="Unsupported_file_systems">Unsupported file systems</span></h3>
@@ -1847,6 +1858,30 @@ grub rescue&gt; normal
 </h3>
 <p>See <a rel="nofollow" class="external text" href="https://www.reddit.com/r/ManjaroLinux/comments/e682d6/fixing_lenovos_error_code_1962_by_spoofing_the/">Fixing Lenovo’s ERROR CODE 1962 by spoofing the EFI boot entries</a>.
 </p>
+<h3>
+<span id="Warning_to_perform_grub-install.2Fgrub-mkconfig_at_each_grub_update"></span><span class="mw-headline" id="Warning_to_perform_grub-install/grub-mkconfig_at_each_grub_update">Warning to perform grub-install/grub-mkconfig at each grub update</span>
+</h3>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-clear.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs language, wiki syntax or style improvements. See <a href="../en/Help:Style.html" title="Help:Style">Help:Style</a> for reference.</b></p>
+<div>
+<b>Reason:</b> This does not belong in a troubleshooting section. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:GRUB.html">Talk:GRUB</a>)</div>
+</div>
+<p>You can do it manually or use a <a href="../en/Pacman.html#Hooks" class="mw-redirect" title="Pacman hook">pacman hook</a>, for example:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pacman.d/hooks/grub-update.hook</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Trigger]
+Operation = Upgrade
+
+Type = Package
+Target = grub
+
+[Action]
+Description = Regenerate grub if updated
+When = PostTransaction
+Depends = grub
+Exec = /bin/sh -c "/usr/bin/grub-install --efi-directory=<i>esp</i> --bootloader-id=GRUB &amp;&amp; /usr/bin/grub-mkconfig -o /boot/grub/grub.cfg"</pre>
+<p>Change <i>grub-install</i> options such as the <code>--efi-directory</code> path to match your settings.
+</p>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul>
 <li><a href="https://en.wikipedia.org/wiki/GNU_GRUB" class="extiw" title="wikipedia:GNU GRUB">Wikipedia:GNU GRUB</a></li>
@@ -1868,6 +1903,7 @@ grub rescue&gt; normal
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Merge.html" title="Category:Pages or sections flagged with Template:Merge">Pages or sections flagged with Template:Merge</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li>
 </ul>
 </div>
 </div>
@@ -1879,8 +1915,8 @@ grub rescue&gt; normal
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GRUB&amp;oldid=826193">https://wiki.archlinux.org/index.php?title=GRUB&amp;oldid=826193</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 31 January 2025, at 19:50.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GRUB&amp;oldid=834403">https://wiki.archlinux.org/index.php?title=GRUB&amp;oldid=834403</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 23 May 2025, at 22:41.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

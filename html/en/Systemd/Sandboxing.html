@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>systemd/Sandboxing - ArchWiki</title>
 <link rel="stylesheet" href="../../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -306,10 +306,9 @@ CapabilityBoundingSet=<i>CAP_NET_BIND_SERVICE</i></pre>
 </tr>
 <tr>
 <td><code>MemoryDenyWriteExecute</code></td>
-<td style="background: #ddd; color: inherit; vertical-align: middle; text-align: center;">Medium<sup>3</sup>
-</td>
+<td style="background: #ddd; color: inherit; vertical-align: middle; text-align: center;">Medium</td>
 <td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;">Medium</td>
-<td>Incompatible with dynamically generated code at runtime, including JIT, executable stacks, C compiler code "trampoline"
+<td>Incompatible with dynamically generated code at runtime, including JIT, executable stacks, C compiler code "trampoline". Can be enhanced with <code>SystemCallFilter</code>.
 </td>
 </tr>
 <tr>
@@ -324,7 +323,7 @@ CapabilityBoundingSet=<i>CAP_NET_BIND_SERVICE</i></pre>
 <td style="background: #ddd; color: inherit; vertical-align: middle; text-align: center;">Medium</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Low</td>
 <td>
-<code>/dev/null</code> and similar will still be there
+<code>/dev/null</code> and similar will still be there.
 </td>
 </tr>
 <tr>
@@ -352,14 +351,14 @@ CapabilityBoundingSet=<i>CAP_NET_BIND_SERVICE</i></pre>
 <td><code>RestrictRealtime</code></td>
 <td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;">Low</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Low</td>
-<td>May prevent denial-of-service situations
+<td>May prevent denial-of-service situations.
 </td>
 </tr>
 <tr>
 <td><code>RestrictSUIDSGID</code></td>
 <td style="background: #ddd; color: inherit; vertical-align: middle; text-align: center;">Medium</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Low</td>
-<td>Best used with <code>NoNewPrivileges</code>
+<td>Best used with <code>NoNewPrivileges</code>.
 </td>
 </tr>
 </tbody>
@@ -367,8 +366,6 @@ CapabilityBoundingSet=<i>CAP_NET_BIND_SERVICE</i></pre>
 <ol>
 <li>How effective the directive is</li>
 <li>How likely the directive is to break something</li>
-<li>Can be enhanced with <code>SystemCallFilter</code>
-</li>
 </ol>
 <h3><span class="mw-headline" id="Configurable_directives">Configurable directives</span></h3>
 <p>Most of these directives are quite powerful and will affect a lot. It is recommended to consider using at least some of them.
@@ -489,7 +486,7 @@ CapabilityBoundingSet=<i>CAP_NET_BIND_SERVICE</i></pre>
 </tr>
 <tr>
 <td>
-<code>ProtectClock</code><sup>1</sup>
+<code>ProtectClock</code><sup>1,2</sup>
 </td>
 <td>Boolean</td>
 <td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;">Low</td>
@@ -509,7 +506,7 @@ CapabilityBoundingSet=<i>CAP_NET_BIND_SERVICE</i></pre>
 </tr>
 <tr>
 <td>
-<code>ProtectHostname</code><sup>1</sup>
+<code>ProtectHostname</code><sup>1,2</sup>
 </td>
 <td>Boolean</td>
 <td data-sort-value="3" style="background: #ffa; color: inherit; vertical-align: middle; text-align: center;">Low</td>
@@ -574,12 +571,24 @@ CapabilityBoundingSet=<i>CAP_NET_BIND_SERVICE</i></pre>
 <td>See <span class="plainlinks archwiki-template-man" title="$ man 5 systemd.exec"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd.exec.5#SYSTEM_CALL_FILTERING">systemd.exec(5) § SYSTEM CALL FILTERING</a></span> - forgetting just a single syscall will lead to your application segfaulting at possibly inopportune times.
 </td>
 </tr>
+<tr>
+<td><code>SocketBindAllow/Deny</code></td>
+<td>e.g <code>SocketBindAllow=ipv4:22</code> <code>SocketBindDeny=any</code>
+</td>
+<td style="background: #ddd; color: inherit; vertical-align: middle; text-align: center;">Medium</td>
+<td style="background: #ddd; color: inherit; vertical-align: middle; text-align: center;">Medium</td>
+<td>Best combined with <code>CAP_NET_BIND_SERVICE</code> to ensure the privileged context can only bind to desired ports.
+</td>
+</tr>
 </tbody>
 </table>
-<ol><li>Redundant and unnecessary to specify if the service unit does not run with elevated privileges resulting from use of e.g <code>AmbientCapabilities=</code> or running as root. If a service unit is running as another normal and unprivileged <code>User=</code>, these settings are entirely superfluous and can be safely omitted.</li></ol>
+<ol>
+<li>Redundant and unnecessary to specify if the service unit does not run with elevated privileges resulting from use of e.g <code>AmbientCapabilities=</code> or running as root. If a service unit is running as another normal and unprivileged <code>User=</code>, these settings are entirely superfluous and can be safely omitted.</li>
+<li>Restricts issuing corresponding syscalls only, but not access to IPC services shipped by systemd (namely <i>systemd-timedated</i> and <i>systemd-hostnamed</i>).<a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/pull/35447#issuecomment-2512361567">[2]</a> Care must be taken to block the D-Bus/Varlink methods involved if absolute security is demanded.</li>
+</ol>
 <h3><span class="mw-headline" id="chroot_jail">chroot jail</span></h3>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> While this works in practice, it is partly relying on undocumented side effects of directives and can break at any time with new versions of systemd. For these reasons, it is considered unsupported by the developers of systemd. A feature request has been filed to make this an intended and supported functionality.<a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/33688">[2]</a>
+<strong>Warning:</strong> While this works in practice, it is partly relying on undocumented side effects of directives and can break at any time with new versions of systemd. For these reasons, it is considered unsupported by the developers of systemd. A feature request has been filed to make this an intended and supported functionality.<a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/33688">[3]</a>
 </div>
 <p>It is possible to severely restrict what a process can see by specifying <code>TemporaryFileSystem=/:ro</code> and mounting required paths into this chroot-like jail.
 <code>RootDirectory</code> requires a directory to be present, whereas <code>TemporaryFileSystem</code> does not and will override <code>/</code> seamlessly. Both, and especially the latter, appear to be secure chroot-like directives, which can not be broken out easily, as they do not use the <code>chroot</code> syscall.
@@ -647,8 +656,8 @@ DefaultTasksAccounting=yes</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Systemd/Sandboxing&amp;oldid=830332">https://wiki.archlinux.org/index.php?title=Systemd/Sandboxing&amp;oldid=830332</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 2 April 2025, at 01:05.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Systemd/Sandboxing&amp;oldid=831510">https://wiki.archlinux.org/index.php?title=Systemd/Sandboxing&amp;oldid=831510</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 8 April 2025, at 17:20.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Optical disc drive - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -918,7 +918,7 @@ Volume size is: 2041796
 <p>1. Insert the CD, DVD, or Blu-ray Disc into your optical drive.<br>
 2. Make sure the disc is not mounted. You can unmount it using:<br>
 </p>
-<pre>sudo umount /dev/cdrom
+<pre># umount /dev/cdrom
 </pre>
 <p>3. Run dvdisaster from the command line or find it in your application menu.<br>
 4. In the dvdisaster interface, choose <b>Create error correction dat</b>a.<br>
@@ -950,7 +950,7 @@ Volume size is: 2041796
 1. Insert the damaged CD, DVD, or Blu-ray Disc into your optical drive.<br>
 2. Unmount the disc to avoid conflicts:<br>
 </p>
-<pre>sudo umount /dev/cdrom
+<pre># umount /dev/cdrom
 </pre>
 <p>3. Start dvdisaster<br>
 4. In the dvdisaster interface, choose <b>Scan and Repair</b> mode.<br>
@@ -965,7 +965,7 @@ Volume size is: 2041796
 12. Click **"Save"** to complete the process.<br>
 13. Mount the ISO to verify that files have been successfully recovered:<br>
 </p>
-<pre>sudo mount -o loop /home/user/recovered_disc.iso /mnt
+<pre># mount -o loop /home/user/recovered_disc.iso /mnt
 </pre>
 <p>14. Check the contents at `/mnt` to ensure data integrity.
 </p>
@@ -1163,7 +1163,17 @@ e5643e18e05f5646046bb2e4236986d8  -</pre>
 <p><i>cdrskin</i>, <i>xorriso</i> and <i>xorrecord</i> do not format BD-R by default. They do with <code>cdrskin blank=format_if_needed</code>, resp. <code>xorriso -format as_needed</code>, resp. <code>xorrecord blank=format_overwrite</code>. These three programs can disable Defect Management with BD-RE and already formatted BD-R by <code>cdrskin stream_recording=on</code>, resp. <code>xorriso -stream_recording on</code>, resp. <code>xorrecord stream_recording=on</code>.
 </p>
 <h3><span class="mw-headline" id="Burning_an_audio_CD">Burning an audio CD</span></h3>
-<p>Create your audio tracks and store them as uncompressed, 16-bit, 44100-Hz, stereo WAV files. To convert MP3 to WAV, ensure <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lame">lame</a></span> is installed, <i>cd</i> to the directory with your MP3 files, and run:
+<p>Create your audio tracks and store them as uncompressed, 16-bit, 44100-Hz, stereo WAV files. 
+</p>
+<p>If the files are 24 bit encoded (for example, an online music service only provides 24 bit WAV files), they need to be converted to 16 bit in order to play in RedBook-compliant CD players. To check, ensure <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sox">sox</a></span> is installed, <i>cd</i> to the directory with your WAV files, and run:
+</p>
+<pre>$ soxi *.wav
+</pre>
+<p>If the file have the wrong encoding, convert the files using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sox">sox</a></span>:
+</p>
+<pre>$ for f in *.wav; do sox "$f" -b 16 output.wav; mv output.wav "$f"; done
+</pre>
+<p>To convert MP3 to WAV, ensure <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lame">lame</a></span> is installed, <i>cd</i> to the directory with your MP3 files, and run:
 </p>
 <pre>$ for FILE in *.mp3; do lame --decode "$FILE" "${FILE%.mp3}.wav"; done
 </pre>
@@ -1496,7 +1506,7 @@ e5643e18e05f5646046bb2e4236986d8  -</pre>
 <ul><li>
 <b>Aaru</b> — Software for archival ripping of CDs, DVDs, and harddrives</li></ul>
 <dl><dd>
-<a rel="nofollow" class="external free" href="https://aaru.app">https://aaru.app</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/aaru/">aaru</a></span><sup><small>AUR</small></sup>
+<a rel="nofollow" class="external free" href="https://aaru.app">https://aaru.app</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/aaru/">aaru</a></span><sup><small>AUR</small></sup><sup>[<a href="../en/Help:Procedures.html#Fix_broken_package_links" title="Help:Procedures">broken link</a>: package not found]</sup>
 </dd></dl>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
 <h3><span class="mw-headline" id="Brasero_fails_to_normalize_audio_CD">Brasero fails to normalize audio CD</span></h3>
@@ -1528,6 +1538,8 @@ dvd=/dev/sr0
 <p>Any speed that is supported by the drive can be used, or 0 for the maximum speed.
 </p>
 <p><a rel="nofollow" class="external text" href="https://michal.kosmulski.org/computing/tips/cd-rom-speed.html">Setting CD-ROM and DVD-ROM drive speed</a>
+</p>
+<p>If optical drive is constantly checking for a new disk causing it to make unnecessary noise, consider turning SATA "Hot Plug" on for your optical drive in BIOS.
 </p>
 <h3>
 <span id="Playback_does_not_work_with_new_computer_.28new_DVD-Drive.29"></span><span class="mw-headline" id="Playback_does_not_work_with_new_computer_(new_DVD-Drive)">Playback does not work with new computer (new DVD-Drive)</span>
@@ -1623,6 +1635,7 @@ I: -input-charset not specified, using utf-8 (detected in locale settings)
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li>
+<li><a href="../en/Category:Pages_with_broken_package_links.html" title="Category:Pages with broken package links">Pages with broken package links</a></li>
 </ul>
 </div>
 </div>
@@ -1634,8 +1647,8 @@ I: -input-charset not specified, using utf-8 (detected in locale settings)
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Optical_disc_drive&amp;oldid=826362">https://wiki.archlinux.org/index.php?title=Optical_disc_drive&amp;oldid=826362</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 4 February 2025, at 19:45.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Optical_disc_drive&amp;oldid=833634">https://wiki.archlinux.org/index.php?title=Optical_disc_drive&amp;oldid=833634</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 11 May 2025, at 06:15.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

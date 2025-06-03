@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>GnuPG - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -1181,7 +1181,7 @@ keyring <i>keyring-path</i>
 </p>
 <pre>$ gpg --import <i>public-key</i>.asc
 </pre>
-<p>Alternatively, <a href="#Use_a_keyserver">use a keyserver</a> to find a public key.
+<p>Alternatively, try retrieving their public key <a href="#Web_Key_Directory">via WKD</a> (in case the domain of their email address supports it) or <a href="#Use_a_keyserver">using a keyserver</a>.
 </p>
 <p>If you wish to import a key ID to install a specific Arch Linux package, see <a href="../en/Pacman/Package_signing.html#Managing_the_keyring" title="Pacman/Package signing">pacman/Package signing#Managing the keyring</a> and <a href="../en/Makepkg.html#Signature_checking" title="Makepkg">Makepkg#Signature checking</a>.
 </p>
@@ -1243,12 +1243,18 @@ keyring <i>keyring-path</i>
 <p>See <a href="../en/OpenPGP.html#Web_Key_Directory" title="OpenPGP">OpenPGP#Web Key Directory</a> for a general overview.
 </p>
 <h4><span class="mw-headline" id="Lookup_certificates_using_WKD">Lookup certificates using WKD</span></h4>
-<p>When encrypting to an email address (e.g. <code><i>user@example.org</i></code>), GnuPG (&gt;=2.1.16) will query the domain (<code>example.com</code>) via HTTPS for the public OpenPGP key if it is not already in the local keyring. The option <code>--auto-key-locate</code> will default to locate a key using the WKD protocol, if there is no key on the local keyring for this email address:
+<p>When encrypting to an email address (e.g. <code><i>user@example.org</i></code>), if it is not already in the local keyring, GnuPG, by default, will retrieve the public OpenPGP key using the Web Key Directory protocol (i.e. GnuPG will download the key via HTTPS from the <code>example.org</code> web server). For example:
 </p>
-<pre>$ gpg --recipient <i>user@example.org</i> --auto-key-locate --encrypt <i>doc</i>
+<pre>$ gpg --recipient <i>user@example.org</i> --encrypt <i>doc</i>
 </pre>
+<p>To retrieve a public key and import it into your keyring, use the <code>--locate-keys</code> or <code>--locate-external-keys</code> options. The former will not do anything if the key already exists in the local keyring, while the later will always refresh the key. For example:
+</p>
+<pre>$ gpg --locate-external-keys <i>user@example.org</i>
+</pre>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> GnuPG's automatic key retrieval is controlled with the <code>--auto-key-locate</code> option which defaults to <code>local,wkd</code>; see its description in <span class="plainlinks archwiki-template-man" title="$ man 1 gpg"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/gpg.1">gpg(1)</a></span>. In case you have set <code>auto-key-locate</code> to a value without <code>wkd</code> in the <a href="#Configuration_files">GPG configuration file</a>, you can use the <code>--auto-key-locate clear,wkd</code> command line option to override it.</div>
 <h4><span class="mw-headline" id="Create_a_WKD">Create a WKD</span></h4>
-<p>If you control the domain of your email address yourself, you can follow <a rel="nofollow" class="external text" href="https://wiki.gnupg.org/WKDHosting">this guide</a> to enable WKD for your domain.
+<p>If you control the domain of your email address yourself and have a web server that provides HTTPS with a trusted TLS certificate, you can follow <a rel="nofollow" class="external text" href="https://wiki.gnupg.org/WKDHosting">this guide</a> to enable WKD for your domain.
 </p>
 <h3><span class="mw-headline" id="Encrypt_and_decrypt">Encrypt and decrypt</span></h3>
 <h4><span class="mw-headline" id="Asymmetric">Asymmetric</span></h4>
@@ -1360,21 +1366,24 @@ The revocation certificates can also be generated manually by the user later usi
 </pre>
 <p>Select only that subkey to export.
 </p>
-<pre>$ gpg --armor --export-secret-subkeys <i>subkey-id! &gt; /tmp/subkey.asc</i>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ mktemp -d</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">/tmp/tmp.<i>XXXXXXXXXX</i>
+</pre>
+<pre>$ gpg --armor --export-secret-subkeys --output /tmp/tmp.XXXXXXXXXX/subkey.asc <i>subkey-id</i>!
 </pre>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> If you forget to add the !, all of your subkeys will be exported.</div>
+<strong>Warning:</strong> If you forget to add the exclamation mark (<code>!</code>), all of your subkeys will be exported.</div>
 <p>At this point you could stop, but it is most likely a good idea to change the passphrase as well. Import the key into a temporary folder. 
 </p>
-<pre>$ gpg --homedir /tmp/gpg --import /tmp/subkey.asc
-$ gpg --homedir /tmp/gpg --edit-key <i>user-id</i>
+<pre>$ gpg --homedir /tmp/tmp.<i>XXXXXXXXXX</i> --import /tmp/tmp.<i>XXXXXXXXXX</i>/subkey.asc
+$ gpg --homedir /tmp/tmp.<i>XXXXXXXXXX</i> --edit-key <i>user-id</i>
 &gt; passwd
 &gt; save
-$ gpg --homedir /tmp/gpg --armor --export-secret-subkeys <i>subkey-id</i>! &gt; /tmp/subkey.altpass.asc
+$ gpg --homedir /tmp/tmp.<i>XXXXXXXXXX</i> --armor --output /tmp/tmp.<i>XXXXXXXXXX</i>/subkey.altpass.asc --export-secret-subkeys <i>subkey-id</i>!
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> You will get a warning that the master key was not available and the password was not changed, but that can safely be ignored as the subkey password was.</div>
-<p>At this point, you can now use <code>/tmp/subkey.altpass.asc</code> on your other devices.
+<p>At this point, you can now use <code>/tmp/tmp.<i>XXXXXXXXXX</i>/subkey.altpass.asc</code> on your other devices.
 </p>
 <h3><span class="mw-headline" id="Extending_expiration_date">Extending expiration date</span></h3>
 <div class="archwiki-template-box archwiki-template-box-warning">
@@ -1803,18 +1812,20 @@ This ensures the longterm compatibility with other <a href="../en/OpenPGP.html" 
 </p>
 <p>Whether GnuPG's custom AEAD is set for a key can be inspected with the help of <code>gpg</code> itself:
 </p>
-<pre>$ gpg --expert --edit-key <i>&lt;FINGERPRINT&gt;</i>
-gpg&gt; showpref
-[ultimate] (1). Foobar McFooface (test) &lt;foobar@mcfooface.com&gt;
-    Cipher: AES256, AES192, AES, 3DES
-    AEAD: <b>OCB</b>
-    Digest: SHA512, SHA384, SHA256, SHA224, SHA1
-    Compression: ZLIB, BZIP2, ZIP, Uncompressed
-    Features: MDC, <b>AEAD</b>, Keyserver no-modify
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ gpg --list-secret-keys --list-options=show-pref-verbose <i>FINGERPRINT</i></pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">...
+uid           [ultimate] Archie &lt;archie@archlinux.example&gt;
+              Cipher: AES256, AES192, AES, 3DES
+              AEAD: <b>OCB</b>
+              Digest: SHA512, SHA384, SHA256, SHA224, SHA1
+              Compression: ZLIB, BZIP2, ZIP, Uncompressed
+              Features: MDC, <b>AEAD</b>, Keyserver no-modify
+...
 </pre>
 <p>This mechanism can be disabled:
 </p>
-<pre>gpg&gt; setpref AES256 AES192 AES SHA512 SHA384 SHA256 SHA224 ZLIB BZIP2 ZIP
+<pre>$ gpg --expert --edit-key <i>FINGERPRINT</i>
+gpg&gt; setpref AES256 AES192 AES SHA512 SHA384 SHA256 SHA224 ZLIB BZIP2 ZIP
 Set preference list to:
     Cipher: AES256, AES192, AES, 3DES
     AEAD:
@@ -2034,8 +2045,8 @@ gpg: [stdin]: clear-sign failed: Inappropriate ioctl for device
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GnuPG&amp;oldid=830132">https://wiki.archlinux.org/index.php?title=GnuPG&amp;oldid=830132</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 29 March 2025, at 19:38.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GnuPG&amp;oldid=834812">https://wiki.archlinux.org/index.php?title=GnuPG&amp;oldid=834812</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 29 May 2025, at 14:30.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

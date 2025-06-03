@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Network configuration/Wireless - ArchWiki</title>
 <link rel="stylesheet" href="../../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -1801,7 +1801,7 @@ wlp1s0: authentication with 56:e7:ee:7b:55:bc timed out</pre>
 </div>
 <p>Issues with the <code>rtl8xxxu</code> mainline kernel module may be solved by compiling a third-party module for the specific chipset. The source code can be found in <a rel="nofollow" class="external text" href="https://github.com/lwfinger?tab=repositories">GitHub repositories</a>.
 </p>
-<p>Some drivers may be already prepared in the AUR, e.g. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/rtl8723bu-dkms-git/">rtl8723bu-dkms-git</a></span><sup><small>AUR</small></sup>.
+<p>Some drivers may be already prepared in the AUR, e.g. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/rtl8723bu-dkms-git/">rtl8723bu-dkms-git</a></span><sup><small>AUR</small></sup>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/rtl8852au-dkms-git/">rtl8852au-dkms-git</a></span><sup><small>AUR</small></sup>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/rtl8852bu-dkms-git/">rtl8852bu-dkms-git</a></span><sup><small>AUR</small></sup>,  <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/rtl8852cu-dkms-git/">rtl8852cu-dkms-git</a></span><sup><small>AUR</small></sup>.
 </p>
 <h4><span class="mw-headline" id="RTW88">RTW88</span></h4>
 <p>RWT88 kernel module is included in all <a href="../../en/Kernel.html#Officially_supported_kernels" title="Kernel">officially supported</a> Arch Linux kernels. The number of supported devices grew over time, currently it supports most RTW88 chip devices if configured and compiled to do so.
@@ -1836,7 +1836,8 @@ event: connect-failed, status: 1
 Try disabling ASPM-related features using the config below.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/modprobe.d/70-rtw89.conf</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">options rtw89_pci disable_aspm_l1=y disable_aspm_l1ss</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">options rtw89_pci disable_aspm_l1=y disable_aspm_l1ss=y
+options rtw89_core disable_ps_mode=y</pre>
 <p>See also: 
 </p>
 <ul>
@@ -1924,6 +1925,8 @@ Try disabling ASPM-related features using the config below.
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> Since kernel version 5.8, the <code>bt_coex_active</code> and <code>sw_crypto</code> module options have been disabled for the hardware handled by the <code>iwlmvm</code> kernel module. For older hardware handled by the <code>iwldvm</code> module, the options are still enabled.</div>
 <h5><span class="mw-headline" id="Firmware_issues">Firmware issues</span></h5>
+<p>Make sure your <a href="../../en/Fwupd.html#Setup_for_UEFI_upgrade" title="Fwupd">firmware is fully updated</a> before trying anything else.
+</p>
 <p>You may have some issue where the driver outputs stack traces &amp; errors, which can cause some stuttering.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># dmesg</pre>
@@ -1936,7 +1939,7 @@ Try disabling ASPM-related features using the config below.
 </p>
 <pre># for i in {64..73} ; do mv /usr/lib/firmware/iwlwifi-ty-a0-gf-a0-$i.ucode.xz /usr/lib/firmware/iwlwifi-ty-a0-gf-a0-$i.ucode.xz.bak ; done
 </pre>
-<p>To avoid having to repeat these steps manually after each update, use the <a href="../../en/Pacman.html#Skip_files_from_being_installed_to_system" class="mw-redirect" title="NoExtract">NoExtract</a> array in <code>pacman.conf</code> with a wildcard to block their installation.
+<p>To avoid having to repeat these steps manually after each update, use the <a href="../../en/Pacman.html#Skip_files_from_being_installed_to_system" class="mw-redirect" title="NoExtract">NoExtract</a> and <a href="../../en/Pacman.html#Skip_file_from_being_upgraded" class="mw-redirect" title="NoUpgrade">NoUpgrade</a> arrays in <code>pacman.conf</code> with a wildcard to block their installation.
 </p>
 <h5><span class="mw-headline" id="Adapter_not_detected_after_booting_from_Windows">Adapter not detected after booting from Windows</span></h5>
 <p>If the Wi-Fi adapter is not getting detected after finishing a session in Windows, this might be due to Windows' <b>Fast Startup</b> feature which is enabled by default. Try <a href="../../en/Dual_boot_with_Windows.html#Windows_settings" title="Dual boot with Windows">disabling Fast Startup</a>. The <a rel="nofollow" class="external text" href="https://wireless.wiki.kernel.org/en/users/drivers/iwlwifi#about_dual-boot_with_windows_and_fast-boot_enabled">iwlwifi kernel driver wiki has an entry for this</a>.
@@ -2044,8 +2047,8 @@ Try disabling ASPM-related features using the config below.
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Network_configuration/Wireless&amp;oldid=827123">https://wiki.archlinux.org/index.php?title=Network_configuration/Wireless&amp;oldid=827123</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 15 February 2025, at 10:39.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Network_configuration/Wireless&amp;oldid=833901">https://wiki.archlinux.org/index.php?title=Network_configuration/Wireless&amp;oldid=833901</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 14 May 2025, at 05:45.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

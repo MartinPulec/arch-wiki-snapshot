@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Advanced Linux Sound Architecture - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -332,15 +332,15 @@
 			<ul id="toc-Select_the_default_PCM_via_environment_variable-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Alternative_method" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Alternative_method">
+		<li id="toc-Addressing_hardware_directly" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Addressing_hardware_directly">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">4.2.4</span>
-					<span>Alternative method</span>
+					<span>Addressing hardware directly</span>
 				</div>
 			</a>
 			
-			<ul id="toc-Alternative_method-sublist" class="vector-toc-list">
+			<ul id="toc-Addressing_hardware_directly-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -939,7 +939,7 @@ key.!subkeyN valueN;</pre>
 <p>Using override operation mode, when done correctly, is usually safe; however, one should bear in mind that there might be other necessary keys in a node for proper functioning.
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong>  Overriding pcm node itself will most definitely make alsa unusable, since every plugin definition will be deleted. Therefore, <b>do not use !pcm.key</b> unless you are making a configuration from scratch.</div>
+<strong>Warning:</strong> Overriding <code>pcm</code> node itself will most definitely make ALSA unusable, since every plugin definition will be deleted. Therefore, <b>do not use</b> <code>!pcm.key</code> unless you are making a configuration from scratch.</div>
 <h4><span class="mw-headline" id="Nesting">Nesting</span></h4>
 <p>Sometimes, it may be useful and even easier to read using nesting in configuration.
 </p>
@@ -980,7 +980,7 @@ defaults.ctl.!card "SB"; # different value types.</pre>
 <p>Using double quotes here automatically sets values data type to string, so in the above example, setting defaults.pcm.!card "2" would result in retaining last default device, in this case card 0. Using double quotes for strings is not mandatory as long as no special characters are used, which ideally should never be the case. This may be irrelevant in other assignments.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong>  From a configuration point of view, those are not equivalent to setting a compound "default" pcm device, since most users specify addressing type in there also, which actually may be the same, but the assignment itself still differs. Also, defaults.pcm.card is referred to multiple times in alsa configuration files, usually as a fallback assignment, where different environment variables take precedence.</div>
+<strong>Note:</strong> From a configuration point of view, those are not equivalent to setting a compound "default" PCM device, since most users specify addressing type in there also, which actually may be the same, but the assignment itself still differs. Also, <code>defaults.pcm.card</code> is referred to multiple times in ALSA configuration files, usually as a fallback assignment, where different environment variables take precedence.</div>
 <h4><span class="mw-headline" id="Setting_the_default_sound_card_via_defaults_node">Setting the default sound card via defaults node</span></h4>
 <p>Putting the <a href='#An_example_of_setting_default_device_using_"defaults"_node'>previous example</a> regarding <code>defaults.pcm.card</code> and <code>defaults.pcm.device</code> into practice, assuming we have 2 cards with index 0 and 1 respectively and wish to simply change the default card to index 1, would lead to the following configuration in <code>/etc/asound.conf</code> or the user-specific <code>~/.asoundrc</code> to change both the playback and the mixer control card.
 </p>
@@ -1072,9 +1072,9 @@ For example, assuming you wrote a downmix PCM called <code>mix51to20</code>, you
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> Pay attention to default addressing type.</div>
-<h4><span class="mw-headline" id="Alternative_method">Alternative method</span></h4>
-<div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> This process can be partly automated using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/asoundconf/">asoundconf</a></span><sup><small>AUR</small></sup>.</div>
+<h4><span class="mw-headline" id="Addressing_hardware_directly">Addressing hardware directly</span></h4>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning:</strong> This setting leaves the device unavailable to other applications. This method is only recommended if it is a part of a more sophisticated setup <code>~/.asoundrc</code> or if user deliberately wants to address sound card directly (digital output through <code>IEC958</code> or dedicated music server for example). This setting without sound server or <a href="#Software_mixing">mixing</a> is not supported by some applications such as <a href="../en/Chromium.html" title="Chromium">Chromium</a>.</div>
 <p>First, you will have to find out the card and device id that you want to set as the default:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ aplay -l</pre>
@@ -1091,45 +1091,50 @@ card 1: JamLab [JamLab], device 0: USB Audio [USB Audio]
 card 2: Audio [Altec Lansing XT1 - USB Audio], device 0: USB Audio [USB Audio]
   Subdevices: 1/1
   Subdevice #0: subdevice #0</pre>
-<div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> Simply setting a <code>type hw</code> as default card is equivalent to addressing hardware directly, which leaves the device unavailable to other applications. This method is only recommended if it is a part of a more sophisticated setup <code>~/.asoundrc</code> or if user deliberately wants to address sound card directly (digital output through <code>IEC958</code> or dedicated music server for example).</div>
-<p>For example, the last entry in this list has the card index (card number) <code>2</code> and the device ID <code>0</code>. To set this card as the default, you can either use the system-wide file <code>/etc/asound.conf</code> or the user-specific file <code>~/.asoundrc</code>. You may have to create the file if it does not exist. Then insert the following options with the corresponding card.
+<p>For example, the last entry in this list has the card index (card number) <code>2</code>, card ID strings <code>Audio</code>  and the device ID <code>0</code>. To set this card as the default, you can either use the system-wide file <code>/etc/asound.conf</code> or the user-specific file <code>~/.asoundrc</code>. You may have to create the file if it does not exist. Then insert the following options with the corresponding card.
 </p>
 <pre>pcm.!default {
    type hw
-   card 2
-}
-
-ctl.!default {
-   type hw
-   card 2
-}
-</pre>
-<p>In most cases, it is recommended to use sound card ID strings instead of number references. Card IDs are easier to grasp, and also overcomes the boot order problem. Therefore, the following would be correct for the above example:
-</p>
-<pre>pcm.!default {
-   type hw
-   card Audio
+   card Audio #or card 2
+   hint {
+    show on # for some applications
+   }
 }
 
 ctl.!default {
    type hw
    card Audio
 }
+
+pcm.dmixer {
+	type dmix
+	ipc_key 2048
+	slave {
+		pcm "hw:Audio" #or "hw:2"
+	}
+}
+
+pcm.dsnooper {
+	type dsnoop
+	ipc_key 2048
+	slave {
+		pcm "hw:Audio"
+	}
+}
 </pre>
-<p>To get valid ALSA card IDs, use <i>aplay</i>:
+<p>It is recommended to use sound card ID strings instead of number references to overcome the boot order problem.
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ aplay -l | awk -F \: '/,/{print $2}' | awk '{print $1}' | uniq</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">PCH
-</pre>
-<p>Alternatively, use <i>cat</i>, which might return unused devices:
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ cat /proc/asound/card*/id</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">PCH
-ThinkPadEC
-</pre>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> This method could be problematic if your system has several cards of the same ID string (with <code>_1</code>, <code>_2</code>, … suffixes appended). For more information, see <a rel="nofollow" class="external text" href="https://alsa.opensrc.org/Udev#Identify_two_identical_audio_devices">Identify two identical audio devices</a>.</div>
+<p><code>pcm.dmixer</code> and <code>pcm.dsnooper</code> are spares for applications which does not support without <a href="#Software_mixing">mixing</a>.
+</p>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
+<div>
+<b>Reason:</b> General method to select ALSA device should be introduced such as environment value. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Advanced_Linux_Sound_Architecture.html">Talk:Advanced Linux Sound Architecture</a>)</div>
+</div>
+<p>For example, <code>chromium -alsa-output-device=pcm.dmixer -alsa-input-device=pcm.dsnooper</code> enables mixing for Chromium tempolary.
+</p>
 <p>The <code>pcm</code> options affect which card and device will be used for audio playback while the <code>ctl</code> option affects which card is used by control utilities like <i>alsamixer</i>.
 </p>
 <p>The changes should take effect as soon as you (re-)start an application (e.g. MPlayer). You can also test with a command like <i>aplay</i>:
@@ -1533,9 +1538,13 @@ rm "_tmp.wav"
 </ul>
 </div>
 </div>
-					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
+					<div id="catlinks" class="catlinks" data-mw="interface">
+<div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Sound.html" title="Category:Sound">Sound</a></li></ul>
-</div></div>
+</div>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li></ul>
+</div>
+</div>
 				</div>
 			</main>
 			
@@ -1544,8 +1553,8 @@ rm "_tmp.wav"
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Advanced_Linux_Sound_Architecture&amp;oldid=828001">https://wiki.archlinux.org/index.php?title=Advanced_Linux_Sound_Architecture&amp;oldid=828001</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 1 March 2025, at 05:35.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Advanced_Linux_Sound_Architecture&amp;oldid=833800">https://wiki.archlinux.org/index.php?title=Advanced_Linux_Sound_Architecture&amp;oldid=833800</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 13 May 2025, at 20:43.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

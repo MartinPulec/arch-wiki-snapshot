@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>NTFS - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -120,10 +120,21 @@
 			</button>
 		
 		<ul id="toc-Troubleshooting-sublist" class="vector-toc-list">
-			<li id="toc-unknown_filesystem_type_'ntfs'" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#unknown_filesystem_type_'ntfs'">
+			<li id="toc-File_system_mounts_read-only" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#File_system_mounts_read-only">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">3.1</span>
+					<span>File system mounts read-only</span>
+				</div>
+			</a>
+			
+			<ul id="toc-File_system_mounts_read-only-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-unknown_filesystem_type_'ntfs'" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#unknown_filesystem_type_'ntfs'">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.2</span>
 					<span>unknown filesystem type 'ntfs'</span>
 				</div>
 			</a>
@@ -134,7 +145,7 @@
 		<li id="toc-Unable_to_mount_with_ntfs3_with_partition_marked_dirty" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Unable_to_mount_with_ntfs3_with_partition_marked_dirty">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">3.2</span>
+					<span class="vector-toc-numb">3.3</span>
 					<span>Unable to mount with ntfs3 with partition marked dirty</span>
 				</div>
 			</a>
@@ -247,7 +258,6 @@
 <ul>
 <li><a href="../en/File_systems.html" title="File systems">File systems</a></li>
 <li><a href="../en/NTFS-3G.html" title="NTFS-3G">NTFS-3G</a></li>
-<li><a href="../en/Ufsd.html" title="Ufsd">Ufsd</a></li>
 </ul>
 </div>
 <p>From <a href="https://en.wikipedia.org/wiki/NTFS" class="extiw" title="wikipedia:NTFS">Wikipedia</a>:
@@ -256,13 +266,8 @@
 <b>NTFS (New Technology File System)</b> is a proprietary journaling file system developed by Microsoft. Starting with Windows NT 3.1, it is the default file system of the Windows NT family.</dd></dl>
 <p>The <a rel="nofollow" class="external text" href="https://docs.kernel.org/filesystems/ntfs3.html">ntfs3</a> kernel driver provides read and write support for the file system.
 </p>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> 
-<ul>
-<li>All <a href="../en/Kernel.html#Officially_supported_kernels" title="Kernel">officially supported kernels</a> with versions 5.15 or newer are built with <code>CONFIG_NTFS3_FS=m</code> and thus support it. Before 5.15, NTFS read and write support is provided by the <a href="../en/NTFS-3G.html" title="NTFS-3G">NTFS-3G</a> FUSE file system. Or you can use backported NTFS3 via <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/ntfs3-dkms/">ntfs3-dkms</a></span><sup><small>AUR</small></sup>.</li>
-<li>Paragon Software, the author of the kernel module, has not yet released userspace utilities for NTFS3. You can use NTFS-3G userspace utilities without NTFS-3G driver via <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/ntfsprogs-ntfs3/">ntfsprogs-ntfs3</a></span><sup><small>AUR</small></sup>.</li>
-</ul>
-</div>
+<p>There are no userspace utilities alongside the kernel driver. To format partitions or perform maintenance you still need a Windows machine or external tools like <a href="../en/NTFS-3G.html" title="NTFS-3G">NTFS-3G</a>.
+</p>
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Tips_and_tricks">Tips and tricks</span></h2>
 <h3><span class="mw-headline" id="Improving_performance">Improving performance</span></h3>
@@ -271,7 +276,7 @@
 <h3><span class="mw-headline" id="Prevent_creation_of_names_not_allowed_by_Windows">Prevent creation of names not allowed by Windows</span></h3>
 <p>NTFS itself does not have restrictions for characters and names used, but <a rel="nofollow" class="external text" href="https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-file#naming-conventions">Windows does</a>.
 </p>
-<p>Since the kernel version 6.2, ntfs3 supports <code>windows_names</code> <span class="plainlinks archwiki-template-man" title="$ man 8 mount"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/mount.8">mount(8)</a></span> option. Use it to strictly maintain compatibility.
+<p>ntfs3 supports <code>windows_names</code> <span class="plainlinks archwiki-template-man" title="$ man 8 mount"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/mount.8">mount(8)</a></span> option. Use it to strictly maintain compatibility.
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> <a href="../en/Udisks.html" title="Udisks">udisks</a> has this option enabled by default.</div>
@@ -283,7 +288,16 @@
 </p>
 <pre># mount -t ntfs3 /dev/<i>sdxY</i> <i>/mnt</i>
 </pre>
+<p>Or using <a href="../en/Fstab.html" title="Fstab">fstab</a>:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/fstab</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">/dev/<i>sdxY</i> <i>/mnt</i> ntfs3 defaults 0 0</pre>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
+<h3><span class="mw-headline" id="File_system_mounts_read-only">File system mounts read-only</span></h3>
+<p>The kernel from <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span> package has enabled <code>CONFIG_NTFS_FS</code> compatibility option <a rel="nofollow" class="external autonumber" href="https://gitlab.archlinux.org/archlinux/packaging/packages/linux/-/commit/ec29b86317f1c6c2e6c698684a4cc149bd492f9d">[1]</a>. It mimics the legacy driver behavior and mounts the file system read-only when <code>ntfs</code> type is used for mount.
+</p>
+<p>To mount the file system read-write, use <code>ntfs3</code> type. See <a href="#Explicit_file_system_type_required_to_mount">#Explicit file system type required to mount</a>.
+</p>
 <h3>
 <span id="unknown_filesystem_type_.27ntfs.27"></span><span class="mw-headline" id="unknown_filesystem_type_'ntfs'">unknown filesystem type 'ntfs'</span>
 </h3>
@@ -309,7 +323,7 @@
 </p>
 <pre><i>sdb1</i>: volume is dirty and "force" flag is not set!
 </pre>
-<p>You can try passing the <code>--clear-dirty</code> argument to <span class="plainlinks archwiki-template-man" title="$ man 8 ntfsfix"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/ntfsfix.8">ntfsfix(8)</a></span> to clean it. <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=271650">[1]</a>
+<p>You can try passing the <code>--clear-dirty</code> argument to <span class="plainlinks archwiki-template-man" title="$ man 8 ntfsfix"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/ntfsfix.8">ntfsfix(8)</a></span> to clean it. <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=271650">[2]</a>
 </p>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul>
@@ -331,8 +345,8 @@
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=NTFS&amp;oldid=807012">https://wiki.archlinux.org/index.php?title=NTFS&amp;oldid=807012</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 29 April 2024, at 08:12.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=NTFS&amp;oldid=834141">https://wiki.archlinux.org/index.php?title=NTFS&amp;oldid=834141</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 18 May 2025, at 16:14.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Professional audio/Hardware - ArchWiki</title>
 <link rel="stylesheet" href="../../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -288,10 +288,10 @@ EP 4 (digital output = S/PDIF output on back, mirrored on RCA outputs 3 and 4 on
 EP 5 (analogue input = balanced TRS or XLR microphone, unbalanced TS line on front)
 EP 6 (digital input = S/PDIF input on back)
 </pre>
-<p>This .asoundrc file enables 24-bit IO on the fast-track pro (and I'm sure it could be modified to work with other 3-byte usb devices) within the context of jack's 32-bit interface while routing default alsa traffic to jack outputs on the audio interface. Alsa will be in S24_3BE mode but jack can plug S32_LE data in and out of the interface and other alsa programs will be able to plug almost anything into jack.
+<p>This .asoundrc file enables 24-bit IO on the fast-track pro (and I'm sure it could be modified to work with other 3-byte usb devices) within the context of jack's 32-bit interface while routing default <a href="../../en/Advanced_Linux_Sound_Architecture.html" class="mw-redirect" title="ALSA">ALSA</a> traffic to jack outputs on the audio interface. ALSA will be in S24_3BE mode but jack can plug S32_LE data in and out of the interface and other ALSA programs will be able to plug almost anything into jack.
 </p>
 <pre>### ~/.asoundrc
-### default alsa config file, for a fast-track pro configured in 24-bit mode as so:
+### default ALSA config file, for a fast-track pro configured in 24-bit mode as so:
 ### options snd_usb_audio device_setup=0x9
 ### invoke jack with: (if you use -r48000, change the rate in the plugs as well)
 ### $jackd -dalsa -P"hw:Pro" -C"hw:Pro,1" -r44100
@@ -326,7 +326,7 @@ pcm.jack_in {
 	slave pcm.maud1
 }
 #####
-# route default alsa traffic through jack system io
+# route default ALSA traffic through jack system io
 
 pcm.jack {
     type jack
@@ -350,19 +350,26 @@ pcm.!default {
 }
 </pre>
 <h2><span class="mw-headline" id="Tascam_US-122">Tascam US-122</span></h2>
-<p><b>This does not apply to the US-122L</b>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> This does not apply to the US-122L.</div>
+<p>Required packages:
 </p>
-<p>Required packages: <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=alsa-tools">alsa-tools</a></span> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=alsa-firmware">alsa-firmware</a></span> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/fxload/">fxload</a></span><sup><small>AUR</small></sup>. 
-</p>
-<p>Create the following rules file, then reload udev rules, <a href="../../en/Udev.html#Loading_new_rules" title="Udev">Udev#Loading new rules</a>
+<ul>
+<li><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=alsa-firmware">alsa-firmware</a></span></li>
+<li><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=alsa-tools">alsa-tools</a></span></li>
+<li>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/fxload/">fxload</a></span><sup><small>AUR</small></sup>
+</li>
+</ul>
+<p>Create the following rules file:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/udev/rules.d/51-tascam-us-122.rules</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">SUBSYSTEMS=="usb", ACTION=="add", ATTRS{idProduct}=="8006", ATTRS{idVendor}=="1604", RUN+="/bin/sh -c '/sbin/fxload -D %N -s /usr/share/alsa/firmware/usx2yloader/tascam_loader.ihx -I /usr/share/alsa/firmware/usx2yloader/us122fw.ihx'"
 SUBSYSTEMS=="usb", ACTION=="add", ATTRS{idProduct}=="8007", ATTRS{idVendor}=="1604", RUN+="/bin/sh -c '/usr/bin/usx2yloader'"</pre>
-<p>Plug in the unit. The device should now be working, there are no software mixer controls
+<p>Then <a href="../../en/Udev.html#Loading_new_rules" title="Udev">reload udev rules</a> and plug in the unit. The device should now be working, there are no software mixer controls.
 </p>
 <h2><span class="mw-headline" id="RME_Babyface">RME Babyface</span></h2>
-<p>It works very well at low latencies (~5ms) with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=alsa-utils">alsa-utils</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=jack2">jack2</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-rt">linux-rt</a></span>. Running on ALSA only with the standard kernel may cause crackling at lower latencies.
+<p>It works very well at low latencies (~5ms) with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=alsa-utils">alsa-utils</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=jack2">jack2</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-rt">linux-rt</a></span>. Running on <a href="../../en/Advanced_Linux_Sound_Architecture.html" class="mw-redirect" title="ALSA">ALSA</a> only with the standard kernel may cause crackling at lower latencies.
 </p>
 <p>To be recognized and work, the firmware version of the Babyface needs to be &gt;= 200, which introduces the Class Compliant Mode. To enter Class Compliant Mode hold the "Select" and "Recall" buttons while connecting the Babyface to the computer via USB. It should now be recognized. 
 </p>
@@ -372,7 +379,7 @@ SUBSYSTEMS=="usb", ACTION=="add", ATTRS{idProduct}=="8007", ATTRS{idVendor}=="16
 </pre>
 <p>For more info about the Class Compliant Mode visit RME's website, they have PDF which covers all the functionality.
 </p>
-<p>The Babyface does not need any special Jack Settings. But if you want to use the built in MIDI In/Out then you need to set the "MIDI Driver" to "seq" and optionally disable "Enable Alsa Sequencer Support" to use it in combination with other MIDI Devices (a USB Midi Keyboard for example).
+<p>The Babyface does not need any special Jack Settings. But if you want to use the built in MIDI In/Out then you need to set the "MIDI Driver" to "seq" and optionally disable "Enable ALSA Sequencer Support" to use it in combination with other MIDI Devices (a USB Midi Keyboard for example).
 </p>
 <h3>
 <span id="Behringer_UMC202HD.2FUMC204HD"></span><span class="mw-headline" id="Behringer_UMC202HD/UMC204HD">Behringer UMC202HD/UMC204HD</span>
@@ -415,8 +422,8 @@ WantedBy=basic.target suspend.target hibernate.target</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Professional_audio/Hardware&amp;oldid=814759">https://wiki.archlinux.org/index.php?title=Professional_audio/Hardware&amp;oldid=814759</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 19 August 2024, at 07:21.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Professional_audio/Hardware&amp;oldid=833598">https://wiki.archlinux.org/index.php?title=Professional_audio/Hardware&amp;oldid=833598</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 10 May 2025, at 11:30.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

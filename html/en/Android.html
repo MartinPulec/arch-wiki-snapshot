@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Android - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -155,6 +155,17 @@
 			</a>
 			
 			<ul id="toc-Making_/opt/android-sdk_group-writeable-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Using_/opt/android-sdk_as_read-only_with_CoW" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Using_/opt/android-sdk_as_read-only_with_CoW">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">2.2.4</span>
+					<span>Using /opt/android-sdk as read-only with CoW</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Using_/opt/android-sdk_as_read-only_with_CoW-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -837,6 +848,32 @@ You can also install it offline through the <code>extras;android;m2repository</c
 </p>
 <pre>$ newgrp android-sdk
 </pre>
+<h4>
+<span id="Using_.2Fopt.2Fandroid-sdk_as_read-only_with_CoW"></span><span class="mw-headline" id="Using_/opt/android-sdk_as_read-only_with_CoW">Using /opt/android-sdk as read-only with CoW</span>
+</h4>
+<p>The AUR packages install the SDK in <code>/opt/android-sdk/</code>. This directory has root <a href="../en/File_permissions_and_attributes.html" class="mw-redirect" title="Permissions">permissions</a>, so to use it as your regular user, you should have another directory with write permissions.
+</p>
+<p>To do so, you should use <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=fuse-overlayfs">fuse-overlayfs</a></span>, a <a href="../en/FUSE.html" title="FUSE">FUSE</a> package around <a href="../en/Overlay_filesystem.html" class="mw-redirect" title="Overlayfs">overlayfs</a>. This will allow to access read-only <code>/opt/android-sdk/</code> directory and write modifications without copying the data (Copy-On-Write conception).
+</p>
+<p>First, create directories to host the overlay:
+</p>
+<pre>$ LOWER=/opt/android-sdk
+$ UPPER="$HOME/.local/android/.sdk/upper"
+$ WORK="$HOME/.local/android/.sdk/work"
+$ ANDROID_HOME="$HOME/.local/android/sdk"
+$ mkdir -p "$UPPER" "$WORK" "$ANDROID_HOME"
+</pre>
+<p>Then mount your overlay and export the Android home variable:
+</p>
+<pre>$ fuse-overlayfs -o squash_to_uid=$(id -u),squash_to_gid=$(id -g),lowerdir=$LOWER,upperdir=$UPPER,workdir=$WORK $ANDROID_HOME
+$ export ANDROID_HOME
+</pre>
+<p>You can now use any Android tool (`sdk-manager` for instance) with your copy-on-write setup.
+</p>
+<p>You can unmount it as with any other FUSE fs:
+</p>
+<pre>$ fusermount -u $ANDROID_HOME
+</pre>
 <h3><span class="mw-headline" id="Other_IDEs">Other IDEs</span></h3>
 <p>Android Studio is the official Android development environment based on IntelliJ IDEA. Alternatively, you can use <a href="../en/Netbeans.html" title="Netbeans">Netbeans</a> with the NBAndroid-V2. All are described below.
 </p>
@@ -1008,7 +1045,7 @@ $ make -j4
 <ul><li>
 <a href="https://en.wikipedia.org/wiki/Containerization_(computing)" class="extiw" title="wikipedia:Containerization (computing)">Container-based</a> solutions tend to be the most popular. They are the closest you can get to run Android app natively on a non-Android Linux kernel. They tend to be the best integrated with your system and have good performance. Notable ones are:
 <ul><li>
-<a href="../en/Waydroid.html" title="Waydroid">Waydroid</a> is a fork of Anbox, and it is gaining popularity. It is more performant, because it runs closer to the hardware. It is based on a newer LineageOS 17.1 (Android 10) based image with the option to install the Google Play Store and other Open Gapps. Beside running apps in standalone windows, it can also run a full Android UI.</li></ul>
+<a href="../en/Waydroid.html" title="Waydroid">Waydroid</a> is a fork of Anbox, and it is gaining popularity. It is more performant, because it runs closer to the hardware. It is based on a newer LineageOS 18.1 (Android 11) based image with the option to install the Google Play Store and other Open Gapps. Beside running apps in standalone windows, it can also run a full Android UI.</li></ul>
 </li></ul>
 <ul><li>There are also a few Chromium extensions that can run android apps:
 <ul>
@@ -1193,8 +1230,8 @@ See <a rel="nofollow" class="external text" href="https://developer.android.com/
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Android&amp;oldid=830068">https://wiki.archlinux.org/index.php?title=Android&amp;oldid=830068</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 28 March 2025, at 17:17.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Android&amp;oldid=833789">https://wiki.archlinux.org/index.php?title=Android&amp;oldid=833789</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 13 May 2025, at 19:57.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

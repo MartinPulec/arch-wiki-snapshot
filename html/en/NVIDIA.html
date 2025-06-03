@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>NVIDIA - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -616,7 +616,7 @@
 </tbody>
 </table>
 <ol>
-<li>If these packages do not work, usually due to new hardware releases, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/nvidia-open-beta/">nvidia-open-beta</a></span><sup><small>AUR</small></sup> may have a newer driver version that offers support.</li>
+<li>If these packages do not work, it is usually due to new hardware releases. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/nvidia-open-beta/">nvidia-open-beta</a></span><sup><small>AUR</small></sup> may have a newer driver version that offers support.</li>
 <li>May not function correctly on Linux 5.18 (or later) on systems with Intel CPUs <a rel="nofollow" class="external text" href="https://www.intel.com/content/www/us/en/newsroom/opinion/intel-cet-answers-call-protect-common-malware-threats.html">11th Gen and newer</a> due an incompatibility with <a rel="nofollow" class="external text" href="https://edc.intel.com/content/www/us/en/design/ipla/software-development-platforms/client/platforms/alder-lake-desktop/12th-generation-intel-core-processors-datasheet-volume-1-of-2/007/indirect-branch-tracking/">Indirect Branch Tracking</a>. You can disable it by setting the <code>ibt=off</code> <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a> from the <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a>. Be aware, this security feature is responsible for <a rel="nofollow" class="external text" href="https://lwn.net/Articles/889475/">mitigating a class of exploit techniques</a>.</li>
 <li>NVIDIA no longer actively supports these cards and their drivers <a rel="nofollow" class="external text" href="https://nvidia.custhelp.com/app/answers/detail/a_id/3142/">may not officially support the current Xorg version</a>. It might be easier to use the <a href="../en/Nouveau.html" title="Nouveau">nouveau</a> driver; however, NVIDIA's legacy drivers are still available and might provide better 3D performance/stability.</li>
 </ol>
@@ -706,11 +706,16 @@ Exec=/bin/sh -c 'while read -r trg; do case $trg in linux*) exit 0; esac; done; 
 <p>There are two kernel parameters for the <code>nvidia_drm</code> module to be considered: <code>modeset</code> and <code>fbdev</code>. Both are <a rel="nofollow" class="external text" href="https://gitlab.archlinux.org/archlinux/packaging/packages/nvidia-utils/-/blob/3b439109/PKGBUILD#L60">enabled by default</a> when using the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nvidia-utils">nvidia-utils</a></span> package. NVIDIA also <a rel="nofollow" class="external text" href="https://indico.freedesktop.org/event/6/contributions/287/attachments/210/288/NVIDIA%20Wayland%20Roadmap.pdf">plans to enable them by default in a future release</a>.
 </p>
 <h4><span class="mw-headline" id="modeset">modeset</span></h4>
-<p>Enabling <code>modeset</code> is necessary for all Wayland configurations.
+<p>Enabling <code>modeset</code> is necessary for all Wayland configurations to function properly.
 </p>
 <p>For unsupported drivers, where <code>modeset</code> needs to be enabled manually, see <a href="#DRM_kernel_mode_setting">#DRM kernel mode setting</a>, and <a href="../en/Wayland.html#Requirements" title="Wayland">Wayland#Requirements</a> for more information.
 </p>
 <h4><span class="mw-headline" id="fbdev">fbdev</span></h4>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:View-refresh-red.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is out of date.</b></p>
+<div>
+<b>Reason:</b> As of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span> 6.14.2 and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nvidia">nvidia</a></span> 570.133.07 Wayland seems to work well with fbdev disabled and the <code>cat</code> command can return <code>N</code>, so this section is probably only relevant for older versions of the driver. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:NVIDIA.html">Talk:NVIDIA</a>)</div>
+</div>
 <p>Enabling <code>fbdev</code> is necessary for some Wayland configurations.
 </p>
 <p>It is specifically a hard requirement on Linux 6.11 and later, but it is currently unclear whether this is intended behavior or a bug, see <a rel="nofollow" class="external autonumber" href="https://forums.developer.nvidia.com/t/drm-fbdev-wayland-presentation-support-with-linux-kernel-6-11-and-above/307920">[2]</a> for more details.
@@ -738,10 +743,6 @@ Exec=/bin/sh -c 'while read -r trg; do case $trg in linux*) exit 0; esac; done; 
 </pre>
 <p>This command will auto-detect and create (or edit, if already present) the <code>/etc/X11/xorg.conf</code> configuration according to present hardware.
 </p>
-<p>If there are instances of DRI, ensure they are commented out:
-</p>
-<pre>#    Load        "dri"
-</pre>
 <p>Double-check your <code>/etc/X11/xorg.conf</code> to make sure your default depth, horizontal sync, vertical refresh, and resolutions are acceptable.
 </p>
 <h3><span class="mw-headline" id="nvidia-settings">nvidia-settings</span></h3>
@@ -756,14 +757,7 @@ Exec=/bin/sh -c 'while read -r trg; do case $trg in linux*) exit 0; esac; done; 
 <p>See <a href="../en/Autostarting.html" title="Autostarting">Autostarting</a> to start this command on every boot.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> 
-<ul>
-<li>
-<a href="../en/Xorg.html" title="Xorg">Xorg</a> may not start or crash on startup after saving <code>nvidia-settings</code> changes. Adjusting or deleting the generated <code>~/.nvidia-settings-rc</code> and/or <a href="../en/Xorg.html" title="Xorg">Xorg</a> file(s) should recover normal startup.</li>
-<li>
-<a href="../en/Cinnamon.html" title="Cinnamon">Cinnamon</a> desktop can override changes made through <code>nvidia-settings</code>.  You can <a href="../en/Cinnamon.html#Cinnamon_overrides_settings_in_xorg.conf" title="Cinnamon">adjust the Cinnamon startup behavior to prevent that</a>.</li>
-</ul>
-</div>
+<strong>Note:</strong> <a href="../en/Xorg.html" title="Xorg">Xorg</a> may not start or crash on startup after saving <code>nvidia-settings</code> changes. Adjusting or deleting the generated <code>~/.nvidia-settings-rc</code> and/or <a href="../en/Xorg.html" title="Xorg">Xorg</a> file(s) should recover normal startup.</div>
 <h3><span class="mw-headline" id="Manual_configuration">Manual configuration</span></h3>
 <p>Several tweaks (which cannot be enabled <a href="#Automatic_configuration">automatically</a> or with <a href="#nvidia-settings">nvidia-settings</a>) can be performed by editing your configuration file. The Xorg server will need to be restarted before any changes are applied.
 </p>
@@ -925,6 +919,11 @@ Section "OutputClass"
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> You can create shell aliases for the different monitor and resolution configurations you use.</div>
 <h4><span class="mw-headline" id="ConnectedMonitor">ConnectedMonitor</span></h4>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:View-refresh-red.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is out of date.</b></p>
+<div>
+<b>Reason:</b> <code>Option "TwinView"</code> is removed in 302.07, and TwinView is always enabled, this configuration needs to be rewritten. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:NVIDIA.html">Talk:NVIDIA</a>)</div>
+</div>
 <p>If the driver does not properly detect a second monitor, you can force it to do so with ConnectedMonitor.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/X11/xorg.conf</pre>
@@ -976,6 +975,11 @@ EndSection
 <p>The duplicated device with <code>Screen</code> is how you get X to use two monitors on one card without <code>TwinView</code>. Note that <code>nvidia-settings</code> will strip out any <code>ConnectedMonitor</code> options you have added.
 </p>
 <h4><span class="mw-headline" id="TwinView">TwinView</span></h4>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:View-refresh-red.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is out of date.</b></p>
+<div>
+<b>Reason:</b> <code>Option "TwinView"</code> is removed in 302.07, and TwinView is always enabled. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:NVIDIA.html">Talk:NVIDIA</a>)</div>
+</div>
 <p>You want only one big screen instead of two. Set the <code>TwinView</code> argument to <code>1</code>. This option should be used if you desire compositing. TwinView only works on a per-card basis, when all participating monitors are connected to the same card.
 </p>
 <pre>Option "TwinView" "1"
@@ -1184,8 +1188,8 @@ export VDPAU_NVIDIA_SYNC_DISPLAY_DEVICE=DFP-0
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=NVIDIA&amp;oldid=827312">https://wiki.archlinux.org/index.php?title=NVIDIA&amp;oldid=827312</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 18 February 2025, at 09:54.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=NVIDIA&amp;oldid=833977">https://wiki.archlinux.org/index.php?title=NVIDIA&amp;oldid=833977</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 15 May 2025, at 15:30.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

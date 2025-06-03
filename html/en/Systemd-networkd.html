@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>systemd-networkd - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -665,6 +665,8 @@ ExecStart=
 ExecStart=/usr/lib/systemd/systemd-networkd-wait-online --any</pre>
 <p>Alternatively, use <code>systemd-networkd-wait-online@.service</code> to wait for a specific interface. For example, to wait for <code>enp1s0</code>, <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Disable">disable</a> <code>systemd-networkd-wait-online.service</code> and <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> <code>systemd-networkd-wait-online@enp1s0.service</code>.
 </p>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong> If you know which interface might not be up all the time, you can use <code>RequiredForOnline=no</code> in the <code>Link</code> section of your <code>.network</code> configuration file instead. See <span class="plainlinks archwiki-template-man" title="$ man 5 systemd.network"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd.network.5#%5BLINK%5D_SECTION_OPTIONS">systemd.network(5) § [LINK]_SECTION_OPTIONS</a></span>.</div>
 <h4><span class="mw-headline" id="Wait_until_network_interfaces_have_a_routable_address">Wait until network interfaces have a routable address</span></h4>
 <p>Per <span class="plainlinks archwiki-template-man" title="$ man 8 systemd-networkd-wait-online.service"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-networkd-wait-online.service.8">systemd-networkd-wait-online.service(8)</a></span>, "online means that the link's operational state is equal or higher than "degraded"." (see <span class="plainlinks archwiki-template-man" title="$ man 1 networkctl"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/networkctl.1">networkctl(1)</a></span> for the definition of "degraded" and other operational statuses).
 </p>
@@ -711,8 +713,11 @@ Name=enp1s0
 
 [Network]
 Address=10.1.10.9/24
+Address=2001:db8:1234:5678::1/64
 Gateway=10.1.10.1
-DNS=10.1.10.1</pre>
+Gateway=fe80::1
+DNS=10.1.10.1
+DNS=2001:db8:1122::3344:1</pre>
 <p><code>Address=</code> can be used more than once to configure multiple IPv4 or IPv6 addresses. See <a href="#network_files">#network files</a> or <span class="plainlinks archwiki-template-man" title="$ man 5 systemd.network"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd.network.5">systemd.network(5)</a></span> for more options.
 </p>
 <h4><span class="mw-headline" id="Wireless_adapter">Wireless adapter</span></h4>
@@ -1016,7 +1021,7 @@ RouteMetric=600</pre>
 <li>
 <code>Destination=</code> the destination prefix of the route, possibly followed by a slash and the prefix length</li>
 <li>
-<code>Metrics=</code> the priority of this route</li>
+<code>Metric=</code> the priority of this route</li>
 <li>
 <code>Type=</code> the type for the route</li>
 <li>
@@ -1171,7 +1176,7 @@ DNS=9.9.9.9</pre>
 <p><i>systemd-networkd</i> can provide fully automatic configuration of networking for <a href="../en/Systemd-nspawn.html" title="Systemd-nspawn">systemd-nspawn</a> containers using private networking when it is used on the host system as well as inside the container. See <a href="../en/Systemd-nspawn.html#Networking" title="Systemd-nspawn">systemd-nspawn#Networking</a> for a comprehensive overview.
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Starting">Starting</a> <code>systemd-networkd</code> is <b>all that is needed</b> on the host to provide the described network auto-configuration for containers which use the default <a href="../en/Systemd-nspawn.html#Use_a_virtual_Ethernet_link" title="Systemd-nspawn">virtual Ethernet link</a> setup. The following is only needed for other private networking scenarios.</div>
+<strong>Tip:</strong> <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Starting">Starting</a> <code>systemd-networkd.service</code> is <b>all that is needed</b> on the host to provide the described network auto-configuration for containers which use the default <a href="../en/Systemd-nspawn.html#Use_a_virtual_Ethernet_link" title="Systemd-nspawn">virtual Ethernet link</a> setup. The following is only needed for other private networking scenarios.</div>
 <p>For the examples below,
 </p>
 <ul>
@@ -1605,8 +1610,8 @@ Metric=2</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Systemd-networkd&amp;oldid=829031">https://wiki.archlinux.org/index.php?title=Systemd-networkd&amp;oldid=829031</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 15 March 2025, at 16:53.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Systemd-networkd&amp;oldid=834296">https://wiki.archlinux.org/index.php?title=Systemd-networkd&amp;oldid=834296</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 22 May 2025, at 08:59.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

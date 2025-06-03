@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Power management - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -954,14 +954,10 @@ SUBSYSTEM=="rfkill", ATTR{type}=="bluetooth", ATTR{state}="0"</pre>
 </p>
 <h4><span class="mw-headline" id="PCI_Runtime_Power_Management">PCI Runtime Power Management</span></h4>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/udev/rules.d/pci_pm.rules</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">SUBSYSTEM=="pci", ATTR{power/control}="auto"</pre>
-<p>The rule above powers down unused devices except for ATA PCI devices. We need rules for each ATA PCI device as below.
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">SUBSYSTEM=="pci", ATTR{power/control}="auto"
+SUBSYSTEM=="ata_port", KERNEL=="ata*", ATTR{device/power/control}="auto"</pre>
+<p>The rule above powers down unused devices.
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/udev/rules.d/pci_pm_ata.rules</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">ACTION=="add", SUBSYSTEM=="pci", TEST=="ata1/power/control", ATTR{ata1/power/control}="auto"
-ACTION=="add", SUBSYSTEM=="pci", TEST=="ata2/power/control", ATTR{ata2/power/control}="auto"
-ACTION=="add", SUBSYSTEM=="pci", TEST=="ata3/power/control", ATTR{ata3/power/control}="auto"
-# etc.</pre>
 <p>Some devices will not wake up again. To allow runtime power management only for devices that are known to work, use simple matching against vendor and device IDs (use <code>lspci -nn</code> to get these values):
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/udev/rules.d/pci_pm.rules</pre>
@@ -1233,8 +1229,8 @@ $ systemctl reboot
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Power_management&amp;oldid=829040">https://wiki.archlinux.org/index.php?title=Power_management&amp;oldid=829040</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 15 March 2025, at 17:50.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Power_management&amp;oldid=831129">https://wiki.archlinux.org/index.php?title=Power_management&amp;oldid=831129</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 5 April 2025, at 16:53.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

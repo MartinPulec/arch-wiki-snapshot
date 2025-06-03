@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>ClamAV - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -493,9 +493,9 @@ clamconf: Tool to create and check configuration files
 <h2><span class="mw-headline" id="Configuration">Configuration</span></h2>
 <p>Default configuration files should already exists. Other wise you can manually create them by using clamconf:
 </p>
-<pre>clamconf -g freshclam.conf &gt; freshclam.conf
-clamconf -g clamd.conf &gt; clamd.conf
-clamconf -g clamav-milter.conf &gt; clamav-milter.conf
+<pre># clamconf -g freshclam.conf &gt; freshclam.conf
+# clamconf -g clamd.conf &gt; clamd.conf
+# clamconf -g clamav-milter.conf &gt; clamav-milter.conf
 </pre>
 <p>The following files contain the relevant configuration options.
 </p>
@@ -553,13 +553,8 @@ AlertOLE2Macros yes
 AlertPartitionIntersection yes
 </pre>
 <h3><span class="mw-headline" id="Enabling_real-time_protection_OnAccessScan">Enabling real-time protection OnAccessScan</span></h3>
-<p>On-access scanning is the real-time protection daemon which will scan the file while reading, writing or executing it.
-It can be configured to either notify on detection or prevent/block on detection.
+<p>On-access scanning is the real-time protection daemon which will scan the file while reading, writing or executing it. It can be configured to either notify on detection or prevent/block on detection.
 </p>
-<p>On-access scanning requires the kernel to be compiled with the <i>fanotify</i> kernel module (kernel &gt;= 3.8), which is true for official Arch Linux kernel packages. Check if <i>fanotify</i> has been enabled before enabling on-access scanning. You can check if the required modules are enabled by running:
-</p>
-<pre>$ zgrep FANOTIFY /proc/config.gz
-</pre>
 <p>Configuration OnAccessScan is done via editing the <code>/etc/clamav/clamd.conf</code> configuration file.
 </p>
 <p>The following changes are required for OnAccessScan to work:
@@ -567,12 +562,6 @@ It can be configured to either notify on detection or prevent/block on detection
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/clamav/clamd.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># Exclude the UID of the scanner itself from checking, to prevent loops
 OnAccessExcludeUname clamav
-
-# WARNING: for security reasons, clamd should NEVER run as root.
-# Previous instructions in this wiki included this line, remove it:
-# User root    # REMOVE THIS
-# Add this instead:
-User clamav
 </pre>
 <p>The following additional changes are recommended and will put the On-Access Scanner into notify-only mode:
 </p>
@@ -596,10 +585,6 @@ OnAccessExtraScanning yes
 # Optionallyexclude root-owned processes
 # OnAccessExcludeRootUID true
 </pre>
-<p>Next, allow the <i>clamav</i> user to run <i>notify-send</i> as any user with custom environment variables via <a href="../en/Sudo.html" title="Sudo">sudo</a>:
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/sudoers.d/clamav</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">clamav ALL = (ALL) NOPASSWD: SETENV: /usr/bin/notify-send</pre>
 <h4><span class="mw-headline" id="Creating_notification_popups_for_alerts">Creating notification popups for alerts</span></h4>
 <p>So far ClamAV will silently log any detection but not alert the user. A pop-up to alert the user on any detection can be added.
 </p>
@@ -608,6 +593,10 @@ OnAccessExtraScanning yes
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/clamav/clamd.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">VirusEvent /etc/clamav/virus-event.bash
 </pre>
+<p>Next, allow the <i>clamav</i> user to run <i>notify-send</i> as any user with custom environment variables via <a href="../en/Sudo.html" title="Sudo">sudo</a>:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/sudoers.d/clamav</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">clamav ALL = (ALL) NOPASSWD: SETENV: /usr/bin/notify-send</pre>
 <p>Next, create the file <code>/etc/clamav/virus-event.bash</code>, make it <a href="../en/Help:Reading.html#Make_executable" class="mw-redirect" title="Executable">executable</a> and add the following:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/clamav/virus-event.bash</pre>
@@ -619,7 +608,7 @@ ALERT="Signature detected by clamav: $CLAM_VIRUSEVENT_VIRUSNAME in $CLAM_VIRUSEV
 for ADDRESS in /run/user/*; do
     USERID=${ADDRESS#/run/user/}
     /usr/bin/sudo -u "#$USERID" DBUS_SESSION_BUS_ADDRESS="unix:path=$ADDRESS/bus" PATH=${PATH} \
-        /usr/bin/notify-send -w -u critical -i dialog-warning "Virus found!" "$ALERT"
+        /usr/bin/notify-send -u critical -i dialog-warning "Virus found!" "$ALERT"
 done
 </pre>
 <p>This allows you to change/specify the message when a virus has been detected by clamd's on-access scanning service.
@@ -901,8 +890,8 @@ in /var/lib/clamav ERROR: Not supported data format
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=ClamAV&amp;oldid=829846">https://wiki.archlinux.org/index.php?title=ClamAV&amp;oldid=829846</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 25 March 2025, at 21:50.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=ClamAV&amp;oldid=833518">https://wiki.archlinux.org/index.php?title=ClamAV&amp;oldid=833518</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 8 May 2025, at 19:33.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

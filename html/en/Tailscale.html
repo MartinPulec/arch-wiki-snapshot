@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Tailscale - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -128,10 +128,37 @@
 		</li>
 	</ul>
 	</li>
+	<li id="toc-Tips_and_tricks" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#Tips_and_tricks">
+			<div class="vector-toc-text">
+				<span class="vector-toc-numb">4</span>
+				<span>Tips and tricks</span>
+			</div>
+		</a>
+		
+			<button aria-controls="toc-Tips_and_tricks-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle Tips and tricks subsection</span>
+			</button>
+		
+		<ul id="toc-Tips_and_tricks-sublist" class="vector-toc-list">
+			<li id="toc-Using_with_NetworkManager" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Using_with_NetworkManager">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">4.1</span>
+					<span>Using with NetworkManager</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Using_with_NetworkManager-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+	</li>
 	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
 		<a class="vector-toc-link" href="#See_also">
 			<div class="vector-toc-text">
-				<span class="vector-toc-numb">4</span>
+				<span class="vector-toc-numb">5</span>
 				<span>See also</span>
 			</div>
 		</a>
@@ -291,6 +318,29 @@ If you opt out of centralized logging, Tailscale may not be able to provide tech
 <li>Define <code>TS_USERSPACE=1</code> so that the container doesn't need elevated permissions (<code>CAP_NET_ADMIN</code> and <code>CAP_NET_RAW</code>).</li>
 <li>Bind mount an unused directory on the host (<code>/var/lib/tailscale-exitnode-1</code>) to <code>/var/lib/tailscale</code> inside the container, and also define <code>TS_STATE_DIR=/var/lib/tailscale</code>, so that tailscale will use a persistent state file. Without these, the exit node will use volatile memory to keep state, and thus get a new ID and tailnet IP address <a rel="nofollow" class="external text" href="https://github.com/tailscale/tailscale/issues/7119">every time the container is restarted</a>.</li>
 </ul>
+<h2><span class="mw-headline" id="Tips_and_tricks">Tips and tricks</span></h2>
+<h3><span class="mw-headline" id="Using_with_NetworkManager">Using with NetworkManager</span></h3>
+<p>If you use with <a href="../en/NetworkManager.html" title="NetworkManager">NetworkManager</a>, you may notice connection issues with other devices within your tailnet. This is due to a management conflict that is happening between NetworkManager and tailscaled.
+</p>
+<p>To clear this up, we need NetworkManager to unmanage the tailscale network devices (e.g. <code>tailscale0</code>). 
+</p>
+<p>To do so, simply create a config like <code>/etc/NetworkManager/conf.d/99-tailscale.conf</code> with the contents of:
+</p>
+<pre>[keyfile]
+unmanaged-devices=interface-name:tailscale0
+</pre>
+<p>Then restart <code>NetworkManager</code> and <code>tailscaled</code>.
+</p>
+<pre># sudo systemctl restart NetworkManager
+# sudo systemctl restart tailscaled
+</pre>
+<p>You may also need to cycle tailscale:
+</p>
+<pre># tailscale down
+# tailscale up
+</pre>
+<p>After this, you should be able to <code>ping</code> other devices on your tailnet.
+</p>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul>
 <li><a rel="nofollow" class="external free" href="https://tailscale.com/">https://tailscale.com/</a></li>
@@ -312,8 +362,8 @@ If you opt out of centralized logging, Tailscale may not be able to provide tech
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Tailscale&amp;oldid=825974">https://wiki.archlinux.org/index.php?title=Tailscale&amp;oldid=825974</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 26 January 2025, at 13:14.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Tailscale&amp;oldid=832533">https://wiki.archlinux.org/index.php?title=Tailscale&amp;oldid=832533</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 23 April 2025, at 17:01.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

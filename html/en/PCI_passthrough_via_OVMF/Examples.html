@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>PCI passthrough via OVMF/Examples - ArchWiki</title>
 <link rel="stylesheet" href="../../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -626,7 +626,7 @@
 <b>Guest OS</b>: Windows 8.1 Pro.</li>
 <li>The entire HDD is passed to the VM as a raw device (formatted as a single NTFS partition).</li>
 <li>USB keyboard and mouse are passed to the guest VM and shared with the host with Synergy.</li>
-<li>Virtualized audio: PulseAudio -&gt; local Unix socket. Previously, I have had a bit more complex setup in which PA on the host was configured to accept TCP connections, and the <a href="../../en/Environment_variables.html" title="Environment variables">environment variables</a> required for QEMU to use PA were pointed at the PA server running on 127.0.0.1. This way it was not required to change the QEMU user (exact details in the repository), but introduced other minor issues I have resolved later.</li>
+<li>Virtualized audio: <a href="../../en/PulseAudio.html" title="PulseAudio">PulseAudio</a> -&gt; local Unix socket. Previously, I have had a bit more complex setup in which PA on the host was configured to accept TCP connections, and the <a href="../../en/Environment_variables.html" title="Environment variables">environment variables</a> required for QEMU to use PA were pointed at the PA server running on 127.0.0.1. This way it was not required to change the QEMU user (exact details in the repository), but introduced other minor issues I have resolved later.</li>
 <li>Bridged networking (with NetworkManager's and <a rel="nofollow" class="external text" href="https://www.happyassassin.net/2014/07/23/bridged-networking-for-libvirt-with-networkmanager-2014-fedora-21/">this tutorial's</a> help) is used. <code>bridge0</code> is created, <code>eth0</code> interface is bound to it. STP disabled, VirtIO NIC is configured in the VM and that VM is seen in the network just as any other computer (and is being assigned an IP address from the router itself, can communicate freely with other computers).</li>
 <li>For some reason, enabling <code>intel_iommu=on</code> on the <a href="../../en/Kernel_parameters.html" class="mw-redirect" title="Kernel command line">kernel command line</a> without CSM support enabled in UEFI causes a black screen on boot. Enable it (Windows 8/10 features need to be enabled to show "CSM Support", selecting "Other OS" hides that).</li>
 </ul>
@@ -850,7 +850,7 @@
 <li>
 <b>Kernel</b>: 4.15.2-gentoo</li>
 <li>Using <b>libvirt/QEMU</b>: libvirt-4.0.0, qemu-2.11.1, <a rel="nofollow" class="external free" href="https://github.com/pauledd/GPU-Passthrough/blob/master/win10-2.xml">https://github.com/pauledd/GPU-Passthrough/blob/master/win10-2.xml</a> , using vfio kernel module</li>
-<li>Had to dump VBIOS in at the host while GPU was normally attached (and drivers loaded) (see <a rel="nofollow" class="external free" href="https://stackoverflow.com/a/42441234">https://stackoverflow.com/a/42441234</a>), had to set CPU settings manually according to my cpu (host-passthrough, sockets 1, cores: 4, threads: 2 ) or some games will regularly crash, see my xml how to insert vbios, still have audio clicking/lag with pulseaudio but thats ok for me, no further patching etc.. works out of the box without any issues.</li>
+<li>Had to dump VBIOS in at the host while GPU was normally attached (and drivers loaded) (see <a rel="nofollow" class="external free" href="https://stackoverflow.com/a/42441234">https://stackoverflow.com/a/42441234</a>), had to set CPU settings manually according to my cpu (host-passthrough, sockets 1, cores: 4, threads: 2 ) or some games will regularly crash, see my xml how to insert vbios, still have audio clicking/lag with PulseAudio but that's ok for me, no further patching etc… works out of the box without any issues.</li>
 <li>3DMark Results Time Spy Graphic Score: Native Windows 10: 5564 , GPU-Passthrough: 5541</li>
 </ul>
 <h3>
@@ -1009,7 +1009,7 @@
 <b>Kernel</b>: 4.17.3-1-ARCH (vanilla).</li>
 <li>Using <b>libvirt/QEMU</b>: libvirt/virt-manager (<a rel="nofollow" class="external free" href="https://github.com/eduxstad/vfio-config">https://github.com/eduxstad/vfio-config</a>).</li>
 <li>Look in the repository for complete documentation of extra steps taken</li>
-<li>Overview: VM managed using virt-manager, using looking glass for primary io and built in spice display server as backup. Passing vm audio back to pulseaudio. Using hugepages for RAM. SCSI Drivers installed for hardware drive support.</li>
+<li>Overview: VM managed using virt-manager, using looking glass for primary io and built in spice display server as backup. Passing vm audio back to PulseAudio. Using hugepages for RAM. SCSI Drivers installed for hardware drive support.</li>
 </ul>
 <h3>
 <span id="Pi.27s_vr-vm"></span><span class="mw-headline" id="Pi's_vr-vm">Pi's vr-vm</span>
@@ -1151,7 +1151,7 @@
 </ul>
 <p>Issues: 
 </p>
-<ul><li>Pulseaudio never worked good (too much crackling), so I ended up passing-through an USB 3.1 PCI controller and connecting an USB audio card to it. That card is then connected to one of my MoBo's inputs, and echoed using pulseaudio's `loopback` module.</li></ul>
+<ul><li>PulseAudio never worked good (too much crackling), so I ended up passing-through an USB 3.1 PCI controller and connecting an USB audio card to it. That card is then connected to one of my MoBo's inputs, and echoed using PulseAudio <code>loopback</code> module.</li></ul>
 <ul><li>Synergy works really great. On some games (ones who take control of the mouse pointer, e.g. first-person), you need to lock the mouse cursor to the VM window to avoid issues (camera moving too fast).</li></ul>
 <ul><li>Do not forget to add the needed snippet for the nvidia driver to run (<a href='../../en/PCI_passthrough_via_OVMF.html#"Error_43:_Driver_failed_to_load"_with_mobile_(Optimus/max-q)_nvidia_GPUs' title="PCI passthrough via OVMF">PCI passthrough via OVMF#"Error 43: Driver failed to load" with mobile (Optimus/max-q) nvidia GPUs</a>)</li></ul>
 <h3>
@@ -1551,7 +1551,7 @@ scream-ivshmem and sound is working perfectly now. Its great in combination with
 <li>evdev passthrough using persistent-evdev.py</li>
 <li>Looking Glass: SPICE input and clipboard sharing; DMA buffer support; Auto shared memory creation</li>
 <li>virtio devices</li>
-<li>pulseaudio audio device passthrough</li>
+<li>PulseAudio audio device passthrough</li>
 <li>CPU pinning with qemu-affinity</li>
 <li>CPU governor configuration</li>
 <li>Runs QEMU with jemalloc() memory allocator</li>
@@ -1764,27 +1764,27 @@ scream-ivshmem and sound is working perfectly now. Its great in combination with
 </p>
 <ul>
 <li>
-<b>Kernel</b>: Archlinux Kernel 6.4 (with kernel &gt;6.0 there is bug so vfio is done later when loading modules <a rel="nofollow" class="external text" href="https://forum.level1techs.com/t/linux-kernel-6-seems-to-be-incompatible-with-the-vfio-pci-module-needed-for-pci-passthrough/190039/2">post</a>)</li>
+<b>Kernel</b>: Arch Linux kernel 6.4 (with kernel &gt;6.0 there is bug so vfio is done later when loading modules <a rel="nofollow" class="external text" href="https://forum.level1techs.com/t/linux-kernel-6-seems-to-be-incompatible-with-the-vfio-pci-module-needed-for-pci-passthrough/190039/2">post</a>)</li>
 <li>Using <b>libvirt/QEMU KVM 8.1</b>:</li>
-<li>In same time using Host and 2 VMs (Windows or archlinux)</li>
+<li>In same time using Host and 2 VMs (Windows or Arch Linux)</li>
 <li>
 <b>scripts, libvirt XML, and personal configs can be found here:</b> <a rel="nofollow" class="external text" href="https://github.com/ronn21/vfio">config</a>
 </li>
-<li>USB are passthough by own group so 2 VM had their own USB conntrolers (one from MB and one from Fresco)</li>
+<li>USB are passthough by own group so 2 VM had their own USB controllers (one from MB and one from Fresco)</li>
 <li>GPU are connected by risers with Pcie4.0 standard</li>
 <li>2xNVME are passthrough by their own group to VM's and one NVME for host</li>
 <li>Used Isolated NIC for internal talk to VMs</li>
-<li>Used Barrier to comunicate via TCP for taking mouse and keyboard on VM's</li>
+<li>Used Barrier to communicate via TCP for taking mouse and keyboard on VM's</li>
 <li>CPU pinning was done VM1:cpuset="8-11,24-27"&gt;8 cores VM2:cpuset="12-15,28-31"&gt;8 cores</li>
-<li>DKMS vendor-reset-dkms-git get rid of erros when restarting VMs</li>
-<li>Audio passthourgh by Pipewire-pulse</li>
+<li>DKMS vendor-reset-dkms-git get rid of errors when restarting VMs</li>
+<li>Audio passthrough by Pipewire-pulse</li>
 <li>Added CPU affinity by this <a rel="nofollow" class="external text" href="https://www.reddit.com/r/VFIO/comments/cieph2/update_to_another_dpc_latency_post_success_with/">this tutorial's</a>
 </li>
 <li>NIC has been pass by MACTAP</li>
-<li>Latency is super stable, spikes are only generated by Nvidia Kernel Driver occasionaly</li>
+<li>Latency is super stable, spikes are only generated by Nvidia Kernel Driver occasionally</li>
 <li>MSI interrupt done via <a rel="nofollow" class="external text" href="https://forums.guru3d.com/threads/windows-line-based-vs-message-signaled-based-interrupts-msi-tool.378044/">MSI_util_v2</a>
 </li>
-<li>Scalling gouvernor is triggered by Hooks as MASK affinity <a rel="nofollow" class="external text" href="https://github.com/ronn21/vfio/blob/main/qemu">Hooks/qemu.conf</a>
+<li>Scaling governor is triggered by Hooks as MASK affinity <a rel="nofollow" class="external text" href="https://github.com/ronn21/vfio/blob/main/qemu">Hooks/qemu.conf</a>
 </li>
 <li>Host GPU is in PCiex16 slot3 marked to boot from Gigabyte bios. No chipset bandwitch affected or noiced.</li>
 <li>Hugepages are divided 2x16Gb ram for each VM</li>
@@ -1853,8 +1853,8 @@ Configuration:
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PCI_passthrough_via_OVMF/Examples&amp;oldid=829147">https://wiki.archlinux.org/index.php?title=PCI_passthrough_via_OVMF/Examples&amp;oldid=829147</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 15 March 2025, at 22:36.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PCI_passthrough_via_OVMF/Examples&amp;oldid=832762">https://wiki.archlinux.org/index.php?title=PCI_passthrough_via_OVMF/Examples&amp;oldid=832762</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 26 April 2025, at 09:16.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

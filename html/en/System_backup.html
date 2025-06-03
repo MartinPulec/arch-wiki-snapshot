@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>System backup - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -156,6 +156,17 @@
 		<ul id="toc-Snapshots_and_/boot_partition-sublist" class="vector-toc-list">
 		</ul>
 	</li>
+	<li id="toc-Automation" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#Automation">
+			<div class="vector-toc-text">
+				<span class="vector-toc-numb">8</span>
+				<span>Automation</span>
+			</div>
+		</a>
+		
+		<ul id="toc-Automation-sublist" class="vector-toc-list">
+		</ul>
+	</li>
 </ul>
 </div>
 
@@ -257,6 +268,13 @@
 </div>
 <p>A system backup is <q>the process of backing up the operating system, files and system-specific useful/essential data. [It] primarily ensures that not only the user data in a system is saved, but also the system's state or operational condition. This helps in restoring the system to the last-saved state along with all the selected backup data.</q><a rel="nofollow" class="external autonumber" href="https://www.techopedia.com/definition/29387/system-backup">[1]</a>
 </p>
+<p>One common and generally effective method is to follow the 3-2-1 strategy:
+</p>
+<ul>
+<li>Maintain three copies of your data,</li>
+<li>Use two different types of storage media,</li>
+<li>Store one copy offsite.</li>
+</ul>
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Using_Btrfs_snapshots">Using Btrfs snapshots</span></h2>
 <p>See <a href="../en/Btrfs.html#Snapshots" title="Btrfs">Btrfs#Snapshots</a>, <a href="#Snapshots_and_/boot_partition">#Snapshots and /boot partition</a>, and <a href="../en/Snapper.html" title="Snapper">Snapper</a>.
@@ -342,6 +360,71 @@ Depends = rsync
 Description = Backing up post /boot...
 When = PostTransaction
 Exec = /usr/bin/bash -c 'rsync -a --mkpath --delete /boot/ "/.bootbackup/$(date +%Y_%m_%d_%H.%M.%S)_post"/'</pre>
+<p><br>
+</p>
+<h2><span class="mw-headline" id="Automation">Automation</span></h2>
+<p>Backups that are only manually created are rarely up to date when they are needed. Therefore it is recommended to setup an automated process to ensure backup processes are executed regularly. The most common solutions are provided by <a href="../en/Systemd/Timers.html" title="Systemd/Timers">systemd/Timers</a> and <a href="../en/Cron.html" title="Cron">Cron</a>.
+</p>
+<p>For a local system wide backup that requires read access to all files the following systemd timer and service may be useful as a template for automated backup processes.
+</p>
+<p>To use a <i>timer</i> unit <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> and <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start">start</a> it like any other unit.
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/backup.timer</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Unit]
+Description=Timer for backups
+
+[Timer]
+OnCalendar=weekly
+Persistent=true
+Unit=backup.service
+
+[Install]
+WantedBy=timers.target</pre>
+<p>The following example is configured to run with minimal required permissions while preventing modifications from normal users for increased security.
+</p>
+<p>Note that this example will block the shutdown process when it is initiated while the backup is running. This ensures that the backup is not interrupted, but can lead to a delay during shutdown/reboot if many new files need to be saved.
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/backup.service</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Unit]
+Description=Backup system
+
+[Service]
+Type=simple
+User=<i>backupuser</i>
+
+AmbientCapabilities=CAP_DAC_READ_SEARCH
+CapabilityBoundingSet=CAP_DAC_READ_SEARCH
+DevicePolicy=closed
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+NoNewPrivileges=yes
+PrivateDevices=yes
+PrivateTmp=yes
+ProtectClock=yes
+ProtectControlGroups=yes
+ProtectHome=read-only
+ProtectHostname=yes
+ProtectKernelLogs=yes
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+ProtectProc=invisible
+ProtectSystem=full
+RemoveIPC=yes
+RestrictAddressFamilies=AF_UNIX
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+SystemCallFilter=@system-service
+UMask=7007
+
+ExecStart=/usr/local/bin/backup.sh
+ExecStop=bash -c 'if [ -n "$MAINPID" ]; then tail --pid="$MAINPID" -f /dev/null; fi'</pre>
+<p><code>CAP_DAC_READ_SEARCH</code> sets the capability that allows bypassing file read permission checks in the file system; thus all files in the file system will be accessible without requiring root permissions.
+</p>
+<p>For remote backups allow the use of network protocols:
+</p>
+<pre>RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+</pre>
 </div>
 </div>
 					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
@@ -355,8 +438,8 @@ Exec = /usr/bin/bash -c 'rsync -a --mkpath --delete /boot/ "/.bootbackup/$(date 
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=System_backup&amp;oldid=823897">https://wiki.archlinux.org/index.php?title=System_backup&amp;oldid=823897</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 26 December 2024, at 01:04.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=System_backup&amp;oldid=832726">https://wiki.archlinux.org/index.php?title=System_backup&amp;oldid=832726</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 26 April 2025, at 08:06.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

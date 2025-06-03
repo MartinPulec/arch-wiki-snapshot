@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Display Power Management Signaling - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -201,7 +201,7 @@
 <strong>Note:</strong> The <i>standby</i>, <i>suspend</i> and <i>off</i> modes do the same thing on <a href="https://en.wikipedia.org/wiki/Liquid-crystal_display" class="extiw" title="wikipedia:Liquid-crystal display">LCD</a> monitors. DPMS was originally developed for <a href="https://en.wikipedia.org/wiki/Cathode-ray_tube" class="extiw" title="wikipedia:Cathode-ray tube">CRTs</a>.</div>
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Linux_console">Linux console</span></h2>
-<p>To alter the terminal, <i>setterm</i> issues terminal-recognized escape codes. Essentially it just writes/echos the terminal sequences to the current terminal device, whether that be in screen, a remote ssh terminal, console mode, serial consoles, etc. Its syntax (where 0 disables): 
+<p>To alter the terminal, use the <i>setterm</i> command. Its syntax (where 0 disables):
 </p>
 <pre>$ setterm --blank [0-60|force|poke]
 $ setterm --powersave [on|vsync|hsync|powerdown|off]
@@ -218,11 +218,13 @@ $ setterm --powerdown [0-60]
 <li>Console blanking can also be enabled by the <code>consoleblank</code> <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a>. See the <a rel="nofollow" class="external text" href="https://docs.kernel.org/admin-guide/kernel-parameters.html">kernel documentation</a> for details.</li>
 </ul>
 </div>
-<p>To see the escape codes used, pipe the output as follows: 
+<p>Some commands just write the terminal sequences to the current terminal device, whether that be in screen, a remote ssh terminal, console mode, serial consoles, etc.
+</p>
+<p>To see the escape codes used, pipe the output as follows:
 </p>
 <pre>$ setterm --powerdown 2&gt;&amp;1 | exec cat -v 2&gt;&amp;1 | sed "s/\\^\\[/\\\\033/g"
 </pre>
-<p>To modify a specific terminal, redirect the escape codes to it (with write permission): 
+<p>To modify a specific terminal, redirect the escape codes to it (with write permission):
 </p>
 <pre>$ setterm --powerdown 0 &gt;&gt; /dev/tty3
 </pre>
@@ -252,7 +254,7 @@ EndSection
 EndSection
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> If the <code>OffTime</code> option does not work, use screen blanking (i.e. <code>BlankTime</code>) instead, which will keep the monitor turned on with a black image.</div>
+<strong>Note:</strong> If the <code>OffTime</code> option does not work, use screen blanking (i.e. <code>BlankTime</code>) instead.</div>
 <h3><span class="mw-headline" id="Runtime_settings">Runtime settings</span></h3>
 <p>It is possible to turn off your monitor with the <i>xset</i> command which is provided by the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xorg-xset">xorg-xset</a></span> package.
 </p>
@@ -335,7 +337,7 @@ DPMS (Energy Star):
 <strong>Note:</strong> 
 <ul>
 <li>
-<a href="../en/XScreenSaver.html" title="XScreenSaver">XScreenSaver</a> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xfce4-power-manager">xfce4-power-manager</a></span> use their own DPMS settings and override <i>xset</i> configuration. See <a href="../en/XScreenSaver.html#DPMS_and_blanking_settings" title="XScreenSaver">XScreenSaver#DPMS and blanking settings</a> and <a href="../en/Xfce.html#Display_blanking" title="Xfce">Xfce#Display blanking</a> for more information.</li>
+<a href="../en/XScreenSaver.html" title="XScreenSaver">XScreenSaver</a>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xfce4-power-manager">xfce4-power-manager</a></span> and lxqt-powermanagement use their own DPMS settings and override <i>xset</i> configuration. See <a href="../en/XScreenSaver.html#DPMS_and_blanking_settings" title="XScreenSaver">XScreenSaver#DPMS and blanking settings</a> and <a href="../en/Xfce.html#Display_blanking" title="Xfce">Xfce#Display blanking</a> for more information.</li>
 <li>If using the command manually in a shell you may need to prefix it with <code>sleep 1;</code> for it to work correctly, for example <code>sleep 1; xset dpms force off</code>
 </li>
 <li>
@@ -369,8 +371,8 @@ DPMS (Energy Star):
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Display_Power_Management_Signaling&amp;oldid=827076">https://wiki.archlinux.org/index.php?title=Display_Power_Management_Signaling&amp;oldid=827076</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 14 February 2025, at 19:29.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Display_Power_Management_Signaling&amp;oldid=831290">https://wiki.archlinux.org/index.php?title=Display_Power_Management_Signaling&amp;oldid=831290</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 5 April 2025, at 23:56.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>GRUB/Tips and tricks - ArchWiki</title>
 <link rel="stylesheet" href="../../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -212,6 +212,17 @@
 			</a>
 			
 			<ul id="toc-Disable_framebuffer-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Language" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Language">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">4.7</span>
+					<span>Language</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Language-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -631,7 +642,7 @@ In order to fix this issue the following commands:
 <ul><li>
 <b>grub-customizer</b> — GTK customizer for GRUB or BURG</li></ul>
 <dl><dd>
-<a rel="nofollow" class="external free" href="https://launchpad.net/grub-customizer">https://launchpad.net/grub-customizer</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=grub-customizer">grub-customizer</a></span>
+<a rel="nofollow" class="external free" href="https://launchpad.net/grub-customizer">https://launchpad.net/grub-customizer</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/grub-customizer/">grub-customizer</a></span><sup><small>AUR</small></sup>
 </dd></dl>
 <h2><span class="mw-headline" id="drop-in_configuration">drop-in configuration</span></h2>
 <p>Instead of editing <code>/boot/grub/grub.cfg</code> configuration file, it's possible to use your custom settings as drop-in file like <code>/etc/default/grub.d/00-custom.cfg</code>. Note that you have to create <code>/etc/default/grub.d/</code> drop-in directory manually. Do not confuse this directory with <code>/etc/grub.d/</code>.
@@ -688,11 +699,6 @@ GRUB_FONT="/path/to/font.pf2"
 <li>The <code>grub-mkconfig</code> scripts will not quote the file name in <code>grub.cfg</code> so make sure it does not contain spaces</li>
 </ul>
 <h3><span class="mw-headline" id="Theme">Theme</span></h3>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
-<div>
-<b>Reason:</b> <code>/boot/</code> should be self-contained, so GRUB themes should always be copied to <code>/boot/grub/themes/</code> or installed with <code>grub-install --themes=<i>theme_names</i> ...</code>. (Discuss in <a href="../../en/Talk:GRUB/Tips_and_tricks.html#Point_GRUB_THEME_to_/usr/share/grub/themes" title="Talk:GRUB/Tips and tricks">Talk:GRUB/Tips and tricks#Point GRUB_THEME to /usr/share/grub/themes</a>)</div>
-</div>
 <p>Here is an example for configuring Starfield theme which was included in GRUB package.
 </p>
 <p>Edit <code>/etc/default/grub</code>:
@@ -704,7 +710,10 @@ GRUB_FONT="/path/to/font.pf2"
 <p>Your splash image will usually not be displayed when using a theme.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> If the hard drive is encrypted, you need to put the theme files in <code>/boot/grub/themes</code>, as grub is unable to access anything on the encrypted device before it is luksOpen-ed. See <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=288619">[2]</a>.</div>
+<strong>Note:</strong> GRUB can only load themes from paths accessible at boot. On encrypted drives, GRUB cannot access anything on the encrypted device before it is unlocked/mapped. See <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=288619">[2]</a>.
+<p>If the theme path may be inaccessible (e.g. due to encryption or an unavailable partition), copy it to <code>/boot/grub/themes/</code> or install it using <code>grub-install --themes=<i>theme_names</i> ...</code>.
+</p>
+</div>
 <h3><span class="mw-headline" id="Menu_colors">Menu colors</span></h3>
 <p>You can set the menu colors in GRUB. The available colors for GRUB can be found in <a rel="nofollow" class="external text" href="https://www.gnu.org/software/grub/manual/grub/html_node/color_005fnormal.html">the GRUB Manual</a>.
 Here is an example:
@@ -734,6 +743,20 @@ GRUB_TIMEOUT_STYLE='countdown'
 <p>Another option if you want to keep the framebuffer in GRUB is to revert to text mode just before starting the kernel. To do that modify the variable in <code>/etc/default/grub</code>:
 </p>
 <pre>GRUB_GFXPAYLOAD_LINUX=text
+</pre>
+<h3><span class="mw-headline" id="Language">Language</span></h3>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../../File:Tango-edit-cut.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is being considered for removal.</b></p>
+<div>
+<b>Reason:</b> There is no need for a temporarily solution when there is a permanent one in <a href="../../en/Locale.html#LANGUAGE:_fallback_locales" title="Locale">Locale#LANGUAGE: fallback locales</a>. (Discuss in <a href="../../en/Talk:GRUB/Tips_and_tricks.html#Section_4.7:_Language_-_Removal_Template" title="Talk:GRUB/Tips and tricks">Talk:GRUB/Tips and tricks#Section 4.7: Language - Removal Template</a>)</div>
+</div>
+<p><code>grub-mkconfig</code> utilizes <code>gettext</code>  for translations. The language used is determined by the <a href="../../en/Locale.html#Variables" title="Locale">Locale#Variables</a>.
+</p>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong> If a locale is placed after <code>en_US</code> or <code>en</code> in your <code>LANGUAGE</code> variable, <code>grub-mkconfig</code> might choose that secondary locale. This is because grub uses <code>C</code> as the default locale for English, but doesn't explicitly name or alias it as <code>en_US</code> or <code>en</code>. See <a href="../../en/Locale.html#LANGUAGE:_fallback_locales" title="Locale">Locale#LANGUAGE: fallback locales</a> for permanent solution.</div>
+<p>You can temporarily override the Locale when running <code>grub-mkconfig</code> to generate config in a specific language, for example English (C locale):
+</p>
+<pre># LC_ALL=C grub-mkconfig -o /boot/grub/grub.cfg
 </pre>
 <h2><span class="mw-headline" id="Booting_ISO9660_image_file_directly_via_GRUB">Booting ISO9660 image file directly via GRUB</span></h2>
 <p>GRUB supports booting from ISO images directly via loopback devices, see <a href="../../en/Multiboot_USB_drive.html#Using_GRUB_and_loopback_devices" title="Multiboot USB drive">Multiboot USB drive#Using GRUB and loopback devices</a> for examples.
@@ -1018,6 +1041,7 @@ configfile grub.cfg</pre>
 <a href="../../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../../en/Category:Boot_loaders.html" title="Category:Boot loaders">Boot loaders</a></li></ul>
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
+<li><a href="../../en/Category:Sections_flagged_with_Template:Remove.html" title="Category:Sections flagged with Template:Remove">Sections flagged with Template:Remove</a></li>
 <li><a href="../../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
 <li><a href="../../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li>
 <li><a href="../../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
@@ -1032,8 +1056,8 @@ configfile grub.cfg</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GRUB/Tips_and_tricks&amp;oldid=829340">https://wiki.archlinux.org/index.php?title=GRUB/Tips_and_tricks&amp;oldid=829340</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 17 March 2025, at 16:48.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GRUB/Tips_and_tricks&amp;oldid=834744">https://wiki.archlinux.org/index.php?title=GRUB/Tips_and_tricks&amp;oldid=834744</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 28 May 2025, at 10:40.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

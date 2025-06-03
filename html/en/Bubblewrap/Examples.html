@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Bubblewrap/Examples - ArchWiki</title>
 <link rel="stylesheet" href="../../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -123,21 +123,10 @@
 		<ul id="toc-Chromium-sublist" class="vector-toc-list">
 		</ul>
 	</li>
-	<li id="toc-Skype_for_Linux" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
-		<a class="vector-toc-link" href="#Skype_for_Linux">
-			<div class="vector-toc-text">
-				<span class="vector-toc-numb">7</span>
-				<span>Skype for Linux</span>
-			</div>
-		</a>
-		
-		<ul id="toc-Skype_for_Linux-sublist" class="vector-toc-list">
-		</ul>
-	</li>
 	<li id="toc-Steam" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
 		<a class="vector-toc-link" href="#Steam">
 			<div class="vector-toc-text">
-				<span class="vector-toc-numb">8</span>
+				<span class="vector-toc-numb">7</span>
 				<span>Steam</span>
 			</div>
 		</a>
@@ -148,7 +137,7 @@
 	<li id="toc-NPM,_Node_Version_Manager_(NVM),_Maven_Java" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
 		<a class="vector-toc-link" href="#NPM,_Node_Version_Manager_(NVM),_Maven_Java">
 			<div class="vector-toc-text">
-				<span class="vector-toc-numb">9</span>
+				<span class="vector-toc-numb">8</span>
 				<span>NPM, Node Version Manager (NVM), Maven Java</span>
 			</div>
 		</a>
@@ -568,58 +557,6 @@ bash-4.4$ ls -A /usr/bin
 <code>--bind $HOME/Downloads $HOME/Downloads \</code> mounts your ~/Downloads directory in the sandbox as readable and writable</li>
 <li>This example can be further improved for more isolation.</li>
 </ul>
-<h2><span class="mw-headline" id="Skype_for_Linux">Skype for Linux</span></h2>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
-<div>
-<b>Reason:</b> Forwarding the X11 and/or DBus sockets may lead to a sandbox escape (Discuss in <a rel="nofollow" class="external text" href="../../en/Talk:Bubblewrap/Examples.html">Talk:Bubblewrap/Examples</a>)</div>
-</div>
-<p>The following example provides these features:
-</p>
-<ul>
-<li>
-<code>env -i</code> ensures that all environment variables are unset.</li>
-<li>Network is shared with the host (<code>--share-net</code>), <code>/etc/resolv.conf</code> is bind-mounted.</li>
-<li>
-<a href="../../en/Xorg.html" title="Xorg">Xorg</a> access: bind the <code>/tmp/.X11-unix/X0</code> socket, set <code>$DISPLAY</code>.</li>
-<li>
-<a href="../../en/D-Bus.html" title="D-Bus">D-Bus</a>: bind the <code>$XDG_RUNTIME_DIR/bus</code> socket, set <code>$DBUS_SESSION_BUS_ADDRESS</code>.</li>
-<li>Audio: bind the <a href="../../en/PulseAudio.html" title="PulseAudio">PulseAudio</a> socket.</li>
-<li>Video: dev-bind the <code>/dev/video0</code> device.</li>
-</ul>
-<p>The directory on the host where you want to keep the Skype profile can be configured with <code>$HOST_PROFILE_PATH</code>.
-</p>
-<pre>env -i bwrap \
-    --ro-bind /usr /usr \
-    --dir /home/r \
-    --dir /tmp \
-    --dir /var \
-    --dir "$XDG_RUNTIME_DIR" \
-    --proc /proc \
-    --dev /dev \
-    --symlink usr/lib /lib \
-    --symlink usr/lib64 /lib64 \
-    --symlink usr/bin /bin \
-    --symlink usr/sbin /sbin \
-    --symlink ../tmp /var/tmp \
-    --bind "$HOST_PROFILE_PATH" /home/r/.config/skypeforlinux \
-    --ro-bind /etc/resolv.conf /etc/resolv.conf \
-    --ro-bind /tmp/.X11-unix/X0 /tmp/.X11-unix/X0 \
-    --ro-bind "$XDG_RUNTIME_DIR/bus" "$XDG_RUNTIME_DIR/bus" \
-    --ro-bind "$XDG_RUNTIME_DIR/pulse" "$XDG_RUNTIME_DIR/pulse" \
-    --dev-bind /dev/video0 /dev/video0 \
-    --chdir / \
-    --unshare-all \
-    --share-net \
-    --hostname RESTRICTED \
-    --die-with-parent \
-    --new-session \
-    --setenv PATH /usr/bin \
-    --setenv HOME /home/r \
-    --setenv XDG_RUNTIME_DIR "$XDG_RUNTIME_DIR" \
-    --setenv DISPLAY "$DISPLAY" \
-    --setenv DBUS_SESSION_BUS_ADDRESS "unix:path=$XDG_RUNTIME_DIR/bus" \
-    /usr/bin/skypeforlinux</pre>
 <h2><span class="mw-headline" id="Steam">Steam</span></h2>
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
@@ -843,8 +780,8 @@ $ bwrap "${bwrap_arguments[@]}" "$@"</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Bubblewrap/Examples&amp;oldid=829889">https://wiki.archlinux.org/index.php?title=Bubblewrap/Examples&amp;oldid=829889</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 26 March 2025, at 12:02.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Bubblewrap/Examples&amp;oldid=834159">https://wiki.archlinux.org/index.php?title=Bubblewrap/Examples&amp;oldid=834159</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 18 May 2025, at 18:28.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

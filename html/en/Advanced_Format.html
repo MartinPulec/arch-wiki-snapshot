@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Advanced Format - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -145,10 +145,48 @@
 		<ul id="toc-File_systems-sublist" class="vector-toc-list">
 		</ul>
 	</li>
+	<li id="toc-Known_issues" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#Known_issues">
+			<div class="vector-toc-text">
+				<span class="vector-toc-numb">5</span>
+				<span>Known issues</span>
+			</div>
+		</a>
+		
+			<button aria-controls="toc-Known_issues-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle Known issues subsection</span>
+			</button>
+		
+		<ul id="toc-Known_issues-sublist" class="vector-toc-list">
+			<li id="toc-Syslinux_and_FAT" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Syslinux_and_FAT">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">5.1</span>
+					<span>Syslinux and FAT</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Syslinux_and_FAT-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-systemd-homed" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#systemd-homed">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">5.2</span>
+					<span>systemd-homed</span>
+				</div>
+			</a>
+			
+			<ul id="toc-systemd-homed-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+	</li>
 	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
 		<a class="vector-toc-link" href="#See_also">
 			<div class="vector-toc-text">
-				<span class="vector-toc-numb">5</span>
+				<span class="vector-toc-numb">6</span>
 				<span>See also</span>
 			</div>
 		</a>
@@ -354,6 +392,8 @@ Id Fmt  Data  Metadt  Rel_Perf
  0 +     512       0         2
  1 -    4096       0         1
 </pre>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning:</strong> Some NVMe SSDs report they support 4K sectors but encounter sporadic instability upon enabling them, especially under heavy random read loads.<a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?pid=2238884#p2238884">[3]</a><a rel="nofollow" class="external autonumber" href="https://halestrom.net/darksleep/blog/054_nvme/">[4]</a> Make sure to test the new configuration thoroughly before storing data you cannot afford to lose on it. If encountering this issue, simply revert back to a 512 sector configuration.</div>
 <p>To change the logical block address size, use <code>nvme format</code> and specify the preferred value with the <code>--lbaf</code> parameter:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># nvme format --lbaf=1 /dev/nvme0n1</pre>
@@ -373,7 +413,7 @@ Success formatting namespace:1</pre>
 <div>
 <b>Reason:</b> Before fiddling with power state or UEFI settings, users are encouraged to use native <code>nvme</code> commands to check operation logs, or soft reset the controller with <i>e.g.</i> <code>nvme reset</code>. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Advanced_Format.html">Talk:Advanced Format</a>)</div>
 </div>
-<p>Drives older than 2020 can block the <code>Format NVM</code> command when used on systems that issue a non-standard "security freeze" at the end of POST.<a rel="nofollow" class="external autonumber" href="https://github.com/linux-nvme/nvme-cli/issues/816">[3]</a><a rel="nofollow" class="external autonumber" href="https://forums.lenovo.com/topic/findpost/1300/5043069/5167342">[4]</a> If <code>nvme format</code> fails, try to <a href="../en/Systemd.html#Power_management" title="Systemd">suspend the system</a> (make sure to <a href="../en/Power_management/Suspend_and_hibernate.html#Changing_suspend_method" title="Power management/Suspend and hibernate">use S3 sleep not S0ix</a>) and then try running <code>nvme format</code> again after waking it.<a rel="nofollow" class="external autonumber" href="https://github.com/linux-nvme/nvme-cli/issues/84">[5]</a><a rel="nofollow" class="external autonumber" href="https://forums.sandisk.com/t/sn750-cannot-format-using-the-nvme-command/253702">[6]</a>
+<p>Drives older than 2020 can block the <code>Format NVM</code> command when used on systems that issue a non-standard "security freeze" at the end of POST.<a rel="nofollow" class="external autonumber" href="https://github.com/linux-nvme/nvme-cli/issues/816">[5]</a><a rel="nofollow" class="external autonumber" href="https://forums.lenovo.com/topic/findpost/1300/5043069/5167342">[6]</a> If <code>nvme format</code> fails, try to <a href="../en/Systemd.html#Power_management" title="Systemd">suspend the system</a> (make sure to <a href="../en/Power_management/Suspend_and_hibernate.html#Changing_suspend_method" title="Power management/Suspend and hibernate">use S3 sleep not S0ix</a>) and then try running <code>nvme format</code> again after waking it.<a rel="nofollow" class="external autonumber" href="https://github.com/linux-nvme/nvme-cli/issues/84">[7]</a><a rel="nofollow" class="external autonumber" href="https://forums.sandisk.com/t/sn750-cannot-format-using-the-nvme-command/253702">[8]</a>
 </p>
 <h3><span class="mw-headline" id="Using_manufacturer_specific_programs">Using manufacturer specific programs</span></h3>
 <p>If the above generic utilities do not allow changing the sector size, it may still be possible to change it using an utility from the drive's manufacturer.
@@ -407,7 +447,7 @@ Success formatting namespace:1</pre>
 <p>Aligning partitions correctly avoids excessive read-modify-write cycles. A typical practice for personal computers is to have each partition's start and size aligned to 1 MiB (1 048 576 bytes) marks. This covers all common page and block size scenarios, as it is divisible by all commonly used sizes—1 MiB, 512 KiB, 128 KiB, 4 KiB, and 512 B.
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> Misaligned partitions will prevent being able to use 4096 byte sectors with dm-crypt/LUKS. See <a rel="nofollow" class="external autonumber" href="https://lore.kernel.org/dm-crypt/fe8cd3b4-6d50-66d3-375c-254e278a6443@gmail.com/">[7]</a>.</div>
+<strong>Warning:</strong> Misaligned partitions will prevent being able to use 4096 byte sectors with dm-crypt/LUKS. See <a rel="nofollow" class="external autonumber" href="https://lore.kernel.org/dm-crypt/fe8cd3b4-6d50-66d3-375c-254e278a6443@gmail.com/">[9]</a>.</div>
 <ul>
 <li>
 <a href="../en/Fdisk.html" title="Fdisk">fdisk, cfdisk and sfdisk</a> handle alignment automatically.</li>
@@ -427,7 +467,7 @@ Success formatting namespace:1</pre>
 <div>
 <b>Reason:</b> Add example for plain dm-crypt. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Advanced_Format.html">Talk:Advanced Format</a>)</div>
 </div>
-<p>As of <a href="../en/Dm-crypt/Device_encryption.html#Cryptsetup_usage" class="mw-redirect" title="Cryptsetup">Cryptsetup</a> 2.4.0, <code>luksFormat</code> automatically detects the optimal encryption sector size for LUKS2 format <a rel="nofollow" class="external autonumber" href="https://mirrors.edge.kernel.org/pub/linux/utils/cryptsetup/v2.4/v2.4.0-ReleaseNotes">[8]</a>. 
+<p>As of <a href="../en/Dm-crypt/Device_encryption.html#Cryptsetup_usage" class="mw-redirect" title="Cryptsetup">Cryptsetup</a> 2.4.0, <code>luksFormat</code> automatically detects the optimal encryption sector size for LUKS2 format <a rel="nofollow" class="external autonumber" href="https://mirrors.edge.kernel.org/pub/linux/utils/cryptsetup/v2.4/v2.4.0-ReleaseNotes">[10]</a>. 
 </p>
 <p>However, for this to work, the device needs to report the correct default sector size, see <a href="#Changing_sector_size">#Changing sector size</a>.
 </p>
@@ -507,8 +547,8 @@ Device size is not aligned to requested sector size.
 </tr>
 <tr>
 <td><span class="plainlinks archwiki-template-man" title="$ man 8 mkfs.f2fs"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/mkfs.f2fs.8">mkfs.f2fs(8)</a></span></td>
-<td data-sort-value="1" style="background: #faa; color: inherit; vertical-align: middle; text-align: center;"><a rel="nofollow" class="external text" href="https://github.com/jaegeuk/f2fs-tools/issues/29">512</a></td>
-<td data-sort-value="2" style="background: #fda; color: inherit; vertical-align: middle; text-align: center;">512
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">4096</td>
+<td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">4096
 </td>
 </tr>
 <tr>
@@ -530,7 +570,7 @@ Device size is not aligned to requested sector size.
 </td>
 </tr>
 <tr>
-<td><span class="plainlinks archwiki-template-man" title="$ man 8 mkfs.reiserfs"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/mkfs.reiserfs.8">mkfs.reiserfs(8)</a></span></td>
+<td><span class="plainlinks archwiki-template-man" title="$ man 8 mkfs.reiserfs"><a rel="nofollow" class="external text" href="https://manpages.debian.org/unstable/reiserfsprogs/mkfs.reiserfs.8.en.html">mkfs.reiserfs(8)</a></span></td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">4096</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">4096
 </td>
@@ -595,11 +635,18 @@ Device size is not aligned to requested sector size.
 <a rel="nofollow" class="external text" href="https://openzfs.github.io/openzfs-docs/Project%20and%20Community/FAQ.html#advanced-format-disks">ZFS</a>: <pre># zpool create -o ashift=12 <i>poolname</i> raidz <i>device0</i> … <i>deviceN</i></pre>
 </li>
 </ul>
+<h2><span class="mw-headline" id="Known_issues">Known issues</span></h2>
+<h3><span class="mw-headline" id="Syslinux_and_FAT">Syslinux and FAT</span></h3>
+<p><a href="../en/Syslinux.html" title="Syslinux">Syslinux</a> does not support FAT file systems with a sector size other than 512 bytes.
+</p>
+<h3><span class="mw-headline" id="systemd-homed">systemd-homed</span></h3>
+<p><a href="../en/Systemd-homed.html" title="Systemd-homed">systemd-homed</a> does not work on 4Kn drives and LUKS with a 4096 byte sector size. See systemd issues <a rel="nofollow" class="external text" href="https://github.com/systemd/systemd/issues/30393">30393</a> and <a rel="nofollow" class="external text" href="https://github.com/systemd/systemd/issues/30394">30394</a>.
+</p>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul>
 <li><a rel="nofollow" class="external text" href="https://www.anandtech.com/Show/Index/2888">Western Digital’s Advanced Format: The 4K Sector Transition Begins</a></li>
 <li><a rel="nofollow" class="external text" href="https://www.wdc.com/wdproducts/library/WhitePapers/ENG/2579-771430.pdf">White paper entitled "Advanced Format Technology."</a></li>
-<li>Failure to align one's HDD results in poor read/write performance.  See <a rel="nofollow" class="external autonumber" href="https://linuxconfig.org/linux-wd-ears-advanced-format">[9]</a> for specific examples.</li>
+<li>Failure to align one's HDD results in poor read/write performance.  See <a rel="nofollow" class="external autonumber" href="https://linuxconfig.org/linux-wd-ears-advanced-format">[11]</a> for specific examples.</li>
 </ul>
 </div>
 </div>
@@ -622,8 +669,8 @@ Device size is not aligned to requested sector size.
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Advanced_Format&amp;oldid=826944">https://wiki.archlinux.org/index.php?title=Advanced_Format&amp;oldid=826944</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 12 February 2025, at 19:30.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Advanced_Format&amp;oldid=834876">https://wiki.archlinux.org/index.php?title=Advanced_Format&amp;oldid=834876</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 30 May 2025, at 10:45.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

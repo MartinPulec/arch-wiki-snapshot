@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Bluetooth headset - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -606,7 +606,7 @@
 <li>HFP/HSP (hands-free/headset) provides voice-grade mono output and input. HFP builds on top of HSP.</li>
 <li>LE Audio is a low-energy audio standard announced in 2020. The standard codec is LC3.</li>
 </ul>
-<p>The kernel, BlueZ 5, and PipeWire support all three profiles. Older sound servers such as PulseAudio and ALSA only support A2DP and HFP/HSP. Although Bluetooth is infamous for being unreliable<a rel="nofollow" class="external autonumber" href="https://xkcd.com/2055/">[1]</a>, many implementations have seen massive improvements, making it a somewhat less excruciating experience on well-established hardware like Intel Bluetooth chips.
+<p>The <a href="../en/Kernel.html" title="Kernel">kernel</a>, BlueZ 5, and <a href="../en/PipeWire.html" title="PipeWire">PipeWire</a> support all three profiles. Older sound servers such as <a href="../en/PulseAudio.html" title="PulseAudio">PulseAudio</a> and <a href="../en/Advanced_Linux_Sound_Architecture.html" class="mw-redirect" title="ALSA">ALSA</a> only support A2DP and HFP/HSP. Although Bluetooth is infamous for being unreliable <a rel="nofollow" class="external autonumber" href="https://xkcd.com/2055/">[1]</a>, many implementations have seen massive improvements, making it a somewhat less excruciating experience on well-established hardware like Intel Bluetooth chips.
 </p>
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Headset_via_PipeWire">Headset via PipeWire</span></h2>
@@ -712,7 +712,7 @@ load-module module-switch-on-connect
 <strong>Note:</strong> Make sure that your bluetooth audio device is <i>trusted</i>, otherwise repeated pairing will fail. See <a href="../en/Bluetooth.html#Pairing" title="Bluetooth">Bluetooth#Pairing</a> for details.</div>
 <h3><span class="mw-headline" id="Configuration_via_GNOME_Bluetooth">Configuration via GNOME Bluetooth</span></h3>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong>  The A2DP profile will not be activated using this method with pulseaudio 9/10 due to an ongoing bug, leading to possible low quality mono sound. See <a href="#A2DP_not_working_with_PulseAudio">#A2DP not working with PulseAudio</a> for a possible solution.</div>
+<strong>Note:</strong>  The A2DP profile will not be activated using this method with PulseAudio 9/10 due to an ongoing bug, leading to possible low quality mono sound. See <a href="#A2DP_not_working_with_PulseAudio">#A2DP not working with PulseAudio</a> for a possible solution.</div>
 <p>You can use <a href="../en/Bluetooth.html#Graphical" title="Bluetooth">GNOME Bluetooth</a> graphical front-end to easily configure your bluetooth headset. 
 </p>
 <p>First, you need to be sure that <code>bluetooth.service</code> systemd unit is running. 
@@ -778,9 +778,9 @@ Failed to connect: org.bluez.Error.Failed
 </p>
 <pre>bluetoothd[5556]: a2dp-sink profile connect failed for 00:1D:43:6D:03:26: Protocol not available
 </pre>
-<p>This may be due to the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pulseaudio-bluetooth">pulseaudio-bluetooth</a></span> package not being installed. Install it if it is missing, then restart pulseaudio.
+<p>This may be due to the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pulseaudio-bluetooth">pulseaudio-bluetooth</a></span> package not being installed. Install it if it is missing, then restart PulseAudio.
 </p>
-<p>It can also be due to permission, especially if starting pulseaudio as root allows you to connect. 
+<p>It can also be due to permission, especially if starting PulseAudio as root allows you to connect. 
 See <code>/usr/share/dbus-1/system.d/bluetooth.conf</code> for reference.
 </p>
 <p>If the issue is not due to the missing package, the problem in this case is that PulseAudio is not catching up. A common solution to this problem is to restart PulseAudio. Note that it is perfectly fine to run <i>bluetoothctl</i> as root while PulseAudio runs as user. After restarting PulseAudio, retry to connect. It is not necessary to repeat the pairing.
@@ -791,7 +791,7 @@ See <code>/usr/share/dbus-1/system.d/bluetooth.conf</code> for reference.
 </pre>
 <p>The same load-module command can be added to <code>/etc/pulse/default.pa</code>.
 </p>
-<p>If that still does not work, or you are using PulseAudio's system-wide mode, also load the following PulseAudio modules (again these can be loaded via your <code>default.pa</code> or <code>system.pa</code>):
+<p>If that still does not work, or you are using PulseAudio system-wide mode, also load the following PulseAudio modules (again these can be loaded via your <code>default.pa</code> or <code>system.pa</code>):
 </p>
 <pre>module-bluetooth-policy
 module-bluez5-device
@@ -840,7 +840,7 @@ bluetoothd[5556]: Endpoint registered: sender=:1.83 path=/MediaEndpoint/A2DPSink
 <div>
 <b>Notes:</b> The following seems to be general issue: <a rel="nofollow" class="external autonumber" href="https://wiki.archlinux.org/index.php?title=PulseAudio/Troubleshooting&amp;diff=next&amp;oldid=421986">[4]</a> (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Bluetooth_headset.html">Talk:Bluetooth headset</a>)</div>
 </div>
-<p>When using <a href="../en/GDM.html" title="GDM">GDM</a>, another instance of PulseAudio is started, which "captures" your bluetooth device connection. This can be prevented by <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Mask">masking</a> the pulseaudio socket for the GDM user by doing the following:
+<p>When using <a href="../en/GDM.html" title="GDM">GDM</a>, another instance of PulseAudio is started, which "captures" your bluetooth device connection. This can be prevented by <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Mask">masking</a> the PulseAudio socket for the GDM user by doing the following:
 </p>
 <pre># mkdir -p  /var/lib/gdm/.config/systemd/user
 # ln -s /dev/null  /var/lib/gdm/.config/systemd/user/pulseaudio.socket
@@ -955,7 +955,7 @@ ExecStart=/usr/lib/bluetooth/bluetoothd --noplugin=avrcp</pre>
 <h4>
 <span id="HSP_problem:_the_bluetooth_sink_and_source_are_created.2C_but_no_audio_is_being_transmitted"></span><span class="mw-headline" id="HSP_problem:_the_bluetooth_sink_and_source_are_created,_but_no_audio_is_being_transmitted">HSP problem: the bluetooth sink and source are created, but no audio is being transmitted</span>
 </h4>
-<p>You may be missing firmware or the SCO (audio protocol of HSP and HFP) routing might be wrong. See <a rel="nofollow" class="external autonumber" href="https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/User/Bluetooth/#index10h3">[6]</a> - the firmware for BCM20702 can be installed via <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/bcm20702a1-firmware/">bcm20702a1-firmware</a></span><sup><small>AUR</small></sup> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/bcm20702b0-firmware/">bcm20702b0-firmware</a></span><sup><small>AUR</small></sup>.
+<p>You may be missing firmware or the SCO (audio protocol of HSP and HFP) routing might be wrong. See <a rel="nofollow" class="external text" href="https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/User/Bluetooth/#index10h3">the PulseAudio documentation on this matter</a> - firmware for Broadcom chips can be installed with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/broadcom-bt-firmware/">broadcom-bt-firmware</a></span><sup><small>AUR</small></sup>.
 </p>
 <h4><span class="mw-headline" id="Error:_Failed_to_start_discovery_org.bluez.Error.InProgress">Error: Failed to start discovery org.bluez.Error.InProgress</span></h4>
 <div class="noprint archwiki-template-message">
@@ -1060,11 +1060,11 @@ $ sudo -ugdm ln -s /dev/null /var/lib/gdm/.config/systemd/user/pulseaudio.socket
 <ul><li>Restart, and check that there is no PulseAudio process for the <code>gdm</code> user using:</li></ul>
 <pre>$ pgrep -u gdm pulseaudio
 </pre>
-<p>Further discussion about this problem and alternative fixes can be found at <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=194006">[7]</a> and <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=196689">[8]</a>. Alternatively, one may try and install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/fix-bt-a2dp/">fix-bt-a2dp</a></span><sup><small>AUR</small></sup>.
+<p>Further discussion about this problem and alternative fixes can be found at <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=194006">[6]</a> and <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=196689">[7]</a>. Alternatively, one may try and install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/fix-bt-a2dp/">fix-bt-a2dp</a></span><sup><small>AUR</small></sup>.
 </p>
 <h3><span class="mw-headline" id="HFP_not_working_with_PulseAudio">HFP not working with PulseAudio</span></h3>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> Some users have reported success in enabling HFP support by replacing PulseAudio with PipeWire for Bluetooth support. <a rel="nofollow" class="external autonumber" href="https://www.reddit.com/r/archlinux/comments/w69mij/hfp_audio_is_no_longer_available_stuck_on/">[9]</a> See <a href="#Headset_via_PipeWire">#Headset via PipeWire</a> for installation instructions.</div>
+<strong>Note:</strong> Some users have reported success in enabling HFP support by replacing PulseAudio with PipeWire for Bluetooth support. <a rel="nofollow" class="external autonumber" href="https://www.reddit.com/r/archlinux/comments/w69mij/hfp_audio_is_no_longer_available_stuck_on/">[8]</a> See <a href="#Headset_via_PipeWire">#Headset via PipeWire</a> for installation instructions.</div>
 <p>HFP-only bluetooth headsets may not be usable in the standard configuration of PulseAudio. The respective profiles occur, but they are not available:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">bluetoothctl info</pre>
@@ -1079,7 +1079,7 @@ Profiles:
       ...
       headset_head_unit: Headset Head Unit (HSP/HFP) (sinks: 1, sources: 1, priority: 30, available: no)
 </pre>
-<p>To solve the respective issue, update PulseAudio and BlueZ to latest versions. Then <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/ofono/">ofono</a></span><sup><small>AUR</small></sup> and  <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/phonesim/">phonesim</a></span><sup><small>AUR</small></sup> then create / activate a fake modem as described here <a rel="nofollow" class="external autonumber" href="https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/User/Bluetooth/#index1h3">[10]</a>:
+<p>To solve the respective issue, update PulseAudio and BlueZ to latest versions. Then <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/ofono/">ofono</a></span><sup><small>AUR</small></sup> and  <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/phonesim/">phonesim</a></span><sup><small>AUR</small></sup> then create / activate a fake modem as described here <a rel="nofollow" class="external autonumber" href="https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/User/Bluetooth/#index1h3">[9]</a>:
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> The steps following the creation of <code>phonesim.conf</code> should be done <i>every time</i> you want to connect the headset.</div>
@@ -1136,7 +1136,7 @@ $ /usr/lib/ofono/test/list-modems
 <p>Unlike PulseAudio, <a href="../en/PipeWire.html#Automatic_profile_selection" title="PipeWire">PipeWire does not automatically switch between A2DP and HSP/HFP</a> in response to input events. However, rather than to enable automatically switching to the (lower audio quality) HSP/HFP profile if A2DP fails, you may prefer to disable the former altogether. To do so, create or edit a bluez configuration as shown below.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> HSP mode is required for built-in microphones to work <a rel="nofollow" class="external autonumber" href="https://www.reddit.com/r/pop_os/comments/otofgt/bluetooth_headphone_switches_to_hsphfp_when/">[11]</a>.</div>
+<strong>Note:</strong> HSP mode is required for built-in microphones to work <a rel="nofollow" class="external autonumber" href="https://www.reddit.com/r/pop_os/comments/otofgt/bluetooth_headphone_switches_to_hsphfp_when/">[10]</a>.</div>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/wireplumber/wireplumber.conf.d/51-mitigate-annoying-profile-switch.conf (or ~/.config/wireplumber/wireplumber.conf.d/51-mitigate-annoying-profile-switch.conf)</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">## In WirePlumber there's a bug where some applications trigger switching to Headset Profile
 ## --
@@ -1218,8 +1218,8 @@ monitor.bluez.properties = {
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Bluetooth_headset&amp;oldid=828071">https://wiki.archlinux.org/index.php?title=Bluetooth_headset&amp;oldid=828071</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 1 March 2025, at 20:13.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Bluetooth_headset&amp;oldid=833436">https://wiki.archlinux.org/index.php?title=Bluetooth_headset&amp;oldid=833436</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 7 May 2025, at 06:11.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

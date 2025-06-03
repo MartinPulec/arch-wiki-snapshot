@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Unified Extensible Firmware Interface/Secure Boot - ArchWiki</title>
 <link rel="stylesheet" href="../../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -891,25 +891,36 @@
 <p>Secure Boot is in Setup Mode when the Platform Key is removed. To put firmware in Setup Mode, enter firmware setup utility and find an option to delete or clear certificates. How to enter the setup utility is described in <a href="#Before_booting_the_OS">#Before booting the OS</a>.
 </p>
 <h4><span class="mw-headline" id="Assisted_process_with_systemd">Assisted process with systemd</span></h4>
-<p>As of v257, you can easily set up Secure Boot with <a href="../../en/Systemd.html" title="Systemd">systemd</a> and <a href="../../en/Systemd-boot.html" title="Systemd-boot">systemd-boot</a>. Install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=systemd-ukify">systemd-ukify</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sbsigntools">sbsigntools</a></span>.
+<p>As of v257, you can easily set up Secure Boot with <a href="../../en/Systemd.html" title="Systemd">systemd</a> and <a href="../../en/Systemd-boot.html" title="Systemd-boot">systemd-boot</a>. Install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=systemd-ukify">systemd-ukify</a></span>.
 </p>
-<p>First generate your signing keys with e.g.:
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> This method does not include Microsoft's certificates. See <a href="#Enrolling_Option_ROM_digests">#Enrolling Option ROM digests</a> and <a href="#Dual_booting_with_other_operating_systems">#Dual booting with other operating systems</a>.</div>
+<p>First set up your desired configuration as in <a href="../../en/Unified_kernel_image.html#ukify_2" title="Unified kernel image">Unified kernel image#ukify</a> (you can use the template from <code>/usr/lib/kernel/uki.conf</code>), then generate your signing keys:
 </p>
-<pre># ukify genkey \
---secureboot-private-key /etc/kernel/secure-boot-private-key.pem \
---secureboot-certificate /etc/kernel/secure-boot-certificate.pem
+<pre># ukify genkey --config /etc/kernel/uki.conf
+Using config file: /etc/kernel/uki.conf
+Writing SecureBoot private key to /etc/kernel/secure-boot-private-key.pem
+Writing SecureBoot certificate to /etc/kernel/secure-boot-certificate.pem
 </pre>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> Alternatively, set up your desired configuration in <code>/etc/kernel/uki.conf</code> (or use the template from <code>/usr/lib/kernel/uki.conf</code>) and use ukify's <code>--config</code> option. This is useful to automatically reuse the keys to sign <a href="../../en/Unified_kernel_image.html" class="mw-redirect" title="UKI">UKIs</a> later with <a href="../../en/Kernel-install.html" title="Kernel-install">kernel-install</a>.</div>
+<strong>Tip:</strong> <a href="../../en/Kernel-install.html" title="Kernel-install">kernel-install</a> will automatically use this configuration to sign <a href="../../en/Unified_kernel_image.html" class="mw-redirect" title="UKI">UKIs</a>.</div>
+<p>Sign the bootloader with the newly created keys (see <a href="../../en/Systemd-boot.html#Signing_for_Secure_Boot" title="Systemd-boot">Systemd-boot#Signing for Secure Boot</a> for automation):
+</p>
+<pre># /usr/lib/systemd/systemd-sbsign sign \
+--private-key /etc/kernel/secure-boot-private-key.pem \
+--certificate /etc/kernel/secure-boot-certificate.pem \
+--output /usr/lib/systemd/boot/efi/systemd-bootx64.efi.signed \
+/usr/lib/systemd/boot/efi/systemd-bootx64.efi
+</pre>
 <p>Next, configure the <a href="../../en/EFI_system_partition.html" class="mw-redirect" title="ESP">ESP</a> for auto-enrollment:
 </p>
 <pre># bootctl install --secure-boot-auto-enroll yes \
 --certificate /etc/kernel/secure-boot-certificate.pem \
 --private-key /etc/kernel/secure-boot-private-key.pem
 </pre>
-<p>This will create the three files <code>PK.auth</code>, <code>KEK.auth</code> and <code>db.auth</code> in <code>/boot/loader/keys/auto/</code>. Note that this command also installs (or updates) the <a href="../../en/Systemd-boot.html" title="Systemd-boot">systemd-boot</a> bootloader to the <a href="../../en/EFI_system_partition.html" class="mw-redirect" title="ESP">ESP</a>.
+<p>This installs (or updates) the signed <a href="../../en/Systemd-boot.html" title="Systemd-boot">systemd-boot</a> bootloader to the <a href="../../en/EFI_system_partition.html" class="mw-redirect" title="ESP">ESP</a>, and creates three files <code>PK.auth</code>, <code>KEK.auth</code> and <code>db.auth</code> in <code>/boot/loader/keys/auto/</code>.
 </p>
-<p>Finally, set <code>secure-boot-enroll=force</code> in <code>/boot/loader.conf</code>. See <span class="plainlinks archwiki-template-man" title="$ man 5 loader.conf"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/loader.conf.5">loader.conf(5)</a></span>.
+<p>Finally, set <code>secure-boot-enroll force</code> in <code>/boot/loader.conf</code>, and reboot to enroll the keys in the firmware. See <span class="plainlinks archwiki-template-man" title="$ man 5 loader.conf"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/loader.conf.5">loader.conf(5)</a></span>.
 </p>
 <h4><span class="mw-headline" id="Assisted_process_with_sbctl">Assisted process with sbctl</span></h4>
 <p><a rel="nofollow" class="external text" href="https://github.com/Foxboron/sbctl">sbctl</a> is a user-friendly way of setting up secure boot and signing files.
@@ -1731,8 +1742,8 @@ $ digest-to-efi-sig-list <i>fedcba9876543210fedcba9876543210fedcba9876543210fedc
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Unified_Extensible_Firmware_Interface/Secure_Boot&amp;oldid=828929">https://wiki.archlinux.org/index.php?title=Unified_Extensible_Firmware_Interface/Secure_Boot&amp;oldid=828929</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 15 March 2025, at 08:54.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Unified_Extensible_Firmware_Interface/Secure_Boot&amp;oldid=834300">https://wiki.archlinux.org/index.php?title=Unified_Extensible_Firmware_Interface/Secure_Boot&amp;oldid=834300</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 22 May 2025, at 14:00.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

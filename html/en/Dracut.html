@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>dracut - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -230,15 +230,15 @@
 			<ul id="toc-Bluetooth_keyboard_support-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Limine_bootloader_support" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Limine_bootloader_support">
+		<li id="toc-Limine_boot_loader_support" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Limine_boot_loader_support">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">4.6</span>
-					<span>Limine bootloader support</span>
+					<span>Limine boot loader support</span>
 				</div>
 			</a>
 			
-			<ul id="toc-Limine_bootloader_support-sublist" class="vector-toc-list">
+			<ul id="toc-Limine_boot_loader_support-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -432,10 +432,13 @@
 <p>To enable hostonly mode permanently (so that you do not need to include it in the command line) you can add the following to your dracut configuration:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/dracut.conf.d/hostonly.conf</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">hostonly="yes"</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">hostonly="yes"
+hostonly_cmdline="no"</pre>
+<p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/dracut-git/">dracut-git</a></span><sup><small>AUR</small></sup> has hostonly mode enabled by default already.
+</p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> In some cases, especially when installing a system for the first time, the above command will not work. Use the following:
-<pre># dracut --regenerate-all
+<pre># dracut -f --regenerate-all
 </pre>
  </div>
 <p>To generate a fallback initramfs run:
@@ -487,755 +490,12 @@ omit_dracutmodules+=" systemd network "</pre>
 add_dracutmodules+=" <i>dracut modules to activate</i> "
 omit_dracutmodules+=" <i>dracut modules to deactivate</i> "
 # ...</pre>
-<p>The following table lists dracut modules, required packages (<i>dracut</i> 's optional dependencies) and module descriptions.
+<p>For dracut module documentation, see the <a rel="nofollow" class="external text" href="https://dracut-ng.github.io/dracut-ng/modules/core.html">upstream dracut documentation</a>.
 </p>
-<p>Most dracut modules are dependent on other dracut modules. As an example the bluetooth dracut module depends on the dbus dracut module. The table below only lists direct dracut module dependencies, i.e. the required packages for a given module listed in the <code>module-setup.sh</code> for the given dracut module.
+<p>Most dracut modules are dependent on other dracut modules. As an example the bluetooth dracut module depends on the dbus dracut module. 
 </p>
-<p>For additional dracut module documentation, see the <a rel="nofollow" class="external text" href="https://dracut-ng.github.io/dracut-ng/modules/core.html">upstream dracut wiki</a>.
+<p><br>
 </p>
-<table class="wikitable">
-<tbody>
-<tr>
-<th>dracut module
-</th>
-<th>Required packages
-</th>
-<th>Description
-</th>
-</tr>
-<tr>
-<td>bluetooth
-</td>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=bluez">bluez</a></span>
-</td>
-<td>
-<a href="../en/Bluetooth.html" title="Bluetooth">Bluetooth</a> (keyboard)
-</td>
-</tr>
-<tr>
-<td>btrfs
-</td>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=btrfs-progs">btrfs-progs</a></span>
-</td>
-<td>Scans for <a href="../en/Btrfs.html" title="Btrfs">Btrfs</a> on block devices
-</td>
-</tr>
-<tr>
-<td>busybox
-</td>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=busybox">busybox</a></span>
-</td>
-<td>Allows use of <a href="../en/BusyBox.html" title="BusyBox">BusyBox</a> (on your own risk)
-</td>
-</tr>
-<tr>
-<td>crypt
-</td>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=cryptsetup">cryptsetup</a></span>
-</td>
-<td>Support for encrypted <a href="../en/Dm-crypt.html" title="Dm-crypt">Dm-crypt</a> file systems
-</td>
-</tr>
-<tr>
-<td>dash
-</td>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dash">dash</a></span>
-</td>
-<td>Allows use of <a href="../en/Dash.html" title="Dash">Dash</a> (on your own risk)
-</td>
-</tr>
-<tr>
-<td>dmraid
-</td>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dmraid">dmraid</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=multipath-tools">multipath-tools</a></span>
-</td>
-<td>dmraid dracut module support
-</td>
-</tr>
-<tr>
-<td>multipath
-</td>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=multipath-tools">multipath-tools</a></span>
-</td>
-<td>Multipath dracut module support
-</td>
-</tr>
-<tr>
-<td>dmsquash-live-ntfs
-</td>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=fuse3">fuse3</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=ntfs-3g">ntfs-3g</a></span>
-</td>
-<td>Live on <a href="../en/NTFS.html" title="NTFS">NTFS</a>
-</td>
-</tr>
-<tr>
-<td>lvm
-</td>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lvm2">lvm2</a></span>
-</td>
-<td>Support for <a href="../en/LVM.html" title="LVM">LVM</a>
-</td>
-</tr>
-<tr>
-<td>mdraid
-</td>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mdadm">mdadm</a></span>
-</td>
-<td>Support MD devices, also known as software <a href="../en/RAID.html" title="RAID">RAID</a> devices
-</td>
-</tr>
-<tr>
-<td>memstrack
-</td>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/memstrack/">memstrack</a></span><sup><small>AUR</small></sup>
-</td>
-<td>Support memstrack
-</td>
-</tr>
-<tr>
-<td>nvdimm
-</td>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=ndctl">ndctl</a></span>
-</td>
-<td>NVDIMM support
-</td>
-</tr>
-<tr>
-<td>plymouth
-</td>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=plymouth">plymouth</a></span>
-</td>
-<td>
-<a href="../en/Plymouth.html" title="Plymouth">Plymouth</a> boot splash
-</td>
-</tr>
-<tr>
-<td>rescue
-</td>
-<td>
-</td>
-<td>Includes various utilities for rescue mode (such as ping, ssh, vi, fsck.*)
-</td>
-</tr>
-<tr>
-<td>resume
-</td>
-<td>
-</td>
-<td>Allows initramfs to resume from low-power state
-</td>
-</tr>
-<tr>
-<td>rngd
-</td>
-<td>
-</td>
-<td>Starts random generator service on early boot
-</td>
-</tr>
-<tr>
-<td>syslog
-</td>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/rsyslog/">rsyslog</a></span><sup><small>AUR</small></sup>
-</td>
-<td>Enable logging with <a href="../en/Rsyslog.html" title="Rsyslog">Rsyslog</a>
-</td>
-</tr>
-<tr>
-<td>squash
-</td>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=squashfs-tools">squashfs-tools</a></span>
-</td>
-<td>Support for building a squashed initramfs
-</td>
-</tr>
-<tr>
-<td>tpm2-tss
-</td>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=tpm2-tools">tpm2-tools</a></span>
-</td>
-<td>
-<a href="../en/Trusted_Platform_Module.html" title="Trusted Platform Module">Trusted Platform Module</a>
-</td>
-</tr>
-<tr>
-<td>base
-</td>
-<td>
-</td>
-<td>Base module with required utilities
-</td>
-</tr>
-<tr>
-<td>bash
-</td>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=bash">bash</a></span>
-</td>
-<td>Bash is the preferred interpreter, if there are more available
-</td>
-</tr>
-<tr>
-<td>biosdevname
-</td>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/biosdevname/">biosdevname</a></span><sup><small>AUR</small></sup>
-</td>
-<td>Enables BIOS network device renaming
-</td>
-</tr>
-<tr>
-<td>caps
-</td>
-<td>
-</td>
-<td>Supports dropping capabilities before init
-</td>
-</tr>
-<tr>
-<td>convertfs
-</td>
-<td>
-</td>
-<td>Merges / into /usr on next boot
-</td>
-</tr>
-<tr>
-<td>crypt-gpg
-</td>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=gnupg">gnupg</a></span>
-</td>
-<td>Adds support GPG for crypto operations and SmartCards (may requires GPG keys)
-</td>
-</tr>
-<tr>
-<td>crypt-loop
-</td>
-<td>
-</td>
-<td>Adds support for encrypted loopback devices (symmetric key)
-</td>
-</tr>
-<tr>
-<td>dbus
-</td>
-<td>
-</td>
-<td>Virtual package for dbus-broker or dbus-daemon
-</td>
-</tr>
-<tr>
-<td>dbus-broker
-</td>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dbus-broker">dbus-broker</a></span>
-</td>
-<td>Use <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dbus-broker">dbus-broker</a></span> as dbus service provider
-</td>
-</tr>
-<tr>
-<td>dbus-daemon
-</td>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dbus">dbus</a></span>
-</td>
-<td>Use <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dbus">dbus</a></span> as dbus service provider
-</td>
-</tr>
-<tr>
-<td>debug
-</td>
-<td>
-</td>
-<td>Enable debug features
-</td>
-</tr>
-<tr>
-<td>dm
-</td>
-<td>
-</td>
-<td>Adds support of device-mapper
-</td>
-</tr>
-<tr>
-<td>dmsquash-live-autooverlay
-</td>
-<td>
-</td>
-<td>Creates a partition for overlayfs usage in the free space on the root filesystem's parent block device
-</td>
-</tr>
-<tr>
-<td>dracut-systemd
-</td>
-<td>
-</td>
-<td>Base systemd dracut module
-</td>
-</tr>
-<tr>
-<td>drm
-</td>
-<td>
-</td>
-<td>Includes kernel modules that provides DRM support
-</td>
-</tr>
-<tr>
-<td>ecryptfs
-</td>
-<td>
-</td>
-<td>Adds ecryptfs filesystems support
-</td>
-</tr>
-<tr>
-<td>fido2
-</td>
-<td>
-</td>
-<td>Allows to unlock an encrypted filesystem using a FIDO2 security token
-</td>
-</tr>
-<tr>
-<td>fips
-</td>
-<td>
-</td>
-<td>Enforces FIPS security standard regulations
-</td>
-</tr>
-<tr>
-<td>fs-lib
-</td>
-<td>
-</td>
-<td>Library for filesystem tools (including fsck.* and mount)
-</td>
-</tr>
-<tr>
-<td>fstab-sys
-</td>
-<td>
-</td>
-<td>Arranges for arbitrary partitions to be mounted before rootfs
-</td>
-</tr>
-<tr>
-<td>i18n
-</td>
-<td>
-</td>
-<td>Includes keymaps, console fonts, etc.
-</td>
-</tr>
-<tr>
-<td>img-lib
-</td>
-<td>
-</td>
-<td>Library to includes various tools for decompressing images
-</td>
-</tr>
-<tr>
-<td>integrity
-</td>
-<td>
-</td>
-<td>Adds support for Extended Verification Module
-</td>
-</tr>
-<tr>
-<td>kernel-modules
-</td>
-<td>
-</td>
-<td>Kernel modules for root filesystems and other boot-time devices
-</td>
-</tr>
-<tr>
-<td>kernel-modules-extra
-</td>
-<td>
-</td>
-<td>Extra out-of-tree kernel modules
-</td>
-</tr>
-<tr>
-<td>lunmask
-</td>
-<td>
-</td>
-<td>Masks LUN devices to select only ones which required to boot
-</td>
-</tr>
-<tr>
-<td>lvmmerge
-</td>
-<td>
-</td>
-<td>Merges lvm snapshots
-</td>
-</tr>
-<tr>
-<td>lvmthinpool-monitor
-</td>
-<td>
-</td>
-<td>Monitor LVM thinpool service
-</td>
-</tr>
-<tr>
-<td>masterkey
-</td>
-<td>
-</td>
-<td>Masterkey that can be used to decrypt other keys and keyutils
-</td>
-</tr>
-<tr>
-<td>modsign
-</td>
-<td>
-</td>
-<td>Adds signing kernel modules support
-</td>
-</tr>
-<tr>
-<td>overlayfs
-</td>
-<td>
-</td>
-<td>Kernel module for overlayfs
-</td>
-</tr>
-<tr>
-<td>pcsc
-</td>
-<td>
-</td>
-<td>Adds support for PCSC Smart cards
-</td>
-</tr>
-<tr>
-<td>pkcs11
-</td>
-<td>
-</td>
-<td>Includes PKCS#11 libraries
-</td>
-</tr>
-<tr>
-<td>pollcdrom
-</td>
-<td>
-</td>
-<td>Enables CD-ROM polling
-</td>
-</tr>
-<tr>
-<td>qemu
-</td>
-<td>
-</td>
-<td>Includes kernel modules for QEMU environment
-</td>
-</tr>
-<tr>
-<td>rootfs-block
-</td>
-<td>
-</td>
-<td>Arranges for the block device containing the rootfs to be mounted
-</td>
-</tr>
-<tr>
-<td>securityfs
-</td>
-<td>
-</td>
-<td>Arranges for the securityfs to be mounted early
-</td>
-</tr>
-<tr>
-<td>selinux
-</td>
-<td>
-</td>
-<td>Arranges for the selinux policy to be loaded
-</td>
-</tr>
-<tr>
-<td>shutdown
-</td>
-<td>
-</td>
-<td>Sets up hooks to run on shutdown
-</td>
-</tr>
-<tr>
-<td>systemd
-</td>
-<td>
-</td>
-<td>Adds systemd as early init initialization system
-</td>
-</tr>
-<tr>
-<td>terminfo
-</td>
-<td>
-</td>
-<td>Includes a terminfo file
-</td>
-</tr>
-<tr>
-<td>udev-rules
-</td>
-<td>
-</td>
-<td>Includes udev and some basic rules
-</td>
-</tr>
-<tr>
-<td>uefi-lib
-</td>
-<td>
-</td>
-<td>Library to include UEFI tools
-</td>
-</tr>
-<tr>
-<td>usrmount
-</td>
-<td>
-</td>
-<td>Mounts /usr
-</td>
-</tr>
-<tr>
-<td>virtfs
-</td>
-<td>
-</td>
-<td>Adds virtual filesystems (9p) support
-</td>
-</tr>
-<tr>
-<td>virtiofs
-</td>
-<td>
-</td>
-<td>Adds virtiofs filesystems support
-</td>
-</tr>
-<tr>
-<td>warpclock
-</td>
-<td>
-</td>
-<td>Sets kernel's timezone and reset the system time if adjtime is set to LOCAL
-</td>
-</tr>
-<tr>
-<td>watchdog
-</td>
-<td>
-</td>
-<td>Includes watchdog devices management; works only if systemd not in use
-</td>
-</tr>
-<tr>
-<td>watchdog-modules
-</td>
-<td>
-</td>
-<td>Includes watchdog kernel modules to be loaded early in booting
-</td>
-</tr>
-</tbody>
-</table>
-<p>Dracut modules that are meant to be used when <a href="../en/Network_configuration.html#IP_addresses" title="Network configuration">IP address</a> is expected to be available during early boot.
-</p>
-<table class="wikitable">
-<tbody>
-<tr>
-<th>networking dracut module
-</th>
-<th>Required packages
-</th>
-<th>Description
-</th>
-</tr>
-<tr>
-<td>cifs
-</td>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=cifs-utils">cifs-utils</a></span>
-</td>
-<td>Support for <a href="../en/Samba.html" title="Samba">Samba</a>
-</td>
-</tr>
-<tr>
-<td>nbd
-</td>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nbd">nbd</a></span>
-</td>
-<td>Support network block devices
-</td>
-</tr>
-<tr>
-<td>network-manager
-</td>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=networkmanager">networkmanager</a></span>
-</td>
-<td>
-<a href="../en/NetworkManager.html" title="NetworkManager">NetworkManager</a> support
-</td>
-</tr>
-<tr>
-<td>nfs
-</td>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nfs-utils">nfs-utils</a></span>
-</td>
-<td>
-<a href="../en/NFS.html" title="NFS">NFS</a> support - NFSv3 and NFSv4
-</td>
-</tr>
-<tr>
-<td>nvmf
-</td>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nvme-cli">nvme-cli</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=jq">jq</a></span>
-</td>
-<td>NVMe over Fibre Channel and NVMe-over Fabrics support
-</td>
-</tr>
-<tr>
-<td>iscsi
-</td>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=open-iscsi">open-iscsi</a></span>
-</td>
-<td>
-<a href="../en/ISCSI.html" title="ISCSI">ISCSI</a> support
-</td>
-</tr>
-<tr>
-<td>ssh-client
-</td>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=openssh">openssh</a></span>
-</td>
-<td>Installs ssh and scp along with config files and specified keys
-</td>
-</tr>
-<tr>
-<td>network-legacy
-</td>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dhclient">dhclient</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=iproute2">iproute2</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=iputils">iputils</a></span>
-</td>
-<td>Legacy <a href="../en/Network_configuration.html" class="mw-redirect" title="Network">network</a> support
-</td>
-</tr>
-<tr>
-<td>connman
-</td>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=connman">connman</a></span>
-</td>
-<td>Support for <a href="../en/ConnMan.html" title="ConnMan">ConnMan</a> networking
-</td>
-</tr>
-<tr>
-<td>kernel-network-modules
-</td>
-<td>
-</td>
-<td>Includes and loads kernel modules for network devices
-</td>
-</tr>
-<tr>
-<td>livenet
-</td>
-<td>
-</td>
-<td>Fetch live updates for SquashFS images
-</td>
-</tr>
-<tr>
-<td>network
-</td>
-<td>
-</td>
-<td>Virtual module for network service providers
-</td>
-</tr>
-<tr>
-<td>url-lib
-</td>
-<td>
-</td>
-<td>Library to includes curl and SSL certs
-</td>
-</tr>
-<tr>
-<td>qemu-net
-</td>
-<td>
-</td>
-<td>Includes network kernel modules for QEMU environment
-</td>
-</tr>
-<tr>
-<td>systemd-network-management
-</td>
-<td>
-</td>
-<td>Adds network management for systemd. Includes systemd-networkd, systemd-resolved and some othr networking related dracut modules
-</td>
-</tr>
-<tr>
-<td>systemd-networkd
-</td>
-<td>
-</td>
-<td>
-<a href="../en/Systemd-networkd.html" title="Systemd-networkd">Systemd-networkd</a>
-</td>
-</tr>
-<tr>
-<td>net-lib
-</td>
-<td>
-</td>
-<td>Networking library with <i>ip</i>
-</td>
-</tr>
-</tbody>
-</table>
 <h4><span class="mw-headline" id="TPM2">TPM2</span></h4>
 <p>To make use of <i>systemd</i> 's unlocking of <i>luks2</i> encrypted volumes using TPM2 through <a href="../en/Systemd-cryptenroll.html#Trusted_Platform_Module" title="Systemd-cryptenroll">systemd-cryptenroll</a>, install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=tpm2-tools">tpm2-tools</a></span> package and enable the <code>tpm2-tss</code> <i>dracut</i> module.
 </p>
@@ -1250,7 +510,7 @@ force_drivers+=" nvidia nvidia_modeset nvidia_uvm nvidia_drm "
 <p>Kernel command line options can be placed in a <i>.conf</i> file in <code>/etc/dracut.conf.d/</code>, and set via the <code>kernel_cmdline=</code> flag. Dracut will automatically source this file and create a <code>01-default.conf</code> file and place it inside the initramfs directory <code>/etc/cmdline.d/</code>. For example, your kernel command line options file could look like:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/dracut.conf.d/cmdline.conf</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">kernel_cmdline="rd.luks.uuid=luks-f6c738f3-ee64-4633-b6b0-eceddb1bb010 rd.lvm.lv=arch/root rd.lvm.lv=arch/swap  root=/dev/arch/root rootfstype=ext4 rootflags=rw,relatime"</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">kernel_cmdline="rd.luks.uuid=luks-f6c738f3-ee64-4633-b6b0-eceddb1bb010 rd.lvm.lv=arch/root rd.lvm.lv=arch/swap root=/dev/arch/root rootfstype=ext4 rootflags=rw,relatime"</pre>
 <h4><span class="mw-headline" id="Miscellaneous_notes">Miscellaneous notes</span></h4>
 <p>It is not necessary to specify the root block device for <code>dracut</code>. From <span class="plainlinks archwiki-template-man" title="$ man 7 dracut.cmdline"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/dracut.cmdline.7">dracut.cmdline(7)</a></span>:
 </p>
@@ -1305,10 +565,14 @@ compress="zstd"
 <ul><li>Understand the impact if including systemd into your initramfs. If it slows things down, omit it. If it makes things faster, include it.</li></ul>
 <ul><li>Consider using dracut-cpio when using a copy-on-write filesystem. See the <code>--enhanced-cpio</code> option for applicability.</li></ul>
 <ul><li>Minimize the number of kernel modules and dracut modules included in initramfs. As an example: If <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nfs-utils">nfs-utils</a></span> is installed (but not required to boot), then you need to explicitly omit the nfs dracut module, otherwise network boot will be enabled in the generated initramfs in default configuration - see <a rel="nofollow" class="external free" href="https://github.com/dracut-ng/dracut-ng/pull/297">https://github.com/dracut-ng/dracut-ng/pull/297</a>.</li></ul>
-<ul><li>Consider using busybox instead of bash.</li></ul>
-<ul><li>Consider hostonly.</li></ul>
+<ul><li>Consider adding <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=busybox">busybox</a></span> dracut module to replace bash.</li></ul>
+<ul><li>Consider <code>hostonly</code> and <code>hostonly_mode=strict</code>.</li></ul>
 <h3><span class="mw-headline" id="Generate_a_new_initramfs_on_kernel_upgrade">Generate a new initramfs on kernel upgrade</span></h3>
-<p>It is possible to automatically generate new initramfs images upon each kernel upgrade. The instructions here are for the default <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span> kernel, but it should be easy to add extra hooks for other kernels.
+<p>It is possible to automatically generate new initramfs images upon each kernel upgrade. 
+</p>
+<p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/dracut-git/">dracut-git</a></span><sup><small>AUR</small></sup> package now comes with hooks for pacman, the instructions below are for <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dracut">dracut</a></span> or if the you'd like to customize the hooks.
+</p>
+<p>The instructions here are for the default <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span> kernel, but it should be easy to add extra hooks for other kernels.
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> 
@@ -1384,10 +648,10 @@ NeedsTargets
 # ln -sf /dev/null /etc/pacman.d/hooks/60-mkinitcpio-remove.hook
 </pre>
 <h3><span class="mw-headline" id="Bluetooth_keyboard_support">Bluetooth keyboard support</span></h3>
-<p>Dracut will enable the bluetooth module automatically when a bluetooth keyboard is detected. However it is required that dracut is in hostonly mode for this. This seems to not be the default.
+<p>Dracut will enable the bluetooth module automatically when a bluetooth keyboard is detected. However it is required that dracut is in hostonly mode for dracut to auto-discover bluetooth keyboard.
 </p>
-<h3><span class="mw-headline" id="Limine_bootloader_support">Limine bootloader support</span></h3>
-<p>The <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/limine-dracut-support/">limine-dracut-support</a></span><sup><small>AUR</small></sup> package utilizes <a rel="nofollow" class="external text" href="https://gitlab.com/Zesko/limine-entry-tool">limine-entry-tool</a> with dracut and pacman hooks to automate the installation and removal of kernels and boot entries in the <a href="../en/Limine.html" title="Limine">Limine</a> bootloader. See <a href="../en/Limine.html#Boot_entry_automation" title="Limine">Limine#Boot entry automation</a> for more information.
+<h3><span class="mw-headline" id="Limine_boot_loader_support">Limine boot loader support</span></h3>
+<p>The <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/limine-dracut-support/">limine-dracut-support</a></span><sup><small>AUR</small></sup> package utilizes <a rel="nofollow" class="external text" href="https://gitlab.com/Zesko/limine-entry-tool">limine-entry-tool</a> with dracut and pacman hooks to automate the installation and removal of kernels and boot entries in the <a href="../en/Limine.html" title="Limine">Limine</a> <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a>. See <a href="../en/Limine.html#Boot_entry_automation" title="Limine">Limine#Boot entry automation</a> for more information.
 </p>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
 <h3><span class="mw-headline" id="Hibernation">Hibernation</span></h3>
@@ -1438,8 +702,8 @@ No usable keyslot is available.
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dracut&amp;oldid=828808">https://wiki.archlinux.org/index.php?title=Dracut&amp;oldid=828808</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 13 March 2025, at 18:02.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dracut&amp;oldid=833953">https://wiki.archlinux.org/index.php?title=Dracut&amp;oldid=833953</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 14 May 2025, at 20:40.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

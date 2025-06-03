@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Dell G5 SE 5505 - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -201,7 +201,18 @@
 			</a>
 			
 			<ul id="toc-GPU-sublist" class="vector-toc-list">
+				<li id="toc-Disabling_dGPU" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Disabling_dGPU">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">5.4.1</span>
+					<span>Disabling dGPU</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Disabling_dGPU-sublist" class="vector-toc-list">
 			</ul>
+		</li>
+	</ul>
 		</li>
 		<li id="toc-System_power_states" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#System_power_states">
@@ -314,7 +325,7 @@
 					
 					<div id="mw-content-text" class="mw-body-content">
 <div class="mw-content-ltr mw-parser-output" lang="en" dir="ltr">
-<table class="wikitable" style="float: right;">
+<table class="wikitable archwiki-table-laptop">
 
 <tbody>
 <tr>
@@ -446,6 +457,12 @@ Use of a BIOS editing tool, such as Smokeless Runtime Efi Patcher (SREP) is requ
 </pre>
 <p>This more than likely ties into the strange no sleep/hibernation issue.
 </p>
+<p>The default BIOS lacks <a href="../en/CPU_frequency_scaling.html#Collaborative_processor_performance_control" title="CPU frequency scaling">CPPC</a> support and an option to enable it, leading to this error. To enable <a href="../en/CPU_frequency_scaling.html#Collaborative_processor_performance_control" title="CPU frequency scaling">CPPC</a> and subsequently allow the <code>amd_pstate</code> driver to load, a BIOS editing tool like Smokeless Runtime Efi Patcher (SREP) is required.
+</p>
+<p><br>
+</p>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning:</strong> Modifying your BIOS can be dangerous and may permanently damage or brick your device if not done correctly. Proceed with extreme caution and only if you understand the risks involved.</div>
 <h3><span class="mw-headline" id="GPU">GPU</span></h3>
 <p>It may be possible to use <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=corectrl">corectrl</a></span>. Also see <a href="../en/AMDGPU.html#Overclocking" title="AMDGPU">AMDGPU#Overclocking</a>. Unknown compaitibility (2024-06-04)
 </p>
@@ -463,6 +480,24 @@ Use of a BIOS editing tool, such as Smokeless Runtime Efi Patcher (SREP) is requ
 # echo "2" &gt; /sys/class/drm/card0/device/pp_power_profile_mode
 </pre>
 <p><a rel="nofollow" class="external text" href="https://docs.kernel.org/gpu/amdgpu/thermal.html">See amdgpu kernel documentation</a>
+</p>
+<h4><span class="mw-headline" id="Disabling_dGPU">Disabling dGPU</span></h4>
+<p>To potentially reduce power draw by disabling the dedicated GPU, a <a href="../en/Udev.html" title="Udev">udev</a> rule can be employed. Create the following rule (e.g., at /etc/udev/rules.d/90-disable-dgpu.rules) :
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/udev/rules.d/90-disable-dgpu.rules</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">ACTION=="add", \
+  KERNEL=="0000:03:00.0", \
+  SUBSYSTEM=="pci", \
+  ATTR{class}=="0x03[0-9]*", \
+  ATTR{power/control}="auto", \
+  ATTR{remove}="1"</pre>
+<p>For more context and discussion, refer to this <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?id=292457">forum thread</a>.
+</p>
+<p>Alternatively, the dedicated GPU can be disabled via a BIOS editor like Smokeless Runtime Efi Patcher (SREP), similar to enabling <a href="../en/CPU_frequency_scaling.html#Collaborative_processor_performance_control" title="CPU frequency scaling">CPPC</a> or <a href="#Resizable_BAR_support">Resizable BAR</a>.
+</p>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning:</strong> Exercise extreme caution when attempting BIOS modifications. Incorrect changes can render your device unusable or bricked. Ensure you understand the risks before proceeding.</div>
+<p><br>
 </p>
 <h3><span class="mw-headline" id="System_power_states">System power states</span></h3>
 <p>Suspension and hibernation features simply do not work. You can try to enabling its support via BIOS injection, see <a rel="nofollow" class="external autonumber" href="https://www.reddit.com/r/DellG5SE/comments/kpg3ez/how_to_disable_smartshift_and_enable_s3_sleep/">[5]</a>
@@ -706,8 +741,8 @@ Use of a BIOS editing tool, such as Smokeless Runtime Efi Patcher (SREP) is requ
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dell_G5_SE_5505&amp;oldid=818753">https://wiki.archlinux.org/index.php?title=Dell_G5_SE_5505&amp;oldid=818753</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 12 October 2024, at 20:13.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dell_G5_SE_5505&amp;oldid=834583">https://wiki.archlinux.org/index.php?title=Dell_G5_SE_5505&amp;oldid=834583</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 25 May 2025, at 19:39.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

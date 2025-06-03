@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>dm-crypt/Drive preparation - ArchWiki</title>
 <link rel="stylesheet" href="../../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -137,10 +137,21 @@
 			</button>
 		
 		<ul id="toc-Partitioning-sublist" class="vector-toc-list">
-			<li id="toc-Physical_partitions" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Physical_partitions">
+			<li id="toc-Boot_partition_and_EFI_system_partition" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Boot_partition_and_EFI_system_partition">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">2.1</span>
+					<span>Boot partition and EFI system partition</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Boot_partition_and_EFI_system_partition-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Physical_partitions" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Physical_partitions">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">2.2</span>
 					<span>Physical partitions</span>
 				</div>
 			</a>
@@ -151,7 +162,7 @@
 		<li id="toc-Stacked_block_devices" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Stacked_block_devices">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">2.2</span>
+					<span class="vector-toc-numb">2.3</span>
 					<span>Stacked block devices</span>
 				</div>
 			</a>
@@ -162,7 +173,7 @@
 		<li id="toc-Btrfs_subvolumes" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Btrfs_subvolumes">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">2.3</span>
+					<span class="vector-toc-numb">2.4</span>
 					<span>Btrfs subvolumes</span>
 				</div>
 			</a>
@@ -170,15 +181,15 @@
 			<ul id="toc-Btrfs_subvolumes-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Boot_partition_(GRUB)" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Boot_partition_(GRUB)">
+		<li id="toc-Encrypted_boot_partition_(GRUB)" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Encrypted_boot_partition_(GRUB)">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">2.4</span>
-					<span>Boot partition (GRUB)</span>
+					<span class="vector-toc-numb">2.5</span>
+					<span>Encrypted boot partition (GRUB)</span>
 				</div>
 			</a>
 			
-			<ul id="toc-Boot_partition_(GRUB)-sublist" class="vector-toc-list">
+			<ul id="toc-Encrypted_boot_partition_(GRUB)-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -383,9 +394,16 @@ sda             8:0    0  1.8T  0 disk
 <strong>Note:</strong> If you plan to use <a href="../../en/Self-encrypting_drives.html#Using_cryptsetup" title="Self-encrypting drives">OPAL hardware encryption</a> and have not previously set an OPAL admin password for the drive, you will need to erase all data on the drive with <span class="plainlinks archwiki-template-man" title="$ man 8 cryptsetup-erase"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/cryptsetup-erase.8">cryptsetup-erase(8)</a></span> to be able to create a new OPAL admin password. Follow the instructions in <a href="../../en/Self-encrypting_drives.html#Secure_disk_erasure" title="Self-encrypting drives">Self-encrypting drives#Secure disk erasure</a> to perform the erase before partitioning.</div>
 <p>This section only applies when encrypting an entire system. After the drive(s) has/have been securely overwritten, a proper partitioning scheme will have to be accurately chosen, taking into account the requirements of dm-crypt, and the effects that the various choices will have on the management of the resulting system.
 </p>
-<p>It is important to note from now that in <a href="#Boot_partition_(GRUB)">almost</a> every case there has to be a separate partition for <code>/boot</code> that must remain unencrypted, because the bootloader needs to access the <code>/boot</code> directory where it will load the initramfs/encryption modules needed to load the rest of the system (see <a href="../../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a> for details). If this raises security concerns, see <a href="../../en/Dm-crypt/Specialties.html#Securing_the_unencrypted_boot_partition" title="Dm-crypt/Specialties">dm-crypt/Specialties#Securing the unencrypted boot partition</a>.
-</p>
 <p>Another important factor to take into account is how the swap area and system suspension will be handled, see <a href="../../en/Dm-crypt/Swap_encryption.html" title="Dm-crypt/Swap encryption">dm-crypt/Swap encryption</a>.
+</p>
+<h3><span class="mw-headline" id="Boot_partition_and_EFI_system_partition">Boot partition and EFI system partition</span></h3>
+<p>In <a href="#Encrypted_boot_partition_(GRUB)">almost</a> every case there has to be a separate unencrypted partition that will contain the kernel and initramfs so that the <a href="../../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> can access them (see <a href="../../en/Arch_boot_process.html" title="Arch boot process">Arch boot process</a> for a detailed explanation on each part of the boot process).
+</p>
+<p>Since, by default, <a href="../../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a> places the kernel and initramfs images in <code>/boot/</code>, this separate unencrypted partition is typically mounted to <code>/boot</code>. The requirements and limitations of the <code>/boot</code> partition are explained in <a href="../../en/Partitioning.html#/boot" title="Partitioning">Partitioning#/boot</a>.
+</p>
+<p>On UEFI systems it is possible to <a href="../../en/EFI_system_partition.html#Typical_mount_points" title="EFI system partition">mount the EFI system partition to /boot</a>. This avoids the need to create another separate unencrypted partition since the EFI system partition must be an unencrypted physical partition in the main partition table by definition. The EFI system partition has its own separate requirements and limitations that are listed in the <a href="../../en/EFI_system_partition.html" title="EFI system partition">EFI system partition</a> article. When mounting the EFI system partition to <code>/boot</code>, the requirements of a boot partition also apply to it.
+</p>
+<p>If having an unencrypted partition raises security concerns, see <a href="../../en/Dm-crypt/Specialties.html#Securing_the_unencrypted_boot_partition" title="Dm-crypt/Specialties">dm-crypt/Specialties#Securing the unencrypted boot partition</a>.
 </p>
 <h3><span class="mw-headline" id="Physical_partitions">Physical partitions</span></h3>
 <p>In the simplest case, the encrypted layers can be based directly on the physical partitions; see <a href="../../en/Partitioning.html" title="Partitioning">Partitioning</a> for the methods to create them. Just like in an unencrypted system, a root partition is sufficient, besides another for <code>/boot</code> as noted above. This method allows deciding which partitions to encrypt and which to leave unencrypted, and works the same regardless of the number of disks involved. It will also be possible to add or remove partitions in the future, but resizing a partition will be limited by the size of the disk that is hosting it. Finally note that separate passphrases or keys are required to open each encrypted partition, even though this can be automated during boot using the <code>crypttab</code> file, see <a href="../../en/Dm-crypt/System_configuration.html#crypttab" title="Dm-crypt/System configuration">Dm-crypt/System configuration#crypttab</a>.
@@ -401,8 +419,10 @@ sda             8:0    0  1.8T  0 disk
 <p><a href="../../en/Btrfs.html" title="Btrfs">Btrfs</a>'s built-in <a href="../../en/Btrfs.html#Subvolumes" title="Btrfs">subvolumes feature</a> can be used with dm-crypt, fully replacing the need for LVM if no other file systems are required.
 </p>
 <h3>
-<span id="Boot_partition_.28GRUB.29"></span><span class="mw-headline" id="Boot_partition_(GRUB)">Boot partition (GRUB)</span>
+<span id="Encrypted_boot_partition_.28GRUB.29"></span><span class="mw-headline" id="Encrypted_boot_partition_(GRUB)">Encrypted boot partition (GRUB)</span>
 </h3>
+<p>An exception for needing a unencrypted partition is when using GRUB on BIOS/MBR. In this case, GRUB is stored (unencrypted) in the <a href="../../en/Partitioning.html#Master_Boot_Record_(bootstrap_code)" title="Partitioning">MBR bootstrap code area</a> and the post-MBR gap and all other partitions can be encrypted.
+</p>
 <p>See <a href="../../en/Dm-crypt/Encrypting_an_entire_system.html#Encrypted_boot_partition_(GRUB)" title="Dm-crypt/Encrypting an entire system">dm-crypt/Encrypting an entire system#Encrypted boot partition (GRUB)</a>.
 </p>
 </div>
@@ -418,8 +438,8 @@ sda             8:0    0  1.8T  0 disk
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/Drive_preparation&amp;oldid=826120">https://wiki.archlinux.org/index.php?title=Dm-crypt/Drive_preparation&amp;oldid=826120</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 30 January 2025, at 12:08.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/Drive_preparation&amp;oldid=834682">https://wiki.archlinux.org/index.php?title=Dm-crypt/Drive_preparation&amp;oldid=834682</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 27 May 2025, at 09:09.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

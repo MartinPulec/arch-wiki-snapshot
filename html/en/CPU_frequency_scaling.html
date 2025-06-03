@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>CPU frequency scaling - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -152,6 +152,17 @@
 			</a>
 			
 			<ul id="toc-auto-cpufreq-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-nvidia-powerd" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#nvidia-powerd">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">1.10</span>
+					<span>nvidia-powerd</span>
+				</div>
+			</a>
+			
+			<ul id="toc-nvidia-powerd-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -620,6 +631,13 @@
 <h3><span class="mw-headline" id="auto-cpufreq">auto-cpufreq</span></h3>
 <p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/auto-cpufreq/">auto-cpufreq</a></span><sup><small>AUR</small></sup> is an automatic CPU speed and power optimizer for Linux based on active monitoring of laptop's battery state, CPU usage, CPU temperature and system load.
 </p>
+<h3><span class="mw-headline" id="nvidia-powerd">nvidia-powerd</span></h3>
+<p>The <i>nvidia-powerd</i> daemon provides support for <a href="../en/NVIDIA.html" title="NVIDIA">NVIDIA</a>'s Dynamic Boost technology on supported laptop platforms. It acts as a system-wide power controller that dynamically redistributes power between the GPU and CPU based on workload demands, while maintaining the system's total thermal budget. <a rel="nofollow" class="external autonumber" href="https://download.nvidia.com/XFree86/Linux-x86_64/570.144/README/dynamicboost.html">[4]</a>
+</p>
+<p><a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start/enable">Start/enable</a> the <code>nvidia-powerd</code> service, which is provided by the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nvidia-utils">nvidia-utils</a></span> package.
+</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> The prerequisites for <i>nvidia-powerd</i> are: NVIDIA Ampere (or newer) GPU, Intel Comet Lake (or newer) or AMD Renoir (or newer) chipset, and firmware-level Dynamic Boost support (verify with <code>nvidia-settings -q DynamicBoostSupport</code>).</div>
 <h2><span class="mw-headline" id="Scaling_drivers">Scaling drivers</span></h2>
 <p>Scaling drivers implement the CPU-specific details of setting frequencies specified by the governor. Strictly speaking, the ACPI standard requires <a href="https://en.wikipedia.org/wiki/Advanced_Configuration_and_Power_Interface#Performance_state" class="extiw" title="wikipedia:Advanced Configuration and Power Interface">power-performance states (P-states)</a> that start at P0, and becoming decreasingly performant. This functionality is called SpeedStep on Intel, and PowerNow! on AMD.
 </p>
@@ -727,7 +745,7 @@
 </p>
 <pre># echo <i>value</i> | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_max_freq
 </pre>
-<p>The available values can be found in <code>/sys/devices/system/cpu/cpu*/cpufreq/scaling_available_frequencies</code> or similar. <a rel="nofollow" class="external autonumber" href="https://web.archive.org/web/20201029114421/https://software.intel.com/sites/default/files/comment/1716807/how-to-change-frequency-on-linux-pub.txt">[4]</a>
+<p>The available values can be found in <code>/sys/devices/system/cpu/cpu*/cpufreq/scaling_available_frequencies</code> or similar. <a rel="nofollow" class="external autonumber" href="https://web.archive.org/web/20201029114421/https://software.intel.com/sites/default/files/comment/1716807/how-to-change-frequency-on-linux-pub.txt">[5]</a>
 </p>
 <h3><span class="mw-headline" id="Configuring_frequency_boosting">Configuring frequency boosting</span></h3>
 <p>Some processors support raising their frequency above the normal maximum for a short burst of time, under appropriate thermal conditions. On Intel processors, this is called <a href="https://en.wikipedia.org/wiki/Intel_Turbo_Boost" class="extiw" title="wikipedia:Intel Turbo Boost">Turbo Boost</a>, and on AMD processors this is called <a href="https://en.wikipedia.org/wiki/AMD_Turbo_Core" class="extiw" title="wikipedia:AMD Turbo Core">Turbo-Core</a>.
@@ -809,7 +827,7 @@
 </tr>
 <tr>
 <td>schedutil</td>
-<td>Scheduler-driven CPU frequency selection <a rel="nofollow" class="external autonumber" href="https://lwn.net/Articles/682391/">[5]</a>, <a rel="nofollow" class="external autonumber" href="https://lore.kernel.org/lkml/1614814.usHvZ58O6A@vostro.rjw.lan/">[6]</a>.
+<td>Scheduler-driven CPU frequency selection <a rel="nofollow" class="external autonumber" href="https://lwn.net/Articles/682391/">[6]</a>, <a rel="nofollow" class="external autonumber" href="https://lore.kernel.org/lkml/1614814.usHvZ58O6A@vostro.rjw.lan/">[7]</a>.
 </td>
 </tr>
 </tbody>
@@ -868,7 +886,7 @@
 <pre># echo -n <i>value</i> &gt; /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor
 </pre>
 <h4><span class="mw-headline" id="Make_changes_permanent">Make changes permanent</span></h4>
-<p>Since Linux 5.9, it is possible to set the <code>cpufreq.default_governor</code> kernel option.<a rel="nofollow" class="external autonumber" href="https://kernelnewbies.org/Linux_5.9#CPU_Frequency_scaling">[7]</a> To set the desired scaling parameters at boot, configure the <a href="#cpupower">cpupower</a> utility and enable its systemd service. Alternatively, <a href="../en/Systemd.html#systemd-tmpfiles_-_temporary_files" class="mw-redirect" title="Systemd-tmpfiles">systemd-tmpfiles</a> or <a href="../en/Udev.html" title="Udev">udev</a> rules can be used.
+<p>Since Linux 5.9, it is possible to set the <code>cpufreq.default_governor</code> kernel option.<a rel="nofollow" class="external autonumber" href="https://kernelnewbies.org/Linux_5.9#CPU_Frequency_scaling">[8]</a> To set the desired scaling parameters at boot, configure the <a href="#cpupower">cpupower</a> utility and enable its systemd service. Alternatively, <a href="../en/Systemd.html#systemd-tmpfiles_-_temporary_files" class="mw-redirect" title="Systemd-tmpfiles">systemd-tmpfiles</a> or <a href="../en/Udev.html" title="Udev">udev</a> rules can be used.
 </p>
 <h2><span class="mw-headline" id="Autonomous_frequency_scaling">Autonomous frequency scaling</span></h2>
 <p>Both Intel and AMD define a way to have the CPU decide its own speed based on (1) a performance range from the system and (2) a performance/power hint specifying the preference. The fully-autonomous mode is activated when:
@@ -1020,7 +1038,7 @@ ac_adapter)
 <strong>Warning:</strong> 
 <ul>
 <li>Make sure you read and understood the section above. CPU frequency limitation is a safety feature of your BIOS and you should not need to work around it.</li>
-<li>This is <b>not</b> recommended and can seriously damage your hardware: use at your own risk. <a rel="nofollow" class="external autonumber" href="https://github.com/syscl/CPUTune">[8]</a>
+<li>This is <b>not</b> recommended and can seriously damage your hardware: use at your own risk. <a rel="nofollow" class="external autonumber" href="https://github.com/syscl/CPUTune">[9]</a>
 </li>
 </ul>
 </div>
@@ -1060,8 +1078,8 @@ ac_adapter)
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=CPU_frequency_scaling&amp;oldid=824485">https://wiki.archlinux.org/index.php?title=CPU_frequency_scaling&amp;oldid=824485</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 3 January 2025, at 14:44.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=CPU_frequency_scaling&amp;oldid=832821">https://wiki.archlinux.org/index.php?title=CPU_frequency_scaling&amp;oldid=832821</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 26 April 2025, at 15:51.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

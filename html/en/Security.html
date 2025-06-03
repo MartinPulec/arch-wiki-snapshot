@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Security - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -1387,25 +1387,33 @@ password required pam_unix.so use_authtok sha512 shadow</pre>
 <p>The default <a href="../en/Umask.html" title="Umask">umask</a> <code>0022</code> can be changed to improve security for newly created files. The <a rel="nofollow" class="external text" href="https://apps.nsa.gov/iaarchive/library/ia-guidance/security-configuration/operating-systems/guide-to-the-secure-configuration-of-red-hat-enterprise.cfm">NSA RHEL5 Security Guide</a> suggests a umask of <code>0077</code> for maximum security, which makes new files not readable by users other than the owner. To change this, see <a href="../en/Umask.html#Set_the_mask_value" title="Umask">Umask#Set the mask value</a>. If you use <a href="../en/Sudo.html" title="Sudo">sudo</a>, consider configuring it to use the <a href="../en/Sudo.html#Permissive_umask" title="Sudo">default root umask</a>.
 </p>
 <h3><span class="mw-headline" id="SUID_and_SGID_files">SUID and SGID files</span></h3>
-<p>It is important to be aware of any files with the <a href="https://en.wikipedia.org/wiki/Setuid" class="extiw" title="wikipedia:Setuid">Setuid</a> or Setgid bit. Examples of relevant files in <code>/usr/bin</code> with the SUID bit set and owned by root:
+<p>It is important to be aware of any files with the <a href="https://en.wikipedia.org/wiki/Setuid" class="extiw" title="wikipedia:Setuid">Setuid</a> or Setgid bit. Examples of relevant files with the SUID bit set:
 </p>
 <ul>
-<li>gpasswd</li>
-<li>pkexec</li>
-<li><a href="../en/Sudo.html" title="Sudo">sudo</a></li>
-<li><a href="../en/Su.html" title="Su">su</a></li>
-<li><a href="../en/Users_and_groups.html#User_management" class="mw-redirect" title="Passwd">passwd</a></li>
+<li><a href="../en/PAM.html" title="PAM">unix_chkpwd</a></li>
+<li>chage, expiry, gpasswd, groupmems, <a href="../en/Users_and_groups.html#User_management" class="mw-redirect" title="Passwd">passwd</a>, sg (<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=shadow">shadow</a></span>)</li>
+<li>
+<a href="../en/FUSE.html" title="FUSE">fusermount3</a>, fusermount2</li>
+<li>pkexec, polkit-agent-helper-1<a rel="nofollow" class="external autonumber" href="https://github.com/polkit-org/polkit/pull/501">[4]</a> (<a href="../en/Polkit.html" title="Polkit">polkit</a>)</li>
+<li><a href="../en/OpenSSH.html" title="OpenSSH">ssh-keysign</a></li>
+<li>chfn, chsh, mount, newgrp, umount, wall, write (<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=util-linux">util-linux</a></span>)</li>
+<li>
+<a href="../en/Sudo.html" title="Sudo">sudo</a>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sudo-rs">sudo-rs</a></span>, <a href="../en/Doas.html" title="Doas">doas</a>, <a href="../en/Su.html" title="Su">su</a>, su-rs, <a href="../en/Kerberos.html" title="Kerberos">ksu</a>
+</li>
 <li><a href="../en/Firejail.html" title="Firejail">firejail</a></li>
+<li><a href="../en/D-Bus.html" class="mw-redirect" title="Dbus">dbus-daemon-launch-helper</a></li>
+<li><a href="../en/Chromium.html" title="Chromium">chromium-sandbox</a></li>
+<li><a href="../en/Xorg.html" title="Xorg">Xorg.wrap</a></li>
 </ul>
-<p>The prominent risks of such executable files include privilege escalation vulnerabilities, see e.g <a href="https://en.wikipedia.org/wiki/Setuid#Security_impact" class="extiw" title="wikipedia:Setuid">Wikipedia:Setuid#Security impact</a>.<a rel="nofollow" class="external autonumber" href="https://www.cvedetails.com/vulnerability-list/vendor_id-16224/product_id-36412/Calibre-ebook-Calibre.html">[4]</a><a rel="nofollow" class="external autonumber" href="https://www.cvedetails.com/product/32625/Sudo-Project-Sudo.html?vendor_id=15714">[5]</a><a rel="nofollow" class="external autonumber" href="https://www.cvedetails.com/vulnerability-list/vendor_id-16191/Firejail-Project.html">[6]</a>
+<p>The prominent risks of such executable files include privilege escalation vulnerabilities, see e.g <a href="https://en.wikipedia.org/wiki/Setuid#Security_impact" class="extiw" title="wikipedia:Setuid">Wikipedia:Setuid#Security impact</a>.<a rel="nofollow" class="external autonumber" href="https://www.cvedetails.com/vulnerability-list/vendor_id-16224/product_id-36412/Calibre-ebook-Calibre.html">[5]</a><a rel="nofollow" class="external autonumber" href="https://www.cvedetails.com/product/32625/Sudo-Project-Sudo.html?vendor_id=15714">[6]</a><a rel="nofollow" class="external autonumber" href="https://www.cvedetails.com/vulnerability-list/vendor_id-16191/Firejail-Project.html">[7]</a>
 </p>
-<p>Files with the SUID bit set and not owned by root, or files with the SGID bit set <i>typically</i> have less potential impact but can theoretically still do decent damage if vulnerable. It is usually possible to avoid using Setuid or Setgid by assigning <a href="../en/Capabilities.html" title="Capabilities">Capabilities</a> instead.
+<p>Files with the SUID bit set and not owned by root, or files with the SGID bit set <i>typically</i> have less potential impact but can theoretically still do decent damage if vulnerable. It is usually possible to avoid using SUID or SGID by assigning <a href="../en/Capabilities.html" title="Capabilities">Capabilities</a> instead.
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> It is vital to be vigilant in keeping packages which provide SUID/SGID executables up to date in order to prevent having a vulnerable system.</div>
-<p>To search <code>/usr/bin</code> for files with either the SUID or SGID bit:
+<p>To search for files with either the SUID or SGID bit:
 </p>
-<pre>$ find /usr/bin -perm "/u=s,g=s"
+<pre>$ find / -perm "/u=s,g=s" -type f 2&gt;/dev/null
 </pre>
 <h3><span class="mw-headline" id="Backups">Backups</span></h3>
 <div class="noprint archwiki-template-message">
@@ -1688,7 +1696,7 @@ Randomization under memory exhaustion @0 : No randomization
 <ul>
 <li>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-hardened">linux-hardened</a></span> sets <code>net.core.bpf_jit_harden=2</code> by default rather than <code>0</code>.</li>
-<li>By default, BPF programs can be run even by unprivileged users. To change that behaviour set <code>kernel.unprivileged_bpf_disabled=1</code><a rel="nofollow" class="external autonumber" href="https://access.redhat.com/security/cve/cve-2021-33624">[7]</a>.</li>
+<li>By default, BPF programs can be run even by unprivileged users. To change that behaviour set <code>kernel.unprivileged_bpf_disabled=1</code><a rel="nofollow" class="external autonumber" href="https://access.redhat.com/security/cve/cve-2021-33624">[8]</a>.</li>
 </ul>
 </div>
 <h3><span class="mw-headline" id="ptrace_scope">ptrace scope</span></h3>
@@ -1709,7 +1717,7 @@ Randomization under memory exhaustion @0 : No randomization
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
 <div>
-<b>Reason:</b> Enabling <code>hidepid</code> globally is not a supported way of operation by <a href="../en/Systemd.html" title="Systemd">systemd</a>, nor does it have any practical improvements security-wise when systemd is running as service manager. <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/29893#issuecomment-1798030108">[8]</a> (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Security.html">Talk:Security</a>)</div>
+<b>Reason:</b> Enabling <code>hidepid</code> globally is not a supported way of operation by <a href="../en/Systemd.html" title="Systemd">systemd</a>, nor does it have any practical improvements security-wise when systemd is running as service manager. <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/29893#issuecomment-1798030108">[9]</a> (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Security.html">Talk:Security</a>)</div>
 </div>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> 
@@ -1790,7 +1798,7 @@ SupplementaryGroups=proc</pre>
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
 <div>
-<b>Reason:</b> Masking <code>emergency.target</code> and <code>emergency.service</code> will have no effect on those units being added to the initramfs and run in early userspace. Even with them in the initramfs, mkinitcpio's systemd hook locks the root account<a rel="nofollow" class="external autonumber" href="https://gitlab.archlinux.org/archlinux/packaging/packages/systemd/-/commit/292cdf8a2f7dd7c6c7d91d2b59617391935c837c">[9]</a><a rel="nofollow" class="external autonumber" href="https://gitlab.archlinux.org/archlinux/packaging/packages/systemd/-/commit/8835b2f5dfbe8663f1a2fd08edbd35f90bf08691">[10]</a> for "security reasons" (see <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/70408">FS#70408</a>). The solution for the issue in the linked article, if even needed, would be to prevent <code>rescue.target</code>, <code>rescue.service</code>, <code>emergency.target</code> and <code>emergency.service</code> from being added to the initramfs image. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Security.html">Talk:Security</a>)</div>
+<b>Reason:</b> Masking <code>emergency.target</code> and <code>emergency.service</code> will have no effect on those units being added to the initramfs and run in early userspace. Even with them in the initramfs, mkinitcpio's systemd hook locks the root account<a rel="nofollow" class="external autonumber" href="https://gitlab.archlinux.org/archlinux/packaging/packages/systemd/-/commit/292cdf8a2f7dd7c6c7d91d2b59617391935c837c">[10]</a><a rel="nofollow" class="external autonumber" href="https://gitlab.archlinux.org/archlinux/packaging/packages/systemd/-/commit/8835b2f5dfbe8663f1a2fd08edbd35f90bf08691">[11]</a> for "security reasons" (see <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/70408">FS#70408</a>). The solution for the issue in the linked article, if even needed, would be to prevent <code>rescue.target</code>, <code>rescue.service</code>, <code>emergency.target</code> and <code>emergency.service</code> from being added to the initramfs image. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Security.html">Talk:Security</a>)</div>
 </div>
 <p>The emergency shell is used to interactively troubleshoot the machine during the boot process. However, it is also a gadget that an attacker can use to access secure resources such as the TPM. See <a rel="nofollow" class="external text" href="https://pulsesecurity.co.nz/advisories/tpm-luks-bypass">this article</a> for a practical example. The difficulty of attacks can be increased by disabling the emergency shell, at the tradeoff of removing a tool to troubleshoot early boot failures.
 </p>
@@ -1878,7 +1886,7 @@ SupplementaryGroups=proc</pre>
 <h3><span class="mw-headline" id="Proxies">Proxies</span></h3>
 <p>Proxies are commonly used as an extra layer between applications and the network, sanitizing data from untrusted sources. The attack surface of a small proxy running with lower privileges is significantly smaller than a complex application running with the end user privileges.
 </p>
-<p>For example the DNS resolver is implemented in <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=glibc">glibc</a></span>, that is linked with the application (that may be running as root), so a bug in the DNS resolver might lead to a remote code execution. This can be prevented by installing a DNS caching server, such as <a href="../en/Dnsmasq.html" title="Dnsmasq">dnsmasq</a>, which acts as a proxy. <a rel="nofollow" class="external autonumber" href="https://googleonlinesecurity.blogspot.it/2016/02/cve-2015-7547-glibc-getaddrinfo-stack.html">[11]</a>
+<p>For example the DNS resolver is implemented in <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=glibc">glibc</a></span>, that is linked with the application (that may be running as root), so a bug in the DNS resolver might lead to a remote code execution. This can be prevented by installing a DNS caching server, such as <a href="../en/Dnsmasq.html" title="Dnsmasq">dnsmasq</a>, which acts as a proxy. <a rel="nofollow" class="external autonumber" href="https://googleonlinesecurity.blogspot.it/2016/02/cve-2015-7547-glibc-getaddrinfo-stack.html">[12]</a>
 </p>
 <h3><span class="mw-headline" id="Managing_TLS_certificates">Managing TLS certificates</span></h3>
 <p>See <a href="../en/Transport_Layer_Security.html#Trust_management" class="mw-redirect" title="TLS">TLS#Trust management</a>.
@@ -1886,7 +1894,7 @@ SupplementaryGroups=proc</pre>
 <h2><span class="mw-headline" id="Physical_security">Physical security</span></h2>
 <p>Physical access to a computer is root access given enough time and resources. However, a high <i>practical</i> level of security can be obtained by putting up enough barriers.
 </p>
-<p>An attacker can gain full control of your computer on the next boot by simply attaching a malicious IEEE 1394 (FireWire), Thunderbolt or PCI Express device as they are given full memory access by default.<a rel="nofollow" class="external autonumber" href="https://web.archive.org/web/20210312083421/http://breaknenter.org/2014/09/inception-metasploit-integration/">[12]</a> For Thunderbolt, you can restrict the direct memory access completely or to known devices, see <a href="../en/Thunderbolt.html#User_device_authorization" title="Thunderbolt">Thunderbolt#User device authorization</a>. For Firewire and PCI Express, there is little you can do from preventing this, or modification of the hardware itself - such as flashing malicious firmware onto a drive. However, the vast majority of attackers will not be this knowledgeable and determined.
+<p>An attacker can gain full control of your computer on the next boot by simply attaching a malicious IEEE 1394 (FireWire), Thunderbolt or PCI Express device as they are given full memory access by default.<a rel="nofollow" class="external autonumber" href="https://web.archive.org/web/20210312083421/http://breaknenter.org/2014/09/inception-metasploit-integration/">[13]</a> For Thunderbolt, you can restrict the direct memory access completely or to known devices, see <a href="../en/Thunderbolt.html#User_device_authorization" title="Thunderbolt">Thunderbolt#User device authorization</a>. For Firewire and PCI Express, there is little you can do from preventing this, or modification of the hardware itself - such as flashing malicious firmware onto a drive. However, the vast majority of attackers will not be this knowledgeable and determined.
 </p>
 <p><a href="#Data-at-rest_encryption">#Data-at-rest encryption</a> will prevent access to your data if the computer is stolen, but malicious firmware can be installed to obtain this data upon your next log in by a resourceful attacker.
 </p>
@@ -2124,8 +2132,8 @@ esac
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Security&amp;oldid=829966">https://wiki.archlinux.org/index.php?title=Security&amp;oldid=829966</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 27 March 2025, at 19:38.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Security&amp;oldid=835014">https://wiki.archlinux.org/index.php?title=Security&amp;oldid=835014</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 1 June 2025, at 11:55.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

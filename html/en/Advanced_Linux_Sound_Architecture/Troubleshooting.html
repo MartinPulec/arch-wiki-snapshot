@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Advanced Linux Sound Architecture/Troubleshooting - ArchWiki</title>
 <link rel="stylesheet" href="../../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -521,7 +521,7 @@
 			<ul class="vector-menu-content-list">
 				
 				<li class="interlanguage-link interwiki-ja mw-list-item"><a href="https://wiki.archlinux.jp/index.php/Advanced_Linux_Sound_Architecture/%E3%83%88%E3%83%A9%E3%83%96%E3%83%AB%E3%82%B7%E3%83%A5%E3%83%BC%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0" title="Advanced Linux Sound Architecture/トラブルシューティング – 日本語" lang="ja" hreflang="ja" data-title="Advanced Linux Sound Architecture/トラブルシューティング" data-language-autonym="日本語" data-language-local-name="日本語" class="interlanguage-link-target"><span>日本語</span></a></li>
-<li class="interlanguage-link interwiki-zh-hans mw-list-item"><a href="https://wiki.archlinuxcn.org/wiki/Advanced_Linux_Sound_Architecture/Troubleshooting" title="Advanced Linux Sound Architecture/Troubleshooting – 中文（简体）" lang="zh-Hans" hreflang="zh-Hans" data-title="Advanced Linux Sound Architecture/Troubleshooting" data-language-autonym="中文（简体）" data-language-local-name="中文（简体）" class="interlanguage-link-target"><span>中文（简体）</span></a></li>
+<li class="interlanguage-link interwiki-zh-hans mw-list-item"><a href="https://wiki.archlinuxcn.org/wiki/ALSA/%E7%96%91%E9%9A%BE%E8%A7%A3%E7%AD%94" title="ALSA/疑难解答 – 中文（简体）" lang="zh-Hans" hreflang="zh-Hans" data-title="ALSA/疑难解答" data-language-autonym="中文（简体）" data-language-local-name="中文（简体）" class="interlanguage-link-target"><span>中文（简体）</span></a></li>
 			</ul>
 			
 		</div>
@@ -578,10 +578,10 @@
 </p>
 <pre># alsactl restore
 </pre>
-<p>If the problem persists, verify that the <code>Auto-Mute</code> option in <i>alsamixer</i> is set to <code>Disabled</code>.
+<p>If the problem persists, verify that the <code>Auto-Mute</code> option in <span class="plainlinks archwiki-template-man" title="$ man 1 alsamixer"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/alsamixer.1">alsamixer(1)</a></span> is set to <code>Disabled</code>.
 </p>
 <h3><span class="mw-headline" id="Volume_is_too_low">Volume is too low</span></h3>
-<p>Run <i>alsamixer</i> and try to increase the value of the sliders, unmuting channels if necessary. Note that if you have many sliders, you may have to scroll to the right to see any missing sliders.
+<p>Run <code>alsamixer</code> and try to increase the value of the sliders, unmuting channels if necessary. Note that if you have many sliders, you may have to scroll to the right to see any missing sliders.
 </p>
 <p>If all the sliders are maxed out, and the volume is still too low, you can try running the following script to reset your codec settings:
 </p>
@@ -589,10 +589,10 @@
 </pre>
 <p>Close the analyzer, and when prompted as to whether you want to reset the codecs, say "yes".
 </p>
-<p>If the volume is still too low, run <i>alsamixer</i> again: resetting the codecs may have caused new sliders to become enabled and some of them may be set to a low value.
+<p>If the volume is still too low, run <code>alsamixer</code> again: resetting the codecs may have caused new sliders to become enabled and some of them may be set to a low value.
 </p>
 <h3><span class="mw-headline" id="Volume_is_still_too_low">Volume is still too low</span></h3>
-<p>If you are facing low volume even after maxing out your speakers/headphones, you can give the softvol plugin a try. Add the following to <code>/etc/asound.conf</code>.
+<p>If you are facing low volume even after maxing out your speakers/headphones, you can give the softvol plugin a try. Add the following to <code>/etc/asound.conf</code>:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/asound.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">pcm.!default {
@@ -613,9 +613,9 @@ pcm.softvol {
     max_dB 20.0
     resolution 6
 }</pre>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> You will probably have to restart the computer, as restarting the alsa daemon did not load the new configuration. Also, if the configuration does not work even after restarting, try changing <code>plug</code> with <code>hw</code> in the above configuration.</div>
-<p>After the changes are loaded successfully, you will see a <code>Pre-Amp</code> section in alsamixer. You can adjust the levels there.
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong> If this configuration does not work, try to change <code>type plug</code> with <code>type hw</code>.</div>
+<p>After the changes are loaded successfully, you will see a <code>Pre-Amp</code> section in <i>alsamixer</i>. You can adjust the levels there.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> 
@@ -637,9 +637,9 @@ Device or resource busy
 </p>
 <h2><span class="mw-headline" id="Microphone">Microphone</span></h2>
 <h3><span class="mw-headline" id="No_microphone_input">No microphone input</span></h3>
-<p>In alsamixer, make sure that all the volume levels are up under recording, and that CAPTURE is toggled active on the microphone (e.g. Mic, Internal Mic) and/or on Capture (in alsamixer, select these items and press space). Try making positive Mic Boost and raising Capture and Digital levels higher; this may make static or distortion, but then you can adjust them back down once you are hearing <i>something</i> when you record.
+<p>In <span class="plainlinks archwiki-template-man" title="$ man 1 alsamixer"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/alsamixer.1">alsamixer(1)</a></span>, make sure that all the volume levels are up under recording, and that <i>CAPTURE</i> is toggled active on the microphone (e.g. <i>Mic</i>, <i>Internal Mic</i>) and/or on <i>Capture</i> (in <i>alsamixer</i>, select these items and press <code>Space</code>). Try making positive <i>Mic Boost</i> and raising <i>Capture</i> and <i>Digital</i> levels higher; this may make static or distortion, but then you can adjust them back down once you are hearing <i>something</i> when you record.
 </p>
-<p>As the pulseaudio wrapper is shown as "default" in alsamixer, you may have to press F6 to select your actual sound card first. You may also need to enable and increase the volume of Line-in in the Playback section.
+<p>As the <a href="../../en/PulseAudio.html" title="PulseAudio">PulseAudio</a> wrapper is shown as "default" in <i>alsamixer</i>, you may have to press <code>F6</code> to select your actual sound card first. You may also need to enable and increase the volume of <i>Line-in</i> in the <i>Playback</i> section.
 </p>
 <p>To test the microphone, run these commands (see <span class="plainlinks archwiki-template-man" title="$ man 1 arecord"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/arecord.1">arecord(1)</a></span> for further information):
 </p>
@@ -650,7 +650,7 @@ $ aplay test-mic.wav
 </p>
 <pre>$ arecord -vv --format=dat /dev/null
 </pre>
-<p>alongside alsamixer to easily identify channel which you should select and unmute.
+<p>alongside <i>alsamixer</i> to easily identify channel which you should select and unmute.
 </p>
 <p>To test a particular device, use the <code>--device</code> parameter followed by the hardware PCM name in the form <code>hw:<i>C</i>,<i>D</i></code> for card <i>C</i> device <i>D</i>, or <code>plughw:<i>C</i>,<i>D</i></code> for plugged hardware. For instance:
 </p>
@@ -704,7 +704,7 @@ pcm.!default
 <h3>
 <span id="Crackling_sound_through_mini-jack_.28headphones_connector.29"></span><span class="mw-headline" id="Crackling_sound_through_mini-jack_(headphones_connector)">Crackling sound through mini-jack (headphones connector)</span>
 </h3>
-<p>Following <a href="../../en/Advanced_Linux_Sound_Architecture.html#Simultaneous_output" title="Advanced Linux Sound Architecture">Advanced Linux Sound Architecture#Simultaneous output</a> might lead to crackling sound through headphones or external speakers. This can be fixed by muting <b>or</b> setting the volume to 0% on <i>Mic</i>. Use <code>alsamixer</code> or <code>amixer</code>:
+<p>Following <a href="../../en/Advanced_Linux_Sound_Architecture.html#Simultaneous_output" title="Advanced Linux Sound Architecture">Advanced Linux Sound Architecture#Simultaneous output</a> might lead to crackling sound through headphones or external speakers. This can be fixed by muting <b>or</b> setting the volume to <code>0%</code> on <i>Mic</i>. Use <span class="plainlinks archwiki-template-man" title="$ man 1 alsamixer"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/alsamixer.1">alsamixer(1)</a></span> or <span class="plainlinks archwiki-template-man" title="$ man 1 amixer"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/amixer.1">amixer(1)</a></span>:
 </p>
 <pre>$ amixer sset "Mic" 0%
 $ amixer sset "Mic" mute
@@ -713,7 +713,7 @@ $ amixer sset "Mic" mute
 <p>You might hear a popping sound after resuming the computer from suspension. This can be fixed by editing <code>/etc/pm/sleep.d/90alsa</code> and removing the line that says <code>aplay -d 1 /dev/zero</code>
 </p>
 <h3><span class="mw-headline" id="Sound_skipping_during_playback">Sound skipping during playback</span></h3>
-<p>Run <i>alsamixer</i>, and if channels exist for nonexistent output devices then disable them (e.g. <i>alsamixer</i> showing a center speaker but you not having one).
+<p>Run <code>alsamixer</code>, and if channels exist for nonexistent output devices then disable them (e.g. <i>alsamixer</i> showing a center speaker but you not having one).
 </p>
 <h3><span class="mw-headline" id="Poor_sound_quality_or_clipping">Poor sound quality or clipping</span></h3>
 <p>If you experience poor sound quality, try setting the PCM volume (in <i>alsamixer</i>) to a level such that gain is 0.
@@ -822,7 +822,7 @@ ctl.dmixer {
 </p>
 <ul>
 <li>
-<i>alsamixer</i>—see <i>Chip:</i> in the upper-left corner,</li>
+<span class="plainlinks archwiki-template-man" title="$ man 1 alsamixer"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/alsamixer.1">alsamixer(1)</a></span>—see <i>Chip:</i> in the upper-left corner,</li>
 <li>output of <code>grep 'Codec:' /proc/asound/card*/codec#*</code>,</li>
 <li>output of <code>grep . /sys/class/sound/hwC?D?/chip_name</code>,</li>
 <li>
@@ -1100,8 +1100,8 @@ slave {
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Advanced_Linux_Sound_Architecture/Troubleshooting&amp;oldid=823821">https://wiki.archlinux.org/index.php?title=Advanced_Linux_Sound_Architecture/Troubleshooting&amp;oldid=823821</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 24 December 2024, at 19:39.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Advanced_Linux_Sound_Architecture/Troubleshooting&amp;oldid=833479">https://wiki.archlinux.org/index.php?title=Advanced_Linux_Sound_Architecture/Troubleshooting&amp;oldid=833479</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 8 May 2025, at 08:59.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

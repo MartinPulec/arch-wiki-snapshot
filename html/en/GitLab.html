@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>GitLab - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -110,15 +110,15 @@
 			<ul id="toc-Secret_strings-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Redis" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Redis">
+		<li id="toc-Valkey" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Valkey">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">2.5</span>
-					<span>Redis</span>
+					<span>Valkey</span>
 				</div>
 			</a>
 			
-			<ul id="toc-Redis-sublist" class="vector-toc-list">
+			<ul id="toc-Valkey-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 		<li id="toc-PostgreSQL_database" class="vector-toc-list-item vector-toc-level-2">
@@ -606,7 +606,7 @@
 </p>
 <meta property="mw:PageProp/toc">
 <h2><span class="mw-headline" id="Installation">Installation</span></h2>
-<p>GitLab requires <a href="../en/Valkey.html" class="mw-redirect" title="Redis">Redis</a> and a database backend. If you plan to run it on the same machine, first install <a href="../en/PostgreSQL.html" title="PostgreSQL">PostgreSQL</a>.
+<p>GitLab requires <a href="../en/Valkey.html" title="Valkey">Valkey</a> and a database backend. If you plan to run it on the same machine, first install <a href="../en/PostgreSQL.html" title="PostgreSQL">PostgreSQL</a>.
 </p>
 <p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=gitlab">gitlab</a></span> package.
 </p>
@@ -787,18 +787,31 @@ bind 'tcp://127.0.0.1:8080'</pre>
   active_record_encryption_deterministic_key: ["<i>32-alphanumeric-chars</i>"]
   active_record_encryption_key_derivation_salt: "<i>32-alphanumeric-chars</i>"
 </pre>
-<h3><span class="mw-headline" id="Redis">Redis</span></h3>
-<p>In order to provide sufficient performance you will need a cache database. <a href="../en/Valkey.html#Installation" class="mw-redirect" title="Redis">Install</a> and <a href="../en/Valkey.html#Configuration" class="mw-redirect" title="Redis">configure</a> a Redis instance, being careful to the section dedicated to listening via a socket.
+<h3><span class="mw-headline" id="Valkey">Valkey</span></h3>
+<p>In order to provide sufficient performance you will need a cache database. <a href="../en/Valkey.html#Installation" title="Valkey">Install</a> and <a href="../en/Valkey.html#Configuration" title="Valkey">configure</a> a Valkey instance, being careful to the section dedicated to listening via a socket.
 </p>
-<p>Add the <code>gitlab</code> user to the <code>redis</code> <a href="../en/Users_and_groups.html#Group_management" class="mw-redirect" title="User group">user group</a> and update this configuration file:
+<p>Add the <code>gitlab</code> user to the <code>valkey</code> <a href="../en/Users_and_groups.html#Group_management" class="mw-redirect" title="User group">user group</a> and update these configuration files:
 </p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/webapps/gitlab/cable.yml</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">development:
+  adapter: redis
+  url: unix:/run/valkey/valkey.sock
+  channel_prefix: gitlab_development
+test:
+  adapter: redis
+  url: unix:/run/valkey/valkey.sock
+  channel_prefix: gitlab_test
+production:
+  adapter: redis
+  url: unix:/run/valkey/valkey.sock
+  channel_prefix: gitlab_production</pre>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/webapps/gitlab/resque.yml</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">development:
-  url: unix:/run/redis/redis.sock
+  url: unix:/run/valkey/valkey.sock
 test:
-  url: unix:/run/redis/redis.sock
+  url: unix:/run/valkey/valkey.sock
 production:
-  url: unix:/run/redis/redis.sock</pre>
+  url: unix:/run/valkey/valkey.sock</pre>
 <h3><span class="mw-headline" id="PostgreSQL_database">PostgreSQL database</span></h3>
 <p>A <a href="../en/PostgreSQL.html" title="PostgreSQL">PostgreSQL</a> database will be required before Gitlab can be run.
 </p>
@@ -849,7 +862,7 @@ production:
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> Since <a rel="nofollow" class="external text" href="https://docs.gitlab.com/ee/install/installation.html#configure-gitlab-db-settings">GitLab 15.9</a>, <code>database.yml</code> with only a <code>main:</code> section is deprecated. In GitLab 17.0 and later, you must have two sections in your <code>database.yml</code>: <code>main:</code> and <code>ci:</code>. The <code>ci:</code> connection <b>must be to the same database</b> as <code>main:</code>.</div>
 <h3><span class="mw-headline" id="Initialize_Gitlab_database">Initialize Gitlab database</span></h3>
-<p>Start the <a href="../en/Valkey.html" class="mw-redirect" title="Redis">Redis</a> server and the <code>gitlab-gitaly.service</code> before initializing the database.
+<p>Start the <a href="../en/Valkey.html" title="Valkey">Valkey</a> server and the <code>gitlab-gitaly.service</code> before initializing the database.
 </p>
 <p>Initialize the database and activate advanced features:
 </p>
@@ -1102,7 +1115,7 @@ RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> Allowing access to GitLab from hosts other than localhost is not recommended before completing the installation and setting the root password. See <a href="#Start_and_test_GitLab">#Start and test GitLab</a>.</div>
 <h2><span class="mw-headline" id="Start_and_test_GitLab">Start and test GitLab</span></h2>
-<p>Make sure <a href="../en/PostgreSQL.html" title="PostgreSQL">PostgreSQL</a> and <a href="../en/Valkey.html" class="mw-redirect" title="Redis">Redis</a> are running and setup correctly.
+<p>Make sure <a href="../en/PostgreSQL.html" title="PostgreSQL">PostgreSQL</a> and <a href="../en/Valkey.html" title="Valkey">Valkey</a> are running and setup correctly.
 </p>
 <p>Then <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start">start</a>/<a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> <code>gitlab.target</code>.
 </p>
@@ -1288,7 +1301,7 @@ $ sudo -u gitlab $(cat environment | xargs) bundle exec rails console
 <h3>
 <span id="HTTPS_is_not_green_.28gravatar_not_using_https.29"></span><span class="mw-headline" id="HTTPS_is_not_green_(gravatar_not_using_https)">HTTPS is not green (gravatar not using https)</span>
 </h3>
-<p>Redis caches gravatar images, so if you have visited your GitLab with http, then enabled https, gravatar will load up the non-secure images. You can clear the cache by doing
+<p>Valkey caches gravatar images, so if you have visited your GitLab with http, then enabled https, gravatar will load up the non-secure images. You can clear the cache by doing
 </p>
 <pre>$ cd /usr/share/webapps/gitlab
 $ sudo -u gitlab $(cat environment | xargs) bundle exec rake cache:clear
@@ -1376,8 +1389,8 @@ $ sudo -u gitlab $(cat environment | xargs) bundle exec rake cache:clear
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GitLab&amp;oldid=829275">https://wiki.archlinux.org/index.php?title=GitLab&amp;oldid=829275</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 16 March 2025, at 21:22.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GitLab&amp;oldid=834380">https://wiki.archlinux.org/index.php?title=GitLab&amp;oldid=834380</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 23 May 2025, at 16:15.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

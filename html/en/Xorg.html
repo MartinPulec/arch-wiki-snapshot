@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Xorg - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -657,17 +657,6 @@
 			<ul id="toc-Invalid_MIT-MAGIC-COOKIE-1_key_when_trying_to_run_a_program_as_root-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Xorg-server_Fatal_server_error:_(EE)_AddScreen/ScreenInit" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Xorg-server_Fatal_server_error:_(EE)_AddScreen/ScreenInit">
-				<div class="vector-toc-text">
-					<span class="vector-toc-numb">8.12</span>
-					<span>Xorg-server Fatal server error: (EE) AddScreen/ScreenInit</span>
-				</div>
-			</a>
-			
-			<ul id="toc-Xorg-server_Fatal_server_error:_(EE)_AddScreen/ScreenInit-sublist" class="vector-toc-list">
-			</ul>
-		</li>
 	</ul>
 	</li>
 	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1">
@@ -799,7 +788,7 @@
 <p>Finally, an <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/groups/x86_64/xorg/">xorg</a></span> group is also available, which includes Xorg server packages, packages from the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/groups/x86_64/xorg-apps/">xorg-apps</a></span> group and fonts.
 </p>
 <h3><span class="mw-headline" id="Driver_installation">Driver installation</span></h3>
-<p>The Linux kernel includes open-source video drivers and support for hardware accelerated framebuffers. However, userland support is required for <a href="../en/OpenGL.html" title="OpenGL">OpenGL</a> and 2D acceleration in X11.
+<p>The Linux kernel includes open-source video drivers and support for hardware accelerated framebuffers. However, userland support is required for <a href="../en/OpenGL.html" title="OpenGL">OpenGL</a>, <a href="../en/Vulkan.html" title="Vulkan">Vulkan</a> and 2D acceleration in X11.
 </p>
 <p>First, identify the graphics card (the <i>Subsystem</i> output shows the specific model):
 </p>
@@ -807,16 +796,18 @@
 </pre>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> <code>::03</code> here means "<a rel="nofollow" class="external text" href="https://admin.pci-ids.ucw.cz/read/PD/03">Display controller</a> PCI device class", and <code>xx</code> stands for "any subclass of the class".</div>
-<p>Then, install an appropriate driver. You can search the package database for a complete list of open-source video drivers:
+<p>Then, install an appropriate driver. You can search the package database for a complete list of open-source <a rel="nofollow" class="external text" href="https://dri.freedesktop.org/wiki/DDX/">Device Dependent X (DDX)</a> drivers:
 </p>
 <pre>$ pacman -Ss xf86-video
 </pre>
-<p>Xorg searches for installed drivers automatically:
+<p>However, hardware-specific DDX is considered legacy nowadays. There is a generic <span class="plainlinks archwiki-template-man" title="$ man 4 modesetting"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/modesetting.4">modesetting(4)</a></span> DDX driver in <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xorg-server">xorg-server</a></span>, which uses <a href="../en/Kernel_mode_setting.html" title="Kernel mode setting">kernel mode setting</a> and works well on modern hardware. The modesetting DDX driver uses <a rel="nofollow" class="external text" href="https://www.freedesktop.org/wiki/Software/Glamor/">Glamor</a><a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/xorg/xserver/-/tree/server-21.1-branch/glamor">[1]</a> for 2D acceleration, which requires OpenGL.
+</p>
+<p>If you want to install another DDX driver, note that Xorg searches for installed DDX drivers automatically:
 </p>
 <ul>
 <li>If it cannot find the specific driver installed for the hardware (listed below), it first searches for <i>fbdev</i> (<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xf86-video-fbdev">xf86-video-fbdev</a></span>), which does not include any 2D or 3D acceleration.</li>
 <li>If that is not found, it searches for <i>vesa</i> (<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xf86-video-vesa">xf86-video-vesa</a></span>), the generic driver, which handles a large number of chipsets but does not include any 2D or 3D acceleration.</li>
-<li>If <i>vesa</i> is not found, Xorg will fall back to <a href="../en/Kernel_mode_setting.html" title="Kernel mode setting">kernel mode setting</a>, which includes GLAMOR acceleration (see <span class="plainlinks archwiki-template-man" title="$ man 4 modesetting"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/modesetting.4">modesetting(4)</a></span>).</li>
+<li>If <i>vesa</i> is not found, Xorg will fall back to <span class="plainlinks archwiki-template-man" title="$ man 4 modesetting"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/modesetting.4">modesetting(4)</a></span> DDX driver.</li>
 </ul>
 <p>In order for video acceleration to work, and often to expose all the modes that the GPU can set, a proper video driver is required:
 </p>
@@ -830,7 +821,7 @@
 </th>
 <th>Documentation
 </th>
-<th>Driver
+<th>DRM Driver
 </th>
 <th>OpenGL
 </th>
@@ -839,6 +830,8 @@
 <th>Vulkan
 </th>
 <th>Vulkan (<a href="../en/Official_repositories.html#multilib" class="mw-redirect" title="Multilib">multilib</a>)
+</th>
+<th>DDX Driver
 </th>
 </tr>
 <tr>
@@ -849,14 +842,13 @@
 <td>
 <a href="../en/AMDGPU.html" title="AMDGPU">AMDGPU</a>
 </td>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xf86-video-amdgpu">xf86-video-amdgpu</a></span>
+<td rowspan="5">included in <a href="../en/Kernel.html" class="mw-redirect" title="Linux">Linux</a>
 </td>
 <td rowspan="2">
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mesa">mesa</a></span>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mesa">mesa</a></span><sup>3</sup>
 </td>
 <td rowspan="2">
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lib32-mesa">lib32-mesa</a></span>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lib32-mesa">lib32-mesa</a></span><sup>3</sup>
 </td>
 <td>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=vulkan-radeon">vulkan-radeon</a></span> / <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=amdvlk">amdvlk</a></span><sup>4</sup>
@@ -864,15 +856,18 @@
 <td>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lib32-vulkan-radeon">lib32-vulkan-radeon</a></span> / <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lib32-amdvlk">lib32-amdvlk</a></span><sup>4</sup>
 </td>
+<td>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xf86-video-amdgpu">xf86-video-amdgpu</a></span>
+</td>
 </tr>
 <tr>
 <td>
 <a href="../en/ATI.html" title="ATI">ATI</a>
 </td>
+<td colspan="2">None
+</td>
 <td>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xf86-video-ati">xf86-video-ati</a></span>
-</td>
-<td colspan="2">None
 </td>
 </tr>
 <tr>
@@ -880,9 +875,6 @@
 </td>
 <td>
 <a href="../en/AMDGPU_PRO.html" title="AMDGPU PRO">AMDGPU PRO</a>
-</td>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xf86-video-amdgpu">xf86-video-amdgpu</a></span>
 </td>
 <td>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/amdgpu-pro-oglp/">amdgpu-pro-oglp</a></span><sup><small>AUR</small></sup>
@@ -896,6 +888,9 @@
 <td>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/lib32-vulkan-amdgpu-pro/">lib32-vulkan-amdgpu-pro</a></span><sup><small>AUR</small></sup>
 </td>
+<td>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xf86-video-amdgpu">xf86-video-amdgpu</a></span>
+</td>
 </tr>
 <tr>
 <td>Intel
@@ -906,13 +901,10 @@
 <a href="../en/Intel_graphics.html" title="Intel graphics">Intel graphics</a>
 </td>
 <td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xf86-video-intel">xf86-video-intel</a></span><sup>2</sup>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mesa">mesa</a></span><sup>3</sup>
 </td>
 <td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mesa">mesa</a></span> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mesa-amber">mesa-amber</a></span><sup>3</sup>
-</td>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lib32-mesa">lib32-mesa</a></span>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lib32-mesa">lib32-mesa</a></span><sup>3</sup>
 </td>
 <td>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=vulkan-intel">vulkan-intel</a></span>
@@ -920,9 +912,12 @@
 <td>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lib32-vulkan-intel">lib32-vulkan-intel</a></span>
 </td>
+<td>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xf86-video-intel">xf86-video-intel</a></span><sup>2</sup>
+</td>
 </tr>
 <tr>
-<td rowspan="4">NVIDIA
+<td rowspan="5">NVIDIA
 </td>
 <td>Open source
 </td>
@@ -930,13 +925,10 @@
 <a href="../en/Nouveau.html" title="Nouveau">Nouveau</a><sup>1</sup>
 </td>
 <td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xf86-video-nouveau">xf86-video-nouveau</a></span>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mesa">mesa</a></span><sup>3</sup>
 </td>
 <td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mesa">mesa</a></span>
-</td>
-<td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lib32-mesa">lib32-mesa</a></span>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lib32-mesa">lib32-mesa</a></span><sup>3</sup>
 </td>
 <td>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=vulkan-nouveau">vulkan-nouveau</a></span>
@@ -944,11 +936,14 @@
 <td>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lib32-vulkan-nouveau">lib32-vulkan-nouveau</a></span>
 </td>
+<td>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xf86-video-nouveau">xf86-video-nouveau</a></span>
+</td>
 </tr>
 <tr>
-<td rowspan="3">Proprietary
+<td rowspan="4">Proprietary
 </td>
-<td rowspan="3">
+<td rowspan="4">
 <a href="../en/NVIDIA.html" title="NVIDIA">NVIDIA</a><sup>1</sup>
 </td>
 <td>
@@ -965,6 +960,29 @@
 </td>
 <td>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lib32-nvidia-utils">lib32-nvidia-utils</a></span>
+</td>
+<td>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nvidia-utils">nvidia-utils</a></span>
+</td>
+</tr>
+<tr>
+<td>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/nvidia-535xx-dkms/">nvidia-535xx-dkms</a></span><sup><small>AUR</small></sup>
+</td>
+<td>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/nvidia-535xx-utils/">nvidia-535xx-utils</a></span><sup><small>AUR</small></sup>
+</td>
+<td>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/lib32-nvidia-535xx-utils/">lib32-nvidia-535xx-utils</a></span><sup><small>AUR</small></sup>
+</td>
+<td>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/nvidia-535xx-utils/">nvidia-535xx-utils</a></span><sup><small>AUR</small></sup>
+</td>
+<td>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/lib32-nvidia-535xx-utils/">lib32-nvidia-535xx-utils</a></span><sup><small>AUR</small></sup>
+</td>
+<td>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/nvidia-535xx-utils/">nvidia-535xx-utils</a></span><sup><small>AUR</small></sup>
 </td>
 </tr>
 <tr>
@@ -983,6 +1001,9 @@
 <td>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/lib32-nvidia-470xx-utils/">lib32-nvidia-470xx-utils</a></span><sup><small>AUR</small></sup>
 </td>
+<td>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/nvidia-470xx-utils/">nvidia-470xx-utils</a></span><sup><small>AUR</small></sup>
+</td>
 </tr>
 <tr>
 <td>
@@ -1000,18 +1021,21 @@
 <td>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/lib32-nvidia-390xx-utils/">lib32-nvidia-390xx-utils</a></span><sup><small>AUR</small></sup>
 </td>
+<td>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/nvidia-390xx-utils/">nvidia-390xx-utils</a></span><sup><small>AUR</small></sup>
+</td>
 </tr>
 </tbody>
 </table>
 <ol>
 <li>For NVIDIA Optimus enabled laptop which uses an integrated video card combined with a dedicated GPU, see <a href="../en/NVIDIA_Optimus.html" title="NVIDIA Optimus">NVIDIA Optimus</a>.</li>
-<li>For Intel graphics on 4th generation and above, see <a href="../en/Intel_graphics.html#Installation" title="Intel graphics">Intel graphics#Installation</a> for available drivers.</li>
-<li>Classic OpenGL (non-Gallium3D) drivers for older hardware (Mesa 22.0 and higher have dropped support for i915 classic driver)</li>
+<li>For Intel graphics on 4th generation and above, the <i>modesetting</i> DDX driver is recommended. See <a href="../en/Intel_graphics.html#Installation" title="Intel graphics">Intel graphics#Installation</a> for details.</li>
+<li>For older hardware, classic OpenGL (non-Gallium3D) drivers in <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mesa-amber">mesa-amber</a></span>/<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lib32-mesa-amber">lib32-mesa-amber</a></span> might be useful (Mesa 22.0 and higher have dropped support for non-Gallium3D classic drivers), see <a href="../en/OpenGL.html#Installation" title="OpenGL">OpenGL#Installation</a>.</li>
 <li>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=vulkan-radeon">vulkan-radeon</a></span> / <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lib32-vulkan-radeon">lib32-vulkan-radeon</a></span> is recommended over <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=amdvlk">amdvlk</a></span> / <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lib32-amdvlk">lib32-amdvlk</a></span> (see <a href="../en/AMDGPU.html#Installation" title="AMDGPU">AMDGPU#Installation</a>).</li>
 <li>For the difference between <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nvidia">nvidia</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nvidia-open">nvidia-open</a></span>, see <a href="../en/NVIDIA.html#Installation" title="NVIDIA">NVIDIA#Installation</a>.</li>
 </ol>
-<p>Other video drivers can be found in the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/groups/x86_64/xorg-drivers/">xorg-drivers</a></span> group.
+<p>Other DDX drivers can be found in the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/groups/x86_64/xorg-drivers/">xorg-drivers</a></span> group.
 </p>
 <p>Xorg should run smoothly without closed source drivers, which are typically needed only for advanced features such as fast 3D-accelerated rendering for games. The exceptions to this rule are recent GPUs (especially NVIDIA GPUs) not supported by open source drivers.
 </p>
@@ -1086,7 +1110,7 @@
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> Configuration file keywords are case insensitive, and "_" characters are ignored. Most strings (including Option names) are also case insensitive, and insensitive to white space and "_" characters.</div>
 <h2><span class="mw-headline" id="Input_devices">Input devices</span></h2>
-<p>For input devices the X server defaults to the libinput driver (<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xf86-input-libinput">xf86-input-libinput</a></span>), but <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xf86-input-evdev">xf86-input-evdev</a></span> and related drivers are available as alternative.<a rel="nofollow" class="external autonumber" href="https://archlinux.org/news/xorg-server-1191-is-now-in-extra/">[1]</a>
+<p>For input devices the X server defaults to the libinput driver (<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xf86-input-libinput">xf86-input-libinput</a></span>), but <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xf86-input-evdev">xf86-input-evdev</a></span> and related drivers are available as alternative.<a rel="nofollow" class="external autonumber" href="https://archlinux.org/news/xorg-server-1191-is-now-in-extra/">[2]</a>
 </p>
 <p><a href="../en/Udev.html" title="Udev">Udev</a>, which is provided as a systemd dependency, will detect hardware and both drivers will act as hotplugging input driver for almost all devices, as defined in the default configuration files <code>10-quirks.conf</code> and <code>40-libinput.conf</code> in the <code>/usr/share/X11/xorg.conf.d/</code> directory.
 </p>
@@ -1313,7 +1337,7 @@ $ echo 'scale=5;(13.3/1509)*800*25.4'  | bc  # 179.01920
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td data-sort-value="5" style="background: #afa; color: inherit; vertical-align: middle; text-align: center;">Yes</td>
 <td>
-<a rel="nofollow" class="external text" href="https://github.com/jordansissel/xdotool/issues">Very buggy</a> and not in active development, e.g: has broken CLI parsing.<a rel="nofollow" class="external autonumber" href="https://github.com/jordansissel/xdotool/issues/14#issuecomment-327968132">[2]</a><a rel="nofollow" class="external autonumber" href="https://github.com/jordansissel/xdotool/issues/71">[3]</a>
+<a rel="nofollow" class="external text" href="https://github.com/jordansissel/xdotool/issues">Very buggy</a> and not in active development, e.g: has broken CLI parsing.<a rel="nofollow" class="external autonumber" href="https://github.com/jordansissel/xdotool/issues/14#issuecomment-327968132">[3]</a><a rel="nofollow" class="external autonumber" href="https://github.com/jordansissel/xdotool/issues/71">[4]</a>
 </td>
 </tr>
 <tr>
@@ -1466,7 +1490,7 @@ EndSection
 </p>
 <pre>startx -- -keeptty &gt;~/.xorg.log 2&gt;&amp;1
 </pre>
-<p>Alternatively, copy <code>/etc/X11/xinit/xserverrc</code> to <code>~/.xserverrc</code>, and append <code>-keeptty</code>. See <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?pid=1446402#p1446402">[4]</a>.
+<p>Alternatively, copy <code>/etc/X11/xinit/xserverrc</code> to <code>~/.xserverrc</code>, and append <code>-keeptty</code>. See <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?pid=1446402#p1446402">[5]</a>.
 </p>
 <h3><span class="mw-headline" id="Xorg_as_Root">Xorg as Root</span></h3>
 <p>As explained above, there are circumstances in which rootless Xorg is defaulted to. If this is the case for your configuration, and you have a need to run Xorg as root, you can configure <span class="plainlinks archwiki-template-man" title="$ man 1 Xorg.wrap"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/Xorg.wrap.1">Xorg.wrap(1)</a></span> to require root:
@@ -1477,7 +1501,7 @@ EndSection
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">needs_root_rights = yes</pre>
 <h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
 <h3><span class="mw-headline" id="General">General</span></h3>
-<p>If a problem occurs, view the log stored in either <code>/var/log/</code> or, for the rootless X default since v1.16, in <code>~/.local/share/xorg/</code>. <a href="../en/GDM.html" title="GDM">GDM</a> users should check the <a href="../en/Systemd/Journal.html" class="mw-redirect" title="Systemd journal">systemd journal</a>. <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=184639">[5]</a>
+<p>If a problem occurs, view the log stored in either <code>/var/log/</code> or, for the rootless X default since v1.16, in <code>~/.local/share/xorg/</code>. <a href="../en/GDM.html" title="GDM">GDM</a> users should check the <a href="../en/Systemd/Journal.html" class="mw-redirect" title="Systemd journal">systemd journal</a>. <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=184639">[6]</a>
 </p>
 <p>The logfiles are of the form <code>Xorg.n.log</code> with <code>n</code> being the display number. For a single user machine with default configuration the applicable log is frequently <code>Xorg.0.log</code>, but otherwise it may vary. To make sure to pick the right file it may help to look at the timestamp of the X server session start and from which console it was started. For example: 
 </p>
@@ -1597,22 +1621,6 @@ Failed to activate core devices.
 </pre>
 <p>That line can also be used to give access to X to a different user than root.
 </p>
-<h3>
-<span id="Xorg-server_Fatal_server_error:_.28EE.29_AddScreen.2FScreenInit"></span><span class="mw-headline" id="Xorg-server_Fatal_server_error:_(EE)_AddScreen/ScreenInit">Xorg-server Fatal server error: (EE) AddScreen/ScreenInit</span>
-</h3>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-cut.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is being considered for removal.</b></p>
-<div>
-<b>Reason:</b> The linked issue is closed as fixed. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Xorg.html">Talk:Xorg</a>)</div>
-</div>
-<p>If the Xorg server is not working randomly and in the Xorg log you see:
-</p>
-<pre>systemd-logind: failed to take device /dev/dri/card0: Operation not permitted
-...
-AddScreen/ScreenInit failed for driver 0
-</pre>
-<p>Then, this problem may be caused by <a rel="nofollow" class="external text" href="https://github.com/systemd/systemd/issues/13943">systemd issue 13943</a>. Set up <a href="../en/Kernel_mode_setting.html#Early_KMS_start" title="Kernel mode setting">early KMS start</a>.
-</p>
 <h2><span class="mw-headline" id="See_also">See also</span></h2>
 <ul>
 <li>
@@ -1625,13 +1633,9 @@ AddScreen/ScreenInit failed for driver 0
 </ul>
 </div>
 </div>
-					<div id="catlinks" class="catlinks" data-mw="interface">
-<div id="mw-normal-catlinks" class="mw-normal-catlinks">
+					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:X_server.html" title="Category:X server">X server</a></li></ul>
-</div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Sections_flagged_with_Template:Remove.html" title="Category:Sections flagged with Template:Remove">Sections flagged with Template:Remove</a></li></ul>
-</div>
-</div>
+</div></div>
 				</div>
 			</main>
 			
@@ -1640,8 +1644,8 @@ AddScreen/ScreenInit failed for driver 0
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Xorg&amp;oldid=829019">https://wiki.archlinux.org/index.php?title=Xorg&amp;oldid=829019</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 15 March 2025, at 15:39.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Xorg&amp;oldid=833961">https://wiki.archlinux.org/index.php?title=Xorg&amp;oldid=833961</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 15 May 2025, at 05:04.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

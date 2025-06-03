@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Postfix - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -181,6 +181,17 @@
 			<ul id="toc-Secure_SMTP_(receiving)-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Post-quantum_TLS" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Post-quantum_TLS">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">4.3</span>
+					<span>Post-quantum TLS</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Post-quantum_TLS-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-Tips_and_tricks" class="vector-toc-list-item vector-toc-level-1">
@@ -239,15 +250,15 @@
 			</a>
 			
 			<ul id="toc-DANE_(DNSSEC)-sublist" class="vector-toc-list">
-				<li id="toc-Resource_Record" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Resource_Record">
+				<li id="toc-Resource_record" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Resource_record">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">5.4.1</span>
-					<span>Resource Record</span>
+					<span>Resource record</span>
 				</div>
 			</a>
 			
-			<ul id="toc-Resource_Record-sublist" class="vector-toc-list">
+			<ul id="toc-Resource_record-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 		<li id="toc-Configuration_2" class="vector-toc-list-item vector-toc-level-3">
@@ -617,7 +628,7 @@
 </p>
 <p>You can specify aliases (also known as forwarders) in <code>/etc/postfix/aliases</code>.
 </p>
-<p>You should map all mail addressed to <i>root</i> to another account since it is not a good idea to read mail as root. 
+<p>You should map all mail addressed to <i>root</i> to another account since it is not a good idea to read mail as root.
 </p>
 <p>Uncomment the following line, and change <code>you</code> to a real account.
 </p>
@@ -675,7 +686,7 @@ default_transport = error: outside mail is not deliverable
 <p><a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Restart">Restart</a> <code>postfix.service</code>.
 </p>
 <h3><span class="mw-headline" id="Check_configuration">Check configuration</span></h3>
-<p>Run the <code>postfix check</code> command. It should output anything that you might have done wrong in a configuration file. 
+<p>Run the <code>postfix check</code> command. It should output anything that you might have done wrong in a configuration file.
 </p>
 <p>To see all of your configs, type <code>postconf</code>. To see how you differ from the defaults, try <code>postconf -n</code>.
 </p>
@@ -745,9 +756,36 @@ smtpd_tls_key_file = <b>/path/to/key.pem</b></pre>
   -o milter_macro_daemon_name=ORIGINATING</pre>
 <p>The rationale surrounding the <code>$smtpd_*_restrictions</code> lines is the same as above.
 </p>
+<h3><span class="mw-headline" id="Post-quantum_TLS">Post-quantum TLS</span></h3>
+<p>As of Postfix 3.10 and OpenSSL 3.5.0, it is possible to offer post-quantum key exchanges for TLS. In order to do this, OpenSSL needs to be provided with a config file, as Postfix does not support the new keyshare syntax itself.
+</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> The post-quantum key exchange will only be used if both the sending and receiving server support it. Yet, there is no downside of enabling it - it will just be used opportunistically, if possible. Some larger services like GMail offer the X25519MLKEM768 keyshare already though.
+You can test whether a server supports any post-quantum algorithms by using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/testssl.sh-git/">testssl.sh-git</a></span><sup><small>AUR</small></sup> or using the <a rel="nofollow" class="external text" href="https://www.hardenize.com/">Hardenize web service</a>. Note that <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=testssl.sh">testssl.sh</a></span> does not support post-quantum algorithms yet, and you will indeed need the Git version.</div>
+<p>To enable this functionality, add the following to your configuration:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/postfix/main.cf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">tls_eecdh_auto_curves =
+tls_ffdhe_auto_groups =
+tls_config_file = ${config_directory}/openssl.cnf
+tls_config_name = postfix</pre>
+<p>Then you need to add an appropriate OpenSSL config:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/postfix/openssl.cnf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">postfix = postfix_settings
+[postfix_settings]
+ssl_conf = postfix_ssl_settings
+[postfix_ssl_settings]
+system_default = baseline_postfix_settings
+[baseline_postfix_settings]
+Groups = *X25519MLKEM768 / *X25519:X448 / P-256:P-384:P-521:ffdhe2048:ffdhe3072</pre>
+<p>This enables the new post-quantum secure X25519MLKEM768 as well as the previous defaults for traditional, non-quantum safe curves.
+</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> OpenSSL also supports further post-quantum exchanges like the hybrid schemes SecP256r1MLKEM768 and SecP384r1MLKEM1024 or using ML-KEM exclusively via MLKEM512, MLKEM768 and MLKEM1024. For now, hybrid schemes are preferred as they provide at least the same classical safety of X25519 and co should there be any issues found with ML-KEM or the implementation thereof. Considering these are pretty new algorithms, it appears as if X25519MLKEM768 is seeing most adoption for now. If wanted, any of the other key exchange schemes could be added though, their presence wouldn't cause any problems.</div>
 <h2><span class="mw-headline" id="Tips_and_tricks">Tips and tricks</span></h2>
 <h3><span class="mw-headline" id="Blacklist_incoming_emails">Blacklist incoming emails</span></h3>
-<p>Manually blacklisting incoming emails by sender address can easily be done with Postfix. 
+<p>Manually blacklisting incoming emails by sender address can easily be done with Postfix.
 </p>
 <p>Create and open <code>/etc/postfix/blacklist_incoming</code> file and append sender email address:
 </p>
@@ -782,13 +820,18 @@ What we want to do is remove the Received header from outgoing emails. This can 
 <p>Finally, <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Restart">restart</a> <code>postfix.service</code>.
 </p>
 <h3><span class="mw-headline" id="Postfix_in_a_chroot_jail">Postfix in a chroot jail</span></h3>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
+<div>
+<b>Reason:</b> This was added in <a href="../Special:Diff/417489.html" title="Special:Diff/417489">2016</a> and scarcely modified. This is probably much better done using <a href="../en/Systemd/Sandboxing.html" title="Systemd/Sandboxing">systemd/Sandboxing</a> features, specifically <code>RootDirectory=</code>.. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Postfix.html">Talk:Postfix</a>)</div>
+</div>
 <p>Postfix is not put in a chroot jail by default. The Postfix documentation <a rel="nofollow" class="external autonumber" href="http://www.postfix.org/BASIC_CONFIGURATION_README.html#chroot_setup">[1]</a> provides details about how to accomplish such a jail. The steps are outlined below and are based on the chroot-setup script provided in the Postfix source code.
 </p>
 <p>First, go into the <code>master.cf</code> file in the directory <code>/etc/postfix</code> and change all the chroot entries to 'yes' (y) except for the services <code>qmgr</code>, <code>proxymap</code>, <code>proxywrite</code>, <code>local</code>, and <code>virtual</code>
 </p>
 <p>Second, create two functions that will help us later with copying files over into the chroot jail (see last step)
 </p>
-<pre>CP="cp -p"
+<pre>$ alias CP="cp -p"
 </pre>
 <pre>cond_copy() {
   # find files as per pattern in $1
@@ -802,51 +845,49 @@ What we want to do is remove the Received header from outgoing emails. This can 
 </pre>
 <p>Next, make the new directories for the jail:
 </p>
-<pre>set -e
-umask 022
+<pre>$ set -e
+$ umask 022
+$ POSTFIX_DIR=${POSTFIX_DIR-/var/spool/postfix}
+$ cd ${POSTFIX_DIR}
+$ mkdir -p etc lib usr/lib/zoneinfo
+$ test -d /lib64 &amp;&amp; mkdir -p lib64
 </pre>
-<pre>POSTFIX_DIR=${POSTFIX_DIR-/var/spool/postfix}
-cd ${POSTFIX_DIR}
-</pre>
-<pre>mkdir -p etc lib usr/lib/zoneinfo
-test -d /lib64 &amp;&amp; mkdir -p lib64
-</pre>
-<p>Find the localtime file
+<p>Find the localtime file:
 </p>
-<pre>lt=/etc/localtime
-if test ! -f $lt ; then lt=/usr/lib/zoneinfo/localtime ; fi
-if test ! -f $lt ; then lt=/usr/share/zoneinfo/localtime ; fi
-if test ! -f $lt ; then echo "cannot find localtime" ; exit 1 ; fi
-rm -f etc/localtime
+<pre>$ lt=/etc/localtime
+$ if test ! -f $lt ; then lt=/usr/lib/zoneinfo/localtime ; fi
+$ if test ! -f $lt ; then lt=/usr/share/zoneinfo/localtime ; fi
+$ if test ! -f $lt ; then echo "cannot find localtime" ; exit 1 ; fi
+$ rm -f etc/localtime
 </pre>
 <p>Copy localtime and some other system files into the chroot's etc
 </p>
-<pre>$CP -f $lt /etc/services /etc/resolv.conf /etc/nsswitch.conf etc
-$CP -f /etc/host.conf /etc/hosts /etc/passwd etc
-ln -s -f /etc/localtime usr/lib/zoneinfo
+<pre>$ CP -f $lt /etc/services /etc/resolv.conf /etc/nsswitch.conf etc
+$ CP -f /etc/host.conf /etc/hosts /etc/passwd etc
+$ ln -s -f /etc/localtime usr/lib/zoneinfo
 </pre>
 <p>Make sure resolv.conf is owned by root:
 </p>
-<pre>chown root /var/spool/postfix/etc/resolv.conf
+<pre>$ chown root /var/spool/postfix/etc/resolv.conf
 </pre>
 <p>Copy required libraries into the chroot using the previously created function <code>cond_copy</code>
 </p>
-<pre>cond_copy '/usr/lib/libnss_*.so*' lib
-cond_copy '/usr/lib/libresolv.so*' lib
-cond_copy '/usr/lib/libdb.so*' lib
+<pre>$ cond_copy '/usr/lib/libnss_*.so*' lib
+$ cond_copy '/usr/lib/libresolv.so*' lib
+$ cond_copy '/usr/lib/libdb.so*' lib
 </pre>
 <p>And do not forget to <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Reload">reload</a> Postfix.
 </p>
 <h3>
 <span id="DANE_.28DNSSEC.29"></span><span class="mw-headline" id="DANE_(DNSSEC)">DANE (DNSSEC)</span>
 </h3>
-<h4><span class="mw-headline" id="Resource_Record">Resource Record</span></h4>
+<h4><span class="mw-headline" id="Resource_record">Resource record</span></h4>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> This is not a trivial section. Be aware that you make sure you know what you are doing. You better read <a rel="nofollow" class="external text" href="https://dane.sys4.de/common_mistakes">Common Mistakes</a> before.</div>
 <p><a href="../en/DANE.html" title="DANE">DANE</a> supports several types of records, however not all of them are suitable in Postfix.
 </p>
 <p>Certificate usage 0 is unsupported, 1 is mapped to 3 and 2 is optional, thus it is recommendet to publish a "3" record.
-More on <a href="../en/DANE.html#Resource_Record" title="DANE">Resource Records</a>.
+More on <a href="../en/DANE.html#Resource_record" title="DANE">DANE#Resource record</a>.
 </p>
 <h4><span class="mw-headline" id="Configuration_2">Configuration</span></h4>
 <div class="noprint archwiki-template-message">
@@ -928,7 +969,7 @@ ExecStart=/usr/bin/postgrey --inet=127.0.0.1:10030 \
 <p>To add your own list of whitelisted clients in addition to the default ones, create the file <code>/etc/postfix/postgrey_whitelist_clients.local</code> and enter one host or domain per line, then restart <code>postgrey.service</code> so the changes take effect.
 </p>
 <h4><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h4>
-<p>If you specify <code>--unix=/path/to/socket</code> and the socket file is not created ensure you have removed the default <code>--inet=127.0.0.1:10030</code> from the service file. 
+<p>If you specify <code>--unix=/path/to/socket</code> and the socket file is not created ensure you have removed the default <code>--inet=127.0.0.1:10030</code> from the service file.
 </p>
 <p>For a full documentation of possible options see <code>perldoc postgrey</code>.
 </p>
@@ -962,9 +1003,7 @@ ExecStart=/usr/bin/postgrey --inet=127.0.0.1:10030 \
 </p>
 <pre> virtual_transport = dovecot
 </pre>
-<p>Alternately, if you do not want to use virtual transports you can use the
-<a rel="nofollow" class="external text" href="http://www.postfix.org/postconf.5.html#mailbox_command">mailbox_command</a>. This runs 
-with the local user and group, whereas the pipe runs with with the specified user using the <code>user</code> setting.
+<p>Alternately, if you do not want to use virtual transports you can use the <a rel="nofollow" class="external text" href="http://www.postfix.org/postconf.5.html#mailbox_command">mailbox_command</a>. This runs with the local user and group, whereas the pipe runs with with the specified user using the <code>user</code> setting.
 </p>
 <pre> mailbox_command = /usr/bin/vendor_perl/spamc -u spamd -e /usr/lib/dovecot/dovecot-lda -f "$SENDER" -a "$RECIPIENT"
 </pre>
@@ -1134,6 +1173,7 @@ sievec(root): Fatal: failed to compile sieve script 'spamassassin.sieve'
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Mail_server.html" title="Category:Mail server">Mail server</a></li></ul>
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li>
 </ul>
@@ -1147,8 +1187,8 @@ sievec(root): Fatal: failed to compile sieve script 'spamassassin.sieve'
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Postfix&amp;oldid=827868">https://wiki.archlinux.org/index.php?title=Postfix&amp;oldid=827868</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 26 February 2025, at 20:51.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Postfix&amp;oldid=833836">https://wiki.archlinux.org/index.php?title=Postfix&amp;oldid=833836</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 13 May 2025, at 21:05.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

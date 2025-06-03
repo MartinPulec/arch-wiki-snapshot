@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Creating packages (Русский) - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -217,6 +217,17 @@
 			</a>
 			
 			<ul id="toc-Проверка_целостности_пакета-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Использование_pkgctl_для_сборки_в_чистом_chroot-окружении" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%98%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5_pkgctl_%D0%B4%D0%BB%D1%8F_%D1%81%D0%B1%D0%BE%D1%80%D0%BA%D0%B8_%D0%B2_%D1%87%D0%B8%D1%81%D1%82%D0%BE%D0%BC_chroot-%D0%BE%D0%BA%D1%80%D1%83%D0%B6%D0%B5%D0%BD%D0%B8%D0%B8">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">4.2</span>
+					<span>Использование pkgctl для сборки в чистом chroot-окружении</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Использование_pkgctl_для_сборки_в_чистом_chroot-окружении-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -602,6 +613,21 @@ $ namcap <i>&lt;имя файла пакета&gt;</i>.pkg.tar.zst
 </p>
 <p>Возьмите за привычку проверять свои пакеты с помощью namcap во избежание необходимости исправлять простейшие ошибки после отправки пакета.
 </p>
+<h3>
+<span id=".D0.98.D1.81.D0.BF.D0.BE.D0.BB.D1.8C.D0.B7.D0.BE.D0.B2.D0.B0.D0.BD.D0.B8.D0.B5_pkgctl_.D0.B4.D0.BB.D1.8F_.D1.81.D0.B1.D0.BE.D1.80.D0.BA.D0.B8_.D0.B2_.D1.87.D0.B8.D1.81.D1.82.D0.BE.D0.BC_chroot-.D0.BE.D0.BA.D1.80.D1.83.D0.B6.D0.B5.D0.BD.D0.B8.D0.B8"></span><span class="mw-headline" id="Использование_pkgctl_для_сборки_в_чистом_chroot-окружении">Использование pkgctl для сборки в чистом chroot-окружении</span>
+</h3>
+<p>Вы можете использовать <code>pkgctl</code> из <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=devtools">devtools</a></span> для проверки возможно ли собрать пакет там, где ещё не установлены другие пакеты. Находясь в каталоге PKGBUILD выполнить:
+</p>
+<pre>$ pkgctl build
+</pre>
+<p>И проверьте вывод на наличие возможных ошибок или предупреждений. Если пакет зависит от других пакетов AUR, эти пакеты должны быть собраны и перенесены в окружение chroot:
+</p>
+<pre>$ pkgctl build -I path/to/somepkg.tar.gz -I ...
+</pre>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Примечание:</strong>  Если пакет установлен с помощью помощника AUR, велика вероятность того, что его tarball можно найти в его кэш-каталоге.</div>
+<p>Дополнительные опции см. в <span class="plainlinks archwiki-template-man" title="$ man 1 pkgctl-build"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/pkgctl-build.1">pkgctl-build(1)</a></span>.
+</p>
 <h2>
 <span id=".D0.9E.D1.82.D0.BF.D1.80.D0.B0.D0.B2.D0.BA.D0.B0_.D0.BF.D0.B0.D0.BA.D0.B5.D1.82.D0.BE.D0.B2_.D0.B2_AUR"></span><span class="mw-headline" id="Отправка_пакетов_в_AUR">Отправка пакетов в AUR</span>
 </h2>
@@ -657,7 +683,7 @@ $ namcap <i>&lt;имя файла пакета&gt;</i>.pkg.tar.zst
 <a href="../en/Node.js.html" title="Node.js">Node.js</a>: <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/nodejs-npm2arch/">nodejs-npm2arch</a></span><sup><small>AUR</small></sup>
 </li>
 <li>
-<a href="../en/Perl.html" title="Perl">Perl</a>: <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=perl-cpanplus-dist-arch">perl-cpanplus-dist-arch</a></span>
+<a href="../en/Perl.html" title="Perl">Perl</a>: <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/perl-cpanplus-dist-arch/">perl-cpanplus-dist-arch</a></span><sup><small>AUR</small></sup>
 </li>
 <li>
 <a href="../ru/Python.html" title="Python (Русский)">Python</a>: <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/pipman-git/">pipman-git</a></span><sup><small>AUR</small></sup>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/pip2arch-git/">pip2arch-git</a></span><sup><small>AUR</small></sup>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/python-pypi2pkgbuild/">python-pypi2pkgbuild</a></span><sup><small>AUR</small></sup>
@@ -695,8 +721,8 @@ $ namcap <i>&lt;имя файла пакета&gt;</i>.pkg.tar.zst
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Creating_packages_(%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9)&amp;oldid=811887">https://wiki.archlinux.org/index.php?title=Creating_packages_(Русский)&amp;oldid=811887</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 4 July 2024, at 05:13.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Creating_packages_(%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9)&amp;oldid=830707">https://wiki.archlinux.org/index.php?title=Creating_packages_(Русский)&amp;oldid=830707</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 5 April 2025, at 07:13.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

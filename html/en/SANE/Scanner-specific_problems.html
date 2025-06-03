@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>SANE/Scanner-specific problems - ArchWiki</title>
 <link rel="stylesheet" href="../../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -162,6 +162,17 @@
 			</a>
 			
 			<ul id="toc-Scanning_over_the_network_with_Canon_PIXMA_or_imageCLASS_all-in-one_printer/scanners-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Scanning_over_the_network_with_the_eSCL_protocol_for_Canon_MAXIFY_printer/scanners" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Scanning_over_the_network_with_the_eSCL_protocol_for_Canon_MAXIFY_printer/scanners">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">4.2</span>
+					<span>Scanning over the network with the eSCL protocol for Canon MAXIFY printer/scanners</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Scanning_over_the_network_with_the_eSCL_protocol_for_Canon_MAXIFY_printer/scanners-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -627,7 +638,7 @@
 </p>
 <p>For network scanners, Brother provides a different configuration tool for each brscan version (e.g., brsaneconfig2 for brscan2 compatible devices):
 </p>
-<pre># brsaneconfig2 -a name=&lt;ScannerName&gt; model=&lt;ScannerModel&gt; ip=&lt;ScannerIP&gt;
+<pre># brsaneconfig2 -a name=<i>ScannerName</i> model=<i>ScannerModel</i> ip=<i>ScannerIP</i>
 </pre>
 <p>Example:
 </p>
@@ -649,7 +660,7 @@
 <h3><span class="mw-headline" id="Invalid_argument">Invalid argument</span></h3>
 <p>If all the necessary packages are installed but you still get the "invalid argument" error this could mean that the configuration file has been corrupted. Run the following command (in case of brscan4):
 </p>
-<pre> # brsaneconfig4 -d
+<pre># brsaneconfig4 -d
 </pre>
 <p>The output should narrow down the problem. Most likely the connection is not set up correctly. In case of a network scanner, check if the IP address is right by opening <code>/etc/opt/brother/scanner/brscan4/brsanenetdevice4.cfg</code> with an editor. In case of a USB connection, check if the path to the scanner in the configuration file is set up correctly. For that, compare the values of the <code>lsusb</code> command with your configuration file and change them if necessary. You might also try to follow the <code>brother<i>X</i></code> suggestion from <a href="#Network_Scanning">Network Scanning above</a> even for non-network scanners.
 </p>
@@ -660,7 +671,7 @@
 </p>
 <p>It is possible to change what action takes place when a given type of scan is selected on the keypad. This is done by editing <code>/opt/brother/scanner/brscan-skey/brscan-skey-0.2.4-0.cfg</code>. For each variable <code>SCAN_COMMAND</code> in <code>IMAGE</code>, <code>OCR</code>, <code>EMAIL</code>, <code>FILE</code>, the command
 </p>
-<pre> $ $SCAN_COMMAND $SCANNER_DEVICE $SCANNER_FRIENDLY_NAME
+<pre>$ $SCAN_COMMAND $SCANNER_DEVICE $SCANNER_FRIENDLY_NAME
 </pre>
 <p>is executed when the corresponding scan type is selected. Note that <code>$SCAN_COMMAND</code> is not quoted so may specify more than one positional parameter in the final command that is executed. <code>$SCANNER_DEVICE</code> refers to the name of the device that should be specified to a sane frontend (e.g. via the <code>--device-name</code> flag when using <code>scanimage</code>), for example <code>brother3:bus4;dev2</code>. <code>$SCANNER_FRIENDLY_NAME</code> is the human-readable name of the scanner.
 </p>
@@ -671,9 +682,9 @@
 <b>Reason:</b> 
 <ul>
 <li>Should be mentioned on AUR page</li>
-<li>This may only be relevant for the Brother DCP-150C scanner (Discuss in <a rel="nofollow" class="external text" href="../../en/Talk:SANE/Scanner-specific_problems.html">Talk:SANE/Scanner-specific problems</a>)</li>
+<li>This may only be relevant for the Brother DCP-150C scanner</li>
 </ul>
-</div>
+ (Discuss in <a rel="nofollow" class="external text" href="../../en/Talk:SANE/Scanner-specific_problems.html">Talk:SANE/Scanner-specific problems</a>)</div>
 </div>
 <p>If xsane crashes with message "<code>=bugchk_free(ptr==(nil))@brother_modelinf.c(482)</code>", then you need to create the link <code>/usr/local/Brother -&gt; /usr/share/brother</code>.
 </p>
@@ -689,6 +700,18 @@
 </p>
 <p>Alternatively, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/scangearmp2/">scangearmp2</a></span><sup><small>AUR</small></sup> can be used for some Canon PIXMA all-in-one printer/scanners which are not detected over the network.
 </p>
+<h3>
+<span id="Scanning_over_the_network_with_the_eSCL_protocol_for_Canon_MAXIFY_printer.2Fscanners"></span><span class="mw-headline" id="Scanning_over_the_network_with_the_eSCL_protocol_for_Canon_MAXIFY_printer/scanners">Scanning over the network with the eSCL protocol for Canon MAXIFY printer/scanners</span>
+</h3>
+<p>As mentioned in the sane-pixma documentation <span class="plainlinks archwiki-template-man" title="$ man 5 sane-pixma"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/sane-pixma.5">sane-pixma(5)</a></span>, Canon seems to be dropping support the BJNP and MFNP protocols in recent scanners. As an alternative, you could try using the eSCL protocol for scanning over the network. To do so, find your printer/scanner's IP address and add a new line to the <code>/etc/sane.d/escl.conf</code> configuration file, using the format <code>device https://<i>your-scanners-ip</i>:443 "<i>your-scanner-model</i>"</code>. The scanner model is used as an identifier for e.g. the command <code>scanimage -L</code>.
+</p>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip:</strong> 
+<ul>
+<li>If <code>device https://<i>your-scanners-ip</i>:443 "<i>your-scanner-model</i>"</code> does not work, try <code>device http://<i>your-scanners-ip</i>:80 "<i>your-scanner-model</i>"</code>.</li>
+<li>If <code>scanimage -L</code> returns something along the lines of <code>device `escl:https://<i>your-scanners-ip</i>:443' is a ESCL <i>your-scanner-model</i> flatbed or ADF scanner</code>, you can perform a test scan using <code>scanimage --device-name "escl:https://<i>your-scanners-ip</i>:443" --mode Color --format png &gt; test-scan.png</code>.</li>
+</ul>
+</div>
 <h2><span class="mw-headline" id="Epson">Epson</span></h2>
 <h3><span class="mw-headline" id="Driver-Backends">Driver-Backends</span></h3>
 <p>For Epson scanners, you can choose between two different backends: "<b>Image Scan v3</b>" (<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/imagescan/">imagescan</a></span><sup><small>AUR</small></sup>/utsushi) or "<b>Image Scan! for Linux</b>" (<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/iscan/">iscan</a></span><sup><small>AUR</small></sup>/epkowa). A list of supported devices exists for <a rel="nofollow" class="external text" href="http://www.sane-project.org/lists/sane-backends-external.html#S-UTSUSHI">imagescan/utsushi</a> and <a rel="nofollow" class="external text" href="http://www.sane-project.org/lists/sane-backends-external.html#S-EPKOWA">iscan/epkowa</a>. 
@@ -697,14 +720,14 @@
 <p>If you have to use Image Scan v3-backend you can install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/imagescan/">imagescan</a></span><sup><small>AUR</small></sup>. It should detect supported USB scanners automatically by default. If your scanner is not recognized you can directly edit the <code>/etc/utsushi/utsushi.conf</code> and add the following lines.
 </p>
 <pre>[devices]
-dev1.udi     = esci:usb:&lt;vendor id&gt;:&lt;product id&gt;
+dev1.udi     = esci:usb:<i>vendor_id</i>:<i>product_id</i>
 dev1.name    = foo
-dev1.model   = &lt;Model Name of the scanner&gt;
+dev1.model   = <i>Model Name of the scanner</i>
 </pre>
 <p>If you want to make use of a network scanner you also have to install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/imagescan-plugin-networkscan/">imagescan-plugin-networkscan</a></span><sup><small>AUR</small></sup>. Then edit <code>/etc/utsushi/utsushi.conf</code> and enter the ip address of your scanner to it.
 </p>
 <pre>[devices]
-myscanner.udi    = esci:networkscan://&lt;ip-address-here&gt;:1865
+myscanner.udi    = esci:networkscan://<i>ip-address-here</i>:1865
 myscanner.vendor = Epson
 myscanner.model  = Model-name
 </pre>
@@ -783,8 +806,9 @@ libusbscanner 0x0003 0x04b8 0x0120 0x0000 0x0000 0x00 0x00 0x00 0x00 0x00 0x00 0
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note:</strong> I can scan image if I define the X and Y value, but without that error message occurs like: <code>scanimage: sane_start: Error during device I/O</code>, if anyone knows any other reasons, please add them to this section.</div>
-<ul><li>To prevent <code>scanimage: sane_start: Error during device I/O</code> and hangup of the scanner itself, when trying to scan with ADF (automatic document feed) enabled, I had to remove or comment out all Backends from <code>/etc/sane.d/dll.conf</code> and instead just add this to the file: <pre>snapscan</pre>
-</li></ul>
+<p>
+To prevent <code>scanimage: sane_start: Error during device I/O</code> and hangup of the scanner itself, when trying to scan with ADF (automatic document feed) enabled, I had to remove or comment out all Backends from <code>/etc/sane.d/dll.conf</code> and instead just add this to the file: </p>
+<pre>snapscan</pre>
 <p>If you still get the <code>Error during device I/O</code> messages check that the transportation lock of the scanner (on the bottom of the scanner) is open.
 </p>
 <h3>
@@ -885,7 +909,7 @@ $ scanimage --device "hpaio:/net/DeskJet_3630_series?ip=10.12.129.6" --format=pn
 <p>Most Lexmark scanners are still (2019) not supported by SANE, and thus cannot be detected either by <code>sane-find-scanner</code> or by <code>scanimage -L</code>. Lexmark provides a non-free driver for GNU/Linux, which is supposed to support <i>all</i> its scanners. Nevertheless, the driver is only distributed for Debian, OpenSUSE, Fedora and Red Hat, but not for Arch. Here is a way to install it.
 </p>
 <h3><span class="mw-headline" id="Warning">Warning</span></h3>
-<p>Before following these steps, note that :
+<p>Before following these steps, note that:
 </p>
 <ul>
 <li>This driver is non-free (copyrighted by Lexmark)</li>
@@ -958,7 +982,7 @@ Simply run as root
 <h2><span class="mw-headline" id="Samsung">Samsung</span></h2>
 <p>For some Samsung MFP printers you may need to edit <code>/etc/sane.d/xerox_mfp.conf</code>.
 </p>
-<p>example entry:
+<p>Example entry:
 </p>
 <pre>#Samsung SCX-3200
 usb 0x04e8 0x3441
@@ -967,10 +991,10 @@ usb 0x04e8 0x3441
 </p>
 <p>To access the scanner over the network rather than the usb interface, add a line to <code>/etc/sane.d/xerox_mfp.conf</code> such as
 </p>
-<pre>#Samsung scx4500w wireless ip network address
-tcp xx.xx.xx.xx
+<pre>#Samsung scx4500w wireless IP network address
+tcp <i>xx.xx.xx.xx</i>
 </pre>
-<p>where xx.xx.xx.xx is the static ip address of the printer.
+<p>where <code><i>xx.xx.xx.xx</i></code> is the static IP address of the printer.
 </p>
 </div>
 </div>
@@ -992,8 +1016,8 @@ tcp xx.xx.xx.xx
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=SANE/Scanner-specific_problems&amp;oldid=826226">https://wiki.archlinux.org/index.php?title=SANE/Scanner-specific_problems&amp;oldid=826226</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 1 February 2025, at 17:23.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=SANE/Scanner-specific_problems&amp;oldid=833764">https://wiki.archlinux.org/index.php?title=SANE/Scanner-specific_problems&amp;oldid=833764</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 13 May 2025, at 08:26.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

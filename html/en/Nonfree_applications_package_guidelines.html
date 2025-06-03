@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Nonfree applications package guidelines - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -274,6 +274,39 @@
 		</li>
 	</ul>
 		</li>
+		<li id="toc-Replacing_bundled_runtimes" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Replacing_bundled_runtimes">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">6.5</span>
+					<span>Replacing bundled runtimes</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Replacing_bundled_runtimes-sublist" class="vector-toc-list">
+				<li id="toc-Security_considerations" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Security_considerations">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">6.5.1</span>
+					<span>Security considerations</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Security_considerations-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Plugin_interoperability" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Plugin_interoperability">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">6.5.2</span>
+					<span>Plugin interoperability</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Plugin_interoperability-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+		</li>
 	</ul>
 	</li>
 </ul>
@@ -479,11 +512,13 @@
 </p>
 <ul>
 <li>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=libarchive">libarchive</a></span> contains <i>bsdtar</i>, which can extract <code>.iso</code> images and <code>.AppImage</code> files (which are actually hybrid self-executable iso9660). It also provides <i>bsdunzip</i> which can be used in place of <i>unzip</i>.
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=libarchive">libarchive</a></span> contains <i>bsdtar</i>, which can extract <code>.iso</code> images. It also provides <i>bsdunzip</i> which can be used in place of <i>unzip</i>. <code>bsdunzip -O</code> is used for non-UTF-8 zip files.
 <ul><li>libarchive is required by pacman and so it is part of a base install.</li></ul>
 </li>
 <li>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=unzip">unzip</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=unrar">unrar</a></span> unpack executable SFX archives, based on this formats</li>
+<code>.AppImage</code> files can be extracted by launching them with the <code>--appimage-extract</code> flag.</li>
+<li>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=unzip">unzip</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=unrar">unrar</a></span> unpack executable SFX archives, based on these formats</li>
 <li>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=cabextract">cabextract</a></span> can unpack most <code>.cab</code> files (including ones with <code>.exe</code> extension)</li>
 <li>
@@ -556,13 +591,41 @@ pkgver() {
   dpkg-deb --show --showformat='${Version}' nonfree-app-latest.deb | tr - .
 }
 </pre>
+<h3><span class="mw-headline" id="Replacing_bundled_runtimes">Replacing bundled runtimes</span></h3>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-cut.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is being considered for removal.</b></p>
+<div>
+<b>Reason:</b> The guidelines are aimed to be general, and replacing runtimes is a highly specific use-case (Only <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=steam-native-runtime">steam-native-runtime</a></span> in the <a href="../en/Official_repositories.html" title="Official repositories">official repositories</a> do it). More importantly, it will invalidate any support provided by upstream who bundled the package (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Nonfree_applications_package_guidelines.html">Talk:Nonfree applications package guidelines</a>)</div>
+</div>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note:</strong> This topic may conflict with <a href="#Keep_it_simple">KISS</a>’s goals. Consider the trade-offs, and avoid overdoing it.</div>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
+<div>
+<b>Reason:</b> This section needs to cover ABI compability, ldd, and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=abi-compliance-checker">abi-compliance-checker</a></span>. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Nonfree_applications_package_guidelines.html">Talk:Nonfree applications package guidelines</a>)</div>
+</div>
+<p>Some non-free applications bundle pre-built open source runtimes. However, there are advantages in replacing them.
+</p>
+<p>You can use <a href="../en/Pacman.html#Querying_package_databases" title="Pacman"><code>pacman -F</code></a> to look for packages that provide the corresponding unbundled runtime. To replace the bundled libraries, try replacing them with symbolic links or just removing them from your package.
+</p>
+<h4><span class="mw-headline" id="Security_considerations">Security considerations</span></h4>
+<p>Vendored runtimes are sometimes built with  <a href="../en/Arch_package_guidelines/Security.html" title="Arch package guidelines/Security">insecure flags</a> such as <a href="../en/Security.html#RELRO" title="Security">No RELRO</a><sup>[<a href="../en/Help:Procedures.html#Fix_broken_section_links" title="Help:Procedures">broken link</a>: invalid section]</sup>. If your package must use vendored libraries or executables, consider scanning them for insecure <a href="../en/Security.html#RPATH/RUNPATH" title="Security"><code>RPATH</code></a><sup>[<a href="../en/Help:Procedures.html#Fix_broken_section_links" title="Help:Procedures">broken link</a>: invalid section]</sup> entries. To remove insecure entries, use <code>patchelf --remove-rpath /path/to/binary</code>.
+</p>
+<h4><span class="mw-headline" id="Plugin_interoperability">Plugin interoperability</span></h4>
+<p>Some non-free <a href="../en/Qt.html" title="Qt">Qt</a> applications lack important plugins such as <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=qt5-wayland">qt5-wayland</a></span> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=fcitx5-qt">fcitx5-qt</a></span>. To make an application work with those system-provided packages, you might want to remove its bundled Qt runtime altogether, because mixing different Qt versions is impossible.
+</p>
 </div>
 </div>
 					<div id="catlinks" class="catlinks" data-mw="interface">
 <div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Arch_package_guidelines.html" title="Category:Arch package guidelines">Arch package guidelines</a></li></ul>
 </div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li></ul>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
+<li><a href="../en/Category:Sections_flagged_with_Template:Remove.html" title="Category:Sections flagged with Template:Remove">Sections flagged with Template:Remove</a></li>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
+<li><a href="../en/Category:Pages_with_broken_section_links.html" title="Category:Pages with broken section links">Pages with broken section links</a></li>
+</ul>
 </div>
 </div>
 				</div>
@@ -573,8 +636,8 @@ pkgver() {
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Nonfree_applications_package_guidelines&amp;oldid=824114">https://wiki.archlinux.org/index.php?title=Nonfree_applications_package_guidelines&amp;oldid=824114</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 27 December 2024, at 14:06.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Nonfree_applications_package_guidelines&amp;oldid=833905">https://wiki.archlinux.org/index.php?title=Nonfree_applications_package_guidelines&amp;oldid=833905</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 14 May 2025, at 05:46.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

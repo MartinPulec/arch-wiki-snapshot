@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Character encoding - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -324,25 +324,27 @@
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning:</strong> It is highly recommended to set the codeset of your locale to <code>.UTF-8</code>. Otherwise, conversion from UTF-8 to non-Unicode encoding can result in a loss of information. </div>
 <h3><span class="mw-headline" id="Incorrect_archive_encoding">Incorrect archive encoding</span></h3>
-<p>Zip archives sometimes use encodings other than Unicode for the filenames. This is a known issue with Zip archives created in legacy versions of Windows (XP, Vista, and 7), where File Explorer will prioritize a character set that more closely matches the system locale even if it uses a non-Latin writing system.
+<p>Zip archives sometimes use encodings other than Unicode for the filenames. This issue is most commonly seen with archives created in legacy versions of Windows (XP, Vista, and 7), where File Explorer will prioritize a character set that more closely matches the system locale even if it uses a non-Latin writing system.
 </p>
-<p>The <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=unzip">unzip</a></span> 6.0 package is built with patches to enable character set conversion, but it will still default to the assumption that filenames are UTF8-encoded. To extract properly, use <code>unzip -O</code> followed by the target encoding, e.g. CP936 is a common encoding in old versions of Windows:
+<p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=unzip">unzip</a></span> is built with patches to enable character set conversion. <code>bsdunzip</code> of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=libarchive">libarchive</a></span> has same feature. However, it won't do so automatically and will still default to the assumption that filenames are UTF8-encoded. To properly extract an archive with non-UTF8 filenames, use <code>unzip -O</code> followed by the target encoding, e.g. CP936 is a common Simplified Chinese charset in old versions of Windows:
 </p>
 <pre>$ unzip -O CP936 <i>file.zip</i>
 </pre>
-<p>If unsure about the needed charset, dry-run without extraction by adding the <code>-l</code> flag:
-</p>
-<pre>$ unzip -lO CP936 <i>file.zip</i>
-</pre>
-<p>Japanese versions of Windows encode ZIP archives with Shift-JIS. Use <i>shift-jis</i>:
-</p>
-<pre>$ unzip -O shift-jis nihongo.zip
-</pre>
-<p>Chinese versions of Windows encode ZIP archives with <i>gbk</i>:
+<p>Other common charsets include GBK, also for Simplified Chinese:
 </p>
 <pre>$ unzip -O gbk <i>file</i>.zip
 </pre>
-<p>Alternatively, you can install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/unzip-natspec/">unzip-natspec</a></span><sup><small>AUR</small></sup>, which will auto-detect the correct encoding for filenames.
+<p>And CP932 (not Shift-JIS), for Japanese:
+</p>
+<pre>$ bsdunzip -O CP932 <i>file</i>.zip
+</pre>
+<p>If unsure about which charset you need, you can list an archive's files without extracting them by adding the <code>-l</code> flag, which allows you to verify that the filenames are printed correctly:
+</p>
+<pre>$ unzip -lO shift-jis <i>file.zip</i>
+</pre>
+<p>Alternatively, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/unzip-natspec/">unzip-natspec</a></span><sup><small>AUR</small></sup> detects encoding for file names automatically.
+</p>
+<p><code>unar -e</code> of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=unarchiver">unarchiver</a></span> may be used for some non zip archives encoded without UTF-8.
 </p>
 <h3><span class="mw-headline" id="Incorrect_file_name_encoding">Incorrect file name encoding</span></h3>
 <p>Use <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=convmv">convmv</a></span> for encoding-conversion <code>mv</code>:
@@ -436,8 +438,8 @@ remote_charsets=gb2312
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Character_encoding&amp;oldid=830254">https://wiki.archlinux.org/index.php?title=Character_encoding&amp;oldid=830254</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 31 March 2025, at 07:56.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Character_encoding&amp;oldid=832824">https://wiki.archlinux.org/index.php?title=Character_encoding&amp;oldid=832824</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 26 April 2025, at 16:08.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

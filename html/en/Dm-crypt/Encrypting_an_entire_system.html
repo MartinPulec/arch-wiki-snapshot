@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>dm-crypt/Encrypting an entire system - ArchWiki</title>
 <link rel="stylesheet" href="../../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -826,6 +826,7 @@ The following are examples of common scenarios of full system encryption with <i
 <ul>
 <li>LVM adds an additional mapping layer and hook</li>
 <li>Less useful, if a singular volume should receive a separate key</li>
+<li>If you have several LVM physical volumes (PVs) in a volume group that you want to use inside LUKS, then each physical volume must be encrypted separately using LUKS. In order to use them, all containers must be unlocked individually before the volume group is activated during system boot.</li>
 </ul>
 </td>
 </tr>
@@ -912,8 +913,19 @@ The following are examples of common scenarios of full system encryption with <i
 <a href="#Root_on_ZFS">#Root on ZFS</a>
 </td>
 <td>
+<ul>
+<li>In the case of a encrypted <code>zpool</code> all datasets are contained inside the same cryptographic environment making it easy to dual-boot and share data across installs.</li>
+<li>Backups can be made to a destination with an unencrypted zfs setup. Snapshots will be <a rel="nofollow" class="external text" href="https://freebsdfoundation.org/our-work/journal/browser-based-edition/storage-and-filesystems/protecting-data-with-zfs-native-encryption/#:~:text=As%20you%20have%20seen%2C%20ZFS,able%20to%20mount%20the%20dataset.">encrypted natively on the destination</a>.</li>
+</ul>
 </td>
 <td>
+<ul>
+<li>
+<a rel="nofollow" class="external text" href="https://openzfs.github.io/openzfs-docs/man/v2.2/8/zfs-load-key.8.html">ZFS will not encrypt</a> metadata related to the pool structure, including dataset and snapshot names, dataset hierarchy, properties, file size, file holes, and deduplication tables (though the deduplicated data itself is encrypted).</li>
+<li>Pool creation requires the user to have a more in-depth knowledge of disks geometry setting even block size (<code>ashift</code>) for best performance.</li>
+<li>ZFS has some caveats with its own implementation of <code>aes</code> and some encryption algorithms <a rel="nofollow" class="external text" href="https://github.com/openzfs/zfs/issues/15276">may not perform well</a>.</li>
+<li>Swap on a <code>zvol</code> or file inside a dataset is a <a rel="nofollow" class="external text" href="https://github.com/openzfs/zfs/issues/7734">old and well-known issue</a> with no workaround other than having your swap in another partition or lv and suspend to disk disabled (see below).</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -935,6 +947,7 @@ The following are examples of common scenarios of full system encryption with <i
 <li>The Argon2 key derivation function has a high RAM usage per design, defaulting to 1 GiB per encrypted mapper. Machines with low RAM and/or multiple LUKS2 partitions unlocked in parallel may error on boot. See the <code>--pbkdf-memory</code> option to control memory usage.<a rel="nofollow" class="external autonumber" href="https://gitlab.com/cryptsetup/cryptsetup/issues/372">[1]</a>
 </li>
 <li>GRUB's support for LUKS2 is limited; see <a href="../../en/GRUB.html#Encrypted_/boot" title="GRUB">GRUB#Encrypted /boot</a> for details. Use LUKS2 with PBKDF2 (<code>cryptsetup luksFormat --pbkdf pbkdf2</code>) for partitions that GRUB will need to unlock.</li>
+<li>Waking-up from suspend to disk on a ZFS dataset can corrupt your pool so, be extra careful when setting up hibernation even if swap is placed outside the zvol. <a rel="nofollow" class="external text" href="https://github.com/openzfs/zfs/issues/260#issuecomment-991912492">Reference here</a>.</li>
 </ul>
 </div>
 <h2><span class="mw-headline" id="LUKS_on_a_partition">LUKS on a partition</span></h2>
@@ -986,8 +999,10 @@ The following are examples of common scenarios of full system encryption with <i
 <p>Note that each block device requires its own passphrase. This may be inconvenient, because it results in a separate passphrase to be input during boot. An alternative is to use a keyfile stored in the root partition to unlock the separate partition via <code>crypttab</code>. See <a href="../../en/Dm-crypt/Device_encryption.html#Using_LUKS_to_format_partitions_with_a_keyfile" title="Dm-crypt/Device encryption">dm-crypt/Device encryption#Using LUKS to format partitions with a keyfile</a> for instructions.
 </p>
 <h3><span class="mw-headline" id="Preparing_the_boot_partition">Preparing the boot partition</span></h3>
-<p>What you do have to setup is a non-encrypted <code>/boot</code> partition, which is needed for an encrypted root. For an <a href="../../en/EFI_system_partition.html" title="EFI system partition">EFI system partition</a> on UEFI systems, execute:
+<p>What you do have to setup is a non-encrypted <code>/boot</code> partition, which is needed for an encrypted root. For an <a href="../../en/EFI_system_partition.html" title="EFI system partition">EFI system partition</a> on UEFI systems, execute the following command to format the newly created partition:
 </p>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning:</strong> Only format the EFI system partition if you created it during the partitioning step. If there already was an EFI system partition on disk beforehand, reformatting it can destroy the boot loaders of other installed operating systems.</div>
 <pre># mkfs.fat -F32 /dev/sda1
 </pre>
 <p>or for an ordinary boot partition on BIOS systems:
@@ -999,7 +1014,7 @@ The following are examples of common scenarios of full system encryption with <i
 <pre># mount --mkdir /dev/sda1 /mnt/boot
 </pre>
 <h3><span class="mw-headline" id="Mounting_the_devices">Mounting the devices</span></h3>
-<p>At <a href="../../en/Installation_guide.html#Mount_the_file_systems" title="Installation guide">Installation guide#Mount the file systems</a> you will have to mount the mapped devices, not the actual partitions. Of course <code>/boot</code>, which is not encrypted, will still have to be mounted directly. It should be mounted at <code>/mnt</code>.
+<p>At the step <a href="../../en/Installation_guide.html#Mount_the_file_systems" title="Installation guide">Installation guide#Mount the file systems</a>, you should mount the <code>/dev/mapper/*</code> devices (the contents of LUKS), not the actual partitions. Of course, the partition for <code>/boot</code>, which is not encrypted, should still be mounted directly. During installation, it should be mounted to <code>/mnt/boot</code> (assuming the device for the root file system is mounted to <code>/mnt</code> during installation).
 </p>
 <h3><span class="mw-headline" id="Configuring_mkinitcpio">Configuring mkinitcpio</span></h3>
 <p>Before following <a href="../../en/Installation_guide.html#Initramfs" title="Installation guide">Installation guide#Initramfs</a> you must do the following to your new system:
@@ -1095,7 +1110,7 @@ The following are examples of common scenarios of full system encryption with <i
 <p>Do <b>not</b> regenerate the initramfs <b>yet</b>, as the <code>/boot/EFI/Linux</code> directory needs to be created by the boot loader installer first.
 </p>
 <h3><span class="mw-headline" id="Installing_the_boot_loader">Installing the boot loader</span></h3>
-<p>You can configure your system to directly boot the UEFI image without any boot loader, see <a href="../../en/Unified_kernel_image.html#Directly_from_UEFI" title="Unified kernel image">Unified_kernel_image#Directly_from_UEFI</a>.
+<p>You can configure your system to directly boot the UEFI image without any boot loader, see <a href="../../en/Unified_kernel_image.html#Directly_from_UEFI" title="Unified kernel image">Unified kernel image#Directly from UEFI</a>.
 </p>
 <p>If a boot loader is desired, continue installing <a href="../../en/Systemd-boot.html" title="Systemd-boot">systemd-boot</a> with
 </p>
@@ -1209,8 +1224,10 @@ The following are examples of common scenarios of full system encryption with <i
 <h3><span class="mw-headline" id="Preparing_the_boot_partition_2">Preparing the boot partition</span></h3>
 <p>The boot loader loads the kernel, <a href="../../en/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs">initramfs</a>, and its own configuration files from the <code>/boot</code> directory. Any file system on a disk that can be read by the boot loader is eligible.
 </p>
-<p>Create a <a href="../../en/File_systems.html" class="mw-redirect" title="File system">file system</a> on the partition intended for <code>/boot</code>. For an <a href="../../en/EFI_system_partition.html" title="EFI system partition">EFI system partition</a> on UEFI systems, execute:
+<p>Create a <a href="../../en/File_systems.html" class="mw-redirect" title="File system">file system</a> on the partition intended for <code>/boot</code>. For an <a href="../../en/EFI_system_partition.html" title="EFI system partition">EFI system partition</a> on UEFI systems, execute the following command to format the newly created partition:
 </p>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning:</strong> Only format the EFI system partition if you created it during the partitioning step. If there already was an EFI system partition on disk beforehand, reformatting it can destroy the boot loaders of other installed operating systems.</div>
 <pre># mkfs.fat -F32 /dev/sdb1
 </pre>
 <p>or for an ordinary boot partition on BIOS systems:
@@ -1313,8 +1330,10 @@ Note that <code>/home</code> will be encrypted in <a href="#Encrypting_logical_v
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip:</strong> If you ever have to access the encrypted root from the Arch-ISO, the above <code>open</code> action will allow you to after the <a href="../../en/LVM.html#Logical_volumes_do_not_show_up" title="LVM">LVM shows up</a>.</div>
 <h3><span class="mw-headline" id="Preparing_the_boot_partition_3">Preparing the boot partition</span></h3>
-<p>Create a <a href="../../en/File_systems.html" class="mw-redirect" title="File system">file system</a> on the partition intended for <code>/boot</code>. For an <a href="../../en/EFI_system_partition.html" title="EFI system partition">EFI system partition</a> on UEFI systems, execute:
+<p>Create a <a href="../../en/File_systems.html" class="mw-redirect" title="File system">file system</a> on the partition intended for <code>/boot</code>. For an <a href="../../en/EFI_system_partition.html" title="EFI system partition">EFI system partition</a> on UEFI systems, execute the following command to format the newly created partition:
 </p>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning:</strong> Only format the EFI system partition if you created it during the partitioning step. If there already was an EFI system partition on disk beforehand, reformatting it can destroy the boot loaders of other installed operating systems.</div>
 <pre># mkfs.fat -F32 /dev/sda1
 </pre>
 <p>or for an ordinary boot partition on BIOS systems:
@@ -1480,8 +1499,10 @@ To save on entering a second passphrase at boot, a <a href="../../en/Dm-crypt/De
 # mkfs.ext4 /dev/mapper/data
 # mount --mkdir /dev/mapper/data /mnt/data
 </pre>
-<p>For UEFI systems, set up the EFI system partition:
+<p>For UEFI systems, format the newly created EFI system partition and mount it:
 </p>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning:</strong> Only format the EFI system partition if you created it during the partitioning step. If there already was an EFI system partition on disk beforehand, reformatting it can destroy the boot loaders of other installed operating systems.</div>
 <pre># mkfs.fat -F32 /dev/md/ESP
 # mount --mkdir /dev/md/ESP /mnt/efi
 </pre>
@@ -1623,8 +1644,10 @@ HOOKS=(base udev autodetect microcode modconf kms <b>keyboard</b> <b>keymap</b> 
 <h3><span class="mw-headline" id="Preparing_the_boot_partition_4">Preparing the boot partition</span></h3>
 <p>The <code>/boot</code> partition can be a typical FAT32 formatted partition on a USB stick, if required. But if manual partitioning is needed, then a small 1 GiB partition is all that is required. Create the partition using a <a href="../../en/Partitioning.html#Partitioning_tools" title="Partitioning">partitioning tool</a> of your choice.
 </p>
-<p>Create a <a href="../../en/File_systems.html" class="mw-redirect" title="File system">file system</a> on the partition intended for <code>/boot</code>:
+<p>Create a <a href="../../en/File_systems.html" class="mw-redirect" title="File system">file system</a> on the newly created partition intended for <code>/boot</code>:
 </p>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning:</strong> Only format the EFI system partition if you created it during the partitioning step. If there already was an EFI system partition on disk beforehand, reformatting it can destroy the boot loaders of other installed operating systems.</div>
 <pre># mkfs.fat -F32 /dev/sdb1
 # mount --mkdir /dev/sdb1 /mnt/boot
 </pre>
@@ -1880,8 +1903,8 @@ normal</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/Encrypting_an_entire_system&amp;oldid=826264">https://wiki.archlinux.org/index.php?title=Dm-crypt/Encrypting_an_entire_system&amp;oldid=826264</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 2 February 2025, at 10:13.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/Encrypting_an_entire_system&amp;oldid=834685">https://wiki.archlinux.org/index.php?title=Dm-crypt/Encrypting_an_entire_system&amp;oldid=834685</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 27 May 2025, at 09:23.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-disabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>QEMU/Guest graphics acceleration - ArchWiki</title>
 <link rel="stylesheet" href="../../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.0">
+<meta name="generator" content="MediaWiki 1.43.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -259,7 +259,7 @@
 <p><a href="../../en/PCI_passthrough_via_OVMF.html" title="PCI passthrough via OVMF">PCI passthrough</a> currently seems to be the most popular method for optimal performance. <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?id=162768&amp;p=1">This forum thread</a> (now closed, and may be outdated) may be of interest for problem solving. You can use kvm switch to control desktops.
 </p>
 <h3><span class="mw-headline" id="Single_GPU_passthrough">Single GPU passthrough</span></h3>
-<p>Currently, <a href="../../en/PCI_passthrough_via_OVMF.html" title="PCI passthrough via OVMF">PCI passthrough</a> works for multiple graphics cards only. However, there is a <a rel="nofollow" class="external text" href="https://gitlab.com/risingprismtv/single-gpu-passthrough/-/wikis/1)-Preparations">workaround</a> for passing a single graphics card. The problem with this approach is that you have to detach the graphics card from the host and use ssh to control the host from the guest. 
+<p>Currently, <a href="../../en/PCI_passthrough_via_OVMF.html" title="PCI passthrough via OVMF">PCI passthrough</a> works for multiple graphics cards only. However, there is a <a rel="nofollow" class="external text" href="https://gitlab.com/risingprismtv/single-gpu-passthrough/-/wikis/1)-Preparations">workaround</a> for passing a single graphics card. The problem with this approach is that you have to detach the graphics card from the host and use ssh to control the host from the guest.
 </p>
 <p>When you start the virtual machine, all your GUI apps will be force terminated. However, as a workaround, you can use <a href="../../en/Xpra.html" title="Xpra">Xpra</a> to detach to another Display before starting the virtual machine and reattach the Apps to display after shutting down the virtual machine.
 </p>
@@ -270,15 +270,17 @@
 </p>
 <h2><span class="mw-headline" id="GPU_virtualization">GPU virtualization</span></h2>
 <h3><span class="mw-headline" id="LIBVF.IO">LIBVF.IO</span></h3>
-<p><a rel="nofollow" class="external text" href="https://github.com/Arc-Compute/libvf.io">LibVF.IO</a> is a Virtualization Framework (Libvirt's alternative) for simplifying the GPU Virtualization. It supports Intel (Intel GVT-g, SR-IOV), NVIDIA (NVIDIA vGPU, SR-IOV) and AMD (AMD SR-IOV). You have to create YAML configurations for each virtual machine. Currently, Intel and NVIDIA GPUs are tested, with limited support for AMD. You can follow this <a rel="nofollow" class="external text" href="https://arccompute.com/blog/libvfio-commodity-gpu-multiplexing/">setup guide</a><sup title="Last check status: SSL error">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-12-15 ⓘ]</sup>. You can also check their <a rel="nofollow" class="external text" href="https://open-iov.org/index.php/Articles">Wiki</a>. For NVIDIA GPU, you need to unlock vGPU which can be done by installing <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/nvidia-merged-dkms/">nvidia-merged-dkms</a></span><sup><small>AUR</small></sup><sup>[<a href="../../en/Help:Procedures.html#Fix_broken_package_links" title="Help:Procedures">broken link</a>: package not found]</sup> or <a rel="nofollow" class="external text" href="https://github.com/rupansh/vgpu_unlock_5.12#merged-driver-notes">building it yourself</a> and putting it in LIBVF.IO's Optional Folder.
+<p><a rel="nofollow" class="external text" href="https://github.com/Arc-Compute/libvf.io">LibVF.IO</a> is a Virtualization Framework (Libvirt's alternative) for simplifying the GPU Virtualization. It supports Intel (Intel GVT-g, SR-IOV), NVIDIA (NVIDIA vGPU, SR-IOV) and AMD (AMD SR-IOV). You have to create YAML configurations for each virtual machine. Currently, Intel and NVIDIA GPUs are tested, with limited support for AMD. You can follow this <a rel="nofollow" class="external text" href="https://arccompute.com/blog/libvfio-commodity-gpu-multiplexing/">setup guide</a><sup title="Last check status: SSL error">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-12-15 ⓘ]</sup>. You can also check their <a rel="nofollow" class="external text" href="https://open-iov.org/index.php/Articles">Wiki</a>. For NVIDIA, you need to unlock the vGPU, see <a href="#NVIDIA_vGPU">#NVIDIA vGPU</a> and putting it in LIBVF.IO's Optional Folder.
 </p>
 <p>There is also LIME (<i>L</i>IME <i>I</i>s <i>M</i>ediated <i>E</i>mulation) for executing Windows programs in Linux.
 </p>
 <p>This framework was <a rel="nofollow" class="external text" href="https://www.youtube.com/watch?v=wqUjukaTqEg">tested for gaming</a>. By default, LibVF.IO uses Looking Glass as Virtual Display but you can change that through YAML configuration.
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> In case you have Ryzen CPU, You have to enable ignore_msrs to avoid Windows BSOD. Always double check your guest driver version. For Nvidia GPU, make sure nvidia-vgpud and nvidia-vgpu-mgr services are running!</div>
+<strong>Tip:</strong> In case you have a Ryzen CPU, you have to enable <code>ignore_msrs</code> to avoid a Windows BSOD. Always double check your guest driver version. For Nvidia GPUs, make sure <code>nvidia-vgpud.service</code> and <code>nvidia-vgpu-mgr.service</code> are <a href="../../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Started">running</a>!</div>
 <h3><span class="mw-headline" id="NVIDIA_vGPU">NVIDIA vGPU</span></h3>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning:</strong> According to many issues in <a rel="nofollow" class="external free" href="https://github.com/DualCoder/vgpu_unlock/issues">https://github.com/DualCoder/vgpu_unlock/issues</a> there is no support for recent graphics cards, as the project appears to have been abandoned. There are also open questions about the legality of this process in commercial settings.</div>
 <p>By default, NVIDIA disabled the vGPU for consumer series (if you own an enterprise card <a rel="nofollow" class="external text" href="https://documentation.suse.com/sles/15-SP3/html/SLES-all/article-nvidia-vgpu.html">go ahead</a>). However, you can <a rel="nofollow" class="external text" href="https://krutavshah.github.io/GPU_Virtualization-Wiki/overview.html">unlock vGPU</a> for your consumer card.
 </p>
 <p>You will also need a <a rel="nofollow" class="external text" href="https://www.nvidia.com/en-us/data-center/resources/vgpu-evaluation/">vGPU license</a>, though there are some <a rel="nofollow" class="external text" href="https://github.com/DualCoder/vgpu_unlock/issues/94#issuecomment-1072870857">workarounds</a>.
@@ -298,7 +300,7 @@
 <p>iGVT-g is limited to integrated Intel graphics on past Intel CPUs (starting from Broadwell and ending with Comet Lake). This is a "software workaround" for older iGPUs that do not support SR-IOV <a rel="nofollow" class="external autonumber" href="https://www.reddit.com/r/VFIO/comments/q9noan/comment/hgxlqch/?utm_source=share&amp;utm_medium=web2x&amp;context=3">[1]</a>. Newer Intel iGPUs can use SR-IOV instead. For more information, see <a href="../../en/Intel_GVT-g.html" title="Intel GVT-g">Intel GVT-g</a>.
 </p>
 <h2><span class="mw-headline" id="Virgil3d_virtio-gpu_paravirtualized_device_driver">Virgil3d virtio-gpu paravirtualized device driver</span></h2>
-<p><a rel="nofollow" class="external autonumber" href="https://docs.mesa3d.org/drivers/virgl.html">[2]</a> virtio-gpu is a paravirtualized 3d accelerated graphics driver, similar to <a href="../../en/QEMU.html#Installing_virtio_drivers" title="QEMU">non-graphics virtio drivers</a> (see <a rel="nofollow" class="external text" href="https://www.linux-kvm.org/page/Virtio">virtio driver information</a> and <a rel="nofollow" class="external text" href="https://www.linux-kvm.org/page/WindowsGuestDrivers/Download_Drivers">virtio Windows guest drivers</a>). For Linux guests, <a href="../../en/QEMU.html#virtio" title="QEMU">virtio-gpu</a> is fairly mature, having been available since Linux kernel version 4.4 and QEMU version 2.6. See <a rel="nofollow" class="external text" href="https://www.reddit.com/r/archlinux/comments/7nmceg/kvmqemu_with_virtiogpu_virgl_support_enabled/">this Reddit Arch thread</a> and <a rel="nofollow" class="external text" href="https://www.kraxel.org/blog/2016/09/using-virtio-gpu-with-libvirt-and-spice/">Gerd Hoffmann's blog for using this with libvirt and spice</a>.
+<p><a rel="nofollow" class="external autonumber" href="https://docs.mesa3d.org/drivers/virgl.html">[2]</a> virtio-gpu is a paravirtualized 3d accelerated graphics driver, similar to <a href="../../en/QEMU.html#Using_virtio_drivers" title="QEMU">non-graphics virtio drivers</a> (see <a rel="nofollow" class="external text" href="https://www.linux-kvm.org/page/Virtio">virtio driver information</a> and <a rel="nofollow" class="external text" href="https://www.linux-kvm.org/page/WindowsGuestDrivers/Download_Drivers">virtio Windows guest drivers</a>). For Linux guests, <a href="../../en/QEMU.html#virtio" title="QEMU">virtio-gpu</a> is fairly mature, having been available since Linux kernel version 4.4 and QEMU version 2.6. See <a rel="nofollow" class="external text" href="https://www.reddit.com/r/archlinux/comments/7nmceg/kvmqemu_with_virtiogpu_virgl_support_enabled/">this Reddit Arch thread</a> and <a rel="nofollow" class="external text" href="https://www.kraxel.org/blog/2016/09/using-virtio-gpu-with-libvirt-and-spice/">Gerd Hoffmann's blog for using this with libvirt and spice</a>.
 </p>
 <p>For Windows guests, there's currently an active work in progress on <a rel="nofollow" class="external text" href="https://github.com/virtio-win/kvm-guest-drivers-windows/pull/943">a fully functional OpenGL and Direct3D10 driver</a> on the main GitHub repo's pull request. There's also <a rel="nofollow" class="external text" href="https://lists.freedesktop.org/archives/virglrenderer-devel/2021-January/001897.html">a report that Red Hat also previously worked on the OpenGL driver</a>, including <a rel="nofollow" class="external text" href="https://gist.github.com/Keenuts/199184f9a6d7a68d9a62cf0011147c0b">the project summary</a> but abandoned it soon after. Other drivers include <a rel="nofollow" class="external text" href="https://gitlab.com/spice/win32/virtio-gpu-wddm-dod">the DOD (Windows kernel) driver</a> and <a rel="nofollow" class="external text" href="https://github.com/Keenuts/virtio-gpu-win-icd">the ICD (Windows userland) driver</a> are available. In addition, see <a rel="nofollow" class="external text" href="https://www.phoronix.com/scan.php?page=news_item&amp;px=QEMU-3D-Windows-Guests">this Phoronix article</a> and its comments.
 </p>
@@ -313,10 +315,7 @@
 <li><a href="../../en/Category:Emulation.html" title="Category:Emulation">Emulation</a></li>
 </ul>
 </div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
-<li><a href="../../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li>
-<li><a href="../../en/Category:Pages_with_broken_package_links.html" title="Category:Pages with broken package links">Pages with broken package links</a></li>
-</ul>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li></ul>
 </div>
 </div>
 				</div>
@@ -327,8 +326,8 @@
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=QEMU/Guest_graphics_acceleration&amp;oldid=827720">https://wiki.archlinux.org/index.php?title=QEMU/Guest_graphics_acceleration&amp;oldid=827720</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 25 February 2025, at 00:07.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=QEMU/Guest_graphics_acceleration&amp;oldid=834919">https://wiki.archlinux.org/index.php?title=QEMU/Guest_graphics_acceleration&amp;oldid=834919</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 31 May 2025, at 07:00.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>
