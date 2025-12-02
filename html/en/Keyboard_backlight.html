@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-os vector-sticky-header-enabled vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Keyboard backlight - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.1">
+<meta name="generator" content="MediaWiki 1.44.2">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -148,10 +148,10 @@
 		</div>
 		<div class="mw-content-container">
 			<main id="content" class="mw-body" style="margin: 0">
-				<header class="mw-body-header vector-page-titlebar">
+				<header class="mw-body-header vector-page-titlebar vector-feature-custom-font-size-clientpref--excluded">
 					<nav aria-label="Contents" class="vector-toc-landmark">
 						
-<div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left">
+<div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left" title="Table of Contents">
 	<input type="checkbox" id="vector-page-titlebar-toc-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-vector-page-titlebar-toc" class="vector-dropdown-checkbox " aria-label="Toggle the table of contents">
 	<label id="vector-page-titlebar-toc-label" for="vector-page-titlebar-toc-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only " aria-hidden="true"><span class="vector-icon mw-ui-icon-listBullet mw-ui-icon-wikimedia-listBullet"></span>
 
@@ -190,7 +190,7 @@
 	</div>
 </div>
 </header>
-				<div class="vector-column-end">
+				<div class="vector-column-end vector-feature-custom-font-size-clientpref--excluded">
 					<div class="vector-sticky-pinned-container">
 						<nav class="vector-page-tools-landmark" aria-label="Page tools">
 							<div id="vector-page-tools-pinned-container" class="vector-pinned-container">
@@ -250,10 +250,10 @@
 <p>In contrast, either operating system–controlled scenario allows for easier scripting at the detriment of lacking backlight control outside of a running operating system.
 </p>
 <meta property="mw:PageProp/toc">
-<h2><span class="mw-headline" id="Controlling_the_backlight">Controlling the backlight</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="Controlling_the_backlight">Controlling the backlight</h2></div>
 <p>Even when the brightness is controlled by firmware, you can adjust the level programmatically. There are a variety ways to manage the brightness level and different helpers tools to accomplish this, such as <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=brightnessctl">brightnessctl</a></span> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/light/">light</a></span><sup><small>AUR</small></sup>.
 </p>
-<h3><span class="mw-headline" id="sysfs">sysfs</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="sysfs">sysfs</h3></div>
 <p>The <code>sys</code> pseudo-file system exposes an interface to the keyboard backlight. The current brightness level can be obtained by reading <code>/sys/class/leds/<i>vendor</i>::kbd_backlight/brightness</code> where <code><i>vendor</i></code> can is replaced depending on the manufacturer, e.g. <code>tpacpi</code> for Lenovo (ThinkPads), <code>asus</code> for ASUS or <code>dell</code> for Dell. For example to get the maximum brightness level:
 </p>
 <pre>$ cat /sys/class/leds/<i>vendor</i>::kbd_backlight/max_brightness
@@ -270,7 +270,24 @@
 </p>
 <pre>$ brightnessctl --device='<i>vendor</i>::kbd_backlight' set 1
 </pre>
-<h3><span class="mw-headline" id="xset">xset</span></h3>
+<p>You can use script to toggle keyboard backlight every call, for example
+</p>
+<pre>#!/bin/bash
+
+leds_path="/sys/class/leds"
+for dir in "$leds_path"/input*[0-9]::scrolllock; do
+    if [ -d "$dir" ]; then
+        FILE="$dir/brightness"
+        CONTENT=$(cat "$FILE")
+        if [ "$CONTENT" = "0" ]; then
+            echo "1" &gt; "$FILE"
+        elif [ "$CONTENT" = "1" ]; then
+            echo "0" &gt; "$FILE"
+        fi
+        exit 0
+    fi
+done</pre>
+<div class="mw-heading mw-heading3"><h3 id="xset">xset</h3></div>
 <p>Some keyboard manufacturers are not recognized by <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=brightnessctl">brightnessctl</a></span> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/light/">light</a></span><sup><small>AUR</small></sup>, but you can use <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xorg-xset">xorg-xset</a></span> to control its lights if you are running Xorg.
 </p>
 <p>The first parameter <code>led</code> turns on the led, and <code>-led</code> turns it off, the <code>NUMBER</code> parameters accepts integers for 1 to 32 (each number corresponds to a led in you system, keyboards seem to generally be number 3), or 'on' and 'off' (on will turn ALL lights on, and off will turn ALL lights off).
@@ -283,13 +300,13 @@
 </p>
 <pre>$ xset -led NUMBER
 </pre>
-<h3><span class="mw-headline" id="D-Bus">D-Bus</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="D-Bus">D-Bus</h3></div>
 <p>You can control your computer keyboard backlight via the <a href="../en/D-Bus.html" title="D-Bus">D-Bus</a> interface. The benefits of using it are that no modification to device files is required and it is vendor agnostic.
 </p>
 <p>The following is an example implementation in Python, requiring <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=upower">upower</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=python-dbus">python-dbus</a></span> to be <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">installed</a>. You can then map your keyboard shortcuts to run <code>/usr/local/bin/kb-light.py + <i>x</i></code> and <code>/usr/local/bin/kb-light.py - <i>x</i></code> to increase and decrease your keyboard backlight level by <code><i>x</i></code> amounts.
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> 
+<strong>Tip</strong> 
 <ul>
 <li>You should try with an <i>x</i> = <code>1</code> to determine the limits of the keyboard backlight levels.</li>
 <li>Do not forget to make the script <a href="../en/Help:Reading.html#Make_executable" class="mw-redirect" title="Executable">executable</a>.</li>
@@ -342,13 +359,13 @@ if __name__ ==  '__main__':
 </p>
 <pre>$ dbus-send --system --type=method_call  --dest="org.freedesktop.UPower" "/org/freedesktop/UPower/KbdBacklight" "org.freedesktop.UPower.KbdBacklight.SetBrightness" int32:<i>value</i>
 </pre>
-<h4><span class="mw-headline" id="On_GNOME">On GNOME</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="On_GNOME">On GNOME</h4></div>
 <p>The following can be run from a terminal or mapped to keybindings 
 </p>
 <pre>$ gdbus call --session --dest org.gnome.SettingsDaemon.Power --object-path /org/gnome/SettingsDaemon/Power --method org.gnome.SettingsDaemon.Power.Keyboard.StepUp
 $ gdbus call --session --dest org.gnome.SettingsDaemon.Power --object-path /org/gnome/SettingsDaemon/Power --method org.gnome.SettingsDaemon.Power.Keyboard.StepDown
 </pre>
-<h4><span class="mw-headline" id="On_MATE">On MATE</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="On_MATE">On MATE</h4></div>
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-clear.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs language, wiki syntax or style improvements. See <a href="../en/Help:Style.html" title="Help:Style">Help:Style</a> for reference.</b></p>
 <div>
@@ -396,8 +413,8 @@ $ gdbus call --session --dest org.gnome.SettingsDaemon.Power --object-path /org/
   &lt;/policy&gt;
 &lt;/busconfig&gt;
 </pre>
-<h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
-<h3><span class="mw-headline" id="Restore_after_sleep">Restore after sleep</span></h3>
+<div class="mw-heading mw-heading2"><h2 id="Troubleshooting">Troubleshooting</h2></div>
+<div class="mw-heading mw-heading3"><h3 id="Restore_after_sleep">Restore after sleep</h3></div>
 <p>On some laptops (e.g. Dell XPS 15) the backlight is always off after sleep. In order to restore the previous brightness level you can use the following service.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.config/systemd/system/keyboard-brightness.service</pre>
@@ -431,8 +448,8 @@ WantedBy=sleep.target</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Keyboard_backlight&amp;oldid=808692">https://wiki.archlinux.org/index.php?title=Keyboard_backlight&amp;oldid=808692</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 19 May 2024, at 09:41.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Keyboard_backlight&amp;oldid=850615">https://wiki.archlinux.org/index.php?title=Keyboard_backlight&amp;oldid=850615</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 25 October 2025, at 09:25.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>
@@ -447,7 +464,7 @@ WantedBy=sleep.target</pre>
 
 	<ul id="footer-icons" class="noprint">
 	<li id="footer-copyrightico"><a href="https://www.gnu.org/copyleft/fdl.html" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled"><img src="/resources/assets/licenses/gnu-fdl.png" alt="GNU Free Documentation License 1.3 or later" width="88" height="31" loading="lazy"></a></li>
-	<li id="footer-poweredbyico"><img src="/resources/assets/poweredby_mediawiki.svg" width="88" height="31" loading="lazy"></li>
+	<li id="footer-poweredbyico"><picture><source media="(min-width: 500px)" srcset="/resources/assets/poweredby_mediawiki.svg" width="88" height="31"><img src="/resources/assets/mediawiki_compact.svg" width="25" height="25" loading="lazy"></picture></li>
 </ul>
 
 </footer>
@@ -455,8 +472,100 @@ WantedBy=sleep.target</pre>
 		</div>
 	</div> 
 </div> 
-<div class="vector-settings" id="p-dock-bottom">
-	<ul></ul>
+<div class="vector-header-container vector-sticky-header-container">
+	<div id="vector-sticky-header" class="vector-sticky-header">
+		<div class="vector-sticky-header-start">
+			<div class="vector-sticky-header-icon-start vector-button-flush-left vector-button-flush-right" aria-hidden="true">
+				<button class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-sticky-header-search-toggle" tabindex="-1" data-event-name="ui.vector-sticky-search-form.icon"><span class="vector-icon mw-ui-icon-search mw-ui-icon-wikimedia-search"></span>
+
+<span>Search</span>
+			</button>
+		</div>
+			
+		<div role="search" class="vector-search-box-vue vector-search-box">
+			<div class="vector-typeahead-search-container">
+				<div class="cdx-typeahead-search">
+					<form action="/index.php" id="vector-sticky-search-form" class="cdx-search-input cdx-search-input--has-end-button">
+						<div class="cdx-search-input__input-wrapper" data-search-loc="header-moved">
+							<div class="cdx-text-input cdx-text-input--has-start-icon">
+								<input class="cdx-text-input__input" type="search" name="search" placeholder="Search ArchWiki">
+								<span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
+							</div>
+							<input type="hidden" name="title" value="Special:Search">
+						</div>
+						<button class="cdx-button cdx-search-input__end-button">Search</button>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="vector-sticky-header-context-bar">
+				<nav aria-label="Contents" class="vector-toc-landmark">
+						
+					<div id="vector-sticky-header-toc" class="vector-dropdown mw-portlet mw-portlet-sticky-header-toc vector-sticky-header-toc vector-button-flush-left">
+						<input type="checkbox" id="vector-sticky-header-toc-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-vector-sticky-header-toc" class="vector-dropdown-checkbox " aria-label="Toggle the table of contents">
+						<label id="vector-sticky-header-toc-label" for="vector-sticky-header-toc-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only " aria-hidden="true"><span class="vector-icon mw-ui-icon-listBullet mw-ui-icon-wikimedia-listBullet"></span>
+
+<span class="vector-dropdown-label-text">Toggle the table of contents</span>
+						</label>
+						<div class="vector-dropdown-content">
+					
+						<div id="vector-sticky-header-toc-unpinned-container" class="vector-unpinned-container">
+						</div>
+					
+						</div>
+					</div>
+			</nav>
+				<div class="vector-sticky-header-context-bar-primary" aria-hidden="true"><span class="mw-page-title-main">Keyboard backlight</span></div>
+			</div>
+		</div>
+		<div class="vector-sticky-header-end" aria-hidden="true">
+			<div class="vector-sticky-header-icons">
+				<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-talk-sticky-header" tabindex="-1" data-event-name="talk-sticky-header"><span class="vector-icon mw-ui-icon-speechBubbles mw-ui-icon-wikimedia-speechBubbles"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-subject-sticky-header" tabindex="-1" data-event-name="subject-sticky-header"><span class="vector-icon mw-ui-icon-article mw-ui-icon-wikimedia-article"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-history-sticky-header" tabindex="-1" data-event-name="history-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-history mw-ui-icon-wikimedia-wikimedia-history"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only mw-watchlink" id="ca-watchstar-sticky-header" tabindex="-1" data-event-name="watch-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-star mw-ui-icon-wikimedia-wikimedia-star"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-edit-sticky-header" tabindex="-1" data-event-name="wikitext-edit-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-wikiText mw-ui-icon-wikimedia-wikimedia-wikiText"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-ve-edit-sticky-header" tabindex="-1" data-event-name="ve-edit-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-edit mw-ui-icon-wikimedia-wikimedia-edit"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-viewsource-sticky-header" tabindex="-1" data-event-name="ve-edit-protected-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-editLock mw-ui-icon-wikimedia-wikimedia-editLock"></span>
+
+<span></span>
+			</a>
+		</div>
+			<div class="vector-sticky-header-buttons">
+				<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive" id="ca-addsection-sticky-header" tabindex="-1" data-event-name="addsection-sticky-header"><span class="vector-icon mw-ui-icon-speechBubbleAdd-progressive mw-ui-icon-wikimedia-speechBubbleAdd-progressive"></span>
+
+<span>Add topic</span>
+			</a>
+		</div>
+			<div class="vector-sticky-header-icon-end">
+				<div class="vector-user-links">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="mw-portlet mw-portlet-dock-bottom emptyPortlet" id="p-dock-bottom">
+	<ul>
+		
+	</ul>
 </div>
 </body>
 </html>

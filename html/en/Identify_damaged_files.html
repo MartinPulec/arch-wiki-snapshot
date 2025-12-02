@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-os vector-sticky-header-enabled vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Identify damaged files - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.1">
+<meta name="generator" content="MediaWiki 1.44.2">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -209,10 +209,10 @@
 		</div>
 		<div class="mw-content-container">
 			<main id="content" class="mw-body" style="margin: 0">
-				<header class="mw-body-header vector-page-titlebar">
+				<header class="mw-body-header vector-page-titlebar vector-feature-custom-font-size-clientpref--excluded">
 					<nav aria-label="Contents" class="vector-toc-landmark">
 						
-<div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left">
+<div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left" title="Table of Contents">
 	<input type="checkbox" id="vector-page-titlebar-toc-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-vector-page-titlebar-toc" class="vector-dropdown-checkbox " aria-label="Toggle the table of contents">
 	<label id="vector-page-titlebar-toc-label" for="vector-page-titlebar-toc-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only " aria-hidden="true"><span class="vector-icon mw-ui-icon-listBullet mw-ui-icon-wikimedia-listBullet"></span>
 
@@ -250,7 +250,7 @@
 	</div>
 </div>
 </header>
-				<div class="vector-column-end">
+				<div class="vector-column-end vector-feature-custom-font-size-clientpref--excluded">
 					<div class="vector-sticky-pinned-container">
 						<nav class="vector-page-tools-landmark" aria-label="Page tools">
 							<div id="vector-page-tools-pinned-container" class="vector-pinned-container">
@@ -297,13 +297,13 @@
 <p>For most of these commands you will have to be either root or a user that has direct read access to the drive you are checking (being a member of the disk group should be enough). As usual, a current backup is always a good idea, especially if imminent drive failure is suspected. <a href="../en/S.M.A.R.T..html" title="S.M.A.R.T.">S.M.A.R.T.</a> can help determining that.
 </p>
 <meta property="mw:PageProp/toc">
-<h2><span class="mw-headline" id="Filesystems">Filesystems</span></h2>
-<h3><span class="mw-headline" id="btrfs">btrfs</span></h3>
+<div class="mw-heading mw-heading2"><h2 id="Filesystems">Filesystems</h2></div>
+<div class="mw-heading mw-heading3"><h3 id="btrfs">btrfs</h3></div>
 <p>Unlike other filesystem types, <a href="../en/Btrfs.html" title="Btrfs">btrfs</a> has native support for reporting on damaged files. When scrubbing a partition, <i>btrfs</i> reads all data and metadata blocks and verifies checksums. It automatically repairs corrupted blocks if there is a correct copy available in a RAID configuration. <i>btrfs</i> also reports any unreadable sector along with the affected file via system log.
 </p>
-<h4><span class="mw-headline" id="Find_damaged_files">Find damaged files</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="Find_damaged_files">Find damaged files</h4></div>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> <a href="../en/Btrfs.html#Automatic_notifications" title="Btrfs">Btrfs desktop notifications</a> help you quickly detect and respond to any file damage.</div>
+<strong>Tip</strong> <a href="../en/Btrfs.html#Automatic_notifications" title="Btrfs">Btrfs desktop notifications</a> help you quickly detect and respond to any file damage.</div>
 <p>First of all, <a href="../en/Btrfs.html#Scrub" title="Btrfs">scrub</a> the damaged partition:
 </p>
 <pre># btrfs scrub start -Bd /dev/<i>sdxy</i>
@@ -331,10 +331,9 @@
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Jan 16 23:14:19 my_server kernel: BTRFS: i/o error at logical 398602014720 on dev /dev/sdxy, sector <b>4621320</b>, root 5, inode 23839, offset 4378624, length 4096, links 1 (path: <i>my/damaged/file</i>)</pre>
 <p>The output above reveals that sector <code>4621320</code> could not be read and it contains data for file <code>my/damaged/file</code>. The sector number can be directly used with <a href="../en/Hdparm.html" title="Hdparm">hdparm</a> when reallocating (see <a href="#Force_the_disk_to_reallocate_bad_block">#Force the disk to reallocate bad block</a>).
 </p>
-<h3>
-<span id="Ext2.2C_ext3.2C_and_ext4"></span><span class="mw-headline" id="Ext2,_ext3,_and_ext4">Ext2, ext3, and ext4</span>
-</h3>
-<h4><span class="mw-headline" id="Debug_the_filesystem">Debug the filesystem</span></h4>
+<div class="mw-heading mw-heading3"><h3 id="Ext2,_ext3,_and_ext4">
+<span id="Ext2.2C_ext3.2C_and_ext4"></span>Ext2, ext3, and ext4</h3></div>
+<div class="mw-heading mw-heading4"><h4 id="Debug_the_filesystem">Debug the filesystem</h4></div>
 <p>The <i>tune2fs</i> command will give you access to all the low level structures within any ext2/<a href="../en/Ext3.html" title="Ext3">ext3</a>/<a href="../en/Ext4.html" title="Ext4">ext4</a> filesystem. 
 </p>
 <p>The first thing we want to do is get the block size from the filesystem in question. Just run:
@@ -364,14 +363,14 @@
 <pre>debugfs:  testb <i>blocknumber</i>
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> If <code>debugfs</code> says that block is not in use then that means the block is not allocated and is being used as free space. In that case this is a good thing as it means nothing important was damaged.</div>
+<strong>Note</strong> If <code>debugfs</code> says that block is not in use then that means the block is not allocated and is being used as free space. In that case this is a good thing as it means nothing important was damaged.</div>
 <p>If the block is in use then run this command to get the <i>inode</i> number
 </p>
 <pre>icheck <i>blocknumber</i>
 </pre>
 <p>This will return two numbers. The block number and the <i>inode</i> number.
 </p>
-<h4><span class="mw-headline" id="Find_damaged_files_2">Find damaged files</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="Find_damaged_files_2">Find damaged files</h4></div>
 <p>Use the <i>inode</i> number (second number from the <code>icheck</code> command) with the <code>ncheck</code> command:
 </p>
 <pre>ncheck <i>inodenumber</i>
@@ -386,8 +385,8 @@
 </p>
 <pre># tune2fs -j /dev/sdxy
 </pre>
-<h3><span class="mw-headline" id="JFS">JFS</span></h3>
-<h4><span class="mw-headline" id="Debug_the_filesystem_2">Debug the filesystem</span></h4>
+<div class="mw-heading mw-heading3"><h3 id="JFS">JFS</h3></div>
+<div class="mw-heading mw-heading4"><h4 id="Debug_the_filesystem_2">Debug the filesystem</h4></div>
 <p>The <i>jfs_debugfs</i> command will give you access to all the low level structures within any <a href="../en/JFS.html" title="JFS">JFS</a> filesystem. Other filesystems such as the <a href="../en/Ext3.html" title="Ext3">ext3</a> and <a href="../en/Ext4.html" title="Ext4">ext4</a> filesystems have similar tools. It is probably a good idea to <i>umount</i> any filesystem before you run this on them. To use it just run:
 </p>
 <pre># jfs_debugfs /dev/sdxy
@@ -407,22 +406,22 @@
 <p>The syntax is the <code>d</code> command for display, the block number, the offset (just set it to 0), and the display format <code>i</code> for <i>inode</i>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> If you get an error then that means the block is not allocated and is being used as free space. In that case this is a good thing as it means nothing important was damaged.</div>
+<strong>Note</strong> If you get an error then that means the block is not allocated and is being used as free space. In that case this is a good thing as it means nothing important was damaged.</div>
 <p>The decimal number that <code>di_number</code> is set to is the one we want. From here you type <code>x</code> to exit out of the display mode. Repeat the display command for each bad block that you have and note all of their <i>inode</i> numbers. For more info on the <i>inode</i> such as permissions and filetype type:
 </p>
 <pre>i <i>inodenumber</i>
 </pre>
 <p>When you have all the <i>inode</i> numbers type <code>q</code> to quit.
 </p>
-<h4><span class="mw-headline" id="Find_damaged_files_3">Find damaged files</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="Find_damaged_files_3">Find damaged files</h4></div>
 <p>Finally to find the damaged file you can simply use the gnu <a href="../en/Core_utilities.html#Essentials" class="mw-redirect" title="Find">find</a> utility. Mount your filesystem and run:
 </p>
 <pre># find / -inum <i>inodenumber</i>
 </pre>
 <p>Substitute <code>/</code> for the mountpoint of the filesystem that the <i>inode</i> belongs to. If you search root and have more than one filesystem mounted you can find multiple files with the same <i>inode</i> number on different filesystems, plus <a href="../en/Core_utilities.html#Essentials" class="mw-redirect" title="Find">find</a> will take significantly longer. Remember, an <i>inode</i> is only unique to the filesystem that it is in.
 </p>
-<h3><span class="mw-headline" id="XFS">XFS</span></h3>
-<h4><span class="mw-headline" id="Debug_the_filesystem_3">Debug the filesystem</span></h4>
+<div class="mw-heading mw-heading3"><h3 id="XFS">XFS</h3></div>
+<div class="mw-heading mw-heading4"><h4 id="Debug_the_filesystem_3">Debug the filesystem</h4></div>
 <p>The <i>xfs_info</i> command will give you basic information about an <a href="../en/XFS.html" title="XFS">XFS</a> formatted partition and the <i>xfs_db</i> command will give you access to all the low level structures within any <a href="../en/XFS.html" title="XFS">XFS</a> filesystem.
 </p>
 <p>The first thing we want to do is get the block size from the filesystem in question. Just run:
@@ -453,7 +452,7 @@ log      =internal               <b>bsize=4096</b>   blocks=855, version=2</pre>
 </p>
 <p>If instead you do not get an inode number in your output but do see the word <i>free</i> then likely this means that the bad block belongs to free space and nothing important was damaged.
 </p>
-<h4><span class="mw-headline" id="Find_damaged_files_4">Find damaged files</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="Find_damaged_files_4">Find damaged files</h4></div>
 <p>Finally to find the damaged file you can simply use the gnu <a href="../en/Core_utilities.html#Essentials" class="mw-redirect" title="Find">find</a> utility. Mount your filesystem and run:
 </p>
 <pre># find / -inum <i>inodenumber</i>
@@ -461,11 +460,11 @@ log      =internal               <b>bsize=4096</b>   blocks=855, version=2</pre>
 <p>Substitute <code>/</code> for the mountpoint of the filesystem that the <i>inode</i> belongs to. If you search root and have more than one filesystem mounted you can find multiple files with the same <i>inode</i> number on different filesystems, plus <a href="../en/Core_utilities.html#Essentials" class="mw-redirect" title="Find">find</a> will take significantly longer. Remember, an <i>inode</i> is only unique to the filesystem that it is in.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> According to <span class="plainlinks archwiki-template-man" title="$ man 8 xfs_db"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/xfs_db.8">xfs_db(8)</a></span> the <code>blockuse -n</code> command can be used in conjuction with <code>blockget -n -c <i>blocknumber</i></code> in order to print file names. Testing this did not produce the desired results though it may be worth trying anyway since it is faster than the find method.
+<strong>Note</strong> According to <span class="plainlinks archwiki-template-man" title="$ man 8 xfs_db"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/xfs_db.8">xfs_db(8)</a></span> the <code>blockuse -n</code> command can be used in conjuction with <code>blockget -n -c <i>blocknumber</i></code> in order to print file names. Testing this did not produce the desired results though it may be worth trying anyway since it is faster than the find method.
 <pre># xfs_db -c 'blockget -n -b <i>blocknumber</i>' -c 'blockuse -n' /dev/sd<i>Xy</i>
 </pre>
 </div>
-<h2><span class="mw-headline" id="Force_the_disk_to_reallocate_bad_block">Force the disk to reallocate bad block</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="Force_the_disk_to_reallocate_bad_block">Force the disk to reallocate bad block</h2></div>
 <p>First you will want to see how many badblocks the harddrive is aware of through the <a href="../en/S.M.A.R.T..html#smartctl" class="mw-redirect" title="Smartctl">smartctl</a> command:
 </p>
 <pre># smartctl -t long /dev/sdx
@@ -502,7 +501,7 @@ $ sync</pre>
 </p>
 <pre># smartctl -l selftest /dev/sdx
 </pre>
-<h2><span class="mw-headline" id="See_also">See also</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="See_also">See also</h2></div>
 <ul>
 <li>
 <a rel="nofollow" class="external text" href="https://strugglers.net/~andy/blog/2021/07/24/resolving-a-sector-offset-to-a-logical-volume/">Tracing a disk's sector number through md and LVM to a filesystem</a> by Andy Smith of BitFolk</li>
@@ -541,7 +540,7 @@ $ sync</pre>
 
 	<ul id="footer-icons" class="noprint">
 	<li id="footer-copyrightico"><a href="https://www.gnu.org/copyleft/fdl.html" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled"><img src="/resources/assets/licenses/gnu-fdl.png" alt="GNU Free Documentation License 1.3 or later" width="88" height="31" loading="lazy"></a></li>
-	<li id="footer-poweredbyico"><img src="/resources/assets/poweredby_mediawiki.svg" width="88" height="31" loading="lazy"></li>
+	<li id="footer-poweredbyico"><picture><source media="(min-width: 500px)" srcset="/resources/assets/poweredby_mediawiki.svg" width="88" height="31"><img src="/resources/assets/mediawiki_compact.svg" width="25" height="25" loading="lazy"></picture></li>
 </ul>
 
 </footer>
@@ -549,8 +548,100 @@ $ sync</pre>
 		</div>
 	</div> 
 </div> 
-<div class="vector-settings" id="p-dock-bottom">
-	<ul></ul>
+<div class="vector-header-container vector-sticky-header-container">
+	<div id="vector-sticky-header" class="vector-sticky-header">
+		<div class="vector-sticky-header-start">
+			<div class="vector-sticky-header-icon-start vector-button-flush-left vector-button-flush-right" aria-hidden="true">
+				<button class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-sticky-header-search-toggle" tabindex="-1" data-event-name="ui.vector-sticky-search-form.icon"><span class="vector-icon mw-ui-icon-search mw-ui-icon-wikimedia-search"></span>
+
+<span>Search</span>
+			</button>
+		</div>
+			
+		<div role="search" class="vector-search-box-vue vector-search-box">
+			<div class="vector-typeahead-search-container">
+				<div class="cdx-typeahead-search">
+					<form action="/index.php" id="vector-sticky-search-form" class="cdx-search-input cdx-search-input--has-end-button">
+						<div class="cdx-search-input__input-wrapper" data-search-loc="header-moved">
+							<div class="cdx-text-input cdx-text-input--has-start-icon">
+								<input class="cdx-text-input__input" type="search" name="search" placeholder="Search ArchWiki">
+								<span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
+							</div>
+							<input type="hidden" name="title" value="Special:Search">
+						</div>
+						<button class="cdx-button cdx-search-input__end-button">Search</button>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="vector-sticky-header-context-bar">
+				<nav aria-label="Contents" class="vector-toc-landmark">
+						
+					<div id="vector-sticky-header-toc" class="vector-dropdown mw-portlet mw-portlet-sticky-header-toc vector-sticky-header-toc vector-button-flush-left">
+						<input type="checkbox" id="vector-sticky-header-toc-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-vector-sticky-header-toc" class="vector-dropdown-checkbox " aria-label="Toggle the table of contents">
+						<label id="vector-sticky-header-toc-label" for="vector-sticky-header-toc-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only " aria-hidden="true"><span class="vector-icon mw-ui-icon-listBullet mw-ui-icon-wikimedia-listBullet"></span>
+
+<span class="vector-dropdown-label-text">Toggle the table of contents</span>
+						</label>
+						<div class="vector-dropdown-content">
+					
+						<div id="vector-sticky-header-toc-unpinned-container" class="vector-unpinned-container">
+						</div>
+					
+						</div>
+					</div>
+			</nav>
+				<div class="vector-sticky-header-context-bar-primary" aria-hidden="true"><span class="mw-page-title-main">Identify damaged files</span></div>
+			</div>
+		</div>
+		<div class="vector-sticky-header-end" aria-hidden="true">
+			<div class="vector-sticky-header-icons">
+				<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-talk-sticky-header" tabindex="-1" data-event-name="talk-sticky-header"><span class="vector-icon mw-ui-icon-speechBubbles mw-ui-icon-wikimedia-speechBubbles"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-subject-sticky-header" tabindex="-1" data-event-name="subject-sticky-header"><span class="vector-icon mw-ui-icon-article mw-ui-icon-wikimedia-article"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-history-sticky-header" tabindex="-1" data-event-name="history-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-history mw-ui-icon-wikimedia-wikimedia-history"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only mw-watchlink" id="ca-watchstar-sticky-header" tabindex="-1" data-event-name="watch-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-star mw-ui-icon-wikimedia-wikimedia-star"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-edit-sticky-header" tabindex="-1" data-event-name="wikitext-edit-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-wikiText mw-ui-icon-wikimedia-wikimedia-wikiText"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-ve-edit-sticky-header" tabindex="-1" data-event-name="ve-edit-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-edit mw-ui-icon-wikimedia-wikimedia-edit"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-viewsource-sticky-header" tabindex="-1" data-event-name="ve-edit-protected-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-editLock mw-ui-icon-wikimedia-wikimedia-editLock"></span>
+
+<span></span>
+			</a>
+		</div>
+			<div class="vector-sticky-header-buttons">
+				<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive" id="ca-addsection-sticky-header" tabindex="-1" data-event-name="addsection-sticky-header"><span class="vector-icon mw-ui-icon-speechBubbleAdd-progressive mw-ui-icon-wikimedia-speechBubbleAdd-progressive"></span>
+
+<span>Add topic</span>
+			</a>
+		</div>
+			<div class="vector-sticky-header-icon-end">
+				<div class="vector-user-links">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="mw-portlet mw-portlet-dock-bottom emptyPortlet" id="p-dock-bottom">
+	<ul>
+		
+	</ul>
 </div>
 </body>
 </html>

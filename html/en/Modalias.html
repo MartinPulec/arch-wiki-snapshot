@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-os vector-sticky-header-enabled vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Modalias - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.1">
+<meta name="generator" content="MediaWiki 1.44.2">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -116,10 +116,10 @@
 		</div>
 		<div class="mw-content-container">
 			<main id="content" class="mw-body" style="margin: 0">
-				<header class="mw-body-header vector-page-titlebar">
+				<header class="mw-body-header vector-page-titlebar vector-feature-custom-font-size-clientpref--excluded">
 					<nav aria-label="Contents" class="vector-toc-landmark">
 						
-<div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left">
+<div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left" title="Table of Contents">
 	<input type="checkbox" id="vector-page-titlebar-toc-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-vector-page-titlebar-toc" class="vector-dropdown-checkbox " aria-label="Toggle the table of contents">
 	<label id="vector-page-titlebar-toc-label" for="vector-page-titlebar-toc-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only " aria-hidden="true"><span class="vector-icon mw-ui-icon-listBullet mw-ui-icon-wikimedia-listBullet"></span>
 
@@ -158,7 +158,7 @@
 	</div>
 </div>
 </header>
-				<div class="vector-column-end">
+				<div class="vector-column-end vector-feature-custom-font-size-clientpref--excluded">
 					<div class="vector-sticky-pinned-container">
 						<nav class="vector-page-tools-landmark" aria-label="Page tools">
 							<div id="vector-page-tools-pinned-container" class="vector-pinned-container">
@@ -201,15 +201,14 @@
 <p>This document is an intro to how the Linux kernel and modules see and understand hardware, and how this translates into a sysfs 'modalias'
 </p>
 <meta property="mw:PageProp/toc">
-<h2><span class="mw-headline" id="What_is_a_modalias">What is a modalias</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="What_is_a_modalias">What is a modalias</h2></div>
 <p>Modalias is a little sysfs trick that exports hardware information to a file named 'modalias'.  This file simply contains a formatted form of the information normal hardware exposes.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ cat /sys/devices/pci0000:00/0000:00:1f.1/modalias</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">pci:v00008086d000024DBsv0000103Csd0000006Abc01sc01i8A
 </pre>
-<h2>
-<span id="What_is_a_modalias_file.3F"></span><span class="mw-headline" id="What_is_a_modalias_file?">What is a modalias file?</span>
-</h2>
+<div class="mw-heading mw-heading2"><h2 id="What_is_a_modalias_file?">
+<span id="What_is_a_modalias_file.3F"></span>What is a modalias file?</h2></div>
 <p>As described above, a modalias file simply exposes the information that a given piece of hardware already tells the kernel.  This file simply specifies a structure for exposing this information.  Let us return to the example above:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ cat /sys/devices/pci0000:00/0000:00:1f.1/modalias</pre>
@@ -255,9 +254,8 @@ i  8A
 </p>
 <p><b>i</b> is the "Programming interface", which is only meaningful for a few devices classes.
 </p>
-<h2>
-<span id="How_is_this_information_used.3F"></span><span class="mw-headline" id="How_is_this_information_used?">How is this information used?</span>
-</h2>
+<div class="mw-heading mw-heading2"><h2 id="How_is_this_information_used?">
+<span id="How_is_this_information_used.3F"></span>How is this information used?</h2></div>
 <p>Ok, now we all know what this information is.  A bunch of obscure numbers that each device exposes.  Big deal.  How does this matter when talking about modules?
 </p>
 <p>One thing which people tend to ignore, is all the work <code>depmod</code> does.  When you run <code>depmod</code>, it builds a series of "map" files in <code>/lib/modules/`uname -r`</code> which tell <a href="../en/Kernel_module.html" class="mw-redirect" title="Modprobe">modprobe</a> how to handle certain things it needs to do.  In this case we can ignore most of them.  The important one is <code>modules.alias</code>.  This file contains aliases, or secondary names for modules.  Just for a demonstration, let us look at aliases for, say, snd_intel8x0m:
@@ -285,9 +283,8 @@ alias pci:v000010DEd000000D9sv*sd*bc*sc*i* snd_intel8x0m
 </p>
 <p>The "*" indicates it will match anything, much like filesystem globbing (<code>ls somedir/*</code>).  As stated before, most aliases ignore sv, sd, bc, sc, and i by way of the "*" matching.
 </p>
-<h2>
-<span id="Where_does_this_modules.alias_file_come_from.3F"></span><span class="mw-headline" id="Where_does_this_modules.alias_file_come_from?">Where does this modules.alias file come from?</span>
-</h2>
+<div class="mw-heading mw-heading2"><h2 id="Where_does_this_modules.alias_file_come_from?">
+<span id="Where_does_this_modules.alias_file_come_from.3F"></span>Where does this modules.alias file come from?</h2></div>
 <p>Ok, now you may be thinking "Well, <a href="../en/Hardware_probe.html" title="Hardware probe">hardware probe</a> used to look things up based on a device table, what makes this any different?"
 </p>
 <p>The difference is that this lookup table is not static.  It is not maintained by hand.  In fact, it is built dynamically whenever you run <code>depmod</code>. "Where does this information come from?", you ask?  Why, from the <a href="../en/Kernel_module.html" class="mw-redirect" title="Kernel modules">kernel modules</a> themselves.  When you think about it, each specific module should know what hardware it supports, as it is coded specifically for that hardware.  I mean, the  <i>nvidia</i> module developers know that their module only work with Nvidia (vendor) Graphics Cards (class).  In fact, the module actually exports this information.  It says "Hey, I can support this:".
@@ -327,16 +324,15 @@ alias pci:v000010DEd000000D9sv*sd*bc*sc*i* snd_intel8x0m
 </pre>
 <p>It matches the aliases found by 'grep'ing the alias file.  These aliases exported by each module, are gathered by <code>depmod</code> and merged into the <code>modules.alias</code> file dynamically.  There is no hand-changing of a lookup table, as it is built on-the-fly.  Each module knows exactly what it supports, and therefore <code>depmod</code> can use that information to help load modules.
 </p>
-<h2>
-<span id="How_does_udev_work.3F"></span><span class="mw-headline" id="How_does_udev_work?">How does udev work?</span>
-</h2>
+<div class="mw-heading mw-heading2"><h2 id="How_does_udev_work?">
+<span id="How_does_udev_work.3F"></span>How does udev work?</h2></div>
 <p><a href="../en/Udev.html" title="Udev">udev</a> is closely tied with sysfs (the filesystem which exposes the modalias in the firstplace).  In fact, to load modules based on the modalias when a new device is added (or when udev is first started on boot), it is insanely simple:
 </p>
 <pre>DRIVER!="?*", ENV{MODALIAS}=="?*", RUN{builtin}="kmod load $env{MODALIAS}"
 </pre>
 <p>Yep, that's it.  It is a one-liner.  This simple line, which is part of the default udev rules replace hotplug.  Amazing, is it not?
 </p>
-<h2><span class="mw-headline" id="See_also">See also</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="See_also">See also</h2></div>
 <p>This article shows others modalias templates, i.e. for usb, dmi and acpi subtypes
 </p>
 <ul><li>
@@ -374,7 +370,7 @@ alias pci:v000010DEd000000D9sv*sd*bc*sc*i* snd_intel8x0m
 
 	<ul id="footer-icons" class="noprint">
 	<li id="footer-copyrightico"><a href="https://www.gnu.org/copyleft/fdl.html" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled"><img src="/resources/assets/licenses/gnu-fdl.png" alt="GNU Free Documentation License 1.3 or later" width="88" height="31" loading="lazy"></a></li>
-	<li id="footer-poweredbyico"><img src="/resources/assets/poweredby_mediawiki.svg" width="88" height="31" loading="lazy"></li>
+	<li id="footer-poweredbyico"><picture><source media="(min-width: 500px)" srcset="/resources/assets/poweredby_mediawiki.svg" width="88" height="31"><img src="/resources/assets/mediawiki_compact.svg" width="25" height="25" loading="lazy"></picture></li>
 </ul>
 
 </footer>
@@ -382,8 +378,100 @@ alias pci:v000010DEd000000D9sv*sd*bc*sc*i* snd_intel8x0m
 		</div>
 	</div> 
 </div> 
-<div class="vector-settings" id="p-dock-bottom">
-	<ul></ul>
+<div class="vector-header-container vector-sticky-header-container">
+	<div id="vector-sticky-header" class="vector-sticky-header">
+		<div class="vector-sticky-header-start">
+			<div class="vector-sticky-header-icon-start vector-button-flush-left vector-button-flush-right" aria-hidden="true">
+				<button class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-sticky-header-search-toggle" tabindex="-1" data-event-name="ui.vector-sticky-search-form.icon"><span class="vector-icon mw-ui-icon-search mw-ui-icon-wikimedia-search"></span>
+
+<span>Search</span>
+			</button>
+		</div>
+			
+		<div role="search" class="vector-search-box-vue vector-search-box">
+			<div class="vector-typeahead-search-container">
+				<div class="cdx-typeahead-search">
+					<form action="/index.php" id="vector-sticky-search-form" class="cdx-search-input cdx-search-input--has-end-button">
+						<div class="cdx-search-input__input-wrapper" data-search-loc="header-moved">
+							<div class="cdx-text-input cdx-text-input--has-start-icon">
+								<input class="cdx-text-input__input" type="search" name="search" placeholder="Search ArchWiki">
+								<span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
+							</div>
+							<input type="hidden" name="title" value="Special:Search">
+						</div>
+						<button class="cdx-button cdx-search-input__end-button">Search</button>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="vector-sticky-header-context-bar">
+				<nav aria-label="Contents" class="vector-toc-landmark">
+						
+					<div id="vector-sticky-header-toc" class="vector-dropdown mw-portlet mw-portlet-sticky-header-toc vector-sticky-header-toc vector-button-flush-left">
+						<input type="checkbox" id="vector-sticky-header-toc-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-vector-sticky-header-toc" class="vector-dropdown-checkbox " aria-label="Toggle the table of contents">
+						<label id="vector-sticky-header-toc-label" for="vector-sticky-header-toc-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only " aria-hidden="true"><span class="vector-icon mw-ui-icon-listBullet mw-ui-icon-wikimedia-listBullet"></span>
+
+<span class="vector-dropdown-label-text">Toggle the table of contents</span>
+						</label>
+						<div class="vector-dropdown-content">
+					
+						<div id="vector-sticky-header-toc-unpinned-container" class="vector-unpinned-container">
+						</div>
+					
+						</div>
+					</div>
+			</nav>
+				<div class="vector-sticky-header-context-bar-primary" aria-hidden="true"><span class="mw-page-title-main">Modalias</span></div>
+			</div>
+		</div>
+		<div class="vector-sticky-header-end" aria-hidden="true">
+			<div class="vector-sticky-header-icons">
+				<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-talk-sticky-header" tabindex="-1" data-event-name="talk-sticky-header"><span class="vector-icon mw-ui-icon-speechBubbles mw-ui-icon-wikimedia-speechBubbles"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-subject-sticky-header" tabindex="-1" data-event-name="subject-sticky-header"><span class="vector-icon mw-ui-icon-article mw-ui-icon-wikimedia-article"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-history-sticky-header" tabindex="-1" data-event-name="history-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-history mw-ui-icon-wikimedia-wikimedia-history"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only mw-watchlink" id="ca-watchstar-sticky-header" tabindex="-1" data-event-name="watch-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-star mw-ui-icon-wikimedia-wikimedia-star"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-edit-sticky-header" tabindex="-1" data-event-name="wikitext-edit-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-wikiText mw-ui-icon-wikimedia-wikimedia-wikiText"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-ve-edit-sticky-header" tabindex="-1" data-event-name="ve-edit-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-edit mw-ui-icon-wikimedia-wikimedia-edit"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-viewsource-sticky-header" tabindex="-1" data-event-name="ve-edit-protected-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-editLock mw-ui-icon-wikimedia-wikimedia-editLock"></span>
+
+<span></span>
+			</a>
+		</div>
+			<div class="vector-sticky-header-buttons">
+				<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive" id="ca-addsection-sticky-header" tabindex="-1" data-event-name="addsection-sticky-header"><span class="vector-icon mw-ui-icon-speechBubbleAdd-progressive mw-ui-icon-wikimedia-speechBubbleAdd-progressive"></span>
+
+<span>Add topic</span>
+			</a>
+		</div>
+			<div class="vector-sticky-header-icon-end">
+				<div class="vector-user-links">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="mw-portlet mw-portlet-dock-bottom emptyPortlet" id="p-dock-bottom">
+	<ul>
+		
+	</ul>
 </div>
 </body>
 </html>

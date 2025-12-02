@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-os vector-sticky-header-enabled vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Prometheus - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.1">
+<meta name="generator" content="MediaWiki 1.44.2">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -159,10 +159,10 @@
 		</div>
 		<div class="mw-content-container">
 			<main id="content" class="mw-body" style="margin: 0">
-				<header class="mw-body-header vector-page-titlebar">
+				<header class="mw-body-header vector-page-titlebar vector-feature-custom-font-size-clientpref--excluded">
 					<nav aria-label="Contents" class="vector-toc-landmark">
 						
-<div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left">
+<div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left" title="Table of Contents">
 	<input type="checkbox" id="vector-page-titlebar-toc-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-vector-page-titlebar-toc" class="vector-dropdown-checkbox " aria-label="Toggle the table of contents">
 	<label id="vector-page-titlebar-toc-label" for="vector-page-titlebar-toc-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only " aria-hidden="true"><span class="vector-icon mw-ui-icon-listBullet mw-ui-icon-wikimedia-listBullet"></span>
 
@@ -200,7 +200,7 @@
 	</div>
 </div>
 </header>
-				<div class="vector-column-end">
+				<div class="vector-column-end vector-feature-custom-font-size-clientpref--excluded">
 					<div class="vector-sticky-pinned-container">
 						<nav class="vector-page-tools-landmark" aria-label="Page tools">
 							<div id="vector-page-tools-pinned-container" class="vector-pinned-container">
@@ -247,17 +247,17 @@
 <p><a rel="nofollow" class="external text" href="https://prometheus.io/">Prometheus</a> is an open-source metrics collection and processing tool. It consists primarily of a timeseries database and a query language to access and process the metrics it stores. Separate services perform metric exposure, from which the Prometheus server can pull. It provides a very minimal web UI out of the box. To get a functional dashboard system, third-party tools like <a href="../en/Grafana.html" title="Grafana">Grafana</a> can be used.
 </p>
 <meta property="mw:PageProp/toc">
-<h2><span class="mw-headline" id="Installation">Installation</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="Installation">Installation</h2></div>
 <p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=prometheus">prometheus</a></span> package. After that you can <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> and <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start">start</a> <code>prometheus.service</code> and access the application via HTTP on port 9090 by default.
 </p>
 <p>The default configuration monitors the <code>prometheus</code> process itself, but not much beyond that. To perform system monitoring, you can install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=prometheus-node-exporter">prometheus-node-exporter</a></span> which performs metric scraping from the local system. You can start and enable the <code>prometheus-node-exporter</code> service. It will open port 9100 by default. Once the service is running, you will need to configure <code>prometheus</code> to scrape the exporter service periodically in order actually to collect the data. Do this by following the steps to <a href="#Adding_metrics">add metrics</a> as shown below.
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> The default configuration of <code>prometheus</code> listens on <code>*:9090</code> and <code>prometheus-node-exporter</code> listens on <code>*:9100</code>, so make sure to change the configuration or enable the relevant firewall rules. See also the <a rel="nofollow" class="external text" href="https://prometheus.io/docs/operating/security/">Prometheus security model</a>.</div>
-<h2><span class="mw-headline" id="Configuration">Configuration</span></h2>
+<strong>Warning</strong> The default configuration of <code>prometheus</code> listens on <code>*:9090</code> and <code>prometheus-node-exporter</code> listens on <code>*:9100</code>, so make sure to change the configuration or enable the relevant firewall rules. See also the <a rel="nofollow" class="external text" href="https://prometheus.io/docs/operating/security/">Prometheus security model</a>.</div>
+<div class="mw-heading mw-heading2"><h2 id="Configuration">Configuration</h2></div>
 <p>The Prometheus configuration is done through <a href="https://en.wikipedia.org/wiki/YAML" class="extiw" title="wikipedia:YAML">YAML</a> files, the main one being located at <code>/etc/prometheus/prometheus.yml</code>.
 </p>
-<h3><span class="mw-headline" id="Adding_metrics">Adding metrics</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Adding_metrics">Adding metrics</h3></div>
 <p>You can add new places to scrape metrics from by adding them to the <code>scrape_configs</code> array. To add the local node exporter as a source, next to the prometheus process itself, the configuration would look like this:
 </p>
 <pre> scrape_configs:
@@ -268,7 +268,7 @@
      static_configs:
        - targets: ['localhost:9100']
 </pre>
-<h2><span class="mw-headline" id="Exporters">Exporters</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="Exporters">Exporters</h2></div>
 <p>The Arch Linux repository contains a subset of the <a rel="nofollow" class="external text" href="https://prometheus.io/docs/instrumenting/exporters/">available exporters</a>:
 </p>
 <ul>
@@ -283,10 +283,10 @@
 </ul>
 <p>The exporters are implemented as services. For example to run the node exporter, <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> and <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start">start</a> <code>prometheus-node-exporter.service</code>.
 </p>
-<h2><span class="mw-headline" id="Using_the_UI">Using the UI</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="Using_the_UI">Using the UI</h2></div>
 <p>Prometheus comes with a very limited web UI to verify configuration, query and graph metrics. You can reach it at <a rel="nofollow" class="external free" href="http://localhost:9090">http://localhost:9090</a> by default. You can find an in-depth explanation of Prometheus' query language in the <a rel="nofollow" class="external text" href="https://prometheus.io/docs/prometheus/latest/querying/basics/">Prometheus documentation</a>.
 </p>
-<h2><span class="mw-headline" id="Alerting">Alerting</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="Alerting">Alerting</h2></div>
 <p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=alertmanager">alertmanager</a></span> can send out custom alerts when certain conditions are met configured in <code>/etc/prometheus/alert.rules.yml</code> and what alert to send out is configured in <code>/etc/alertmanager/alertmanager.yml</code>. Alertmanager supports various ways to notify users such as email, slack, and <a rel="nofollow" class="external text" href="https://prometheus.io/docs/alerting/configuration/">more</a>. To configure email alerts add the following snippet:
 </p>
 <pre>global:
@@ -327,11 +327,11 @@ receivers:
       description: 'Instance : Service failed'
       summary: 'Systemd unit failed'
 </pre>
-<h2><span class="mw-headline" id="Tips_and_tricks">Tips and tricks</span></h2>
-<h3><span class="mw-headline" id="Telegraf_instead_of_exporters">Telegraf instead of exporters</span></h3>
+<div class="mw-heading mw-heading2"><h2 id="Tips_and_tricks">Tips and tricks</h2></div>
+<div class="mw-heading mw-heading3"><h3 id="Telegraf_instead_of_exporters">Telegraf instead of exporters</h3></div>
 <p><a href="../en/TICK_stack.html#Telegraf" class="mw-redirect" title="Telegraf">Telegraf</a> can be used instead of multiple exporters when used with <a rel="nofollow" class="external text" href="https://github.com/influxdata/telegraf/tree/master/plugins/outputs/prometheus_client">Prometheus Output Plugin</a>. This reduces metrics collection into a single binary and offers more flexible configuration when compared to standard Prometheus exporters.
 </p>
-<h2><span class="mw-headline" id="See_also">See also</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="See_also">See also</h2></div>
 <ul><li><a rel="nofollow" class="external text" href="https://prometheus.io/">Official homepage</a></li></ul>
 </div>
 </div>
@@ -365,7 +365,7 @@ receivers:
 
 	<ul id="footer-icons" class="noprint">
 	<li id="footer-copyrightico"><a href="https://www.gnu.org/copyleft/fdl.html" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled"><img src="/resources/assets/licenses/gnu-fdl.png" alt="GNU Free Documentation License 1.3 or later" width="88" height="31" loading="lazy"></a></li>
-	<li id="footer-poweredbyico"><img src="/resources/assets/poweredby_mediawiki.svg" width="88" height="31" loading="lazy"></li>
+	<li id="footer-poweredbyico"><picture><source media="(min-width: 500px)" srcset="/resources/assets/poweredby_mediawiki.svg" width="88" height="31"><img src="/resources/assets/mediawiki_compact.svg" width="25" height="25" loading="lazy"></picture></li>
 </ul>
 
 </footer>
@@ -373,8 +373,100 @@ receivers:
 		</div>
 	</div> 
 </div> 
-<div class="vector-settings" id="p-dock-bottom">
-	<ul></ul>
+<div class="vector-header-container vector-sticky-header-container">
+	<div id="vector-sticky-header" class="vector-sticky-header">
+		<div class="vector-sticky-header-start">
+			<div class="vector-sticky-header-icon-start vector-button-flush-left vector-button-flush-right" aria-hidden="true">
+				<button class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-sticky-header-search-toggle" tabindex="-1" data-event-name="ui.vector-sticky-search-form.icon"><span class="vector-icon mw-ui-icon-search mw-ui-icon-wikimedia-search"></span>
+
+<span>Search</span>
+			</button>
+		</div>
+			
+		<div role="search" class="vector-search-box-vue vector-search-box">
+			<div class="vector-typeahead-search-container">
+				<div class="cdx-typeahead-search">
+					<form action="/index.php" id="vector-sticky-search-form" class="cdx-search-input cdx-search-input--has-end-button">
+						<div class="cdx-search-input__input-wrapper" data-search-loc="header-moved">
+							<div class="cdx-text-input cdx-text-input--has-start-icon">
+								<input class="cdx-text-input__input" type="search" name="search" placeholder="Search ArchWiki">
+								<span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
+							</div>
+							<input type="hidden" name="title" value="Special:Search">
+						</div>
+						<button class="cdx-button cdx-search-input__end-button">Search</button>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="vector-sticky-header-context-bar">
+				<nav aria-label="Contents" class="vector-toc-landmark">
+						
+					<div id="vector-sticky-header-toc" class="vector-dropdown mw-portlet mw-portlet-sticky-header-toc vector-sticky-header-toc vector-button-flush-left">
+						<input type="checkbox" id="vector-sticky-header-toc-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-vector-sticky-header-toc" class="vector-dropdown-checkbox " aria-label="Toggle the table of contents">
+						<label id="vector-sticky-header-toc-label" for="vector-sticky-header-toc-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only " aria-hidden="true"><span class="vector-icon mw-ui-icon-listBullet mw-ui-icon-wikimedia-listBullet"></span>
+
+<span class="vector-dropdown-label-text">Toggle the table of contents</span>
+						</label>
+						<div class="vector-dropdown-content">
+					
+						<div id="vector-sticky-header-toc-unpinned-container" class="vector-unpinned-container">
+						</div>
+					
+						</div>
+					</div>
+			</nav>
+				<div class="vector-sticky-header-context-bar-primary" aria-hidden="true"><span class="mw-page-title-main">Prometheus</span></div>
+			</div>
+		</div>
+		<div class="vector-sticky-header-end" aria-hidden="true">
+			<div class="vector-sticky-header-icons">
+				<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-talk-sticky-header" tabindex="-1" data-event-name="talk-sticky-header"><span class="vector-icon mw-ui-icon-speechBubbles mw-ui-icon-wikimedia-speechBubbles"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-subject-sticky-header" tabindex="-1" data-event-name="subject-sticky-header"><span class="vector-icon mw-ui-icon-article mw-ui-icon-wikimedia-article"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-history-sticky-header" tabindex="-1" data-event-name="history-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-history mw-ui-icon-wikimedia-wikimedia-history"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only mw-watchlink" id="ca-watchstar-sticky-header" tabindex="-1" data-event-name="watch-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-star mw-ui-icon-wikimedia-wikimedia-star"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-edit-sticky-header" tabindex="-1" data-event-name="wikitext-edit-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-wikiText mw-ui-icon-wikimedia-wikimedia-wikiText"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-ve-edit-sticky-header" tabindex="-1" data-event-name="ve-edit-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-edit mw-ui-icon-wikimedia-wikimedia-edit"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-viewsource-sticky-header" tabindex="-1" data-event-name="ve-edit-protected-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-editLock mw-ui-icon-wikimedia-wikimedia-editLock"></span>
+
+<span></span>
+			</a>
+		</div>
+			<div class="vector-sticky-header-buttons">
+				<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive" id="ca-addsection-sticky-header" tabindex="-1" data-event-name="addsection-sticky-header"><span class="vector-icon mw-ui-icon-speechBubbleAdd-progressive mw-ui-icon-wikimedia-speechBubbleAdd-progressive"></span>
+
+<span>Add topic</span>
+			</a>
+		</div>
+			<div class="vector-sticky-header-icon-end">
+				<div class="vector-user-links">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="mw-portlet mw-portlet-dock-bottom emptyPortlet" id="p-dock-bottom">
+	<ul>
+		
+	</ul>
 </div>
 </body>
 </html>

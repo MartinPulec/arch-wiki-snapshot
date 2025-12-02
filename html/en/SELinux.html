@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-os vector-sticky-header-enabled vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>SELinux - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.1">
+<meta name="generator" content="MediaWiki 1.44.2">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -329,10 +329,10 @@
 		</div>
 		<div class="mw-content-container">
 			<main id="content" class="mw-body" style="margin: 0">
-				<header class="mw-body-header vector-page-titlebar">
+				<header class="mw-body-header vector-page-titlebar vector-feature-custom-font-size-clientpref--excluded">
 					<nav aria-label="Contents" class="vector-toc-landmark">
 						
-<div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left">
+<div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left" title="Table of Contents">
 	<input type="checkbox" id="vector-page-titlebar-toc-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-vector-page-titlebar-toc" class="vector-dropdown-checkbox " aria-label="Toggle the table of contents">
 	<label id="vector-page-titlebar-toc-label" for="vector-page-titlebar-toc-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only " aria-hidden="true"><span class="vector-icon mw-ui-icon-listBullet mw-ui-icon-wikimedia-listBullet"></span>
 
@@ -370,7 +370,7 @@
 	</div>
 </div>
 </header>
-				<div class="vector-column-end">
+				<div class="vector-column-end vector-feature-custom-font-size-clientpref--excluded">
 					<div class="vector-sticky-pinned-container">
 						<nav class="vector-page-tools-landmark" aria-label="Page tools">
 							<div id="vector-page-tools-pinned-container" class="vector-pinned-container">
@@ -418,7 +418,7 @@
 <p>Running SELinux under a Linux distribution requires three things: An SELinux enabled kernel, SELinux Userspace tools and libraries, and SELinux Policies (mostly based on the Reference Policy). Some common Linux programs will also need to be patched/compiled with SELinux features.
 </p>
 <meta property="mw:PageProp/toc">
-<h2><span class="mw-headline" id="Current_status_in_Arch_Linux">Current status in Arch Linux</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="Current_status_in_Arch_Linux">Current status in Arch Linux</h2></div>
 <p>SELinux is not officially supported (see <a rel="nofollow" class="external autonumber" href="https://lists.archlinux.org/archives/list/arch-general@lists.archlinux.org/message/4LXUXQSFEPVLN7S2DDBIGVUS7L7ES5S2/">[1]</a><a rel="nofollow" class="external autonumber" href="https://lists.archlinux.org/archives/list/arch-general@lists.archlinux.org/message/VM72SI36VDX4PVUP4ZZEDIOSBVYTI7OG/">[2]</a>). The status of unofficial support is:
 </p>
 <table class="wikitable">
@@ -535,13 +535,18 @@
 <td>Need a rebuild with <code>--with-selinux</code> flag
 </td>
 </tr>
+<tr>
+<td>uutils-coreutils</td>
+<td>Need a rebuild with <code>USE=selinux</code> make flag to link with libselinux
+</td>
+</tr>
 </tbody>
 </table>
 <p>All of the other SELinux-related packages may be included without changes nor risks.
 </p>
-<h2><span class="mw-headline" id="Concepts:_Mandatory_Access_Controls">Concepts: Mandatory Access Controls</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="Concepts:_Mandatory_Access_Controls">Concepts: Mandatory Access Controls</h2></div>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> This section is meant for beginners. If you know what SELinux does and how it works, feel free to skip ahead to the installation.</div>
+<strong>Note</strong> This section is meant for beginners. If you know what SELinux does and how it works, feel free to skip ahead to the installation.</div>
 <p>Before you enable SELinux, it is worth understanding what it does. Simply and succinctly, SELinux enforces <i>Mandatory Access Controls (MACs)</i> on Linux. In contrast to SELinux, the traditional user/group/rwx permissions are a form of <i>Discretionary Access Control (DAC)</i>. MACs are different from DACs because security policy and its execution are completely separated.
 </p>
 <p>An example would be the use of the <i>sudo</i> command. When DACs are enforced, sudo allows temporary privilege escalation to root, giving the process so spawned unrestricted systemwide access. However, when using MACs, if the security administrator deems the process to have access only to a certain set of files, then no matter what the kind of privilege escalation used, unless the security policy itself is changed, the process will remain constrained to simply that set of files. So if <i>sudo</i> is tried on a machine with SELinux running in order for a process to gain access to files its policy does not allow, it will fail.
@@ -552,16 +557,16 @@
 </p>
 <p>For further information, visit <a href="https://en.wikipedia.org/wiki/Mandatory_access_control" class="extiw" title="wikipedia:Mandatory access control">Wikipedia:Mandatory access control</a>.
 </p>
-<h2><span class="mw-headline" id="Installing_SELinux">Installing SELinux</span></h2>
-<h3><span class="mw-headline" id="Package_description">Package description</span></h3>
+<div class="mw-heading mw-heading2"><h2 id="Installing_SELinux">Installing SELinux</h2></div>
+<div class="mw-heading mw-heading3"><h3 id="Package_description">Package description</h3></div>
 <p>All SELinux related packages belong to the <i>selinux</i> group in the AUR. Before you manually install any of these, read <a href="#Installation">#Installation</a> to see recommended options for a comprehensive installation.
 </p>
-<h4><span class="mw-headline" id="SELinux_aware_system_utilities">SELinux aware system utilities</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="SELinux_aware_system_utilities">SELinux aware system utilities</h4></div>
 <dl>
 <dt>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/coreutils-selinux/">coreutils-selinux</a></span><sup><small>AUR</small></sup>
 </dt>
-<dd>Modified coreutils package compiled with SELinux support enabled. It replaces the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=coreutils">coreutils</a></span> package</dd>
+<dd>Modified coreutils package compiled with SELinux support enabled. It replaces the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=coreutils">coreutils</a></span> package.</dd>
 <dt>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/cronie-selinux/">cronie-selinux</a></span><sup><small>AUR</small></sup>
 </dt>
@@ -606,13 +611,13 @@
 <dt>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/systemd-selinux/">systemd-selinux</a></span><sup><small>AUR</small></sup>
 </dt>
-<dd>An SELinux aware version of <a href="../en/Systemd.html" title="Systemd">Systemd</a>. It replaces the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=systemd">systemd</a></span> package.</dd>
+<dd>An SELinux aware version of <a href="../en/Systemd.html" title="Systemd">systemd</a>. It replaces the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=systemd">systemd</a></span> package.</dd>
 <dt>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/util-linux-selinux/">util-linux-selinux</a></span><sup><small>AUR</small></sup>
 </dt>
 <dd>Modified util-linux package compiled with SELinux support enabled. It replaces the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=util-linux">util-linux</a></span> package.</dd>
 </dl>
-<h4><span class="mw-headline" id="SELinux_userspace_utilities">SELinux userspace utilities</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="SELinux_userspace_utilities">SELinux userspace utilities</h4></div>
 <dl>
 <dt>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/checkpolicy/">checkpolicy</a></span><sup><small>AUR</small></sup>
@@ -667,7 +672,7 @@
 </dt>
 <dd>Tools to handle SELinux modules when building a policy</dd>
 </dl>
-<h4><span class="mw-headline" id="SELinux_policy_packages">SELinux policy packages</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="SELinux_policy_packages">SELinux policy packages</h4></div>
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
 <div>
@@ -687,7 +692,7 @@
 </dt>
 <dd>Precompiled modular Reference policy with headers and documentation but without sources. Development Arch Linux Refpolicy patches included, which fixes issues related to path labeling and systemd support. These patches are also sent to Reference Policy maintainers and their inclusion in <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/selinux-refpolicy-arch/">selinux-refpolicy-arch</a></span><sup><small>AUR</small></sup> is mainly a way to perform updates between Refpolicy releases.</dd>
 </dl>
-<h4><span class="mw-headline" id="Other_SELinux_tools">Other SELinux tools</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="Other_SELinux_tools">Other SELinux tools</h4></div>
 <dl>
 <dt>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/setools/">setools</a></span><sup><small>AUR</small></sup>
@@ -698,15 +703,15 @@
 </dt>
 <dd>pacman hook to label files accordingly to SELinux policy when installing and updating packages</dd>
 </dl>
-<h3><span class="mw-headline" id="Installation">Installation</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Installation">Installation</h3></div>
 <p>There are three methods to install the requisite SELinux packages.
 </p>
-<h4><span class="mw-headline" id="Via_binary_package_on_GitHub">Via binary package on GitHub</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="Via_binary_package_on_GitHub">Via binary package on GitHub</h4></div>
 <p>All packages are available from the <a href="../en/Unofficial_user_repositories.html#selinux" title="Unofficial user repositories">selinux</a> unofficial repository. the <i>base</i> package can be replaced with <i>base-selinux</i> during the <code>arch-bootstrap</code> stage of system installation.
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> Currently this repository does not provide signed packages, meaning that the binary it downloads will not be verified by pacman. This presents a security risk; proceed with caution</div>
-<h4><span class="mw-headline" id="Via_build_script_from_GitHub">Via build script from GitHub</span></h4>
+<strong>Warning</strong> Currently this repository does not provide signed packages, meaning that the binary it downloads will not be verified by pacman. This presents a security risk; proceed with caution</div>
+<div class="mw-heading mw-heading4"><h4 id="Via_build_script_from_GitHub">Via build script from GitHub</h4></div>
 <p>This repository also contains a script named <code>build_and_install_all.sh</code> which builds and installs (or updates) all packages in the needed order. Here is an example of a way this script can be used in a user shell to install all packages (with downloading the GPG keys which are used to verify the source tarballs of the package):
 </p>
 <pre>$ git clone <a rel="nofollow" class="external free" href="https://github.com/archlinuxhardened/selinux.git">https://github.com/archlinuxhardened/selinux.git</a>
@@ -716,7 +721,7 @@ $ ./build_and_install_all.sh
 </pre>
 <p>Of course, it is possible to modify the content of <code>build_and_install_all.sh</code> before running it, for example if you already have SELinux support in your kernel.
 </p>
-<h4><span class="mw-headline" id="Via_AUR">Via AUR</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="Via_AUR">Via AUR</h4></div>
 <ul>
 <li>First, install SELinux userspace tools and libraries, in this order (because of the dependencies): <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/libsepol/">libsepol</a></span><sup><small>AUR</small></sup>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/libselinux/">libselinux</a></span><sup><small>AUR</small></sup>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/checkpolicy/">checkpolicy</a></span><sup><small>AUR</small></sup>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/secilc/">secilc</a></span><sup><small>AUR</small></sup>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/setools/">setools</a></span><sup><small>AUR</small></sup>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/libsemanage/">libsemanage</a></span><sup><small>AUR</small></sup>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/semodule-utils/">semodule-utils</a></span><sup><small>AUR</small></sup>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/policycoreutils/">policycoreutils</a></span><sup><small>AUR</small></sup>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/selinux-python/">selinux-python</a></span><sup><small>AUR</small></sup> (which depends on <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/python-ipy/">python-ipy</a></span><sup><small>AUR</small></sup>), <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/mcstrans/">mcstrans</a></span><sup><small>AUR</small></sup> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/restorecond/">restorecond</a></span><sup><small>AUR</small></sup>.</li>
 <li>Then install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/pambase-selinux/">pambase-selinux</a></span><sup><small>AUR</small></sup> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/pam-selinux/">pam-selinux</a></span><sup><small>AUR</small></sup> and make sure you can login again after the installation completed, because files in <code>/etc/pam.d/</code> got removed and created when <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pambase">pambase</a></span> got replaced with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/pambase-selinux/">pambase-selinux</a></span><sup><small>AUR</small></sup>.</li>
@@ -729,20 +734,20 @@ $ ./build_and_install_all.sh
 </ul>
 <p>After all these steps, you can install a SELinux kernel (like <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span>) and a policy (like <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/selinux-refpolicy-arch/">selinux-refpolicy-arch</a></span><sup><small>AUR</small></sup> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/selinux-refpolicy-git/">selinux-refpolicy-git</a></span><sup><small>AUR</small></sup>).
 </p>
-<h3><span class="mw-headline" id="Enable_SELinux_LSM">Enable SELinux LSM</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Enable_SELinux_LSM">Enable SELinux LSM</h3></div>
 <p>To enable SELinux as default security model on every boot, set the following <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a>:
 </p>
 <pre>lsm=landlock,lockdown,yama,integrity,selinux,bpf
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> The <code>lsm=</code> kernel parameter sets the initialization order of Linux security modules. The kernel's configured <code>lsm=</code> value can be found with <code>zgrep CONFIG_LSM= /proc/config.gz</code> and the current value with <code>cat /sys/kernel/security/lsm</code>.
+<strong>Note</strong> The <code>lsm=</code> kernel parameter sets the initialization order of Linux security modules. The kernel's configured <code>lsm=</code> value can be found with <code>zgrep CONFIG_LSM= /proc/config.gz</code> and the current value with <code>cat /sys/kernel/security/lsm</code>.
 <ul>
 <li>Make sure that <code>selinux</code> is the first "major" module in the list.<a rel="nofollow" class="external autonumber" href="https://docs.kernel.org/admin-guide/LSM/index.html">[3]</a> Examples of valid values and their order can be found in <a rel="nofollow" class="external text" href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/security/Kconfig">security/Kconfig</a>.</li>
 <li>
 <code>capability</code> should be omitted from <code>lsm=</code> as it will always get included automatically.</li>
 </ul>
 </div>
-<h4><span class="mw-headline" id="Custom_kernel">Custom kernel</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="Custom_kernel">Custom kernel</h4></div>
 <p>When <a href="../en/Kernel.html#Compilation" class="mw-redirect" title="Kernels">compiling the kernel</a>, it is required to set at least the following options:
 </p>
 <pre>CONFIG_SECURITY_SELINUX=y
@@ -752,7 +757,7 @@ CONFIG_AUDIT=y
 </p>
 <pre>CONFIG_LSM="landlock,lockdown,yama,integrity,selinux,bpf"
 </pre>
-<h3><span class="mw-headline" id="Checking_PAM">Checking PAM</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Checking_PAM">Checking PAM</h3></div>
 <p>A correctly set-up <a href="../en/PAM.html" title="PAM">PAM</a> is important to get the proper security context after login. Check for the presence of the following lines in <code>/etc/pam.d/system-login</code>:
 </p>
 <pre># pam_selinux.so close should be the first session rule
@@ -761,9 +766,9 @@ session         required        pam_selinux.so close
 <pre># pam_selinux.so open should only be followed by sessions to be executed in the user context
 session         required        pam_selinux.so open
 </pre>
-<h3><span class="mw-headline" id="Installing_a_policy">Installing a policy</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Installing_a_policy">Installing a policy</h3></div>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> The reference policy as given by <a rel="nofollow" class="external text" href="https://github.com/SELinuxProject/refpolicy/wiki">SELinuxProject</a> is not very good for Arch Linux. Most people submitting patches to improve the policy use an other distribution (Debian, Gentoo, RHEL, etc.), therefore the compatibility with Arch Linux packages is not perfect (for example the policy may not support the most recent features of a program).</div>
+<strong>Warning</strong> The reference policy as given by <a rel="nofollow" class="external text" href="https://github.com/SELinuxProject/refpolicy/wiki">SELinuxProject</a> is not very good for Arch Linux. Most people submitting patches to improve the policy use an other distribution (Debian, Gentoo, RHEL, etc.), therefore the compatibility with Arch Linux packages is not perfect (for example the policy may not support the most recent features of a program).</div>
 <p>Policies are the mainstay of SELinux. They are what govern its behaviour. The only policy currently available in the AUR is the Reference Policy. In order to install it, you should use the source files, which may be got from the package <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/selinux-refpolicy-src/">selinux-refpolicy-src</a></span><sup><small>AUR</small></sup> or by downloading the latest release on <a rel="nofollow" class="external free" href="https://github.com/SELinuxProject/refpolicy/wiki/DownloadRelease#current-release">https://github.com/SELinuxProject/refpolicy/wiki/DownloadRelease#current-release</a>. When using the AUR package, navigate to <code>/etc/selinux/refpolicy/src/policy</code> and run the following commands:
 </p>
 <pre># make bare
@@ -844,7 +849,7 @@ allow udev_t var_run_t:sock_file write;</pre>
 </pre>
 <p>This is required to remove a few messages from <code>/var/log/audit/audit.log</code> which are a nuisance to deal with in the reference policy. This is an ugly hack and it should be made very clear that the policy so installed simply patches the reference policy in order to hide the effects of incorrect labelling.
 </p>
-<h3><span class="mw-headline" id="Testing_in_a_Vagrant_virtual_machine">Testing in a Vagrant virtual machine</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Testing_in_a_Vagrant_virtual_machine">Testing in a Vagrant virtual machine</h3></div>
 <p>It is possible to use <a href="../en/Vagrant.html" title="Vagrant">Vagrant</a> to provision a virtual Arch Linux machine with SELinux configured. This is a convenient way to test an Arch Linux system running SELinux without modifying a current system. Here are commands which can be used to achieve this:
 </p>
 <pre>$ git clone <a rel="nofollow" class="external free" href="https://github.com/archlinuxhardened/selinux.git">https://github.com/archlinuxhardened/selinux.git</a>
@@ -852,7 +857,7 @@ $ cd selinux/_vagrant
 $ vagrant up
 $ vagrant ssh
 </pre>
-<h2><span class="mw-headline" id="Post-installation_steps">Post-installation steps</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="Post-installation_steps">Post-installation steps</h2></div>
 <p>You can check that SELinux is working with <code>sestatus</code>. You should get something like:
 </p>
 <pre>SELinux status:                 enabled
@@ -871,13 +876,13 @@ Max kernel policy version:      28
 </p>
 <pre># echo 1 &gt; /sys/fs/selinux/enforce
 </pre>
-<h3><span class="mw-headline" id="Swapfiles">Swapfiles</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Swapfiles">Swapfiles</h3></div>
 <p>If you have a swap file instead of a swap partition, issue the following commands in order to set the appropriate security context:
 </p>
 <pre># semanage fcontext -a -t swapfile_t "<i>/path/to/swapfile</i>"
 # restorecon <i>/path/to/swapfile</i>
 </pre>
-<h2><span class="mw-headline" id="Working_with_SELinux">Working with SELinux</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="Working_with_SELinux">Working with SELinux</h2></div>
 <p>SELinux defines security using a different mechanism than traditional Unix access controls. The best way to understand it is by example. For example, the SELinux security context of the apache homepage looks like the following:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ ls -lZ /var/www/html/index.html</pre>
@@ -902,12 +907,12 @@ Max kernel policy version:      28
 </p>
 <p><a rel="nofollow" class="external text" href="https://web.archive.org/web/20210310014356/http://www.fosteringlinux.com/tag/selinux/">This</a> is a great series of articles for someone seeking to understand how to work with SELinux.
 </p>
-<h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="Troubleshooting">Troubleshooting</h2></div>
 <p>The place to look for SELinux errors is the <a href="../en/Systemd/Journal.html" class="mw-redirect" title="Systemd journal">systemd journal</a>. In order to see SELinux messages related to the label <code>system_u:system_r:policykit_t:s0</code> (for example), you would need to run:
 </p>
 <pre># journalctl _SELINUX_CONTEXT=system_u:system_r:policykit_t:s0
 </pre>
-<h3><span class="mw-headline" id="Useful_tools">Useful tools</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Useful_tools">Useful tools</h3></div>
 <p>There are some tools/commands that can greatly help with SELinux. 
 </p>
 <dl>
@@ -916,10 +921,10 @@ Max kernel policy version:      28
 <dt>chcon</dt>
 <dd>Change the context on a specific file</dd>
 </dl>
-<h3><span class="mw-headline" id="Reporting_issues">Reporting issues</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Reporting_issues">Reporting issues</h3></div>
 <p>Please report issues on GitHub: <a rel="nofollow" class="external free" href="https://github.com/archlinuxhardened/selinux/issues">https://github.com/archlinuxhardened/selinux/issues</a>
 </p>
-<h2><span class="mw-headline" id="See_also">See also</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="See_also">See also</h2></div>
 <ul>
 <li><a href="https://en.wikipedia.org/wiki/Security-Enhanced_Linux" class="extiw" title="wikipedia:Security-Enhanced Linux">Security Enhanced Linux</a></li>
 <li><a href="https://wiki.gentoo.org/wiki/SELinux" class="extiw" title="gentoo:SELinux">Gentoo:SELinux</a></li>
@@ -955,8 +960,8 @@ Max kernel policy version:      28
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=SELinux&amp;oldid=824248">https://wiki.archlinux.org/index.php?title=SELinux&amp;oldid=824248</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 29 December 2024, at 16:51.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=SELinux&amp;oldid=846762">https://wiki.archlinux.org/index.php?title=SELinux&amp;oldid=846762</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 13 September 2025, at 05:09.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>
@@ -971,7 +976,7 @@ Max kernel policy version:      28
 
 	<ul id="footer-icons" class="noprint">
 	<li id="footer-copyrightico"><a href="https://www.gnu.org/copyleft/fdl.html" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled"><img src="/resources/assets/licenses/gnu-fdl.png" alt="GNU Free Documentation License 1.3 or later" width="88" height="31" loading="lazy"></a></li>
-	<li id="footer-poweredbyico"><img src="/resources/assets/poweredby_mediawiki.svg" width="88" height="31" loading="lazy"></li>
+	<li id="footer-poweredbyico"><picture><source media="(min-width: 500px)" srcset="/resources/assets/poweredby_mediawiki.svg" width="88" height="31"><img src="/resources/assets/mediawiki_compact.svg" width="25" height="25" loading="lazy"></picture></li>
 </ul>
 
 </footer>
@@ -979,8 +984,100 @@ Max kernel policy version:      28
 		</div>
 	</div> 
 </div> 
-<div class="vector-settings" id="p-dock-bottom">
-	<ul></ul>
+<div class="vector-header-container vector-sticky-header-container">
+	<div id="vector-sticky-header" class="vector-sticky-header">
+		<div class="vector-sticky-header-start">
+			<div class="vector-sticky-header-icon-start vector-button-flush-left vector-button-flush-right" aria-hidden="true">
+				<button class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-sticky-header-search-toggle" tabindex="-1" data-event-name="ui.vector-sticky-search-form.icon"><span class="vector-icon mw-ui-icon-search mw-ui-icon-wikimedia-search"></span>
+
+<span>Search</span>
+			</button>
+		</div>
+			
+		<div role="search" class="vector-search-box-vue vector-search-box">
+			<div class="vector-typeahead-search-container">
+				<div class="cdx-typeahead-search">
+					<form action="/index.php" id="vector-sticky-search-form" class="cdx-search-input cdx-search-input--has-end-button">
+						<div class="cdx-search-input__input-wrapper" data-search-loc="header-moved">
+							<div class="cdx-text-input cdx-text-input--has-start-icon">
+								<input class="cdx-text-input__input" type="search" name="search" placeholder="Search ArchWiki">
+								<span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
+							</div>
+							<input type="hidden" name="title" value="Special:Search">
+						</div>
+						<button class="cdx-button cdx-search-input__end-button">Search</button>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="vector-sticky-header-context-bar">
+				<nav aria-label="Contents" class="vector-toc-landmark">
+						
+					<div id="vector-sticky-header-toc" class="vector-dropdown mw-portlet mw-portlet-sticky-header-toc vector-sticky-header-toc vector-button-flush-left">
+						<input type="checkbox" id="vector-sticky-header-toc-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-vector-sticky-header-toc" class="vector-dropdown-checkbox " aria-label="Toggle the table of contents">
+						<label id="vector-sticky-header-toc-label" for="vector-sticky-header-toc-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only " aria-hidden="true"><span class="vector-icon mw-ui-icon-listBullet mw-ui-icon-wikimedia-listBullet"></span>
+
+<span class="vector-dropdown-label-text">Toggle the table of contents</span>
+						</label>
+						<div class="vector-dropdown-content">
+					
+						<div id="vector-sticky-header-toc-unpinned-container" class="vector-unpinned-container">
+						</div>
+					
+						</div>
+					</div>
+			</nav>
+				<div class="vector-sticky-header-context-bar-primary" aria-hidden="true"><span class="mw-page-title-main">SELinux</span></div>
+			</div>
+		</div>
+		<div class="vector-sticky-header-end" aria-hidden="true">
+			<div class="vector-sticky-header-icons">
+				<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-talk-sticky-header" tabindex="-1" data-event-name="talk-sticky-header"><span class="vector-icon mw-ui-icon-speechBubbles mw-ui-icon-wikimedia-speechBubbles"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-subject-sticky-header" tabindex="-1" data-event-name="subject-sticky-header"><span class="vector-icon mw-ui-icon-article mw-ui-icon-wikimedia-article"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-history-sticky-header" tabindex="-1" data-event-name="history-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-history mw-ui-icon-wikimedia-wikimedia-history"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only mw-watchlink" id="ca-watchstar-sticky-header" tabindex="-1" data-event-name="watch-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-star mw-ui-icon-wikimedia-wikimedia-star"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-edit-sticky-header" tabindex="-1" data-event-name="wikitext-edit-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-wikiText mw-ui-icon-wikimedia-wikimedia-wikiText"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-ve-edit-sticky-header" tabindex="-1" data-event-name="ve-edit-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-edit mw-ui-icon-wikimedia-wikimedia-edit"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-viewsource-sticky-header" tabindex="-1" data-event-name="ve-edit-protected-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-editLock mw-ui-icon-wikimedia-wikimedia-editLock"></span>
+
+<span></span>
+			</a>
+		</div>
+			<div class="vector-sticky-header-buttons">
+				<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive" id="ca-addsection-sticky-header" tabindex="-1" data-event-name="addsection-sticky-header"><span class="vector-icon mw-ui-icon-speechBubbleAdd-progressive mw-ui-icon-wikimedia-speechBubbleAdd-progressive"></span>
+
+<span>Add topic</span>
+			</a>
+		</div>
+			<div class="vector-sticky-header-icon-end">
+				<div class="vector-user-links">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="mw-portlet mw-portlet-dock-bottom emptyPortlet" id="p-dock-bottom">
+	<ul>
+		
+	</ul>
 </div>
 </body>
 </html>

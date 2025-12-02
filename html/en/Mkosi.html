@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-os vector-sticky-header-enabled vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>mkosi - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.1">
+<meta name="generator" content="MediaWiki 1.44.2">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -132,10 +132,10 @@
 		</div>
 		<div class="mw-content-container">
 			<main id="content" class="mw-body" style="margin: 0">
-				<header class="mw-body-header vector-page-titlebar">
+				<header class="mw-body-header vector-page-titlebar vector-feature-custom-font-size-clientpref--excluded">
 					<nav aria-label="Contents" class="vector-toc-landmark">
 						
-<div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left">
+<div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left" title="Table of Contents">
 	<input type="checkbox" id="vector-page-titlebar-toc-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-vector-page-titlebar-toc" class="vector-dropdown-checkbox " aria-label="Toggle the table of contents">
 	<label id="vector-page-titlebar-toc-label" for="vector-page-titlebar-toc-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only " aria-hidden="true"><span class="vector-icon mw-ui-icon-listBullet mw-ui-icon-wikimedia-listBullet"></span>
 
@@ -173,7 +173,7 @@
 	</div>
 </div>
 </header>
-				<div class="vector-column-end">
+				<div class="vector-column-end vector-feature-custom-font-size-clientpref--excluded">
 					<div class="vector-sticky-pinned-container">
 						<nav class="vector-page-tools-landmark" aria-label="Page tools">
 							<div id="vector-page-tools-pinned-container" class="vector-pinned-container">
@@ -220,11 +220,32 @@
 <li><a href="../en/Docker.html" title="Docker">Docker</a></li>
 </ul>
 </div>
-<p><a rel="nofollow" class="external text" href="https://mkosi.systemd.io/">mkosi</a> stands for <i>Make Operating System Image</i>, and is a tool for generating an OS tree or image that can be booted.
+<p><a rel="nofollow" class="external text" href="https://mkosi.systemd.io/">mkosi</a> stands for <i>Make Operating System Image</i>, and is a tool for easily building customized OS images. It's a fancy <a href="../en/Python.html" title="Python">Python</a> wrapper around dnf, apt, <a href="../en/Pacman.html" title="Pacman">pacman</a> and zypper that may generate disk images with a number of bells and whistles.
 </p>
+<p>It has nifty features like:
+</p>
+<ul>
+<li>
+<code>no_new_privileges</code> to build images as an unpriviliged user</li>
+<li>An <a href="../en/Overlay_filesystem.html" title="Overlay filesystem">Overlay filesystem</a> to re-use existing distribution package caches reducing disk space requirements</li>
+<li>Deep <a href="../en/Category:Freedesktop.org.html" class="mw-redirect" title="Freedesktop.org">Freedesktop.org</a> and <a href="../en/Systemd.html" title="Systemd">systemd</a> integration</li>
+<li>Wide range of output formats like Raw GPT disk image, plain directory, tar, cpio and <a rel="nofollow" class="external text" href="https://overhead.neocities.org/blog/build-usi-mkosi/">USI</a> / UKI.</li>
+</ul>
+<p>The project is actively maintained and provides <span class="plainlinks archwiki-template-man" title="$ man 1 mkosi"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/mkosi.1">mkosi(1)</a></span> for customizing images across various distributions.
+</p>
+<p>On Arch Linux, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mkosi">mkosi</a></span> can be used to build bootable Unified Kernel Images (<a href="../en/Unified_kernel_image.html" class="mw-redirect" title="UKI">UKI</a>), including those signed for <a href="../en/Unified_Extensible_Firmware_Interface/Secure_Boot.html" class="mw-redirect" title="Secure Boot">Secure Boot</a>. Creating images with encrypted LUKS volumes is as straightforward as defining <code>Passphrase=</code> in <code>mkosi.conf</code>. Package lists can be defined directly in the <code>mkosi.default</code> file under the <code>Packages=</code> section, and additional files or configuration can be added using overlay directories such as <code>mkosi.extra/</code>.
+</p>
+<p>mkosi has a strong focus on developer workflows such as testing, debugging, and producing minimal, production-ready images. A common use case involves adding a <code>mkosi.default</code> configuration file to a project (e.g. written in <a href="../en/C.html" title="C">C</a> or <a href="../en/Python.html" title="Python">Python</a>), which then allows automated image generation tailored to the project’s needs.
+</p>
+<p>During the build process, mkosi can create a temporary development image that includes headers and tooling, compile the project within it, run tests, and then discard this image. It subsequently builds a second image without development dependencies, containing only the resulting build artifacts and any other explicitly configured packages.
+</p>
+<p>This resulting image is minimal, self-contained, and suitable for deployment via tools such as <a rel="nofollow" class="external text" href="https://github.com/rauc/rauc">RAUC</a>, or <a rel="nofollow" class="external text" href="https://github.com/ostreedev/ostree">OSTree</a>, making it well-suited for automated provisioning of servers, embedded systems, or IoT targets.
+</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> It is highly recommended to run <i>mkosi</i> on a <a href="../en/File_systems.html" class="mw-redirect" title="File system">File system</a> that supports <a rel="nofollow" class="external text" href="https://unix.stackexchange.com/questions/631237/in-linux-which-filesystems-support-reflinks">reflinks</a> such as <a href="../en/XFS.html" title="XFS">XFS</a> and <a href="../en/Btrfs.html" title="Btrfs">Btrfs</a> and to keep all related directories on the same file system. This allows mkosi to create images very quickly by using reflinks to perform copying via copy-on-write operations.</div>
 <meta property="mw:PageProp/toc">
-<h2><span class="mw-headline" id="Installation">Installation</span></h2>
-<p>Install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mkosi">mkosi</a></span> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/mkosi-git/">mkosi-git</a></span><sup><small>AUR</small></sup>. Depending on what distribution you want to use in your OS tree/image, install the following packages:
+<div class="mw-heading mw-heading2"><h2 id="Installation">Installation</h2></div>
+<p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mkosi">mkosi</a></span>. Depending on what distribution you want to use in your OS tree/image, install the following packages:
 </p>
 <table class="wikitable">
 <tbody>
@@ -266,7 +287,7 @@
 <td>OpenSUSE
 </td>
 <td>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zypper-git/">zypper-git</a></span><sup><small>AUR</small></sup>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=zypper">zypper</a></span>
 </td>
 </tr>
 <tr>
@@ -278,17 +299,17 @@
 </tr>
 </tbody>
 </table>
-<h2><span class="mw-headline" id="Basic_usage">Basic usage</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="Basic_usage">Basic usage</h2></div>
 <p>You can create an image by just running it without any arguments:
 </p>
-<pre># mkosi
+<pre>$ mkosi
 </pre>
 <p>You can specify option as arguments or by editing files in the current folder.
 </p>
-<h3><span class="mw-headline" id="Create_and_boot_a_Debian_image">Create and boot a Debian image</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Create_and_boot_a_Debian_image">Create and boot a Debian image</h3></div>
 <p>The following example will create a bootable image with the latest Debian version and packages <i>openssh-client</i> and <i>vim</i> installed. This command requires mkosi's optional dependencies <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mtools">mtools</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=systemd-ukify">systemd-ukify</a></span>. Depending on the image, can also be built by an unprivileged (non-root) user:
 </p>
-<pre>$ mkosi --distribution debian --release bookworm --format disk --bootable --checksum --root-password password --package linux-image-generic,systemd,systemd-boot,systemd-sysv,udev,dbus --package openssh-client,vim --output image.raw
+<pre>$ mkosi --distribution debian --release bookworm --format disk --checksum --root-password password --include mkosi-vm --package openssh-client,vim --repository-key-fetch=yes --output image.raw
 </pre>
 <p><a href="../en/Systemd-nspawn.html" title="Systemd-nspawn">systemd-nspawn</a> can boot the resulting image:
 </p>
@@ -300,43 +321,40 @@
 </pre>
 <p>You can also write this image to a USB drive and use it to boot your computer.
 </p>
-<h3><span class="mw-headline" id="Using_configuration_files">Using configuration files</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Using_configuration_files">Using configuration files</h3></div>
 <p>The same Debian image can be created using a configuration file, <code>mkosi.conf</code>, and then run mkosi without any arguments:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">mkosi.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Distribution]
 Distribution=debian
 Release=bookworm
+RepositoryKeyFetch=true
 
 [Output]
 Format=disk
 Output=image.raw
 
+[Include]
+Include=mkosi-vm
+
 [Content]
 Bootable=yes
-Packages=linux-image-generic,systemd,systemd-boot,systemd-sysv,udev,dbus
-
-         openssh-client
+Packages=openssh-client
          vim
 RootPassword=password
 
 [Validation]
 Checksum=yes
 </pre>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:View-refresh-red.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is out of date.</b></p>
-<div>
-<b>Reason:</b> See <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/mkosi/commit/0af2ae8b7eb042f69f73e32ed5c61d1c857fdafd">[1]</a>. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Mkosi.html">Talk:Mkosi</a>)</div>
-</div>
-<p>See <a rel="nofollow" class="external text" href="https://github.com/systemd/mkosi/blob/main/docs/bootable.md">bootable</a><sup title="Last check status: 404">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2024-10-12 ⓘ]</sup> for more distro booting examples.
+<p>The built-in <code>mkosi-vm</code> profile adds the necessary packages in order to run a system and is maintained by the mkosi maintainers.
 </p>
 <p>Downloaded package files and temporary build files are stored in the home cache directory or in <code>/var/cache/mkosi</code> and <code>/var/tmp</code>.
 </p>
-<h3><span class="mw-headline" id="Configuration_settings">Configuration settings</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Configuration_settings">Configuration settings</h3></div>
 <p>Settings can be specified as command-line arguments or, for example, in a file called <code>mkosi.conf</code> in the current directory.
 The most important settings are:
 </p>
-<table class="wikitable" style="width:100%">
+<table class="wikitable">
 <tbody>
 <tr>
 <th>Command line
@@ -444,7 +462,7 @@ RootPassword=</pre>
 </tr>
 </tbody>
 </table>
-<h2><span class="mw-headline" id="Usage_as_initramfs_generator">Usage as initramfs generator</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="Usage_as_initramfs_generator">Usage as initramfs generator</h2></div>
 <p>Mkosi provides a <a href="../en/Kernel-install.html" title="Kernel-install">kernel-install</a> plugin to build an <a href="../en/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs">initramfs</a>, similarly to <a href="../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a> or <a href="../en/Dracut.html" title="Dracut">dracut</a>. 
 </p>
 <p>In order to use it, <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=cpio">cpio</a></span> and edit the kernel-install <a href="../en/Kernel-install.html#Main_configuration" title="Kernel-install">configuration</a> file:
@@ -452,24 +470,21 @@ RootPassword=</pre>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/kernel/install.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">initrd_generator=mkosi-initrd</pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> The generated initrds are much larger than the ones generated by mkinitcpio.</div>
-<h2><span class="mw-headline" id="See_also">See also</span></h2>
+<strong>Note</strong> The generated initramfs are much larger than the ones generated by mkinitcpio. The initramfs size can be significantly reduced by configuring zstd compression via the <code>CompressLevel=</code> Output option.</div>
+<div class="mw-heading mw-heading2"><h2 id="See_also">See also</h2></div>
 <ul>
 <li><a rel="nofollow" class="external text" href="https://github.com/systemd/mkosi">Mkosi on Github</a></li>
 <li><a rel="nofollow" class="external text" href="https://0pointer.net/blog/mkosi-a-tool-for-generating-os-images.html">Longer introduction by Poettering, one of its developers</a></li>
+<li><a rel="nofollow" class="external text" href="https://0pointer.net/blog/a-re-introduction-to-mkosi-a-tool-for-generating-os-images.html">A re-introduction to mkosi by Daan De Meyer, the current maintainer</a></li>
+<li><a rel="nofollow" class="external text" href="https://overhead.neocities.org/blog/build-usi-mkosi/">Building Arch Linux USIs with mkosi</a></li>
+<li><a rel="nofollow" class="external text" href="https://swsnr.de/archlinux-rescue-image-with-mkosi/">Creating Arch Linux rescue image with Secure Boot</a></li>
+<li><a rel="nofollow" class="external text" href="https://www.youtube.com/watch?v=SiyUpBwKL0A">Jelle's video presentation at All Systems Go on creating Arch Linux images using mkosi</a></li>
 </ul>
 </div>
 </div>
-					<div id="catlinks" class="catlinks" data-mw="interface">
-<div id="mw-normal-catlinks" class="mw-normal-catlinks">
+					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Virtualization.html" title="Category:Virtualization">Virtualization</a></li></ul>
-</div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Out_of_date.html" title="Category:Pages or sections flagged with Template:Out of date">Pages or sections flagged with Template:Out of date</a></li>
-<li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li>
-</ul>
-</div>
-</div>
+</div></div>
 				</div>
 			</main>
 			
@@ -478,8 +493,8 @@ RootPassword=</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Mkosi&amp;oldid=834228">https://wiki.archlinux.org/index.php?title=Mkosi&amp;oldid=834228</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 20 May 2025, at 11:43.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Mkosi&amp;oldid=850783">https://wiki.archlinux.org/index.php?title=Mkosi&amp;oldid=850783</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 26 October 2025, at 13:11.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>
@@ -494,7 +509,7 @@ RootPassword=</pre>
 
 	<ul id="footer-icons" class="noprint">
 	<li id="footer-copyrightico"><a href="https://www.gnu.org/copyleft/fdl.html" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled"><img src="/resources/assets/licenses/gnu-fdl.png" alt="GNU Free Documentation License 1.3 or later" width="88" height="31" loading="lazy"></a></li>
-	<li id="footer-poweredbyico"><img src="/resources/assets/poweredby_mediawiki.svg" width="88" height="31" loading="lazy"></li>
+	<li id="footer-poweredbyico"><picture><source media="(min-width: 500px)" srcset="/resources/assets/poweredby_mediawiki.svg" width="88" height="31"><img src="/resources/assets/mediawiki_compact.svg" width="25" height="25" loading="lazy"></picture></li>
 </ul>
 
 </footer>
@@ -502,8 +517,100 @@ RootPassword=</pre>
 		</div>
 	</div> 
 </div> 
-<div class="vector-settings" id="p-dock-bottom">
-	<ul></ul>
+<div class="vector-header-container vector-sticky-header-container">
+	<div id="vector-sticky-header" class="vector-sticky-header">
+		<div class="vector-sticky-header-start">
+			<div class="vector-sticky-header-icon-start vector-button-flush-left vector-button-flush-right" aria-hidden="true">
+				<button class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-sticky-header-search-toggle" tabindex="-1" data-event-name="ui.vector-sticky-search-form.icon"><span class="vector-icon mw-ui-icon-search mw-ui-icon-wikimedia-search"></span>
+
+<span>Search</span>
+			</button>
+		</div>
+			
+		<div role="search" class="vector-search-box-vue vector-search-box">
+			<div class="vector-typeahead-search-container">
+				<div class="cdx-typeahead-search">
+					<form action="/index.php" id="vector-sticky-search-form" class="cdx-search-input cdx-search-input--has-end-button">
+						<div class="cdx-search-input__input-wrapper" data-search-loc="header-moved">
+							<div class="cdx-text-input cdx-text-input--has-start-icon">
+								<input class="cdx-text-input__input" type="search" name="search" placeholder="Search ArchWiki">
+								<span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
+							</div>
+							<input type="hidden" name="title" value="Special:Search">
+						</div>
+						<button class="cdx-button cdx-search-input__end-button">Search</button>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="vector-sticky-header-context-bar">
+				<nav aria-label="Contents" class="vector-toc-landmark">
+						
+					<div id="vector-sticky-header-toc" class="vector-dropdown mw-portlet mw-portlet-sticky-header-toc vector-sticky-header-toc vector-button-flush-left">
+						<input type="checkbox" id="vector-sticky-header-toc-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-vector-sticky-header-toc" class="vector-dropdown-checkbox " aria-label="Toggle the table of contents">
+						<label id="vector-sticky-header-toc-label" for="vector-sticky-header-toc-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only " aria-hidden="true"><span class="vector-icon mw-ui-icon-listBullet mw-ui-icon-wikimedia-listBullet"></span>
+
+<span class="vector-dropdown-label-text">Toggle the table of contents</span>
+						</label>
+						<div class="vector-dropdown-content">
+					
+						<div id="vector-sticky-header-toc-unpinned-container" class="vector-unpinned-container">
+						</div>
+					
+						</div>
+					</div>
+			</nav>
+				<div class="vector-sticky-header-context-bar-primary" aria-hidden="true">mkosi</div>
+			</div>
+		</div>
+		<div class="vector-sticky-header-end" aria-hidden="true">
+			<div class="vector-sticky-header-icons">
+				<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-talk-sticky-header" tabindex="-1" data-event-name="talk-sticky-header"><span class="vector-icon mw-ui-icon-speechBubbles mw-ui-icon-wikimedia-speechBubbles"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-subject-sticky-header" tabindex="-1" data-event-name="subject-sticky-header"><span class="vector-icon mw-ui-icon-article mw-ui-icon-wikimedia-article"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-history-sticky-header" tabindex="-1" data-event-name="history-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-history mw-ui-icon-wikimedia-wikimedia-history"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only mw-watchlink" id="ca-watchstar-sticky-header" tabindex="-1" data-event-name="watch-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-star mw-ui-icon-wikimedia-wikimedia-star"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-edit-sticky-header" tabindex="-1" data-event-name="wikitext-edit-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-wikiText mw-ui-icon-wikimedia-wikimedia-wikiText"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-ve-edit-sticky-header" tabindex="-1" data-event-name="ve-edit-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-edit mw-ui-icon-wikimedia-wikimedia-edit"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-viewsource-sticky-header" tabindex="-1" data-event-name="ve-edit-protected-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-editLock mw-ui-icon-wikimedia-wikimedia-editLock"></span>
+
+<span></span>
+			</a>
+		</div>
+			<div class="vector-sticky-header-buttons">
+				<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive" id="ca-addsection-sticky-header" tabindex="-1" data-event-name="addsection-sticky-header"><span class="vector-icon mw-ui-icon-speechBubbleAdd-progressive mw-ui-icon-wikimedia-speechBubbleAdd-progressive"></span>
+
+<span>Add topic</span>
+			</a>
+		</div>
+			<div class="vector-sticky-header-icon-end">
+				<div class="vector-user-links">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="mw-portlet mw-portlet-dock-bottom emptyPortlet" id="p-dock-bottom">
+	<ul>
+		
+	</ul>
 </div>
 </body>
 </html>

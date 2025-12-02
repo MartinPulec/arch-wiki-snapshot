@@ -1,0 +1,2086 @@
+<!DOCTYPE html>
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-os vector-sticky-header-enabled vector-toc-available" lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<title>dm-crypt (Русский)/Encrypting an entire system (Русский) - ArchWiki</title>
+<link rel="stylesheet" href="../../ArchWikiOffline.css">
+<meta name="ResourceLoaderDynamicStyles" content="">
+<meta name="generator" content="MediaWiki 1.44.2">
+<meta name="referrer" content="no-referrer-when-downgrade">
+<meta name="robots" content="max-image-preview:standard">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, minimum-scale=0.25, maximum-scale=5.0">
+<link rel="search" type="application/opensearchdescription+xml" href="/rest.php/v1/search" title="ArchWiki (en)">
+<link rel="EditURI" type="application/rsd+xml" href="https://wiki.archlinux.org/api.php?action=rsd">
+<link rel="license" href="https://www.gnu.org/copyleft/fdl.html">
+<link rel="alternate" type="application/atom+xml" title="ArchWiki Atom feed" href="/index.php?title=Special:RecentChanges&amp;feed=atom">
+</head>
+<body class="skin--responsive skin-vector skin-vector-search-vue mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-0 ns-subject page-Dm-crypt_Русский_Encrypting_an_entire_system_Русский rootpage-Dm-crypt_Русский skin-vector-2022 action-view">
+<a class="mw-jump-link" href="#bodyContent">Jump to content</a>
+<div class="vector-header-container">
+	</div>
+<div class="mw-page-container">
+	<div class="mw-page-container-inner">
+		<div class="vector-column-start">
+			<div class="vector-main-menu-container">
+		</div>
+	<div class="vector-sticky-pinned-container">
+				<nav id="mw-panel-toc" aria-label="Contents" data-event-name="ui.sidebar-toc" class="mw-table-of-contents-container vector-toc-landmark">
+					<div id="vector-toc-pinned-container" class="vector-pinned-container">
+					<div id="vector-toc" class="vector-toc vector-pinnable-element">
+	<div class="vector-pinnable-header vector-toc-pinnable-header vector-pinnable-header-pinned" data-feature-name="toc-pinned" data-pinnable-element-id="vector-toc">
+	<h2 class="vector-pinnable-header-label">Contents</h2>
+	<button class="vector-pinnable-header-toggle-button vector-pinnable-header-pin-button" data-event-name="pinnable-header.vector-toc.pin">move to sidebar</button>
+	<button class="vector-pinnable-header-toggle-button vector-pinnable-header-unpin-button" data-event-name="pinnable-header.vector-toc.unpin">hide</button>
+</div>
+
+
+	<ul class="vector-toc-contents" id="mw-panel-toc-list">
+		<li id="toc-mw-content-text" class="vector-toc-list-item vector-toc-level-1">
+			<a href="#" class="vector-toc-link">
+				<div class="vector-toc-text">Beginning</div>
+			</a>
+		</li>
+		<li id="toc-Обзор" class="vector-toc-list-item vector-toc-level-1">
+		<a class="vector-toc-link" href="#%D0%9E%D0%B1%D0%B7%D0%BE%D1%80">
+			<div class="vector-toc-text">
+				<span class="vector-toc-numb">1</span>
+				<span>Обзор</span>
+			</div>
+		</a>
+		
+		<ul id="toc-Обзор-sublist" class="vector-toc-list">
+		</ul>
+	</li>
+	<li id="toc-LUKS_на_разделе" class="vector-toc-list-item vector-toc-level-1">
+		<a class="vector-toc-link" href="#LUKS_%D0%BD%D0%B0_%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB%D0%B5">
+			<div class="vector-toc-text">
+				<span class="vector-toc-numb">2</span>
+				<span>LUKS на разделе</span>
+			</div>
+		</a>
+		
+			<button aria-controls="toc-LUKS_на_разделе-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle LUKS на разделе subsection</span>
+			</button>
+		
+		<ul id="toc-LUKS_на_разделе-sublist" class="vector-toc-list">
+			<li id="toc-Подготовка_диска" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9F%D0%BE%D0%B4%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%BA%D0%B0_%D0%B4%D0%B8%D1%81%D0%BA%D0%B0">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">2.1</span>
+					<span>Подготовка диска</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Подготовка_диска-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Подготовка_не_загрузочных_разделов" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9F%D0%BE%D0%B4%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%BA%D0%B0_%D0%BD%D0%B5_%D0%B7%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D0%BE%D1%87%D0%BD%D1%8B%D1%85_%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB%D0%BE%D0%B2">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">2.2</span>
+					<span>Подготовка не загрузочных разделов</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Подготовка_не_загрузочных_разделов-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Подготовка_загрузочного_раздела" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9F%D0%BE%D0%B4%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%BA%D0%B0_%D0%B7%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D0%BE%D1%87%D0%BD%D0%BE%D0%B3%D0%BE_%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB%D0%B0">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">2.3</span>
+					<span>Подготовка загрузочного раздела</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Подготовка_загрузочного_раздела-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Монтирование_устройств" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9C%D0%BE%D0%BD%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5_%D1%83%D1%81%D1%82%D1%80%D0%BE%D0%B9%D1%81%D1%82%D0%B2">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">2.4</span>
+					<span>Монтирование устройств</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Монтирование_устройств-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Настройка_mkinitcpio" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9D%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0_mkinitcpio">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">2.5</span>
+					<span>Настройка mkinitcpio</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Настройка_mkinitcpio-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Настройка_загрузчика" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9D%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0_%D0%B7%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D1%87%D0%B8%D0%BA%D0%B0">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">2.6</span>
+					<span>Настройка загрузчика</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Настройка_загрузчика-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+	</li>
+	<li id="toc-LUKS_на_разделе_с_TPM2_и_Secure_Boot" class="vector-toc-list-item vector-toc-level-1">
+		<a class="vector-toc-link" href="#LUKS_%D0%BD%D0%B0_%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB%D0%B5_%D1%81_TPM2_%D0%B8_Secure_Boot">
+			<div class="vector-toc-text">
+				<span class="vector-toc-numb">3</span>
+				<span>LUKS на разделе с TPM2 и Secure Boot</span>
+			</div>
+		</a>
+		
+			<button aria-controls="toc-LUKS_на_разделе_с_TPM2_и_Secure_Boot-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle LUKS на разделе с TPM2 и Secure Boot subsection</span>
+			</button>
+		
+		<ul id="toc-LUKS_на_разделе_с_TPM2_и_Secure_Boot-sublist" class="vector-toc-list">
+			<li id="toc-Подготовка_диска_2" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9F%D0%BE%D0%B4%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%BA%D0%B0_%D0%B4%D0%B8%D1%81%D0%BA%D0%B0_2">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.1</span>
+					<span>Подготовка диска</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Подготовка_диска_2-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Подготовка_корневого_раздела" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9F%D0%BE%D0%B4%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%BA%D0%B0_%D0%BA%D0%BE%D1%80%D0%BD%D0%B5%D0%B2%D0%BE%D0%B3%D0%BE_%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB%D0%B0">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.2</span>
+					<span>Подготовка корневого раздела</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Подготовка_корневого_раздела-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Подготовка_системного_раздела_EFI" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9F%D0%BE%D0%B4%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%BA%D0%B0_%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%BD%D0%BE%D0%B3%D0%BE_%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB%D0%B0_EFI">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.3</span>
+					<span>Подготовка системного раздела EFI</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Подготовка_системного_раздела_EFI-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Настройка_mkinitcpio_2" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9D%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0_mkinitcpio_2">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.4</span>
+					<span>Настройка mkinitcpio</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Настройка_mkinitcpio_2-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Установка_загрузчика" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%A3%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0_%D0%B7%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D1%87%D0%B8%D0%BA%D0%B0">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.5</span>
+					<span>Установка загрузчика</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Установка_загрузчика-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Финальная_установка" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%A4%D0%B8%D0%BD%D0%B0%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F_%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.6</span>
+					<span>Финальная установка</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Финальная_установка-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Secure_Boot" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Secure_Boot">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.7</span>
+					<span>Secure Boot</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Secure_Boot-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Регистрация_TPM" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%A0%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B0%D1%86%D0%B8%D1%8F_TPM">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.8</span>
+					<span>Регистрация TPM</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Регистрация_TPM-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+	</li>
+	<li id="toc-LVM_внутри_LUKS" class="vector-toc-list-item vector-toc-level-1">
+		<a class="vector-toc-link" href="#LVM_%D0%B2%D0%BD%D1%83%D1%82%D1%80%D0%B8_LUKS">
+			<div class="vector-toc-text">
+				<span class="vector-toc-numb">4</span>
+				<span>LVM внутри LUKS</span>
+			</div>
+		</a>
+		
+			<button aria-controls="toc-LVM_внутри_LUKS-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle LVM внутри LUKS subsection</span>
+			</button>
+		
+		<ul id="toc-LVM_внутри_LUKS-sublist" class="vector-toc-list">
+			<li id="toc-Подготовка_диска_3" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9F%D0%BE%D0%B4%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%BA%D0%B0_%D0%B4%D0%B8%D1%81%D0%BA%D0%B0_3">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">4.1</span>
+					<span>Подготовка диска</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Подготовка_диска_3-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Подготовка_логических_томов" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9F%D0%BE%D0%B4%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%BA%D0%B0_%D0%BB%D0%BE%D0%B3%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D1%85_%D1%82%D0%BE%D0%BC%D0%BE%D0%B2">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">4.2</span>
+					<span>Подготовка логических томов</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Подготовка_логических_томов-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Подготовка_загрузочного_раздела_2" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9F%D0%BE%D0%B4%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%BA%D0%B0_%D0%B7%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D0%BE%D1%87%D0%BD%D0%BE%D0%B3%D0%BE_%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB%D0%B0_2">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">4.3</span>
+					<span>Подготовка загрузочного раздела</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Подготовка_загрузочного_раздела_2-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Настройка_mkinitcpio_3" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9D%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0_mkinitcpio_3">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">4.4</span>
+					<span>Настройка mkinitcpio</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Настройка_mkinitcpio_3-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Настройка_загрузчика_2" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9D%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0_%D0%B7%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D1%87%D0%B8%D0%BA%D0%B0_2">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">4.5</span>
+					<span>Настройка загрузчика</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Настройка_загрузчика_2-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+	</li>
+	<li id="toc-LUKS_внутри_LVM" class="vector-toc-list-item vector-toc-level-1">
+		<a class="vector-toc-link" href="#LUKS_%D0%B2%D0%BD%D1%83%D1%82%D1%80%D0%B8_LVM">
+			<div class="vector-toc-text">
+				<span class="vector-toc-numb">5</span>
+				<span>LUKS внутри LVM</span>
+			</div>
+		</a>
+		
+			<button aria-controls="toc-LUKS_внутри_LVM-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle LUKS внутри LVM subsection</span>
+			</button>
+		
+		<ul id="toc-LUKS_внутри_LVM-sublist" class="vector-toc-list">
+			<li id="toc-Подготовка_диска_4" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9F%D0%BE%D0%B4%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%BA%D0%B0_%D0%B4%D0%B8%D1%81%D0%BA%D0%B0_4">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">5.1</span>
+					<span>Подготовка диска</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Подготовка_диска_4-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Подготовка_логических_томов_2" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9F%D0%BE%D0%B4%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%BA%D0%B0_%D0%BB%D0%BE%D0%B3%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D1%85_%D1%82%D0%BE%D0%BC%D0%BE%D0%B2_2">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">5.2</span>
+					<span>Подготовка логических томов</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Подготовка_логических_томов_2-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Подготовка_загрузочного_раздела_3" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9F%D0%BE%D0%B4%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%BA%D0%B0_%D0%B7%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D0%BE%D1%87%D0%BD%D0%BE%D0%B3%D0%BE_%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB%D0%B0_3">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">5.3</span>
+					<span>Подготовка загрузочного раздела</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Подготовка_загрузочного_раздела_3-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Настройка_mkinitcpio_4" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9D%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0_mkinitcpio_4">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">5.4</span>
+					<span>Настройка mkinitcpio</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Настройка_mkinitcpio_4-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Настройка_загрузчика_3" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9D%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0_%D0%B7%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D1%87%D0%B8%D0%BA%D0%B0_3">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">5.5</span>
+					<span>Настройка загрузчика</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Настройка_загрузчика_3-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Настройка_fstab_и_crypttab" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9D%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0_fstab_%D0%B8_crypttab">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">5.6</span>
+					<span>Настройка fstab и crypttab</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Настройка_fstab_и_crypttab-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Шифрование_логического_тома_/home" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%A8%D0%B8%D1%84%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5_%D0%BB%D0%BE%D0%B3%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%BE%D0%B3%D0%BE_%D1%82%D0%BE%D0%BC%D0%B0_/home">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">5.7</span>
+					<span>Шифрование логического тома /home</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Шифрование_логического_тома_/home-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+	</li>
+	<li id="toc-LUKS_внутри_программного_RAID" class="vector-toc-list-item vector-toc-level-1">
+		<a class="vector-toc-link" href="#LUKS_%D0%B2%D0%BD%D1%83%D1%82%D1%80%D0%B8_%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%BD%D0%BE%D0%B3%D0%BE_RAID">
+			<div class="vector-toc-text">
+				<span class="vector-toc-numb">6</span>
+				<span>LUKS внутри программного RAID</span>
+			</div>
+		</a>
+		
+			<button aria-controls="toc-LUKS_внутри_программного_RAID-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle LUKS внутри программного RAID subsection</span>
+			</button>
+		
+		<ul id="toc-LUKS_внутри_программного_RAID-sublist" class="vector-toc-list">
+			<li id="toc-Подготовка_дисков" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9F%D0%BE%D0%B4%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%BA%D0%B0_%D0%B4%D0%B8%D1%81%D0%BA%D0%BE%D0%B2">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">6.1</span>
+					<span>Подготовка дисков</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Подготовка_дисков-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Построение_массива_RAID" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9F%D0%BE%D1%81%D1%82%D1%80%D0%BE%D0%B5%D0%BD%D0%B8%D0%B5_%D0%BC%D0%B0%D1%81%D1%81%D0%B8%D0%B2%D0%B0_RAID">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">6.2</span>
+					<span>Построение массива RAID</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Построение_массива_RAID-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Подготовка_блочных_устройств" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9F%D0%BE%D0%B4%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%BA%D0%B0_%D0%B1%D0%BB%D0%BE%D1%87%D0%BD%D1%8B%D1%85_%D1%83%D1%81%D1%82%D1%80%D0%BE%D0%B9%D1%81%D1%82%D0%B2">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">6.3</span>
+					<span>Подготовка блочных устройств</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Подготовка_блочных_устройств-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Настройка_GRUB" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9D%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0_GRUB">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">6.4</span>
+					<span>Настройка GRUB</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Настройка_GRUB-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Создание_файлов_ключей" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%A1%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5_%D1%84%D0%B0%D0%B9%D0%BB%D0%BE%D0%B2_%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%B9">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">6.5</span>
+					<span>Создание файлов ключей</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Создание_файлов_ключей-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Настройка_системы" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9D%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0_%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D1%8B">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">6.6</span>
+					<span>Настройка системы</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Настройка_системы-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+	</li>
+	<li id="toc-Простой_dm-crypt" class="vector-toc-list-item vector-toc-level-1">
+		<a class="vector-toc-link" href="#%D0%9F%D1%80%D0%BE%D1%81%D1%82%D0%BE%D0%B9_dm-crypt">
+			<div class="vector-toc-text">
+				<span class="vector-toc-numb">7</span>
+				<span>Простой dm-crypt</span>
+			</div>
+		</a>
+		
+			<button aria-controls="toc-Простой_dm-crypt-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle Простой dm-crypt subsection</span>
+			</button>
+		
+		<ul id="toc-Простой_dm-crypt-sublist" class="vector-toc-list">
+			<li id="toc-Подготовка_диска_5" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9F%D0%BE%D0%B4%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%BA%D0%B0_%D0%B4%D0%B8%D1%81%D0%BA%D0%B0_5">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">7.1</span>
+					<span>Подготовка диска</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Подготовка_диска_5-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Подготовка_незагрузочных_разделов" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9F%D0%BE%D0%B4%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%BA%D0%B0_%D0%BD%D0%B5%D0%B7%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D0%BE%D1%87%D0%BD%D1%8B%D1%85_%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB%D0%BE%D0%B2">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">7.2</span>
+					<span>Подготовка незагрузочных разделов</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Подготовка_незагрузочных_разделов-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Подготовка_загрузочного_раздела_4" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9F%D0%BE%D0%B4%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%BA%D0%B0_%D0%B7%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D0%BE%D1%87%D0%BD%D0%BE%D0%B3%D0%BE_%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB%D0%B0_4">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">7.3</span>
+					<span>Подготовка загрузочного раздела</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Подготовка_загрузочного_раздела_4-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Настройка_mkinitcpio_5" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9D%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0_mkinitcpio_5">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">7.4</span>
+					<span>Настройка mkinitcpio</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Настройка_mkinitcpio_5-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Настройка_загрузчика_4" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9D%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0_%D0%B7%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D1%87%D0%B8%D0%BA%D0%B0_4">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">7.5</span>
+					<span>Настройка загрузчика</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Настройка_загрузчика_4-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-После_установки" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9F%D0%BE%D1%81%D0%BB%D0%B5_%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B8">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">7.6</span>
+					<span>После установки</span>
+				</div>
+			</a>
+			
+			<ul id="toc-После_установки-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+	</li>
+	<li id="toc-Зашифрованный_загрузочный_раздел_(GRUB)" class="vector-toc-list-item vector-toc-level-1">
+		<a class="vector-toc-link" href="#%D0%97%D0%B0%D1%88%D0%B8%D1%84%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B9_%D0%B7%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D0%BE%D1%87%D0%BD%D1%8B%D0%B9_%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB_(GRUB)">
+			<div class="vector-toc-text">
+				<span class="vector-toc-numb">8</span>
+				<span>Зашифрованный загрузочный раздел (GRUB)</span>
+			</div>
+		</a>
+		
+			<button aria-controls="toc-Зашифрованный_загрузочный_раздел_(GRUB)-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle Зашифрованный загрузочный раздел (GRUB) subsection</span>
+			</button>
+		
+		<ul id="toc-Зашифрованный_загрузочный_раздел_(GRUB)-sublist" class="vector-toc-list">
+			<li id="toc-Подготовка_диска_6" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9F%D0%BE%D0%B4%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%BA%D0%B0_%D0%B4%D0%B8%D1%81%D0%BA%D0%B0_6">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">8.1</span>
+					<span>Подготовка диска</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Подготовка_диска_6-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Подготовка_логических_томов_3" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9F%D0%BE%D0%B4%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%BA%D0%B0_%D0%BB%D0%BE%D0%B3%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D1%85_%D1%82%D0%BE%D0%BC%D0%BE%D0%B2_3">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">8.2</span>
+					<span>Подготовка логических томов</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Подготовка_логических_томов_3-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Настройка_mkinitcpio_6" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9D%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0_mkinitcpio_6">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">8.3</span>
+					<span>Настройка mkinitcpio</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Настройка_mkinitcpio_6-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Настройка_GRUB_2" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%9D%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0_GRUB_2">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">8.4</span>
+					<span>Настройка GRUB</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Настройка_GRUB_2-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Избегание_ввода_пароля_дважды" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%98%D0%B7%D0%B1%D0%B5%D0%B3%D0%B0%D0%BD%D0%B8%D0%B5_%D0%B2%D0%B2%D0%BE%D0%B4%D0%B0_%D0%BF%D0%B0%D1%80%D0%BE%D0%BB%D1%8F_%D0%B4%D0%B2%D0%B0%D0%B6%D0%B4%D1%8B">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">8.5</span>
+					<span>Избегание ввода пароля дважды</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Избегание_ввода_пароля_дважды-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Использование_USB-накопителя_для_разблокировки_/boot" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D0%98%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5_USB-%D0%BD%D0%B0%D0%BA%D0%BE%D0%BF%D0%B8%D1%82%D0%B5%D0%BB%D1%8F_%D0%B4%D0%BB%D1%8F_%D1%80%D0%B0%D0%B7%D0%B1%D0%BB%D0%BE%D0%BA%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B8_/boot">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">8.6</span>
+					<span>Использование USB-накопителя для разблокировки /boot</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Использование_USB-накопителя_для_разблокировки_/boot-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+	</li>
+	<li id="toc-Корневой_раздел_на_ZFS" class="vector-toc-list-item vector-toc-level-1">
+		<a class="vector-toc-link" href="#%D0%9A%D0%BE%D1%80%D0%BD%D0%B5%D0%B2%D0%BE%D0%B9_%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB_%D0%BD%D0%B0_ZFS">
+			<div class="vector-toc-text">
+				<span class="vector-toc-numb">9</span>
+				<span>Корневой раздел на ZFS</span>
+			</div>
+		</a>
+		
+		<ul id="toc-Корневой_раздел_на_ZFS-sublist" class="vector-toc-list">
+		</ul>
+	</li>
+</ul>
+</div>
+
+					</div>
+		</nav>
+			</div>
+		</div>
+		<div class="mw-content-container">
+			<main id="content" class="mw-body" style="margin: 0">
+				<header class="mw-body-header vector-page-titlebar vector-feature-custom-font-size-clientpref--excluded">
+					<nav aria-label="Contents" class="vector-toc-landmark">
+						
+<div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left" title="Table of Contents">
+	<input type="checkbox" id="vector-page-titlebar-toc-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-vector-page-titlebar-toc" class="vector-dropdown-checkbox " aria-label="Toggle the table of contents">
+	<label id="vector-page-titlebar-toc-label" for="vector-page-titlebar-toc-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only " aria-hidden="true"><span class="vector-icon mw-ui-icon-listBullet mw-ui-icon-wikimedia-listBullet"></span>
+
+<span class="vector-dropdown-label-text">Toggle the table of contents</span>
+	</label>
+	<div class="vector-dropdown-content">
+
+
+							<div id="vector-page-titlebar-toc-unpinned-container" class="vector-unpinned-container">
+			</div>
+		
+	</div>
+</div>
+
+					</nav>
+					<h1 id="firstHeading" class="firstHeading mw-first-heading">dm-crypt (Русский)/Encrypting an entire system (Русский)</h1>
+							
+<div id="p-lang-btn" class="vector-dropdown mw-portlet mw-portlet-lang">
+	<input type="checkbox" id="p-lang-btn-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-p-lang-btn" class="vector-dropdown-checkbox mw-interlanguage-selector" aria-label="Go to an article in another language. Available in 8 languages">
+	<label id="p-lang-btn-label" for="p-lang-btn-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive mw-portlet-lang-heading-8" aria-hidden="true"><span class="vector-icon mw-ui-icon-language-progressive mw-ui-icon-wikimedia-language-progressive"></span>
+
+<span class="vector-dropdown-label-text">8 languages</span>
+	</label>
+	<div class="vector-dropdown-content">
+
+		<div class="vector-menu-content">
+			
+			<ul class="vector-menu-content-list">
+				
+				<li class="interlanguage-link interwiki-de mw-list-item"><a href="https://wiki.archlinux.de/title/Systemverschl%C3%BCsselung_mit_dm-crypt" title="Systemverschlüsselung mit dm-crypt – Deutsch" lang="de" hreflang="de" data-title="Systemverschlüsselung mit dm-crypt" data-language-autonym="Deutsch" data-language-local-name="Deutsch" class="interlanguage-link-target"><span>Deutsch</span></a></li>
+<li class="interlanguage-link interwiki-en mw-list-item"><a href="../../en/Dm-crypt/Encrypting_an_entire_system.html" title="Dm-crypt/Encrypting an entire system – English" lang="en" hreflang="en" data-title="Dm-crypt/Encrypting an entire system" data-language-autonym="English" data-language-local-name="English" class="interlanguage-link-target"><span>English</span></a></li>
+<li class="interlanguage-link interwiki-es mw-list-item"><a href="../../es/Dm-crypt/Encrypting_an_entire_system.html" title="Dm-crypt (Español)/Encrypting an entire system – español" lang="es" hreflang="es" data-title="Dm-crypt (Español)/Encrypting an entire system" data-language-autonym="Español" data-language-local-name="español" class="interlanguage-link-target"><span>Español</span></a></li>
+<li class="interlanguage-link interwiki-hu mw-list-item"><a href="../../hu/Dm-crypt/Encrypting_an_entire_system.html" title="Dm-crypt (Magyar)/Encrypting an entire system – magyar" lang="hu" hreflang="hu" data-title="Dm-crypt (Magyar)/Encrypting an entire system" data-language-autonym="Magyar" data-language-local-name="magyar" class="interlanguage-link-target"><span>Magyar</span></a></li>
+<li class="interlanguage-link interwiki-ja mw-list-item"><a href="https://wiki.archlinux.jp/index.php/Dm-crypt/%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%E5%85%A8%E4%BD%93%E3%81%AE%E6%9A%97%E5%8F%B7%E5%8C%96" title="Dm-crypt/システム全体の暗号化 – 日本語" lang="ja" hreflang="ja" data-title="Dm-crypt/システム全体の暗号化" data-language-autonym="日本語" data-language-local-name="日本語" class="interlanguage-link-target"><span>日本語</span></a></li>
+<li class="interlanguage-link interwiki-pl mw-list-item"><a href="../../pl/Dm-crypt/Encrypting_an_entire_system.html" title="Dm-crypt (Polski)/Encrypting an entire system – polski" lang="pl" hreflang="pl" data-title="Dm-crypt (Polski)/Encrypting an entire system" data-language-autonym="Polski" data-language-local-name="polski" class="interlanguage-link-target"><span>Polski</span></a></li>
+<li class="interlanguage-link interwiki-pt mw-list-item"><a href="../../pt/Dm-crypt/Encrypting_an_entire_system.html" title="Dm-crypt (Português)/Encrypting an entire system – português" lang="pt" hreflang="pt" data-title="Dm-crypt (Português)/Encrypting an entire system" data-language-autonym="Português" data-language-local-name="português" class="interlanguage-link-target"><span>Português</span></a></li>
+<li class="interlanguage-link interwiki-zh-hans mw-list-item"><a href="https://wiki.archlinuxcn.org/wiki/dm-crypt/%E5%8A%A0%E5%AF%86%E6%95%B4%E4%B8%AA%E7%B3%BB%E7%BB%9F" title="dm-crypt/加密整个系统 – 中文（简体）" lang="zh-Hans" hreflang="zh-Hans" data-title="dm-crypt/加密整个系统" data-language-autonym="中文（简体）" data-language-local-name="中文（简体）" class="interlanguage-link-target"><span>中文（简体）</span></a></li>
+			</ul>
+			
+		</div>
+
+	</div>
+</div>
+</header>
+				<div class="vector-column-end vector-feature-custom-font-size-clientpref--excluded">
+					<div class="vector-sticky-pinned-container">
+						<nav class="vector-page-tools-landmark" aria-label="Page tools">
+							<div id="vector-page-tools-pinned-container" class="vector-pinned-container">
+				
+							</div>
+		</nav>
+						<nav class="vector-appearance-landmark" aria-label="Appearance">
+							<div id="vector-appearance-pinned-container" class="vector-pinned-container">
+				<div id="vector-appearance" class="vector-appearance vector-pinnable-element">
+	<div class="vector-pinnable-header vector-appearance-pinnable-header vector-pinnable-header-pinned" data-feature-name="appearance-pinned" data-pinnable-element-id="vector-appearance" data-pinned-container-id="vector-appearance-pinned-container" data-unpinned-container-id="vector-appearance-unpinned-container">
+	<div class="vector-pinnable-header-label">Appearance</div>
+	<button class="vector-pinnable-header-toggle-button vector-pinnable-header-pin-button" data-event-name="pinnable-header.vector-appearance.pin">move to sidebar</button>
+	<button class="vector-pinnable-header-toggle-button vector-pinnable-header-unpin-button" data-event-name="pinnable-header.vector-appearance.unpin">hide</button>
+</div>
+
+
+</div>
+
+							</div>
+		</nav>
+					</div>
+				</div>
+				<div id="bodyContent" class="vector-body" aria-labelledby="firstHeading" data-mw-ve-target-container>
+					<div class="vector-body-before-content">
+							<div class="mw-indicators">
+		</div>
+
+						<div id="siteSub" class="noprint">From ArchWiki</div>
+					</div>
+					<div id="contentSub"><div id="mw-content-subtitle"><div class="subpages">&lt; <bdi dir="ltr"><a href="../../ru/Dm-crypt.html" title="Dm-crypt (Русский)">Dm-crypt (Русский)</a></bdi>
+</div></div></div>
+					
+					
+					<div id="mw-content-text" class="mw-body-content">
+<div class="mw-content-ltr mw-parser-output" lang="ru" dir="ltr">
+<p><span>
+</span>
+<b>Шифрование всей системы при помощи dm-crypt</b>.
+Следующие примеры демонстрируют общие сценарии полного шифрования системы с <i>dm-crypt</i>. Они объясняют все дополнительные действия, которыми необходимо дополнить обычную <a href="../../ru/Installation_guide.html" title="Installation guide (Русский)">процедуру установки</a>. Все необходимые инструменты доступны на <a rel="nofollow" class="external text" href="https://archlinux.org/download/">установочном образе</a>.
+</p>
+<p>Если вы хотите зашифровать уже существующую незашифрованную файловую систему, смотрите <a href="../../en/Dm-crypt/Device_encryption.html#Encrypt_an_existing_unencrypted_file_system" title="Dm-crypt/Device encryption">dm-crypt/Device encryption#Encrypt an existing unencrypted file system</a>.
+</p>
+<meta property="mw:PageProp/toc">
+<div class="mw-heading mw-heading2"><h2 id="Обзор">
+<span id=".D0.9E.D0.B1.D0.B7.D0.BE.D1.80"></span>Обзор</h2></div>
+<p>Обеспечение безопасности корневой файловой системы — это то, в чем <i>dm-crypt</i> особенно силён, как по функциональности, так и по производительности. В отличие от выборочного шифрования некорневых файловых систем, зашифрованная корневая файловая система может скрыть такую информацию, как установленные программы, имена пользователей всех учетных записей и типичные источники утечки данных, такие как <a href="../../ru/Locate.html" title="Locate (Русский)">locate</a> и <code>/var/log/</code>. Кроме того, зашифрованная корневая файловая система значительно усложняет вмешательство в систему, поскольку всё, кроме <a href="../../ru/Arch_boot_process.html#%D0%97%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D1%87%D0%B8%D0%BA" title="Arch boot process (Русский)">загрузчика</a> и (обычно) ядра, зашифровано.
+</p>
+<p>Все сценарии, проиллюстрированные ниже, обладают этими преимуществами. Различные плюсы и минусы того или иного способа приведены в таблице ниже:
+</p>
+<table class="wikitable">
+<tbody>
+<tr>
+<th>Сценарии
+</th>
+<th>Преимущества
+</th>
+<th>Недостатки
+</th>
+</tr>
+<tr>
+<td>
+<a href="#LUKS_%D0%BD%D0%B0_%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB%D0%B5">#LUKS на разделе</a>
+<p>демонстрирует базовую и прямолинейную настройку полностью зашифрованного корня с LUKS.
+</p>
+</td>
+<td>
+<ul>
+<li>Простое разбиение на разделы и настройка</li>
+<li>На диске с разметкой GPT <a href="../../ru/Systemd.html#%D0%90%D0%B2%D1%82%D0%BE%D0%BC%D0%BE%D0%BD%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5_GPT-%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB%D0%B0" title="Systemd (Русский)">systemd может автоматически смонтировать</a> корневой раздел.</li>
+</ul>
+</td>
+<td>
+<ul><li>Негибкость: объём зашифрованного пространства нужно выделять заранее</li></ul>
+</td>
+</tr>
+<tr>
+<td>
+<a href="#LUKS_%D0%BD%D0%B0_%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB%D0%B5_%D1%81_TPM2_%D0%B8_Secure_Boot">#LUKS на разделе с TPM2 и Secure Boot</a>
+<p>Аналогично примеру выше, с Secure Boot и TPM2, обеспечивающими дополнительные уровни безопасности.
+</p>
+</td>
+<td>
+<p>Те же преимущества, что и выше, и
+</p>
+<ul>
+<li>Secure Boot позволяет защититься от <a href="https://en.wikipedia.org/wiki/Evil_maid_attack" class="extiw" title="wikipedia:Evil maid attack">атак злой горничной</a>
+</li>
+<li>TPM2 предотвращает разблокировку системы, если Secure Boot отключён или изменён</li>
+</ul>
+</td>
+<td>
+<ul><li>Те же недостатки, что и выше.</li></ul>
+</td>
+</tr>
+<tr>
+<td>
+<a href="#LVM_%D0%B2%D0%BD%D1%83%D1%82%D1%80%D0%B8_LUKS">#LVM внутри LUKS</a>
+<p>Физический том (PV) LVM размещён внутри крипто-контейнера LUKS. 
+</p>
+</td>
+<td>
+<ul>
+<li>Простое разбиение при умении работать с LVM</li>
+<li>Можно как угодно переразмечать структуру LVM без дополнительных настроек шифрования</li>
+<li>Только один ключ требуется для разблокировки всех томов (например, удобно для настройки возобновления из спящего режима т.е. выхода из гибернации (resume-from-disk))</li>
+<li>Структура томов не видна при блокировке</li>
+<li>Простейший способ реализовать <a href="../../ru/Dm-crypt/Swap_encryption.html#%D0%A1_%D0%BF%D0%BE%D0%B4%D0%B4%D0%B5%D1%80%D0%B6%D0%BA%D0%BE%D0%B9_%D0%B3%D0%B8%D0%B1%D0%B5%D1%80%D0%BD%D0%B0%D1%86%D0%B8%D0%B8" title="Dm-crypt (Русский)/Swap encryption (Русский)">гибернацию (suspend-to-disk)</a>
+</li>
+</ul>
+</td>
+<td>
+<ul>
+<li>LVM добавляет дополнительный слой mapping'а и хук</li>
+<li>Менее практично и оправдано, если нужно зашифровать какой либо отдельный том отдельно от остальных томов.</li>
+<li>Если у вас несколько физических томов LVM (PV) в группе томов (volume group), которая должна быть внутри LUKS, то каждый физический том должен быть зашифрован отдельно с помощью LUKS. Для их использования все крипто-контейнеры должны быть расшифрованы по отдельности до активации данной группы томов при загрузке системы.</li>
+</ul>
+</td>
+</tr>
+<tr>
+<td>
+<a href="#LUKS_%D0%B2%D0%BD%D1%83%D1%82%D1%80%D0%B8_LVM">#LUKS внутри LVM</a>
+<p>Крипто-контейнеры LUKS, внутри которых находятся файловые системы распольжены внутри логических томов LVM.
+</p>
+</td>
+<td>
+<ul>
+<li>LVM может использоваться для распределения зашифрованных виртуальных логических томов (одного или несколько) на несколько реальных физических носителей информации</li>
+<li>В одной и той же группе томов можно иcпользовать как зашифрованные и так и не зашифрованные логические тома</li>
+</ul>
+</td>
+<td>
+<ul>
+<li>При изменении томов (например при увеличенни размера) нужно также менять и крипто-контейнеры.</li>
+<li>Требуются собственный отдельный ключ для каждого зашифрованного логического тома.</li>
+<li>Структура LVM видна до разблокировки.</li>
+<li>Более медленное время загрузки; каждый зашифрованный LV должен быть разблокирован отдельно.</li>
+</ul>
+</td>
+</tr>
+<tr>
+<td>
+<a href="#LUKS_%D0%B2%D0%BD%D1%83%D1%82%D1%80%D0%B8_%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%BD%D0%BE%D0%B3%D0%BE_RAID">#LUKS внутри программного RAID</a>
+<p>Использует dm-crypt после настройки RAID.
+</p>
+</td>
+<td>
+<ul><li>Аналогично «LUKS внутри LVM»</li></ul>
+</td>
+<td>
+<ul><li>Аналогично «LUKS внутри LVM» и <a href="#%D0%97%D0%B0%D1%88%D0%B8%D1%84%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B9_%D0%B7%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D0%BE%D1%87%D0%BD%D1%8B%D0%B9_%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB_(GRUB)">зашифрованному /boot (GRUB)</a>
+</li></ul>
+</td>
+</tr>
+<tr>
+<td>
+<a href="#%D0%9F%D1%80%D0%BE%D1%81%D1%82%D0%BE%D0%B9_dm-crypt">#Простой dm-crypt</a>
+<p>использует простой режим dm-crypt, т.е. без заголовка LUKS и его опций для нескольких ключей. <br>В этом сценарии также описывается использование USB-устройства для <code>/boot</code> и хранения ключей, что может быть применено и в других описаных здесь сценариях.
+</p>
+</td>
+<td>
+<ul>
+<li>Устойчивость данных для случаев, когда заголовок LUKS может быть поврежден</li>
+<li>Позволяет использовать <a href="https://en.wikipedia.org/wiki/ru:%D0%9E%D1%82%D1%80%D0%B8%D1%86%D0%B0%D0%B5%D0%BC%D0%BE%D0%B5_%D1%88%D0%B8%D1%84%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5" class="extiw" title="wikipedia:ru:Отрицаемое шифрование">отрицаемое шифрование</a>
+</li>
+<li>Помогает решить <a href="../../en/Dm-crypt/Specialties.html#Discard/TRIM_support_for_solid_state_drives_(SSD)" title="Dm-crypt/Specialties">проблемы</a> с SSD</li>
+</ul>
+</td>
+<td>
+<ul>
+<li>Требуется вручную прописывать большое количество параметров шифрования</li>
+<li>Единственный ключ шифрования и нет возможности его изменить</li>
+<li>Слишком сложная настройка для не узкоспециализированного использования</li>
+</ul>
+</td>
+</tr>
+<tr>
+<td>
+<a href="#%D0%97%D0%B0%D1%88%D0%B8%D1%84%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B9_%D0%B7%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D0%BE%D1%87%D0%BD%D1%8B%D0%B9_%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB_(GRUB)">#Зашифрованный загрузочный раздел (GRUB)</a>
+<p>показывает, как зашифровать <code>/boot</code> для расшифровки напрямую GRUB'ом. <br> В этом сценарии также испрользуется системный раздел EFI, что применимо и в других сценариях.
+</p>
+</td>
+<td>
+<ul>
+<li>Те же преимущества, что и у сценария, на котором основана установка (LVM внутри LUKS для этого конкретного примера)</li>
+<li>Меньше данных остается незашифрованными: только загрузчик и системный раздел EFI, если он есть</li>
+</ul>
+</td>
+<td>
+<ul>
+<li>Те же недостатки, что и у сценария, на котором основана установка (LVM внутри LUKS для этого конкретного примера)</li>
+<li>Более сложная конфигурация</li>
+<li>Не поддерживается другими загрузчиками</li>
+<li>
+<a href="../../en/GRUB/Tips_and_tricks.html#Speeding_up_LUKS_decryption_in_GRUB" title="GRUB/Tips and tricks">GRUB долго расшифровывает LUKS</a>, что увеличивает общее время загрузки операционной системы</li>
+</ul>
+</td>
+</tr>
+<tr>
+<td>
+<a href="#%D0%9A%D0%BE%D1%80%D0%BD%D0%B5%D0%B2%D0%BE%D0%B9_%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB_%D0%BD%D0%B0_ZFS">#Корневой раздел на ZFS</a>
+</td>
+<td>
+<ul>
+<li>В случае зашифрованного <code>zpool</code> все наборы данных содержатся в одной и той же криптографической среде, что упрощает <a href="../../en/Dual_boot_with_Windows.html" class="mw-redirect" title="Dual boot">dual boot</a> и обмен данными между установленными системами.</li>
+<li>Резервное копирование возможно на пул ZFS без активного шифрования: передаваемые снимки будут храниться <a rel="nofollow" class="external text" href="https://freebsdfoundation.org/our-work/journal/browser-based-edition/storage-and-filesystems/protecting-data-with-zfs-native-encryption/#:~:text=As%20you%20have%20seen%2C%20ZFS,able%20to%20mount%20the%20dataset.">в зашифрованном виде благодаря нативной поддержке шифрования ZFS</a>.</li>
+</ul>
+</td>
+<td>
+<ul>
+<li>
+<a rel="nofollow" class="external text" href="https://openzfs.github.io/openzfs-docs/man/v2.2/8/zfs-load-key.8.html">ZFS не будет шифровать</a> метаданные, связанные со структурой пула, включая имена наборов данных и снимков, иерархию наборов данных, свойства, размер файлов, дыры в файлах (участки с нулевыми байтами) и таблицы дедупликации (хотя сами дедуплицированные данные зашифрованы).</li>
+<li>Создание пула требует от пользователя более глубокого знания геометрии дисков и даже установки размера блока (<code>ashift</code>) для лучшей производительности.</li>
+<li>ZFS имеет некоторые особенности со своей собственной реализацией <code>aes</code> и некоторые алгоритмы шифрования <a rel="nofollow" class="external text" href="https://github.com/openzfs/zfs/issues/15276">могут работать плохо</a>.</li>
+<li>Swap на <code>zvol</code> или файле внутри набора данных — это <a rel="nofollow" class="external text" href="https://github.com/openzfs/zfs/issues/7734">старая и хорошо известная проблема</a> без обходного пути, кроме размещения swap в другом разделе или lv и отключения гибернации (suspend-to-disk) (смотрите ниже).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Хотя все вышеперечисленные сценарии обеспечивают гораздо бо́льшую защиту от внешних угроз, чем зашифрованные вторичные (не корневые) файловые системы, они также имеют общий недостаток: не возможность шифровать данные для каждового пользоваля отдельно. Если в системе несколько пользователей, то любой из них, при получении доступа к ключу шифрования, может расшифровать весь диск и, следовательно, получить доступ к данным всего диска. Если это критично, возможно использовать комбинацию шифрования блочных устройств и шифрования засчёт стековой файловой системы, чтобы получить преимущества обоих методов. Смотрите <a href="../../ru/Data-at-rest_encryption.html" title="Data-at-rest encryption (Русский)">Data-at-rest encryption (Русский)</a>.
+</p>
+<p>Смотрите <a href="../../en/Dm-crypt/Drive_preparation.html#Partitioning" title="Dm-crypt/Drive preparation">dm-crypt/Drive preparation#Partitioning</a> для общего обзора стратегий разбиения, используемых в сценариях.
+</p>
+<p>Еще одна область для рассмотрения — нужно ли настраивать зашифрованный раздел (или файл) подкачки и какого типа. См. <a href="../../ru/Dm-crypt/Swap_encryption.html" title="Dm-crypt (Русский)/Swap encryption (Русский)">dm-crypt/Шифрование подкачки</a>.
+</p>
+<p>Если вы планируете защитить данные системы не только от физической кражи, но также имеете требования к мерам предосторожности против логического вмешательства, см. <a href="../../en/Dm-crypt/Specialties.html#Securing_the_unencrypted_boot_partition" title="Dm-crypt/Specialties">dm-crypt/Specialties#Securing the unencrypted boot partition</a> для дополнительных возможностей после следования по одному из описанных сценариев.
+</p>
+<p>Для <a href="../../ru/Solid_state_drive.html" title="Solid state drive (Русский)">твердотельных накопителей</a> вы можете захотеть рассмотреть включение поддержки TRIM, но будьте осторожны, есть потенциальные последствия для безопасности. См. <a href="../../en/Dm-crypt/Specialties.html#Discard/TRIM_support_for_solid_state_drives_(SSD)" title="Dm-crypt/Specialties">dm-crypt/Specialties#Discard/TRIM support for solid state drives (SSD)</a> для получения дополнительной информации.
+</p>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Важно</strong> 
+<ul>
+<li>В любом сценарии никогда не используйте программы восстановления файловой системы, такие как <a href="../../ru/Fsck.html" title="Fsck (Русский)">fsck</a>, непосредственно на зашифрованном томе, иначе это уничтожит любые средства восстановления ключа, используемого для расшифровки ваших файлов. Такие инструменты должны использоваться на расшифрованном (открытом) устройстве.</li>
+<li>Функция формирования ключа Argon2 имеет высокое использование ОЗУ в качестве своей особенности для усложнения взлома ключа, по умолчанию 1 ГиБ на зашифрованный маппер. Машины с малым объемом ОЗУ и/или несколькими разделами LUKS2, при разблокировки параллельно, могут выдать ошибку при загрузке. Смотрите опцию <code>--pbkdf-memory</code> для контроля использования памяти.<a rel="nofollow" class="external autonumber" href="https://gitlab.com/cryptsetup/cryptsetup/issues/372">[1]</a>
+</li>
+<li>Поддержка LUKS2 при расшифровки не в пользовательском пространстве, а напрямую через GRUB ограничена; смотрите <a href="../../en/GRUB.html#Encrypted_/boot" title="GRUB">GRUB#Encrypted /boot</a> для подробностей. Используйте LUKS2 с PBKDF2 (<code>cryptsetup luksFormat --pbkdf pbkdf2</code>) для шифрования загрузочных разделов (либо <code>/boot</code> на отдельном разделе, либо корневой раздел, содержащий <code>/boot</code>), которые нужно расшифровывать именно самим GRUB'ом, а не в пользовательском пространстве, после его загрузки из <code>/boot</code>.</li>
+<li>Выход из гибернации на ZFS может повредить ваш пул, поэтому будьте особенно осторожны при настройке гибернации, даже если swap размещен вне zvol. <a rel="nofollow" class="external text" href="https://github.com/openzfs/zfs/issues/260#issuecomment-991912492">Подробности здесь</a>.</li>
+</ul>
+</div>
+<div class="mw-heading mw-heading2"><h2 id="LUKS_на_разделе">
+<span id="LUKS_.D0.BD.D0.B0_.D1.80.D0.B0.D0.B7.D0.B4.D0.B5.D0.BB.D0.B5"></span>LUKS на разделе</h2></div>
+<p>Этот пример описывает полное шифрование системы с <i>dm-crypt</i> + LUKS на схеме наиболее простой разбивки разделов:
+</p>
+<pre style="white-space: pre !important; font-family:'DejaVu Sans Mono',monospace,monospace; font-variant-ligatures: no-common-ligatures;">+-----------------------+------------------------+-----------------------+
+| Загрузочный раздел    | Зашифрованный корневой | Дополнительное        |
+|                       | раздел LUKS            | свободное место для   |
+|                       |                        | дополнительных        |
+| /boot                 | /                      | разделов, которые     |
+|                       |                        | будут настроены позже |
+|                       | /dev/mapper/root       |                       |
+|                       |------------------------|                       |
+| /dev/sda1             | /dev/sda2              |                       |
++-----------------------+------------------------+-----------------------+
+</pre>
+<p>Первые шаги можно выполнить непосредственно после загрузки установочного образа Arch Linux.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Подготовка_диска">
+<span id=".D0.9F.D0.BE.D0.B4.D0.B3.D0.BE.D1.82.D0.BE.D0.B2.D0.BA.D0.B0_.D0.B4.D0.B8.D1.81.D0.BA.D0.B0"></span>Подготовка диска</h3></div>
+<p>Перед созданием любых разделов вы должны узнать о важности безопасного стирания диска и его методах, описанных в <a href="../../en/Dm-crypt/Drive_preparation.html" class="mw-redirect" title="Dm-crypt (Русский)/Drive preparation (Русский)">dm-crypt/Drive preparation</a>.
+</p>
+<p>Затем создайте необходимые разделы, как минимум для <code>/</code> (например, <code>/dev/sda2</code>) и для <code>/boot</code> (<code>/dev/sda1</code>). См. <a href="../../ru/Partitioning.html" title="Partitioning (Русский)">Partitioning</a>.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Подготовка_не_загрузочных_разделов">
+<span id=".D0.9F.D0.BE.D0.B4.D0.B3.D0.BE.D1.82.D0.BE.D0.B2.D0.BA.D0.B0_.D0.BD.D0.B5_.D0.B7.D0.B0.D0.B3.D1.80.D1.83.D0.B7.D0.BE.D1.87.D0.BD.D1.8B.D1.85_.D1.80.D0.B0.D0.B7.D0.B4.D0.B5.D0.BB.D0.BE.D0.B2"></span>Подготовка не загрузочных разделов</h3></div>
+<p>Этот и следующий разделы заменяют инструкции из <a href="../../ru/Installation_guide.html#%D0%A4%D0%BE%D1%80%D0%BC%D0%B0%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5_%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB%D0%BE%D0%B2" title="Installation guide (Русский)">Installation guide (Русский)#Форматирование разделов</a>.
+</p>
+<p>Следующие команды создают и монтируют зашифрованный корневой раздел. Они соответствуют процедуре, описанной подробно в <a href="../../en/Dm-crypt/Device_encryption.html#Encrypting_devices_with_LUKS_mode" title="Dm-crypt/Device encryption">dm-crypt/Device encryption#Encrypting devices with LUKS mode</a>. Если вы хотите использовать определенные нестандартные параметры шифрования (например, метод шифрования, длину ключа, размер сектора), см. <a href="../../en/Dm-crypt/Device_encryption.html#Encryption_options_for_LUKS_mode" title="Dm-crypt/Device encryption">encryption options</a> перед выполнением первой команды.
+</p>
+<pre># cryptsetup -v luksFormat /dev/sda2
+# cryptsetup open /dev/sda2 root
+</pre>
+<p><a href="../../ru/File_systems.html#%D0%A1%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5_%D1%84%D0%B0%D0%B9%D0%BB%D0%BE%D0%B2%D0%BE%D0%B9_%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D1%8B" title="File systems (Русский)">Создайте файловую систему</a> на разблокированном LUKS устройстве. Например, чтобы создать файловую систему <a href="../../en/Ext4.html" class="mw-redirect" title="Ext4 (Русский)">Ext4</a>, выполните:
+</p>
+<pre># mkfs.ext4 /dev/mapper/root
+</pre>
+<p>Смонтируйте корневой том в <code>/mnt</code>:
+</p>
+<pre># mount /dev/mapper/root /mnt
+</pre>
+<p>Проверьте, работает ли маппинг как надо:
+</p>
+<pre># umount /mnt
+# cryptsetup close root
+# cryptsetup open /dev/sda2 root
+# mount /dev/mapper/root /mnt
+</pre>
+<p>Если вы создали отдельные разделы (например, <code>/home</code>), эти шаги необходимо адаптировать и повторить для всех из них, <i>кроме</i> <code>/boot</code> (И <code>/efi</code> если EFI-раздел монтируется не в <code>/boot</code>, а туда). См. <a href="../../en/Dm-crypt/Encrypting_a_non-root_file_system.html#Automated_unlocking_and_mounting" title="Dm-crypt/Encrypting a non-root file system">dm-crypt/Encrypting a non-root file system#Automated unlocking and mounting</a> о том, как обрабатывать дополнительные разделы при загрузке.
+</p>
+<p>Обратите внимание, что каждое блочное устройство потребует своего пароля. Это может быть неудобно, так как это приводёт к необходимости ввода нескольких паролей при загрузке. Альтернативой является использование файла ключа, хранящегося в корневом разделе, для разблокировки всех остальных разделов через <code>crypttab</code> уже без ввода паролей. См. <a href="../../en/Dm-crypt/Device_encryption.html#Using_LUKS_to_format_partitions_with_a_keyfile" title="Dm-crypt/Device encryption">dm-crypt/Device encryption#Using LUKS to format partitions with a keyfile</a> для дополнительных инструкций.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Подготовка_загрузочного_раздела">
+<span id=".D0.9F.D0.BE.D0.B4.D0.B3.D0.BE.D1.82.D0.BE.D0.B2.D0.BA.D0.B0_.D0.B7.D0.B0.D0.B3.D1.80.D1.83.D0.B7.D0.BE.D1.87.D0.BD.D0.BE.D0.B3.D0.BE_.D1.80.D0.B0.D0.B7.D0.B4.D0.B5.D0.BB.D0.B0"></span>Подготовка загрузочного раздела</h3></div>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Важно</strong> Форматируйте системный раздел EFI только в том случае, если он был только что создан на этапе разметки. Если на диске уже есть системный раздел EFI, его переформатирование удалит загрузчики других ранее установленных операционных систем.</div>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Совет</strong> При наличиии других установленных систем использующих <code>/boot</code> лучше создавать отдельные разделы для <code>/boot</code> каждой системы, при этом EFI-раздел, в каждой системе можно монтировать в <code>/efi</code>
+</div>
+<p>Нужно выполнить настройку незашифрованного раздела <code>/boot</code>, который необходим для зашифрованного корня. Для <a href="../../ru/EFI_system_partition.html" title="EFI system partition (Русский)">EFI system partition</a> на системах UEFI выполните:
+</p>
+<pre># mkfs.fat -F32 /dev/sda1
+</pre>
+<p>или на более старом оборудовании для обычного загрузочного раздела на системах BIOS:
+</p>
+<pre># mkfs.ext4 /dev/sda1
+</pre>
+<p>После этого создайте каталог для точки монтирования и смонтируйте раздел:
+</p>
+<pre># mount --mkdir /dev/sda1 /mnt/boot
+</pre>
+<div class="mw-heading mw-heading3"><h3 id="Монтирование_устройств">
+<span id=".D0.9C.D0.BE.D0.BD.D1.82.D0.B8.D1.80.D0.BE.D0.B2.D0.B0.D0.BD.D0.B8.D0.B5_.D1.83.D1.81.D1.82.D1.80.D0.BE.D0.B9.D1.81.D1.82.D0.B2"></span>Монтирование устройств</h3></div>
+<p>На шаге <a href="../../ru/Installation_guide.html#%D0%9C%D0%BE%D0%BD%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5_%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB%D0%BE%D0%B2" title="Installation guide (Русский)">Installation guide (Русский)#Монтирование разделов</a> вы должны будете монтировать устройства <code>/dev/mapper/*</code> (содержимое крипто-контейнеров), а не фактические разделы. Конечно раздел для <code>/boot</code>, который не зашифрован, все равно должен быть смонтирован напрямую. Во время установки должен быть смонтирован в <code>/mnt/boot</code> (Если устройство для корневой файловой системы во время установки монтируется в <code>/mnt</code>).
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Настройка_mkinitcpio">
+<span id=".D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.BE.D0.B9.D0.BA.D0.B0_mkinitcpio"></span>Настройка mkinitcpio</h3></div>
+<p>Если используется стандартный initramfs на основе busybox, добавьте хуки <code>keyboard</code> и <code>encrypt</code> в <a href="../../ru/Mkinitcpio.html" title="Mkinitcpio (Русский)">mkinitcpio.conf</a>. Если на этапе загрузки системы вы хотите использовать неамериканскую (не US) <a href="../../ru/Linux_console/Keyboard_configuration.html" title="Linux console (Русский)/Keyboard configuration (Русский)">консольную карту клавиш</a> или нестандартный шрифт консоли, дополнительно добавьте хуки <code>keymap</code> и <code>consolefont</code> соответственно.
+</p>
+<pre>HOOKS=(base <b>udev</b> autodetect microcode modconf kms <b>keyboard</b> <b>keymap</b> <b>consolefont</b> block <b>encrypt</b> filesystems fsck)
+</pre>
+<p>Если используется initramfs на основе systemd, вместо этого добавьте хуки <code>keyboard</code> и <code>sd-encrypt</code>. Если на этапе загрузки системы вы хотите использовать неамериканскую (не US) <a href="../../ru/Linux_console/Keyboard_configuration.html" title="Linux console (Русский)/Keyboard configuration (Русский)">консольную карту клавиш</a> или нестандартный шрифт консоли, дополнительно добавьте хук <code>sd-vconsole</code>.
+</p>
+<pre>HOOKS=(base <b>systemd</b> autodetect microcode modconf kms <b>keyboard</b> <b>sd-vconsole</b> block <b>sd-encrypt</b> filesystems fsck)
+</pre>
+<p><a href="../../ru/Mkinitcpio.html#%D0%A1%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5_%D0%B7%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D0%BE%D1%87%D0%BD%D0%BE%D0%B3%D0%BE_%D0%BE%D0%B1%D1%80%D0%B0%D0%B7%D0%B0" title="Mkinitcpio (Русский)">Пересоберите initramfs</a> после сохранения изменений. Смотрите <a href="../../en/Dm-crypt/System_configuration.html#mkinitcpio" title="Dm-crypt/System configuration">dm-crypt/System configuration#mkinitcpio</a> для дополнительных подробностей и других хуков, которые вам могут понадобиться.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Настройка_загрузчика">
+<span id=".D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.BE.D0.B9.D0.BA.D0.B0_.D0.B7.D0.B0.D0.B3.D1.80.D1.83.D0.B7.D1.87.D0.B8.D0.BA.D0.B0"></span>Настройка загрузчика</h3></div>
+<p>Чтобы разблокировать зашифрованный корневой раздел при загрузке, загрузчиком должны быть установлены следующие <a href="../../ru/Kernel_parameters.html" title="Kernel parameters (Русский)">параметры ядра</a>:
+</p>
+<pre>cryptdevice=UUID=<i>device-UUID</i>:root root=/dev/mapper/root
+</pre>
+<p>Если используется <a href="../../en/Dm-crypt/System_configuration.html#Using_systemd-cryptsetup-generator" class="mw-redirect" title="Sd-encrypt">sd-encrypt</a> хук, вместо этого нужно установить:
+</p>
+<pre>rd.luks.name=<i>device-UUID</i>=root root=/dev/mapper/root
+</pre>
+<p><code><i>device-UUID</i></code> нужно заменить на UUID суперблока LUKS, в этом примере это UUID <code>/dev/sda2</code>. Подробности в <a href="../../ru/Persistent_block_device_naming.html" title="Persistent block device naming (Русский)">Persistent block device naming</a>.
+</p>
+<p>Также смотрите <a href="../../en/Dm-crypt/System_configuration.html#Kernel_parameters" title="Dm-crypt/System configuration">dm-crypt/System configuration#Kernel parameters</a> для дополнительных деталей.
+</p>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Совет</strong> Если корневой раздел находится на том же диске, что и <code>/boot</code> раздел, и ваш UEFI загрузчик поддерживает <a href="../../ru/Systemd.html#%D0%90%D0%B2%D1%82%D0%BE%D0%BC%D0%BE%D0%BD%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5_GPT-%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB%D0%B0" title="Systemd (Русский)">автомонтирование GPT-раздела</a>, вы можете настроить <a href="https://en.wikipedia.org/wiki/ru:%D0%A2%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0_%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB%D0%BE%D0%B2_GUID#.D0.98.D0.B4.D0.B5.D0.BD.D1.82.D0.B8.D1.84.D0.B8.D0.BA.D0.B0.D1.82.D0.BE.D1.80.D1.8B_.28GUID.29_.D1.80.D0.B0.D0.B7.D0.BB.D0.B8.D1.87.D0.BD.D1.8B.D1.85_.D1.82.D0.B8.D0.BF.D0.BE.D0.B2_.D1.80.D0.B0.D0.B7.D0.B4.D0.B5.D0.BB.D0.BE.D0.B2" class="extiw" title="wikipedia:ru:Таблица разделов GUID">идентификаторы GUID для типов разделов</a> (тип должен быть "Root partition", а не "LUKS partition") и полагаться на <span class="plainlinks archwiki-template-man" title="$ man 8 systemd-gpt-auto-generator"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-gpt-auto-generator.8">systemd-gpt-auto-generator(8)</a></span> вместо использования параметров ядра.</div>
+<div class="mw-heading mw-heading2"><h2 id="LUKS_на_разделе_с_TPM2_и_Secure_Boot">
+<span id="LUKS_.D0.BD.D0.B0_.D1.80.D0.B0.D0.B7.D0.B4.D0.B5.D0.BB.D0.B5_.D1.81_TPM2_.D0.B8_Secure_Boot"></span>LUKS на разделе с TPM2 и Secure Boot</h2></div>
+<p>Этот пример аналогичен <a href="#LUKS_%D0%BD%D0%B0_%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB%D0%B5">#LUKS на разделе</a>, но интегрирует использование <a href="../../en/Unified_Extensible_Firmware_Interface/Secure_Boot.html" class="mw-redirect" title="Secure Boot">Secure Boot</a> и <a href="../../en/Trusted_Platform_Module.html" title="Trusted Platform Module">Trusted Platform Module</a> (TPM), повышая общую безопасность процесса загрузки.
+</p>
+<p>В этой конфигурации остается незашифрованным только <a href="../../ru/EFI_system_partition.html" title="EFI system partition (Русский)">системный раздел EFI</a>, в котором размещается <a href="../../en/Unified_kernel_image.html" title="Unified kernel image">унифицированный образ ядра</a> и <a href="../../ru/Systemd-boot.html" title="Systemd-boot (Русский)">systemd-boot</a>, оба подписаны для использования с Secure Boot. Если Secure Boot отключен или его базы данных ключей изменены, TPM не выдаст ключ для разблокировки зашифрованного раздела. Этот подход аналогичен BitLocker на Windows или FileVault на macOS. Ключ восстановления также будет создан, чтобы обеспечить доступ к данным в случае проблем с разблокировкой TPM (неподписанный загрузчик или обновление ядра, обновление прошивки и т.д.). По желанию, TPM может быть настроен для требования PIN при загрузке, чтобы предотвратить автоматическое разблокирование.
+</p>
+<p>Убедитесь, что внимательно прочитали обсуждение и предупреждения в <a href="../../en/Trusted_Platform_Module.html#LUKS_encryption" title="Trusted Platform Module">Trusted Platform Module#LUKS encryption</a>.
+</p>
+<p>В этом примере разделы создаются с учетом <a href="../../ru/Systemd.html#%D0%90%D0%B2%D1%82%D0%BE%D0%BC%D0%BE%D0%BD%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5_GPT-%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB%D0%B0" title="Systemd (Русский)">systemd (Русский)#Автомонтирование GPT-раздела</a>, нет необходимости в файле fstab или crypttab.
+</p>
+<pre style="white-space: pre !important; font-family:'DejaVu Sans Mono',monospace,monospace; font-variant-ligatures: no-common-ligatures;">+-----------------------+---------------------------------+
+| EFI system partition  | LUKS encrypted root partition   |
+|                       |                                 |
+|                       |                                 |
+| /boot                 | /                               |
+|                       |                                 |
+|                       | /dev/mapper/root                |
+|                       |---------------------------------|
+| /dev/sda1             | /dev/sda2                       |
++-----------------------+---------------------------------+
+</pre>
+<p>Следуйте <a href="../../ru/Installation_guide.html" title="Installation guide (Русский)">Installation guide (Русский)</a> до шага <a href="../../ru/Installation_guide.html#%D0%A0%D0%B0%D0%B7%D0%BC%D0%B5%D1%82%D0%BA%D0%B0_%D0%B4%D0%B8%D1%81%D0%BA%D0%BE%D0%B2" title="Installation guide (Русский)">Installation guide (Русский)#Разметка дисков</a>.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Подготовка_диска_2">
+<span id=".D0.9F.D0.BE.D0.B4.D0.B3.D0.BE.D1.82.D0.BE.D0.B2.D0.BA.D0.B0_.D0.B4.D0.B8.D1.81.D0.BA.D0.B0_2"></span>Подготовка диска</h3></div>
+<p>Перед созданием любых разделов вы должны узнать о важности безопасного стирания диска и его методах, описанных в <a href="../../en/Dm-crypt/Drive_preparation.html" class="mw-redirect" title="Dm-crypt (Русский)/Drive preparation (Русский)">dm-crypt/Drive preparation</a>.
+</p>
+<p>Диск должен быть<a href="../../ru/Partitioning.html" title="Partitioning (Русский)">размечен</a> с использованием <a href="../../ru/Partitioning.html#%D0%A2%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0_%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB%D0%BE%D0%B2_GUID" title="Partitioning (Русский)">Таблицы разделов GUID</a> (GPT). Создайте на нём необходимые разделы.
+</p>
+<p>Создайте <a href="../../ru/EFI_system_partition.html" title="EFI system partition (Русский)">системный раздел EFI</a> (<code>/dev/sda1</code> в этом примере) с подходящим размером. Он будет позже смонтирован в <code>/boot</code>.
+</p>
+<p>В оставшемся пространстве на диске создайте корневой раздел (<code>/dev/sda2</code> в этом примере), который будет зашифрован и позже смонтирован в <code>/</code>. Установите его GUID типа раздела на <code>4F68BCE3-E8CD-4DB1-96E7-FBCAF984B709</code> ("Linux root (x86-64)" в <a href="../../ru/Fdisk.html" title="Fdisk (Русский)">fdisk</a>, <code>8304</code> в <a href="../../en/GPT_fdisk.html" class="mw-redirect" title="Gdisk">gdisk</a>).
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Подготовка_корневого_раздела">
+<span id=".D0.9F.D0.BE.D0.B4.D0.B3.D0.BE.D1.82.D0.BE.D0.B2.D0.BA.D0.B0_.D0.BA.D0.BE.D1.80.D0.BD.D0.B5.D0.B2.D0.BE.D0.B3.D0.BE_.D1.80.D0.B0.D0.B7.D0.B4.D0.B5.D0.BB.D0.B0"></span>Подготовка корневого раздела</h3></div>
+<p>Следующие команды создают и монтируют зашифрованный корневой раздел. Они соответствуют процедуре, описанной подробно в <a href="../../en/Dm-crypt/Device_encryption.html#Encrypting_devices_with_LUKS_mode" title="Dm-crypt/Device encryption">dm-crypt/Device encryption#Encrypting devices with LUKS mode</a>.
+</p>
+<p>Если вы хотите использовать определенные нестандартные параметры шифрования (например, особый шифр, или нестандартную длину ключа), или если вы не хотите использовать дешифровку на основе TPM, посмотрите <a href="../../en/Dm-crypt/Device_encryption.html#Encryption_options_for_LUKS_mode" title="Dm-crypt/Device encryption">настройки шифрования</a> перед выполнением первой команды.
+</p>
+<p>Создайте том LUKS (вы можете просто использовать пустой пароль, так как он будет удален позже) и смонтируйте его:
+</p>
+<pre># cryptsetup luksFormat /dev/sda2
+# cryptsetup open /dev/sda2 root
+</pre>
+<p><a href="../../ru/File_systems.html#%D0%A1%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5_%D1%84%D0%B0%D0%B9%D0%BB%D0%BE%D0%B2%D0%BE%D0%B9_%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D1%8B" title="File systems (Русский)">Создайте файловую систему</a> на разблокированном устройстве LUKS. Например, чтобы создать файловую систему <a href="../../en/Ext4.html" class="mw-redirect" title="Ext4 (Русский)">Ext4</a>, выполните:
+</p>
+<pre># mkfs.ext4 /dev/mapper/root
+</pre>
+<p>Смонтируйте том root в <code>/mnt</code>:
+</p>
+<pre># mount /dev/mapper/root /mnt
+</pre>
+<div class="mw-heading mw-heading3"><h3 id="Подготовка_системного_раздела_EFI">
+<span id=".D0.9F.D0.BE.D0.B4.D0.B3.D0.BE.D1.82.D0.BE.D0.B2.D0.BA.D0.B0_.D1.81.D0.B8.D1.81.D1.82.D0.B5.D0.BC.D0.BD.D0.BE.D0.B3.D0.BE_.D1.80.D0.B0.D0.B7.D0.B4.D0.B5.D0.BB.D0.B0_EFI"></span>Подготовка системного раздела EFI</h3></div>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Важно</strong> Форматируйте системный раздел EFI только в том случае, если он был только что создан на этапе разметки. Если на диске уже есть системный раздел EFI, его переформатирование удалит загрузчики других ранее установленных операционных систем.</div>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Совет</strong> При наличиии других установленных систем использующих <code>/boot</code> лучше создавать отдельные разделы для <code>/boot</code> каждой системы, при этом EFI-раздел, в каждой системе можно монтировать в <code>/efi</code>
+</div>
+<p>Если системный раздел EFI был только что создан, отформатируйте его как указано в <a href="../../ru/EFI_system_partition.html#%D0%A4%D0%BE%D1%80%D0%BC%D0%B0%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5_%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB%D0%B0" title="EFI system partition (Русский)">EFI system partition (Русский)#Форматирование раздела</a>, и смонтируйте его после этого.
+</p>
+<pre># mount --mkdir /dev/sda1 /mnt/boot
+</pre>
+<p>Продолжите процесс установки до <a href="../../ru/Installation_guide.html#Initramfs" title="Installation guide (Русский)">Installation guide (Русский)#Initramfs</a>. Вы можете пропустить <a href="../../ru/Installation_guide.html#Fstab" title="Installation guide (Русский)">Installation guide (Русский)#Fstab</a>.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Настройка_mkinitcpio_2">
+<span id=".D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.BE.D0.B9.D0.BA.D0.B0_mkinitcpio_2"></span>Настройка mkinitcpio</h3></div>
+<p>Чтобы создать рабочий initramfs на основе systemd, измените строку <code>HOOKS=</code> в <a href="../../ru/Mkinitcpio.html" title="Mkinitcpio (Русский)">mkinitcpio.conf</a> следующим образом:
+</p>
+<pre>HOOKS=(base <b>systemd</b> autodetect microcode modconf kms <b>keyboard</b> <b>sd-vconsole</b> block <b>sd-encrypt</b> filesystems fsck)
+</pre>
+<p>Далее см. <a href="../../en/Unified_kernel_image.html#mkinitcpio" title="Unified kernel image">Unified kernel image#mkinitcpio</a> для настройки mkinitcpio для <a href="../../en/Unified_kernel_image.html" title="Unified kernel image">унифицированных образов ядра</a>.
+</p>
+<p><b>Не</b> пересобирайте initramfs <b>пока</b>, так как каталог <code>/boot/EFI/Linux</code> должен сначала быть создан установщиком загрузчика.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Установка_загрузчика">
+<span id=".D0.A3.D1.81.D1.82.D0.B0.D0.BD.D0.BE.D0.B2.D0.BA.D0.B0_.D0.B7.D0.B0.D0.B3.D1.80.D1.83.D0.B7.D1.87.D0.B8.D0.BA.D0.B0"></span>Установка загрузчика</h3></div>
+<p>Вы можете настроить свою систему для прямой загрузки UEFI образа без какого-либо загрузчика, см. <a href="../../en/Unified_kernel_image.html#Directly_from_UEFI" title="Unified kernel image">Unified kernel image#Directly from UEFI</a>.
+</p>
+<p>Если нужен загрузчик, продолжите установку <a href="../../ru/Systemd-boot.html" title="Systemd-boot (Русский)">systemd-boot</a> с помощью
+</p>
+<pre># bootctl install
+</pre>
+<p>Унифицированный образ ядра, генерируемый mkinitcpio, будет автоматически распознан и не требует записи в <code>/boot/loader/entries/</code>.
+</p>
+<p>Смотрите <a href="../../en/Systemd-boot.html#Updating_the_UEFI_boot_manager" title="Systemd-boot">systemd-boot#Updating the UEFI boot manager</a> и <a href="../../en/Systemd-boot.html#Loader_configuration" title="Systemd-boot">systemd-boot#Loader configuration</a> для дальнейшей настройки.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Финальная_установка">
+<span id=".D0.A4.D0.B8.D0.BD.D0.B0.D0.BB.D1.8C.D0.BD.D0.B0.D1.8F_.D1.83.D1.81.D1.82.D0.B0.D0.BD.D0.BE.D0.B2.D0.BA.D0.B0"></span>Финальная установка</h3></div>
+<p>Сначала <a href="../../ru/Mkinitcpio.html#%D0%A1%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5_%D0%B7%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D0%BE%D1%87%D0%BD%D0%BE%D0%B3%D0%BE_%D0%BE%D0%B1%D1%80%D0%B0%D0%B7%D0%B0" title="Mkinitcpio (Русский)">пересоберите initramfs</a> и убедитесь, что генерация образа прошла успешно.
+</p>
+<p>Убедитесь, что вы не забыли <a href="../../ru/Installation_guide.html#%D0%9F%D0%B0%D1%80%D0%BE%D0%BB%D1%8C_%D1%81%D1%83%D0%BF%D0%B5%D1%80%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8F" title="Installation guide (Русский)">установить пароль root</a>, <a href="../../ru/Installation_guide.html#%D0%9F%D0%B5%D1%80%D0%B5%D0%B7%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D0%BA%D0%B0" title="Installation guide (Русский)">перезагрузитесь</a> для завершения установки.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Secure_Boot">Secure Boot</h3></div>
+<p>Теперь вы можете подписать исполняемые файлы загрузчика и бинарный файл EFI, чтобы включить <a href="../../en/Unified_Extensible_Firmware_Interface/Secure_Boot.html" class="mw-redirect" title="Secure Boot">Secure Boot</a>. Для быстрого и простого способа смотрите <a href="../../en/Unified_Extensible_Firmware_Interface/Secure_Boot.html#Assisted_process_with_sbctl" title="Unified Extensible Firmware Interface/Secure Boot">Unified Extensible Firmware Interface/Secure Boot#Assisted process with sbctl</a>.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Регистрация_TPM">
+<span id=".D0.A0.D0.B5.D0.B3.D0.B8.D1.81.D1.82.D1.80.D0.B0.D1.86.D0.B8.D1.8F_TPM"></span>Регистрация TPM</h3></div>
+<p>После подписания исполняемых файлов загрузчика и включения Secure Boot, вы сможете зарегистрировать TPM, чтобы использовать его для разблокировки тома LUKS. Следующие команды удалят пустой пароль, созданный во время процесса форматирования LUKS, создадут ключ, привязанный к TPM <a href="../../en/Trusted_Platform_Module.html#Accessing_PCR_registers" title="Trusted Platform Module">PCR 7</a> (состояние <a href="../../en/Unified_Extensible_Firmware_Interface/Secure_Boot.html" class="mw-redirect" title="Secure Boot">Secure Boot</a> и зарегистрированные сертификаты) и создадут резервный ключ восстановления для использования на случай возникновения каких-либо проблем. Если проблем нет, TPM автоматически выдаёт ключ, если считает, что цепочка зарузки системы не скомпроментирована на любом из её этапов. Смотрите <a href="../../en/Systemd-cryptenroll.html#Trusted_Platform_Module" title="Systemd-cryptenroll">systemd-cryptenroll#Trusted Platform Module</a> и <span class="plainlinks archwiki-template-man" title="$ man 1 systemd-cryptenroll"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-cryptenroll.1">systemd-cryptenroll(1)</a></span>.
+</p>
+<pre># systemd-cryptenroll /dev/sda2 --recovery-key
+# systemd-cryptenroll /dev/sda2 --wipe-slot=empty --tpm2-device=auto --tpm2-pcrs=7
+</pre>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Совет</strong> Добавьте <code>--tpm2-with-pin=yes</code> для требования дополнительного PIN при разблокировке во время загрузки.</div>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Важно</strong> 
+<ul>
+<li>Убедитесь, что <a href="../../en/Unified_Extensible_Firmware_Interface/Secure_Boot.html" class="mw-redirect" title="Secure Boot">Secure Boot</a> активен и находится в пользовательском режиме при привязке к PCR 7, иначе неавторизованные загрузочные устройства могут разблокировать зашифрованный том.</li>
+<li>Состояние PCR 7 может измениться, если изменятся сертификаты прошивки, что может привести к блокировке пользователя. Это может быть сделано неявно <a href="../../en/Fwupd.html" title="Fwupd">fwupd</a><a rel="nofollow" class="external autonumber" href="https://raw.githubusercontent.com/systemd/systemd/ed272a9ff59a26beedaab508dd3c9d631de67165/TODO">[2]</a> или явно путем ротации ключей Secure Boot.</li>
+</ul>
+</div>
+<div class="mw-heading mw-heading2"><h2 id="LVM_внутри_LUKS">
+<span id="LVM_.D0.B2.D0.BD.D1.83.D1.82.D1.80.D0.B8_LUKS"></span>LVM внутри LUKS</h2></div>
+<p>Технически LVM настраивается внутри одного большого зашифрованного блочного устройства. Поэтому LVM не виден до тех пор, пока блочное устройство не разблокировано и структура базового тома не сканируется и не смонтирована во время загрузки.
+</p>
+<p>Схема диска в этом примере выглядит так:
+</p>
+<pre style="white-space: pre !important; font-family:'DejaVu Sans Mono',monospace,monospace; font-variant-ligatures: no-common-ligatures;">+-----------------------------------------------------------------------+ +----------------+
+| Logical volume 1      | Logical volume 2      | Logical volume 3      | | Boot partition |
+|                       |                       |                       | |                |
+| [SWAP]                | /                     | /home                 | | /boot          |
+|                       |                       |                       | |                |
+| /dev/MyVolGroup/swap  | /dev/MyVolGroup/root  | /dev/MyVolGroup/home  | |                |
+|_ _ _ _ _ _ _ _ _ _ _ _|_ _ _ _ _ _ _ _ _ _ _ _|_ _ _ _ _ _ _ _ _ _ _ _| | (may be on     |
+|                                                                       | | other device)  |
+|                         LUKS encrypted partition                      | |                |
+|                           /dev/sda1                                   | | /dev/sdb1      |
++-----------------------------------------------------------------------+ +----------------+
+</pre>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Примечание</strong> При использовании хука <code>encrypt</code> этот метод не позволяет распределить логические тома на несколько дисков; либо используйте <a href="../../en/Dm-crypt/System_configuration.html#Using_systemd-cryptsetup-generator" class="mw-redirect" title="Sd-encrypt">sd-encrypt</a>, либо смотрите <a href="../../en/Dm-crypt/Specialties.html#Modifying_the_encrypt_hook_for_multiple_partitions" title="Dm-crypt/Specialties">dm-crypt/Specialties#Modifying the encrypt hook for multiple partitions</a>.</div>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Совет</strong> Две дополнительные опции этой настройки:
+<ul>
+<li>Инструкции в <a href="../../en/Dm-crypt/Specialties.html#Encrypted_system_using_a_detached_LUKS_header" title="Dm-crypt/Specialties">dm-crypt/Specialties#Encrypted system using a detached LUKS header</a> используют эту настройку с отделенным заголовком LUKS на USB-устройстве для достижения двухфакторной аутентификации.</li>
+<li>Инструкции в <a href="../../en/Dm-crypt/Specialties.html#Encrypted_/boot_and_a_detached_LUKS_header_on_USB" title="Dm-crypt/Specialties">dm-crypt/Specialties#Encrypted /boot and a detached LUKS header on USB</a> используют эту настройку с отделенным заголовком LUKS, зашифрованным разделом <code>/boot</code> и зашифрованным файлом ключа, все на USB-устройстве.</li>
+</ul>
+</div>
+<div class="mw-heading mw-heading3"><h3 id="Подготовка_диска_3">
+<span id=".D0.9F.D0.BE.D0.B4.D0.B3.D0.BE.D1.82.D0.BE.D0.B2.D0.BA.D0.B0_.D0.B4.D0.B8.D1.81.D0.BA.D0.B0_3"></span>Подготовка диска</h3></div>
+<p>Перед созданием любых разделов вы должны узнать о важности безопасного стирания диска и его методах, описанных в <a href="../../en/Dm-crypt/Drive_preparation.html" class="mw-redirect" title="Dm-crypt (Русский)/Drive preparation (Русский)">dm-crypt/Drive preparation</a>.
+</p>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Совет</strong> При использовании загрузчика <a href="../../ru/GRUB.html" title="GRUB (Русский)">GRUB</a> для загрузки BIOS с диска <a href="../../ru/Partitioning.html#%D0%A2%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D0%B0_%D1%80%D0%B0%D0%B7%D0%B4%D0%B5%D0%BB%D0%BE%D0%B2_GUID" class="mw-redirect" title="GPT (Русский)">GPT</a> смотрите <a href="../../en/GRUB.html#GUID_Partition_Table_(GPT)_specific_instructions" title="GRUB">GRUB#GUID_Partition_Table_(GPT)_specific_instructions</a>
+</div>
+<p><a href="../../ru/Installation_guide.html#%D0%A0%D0%B0%D0%B7%D0%BC%D0%B5%D1%82%D0%BA%D0%B0_%D0%B4%D0%B8%D1%81%D0%BA%D0%BE%D0%B2" title="Installation guide (Русский)">Создайте раздел</a> для монтирования в <code>/boot</code> размером 1 ГиБ или больше.
+</p>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Совет</strong> Системы UEFI могут использовать <a href="../../ru/EFI_system_partition.html" title="EFI system partition (Русский)">EFI system partition</a> для <code>/boot</code>.</div>
+<p>Создайте раздел, который позже будет содержать крипто-контейнер.
+</p>
+<p>Создайте крипто-контейнер LUKS на назначенном разделе. Введите новый пароль дважды.
+</p>
+<pre># cryptsetup luksFormat /dev/sda1
+</pre>
+<p>Для получения дополнительной информации о доступных параметрах cryptsetup смотрите <a href="../../en/Dm-crypt/Device_encryption.html#Encryption_options_for_LUKS_mode" title="Dm-crypt/Device encryption">варианты шифрования LUKS</a> перед выполнением вышеуказанной команды.
+</p>
+<p>Откройте контейнер:
+</p>
+<pre># cryptsetup open /dev/sda1 cryptlvm
+</pre>
+<p>введите придуманный ранее пароль в третий раз
+</p>
+<p>Расшифрованный контейнер теперь доступен в <code>/dev/mapper/cryptlvm</code>.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Подготовка_логических_томов">
+<span id=".D0.9F.D0.BE.D0.B4.D0.B3.D0.BE.D1.82.D0.BE.D0.B2.D0.BA.D0.B0_.D0.BB.D0.BE.D0.B3.D0.B8.D1.87.D0.B5.D1.81.D0.BA.D0.B8.D1.85_.D1.82.D0.BE.D0.BC.D0.BE.D0.B2"></span>Подготовка логических томов</h3></div>
+<p>Создайте физический том внутри открытого контейнера LUKS:
+</p>
+<pre># pvcreate /dev/mapper/cryptlvm
+</pre>
+<p>Создайте группу томов (в этом примере названную <code>MyVolGroup</code>, но это может быть любое имя) и добавьте в неё ранее созданный физический том:
+</p>
+<pre># vgcreate MyVolGroup /dev/mapper/cryptlvm
+</pre>
+<p>Создайте все ваши логические тома в группе томов:
+</p>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Совет</strong> Если логический том будет отформатирован с <a href="../../en/Ext4.html" class="mw-redirect" title="Ext4 (Русский)">ext4</a>, оставьте не менее 256 МиБ свободного места в группе томов, чтобы разрешить использование <span class="plainlinks archwiki-template-man" title="$ man 8 e2scrub"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/e2scrub.8">e2scrub(8)</a></span>. После создания последнего тома с <code>-l 100%FREE</code> это можно выполнить, уменьшив его размер с помощью <code>lvreduce -L -256M MyVolGroup/home</code>.</div>
+<pre># lvcreate -L 4G -n swap MyVolGroup
+# lvcreate -L 32G -n root MyVolGroup
+# lvcreate -l 100%FREE -n home MyVolGroup
+</pre>
+<p><a href="../../ru/File_systems.html#%D0%A1%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5_%D1%84%D0%B0%D0%B9%D0%BB%D0%BE%D0%B2%D0%BE%D0%B9_%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D1%8B" title="File systems (Русский)">Отформатируйте</a> ваши файловые системы на каждом логическом томе. Например, используя <a href="../../en/Ext4.html" class="mw-redirect" title="Ext4 (Русский)">Ext4</a> для корневого тома и тома home:
+</p>
+<pre># mkfs.ext4 /dev/MyVolGroup/root
+# mkfs.ext4 /dev/MyVolGroup/home
+# mkswap /dev/MyVolGroup/swap
+</pre>
+<p>Смонтируйте ваши файловые системы:
+</p>
+<pre># mount /dev/MyVolGroup/root /mnt
+# mount --mkdir /dev/MyVolGroup/home /mnt/home
+# swapon /dev/MyVolGroup/swap
+</pre>
+<div class="mw-heading mw-heading3"><h3 id="Подготовка_загрузочного_раздела_2">
+<span id=".D0.9F.D0.BE.D0.B4.D0.B3.D0.BE.D1.82.D0.BE.D0.B2.D0.BA.D0.B0_.D0.B7.D0.B0.D0.B3.D1.80.D1.83.D0.B7.D0.BE.D1.87.D0.BD.D0.BE.D0.B3.D0.BE_.D1.80.D0.B0.D0.B7.D0.B4.D0.B5.D0.BB.D0.B0_2"></span>Подготовка загрузочного раздела</h3></div>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Важно</strong> Форматируйте системный раздел EFI только в том случае, если он был только что создан на этапе разметки. Если на диске уже есть системный раздел EFI, его переформатирование удалит загрузчики других ранее установленных операционных систем.</div>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Совет</strong> При наличиии других установленных систем использующих <code>/boot</code> лучше создавать отдельные разделы для <code>/boot</code> каждой системы, при этом EFI-раздел, в каждой системе можно монтировать в <code>/efi</code>
+</div>
+<p>Загрузчик загружает ядро, <a href="../../ru/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs (Русский)">initramfs</a> и свои собственные конфигурационные файлы из каталога <code>/boot</code>. Подходит любая файловая система на диске, которая может быть прочитана загрузчиком.
+</p>
+<p>Создайте <a href="../../ru/File_systems.html" title="File systems (Русский)">файловую систему</a> на разделе, предназначенном для <code>/boot</code>. Для <a href="../../ru/EFI_system_partition.html" title="EFI system partition (Русский)">EFI system partition</a> на системах с UEFI выполните:
+</p>
+<pre># mkfs.fat -F32 /dev/sdb1
+</pre>
+<p>или для обычного загрузочного раздела на системах с BIOS:
+</p>
+<pre># mkfs.ext4 /dev/sdb1
+</pre>
+<p>Смонтируйте раздел в <code>/mnt/boot</code>:
+</p>
+<pre># mount --mkdir /dev/sdb1 /mnt/boot
+</pre>
+<p>В этот момент возобновите общие шаги из <a href="../../ru/Installation_guide.html#%D0%A3%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0" title="Installation guide (Русский)">Installation guide (Русский)#Установка</a>. Вернитесь на эту страницу, чтобы настроить шаги <a href="../../ru/Installation_guide.html#Initramfs" title="Installation guide (Русский)">Installation guide (Русский)#Initramfs</a> и <a href="../../ru/Installation_guide.html#%D0%97%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D1%87%D0%B8%D0%BA" title="Installation guide (Русский)">Installation guide (Русский)#Загрузчик</a>.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Настройка_mkinitcpio_3">
+<span id=".D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.BE.D0.B9.D0.BA.D0.B0_mkinitcpio_3"></span>Настройка mkinitcpio</h3></div>
+<p>Убедитесь, что пакет <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lvm2">lvm2</a></span> <a href="../../ru/Pacman.html#%D0%A3%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0_%D0%BF%D0%B0%D0%BA%D0%B5%D1%82%D0%BE%D0%B2" title="Pacman (Русский)">установлен</a>.
+</p>
+<p>Если используется стандартный initramfs на основе busybox, добавьте хуки <code>keyboard</code>, <code>encrypt</code> и <code>lvm2</code> в <a href="../../ru/Mkinitcpio.html" title="Mkinitcpio (Русский)">mkinitcpio.conf</a>. Если на этапе загрузки системы вы хотите использовать неамериканскую (не US) <a href="../../ru/Linux_console/Keyboard_configuration.html" title="Linux console (Русский)/Keyboard configuration (Русский)">консольную карту клавиш</a> или нестандартный шрифт консоли, дополнительно добавьте хуки <code>keymap</code> и <code>consolefont</code> соответственно.
+</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Примечание</strong> Обратите внимание, что в отличие от сценария <a href="#LUKS_%D0%B2%D0%BD%D1%83%D1%82%D1%80%D0%B8_LVM">#LUKS внутри LVM</a> хук <code>lvm2</code> расположен после <code>encrypt</code>
+</div>
+<pre>HOOKS=(base <b>udev</b> autodetect microcode modconf kms <b>keyboard</b> <b>keymap</b> <b>consolefont</b> block <b>encrypt</b> <b>lvm2</b> filesystems fsck)
+</pre>
+<p>Если используется initramfs на основе systemd, вместо этого добавьте хуки <code>keyboard</code>, <code>sd-encrypt</code> и <code>lvm2</code>. Если на этапе загрузки системы вы хотите использовать неамериканскую (не US) <a href="../../ru/Linux_console/Keyboard_configuration.html" title="Linux console (Русский)/Keyboard configuration (Русский)">консольную карту клавиш</a> или нестандартный шрифт консоли, дополнительно добавьте хук <code>sd-vconsole</code>.
+</p>
+<pre>HOOKS=(base <b>systemd</b> autodetect microcode modconf kms <b>keyboard</b> <b>sd-vconsole</b> block <b>sd-encrypt</b> <b>lvm2</b> filesystems fsck)
+</pre>
+<p><a href="../../ru/Mkinitcpio.html#%D0%A1%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5_%D0%B7%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D0%BE%D1%87%D0%BD%D0%BE%D0%B3%D0%BE_%D0%BE%D0%B1%D1%80%D0%B0%D0%B7%D0%B0" title="Mkinitcpio (Русский)">Пересоберите initramfs</a> после сохранения изменений. Смотрите <a href="../../en/Dm-crypt/System_configuration.html#mkinitcpio" title="Dm-crypt/System configuration">dm-crypt/System configuration#mkinitcpio</a> для деталей и других хуков, которые вам могут понадобиться.
+</p>
+<p>Примечание: При использовании <a href="../../en/Dracut.html" title="Dracut">dracut</a> дополнительная настройка не требуется, так как необходимые модули уже включены.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Настройка_загрузчика_2">
+<span id=".D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.BE.D0.B9.D0.BA.D0.B0_.D0.B7.D0.B0.D0.B3.D1.80.D1.83.D0.B7.D1.87.D0.B8.D0.BA.D0.B0_2"></span>Настройка загрузчика</h3></div>
+<p>Чтобы разблокировать зашифрованный корневой раздел при загрузке, загрузчиком должны быть установлены следующие <a href="../../ru/Kernel_parameters.html" title="Kernel parameters (Русский)">параметры ядра</a>:
+</p>
+<pre>cryptdevice=UUID=<i>device-UUID</i>:cryptlvm root=/dev/MyVolGroup/root
+</pre>
+<p>Если используется хук <a href="../../en/Dm-crypt/System_configuration.html#Using_systemd-cryptsetup-generator" class="mw-redirect" title="Sd-encrypt">sd-encrypt</a>, вместо этого нужно установить следующее:
+</p>
+<pre>rd.luks.name=<i>device-UUID</i>=cryptlvm root=/dev/MyVolGroup/root
+</pre>
+<p><code><i>device-UUID</i></code> нужно заменить на UUID суперблока LUKS, в этом примере это UUID <code>/dev/sda1</code>. Подробнее смотрите <a href="../../ru/Persistent_block_device_naming.html" title="Persistent block device naming (Русский)">Persistent block device naming (Русский)</a>.
+</p>
+<p>Если используется <a href="../../en/Dracut.html" title="Dracut">dracut</a>, известно, что эти параметры работают:
+</p>
+<pre>rd.luks.uuid=<i>device-UUID</i> root=/dev/MyVolGroup/root
+</pre>
+<p>вам может понадобиться более обширный список параметров, попробуйте:
+</p>
+<pre>rd.luks.uuid=luks-<i>deviceUUID</i> rd.lvm.lv=<i>MyVolGroup</i>/root  rd.lvm.lv=<i>MyVolGroup</i>/swap  root=/dev/mapper/<i>MyVolGroup</i>-root rootfstype=ext4 rootflags=rw,relatime
+</pre>
+<p>Смотрите <a href="../../en/Dm-crypt/System_configuration.html#Kernel_parameters" title="Dm-crypt/System configuration">dm-crypt/System configuration#Kernel parameters</a> если нужны подробности.
+</p>
+<div class="mw-heading mw-heading2"><h2 id="LUKS_внутри_LVM">
+<span id="LUKS_.D0.B2.D0.BD.D1.83.D1.82.D1.80.D0.B8_LVM"></span>LUKS внутри LVM</h2></div>
+<p>Чтобы использовать шифрование внутри структуры <a href="../../en/LVM.html" class="mw-redirect" title="LVM (Русский)">LVM</a> (шифрование его логических томов, а не физических), сначала настраивается LVM (физические тома, группы томов, логические тома), а затем на определённых логических томах LVM создаются не сразу файловые системы, а крипто-контейнеры LUKS, для размещения файловых систем внутри них. Таким образом, возможно сочетание зашифрованных и незашифрованных томов/разделов.
+</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Примечание</strong> В отличие от <a href="#LVM_%D0%B2%D0%BD%D1%83%D1%82%D1%80%D0%B8_LUKS">#LVM внутри LUKS</a>, этот метод позволяет легче распределить логические тома на несколько физических дисков.</div>
+<p>Следующий короткий пример создает LUKS внутри LVM и сочетает использование файла ключа для раздела <code>/home</code>. А также тома для подкачки, который после каждой перезагрузки использует автоматически созданый новый временный ключ. Это правильно продумано с точки зрения безопасности, так как никакие потенциально чувствительные данные не сохраняются после перезагрузки в открытом виде в подкачке, они остаются зашифрованы старым ключём, который более не доступен т.к. шифрование подкачки переинициализируется с каждый раз новым временным ключём после перезагрузки. Если вы знакомы с LVM, вы можете настроить под себя различные специфические детали в соответствии с вашими потребностями.
+</p>
+<p>Если вы хотите расширить логический том на несколько дисков, которые уже настроены, или увеличить логический том для <code>/home</code> (или любого другого тома), описание процедуры для этого описано в <a href="../../en/Dm-crypt/Specialties.html#Expanding_LVM_on_multiple_disks" title="Dm-crypt/Specialties">dm-crypt/Specialties#Expanding LVM on multiple disks</a>. Важно отметить, что зашифрованный контейнер LUKS тогда также должен быть увеличен.
+</p>
+<p><br>
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Подготовка_диска_4">
+<span id=".D0.9F.D0.BE.D0.B4.D0.B3.D0.BE.D1.82.D0.BE.D0.B2.D0.BA.D0.B0_.D0.B4.D0.B8.D1.81.D0.BA.D0.B0_4"></span>Подготовка диска</h3></div>
+<p>Схема разбиения:
+</p>
+<pre style="white-space: pre !important; font-family:'DejaVu Sans Mono',monospace,monospace; font-variant-ligatures: no-common-ligatures;">+----------------+-------------------------------------------------------------------------------------------------+
+| Boot partition | dm-crypt plain encrypted volume | LUKS encrypted volume         | LUKS encrypted volume         |
+|                |                                 |                               |                               |
+| /boot          | [SWAP]                          | /                             | /home                         |
+|                |                                 |                               |                               |
+|                | /dev/mapper/swap                | /dev/mapper/root              | /dev/mapper/home              |
+|                |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _|_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _|_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _|
+|                | Logical volume 1                | Logical volume 2              | Logical volume 3              |
+|                | /dev/MyVolGroup/cryptswap       | /dev/MyVolGroup/cryptroot     | /dev/MyVolGroup/crypthome     |
+|                |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _|_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _|_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _|
+|                |                                                                                                 |
+|   /dev/sda1    |                                   /dev/sda2                                                     |
++----------------+-------------------------------------------------------------------------------------------------+
+</pre>
+<p>Перед использованием <code>/dev/sda2</code> можно рандомизировать данные как описано в <a href="../../en/Dm-crypt/Drive_preparation.html#dm-crypt_wipe_on_an_empty_device_or_partition" title="Dm-crypt/Drive preparation">dm-crypt/Drive preparation#dm-crypt wipe on an empty device or partition</a>.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Подготовка_логических_томов_2">
+<span id=".D0.9F.D0.BE.D0.B4.D0.B3.D0.BE.D1.82.D0.BE.D0.B2.D0.BA.D0.B0_.D0.BB.D0.BE.D0.B3.D0.B8.D1.87.D0.B5.D1.81.D0.BA.D0.B8.D1.85_.D1.82.D0.BE.D0.BC.D0.BE.D0.B2_2"></span>Подготовка логических томов</h3></div>
+<pre># pvcreate /dev/sda2
+# vgcreate MyVolGroup /dev/sda2
+# lvcreate -L 4G -n cryptswap MyVolGroup
+# lvcreate -L 32G -n cryptroot MyVolGroup
+# lvcreate -l 100%FREE -n crypthome MyVolGroup
+</pre>
+<pre># cryptsetup luksFormat /dev/MyVolGroup/cryptroot
+# cryptsetup open /dev/MyVolGroup/cryptroot root
+</pre>
+<p><a href="../../ru/File_systems.html#%D0%A1%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5_%D1%84%D0%B0%D0%B9%D0%BB%D0%BE%D0%B2%D0%BE%D0%B9_%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D1%8B" title="File systems (Русский)">Создайте файловую систему</a> на разблокированном устройстве LUKS и смонтируйте его. Например, чтобы создать файловую систему <a href="../../en/Ext4.html" class="mw-redirect" title="Ext4 (Русский)">Ext4</a>, выполните:
+</p>
+<pre># mkfs.ext4 /dev/mapper/root
+# mount /dev/mapper/root /mnt
+</pre>
+<p>Дополнительную информацию о параметрах шифрования можно найти в <a href="../../en/Dm-crypt/Device_encryption.html#Encryption_options_for_LUKS_mode" title="Dm-crypt/Device encryption">dm-crypt/Device encryption#Encryption options for LUKS mode</a>.
+Обратите внимание, что <code>/home</code> будет зашифрован в <a href="#%D0%A8%D0%B8%D1%84%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5_%D0%BB%D0%BE%D0%B3%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%BE%D0%B3%D0%BE_%D1%82%D0%BE%D0%BC%D0%B0_/home">#Шифрование логического тома /home</a>.
+</p>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Совет</strong> Если вам когда-либо понадобится получить доступ к зашифрованному корню из Arch-ISO или из другой операционной системы, вышеуказанное действие <code>open</code> позволит вам открыть крипто-контейнер при условии что логический том LVM c данным контейнером <a href="../../en/LVM.html#Logical_volumes_do_not_show_up" title="LVM">активен</a>.</div>
+<div class="mw-heading mw-heading3"><h3 id="Подготовка_загрузочного_раздела_3">
+<span id=".D0.9F.D0.BE.D0.B4.D0.B3.D0.BE.D1.82.D0.BE.D0.B2.D0.BA.D0.B0_.D0.B7.D0.B0.D0.B3.D1.80.D1.83.D0.B7.D0.BE.D1.87.D0.BD.D0.BE.D0.B3.D0.BE_.D1.80.D0.B0.D0.B7.D0.B4.D0.B5.D0.BB.D0.B0_3"></span>Подготовка загрузочного раздела</h3></div>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Важно</strong> Форматируйте системный раздел EFI только в том случае, если он был только что создан на этапе разметки. Если на диске уже есть системный раздел EFI, его переформатирование удалит загрузчики других ранее установленных операционных систем.</div>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Совет</strong> При наличиии других установленных систем использующих <code>/boot</code> лучше создавать отдельные разделы для <code>/boot</code> каждой системы, при этом EFI-раздел, в каждой системе можно монтировать в <code>/efi</code>
+</div>
+<p>Создайте <a href="../../ru/File_systems.html" title="File systems (Русский)">файловую систему</a> на разделе, предназначенном для <code>/boot</code>. Для <a href="../../ru/EFI_system_partition.html" title="EFI system partition (Русский)">EFI system partition</a> на системах c UEFI выполните:
+</p>
+<pre># mkfs.fat -F32 /dev/sda1
+</pre>
+<p>или для обычного загрузочного раздела на системах c BIOS:
+</p>
+<pre># mkfs.ext4 /dev/sda1
+</pre>
+<p>После этого создайте каталог для точки монтирования и смонтируйте раздел:
+</p>
+<pre># mount --mkdir /dev/sda1 /mnt/boot
+</pre>
+<div class="mw-heading mw-heading3"><h3 id="Настройка_mkinitcpio_4">
+<span id=".D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.BE.D0.B9.D0.BA.D0.B0_mkinitcpio_4"></span>Настройка mkinitcpio</h3></div>
+<p>Убедитесь, что пакет <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lvm2">lvm2</a></span> <a href="../../ru/Pacman.html#%D0%A3%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0_%D0%BF%D0%B0%D0%BA%D0%B5%D1%82%D0%BE%D0%B2" title="Pacman (Русский)">установлен</a>.
+</p>
+<p>Если используется стандартный initramfs на основе busybox, добавьте хуки <code>keyboard</code>, <code>encrypt</code> и <code>lvm2</code> в <a href="../../ru/Mkinitcpio.html" title="Mkinitcpio (Русский)">mkinitcpio.conf</a>. Если на этапе загрузки системы вы хотите использовать неамериканскую (не US) <a href="../../ru/Linux_console/Keyboard_configuration.html" title="Linux console (Русский)/Keyboard configuration (Русский)">консольную карту клавиш</a> или нестандартный шрифт консоли, дополнительно добавьте хуки <code>keymap</code> и <code>consolefont</code> соответственно.
+</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Примечание</strong> Обратите внимание, что в отличие от сценария <a href="#LVM_%D0%B2%D0%BD%D1%83%D1%82%D1%80%D0%B8_LUKS">#LVM внутри LUKS</a> хук <code>lvm2</code> расположен перед <code>encrypt</code>
+</div>
+<pre>HOOKS=(base <b>udev</b> autodetect microcode modconf kms <b>keyboard</b> <b>keymap</b> <b>consolefont</b> block <b>lvm2</b> <b>encrypt</b> filesystems fsck)
+</pre>
+<p>Если используется initramfs на основе systemd, вместо этого добавьте хуки <code>keyboard</code>, <code>sd-encrypt</code> и <code>lvm2</code>. Если на этапе загрузки системы вы хотите использовать неамериканскую (не US) <a href="../../ru/Linux_console/Keyboard_configuration.html" title="Linux console (Русский)/Keyboard configuration (Русский)">консольную карту клавиш</a> или нестандартный шрифт консоли, дополнительно добавьте хук <code>sd-vconsole</code>.
+</p>
+<pre>HOOKS=(base <b>systemd</b> autodetect microcode modconf kms <b>keyboard</b> <b>sd-vconsole</b> block <b>sd-encrypt</b> <b>lvm2</b> filesystems fsck)
+</pre>
+<p><br>
+<a href="../../ru/Mkinitcpio.html#%D0%A1%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5_%D0%B7%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D0%BE%D1%87%D0%BD%D0%BE%D0%B3%D0%BE_%D0%BE%D0%B1%D1%80%D0%B0%D0%B7%D0%B0" title="Mkinitcpio (Русский)">Пересоберите initramfs</a> после сохранения изменений. Смотрите <a href="../../en/Dm-crypt/System_configuration.html#mkinitcpio" title="Dm-crypt/System configuration">dm-crypt/System configuration#mkinitcpio</a> для деталей и других хуков, которые вам могут понадобиться.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Настройка_загрузчика_3">
+<span id=".D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.BE.D0.B9.D0.BA.D0.B0_.D0.B7.D0.B0.D0.B3.D1.80.D1.83.D0.B7.D1.87.D0.B8.D0.BA.D0.B0_3"></span>Настройка загрузчика</h3></div>
+<p>Чтобы разблокировать зашифрованный корневой раздел при загрузке, загрузчиком должны быть установлены следующие <a href="../../ru/Kernel_parameters.html" title="Kernel parameters (Русский)">параметры ядра</a>:
+</p>
+<pre>cryptdevice=UUID=<i>device-UUID</i>:root root=/dev/mapper/root
+</pre>
+<p>Если используется хук <a href="../../en/Dm-crypt/System_configuration.html#Using_systemd-cryptsetup-generator" class="mw-redirect" title="Sd-encrypt">sd-encrypt</a>, вместо этого нужно установить следующее:
+</p>
+<pre>rd.luks.name=<i>device-UUID</i>=root root=/dev/mapper/root
+</pre>
+<p><code><i>device-UUID</i></code> нужно заменить на UUID суперблока LUKS, в этом примере это UUID <code>/dev/MyVolGroup/cryptroot</code>. Смотрите <a href="../../ru/Persistent_block_device_naming.html" title="Persistent block device naming (Русский)">Persistent block device naming (Русский)</a> для деталей.
+</p>
+<p>Смотрите <a href="../../en/Dm-crypt/System_configuration.html#Kernel_parameters" title="Dm-crypt/System configuration">dm-crypt/System configuration#Kernel parameters</a> для деталей.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Настройка_fstab_и_crypttab">
+<span id=".D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.BE.D0.B9.D0.BA.D0.B0_fstab_.D0.B8_crypttab"></span>Настройка fstab и crypttab</h3></div>
+<p>Требуются записи как в <a href="../../en/Dm-crypt/System_configuration.html#crypttab" class="mw-redirect" title="Crypttab">crypttab</a>, так и в <a href="../../ru/Fstab.html" title="Fstab (Русский)">fstab</a> для разблокировки устройства и монтирования файловых систем соответственно. Следующие строки будут повторно шифровать том подкачки при каждой перезагрузке:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/crypttab</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">swap	/dev/MyVolGroup/cryptswap	/dev/urandom	swap,cipher=aes-xts-plain64,size=256,sector-size=4096</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/fstab</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">/dev/mapper/root                          /     ext4   defaults  0 1
+UUID=<i>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</i> /boot ext4   defaults  0 2
+/dev/mapper/swap                          none  swap   defaults  0 0</pre>
+<div class="mw-heading mw-heading3"><h3 id="Шифрование_логического_тома_/home">
+<span id=".D0.A8.D0.B8.D1.84.D1.80.D0.BE.D0.B2.D0.B0.D0.BD.D0.B8.D0.B5_.D0.BB.D0.BE.D0.B3.D0.B8.D1.87.D0.B5.D1.81.D0.BA.D0.BE.D0.B3.D0.BE_.D1.82.D0.BE.D0.BC.D0.B0_.2Fhome"></span>Шифрование логического тома /home</h3></div>
+<p>Поскольку этот сценарий использует LVM в качестве основного маппера, а dm-crypt в качестве вторичного, каждый зашифрованный логический том требует собственного шифрования. Однако, в отличие от временных файловых систем, настроенных с изменчивым шифрованием выше, логический том для <code>/home</code> должен, конечно, быть постоянным. Следующее предполагает, что вы перезагрузились в установленную систему, иначе вам нужно отрегулировать пути.
+Чтобы избежать ввода второго пароля при загрузке, создается <a href="../../en/Dm-crypt/Device_encryption.html#Keyfiles" title="Dm-crypt/Device encryption">файл ключа</a>:
+</p>
+<pre># dd bs=512 count=4 if=/dev/random iflag=fullblock | install -m 0600 /dev/stdin /etc/cryptsetup-keys.d/home.key
+</pre>
+<p>Логический том шифруется с его помощью:
+</p>
+<pre># cryptsetup luksFormat -v /dev/MyVolGroup/crypthome /etc/cryptsetup-keys.d/home.key
+# cryptsetup -d /etc/cryptsetup-keys.d/home.key open /dev/MyVolGroup/crypthome home
+</pre>
+<p><a href="../../ru/File_systems.html#%D0%A1%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5_%D1%84%D0%B0%D0%B9%D0%BB%D0%BE%D0%B2%D0%BE%D0%B9_%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D1%8B" title="File systems (Русский)">Создайте файловую систему</a> на разблокированном устройстве LUKS и смонтируйте его. Например, чтобы создать файловую систему <a href="../../en/Ext4.html" class="mw-redirect" title="Ext4 (Русский)">Ext4</a>, выполните:
+</p>
+<pre># mkfs.ext4 /dev/mapper/home
+# mount /dev/mapper/home /home
+</pre>
+<p>Зашифрованное монтирование настраивается как в <a href="../../en/Dm-crypt/System_configuration.html#crypttab" class="mw-redirect" title="Crypttab">crypttab</a>, так и в <a href="../../ru/Fstab.html" title="Fstab (Русский)">fstab</a>:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/crypttab</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">home	/dev/MyVolGroup/crypthome   none
+</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/fstab</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">/dev/mapper/home        /home   ext4        defaults        0       2
+</pre>
+<div class="mw-heading mw-heading2"><h2 id="LUKS_внутри_программного_RAID">
+<span id="LUKS_.D0.B2.D0.BD.D1.83.D1.82.D1.80.D0.B8_.D0.BF.D1.80.D0.BE.D0.B3.D1.80.D0.B0.D0.BC.D0.BC.D0.BD.D0.BE.D0.B3.D0.BE_RAID"></span>LUKS внутри программного RAID</h2></div>
+<p>Этот пример основан на реальной настройке ноутбука класса рабочей станции, оснащенного двумя SSD, равных по размеру, и дополнительным HDD под файловое хранилище. Конечный результат — полное шифрование (включая <code>/boot</code>) для всех дисков, с SSD в массиве <a href="../../en/RAID.html" class="mw-redirect" title="RAID (Русский)">RAID0</a>, файлы-ключи используются для разблокировки после того как <a href="../../ru/GRUB.html" title="GRUB (Русский)">GRUB</a> получает правильный пароль при загрузке.
+</p>
+<p>Этот способ использует очень простую схему разбиения: содержимое RAID монтируется в <code>/</code> (без использования отдельного <code>/boot</code> раздела), а расшифрованный HDD монтируется в <code>/data</code>.
+</p>
+<p>Пожалуйста, обратите внимание, что регулярные <a href="../../en/System_backup.html" title="System backup">резервные копии</a> очень важны в данном случае. Если один из SSD выходит из строя, данные, содержащиеся в массиве RAID, будут практически невозможно восстановить. Возможно, вы захотите выбрать другой <a href="../../en/RAID.html#Standard_RAID_levels" title="RAID">уровень RAID</a> если важно обеспечить отказоустойчивость.
+</p>
+<p>Шифрование не является <a href="https://en.wikipedia.org/wiki/ru:%D0%9E%D1%82%D1%80%D0%B8%D1%86%D0%B0%D0%B5%D0%BC%D0%BE%D0%B5_%D1%88%D0%B8%D1%84%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5" class="extiw" title="wikipedia:ru:Отрицаемое шифрование">отрицаемым</a> при такой настройке.
+</p>
+<p>Будем считать, что для наших целей в нижеприведенных инструкциях используются следующие блочные устройства:
+</p>
+<pre>/dev/sda = первый SSD
+/dev/sdb = второй SSD
+/dev/sdc = HDD
+</pre>
+<pre style="white-space: pre !important; font-family:'DejaVu Sans Mono',monospace,monospace; font-variant-ligatures: no-common-ligatures;">+---------------------+---------------------------+---------------------------+ +---------------------+---------------------------+---------------------------+ +---------------------------+
+| BIOS boot partition | EFI system partition      | LUKS encrypted volume     | | BIOS boot partition | EFI system partition      | LUKS encrypted volume     | | LUKS encrypted volume     |
+|                     |                           |                           | |                     |                           |                           | |                           |
+|                     | /efi                      | /                         | |                     | /efi                      | /                         | | /data                     |
+|                     |                           |                           | |                     |                           |                           | |                           |
+|                     |                           | /dev/mapper/root          | |                     |                           | /dev/mapper/root          | |                           |
+|                     +---------------------------+---------------------------+ |                     +---------------------------+---------------------------+ |                           |
+|                     | RAID1 array (part 1 of 2) | RAID0 array (part 1 of 2) | |                     | RAID1 array (part 2 of 2) | RAID0 array (part 2 of 2) | |                           |
+|                     |                           |                           | |                     |                           |                           | |                           |
+|                     | /dev/md/ESP               | /dev/md/root              | |                     | /dev/md/ESP               | /dev/md/root              | | /dev/mapper/data          |
+|                     +---------------------------+---------------------------+ |                     +---------------------------+---------------------------+ +---------------------------+
+| /dev/sda1           | /dev/sda2                 | /dev/sda3                 | | /dev/sdb1           | /dev/sdb2                 | /dev/sdb3                 | | /dev/sdc1                 |
++---------------------+---------------------------+---------------------------+ +---------------------+---------------------------+---------------------------+ +---------------------------+
+</pre>
+<p>Используйте названия устройств соответствующие вашей системе, так как они могут отличаться.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Подготовка_дисков">
+<span id=".D0.9F.D0.BE.D0.B4.D0.B3.D0.BE.D1.82.D0.BE.D0.B2.D0.BA.D0.B0_.D0.B4.D0.B8.D1.81.D0.BA.D0.BE.D0.B2"></span>Подготовка дисков</h3></div>
+<p>Перед созданием любых разделов вы должны узнать о важности безопасного стирания диска и его методах, описанных в <a href="../../en/Dm-crypt/Drive_preparation.html" class="mw-redirect" title="Dm-crypt (Русский)/Drive preparation (Русский)">dm-crypt/Drive preparation</a>.
+</p>
+<p>Для <a href="../../en/GRUB.html#BIOS_systems" title="GRUB">BIOS systems</a> с GPT, создайте <a href="../../en/GRUB.html#GUID_Partition_Table_(GPT)_specific_instructions" class="mw-redirect" title="BIOS boot partition">BIOS boot partition</a> с размером 1 MiB для GRUB для хранения второй стадии загрузчика BIOS. Не монтируйте этот раздел.
+</p>
+<p>Для оборудования с <a href="../../en/GRUB.html#UEFI_systems" title="GRUB">UEFI</a> создайте <a href="../../ru/EFI_system_partition.html" title="EFI system partition (Русский)">системный раздел EFI</a> с подходящим размером, он будет позже смонтирован в <code>/efi</code>.
+</p>
+<p>В оставшемся пространстве на диске создайте раздел (<code>/dev/sda3</code> в этом примере) для "Linux RAID". Выберите идентификатор типа раздела MBR <code>fd</code> или идентификатор типа GUID <code>A19D880F-05FC-4D3B-A006-743F0F84911E</code> для GPT.
+</p>
+<p>После создания разделов на <code>/dev/sda</code>, следующие команды могут использоваться для их клонирования на <code>/dev/sdb</code>.
+</p>
+<pre># sfdisk -d /dev/sda &gt; sda.dump
+# sfdisk /dev/sdb &lt; sda.dump
+</pre>
+<p>В HDD используем один раздел <code>/dev/sdc1</code>, который занимает всё место на диске.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Построение_массива_RAID">
+<span id=".D0.9F.D0.BE.D1.81.D1.82.D1.80.D0.BE.D0.B5.D0.BD.D0.B8.D0.B5_.D0.BC.D0.B0.D1.81.D1.81.D0.B8.D0.B2.D0.B0_RAID"></span>Построение массива RAID</h3></div>
+<p>Создайте массив RAID для SSD.
+</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Примечание</strong> 
+<ul>
+<li>Операционная система должна быть загружаемой с каждого системнго раздела EFI на каждом из дисков по отдельности, это значит, что именно для EFI-разделов требуется использовать зеркальный RAID1 вместо чередования данных RAID0.</li>
+<li>Суперблок RAID должен быть размещен в конце раздела EFI с использованием <code>--metadata=1.0</code>, иначе прошивка не сможет получить доступ к разделу.</li>
+</ul>
+</div>
+<pre># mdadm --create --verbose --level=1 --metadata=1.0 --raid-devices=2 /dev/md/ESP /dev/sda2 /dev/sdb2
+</pre>
+<p>Этот пример использует RAID0 для корня, вы можете захотеть заменить другой уровень на основе ваших предпочтений или требований.
+</p>
+<pre># mdadm --create --verbose --level=0 --metadata=1.2 --raid-devices=2 /dev/md/root /dev/sda3 /dev/sdb3
+</pre>
+<div class="mw-heading mw-heading3"><h3 id="Подготовка_блочных_устройств">
+<span id=".D0.9F.D0.BE.D0.B4.D0.B3.D0.BE.D1.82.D0.BE.D0.B2.D0.BA.D0.B0_.D0.B1.D0.BB.D0.BE.D1.87.D0.BD.D1.8B.D1.85_.D1.83.D1.81.D1.82.D1.80.D0.BE.D0.B9.D1.81.D1.82.D0.B2"></span>Подготовка блочных устройств</h3></div>
+<p>Как объяснено в <a href="../../en/Dm-crypt/Drive_preparation.html" class="mw-redirect" title="Dm-crypt (Русский)/Drive preparation (Русский)">dm-crypt (Русский)/Drive preparation (Русский)</a>, устройства стираются случайными данными с использованием <code>/dev/zero</code> и криптоустройства с случайным ключом. В качестве альтернативы вы можете использовать <code>dd</code> с <code>/dev/random</code> или <code>/dev/urandom</code>, хотя это будет намного медленнее.
+</p>
+<pre># cryptsetup open --type plain --sector-size 4096 --key-file /dev/urandom /dev/md/root to_be_wiped
+# dd if=/dev/zero of=/dev/mapper/to_be_wiped bs=1M status=progress
+# cryptsetup close to_be_wiped
+</pre>
+<p>И повторите вышеуказанное для HDD (<code>/dev/sdc1</code> в этом примере).
+</p>
+<p>Настройте шифрование для <code>/dev/md/root</code>:
+</p>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Важно</strong> Поддержка LUKS2 в GRUB ограничена; подробности смотрите в <a href="../../en/GRUB.html#Encrypted_/boot" title="GRUB">GRUB#Encrypted /boot</a>. Используйте LUKS2 с PBKDF2 (<code>cryptsetup luksFormat --pbkdf pbkdf2</code>) для разделов, которые GRUB'у потребуется разблокировать.</div>
+<pre># cryptsetup -v luksFormat --pbkdf pbkdf2 /dev/md/root
+# cryptsetup open /dev/md/root root
+</pre>
+<p><a href="../../ru/File_systems.html#%D0%A1%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5_%D1%84%D0%B0%D0%B9%D0%BB%D0%BE%D0%B2%D0%BE%D0%B9_%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D1%8B" title="File systems (Русский)">Создайте файловую систему</a> на разблокированном устройстве LUKS. Например, чтобы создать файловую систему <a href="../../en/Ext4.html" class="mw-redirect" title="Ext4 (Русский)">Ext4</a>, выполните:
+</p>
+<pre># mkfs.ext4 /dev/mapper/root
+</pre>
+<p>Смонтируйте корневой том в <code>/mnt</code>:
+</p>
+<pre># mount /dev/mapper/root /mnt
+</pre>
+<p>И повторите для HDD:
+</p>
+<pre># cryptsetup -v luksFormat /dev/sdc1
+# cryptsetup open /dev/sdc1 data
+# mkfs.ext4 /dev/mapper/data
+# mount --mkdir /dev/mapper/data /mnt/data
+</pre>
+<p>Для систем UEFI настройте системный раздел EFI:
+</p>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Важно</strong> Форматируйте системный раздел EFI только в том случае, если он был только что создан на этапе разметки. Если на диске уже есть системный раздел EFI, его переформатирование удалит загрузчики других ранее установленных операционных систем.</div>
+<pre># mkfs.fat -F32 /dev/md/ESP
+# mount --mkdir /dev/md/ESP /mnt/efi
+</pre>
+<div class="mw-heading mw-heading3"><h3 id="Настройка_GRUB">
+<span id=".D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.BE.D0.B9.D0.BA.D0.B0_GRUB"></span>Настройка GRUB</h3></div>
+<p>Настройте <a href="../../ru/GRUB.html" title="GRUB (Русский)">GRUB</a> для зашифрованной системы LUKS, отредактировав <code>/etc/default/grub</code> следующим образом:
+</p>
+<pre>GRUB_CMDLINE_LINUX="cryptdevice=/dev/md/root:root"
+GRUB_ENABLE_CRYPTODISK=y
+</pre>
+<p>Если у вас USB клавиатура на новой системе, либо включите поддержку устаревшего USB в прошивке, либо добавьте следующее в <code>/etc/default/grub</code>:
+</p>
+<pre>GRUB_TERMINAL_INPUT="usb_keyboard"
+GRUB_PRELOAD_MODULES="usb usb_keyboard ohci uhci ehci"
+</pre>
+<p>Иначе вы рискуете не иметь возможность использовать клавиатуру в приглашении LUKS.
+</p>
+<p>Смотрите <a href="../../en/Dm-crypt/System_configuration.html#Kernel_parameters" title="Dm-crypt/System configuration">dm-crypt/System configuration#Kernel parameters</a> и <a href="../../en/GRUB.html#Encrypted_/boot" title="GRUB">GRUB#Encrypted /boot</a> для деталей.
+</p>
+<p>Завершите установку GRUB на оба SSD (на самом деле, установка только на <code>/dev/sda</code> тоже будет работать).
+</p>
+<pre># grub-install --target=i386-pc /dev/sda
+# grub-install --target=i386-pc /dev/sdb
+# grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB
+# grub-mkconfig -o /boot/grub/grub.cfg
+</pre>
+<div class="mw-heading mw-heading3"><h3 id="Создание_файлов_ключей">
+<span id=".D0.A1.D0.BE.D0.B7.D0.B4.D0.B0.D0.BD.D0.B8.D0.B5_.D1.84.D0.B0.D0.B9.D0.BB.D0.BE.D0.B2_.D0.BA.D0.BB.D1.8E.D1.87.D0.B5.D0.B9"></span>Создание файлов ключей</h3></div>
+<p>Следующие шаги позволяют вам избежать ввода пароля дважды при загрузке системы (один раз для GRUB, чтобы разблокировать LUKS устройство, и второй раз, когда initramfs принимает управление системой). Это делается путем создания <a href="../../en/Dm-crypt/Device_encryption.html#Keyfiles" title="Dm-crypt/Device encryption">файла ключа</a> для шифрования и добавления его в образ initramfs, чтобы задействовать хук encrypt для разблокировки корневого устройства. Смотрите <a href="../../en/Dm-crypt/Device_encryption.html#With_a_keyfile_embedded_in_the_initramfs" title="Dm-crypt/Device encryption">dm-crypt/Device encryption#With a keyfile embedded in the initramfs</a> для деталей.
+</p>
+<ul>
+<li>Создайте <a href="../../en/Dm-crypt/Device_encryption.html#Keyfiles" title="Dm-crypt/Device encryption">файл ключа</a> и добавьте ключ в <code>/dev/md/root</code>.</li>
+<li>Создайте другой файл ключа для HDD (<code>/dev/sdc1</code>) так, чтобы он также мог быть разблокирован при загрузке. Для удобства оставьте пароль, созданный выше, на месте, так как это может облегчить восстановление, если вам когда-нибудь понадобится получить доступ к зашифрованному HDD по парольной фразе, не имеея доступа к файлу ключа, хранящегося внутри зашифрованного системного раздела. Отредактируйте <code>/etc/crypttab</code>, чтобы расшифровать HDD при загрузке. Смотрите <a href="../../en/Dm-crypt/System_configuration.html#Unlocking_with_a_keyfile" title="Dm-crypt/System configuration">dm-crypt/System configuration#Unlocking with a keyfile</a>.</li>
+</ul>
+<div class="mw-heading mw-heading3"><h3 id="Настройка_системы">
+<span id=".D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.BE.D0.B9.D0.BA.D0.B0_.D1.81.D0.B8.D1.81.D1.82.D0.B5.D0.BC.D1.8B"></span>Настройка системы</h3></div>
+<p>Отредактируйте <a href="../../ru/Fstab.html" title="Fstab (Русский)">fstab</a> для монтирования блочных устройств root и data, а также ESP:
+</p>
+<pre>/dev/mapper/root  /	  ext4	rw,noatime 	   0 1
+/dev/mapper/data  /data   ext4	defaults           0 2
+/dev/md/ESP       /efi     vfat	rw,relatime,codepage=437,iocharset=iso8859-1,shortname=mixed,utf8,tz=UTC,errors=remount-ro  	0 2
+</pre>
+<p>Сохраните конфигурацию RAID:
+</p>
+<pre># mdadm --detail --scan &gt;&gt; /etc/mdadm.conf
+</pre>
+<p>Отредактируйте <a href="../../ru/Mkinitcpio.html" title="Mkinitcpio (Русский)">mkinitcpio.conf</a>, чтобы задействовать ваш файл ключа и использовать нужные хуки:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/mkinitcpio.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">...
+FILES=(/crypto_keyfile.bin)
+...
+HOOKS=(base udev autodetect microcode modconf kms <b>keyboard</b> <b>keymap</b> <b>consolefont</b> block <b>mdadm_udev</b> <b>encrypt</b> filesystems fsck)
+...</pre>
+<p>Смотрите <a href="../../en/Dm-crypt/System_configuration.html#mkinitcpio" title="Dm-crypt/System configuration">dm-crypt/System configuration#mkinitcpio</a> для деталей.
+</p>
+<div class="mw-heading mw-heading2"><h2 id="Простой_dm-crypt">
+<span id=".D0.9F.D1.80.D0.BE.D1.81.D1.82.D0.BE.D0.B9_dm-crypt"></span>Простой dm-crypt</h2></div>
+<p>В отличие от LUKS, dm-crypt в обычном режиме (<i>plain</i> mode) не требует заголовка на зашифрованном устройстве: этот сценарий использует данную особенность для настройки системы на полностью зашифрованном диске, который будет неотличим от неразмеченного диска, заполненного случайными данными, что может обеспечить <a href="https://en.wikipedia.org/wiki/ru:%D0%9E%D1%82%D1%80%D0%B8%D1%86%D0%B0%D0%B5%D0%BC%D0%BE%D0%B5_%D1%88%D0%B8%D1%84%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5" class="extiw" title="wikipedia:ru:Отрицаемое шифрование">отрицаемое шифрование</a>. Смотрите также <a href="https://en.wikipedia.org/wiki/Disk_encryption#Full_disk_encryption" class="extiw" title="wikipedia:Disk encryption">wikipedia:Disk encryption#Full disk encryption</a>.
+</p>
+<p>Обратите внимание, что если полное шифрование диска не требуется, методы, использующие LUKS, описанные выше, являются лучшими вариантами как для шифрования системы, так и для зашифрованных разделов. Такие <a href="../../en/Dm-crypt/Device_encryption.html#Cryptsetup_actions_specific_for_LUKS" title="Dm-crypt/Device encryption">возможности LUKS</a> как управление ключами с использованием сразу нескольких парольных фраз/файлов-ключей для одного устройства, резервные копии мастер-ключа и перешифровка устройства прямо в ходе его работы недоступны в <i>plain</i>-режиме.
+</p>
+<p><i>Plain</i> dm-crypt encryption может быть более устойчивым к повреждению, чем LUKS, так как он не зависит от ключа шифрования, который может быть одной точкой отказа, если поврежден или принудительно уничтожен. Однако использование режима <i>plain</i> также требует более тонкой настройки параметров шифрования для достижения той же криптографической стойкости. Смотрите также <a href="../../en/Data-at-rest_encryption.html#Cryptographic_metadata" title="Data-at-rest encryption">Data-at-rest encryption#Cryptographic metadata</a>. Использование <i>plain</i> mode также может рассматриваться, если вы беспокоитесь о проблемах, описанных в <a href="../../en/Dm-crypt/Specialties.html#Discard/TRIM_support_for_solid_state_drives_(SSD)" title="Dm-crypt/Specialties">dm-crypt/Specialties#Discard/TRIM support for solid state drives (SSD)</a>.
+</p>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Совет</strong> Если шифрование без заголовка это ваша цель, но вы не уверены в крипто-стойкости из-за отсутствия её повышения в режиме <i>plain</i>, то есть две альтернативы:
+<ul>
+<li>
+<a href="../../en/Dm-crypt/Specialties.html#Encrypted_system_using_a_detached_LUKS_header" title="Dm-crypt/Specialties">dm-crypt LUKS режим с отделенным заголовком</a> с использованием опции <i>cryptsetup</i> <code>--header</code>. Он не может использоваться со стандартным хуком <i>encrypt</i>, но хук может быть специально для этого модифицирован.</li>
+<li>
+<a href="../../en/Tcplay.html" title="Tcplay">tcplay</a>, который предлагает шифрование без заголовка, но с функцией PBKDF2.</li>
+</ul>
+</div>
+<p>Данный сценарий использует два USB-накопителя:
+</p>
+<ul>
+<li>Первый для загрузочного раздела, монтирующегося в <code>/boot</code>, что также позволит сохранить в конфигурации все параметры для разблокировки «простого» (plain) dm-crypt. Это удобно, чтобы избежать ошибок при ручном вводе сложных опций при каждой загрузке;</li>
+<li>Другой для файла ключа шифрования, в данном случае он хранится среди сырых (raw) битов, так что для потенциального злоумышленника, который может завладеть накопителем, но не знающего какой именно ключ нужен для расшифровки, он будет выглядеть как случайные данные вместо того, чтобы быть похожим на обычный файл ключа (<a href="https://en.wikipedia.org/wiki/ru:%D0%91%D0%B5%D0%B7%D0%BE%D0%BF%D0%B0%D1%81%D0%BD%D0%BE%D1%81%D1%82%D1%8C_%D1%87%D0%B5%D1%80%D0%B5%D0%B7_%D0%BD%D0%B5%D1%8F%D1%81%D0%BD%D0%BE%D1%81%D1%82%D1%8C" class="extiw" title="wikipedia:ru:Безопасность через неясность">Wikipedia:ru:Безопасность через неясность</a>). Следуйте инструкциям в <a href="../../en/Dm-crypt/Device_encryption.html#Keyfiles" title="Dm-crypt/Device encryption">dm-crypt/Device encryption#Keyfiles</a> для подготовки файла ключа.</li>
+</ul>
+<p>Диск схематически выглядит так:
+</p>
+<pre style="white-space: pre !important; font-family:'DejaVu Sans Mono',monospace,monospace; font-variant-ligatures: no-common-ligatures;">+----------------------+----------------------+----------------------+ +----------------+ +----------------+
+| Logical volume 1     | Logical volume 2     | Logical volume 3     | | Boot device    | | Encryption key |
+|                      |                      |                      | |                | | file storage   |
+| /                    | [SWAP]               | /home                | | /boot          | | (unpartitioned |
+|                      |                      |                      | |                | | in example)    |
+| /dev/MyVolGroup/root | /dev/MyVolGroup/swap | /dev/MyVolGroup/home | | /dev/sdb1      | | /dev/sdc       |
+|----------------------+----------------------+----------------------| |----------------| |----------------|
+| disk drive /dev/sda encrypted using plain mode and LVM             | | USB stick 1    | | USB stick 2    |
++--------------------------------------------------------------------+ +----------------+ +----------------+
+</pre>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Совет</strong> 
+<ul>
+<li>Также возможно использовать одно физическое USB-устройство, одним из слудующих способов:
+<ul>
+<li>Поместив ключ на другой раздел <code>/dev/sdb2</code> USB-устройства <code>/dev/sdb</code>.</li>
+<li>Скопировав файл ключа напрямую в initramfs. Пример файла ключа <code>/etc/cryptsetup-keys.d/root.key</code> копируется в образ initramfs установкой <code>FILES=(/etc/cryptsetup-keys.d/root.key)</code> в <code>/etc/mkinitcpio.conf</code>. Способ указать хуку <code>encrypt</code> прочитать файл ключа в образе initramfs - использовать префикс <code>rootfs:</code> перед именем файла, например <code>cryptkey=rootfs:/etc/cryptsetup-keys.d/root.key</code>.</li>
+</ul>
+</li>
+<li>Другой вариант - использование пароля с хорошей <a href="../../ru/Security.html#%D0%9D%D0%B0%D0%B4%D1%91%D0%B6%D0%BD%D0%BE%D1%81%D1%82%D1%8C_%D0%BF%D0%B0%D1%80%D0%BE%D0%BB%D1%8F" title="Security (Русский)">энтропией</a>.</li>
+</ul>
+</div>
+<div class="mw-heading mw-heading3"><h3 id="Подготовка_диска_5">
+<span id=".D0.9F.D0.BE.D0.B4.D0.B3.D0.BE.D1.82.D0.BE.D0.B2.D0.BA.D0.B0_.D0.B4.D0.B8.D1.81.D0.BA.D0.B0_5"></span>Подготовка диска</h3></div>
+<p>Важно, чтобы отображенное устройство было заполнено случайными данными. В особенности, это относится данному к способу шифрования.
+</p>
+<p>Смотрите <a href="../../en/Dm-crypt/Drive_preparation.html" class="mw-redirect" title="Dm-crypt (Русский)/Drive preparation (Русский)">dm-crypt/Drive preparation</a> и <a href="../../en/Dm-crypt/Drive_preparation.html#dm-crypt_specific_methods" title="Dm-crypt/Drive preparation">dm-crypt/Drive preparation#dm-crypt specific methods</a>
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Подготовка_незагрузочных_разделов">
+<span id=".D0.9F.D0.BE.D0.B4.D0.B3.D0.BE.D1.82.D0.BE.D0.B2.D0.BA.D0.B0_.D0.BD.D0.B5.D0.B7.D0.B0.D0.B3.D1.80.D1.83.D0.B7.D0.BE.D1.87.D0.BD.D1.8B.D1.85_.D1.80.D0.B0.D0.B7.D0.B4.D0.B5.D0.BB.D0.BE.D0.B2"></span>Подготовка незагрузочных разделов</h3></div>
+<p>Смотрите подробнее: <a href="../../en/Dm-crypt/Device_encryption.html#Encryption_options_for_plain_mode" title="Dm-crypt/Device encryption">dm-crypt/Device encryption#Encryption options for plain mode</a>.
+</p>
+<p>Используя устройство <code>/dev/sda</code>, с методом шифрования aes-xts с размером ключа 512 бит и используя файл ключа, мы имеем следующие параметры для этого сценария:
+</p>
+<pre># cryptsetup open --type plain --cipher=aes-xts-plain64 --offset=0 --key-file=/dev/sdc --key-size=512 --sector-size 4096 /dev/sda cryptlvm
+</pre>
+<p>В отличие от шифрования с использованием LUKS, вышеуказанная команда должна выполняться <i>полностью</i> всякий раз, когда маппинг необходимо переинициализировать, поэтому важно помнить метод шифрования и параметры файла ключа.
+</p>
+<p>Мы можем теперь проверить что маппинг сработал в <code>/dev/mapper/cryptlvm</code>:
+</p>
+<pre># fdisk -l
+</pre>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Совет</strong> 
+<ul>
+<li>Более простая альтернатива использованию LVM, рекомендуемая в FAQ cryptsetup для случаев, когда LVM не нужен: просто создать файловую систему на всём замаппенном устройстве dm-crypt.</li>
+<li>Если логический том будет отформатирован в <a href="../../en/Ext4.html" class="mw-redirect" title="Ext4 (Русский)">ext4</a>, оставьте не менее 256 МиБ свободного места в группе томов для разрешения использования <span class="plainlinks archwiki-template-man" title="$ man 8 e2scrub"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/e2scrub.8">e2scrub(8)</a></span>. После создания последнего тома с <code>-l 100%FREE</code> это можно выполнить, уменьшив его размер с помощью <code>lvreduce -L -256M MyVolGroup/home</code>.</li>
+</ul>
+</div>
+<p>Далее мы настраиваем логические тома <a href="../../en/LVM.html" class="mw-redirect" title="LVM (Русский)">LVM</a> на замаппенном устройстве. (Смотрите <a href="../../en/Install_Arch_Linux_on_LVM.html" title="Install Arch Linux on LVM">Install Arch Linux on LVM</a> более детального описания команд):
+</p>
+<pre># pvcreate /dev/mapper/cryptlvm
+# vgcreate MyVolGroup /dev/mapper/cryptlvm
+# lvcreate -L 32G MyVolGroup -n root
+# lvcreate -L 4G MyVolGroup -n swap
+# lvcreate -l 100%FREE MyVolGroup -n home
+</pre>
+<p>Далее форматируем и монтируем их, активируем подкачку. (более детальное описание комманд: <a href="../../ru/File_systems.html#%D0%A1%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5_%D1%84%D0%B0%D0%B9%D0%BB%D0%BE%D0%B2%D0%BE%D0%B9_%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D1%8B" title="File systems (Русский)">File systems#Create a file system</a>):
+</p>
+<pre># mkfs.ext4 /dev/MyVolGroup/root
+# mkfs.ext4 /dev/MyVolGroup/home
+# mount /dev/MyVolGroup/root /mnt
+# mount --mkdir /dev/MyVolGroup/home /mnt/home
+# mkswap /dev/MyVolGroup/swap
+# swapon /dev/MyVolGroup/swap
+</pre>
+<div class="mw-heading mw-heading3"><h3 id="Подготовка_загрузочного_раздела_4">
+<span id=".D0.9F.D0.BE.D0.B4.D0.B3.D0.BE.D1.82.D0.BE.D0.B2.D0.BA.D0.B0_.D0.B7.D0.B0.D0.B3.D1.80.D1.83.D0.B7.D0.BE.D1.87.D0.BD.D0.BE.D0.B3.D0.BE_.D1.80.D0.B0.D0.B7.D0.B4.D0.B5.D0.BB.D0.B0_4"></span>Подготовка загрузочного раздела</h3></div>
+<p><code>/boot</code> раздел может быть типичным разделом FAT32 на USB-накопителе, если это необходимо. Но если нужно ручное разбиение, то 1 ГиБ раздела достаточно. Создайте раздел с помощью любого <a href="../../ru/Partitioning.html#%D0%98%D0%BD%D1%81%D1%82%D1%80%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B_%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%82%D0%BA%D0%B8" title="Partitioning (Русский)">инструмента разбиения</a> на свой вкус.
+</p>
+<p>Создайте <a href="../../ru/File_systems.html" title="File systems (Русский)">файловую систему</a> на разделе, предназначенном для <code>/boot</code>:
+</p>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Важно</strong> Форматируйте системный раздел EFI только в том случае, если он был только что создан на этапе разметки. Если на диске уже есть системный раздел EFI, его переформатирование удалит загрузчики других ранее установленных операционных систем.</div>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Совет</strong> При наличиии других установленных систем использующих <code>/boot</code> лучше создавать отдельные разделы для <code>/boot</code> каждой системы, при этом EFI-раздел, в каждой системе можно монтировать в <code>/efi</code>
+</div>
+<pre># mkfs.fat -F32 /dev/sdb1
+# mount --mkdir /dev/sdb1 /mnt/boot
+</pre>
+<div class="mw-heading mw-heading3"><h3 id="Настройка_mkinitcpio_5">
+<span id=".D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.BE.D0.B9.D0.BA.D0.B0_mkinitcpio_5"></span>Настройка mkinitcpio</h3></div>
+<p>Убедитесь, что пакет <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lvm2">lvm2</a></span> <a href="../../ru/Pacman.html#%D0%A3%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0_%D0%BF%D0%B0%D0%BA%D0%B5%D1%82%D0%BE%D0%B2" title="Pacman (Русский)">установлен</a>.
+</p>
+<p>Если используется стандартный initramfs на основе busybox, добавьте хуки <code>keyboard</code>, <code>encrypt</code> и <code>lvm2</code> в <a href="../../ru/Mkinitcpio.html" title="Mkinitcpio (Русский)">mkinitcpio.conf</a>. Если на этапе загрузки системы вы хотите использовать неамериканскую (не US) <a href="../../ru/Linux_console/Keyboard_configuration.html" title="Linux console (Русский)/Keyboard configuration (Русский)">консольную карту клавиш</a> или нестандартный шрифт консоли, дополнительно добавьте хуки <code>keymap</code> и <code>consolefont</code> соответственно.
+</p>
+<pre>HOOKS=(base udev autodetect microcode modconf kms <b>keyboard</b> <b>keymap</b> <b>consolefont</b> block <b>encrypt</b> <b>lvm2</b> filesystems fsck)
+</pre>
+<p><a href="../../ru/Mkinitcpio.html#%D0%A1%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5_%D0%B7%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D0%BE%D1%87%D0%BD%D0%BE%D0%B3%D0%BE_%D0%BE%D0%B1%D1%80%D0%B0%D0%B7%D0%B0" title="Mkinitcpio (Русский)">Пересоберите initramfs</a> после сохранения изменений. Смотрите <a href="../../en/Dm-crypt/System_configuration.html#mkinitcpio" title="Dm-crypt/System configuration">dm-crypt/System configuration#mkinitcpio</a> для подробностей, например других хуков, которые вам могут понадобиться.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Настройка_загрузчика_4">
+<span id=".D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.BE.D0.B9.D0.BA.D0.B0_.D0.B7.D0.B0.D0.B3.D1.80.D1.83.D0.B7.D1.87.D0.B8.D0.BA.D0.B0_4"></span>Настройка загрузчика</h3></div>
+<p>Чтобы загрузить зашифрованный корневой раздел, загрузчиком должны быть установлены следующие <a href="../../ru/Kernel_parameters.html" title="Kernel parameters (Русский)">параметры ядра</a> (обратите внимание, что 64 — это количество байт в 512 битах):
+</p>
+<pre>cryptdevice=/dev/disk/by-id/<i>disk-ID-of-sda</i>:cryptlvm:sector-size=4096 cryptkey=/dev/disk/by-id/<i>disk-ID-of-sdc</i>:0:64 crypto=:aes-xts-plain64:512:0:
+</pre>
+<p>Вместо <code><i>disk-ID-of-<b>disk</b></i></code> требуется указать id соответствующих дисков. Смотрите <a href="../../ru/Persistent_block_device_naming.html" title="Persistent block device naming (Русский)">Persistent block device naming (Русский)</a> для деталей.
+</p>
+<p>Смотрите <a href="../../en/Dm-crypt/System_configuration.html#Kernel_parameters" title="Dm-crypt/System configuration">dm-crypt/System configuration#Kernel parameters</a> для деталей и других параметров, которые вам могут понадобиться.
+</p>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Совет</strong> Если используется <a href="../../ru/GRUB.html" title="GRUB (Русский)">GRUB</a>, вы можете установить его на тот же USB на кортором находится раздел для <code>/boot</code>.
+<p>Для BIOS:
+</p>
+<pre># grub-install --target=i386-pc --recheck /dev/sdb</pre>
+<p>Для UEFI:
+</p>
+<pre># grub-install --target=x86_64-efi --efi-directory=/boot --removable</pre>
+</div>
+<div class="mw-heading mw-heading3"><h3 id="После_установки">
+<span id=".D0.9F.D0.BE.D1.81.D0.BB.D0.B5_.D1.83.D1.81.D1.82.D0.B0.D0.BD.D0.BE.D0.B2.D0.BA.D0.B8"></span>После установки</h3></div>
+<p>Вы можете захотеть извлечь из системы USB-накопители после загрузки. Поскольку <code>/boot</code> раздел обычно не нужен, опцию <code>noauto</code> можно добавить в соответствующую строку в <code>/etc/fstab</code>:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/fstab</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># /dev/sdb1
+UUID=<i>XXXX-XXXX</i> /boot vfat <b>noauto</b>,rw,noatime 0 2</pre>
+<p>Однако, когда обновление чего-либо в initramfs, или ядра, или загрузчика требуется; <code>/boot</code> раздел должен быть присутствующим и смонтированным. Поскольку запись в <code>fstab</code> уже существует, его можно просто смонтировать с помощью:
+</p>
+<pre># mount /boot
+</pre>
+<div class="mw-heading mw-heading2"><h2 id="Зашифрованный_загрузочный_раздел_(GRUB)">
+<span id=".D0.97.D0.B0.D1.88.D0.B8.D1.84.D1.80.D0.BE.D0.B2.D0.B0.D0.BD.D0.BD.D1.8B.D0.B9_.D0.B7.D0.B0.D0.B3.D1.80.D1.83.D0.B7.D0.BE.D1.87.D0.BD.D1.8B.D0.B9_.D1.80.D0.B0.D0.B7.D0.B4.D0.B5.D0.BB_.28GRUB.29"></span>Зашифрованный загрузочный раздел (GRUB)</h2></div>
+<p>Этот набор инструкций использует ту же схему разбиения и конфигурацию, что и раздел <a href="#LVM_%D0%B2%D0%BD%D1%83%D1%82%D1%80%D0%B8_LUKS">#LVM внутри LUKS</a>, за исключением того, как в данном случае настраивается загрузчик GRUB, который способен загружаться и с логического тома LVM и с зашифрованного раздела для <code>/boot</code>. Смотрите также: <a href="../../en/GRUB.html#Encrypted_/boot" title="GRUB">GRUB#Encrypted /boot</a>.
+</p>
+<p>Диск схематически выглядит так:
+</p>
+<pre style="white-space: pre !important; font-family:'DejaVu Sans Mono',monospace,monospace; font-variant-ligatures: no-common-ligatures;">+---------------------+----------------------+----------------------+----------------------+----------------------+
+| BIOS boot partition | EFI system partition | Logical volume 1     | Logical volume 2     | Logical volume 3     |
+|                     |                      |                      |                      |                      |
+|                     | /efi                 | /                    | [SWAP]               | /home                |
+|                     |                      |                      |                      |                      |
+|                     |                      | /dev/MyVolGroup/root | /dev/MyVolGroup/swap | /dev/MyVolGroup/home |
+| /dev/sda1           | /dev/sda2            |----------------------+----------------------+----------------------+
+| unencrypted         | unencrypted          | /dev/sda3 encrypted using LVM on LUKS                              |
++---------------------+----------------------+--------------------------------------------------------------------+
+</pre>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Совет</strong> 
+<ul>
+<li>Все сценарии предназначены в качестве примеров. Конечно, возможно применить оба вышеуказанных различных шага установки и с другими сценариями. Смотрите также варианты, связанные в <a href="#LVM_%D0%B2%D0%BD%D1%83%D1%82%D1%80%D0%B8_LUKS">#LVM внутри LUKS</a>.</li>
+<li>Вы можете использовать скрипт <code>cryptboot</code> из пакета <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/cryptboot/">cryptboot</a></span><sup><small>AUR</small></sup> для упрощенного управления зашифрованной загрузкой (монтирование, размонтирование, обновление пакетов) и в качестве защиты от атак <a rel="nofollow" class="external text" href="https://www.schneier.com/blog/archives/2009/10/evil_maid_attac.html">злой горничной</a> с <a href="../../en/Unified_Extensible_Firmware_Interface/Secure_Boot.html#Using_your_own_keys" class="mw-redirect" title="Secure Boot">UEFI Secure Boot</a>. Для получения дополнительной информации и ограничений смотрите страницу <a rel="nofollow" class="external text" href="https://github.com/kmille/cryptboot">проекта cryptboot</a>.</li>
+</ul>
+</div>
+<div class="mw-heading mw-heading3"><h3 id="Подготовка_диска_6">
+<span id=".D0.9F.D0.BE.D0.B4.D0.B3.D0.BE.D1.82.D0.BE.D0.B2.D0.BA.D0.B0_.D0.B4.D0.B8.D1.81.D0.BA.D0.B0_6"></span>Подготовка диска</h3></div>
+<p>Перед созданием любых разделов вы должны узнать о важности безопасного стирания диска и его методах, описанных в <a href="../../en/Dm-crypt/Drive_preparation.html" class="mw-redirect" title="Dm-crypt (Русский)/Drive preparation (Русский)">dm-crypt/Drive preparation</a>.
+</p>
+<p>Ваша схема разделов должна выглятить примерно так:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># gdisk -l /dev/sda</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">...
+Number  Start (sector)    End (sector)  Size       Code  Name
+   1            2048            4095   1024.0 KiB  EF02  BIOS boot partition
+   2            4096         2101247   1024.0 MiB  EF00  EFI system partition
+   3         2101248        69210111   32.0 GiB    8309  Linux LUKS
+</pre>
+<p>Для её получения на чистом диске:
+</p>
+<p>Для <a href="../../en/GRUB.html#UEFI_systems" title="GRUB">систем с UEFI</a> создайте <a href="../../ru/EFI_system_partition.html" title="EFI system partition (Русский)">EFI system partition</a> с подходящим размером, он будет позже смонтирован в <code>/efi</code>.
+</p>
+<p>Для <a href="../../en/GRUB.html#GUID_Partition_Table_(GPT)_specific_instructions" title="GRUB">связки BIOS/GPT</a> создайте <a href="../../en/GRUB.html#GUID_Partition_Table_(GPT)_specific_instructions" class="mw-redirect" title="BIOS boot partition">BIOS boot partition</a> с размером 1 MiB для GRUB, чтобы хранить второй stage загрузчика BIOS. Не монтируйте раздел. Для BIOS/MBR настроек это не нужно.
+</p>
+<p>Создайте раздел типа <code>8309</code>, который позже будет содержать  крипто-контейнер для LVM.
+</p>
+<p>Создайте крипто-контейнер LUKS:
+</p>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Важно</strong> Поддержка GRUB'ом LUKS2 ограничена из-за ограниченности ресурсов системы на этапе загрузки; подробнее смотрите в <a href="../../en/GRUB.html#Encrypted_/boot" title="GRUB">GRUB#Encrypted /boot</a>. Используюйте LUKS2 с PBKDF2 (<code>cryptsetup luksFormat --pbkdf pbkdf2</code> для разделов, котрорые должны быть расшифрованы напрямую самим GRUB'ом, вместо более требовательного к ресурсам Argon2, который используется в LUKS по умолчанию.</div>
+<pre># cryptsetup luksFormat --pbkdf pbkdf2 /dev/sda3
+</pre>
+<p>Для получения дополнительной информации о доступных параметрах cryptsetup смотрите <a href="../../en/Dm-crypt/Device_encryption.html#Encryption_options_for_LUKS_mode" title="Dm-crypt/Device encryption">LUKS encryption options</a> перед выполнением вышеуказанной команды.
+</p>
+<p><br>
+Откройте контейнер:
+</p>
+<pre># cryptsetup open /dev/sda3 cryptlvm
+</pre>
+<p>Расшифрованный контейнер теперь доступен в <code>/dev/mapper/cryptlvm</code>.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Подготовка_логических_томов_3">
+<span id=".D0.9F.D0.BE.D0.B4.D0.B3.D0.BE.D1.82.D0.BE.D0.B2.D0.BA.D0.B0_.D0.BB.D0.BE.D0.B3.D0.B8.D1.87.D0.B5.D1.81.D0.BA.D0.B8.D1.85_.D1.82.D0.BE.D0.BC.D0.BE.D0.B2_3"></span>Подготовка логических томов</h3></div>
+<p>Логические тома этого примера аналогичны <a href="#LVM_%D0%B2%D0%BD%D1%83%D1%82%D1%80%D0%B8_LUKS">#LVM внутри LUKS</a>. При необходимости вы можете выполнить любую похожую разбивку в соответствии с вашими целями.
+Для UEFI-систем создайте точку монтирования для <a href="../../ru/EFI_system_partition.html" title="EFI system partition (Русский)">EFI system partition</a> в <code>/efi</code> для совместимости с <code>grub-install</code> и смонтируйте его:
+</p>
+<pre># mount --mkdir /dev/sda2 /mnt/efi
+</pre>
+<p>В этот момент у вас должны быть следующие разделы и логические тома внутри <code>/mnt</code>:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ lsblk</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">NAME                  MAJ:MIN RM   SIZE RO TYPE  MOUNTPOINT
+sda                   8:0      0   200G  0 disk
+├─sda1                8:1      0     1M  0 part
+├─sda2                8:2      0   550M  0 part  /mnt/efi
+└─sda3                8:3      0   100G  0 part
+  └─cryptlvm          254:0    0   100G  0 crypt
+    ├─MyVolGroup-swap 254:1    0     4G  0 lvm   [SWAP]
+    ├─MyVolGroup-root 254:2    0    32G  0 lvm   /mnt
+    └─MyVolGroup-home 254:3    0    60G  0 lvm   /mnt/home
+</pre>
+<p>Теперь в этот момент возвращаемся к общим шагам <a href="../../ru/Installation_guide.html#%D0%A3%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0" title="Installation guide (Русский)">Installation guide (Русский)#Установка</a>. Вернитесь на эту страницу, чтобы немного по другому выполнить шаги <a href="../../ru/Installation_guide.html#Initramfs" title="Installation guide (Русский)">Installation guide (Русский)#Initramfs</a> и <a href="../../ru/Installation_guide.html#%D0%97%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D1%87%D0%B8%D0%BA" title="Installation guide (Русский)">Installation guide (Русский)#Загрузчик</a>.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Настройка_mkinitcpio_6">
+<span id=".D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.BE.D0.B9.D0.BA.D0.B0_mkinitcpio_6"></span>Настройка mkinitcpio</h3></div>
+<p>Убедитесь, что пакет <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lvm2">lvm2</a></span> <a href="../../ru/Pacman.html#%D0%A3%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0_%D0%BF%D0%B0%D0%BA%D0%B5%D1%82%D0%BE%D0%B2" title="Pacman (Русский)">установлен</a>.
+</p>
+<p>Если используется стандартный initramfs на основе busybox, добавьте хуки <code>keyboard</code>, <code>encrypt</code> и <code>lvm2</code> в <a href="../../ru/Mkinitcpio.html" title="Mkinitcpio (Русский)">mkinitcpio.conf</a>. Если вы используете неамериканскую консольную карту клавиш или нестандартный шрифт консоли, дополнительно добавьте хуки <code>keymap</code> и <code>consolefont</code> соответственно.
+</p>
+<pre>HOOKS=(base <b>udev</b> autodetect microcode modconf kms <b>keyboard</b> <b>keymap</b> <b>consolefont</b> block <b>encrypt</b> <b>lvm2</b> filesystems fsck)
+</pre>
+<p>Если используется initramfs на основе systemd, вместо этого добавьте хуки <code>keyboard</code>, <code>sd-encrypt</code> и <code>lvm2</code>. Если вы используете неамериканскую консольную карту клавиш или нестандартный шрифт консоли, дополнительно добавьте хук <code>sd-vconsole</code>.
+</p>
+<pre>HOOKS=(base <b>systemd</b> autodetect microcode modconf kms <b>keyboard</b> <b>sd-vconsole</b> block <b>sd-encrypt</b> <b>lvm2</b> filesystems fsck)
+</pre>
+<p><a href="../../ru/Mkinitcpio.html#%D0%A1%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5_%D0%B7%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D0%BE%D1%87%D0%BD%D0%BE%D0%B3%D0%BE_%D0%BE%D0%B1%D1%80%D0%B0%D0%B7%D0%B0" title="Mkinitcpio (Русский)">Пересоберите initramfs</a> после сохранения изменений. Смотрите <a href="../../en/Dm-crypt/System_configuration.html#mkinitcpio" title="Dm-crypt/System configuration">dm-crypt/System configuration#mkinitcpio</a> для деталей и других хуков, которые вам могут понадобиться.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Настройка_GRUB_2">
+<span id=".D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.BE.D0.B9.D0.BA.D0.B0_GRUB_2"></span>Настройка GRUB</h3></div>
+<p>Настройте GRUB для разрешения загрузки с <code>/boot</code> на зашифрованном при помощи LUKS разделе:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/default/grub</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">GRUB_ENABLE_CRYPTODISK=y</pre>
+<p>Установите параметры ядра, чтобы initramfs мог разблокировать зашифрованный корневой раздел. Используя хук <code>encrypt</code>:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/default/grub</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">GRUB_CMDLINE_LINUX="... cryptdevice=UUID=<i>device-UUID</i>:cryptlvm ..."</pre>
+<p>Если используется хук <a href="../../en/Dm-crypt/System_configuration.html#Using_systemd-cryptsetup-generator" class="mw-redirect" title="Sd-encrypt">sd-encrypt</a>, вместо этого нужно установить следующее:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/default/grub</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">GRUB_CMDLINE_LINUX="... rd.luks.name=<i>device-UUID</i>=cryptlvm ..."</pre>
+<p>Смотрите <a href="../../en/Dm-crypt/System_configuration.html#Kernel_parameters" title="Dm-crypt/System configuration">dm-crypt/System configuration#Kernel parameters</a> и <a href="../../en/GRUB.html#Encrypted_/boot" title="GRUB">GRUB#Encrypted /boot</a> для деталей. <code><i>device-UUID</i></code> следует заменить на UUID суперблока LUKS, в этом примере это UUID <code>/dev/sda3</code> (раздел, который содержит lvm с корневой файловой системой). Смотрите <a href="../../ru/Persistent_block_device_naming.html" title="Persistent block device naming (Русский)">Persistent block device naming (Русский)</a>.
+</p>
+<p><a href="../../en/GRUB.html#Installation_2" title="GRUB">Установите GRUB</a> на смонтированный ESP для загрузки UEFI:
+</p>
+<pre># grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB --recheck
+</pre>
+<p>Если нужно загрузка с BIOS, то <a href="../../en/GRUB.html#Installation" title="GRUB">установите GRUB</a> таким способом:
+</p>
+<pre># grub-install --target=i386-pc --recheck /dev/sda
+</pre>
+<p>Сгенерируйте <a href="../../en/GRUB.html#Generate_the_main_configuration_file" title="GRUB">конфигурационный</a> файл GRUB:
+</p>
+<pre># grub-mkconfig -o /boot/grub/grub.cfg
+</pre>
+<p>Если все команды завершились без ошибок, GRUB должен запросить пароль для разблокировки раздела <code>/dev/sda3</code> после следующей перезагрузки.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Избегание_ввода_пароля_дважды">
+<span id=".D0.98.D0.B7.D0.B1.D0.B5.D0.B3.D0.B0.D0.BD.D0.B8.D0.B5_.D0.B2.D0.B2.D0.BE.D0.B4.D0.B0_.D0.BF.D0.B0.D1.80.D0.BE.D0.BB.D1.8F_.D0.B4.D0.B2.D0.B0.D0.B6.D0.B4.D1.8B"></span>Избегание ввода пароля дважды</h3></div>
+<p>Хотя GRUB запрашивает пароль для разблокировки зашифрованного раздела LUKS после вышеуказанных инструкций, разблокировка раздела не передается в initramfs. Поэтому без дополнительных настроек вам нужно будет ввести пароль дважды при загрузке: один раз для GRUB и ещё один раз для initramfs.
+</p>
+<p>Этот раздел посвящен дополнительной конфигурации, чтобы система загружалась только получив пароль один раз, в GRUB. Это достигается путем использования <a href="../../en/Dm-crypt/Device_encryption.html#With_a_keyfile_embedded_in_the_initramfs" title="Dm-crypt/Device encryption">с файла ключа, зашитого в сам же initramfs</a>.
+</p>
+<p>Сначала создайте файл ключа и добавьте его как ключ LUKS:
+</p>
+<pre># dd bs=512 count=4 if=/dev/random iflag=fullblock | install -m 0600 /dev/stdin /etc/cryptsetup-keys.d/cryptlvm.key
+# cryptsetup -v luksAddKey /dev/sda3 /etc/cryptsetup-keys.d/cryptlvm.key
+</pre>
+<p>Добавьте файл ключа в образ initramfs:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/mkinitcpio.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">FILES=(/etc/cryptsetup-keys.d/cryptlvm.key)</pre>
+<p><a href="../../ru/Mkinitcpio.html#%D0%A1%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5_%D0%B7%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D0%BE%D1%87%D0%BD%D0%BE%D0%B3%D0%BE_%D0%BE%D0%B1%D1%80%D0%B0%D0%B7%D0%B0" title="Mkinitcpio (Русский)">Пересоберите initramfs</a>.
+</p>
+<p>Установите следующие параметры ядра для разблокировки раздела LUKS с помощью файла ключа. Используя хук <code>encrypt</code>:
+</p>
+<pre>GRUB_CMDLINE_LINUX="... cryptkey=rootfs:/etc/cryptsetup-keys.d/cryptlvm.key"
+</pre>
+<p>При использовании хука <a href="../../en/Dm-crypt/System_configuration.html#Using_systemd-cryptsetup-generator" class="mw-redirect" title="Sd-encrypt">sd-encrypt</a>, <code>/etc/cryptsetup-keys.d/<i>name</i>.key</code> будет использоваться по умолчанию, поэтому дополнительные параметры ядра устанавливать не нужно.
+</p>
+<p>Если по какой-то причине файл ключа не сможет разблокировать загрузочный раздел, systemd автоматически перейдёт к "плану Б" и запросит пароль и, если он окажется правильным, продолжит загрузку.
+</p>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Совет</strong> Если вы хотите зашифровать раздел <code>/boot</code> для защиты от угроз физического вмешательства, хук <a href="../../en/Dm-crypt/Specialties.html#mkinitcpio-chkcryptoboot" title="Dm-crypt/Specialties">mkinitcpio-chkcryptoboot</a> был специально создан, чтобы помочь в этом.</div>
+<div class="mw-heading mw-heading3"><h3 id="Использование_USB-накопителя_для_разблокировки_/boot">
+<span id=".D0.98.D1.81.D0.BF.D0.BE.D0.BB.D1.8C.D0.B7.D0.BE.D0.B2.D0.B0.D0.BD.D0.B8.D0.B5_USB-.D0.BD.D0.B0.D0.BA.D0.BE.D0.BF.D0.B8.D1.82.D0.B5.D0.BB.D1.8F_.D0.B4.D0.BB.D1.8F_.D1.80.D0.B0.D0.B7.D0.B1.D0.BB.D0.BE.D0.BA.D0.B8.D1.80.D0.BE.D0.B2.D0.BA.D0.B8_.2Fboot"></span>Использование USB-накопителя для разблокировки /boot</h3></div>
+<p>Чтобы избежать запоминания сложного пароля или использования простого пароля, который может быть угадан, файл ключа, хранящийся на внешнем USB-накопителе, может использоваться для разблокировки LUKS устройства. Чтобы это было безопасным, этот USB-накопитель желательно хранить отдельно от компьютера, когда он не используется.
+</p>
+<p>Сначала создайте файл ключа таким же образом, как и в <a href="#%D0%98%D0%B7%D0%B1%D0%B5%D0%B3%D0%B0%D0%BD%D0%B8%D0%B5_%D0%B2%D0%B2%D0%BE%D0%B4%D0%B0_%D0%BF%D0%B0%D1%80%D0%BE%D0%BB%D1%8F_%D0%B4%D0%B2%D0%B0%D0%B6%D0%B4%D1%8B">#Избегание ввода пароля дважды</a>. Лучше не используйте тот же файл ключа, что и встроен в initramfs т.к. если USB-накопитель будет потерян или скомпрометирован, вам придется делать меньше теловижений: потребуется обновить только "внешний" файл ключа.
+</p>
+<p>Скопируйте этот файл ключа на ваш USB-накопитель и создайте новый файл конфигурации GRUB:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/boot/grub/grub-pre.cfg</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">set crypto_uuid=UUID-of-the-luks-volume
+set key_disk=UUID-of-the-volume-with-the-key
+cryptomount -u $crypto_uuid -k ($key_disk)/the-location-of-the-key-on-your-usb
+set root=UUID-of-the-unlocked-volume-as-in-grub.cfg
+set prefix=($root)/boot/grub
+insmod normal
+normal</pre>
+<p>Создайте образ GRUB и установите его (не все эти модули могут понадобиться в зависимости от вашей файловой системы):
+</p>
+<pre># grub-mkimage -p /boot/grub -O x86_64-efi -c /boot/grub/grub-pre.cfg -o /tmp/grubx64.efi  part_gpt  part_msdos cryptodisk  luks  gcry_rijndael gcry_sha512 lvm ext2 ntfs fat exfat
+# install -v /tmp/grubx64.efi /efi/EFI/GRUB/grubx64.efi
+</pre>
+<div class="mw-heading mw-heading2"><h2 id="Корневой_раздел_на_ZFS">
+<span id=".D0.9A.D0.BE.D1.80.D0.BD.D0.B5.D0.B2.D0.BE.D0.B9_.D1.80.D0.B0.D0.B7.D0.B4.D0.B5.D0.BB_.D0.BD.D0.B0_ZFS"></span>Корневой раздел на ZFS</h2></div>
+<p>Чтобы использовать dm-crypt с <a href="../../en/ZFS.html" class="mw-redirect" title="ZFS (Русский)">ZFS</a>, см. <a href="../../en/ZFS.html#Encryption_in_ZFS_using_dm-crypt" title="ZFS">ZFS#Encryption in ZFS using dm-crypt</a>.
+</p>
+<p>Кроме того, ZFS имеет <a href="../../en/ZFS.html#Native_encryption" title="ZFS">встроенное шифрование</a>, которое также может использоваться для шифрования корня системы, исключая загрузчик и метаданные файловой системы. Смотрите:
+</p>
+<ul>
+<li>
+<a rel="nofollow" class="external text" href="https://openzfs.github.io/openzfs-docs/Getting%20Started/Arch%20Linux/Root%20on%20ZFS.html">Arch Linux Root on ZFS</a> guide на странице OpenZFS,</li>
+<li>
+<a href="../../en/Install_Arch_Linux_on_ZFS.html" title="Install Arch Linux on ZFS">Install Arch Linux on ZFS</a>.</li>
+</ul>
+<p>После установки загрузчик может быть проверен с <a href="../../en/Unified_Extensible_Firmware_Interface/Secure_Boot.html" class="mw-redirect" title="Secure Boot">Secure Boot</a> на системах основанных на UEFI.
+</p>
+</div>
+</div>
+					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
+<a href="../../Special:Categories.html" title="Special:Categories">Categories</a>: <ul>
+<li><a href="../../ru/Category:Data-at-rest_encryption.html" title="Category:Data-at-rest encryption (Русский)">Data-at-rest encryption (Русский)</a></li>
+<li><a href="../../ru/Category:Installation_process.html" title="Category:Installation process (Русский)">Installation process (Русский)</a></li>
+</ul>
+</div></div>
+				</div>
+			</main>
+			
+		</div>
+		<div class="mw-footer-container">
+			
+<footer id="footer" class="mw-footer" style="margin: 0">
+	<ul id="footer-info">
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt_(%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9)/Encrypting_an_entire_system_(%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9)&amp;oldid=848591">https://wiki.archlinux.org/index.php?title=Dm-crypt_(Русский)/Encrypting_an_entire_system_(Русский)&amp;oldid=848591</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 12 October 2025, at 10:19.</li>
+	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
+<br>
+</ul>
+
+	<ul id="footer-places">
+	<li id="footer-places-privacy"><a href="https://terms.archlinux.org/docs/privacy-policy/">Privacy policy</a></li>
+	<li id="footer-places-about"><a href="../../en/ArchWiki:About.html">About ArchWiki</a></li>
+	<li id="footer-places-disclaimers"><a href="../../en/ArchWiki:General_disclaimer.html">Disclaimers</a></li>
+	<li id="footer-places-archwiki-code-of-conduct"><a href="https://terms.archlinux.org/docs/code-of-conduct/" class="extiw" title="archlinux-service-agreements:code-of-conduct">Code of conduct</a></li>
+	<li id="footer-places-archwiki-terms-of-service"><a href="https://terms.archlinux.org/docs/terms-of-service/" class="extiw" title="archlinux-service-agreements:terms-of-service">Terms of service</a></li>
+</ul>
+
+	<ul id="footer-icons" class="noprint">
+	<li id="footer-copyrightico"><a href="https://www.gnu.org/copyleft/fdl.html" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled"><img src="/resources/assets/licenses/gnu-fdl.png" alt="GNU Free Documentation License 1.3 or later" width="88" height="31" loading="lazy"></a></li>
+	<li id="footer-poweredbyico"><picture><source media="(min-width: 500px)" srcset="/resources/assets/poweredby_mediawiki.svg" width="88" height="31"><img src="/resources/assets/mediawiki_compact.svg" width="25" height="25" loading="lazy"></picture></li>
+</ul>
+
+</footer>
+
+		</div>
+	</div> 
+</div> 
+<div class="vector-header-container vector-sticky-header-container">
+	<div id="vector-sticky-header" class="vector-sticky-header">
+		<div class="vector-sticky-header-start">
+			<div class="vector-sticky-header-icon-start vector-button-flush-left vector-button-flush-right" aria-hidden="true">
+				<button class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-sticky-header-search-toggle" tabindex="-1" data-event-name="ui.vector-sticky-search-form.icon"><span class="vector-icon mw-ui-icon-search mw-ui-icon-wikimedia-search"></span>
+
+<span>Search</span>
+			</button>
+		</div>
+			
+		<div role="search" class="vector-search-box-vue vector-search-box">
+			<div class="vector-typeahead-search-container">
+				<div class="cdx-typeahead-search">
+					<form action="/index.php" id="vector-sticky-search-form" class="cdx-search-input cdx-search-input--has-end-button">
+						<div class="cdx-search-input__input-wrapper" data-search-loc="header-moved">
+							<div class="cdx-text-input cdx-text-input--has-start-icon">
+								<input class="cdx-text-input__input" type="search" name="search" placeholder="Search ArchWiki">
+								<span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
+							</div>
+							<input type="hidden" name="title" value="Special:Search">
+						</div>
+						<button class="cdx-button cdx-search-input__end-button">Search</button>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="vector-sticky-header-context-bar">
+				<nav aria-label="Contents" class="vector-toc-landmark">
+						
+					<div id="vector-sticky-header-toc" class="vector-dropdown mw-portlet mw-portlet-sticky-header-toc vector-sticky-header-toc vector-button-flush-left">
+						<input type="checkbox" id="vector-sticky-header-toc-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-vector-sticky-header-toc" class="vector-dropdown-checkbox " aria-label="Toggle the table of contents">
+						<label id="vector-sticky-header-toc-label" for="vector-sticky-header-toc-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only " aria-hidden="true"><span class="vector-icon mw-ui-icon-listBullet mw-ui-icon-wikimedia-listBullet"></span>
+
+<span class="vector-dropdown-label-text">Toggle the table of contents</span>
+						</label>
+						<div class="vector-dropdown-content">
+					
+						<div id="vector-sticky-header-toc-unpinned-container" class="vector-unpinned-container">
+						</div>
+					
+						</div>
+					</div>
+			</nav>
+				<div class="vector-sticky-header-context-bar-primary" aria-hidden="true">dm-crypt (Русский)/Encrypting an entire system (Русский)</div>
+			</div>
+		</div>
+		<div class="vector-sticky-header-end" aria-hidden="true">
+			<div class="vector-sticky-header-icons">
+				<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-talk-sticky-header" tabindex="-1" data-event-name="talk-sticky-header"><span class="vector-icon mw-ui-icon-speechBubbles mw-ui-icon-wikimedia-speechBubbles"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-subject-sticky-header" tabindex="-1" data-event-name="subject-sticky-header"><span class="vector-icon mw-ui-icon-article mw-ui-icon-wikimedia-article"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-history-sticky-header" tabindex="-1" data-event-name="history-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-history mw-ui-icon-wikimedia-wikimedia-history"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only mw-watchlink" id="ca-watchstar-sticky-header" tabindex="-1" data-event-name="watch-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-star mw-ui-icon-wikimedia-wikimedia-star"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-edit-sticky-header" tabindex="-1" data-event-name="wikitext-edit-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-wikiText mw-ui-icon-wikimedia-wikimedia-wikiText"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-ve-edit-sticky-header" tabindex="-1" data-event-name="ve-edit-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-edit mw-ui-icon-wikimedia-wikimedia-edit"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-viewsource-sticky-header" tabindex="-1" data-event-name="ve-edit-protected-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-editLock mw-ui-icon-wikimedia-wikimedia-editLock"></span>
+
+<span></span>
+			</a>
+		</div>
+			<div class="vector-sticky-header-buttons">
+				<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive" id="ca-addsection-sticky-header" tabindex="-1" data-event-name="addsection-sticky-header"><span class="vector-icon mw-ui-icon-speechBubbleAdd-progressive mw-ui-icon-wikimedia-speechBubbleAdd-progressive"></span>
+
+<span>Add topic</span>
+			</a>
+		</div>
+			<div class="vector-sticky-header-icon-end">
+				<div class="vector-user-links">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="mw-portlet mw-portlet-dock-bottom emptyPortlet" id="p-dock-bottom">
+	<ul>
+		
+	</ul>
+</div>
+</body>
+</html>

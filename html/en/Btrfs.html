@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-os vector-sticky-header-enabled vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Btrfs - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.1">
+<meta name="generator" content="MediaWiki 1.44.2">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -133,16 +133,38 @@
 			</a>
 			
 			<ul id="toc-Disabling_CoW-sublist" class="vector-toc-list">
-				<li id="toc-Effect_on_snapshots" class="vector-toc-list-item vector-toc-level-4">
-			<a class="vector-toc-link" href="#Effect_on_snapshots">
+				<li id="toc-Cases_where_CoW_is_still_triggered" class="vector-toc-list-item vector-toc-level-4">
+			<a class="vector-toc-link" href="#Cases_where_CoW_is_still_triggered">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">3.1.1.1</span>
+					<span>Cases where CoW is still triggered</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Cases_where_CoW_is_still_triggered-sublist" class="vector-toc-list">
+				<li id="toc-Effect_on_copying" class="vector-toc-list-item vector-toc-level-5">
+			<a class="vector-toc-link" href="#Effect_on_copying">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.1.1.1.1</span>
+					<span>Effect on copying</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Effect_on_copying-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Effect_on_snapshots" class="vector-toc-list-item vector-toc-level-5">
+			<a class="vector-toc-link" href="#Effect_on_snapshots">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.1.1.1.2</span>
 					<span>Effect on snapshots</span>
 				</div>
 			</a>
 			
 			<ul id="toc-Effect_on_snapshots-sublist" class="vector-toc-list">
 			</ul>
+		</li>
+	</ul>
 		</li>
 	</ul>
 		</li>
@@ -157,10 +179,54 @@
 			</a>
 			
 			<ul id="toc-Compression-sublist" class="vector-toc-list">
-				<li id="toc-View_compression_types_and_ratios" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#View_compression_types_and_ratios">
+				<li id="toc-Compression_types" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Compression_types">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">3.2.1</span>
+					<span>Compression types</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Compression_types-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Enabling_compression" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Enabling_compression">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.2.2</span>
+					<span>Enabling compression</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Enabling_compression-sublist" class="vector-toc-list">
+				<li id="toc-For_filesystems" class="vector-toc-list-item vector-toc-level-4">
+			<a class="vector-toc-link" href="#For_filesystems">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.2.2.1</span>
+					<span>For filesystems</span>
+				</div>
+			</a>
+			
+			<ul id="toc-For_filesystems-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-For_existing_files" class="vector-toc-list-item vector-toc-level-4">
+			<a class="vector-toc-link" href="#For_existing_files">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.2.2.2</span>
+					<span>For existing files</span>
+				</div>
+			</a>
+			
+			<ul id="toc-For_existing_files-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+		</li>
+		<li id="toc-View_compression_types_and_ratios" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#View_compression_types_and_ratios">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.2.3</span>
 					<span>View compression types and ratios</span>
 				</div>
 			</a>
@@ -256,7 +322,106 @@
 			</a>
 			
 			<ul id="toc-Quota-sublist" class="vector-toc-list">
+				<li id="toc-Quota_groups_(qgroups)" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Quota_groups_(qgroups)">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.4.1</span>
+					<span>Quota groups (qgroups)</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Quota_groups_(qgroups)-sublist" class="vector-toc-list">
+				<li id="toc-Total_referenced_space_and_exclusively_referenced_space" class="vector-toc-list-item vector-toc-level-4">
+			<a class="vector-toc-link" href="#Total_referenced_space_and_exclusively_referenced_space">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.4.1.1</span>
+					<span>Total referenced space and exclusively referenced space</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Total_referenced_space_and_exclusively_referenced_space-sublist" class="vector-toc-list">
 			</ul>
+		</li>
+		<li id="toc-Enabling/disabling_qgroups" class="vector-toc-list-item vector-toc-level-4">
+			<a class="vector-toc-link" href="#Enabling/disabling_qgroups">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.4.1.2</span>
+					<span>Enabling/disabling qgroups</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Enabling/disabling_qgroups-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Creating/destroying_qgroups" class="vector-toc-list-item vector-toc-level-4">
+			<a class="vector-toc-link" href="#Creating/destroying_qgroups">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.4.1.3</span>
+					<span>Creating/destroying qgroups</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Creating/destroying_qgroups-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Assigning/removing_child_qgroups" class="vector-toc-list-item vector-toc-level-4">
+			<a class="vector-toc-link" href="#Assigning/removing_child_qgroups">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.4.1.4</span>
+					<span>Assigning/removing child qgroups</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Assigning/removing_child_qgroups-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Limiting/unlimiting_qgroups" class="vector-toc-list-item vector-toc-level-4">
+			<a class="vector-toc-link" href="#Limiting/unlimiting_qgroups">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.4.1.5</span>
+					<span>Limiting/unlimiting qgroups</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Limiting/unlimiting_qgroups-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Listing_qgroups" class="vector-toc-list-item vector-toc-level-4">
+			<a class="vector-toc-link" href="#Listing_qgroups">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.4.1.6</span>
+					<span>Listing qgroups</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Listing_qgroups-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Quota_rescan" class="vector-toc-list-item vector-toc-level-4">
+			<a class="vector-toc-link" href="#Quota_rescan">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.4.1.7</span>
+					<span>Quota rescan</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Quota_rescan-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+		</li>
+		<li id="toc-Simple_quotas_(squotas)" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Simple_quotas_(squotas)">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.4.2</span>
+					<span>Simple quotas (squotas)</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Simple_quotas_(squotas)-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
 		</li>
 		<li id="toc-Commit_interval" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Commit_interval">
@@ -493,16 +658,49 @@
 			<ul id="toc-Partitionless_Btrfs_disk-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Ext3/4_to_Btrfs_conversion" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Ext3/4_to_Btrfs_conversion">
+		<li id="toc-Conversion" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Conversion">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">6.2</span>
+					<span>Conversion</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Conversion-sublist" class="vector-toc-list">
+				<li id="toc-Ext3/4_to_Btrfs_conversion" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Ext3/4_to_Btrfs_conversion">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">6.2.1</span>
 					<span>Ext3/4 to Btrfs conversion</span>
 				</div>
 			</a>
 			
 			<ul id="toc-Ext3/4_to_Btrfs_conversion-sublist" class="vector-toc-list">
 			</ul>
+		</li>
+		<li id="toc-NTFS_to_Btrfs_conversion" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#NTFS_to_Btrfs_conversion">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">6.2.2</span>
+					<span>NTFS to Btrfs conversion</span>
+				</div>
+			</a>
+			
+			<ul id="toc-NTFS_to_Btrfs_conversion-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-After_conversion" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#After_conversion">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">6.2.3</span>
+					<span>After conversion</span>
+				</div>
+			</a>
+			
+			<ul id="toc-After_conversion-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
 		</li>
 		<li id="toc-Corruption_recovery" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Corruption_recovery">
@@ -630,10 +828,21 @@
 		</li>
 	</ul>
 		</li>
+		<li id="toc-Long_boot_time" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Long_boot_time">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">7.2</span>
+					<span>Long boot time</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Long_boot_time-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 		<li id="toc-Mounting_timed_out" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Mounting_timed_out">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">7.2</span>
+					<span class="vector-toc-numb">7.3</span>
 					<span>Mounting timed out</span>
 				</div>
 			</a>
@@ -644,7 +853,7 @@
 		<li id="toc-BTRFS:_open_ctree_failed" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#BTRFS:_open_ctree_failed">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">7.3</span>
+					<span class="vector-toc-numb">7.4</span>
 					<span>BTRFS: open_ctree failed</span>
 				</div>
 			</a>
@@ -655,7 +864,7 @@
 		<li id="toc-btrfs_check" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#btrfs_check">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">7.4</span>
+					<span class="vector-toc-numb">7.5</span>
 					<span>btrfs check</span>
 				</div>
 			</a>
@@ -666,7 +875,7 @@
 		<li id="toc-Constant_drive_activity" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Constant_drive_activity">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">7.5</span>
+					<span class="vector-toc-numb">7.6</span>
 					<span>Constant drive activity</span>
 				</div>
 			</a>
@@ -677,7 +886,7 @@
 		<li id="toc-Device_total_bytes_should_be_at_most_X_but_found_Y" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Device_total_bytes_should_be_at_most_X_but_found_Y">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">7.6</span>
+					<span class="vector-toc-numb">7.7</span>
 					<span>Device total_bytes should be at most X but found Y</span>
 				</div>
 			</a>
@@ -688,7 +897,7 @@
 		<li id="toc-No_space_left_on_device" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#No_space_left_on_device">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">7.7</span>
+					<span class="vector-toc-numb">7.8</span>
 					<span>No space left on device</span>
 				</div>
 			</a>
@@ -718,10 +927,10 @@
 		</div>
 		<div class="mw-content-container">
 			<main id="content" class="mw-body" style="margin: 0">
-				<header class="mw-body-header vector-page-titlebar">
+				<header class="mw-body-header vector-page-titlebar vector-feature-custom-font-size-clientpref--excluded">
 					<nav aria-label="Contents" class="vector-toc-landmark">
 						
-<div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left">
+<div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left" title="Table of Contents">
 	<input type="checkbox" id="vector-page-titlebar-toc-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-vector-page-titlebar-toc" class="vector-dropdown-checkbox " aria-label="Toggle the table of contents">
 	<label id="vector-page-titlebar-toc-label" for="vector-page-titlebar-toc-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only " aria-hidden="true"><span class="vector-icon mw-ui-icon-listBullet mw-ui-icon-wikimedia-listBullet"></span>
 
@@ -740,10 +949,10 @@
 					<h1 id="firstHeading" class="firstHeading mw-first-heading"><span class="mw-page-title-main">Btrfs</span></h1>
 							
 <div id="p-lang-btn" class="vector-dropdown mw-portlet mw-portlet-lang">
-	<input type="checkbox" id="p-lang-btn-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-p-lang-btn" class="vector-dropdown-checkbox mw-interlanguage-selector" aria-label="Go to an article in another language. Available in 7 languages">
-	<label id="p-lang-btn-label" for="p-lang-btn-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive mw-portlet-lang-heading-7" aria-hidden="true"><span class="vector-icon mw-ui-icon-language-progressive mw-ui-icon-wikimedia-language-progressive"></span>
+	<input type="checkbox" id="p-lang-btn-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-p-lang-btn" class="vector-dropdown-checkbox mw-interlanguage-selector" aria-label="Go to an article in another language. Available in 8 languages">
+	<label id="p-lang-btn-label" for="p-lang-btn-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive mw-portlet-lang-heading-8" aria-hidden="true"><span class="vector-icon mw-ui-icon-language-progressive mw-ui-icon-wikimedia-language-progressive"></span>
 
-<span class="vector-dropdown-label-text">7 languages</span>
+<span class="vector-dropdown-label-text">8 languages</span>
 	</label>
 	<div class="vector-dropdown-content">
 
@@ -754,6 +963,7 @@
 				<li class="interlanguage-link interwiki-de mw-list-item"><a href="https://wiki.archlinux.de/title/Arch_auf_BtrFS" title="Arch auf BtrFS – Deutsch" lang="de" hreflang="de" data-title="Arch auf BtrFS" data-language-autonym="Deutsch" data-language-local-name="Deutsch" class="interlanguage-link-target"><span>Deutsch</span></a></li>
 <li class="interlanguage-link interwiki-es mw-list-item"><a href="../es/Btrfs.html" title="Btrfs – español" lang="es" hreflang="es" data-title="Btrfs" data-language-autonym="Español" data-language-local-name="español" class="interlanguage-link-target"><span>Español</span></a></li>
 <li class="interlanguage-link interwiki-it mw-list-item"><a href="../it/Btrfs.html" title="Btrfs – italiano" lang="it" hreflang="it" data-title="Btrfs" data-language-autonym="Italiano" data-language-local-name="italiano" class="interlanguage-link-target"><span>Italiano</span></a></li>
+<li class="interlanguage-link interwiki-hu mw-list-item"><a href="../hu/Btrfs.html" title="Btrfs – magyar" lang="hu" hreflang="hu" data-title="Btrfs" data-language-autonym="Magyar" data-language-local-name="magyar" class="interlanguage-link-target"><span>Magyar</span></a></li>
 <li class="interlanguage-link interwiki-ja mw-list-item"><a href="https://wiki.archlinux.jp/index.php/Btrfs" title="Btrfs – 日本語" lang="ja" hreflang="ja" data-title="Btrfs" data-language-autonym="日本語" data-language-local-name="日本語" class="interlanguage-link-target"><span>日本語</span></a></li>
 <li class="interlanguage-link interwiki-pt mw-list-item"><a href="../pt/Btrfs.html" title="Btrfs – português" lang="pt" hreflang="pt" data-title="Btrfs" data-language-autonym="Português" data-language-local-name="português" class="interlanguage-link-target"><span>Português</span></a></li>
 <li class="interlanguage-link interwiki-ru mw-list-item"><a href="../ru/Btrfs.html" title="Btrfs – русский" lang="ru" hreflang="ru" data-title="Btrfs" data-language-autonym="Русский" data-language-local-name="русский" class="interlanguage-link-target"><span>Русский</span></a></li>
@@ -765,7 +975,7 @@
 	</div>
 </div>
 </header>
-				<div class="vector-column-end">
+				<div class="vector-column-end vector-feature-custom-font-size-clientpref--excluded">
 					<div class="vector-sticky-pinned-container">
 						<nav class="vector-page-tools-landmark" aria-label="Page tools">
 							<div id="vector-page-tools-pinned-container" class="vector-pinned-container">
@@ -800,6 +1010,11 @@
 					
 					<div id="mw-content-text" class="mw-body-content">
 <div class="mw-content-ltr mw-parser-output" lang="en" dir="ltr">
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:View-refresh-red.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is out of date.</b></p>
+<div>
+<b>Reason:</b> <a rel="nofollow" class="external text" href="https://archive.kernel.org/oldwiki/btrfs.wiki.kernel.org/index.php/Main_Page.html">btrfs Wiki</a>, prominently linked to, has been archived since February 2023, and links should be replaced to the corresponding <a rel="nofollow" class="external text" href="https://btrfs.readthedocs.io">BTRFS documentation</a> links. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Btrfs.html">Talk:Btrfs</a>)</div>
+</div>
 <div class="archwiki-template-meta-related-articles">
 <p>Related articles</p>
 <ul>
@@ -813,19 +1028,19 @@
 </p>
 <dl><dd>Btrfs is a modern copy on write (COW) file system for Linux aimed at implementing advanced features while also focusing on fault tolerance, repair and easy administration.</dd></dl>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> Like some other file systems, Btrfs is under continuous development. This means that specific features may not be ready for everyday use yet. To see if your use case might be affected, check the Btrfs Documentation's <a rel="nofollow" class="external text" href="https://btrfs.readthedocs.io/en/latest/Status.html">Status</a> and the <a href="#Known_issues">#Known issues</a> section of this article.</div>
+<strong>Note</strong> Like some other file systems, Btrfs is under continuous development. This means that specific features may not be ready for everyday use yet. To see if your use case might be affected, check the Btrfs Documentation's <a rel="nofollow" class="external text" href="https://btrfs.readthedocs.io/en/latest/Status.html">Status</a> and the <a href="#Known_issues">#Known issues</a> section of this article.</div>
 <meta property="mw:PageProp/toc">
-<h2><span class="mw-headline" id="Preparation">Preparation</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="Preparation">Preparation</h2></div>
 <p>For user space utilities, <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=btrfs-progs">btrfs-progs</a></span> package that is required for basic operations.
 </p>
 <p>If you need to boot from a Btrfs file system (i.e., your kernel and initramfs reside on a Btrfs partition), check if your <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> supports Btrfs.
 </p>
-<h2><span class="mw-headline" id="File_system_creation">File system creation</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="File_system_creation">File system creation</h2></div>
 <p>The following shows how to create a new Btrfs <a href="../en/File_systems.html" class="mw-redirect" title="File system">file system</a>. To convert an Ext3/4 partition to Btrfs, see <a href="#Ext3/4_to_Btrfs_conversion">#Ext3/4 to Btrfs conversion</a>. To use a partitionless setup, see <a href="#Partitionless_Btrfs_disk">#Partitionless Btrfs disk</a>.
 </p>
 <p>See <span class="plainlinks archwiki-template-man" title="$ man 8 mkfs.btrfs"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/mkfs.btrfs.8">mkfs.btrfs(8)</a></span> for more information.
 </p>
-<h3><span class="mw-headline" id="File_system_on_a_single_device">File system on a single device</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="File_system_on_a_single_device">File system on a single device</h3></div>
 <p>To create a Btrfs file system on partition <code>/dev/<i>partition</i></code>:
 </p>
 <pre># mkfs.btrfs -L <i>mylabel</i> /dev/<i>partition</i>
@@ -835,17 +1050,16 @@
 <pre># mkfs.btrfs -L <i>mylabel</i> -n 32k /dev/<i>partition</i>
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> According to <span class="plainlinks archwiki-template-man" title="$ man 8 mkfs.btrfs"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/mkfs.btrfs.8#OPTIONS">mkfs.btrfs(8) § OPTIONS</a></span>, "[a] smaller node size increases fragmentation but leads to taller b-trees which in turn leads to lower locking contention. Higher node sizes give better packing and less fragmentation at the cost of more expensive memory operations while updating the metadata blocks".</div>
-<h3><span class="mw-headline" id="Multi-device_file_system">Multi-device file system</span></h3>
+<strong>Note</strong> According to <span class="plainlinks archwiki-template-man" title="$ man 8 mkfs.btrfs"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/mkfs.btrfs.8#OPTIONS">mkfs.btrfs(8) § OPTIONS</a></span>, "[a] smaller node size increases fragmentation but leads to taller b-trees which in turn leads to lower locking contention. Higher node sizes give better packing and less fragmentation at the cost of more expensive memory operations while updating the metadata blocks".</div>
+<div class="mw-heading mw-heading3"><h3 id="Multi-device_file_system">Multi-device file system</h3></div>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> 
+<strong>Warning</strong> 
 <ul>
 <li>The RAID 5 and RAID 6 modes of Btrfs are fatally flawed, and should not be used for "anything but testing with throw-away data." <a rel="nofollow" class="external text" href="https://lore.kernel.org/linux-btrfs/20200627032414.GX10769@hungrycats.org/">List of known problems and partial workarounds</a>. See <span class="plainlinks archwiki-template-man" title="$ man 5 btrfs"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/btrfs.5#RAID56_STATUS_AND_RECOMMENDED_PRACTICES">btrfs(5) § RAID56 STATUS AND RECOMMENDED PRACTICES</a></span> for status updates.</li>
 <li>By default, <a href="../en/Systemd.html" title="Systemd">systemd</a> disables <a href="#Copy-on-Write_(CoW)">CoW</a> for <code>/var/log/journal</code>, which can cause data corruption on RAID 1 (see <a href="#Disabling_CoW">#Disabling CoW</a>). To prevent this, create an empty file <code>/etc/tmpfiles.d/journal-nocow.conf</code> to override <code>/usr/lib/tmpfiles.d/journal-nocow.conf</code> (see <span class="plainlinks archwiki-template-man" title="$ man 5 tmpfiles.d"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/tmpfiles.d.5#CONFIGURATION_DIRECTORIES_AND_PRECEDENCE">tmpfiles.d(5) § CONFIGURATION DIRECTORIES AND PRECEDENCE</a></span>).</li>
 </ul>
 </div>
-<p>Multiple devices can be used to create a RAID. Supported RAID levels include RAID 0, RAID 1, RAID 10, RAID 5 and RAID 6. Starting from kernel 5.5 RAID1c3 and RAID1c4 for 3- and 4- copies of RAID 1 level. The RAID levels can be configured separately for data and metadata using the <code>-d</code> and <code>-m</code> options respectively. By default, the data has one copy (<code>single</code>) and the metadata is mirrored (<code>raid1</code>). This is similar to 
-creating a <a href="https://en.wikipedia.org/wiki/JBOD" class="extiw" title="w:JBOD">JBOD configuration</a>, where disks are seen as one file system, but files are not duplicated. See <a rel="nofollow" class="external text" href="https://archive.kernel.org/oldwiki/btrfs.wiki.kernel.org/index.php/Using_Btrfs_with_Multiple_Devices.html">Using Btrfs with Multiple Devices</a> for more information about how to create a Btrfs RAID volume.
+<p>Multiple devices can be used to create a RAID. Supported RAID levels include RAID 0, RAID 1, RAID 10, RAID 5 and RAID 6. Starting from kernel 5.5 RAID1c3 and RAID1c4 for 3- and 4- copies of RAID 1 level. The RAID levels can be configured separately for data and metadata using the <code>-d</code> and <code>-m</code> options respectively. By default, the data has one copy (<code>single</code>) and the metadata is mirrored (<code>raid1</code>). This is similar to creating a <a href="https://en.wikipedia.org/wiki/JBOD" class="extiw" title="wikipedia:JBOD">JBOD configuration</a>, where disks are seen as one file system, but files are not duplicated. See <a rel="nofollow" class="external text" href="https://archive.kernel.org/oldwiki/btrfs.wiki.kernel.org/index.php/Using_Btrfs_with_Multiple_Devices.html">Using Btrfs with Multiple Devices</a> for more information about how to create a Btrfs RAID volume.
 </p>
 <pre># mkfs.btrfs -d single -m raid1 /dev/<i>part1</i> /dev/<i>part2</i> ...
 </pre>
@@ -856,7 +1070,7 @@ creating a <a href="https://en.wikipedia.org/wiki/JBOD" class="extiw" title="w:J
 <pre># btrfs device scan
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> 
+<strong>Note</strong> 
 <ul>
 <li>It is possible to add devices to a multiple-device file system later on. See the <a rel="nofollow" class="external text" href="https://archive.kernel.org/oldwiki/btrfs.wiki.kernel.org/index.php/Using_Btrfs_with_Multiple_Devices.html">Btrfs wiki article</a> for more information.</li>
 <li>Devices can be of different sizes. However, if one drive in a RAID configuration is bigger than the others, this extra space will not be used.</li>
@@ -866,7 +1080,7 @@ creating a <a href="https://en.wikipedia.org/wiki/JBOD" class="extiw" title="w:J
 </div>
 <p>See <a href="#RAID">#RAID</a> for advice on maintenance specific to multi-device Btrfs file systems.
 </p>
-<h4><span class="mw-headline" id="Profiles">Profiles</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="Profiles">Profiles</h4></div>
 <p>Btrfs uses the concept of <a rel="nofollow" class="external text" href="https://btrfs.readthedocs.io/en/latest/mkfs.btrfs.html#profiles">profiles</a> to configure mirroring, parity, and striping. In standard <a href="https://en.wikipedia.org/wiki/RAID" class="extiw" title="wikipedia:RAID">RAID</a> terminology, this is called <i>RAID level</i>. Profiles for metadata (the <code>-m</code> option of <span class="plainlinks archwiki-template-man" title="$ man 8 mkfs.btrfs"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/mkfs.btrfs.8">mkfs.btrfs(8)</a></span>) and data (the <code>-d</code> option of <span class="plainlinks archwiki-template-man" title="$ man 8 mkfs.btrfs"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/mkfs.btrfs.8">mkfs.btrfs(8)</a></span>) may be different for the same Btrfs file system.
 </p>
 <p>Some notable profiles:
@@ -879,78 +1093,114 @@ creating a <a href="https://en.wikipedia.org/wiki/JBOD" class="extiw" title="w:J
 <dt>raid1</dt>
 <dd>Mirroring, no striping, no parity, enables recovering from one drive failure.</dd>
 </dl>
-<h2><span class="mw-headline" id="Configuring_the_file_system">Configuring the file system</span></h2>
-<h3>
-<span id="Copy-on-Write_.28CoW.29"></span><span class="mw-headline" id="Copy-on-Write_(CoW)">Copy-on-Write (CoW)</span>
-</h3>
+<div class="mw-heading mw-heading2"><h2 id="Configuring_the_file_system">Configuring the file system</h2></div>
+<div class="mw-heading mw-heading3"><h3 id="Copy-on-Write_(CoW)">
+<span id="Copy-on-Write_.28CoW.29"></span>Copy-on-Write (CoW)</h3></div>
 <p>By default, Btrfs uses <a href="https://en.wikipedia.org/wiki/copy-on-write" class="extiw" title="wikipedia:copy-on-write">copy-on-write</a> for all files all the time. Writes do not overwrite data in place; instead, a modified copy of the block is written to a new location, and metadata is updated to point at the new location. See the <a rel="nofollow" class="external text" href="https://archive.kernel.org/oldwiki/btrfs.wiki.kernel.org/index.php/SysadminGuide.html#Copy_on_Write_.28CoW.29">Btrfs Sysadmin Guide section</a> for implementation details, as well as advantages and disadvantages.
 </p>
-<h4><span class="mw-headline" id="Disabling_CoW">Disabling CoW</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="Disabling_CoW">Disabling CoW</h4></div>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> Disabling CoW in Btrfs also disables checksums. Btrfs will not be able to detect corrupted <code>nodatacow</code> files. When combined with RAID 1, power outages or other sources of corruption can cause the data to become out of sync.</div>
+<strong>Warning</strong> Disabling CoW in Btrfs also disables checksums. Btrfs will not be able to detect corrupted <code>nodatacow</code> files. When combined with RAID 1, power outages or other sources of corruption can cause the data to become out of sync.</div>
 <p>To disable copy-on-write for newly created files in a mounted subvolume, use the <code>nodatacow</code> mount option. This will only affect newly created files. Copy-on-write will still happen for existing files. The <code>nodatacow</code> option also disables compression. See <span class="plainlinks archwiki-template-man" title="$ man 5 btrfs"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/btrfs.5">btrfs(5)</a></span> for details.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> From <span class="plainlinks archwiki-template-man" title="$ man 5 btrfs"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/btrfs.5#MOUNT_OPTIONS">btrfs(5) § MOUNT OPTIONS</a></span>: "within a single file system, it is not possible to mount some subvolumes with <code>nodatacow</code> and others with <code>datacow</code>. The mount option of the first mounted subvolume applies to any other subvolumes."</div>
+<strong>Note</strong> 
+<ul>
+<li>From <span class="plainlinks archwiki-template-man" title="$ man 5 btrfs"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/btrfs.5#MOUNT_OPTIONS">btrfs(5) § MOUNT OPTIONS</a></span>: "within a single file system, it is not possible to mount some subvolumes with <code>nodatacow</code> and others with <code>datacow</code>. The mount option of the first mounted subvolume applies to any other subvolumes."</li>
+<li>Even with Copy-on-Write disabled, it may still be triggered in certain cases. See <a href="#Cases_where_CoW_is_still_triggered">#Cases where CoW is still triggered</a> below for details.</li>
+</ul>
+</div>
 <p>To disable copy-on-write for single files/directories, do:
 </p>
 <pre>$ chattr +C <i>/dir/file</i>
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> From <a rel="nofollow" class="external text" href="https://btrfs.readthedocs.io/en/latest/Common-features.html#attributes">Btrfs documentation: File attributes</a>: "When set on a directory, all newly created files will inherit this attribute. Due to implementation limitations, this flag can be set/unset only on empty files."</div>
+<strong>Note</strong> From <a rel="nofollow" class="external text" href="https://btrfs.readthedocs.io/en/latest/Common-features.html#attributes">Btrfs documentation: File attributes</a>: "When set on a directory, all newly created files will inherit this attribute. Due to implementation limitations, this flag can be set/unset only on empty files."</div>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> In accordance with the note above, you can use the following trick to disable copy-on-write on existing files in a directory:
+<strong>Tip</strong> In accordance with the note above, you can use the following trick to disable copy-on-write on existing files in a directory:
 <pre>$ mv <i>/path/to/dir</i> <i>/path/to/dir</i>_old
 $ mkdir <i>/path/to/dir</i>
 $ chattr +C <i>/path/to/dir</i>
 $ cp -a --reflink=never <i>/path/to/dir</i>_old/. <i>/path/to/dir</i>
 $ rm -rf <i>/path/to/dir</i>_old
 </pre>
-Make sure that the data are not used during this process. Also note that <code>mv</code> or <code>cp</code> without <code>--reflink=never</code> as described below will not work.</div>
-<h5><span class="mw-headline" id="Effect_on_snapshots">Effect on snapshots</span></h5>
+Make sure that the data are not used during this process. For more on the use of the <code>--reflink=never</code> option, see <a href="#Effect_on_copying">#Effect on copying</a> below.</div>
+<div class="mw-heading mw-heading5"><h5 id="Cases_where_CoW_is_still_triggered">Cases where CoW is still triggered</h5></div>
+<p>Copy-on-Write will <i>still</i> be triggered if a file with the NOCOW attribute (+C) has more than one reference (for example, a copy created via <code>cp</code> using <a rel="nofollow" class="external text" href="https://btrfs.readthedocs.io/en/latest/Reflink.html#reflink">reflink</a> or a snapshot made by Btrfs).
+</p>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-clear.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs language, wiki syntax or style improvements. See <a href="../en/Help:Style.html" title="Help:Style">Help:Style</a> for reference.</b></p>
+<div>
+<b>Reason:</b> 5 levels of subsections is too much. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Btrfs.html">Talk:Btrfs</a>)</div>
+</div>
+<div class="mw-heading mw-heading6"><h6 id="Effect_on_copying">Effect on copying</h6></div>
+<p>When using <code>cp</code> to copy files, the NOCOW attribute is <i>not</i> determined by the source file, but by the destination path—either inherited from the directory or determined by whether the subvolume is mounted with the <code>nodatacow</code> option. Reflink copying is possible only if both the source and destination files either have or do not have the NOCOW attribute. The actual behavior depends on the <code>--reflink</code> option, with three possible outcomes:
+</p>
+<ul>
+<li>With <code>--reflink=auto</code> (default): If the NOCOW attributes match, reflink is used; otherwise, a deep copy is made.</li>
+<li>With <code>--reflink</code> (or <code>--reflink=always</code>): If the NOCOW attributes match, reflink is used; if they differ, the operation fails.</li>
+<li>With <code>--reflink=never</code>: A deep copy is always performed.</li>
+</ul>
+<p>For more information on the <code>--reflink</code> option, refer to <span class="plainlinks archwiki-template-man" title="$ man 1 cp"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/cp.1">cp(1)</a></span>.
+</p>
+<div class="mw-heading mw-heading6"><h6 id="Effect_on_snapshots">Effect on snapshots</h6></div>
 <p>If a file has copy-on-write disabled (NOCOW) and a <a href="#Snapshots">snapshot</a> is taken, the first write to a file block after the snapshot <a rel="nofollow" class="external text" href="https://www.spinics.net/lists/linux-btrfs/msg33090.html">will be a COW operation</a> because the snapshot locks the old file blocks in place. However, the file will retain the NOCOW attribute and any subsequent writes to the same file block will be in-place until the next snapshot.
 </p>
 <p>Frequent snapshots can reduce the effectiveness of NOCOW, as COW is still required on the first write. To avoid copy-on-write for such files altogether, put them in a separate subvolume and do not take snapshots of that subvolume.
 </p>
-<h3><span class="mw-headline" id="Compression">Compression</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Compression">Compression</h3></div>
 <p>Btrfs supports <a rel="nofollow" class="external text" href="https://btrfs.readthedocs.io/en/latest/Compression.html">transparent and automatic compression</a>. This reduces the size of files as well as significantly increases the lifespan of flash-based media by reducing write amplification. See <a href="https://fedoraproject.org/wiki/Changes/BtrfsByDefault#Compression" class="extiw" title="fedora:Changes/BtrfsByDefault">Fedora:Changes/BtrfsByDefault#Compression</a>, <a rel="nofollow" class="external autonumber" href="https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/message/NTV77NFF6NDZM3QTPUM2TQZ5PCM6GOO2/">[2]</a>, and <a rel="nofollow" class="external autonumber" href="https://pagure.io/fedora-btrfs/project/issue/36#comment-701551">[3]</a>. It can also <a rel="nofollow" class="external text" href="https://www.phoronix.com/scan.php?page=article&amp;item=btrfs_compress_2635&amp;num=1">improve performance</a>, in some cases (e.g. single thread with heavy file I/O), while obviously harming performance in other cases (e.g. multi-threaded and/or CPU intensive tasks with large file I/O). Better performance is generally achieved with the fastest compress algorithms, <i>zstd</i> and <i>lzo</i>, and some <a rel="nofollow" class="external text" href="https://www.phoronix.com/scan.php?page=article&amp;item=btrfs-zstd-compress">benchmarks</a> provide detailed comparisons.
 </p>
-<p>LZO has a fixed compression level, whereas zlib and zstd have a range of levels from 1 (low compression) to 9 (zlib) or 15 (zstd); see <span class="plainlinks archwiki-template-man" title="$ man 5 btrfs"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/btrfs.5#COMPRESSION">btrfs(5) § COMPRESSION</a></span>. Changing the levels will affect CPU and I/O throughput differently, so they should be checked / benchmarked before and after changing.
+<div class="mw-heading mw-heading4"><h4 id="Compression_types">Compression types</h4></div>
+<p>Btrfs supports the compression algorithms <code>zlib</code> (<a href="https://en.wikipedia.org/wiki/Deflate" class="extiw" title="wikipedia:Deflate">DEFLATE</a> provided by <a href="https://en.wikipedia.org/wiki/zlib" class="extiw" title="wikipedia:zlib">zlib</a>), <code>lzo</code> (<a href="https://en.wikipedia.org/wiki/LZO" class="extiw" title="wikipedia:LZO">LZO</a>), and <code>zstd</code> (<a href="https://en.wikipedia.org/wiki/Zstandard" class="extiw" title="wikipedia:Zstandard">Zstandard</a> implemented by <a rel="nofollow" class="external text" href="https://github.com/torvalds/linux/tree/master/lib/zstd">zstd</a>). LZO has no compression levels, whereas zlib and zstd have adjustable compression levels (zlib: 1-9; zstd: -15 to -1, 1-15, must be integers). Higher levels provide better compression but require more processing time. Changing the levels will affect CPU and I/O throughput differently, so they should be checked / benchmarked before and after changing. For more information about compression types, see <span class="plainlinks archwiki-template-man" title="$ man 5 btrfs"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/btrfs.5#COMPRESSION">btrfs(5) § COMPRESSION</a></span>.
 </p>
-<p>The <code>compress=<i>alg[:level]</i></code> mount option enables automatically considering every file for compression, where <code><i>alg</i></code> is either <code>zlib</code>, <code>lzo</code>, <code>zstd</code>, or <code>no</code> (for no compression). Using this option, Btrfs will check if compressing the first portion of the data shrinks it.  If it does, the entire write to that file will be compressed.  If it does not, none of it is compressed.  With this option, if the first portion of the write does not shrink, no compression will be applied to the write even if the rest of the data would shrink tremendously. <a rel="nofollow" class="external autonumber" href="https://btrfs.readthedocs.io/en/latest/Compression.html#incompressible-data">[4]</a>  This is done to prevent making the disk wait to start writing until all of the data to be written is fully given to Btrfs and compressed.
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning</strong> Systems using older kernels or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=btrfs-progs">btrfs-progs</a></span> without <code>zstd</code> support (especially levels -15 to -1) may be unable to read or repair your file system if you use this option.</div>
+<div class="mw-heading mw-heading4"><h4 id="Enabling_compression">Enabling compression</h4></div>
+<div class="mw-heading mw-heading5"><h5 id="For_filesystems">For filesystems</h5></div>
+<p>The <code>compress=<i>alg[:level]</i></code> mount option enables automatically considering compression for every write to the filesystem, where <code><i>alg</i></code> is either <code>zlib</code>, <code>lzo</code>, <code>zstd</code>, or <code>no</code> (for no compression), and the optional <code><i>level</i></code> specifies the compression level (defaults to 3 when not specified or set to 0; not applicable for <code>lzo</code>). Using this option, Btrfs will check if compressing the <b>first data block</b> of a file write shrinks it. If it does, the entire write to that file will be compressed. If it does not, the file is marked as <code>NOCOMPRESS</code>, and <b>both the current write and all subsequent writes</b> to that file will not be compressed <a rel="nofollow" class="external autonumber" href="https://btrfs.readthedocs.io/en/latest/Compression.html#incompressible-data">[4]</a>. This is done to prevent making the disk wait to start writing until all of the data to be written is fully given to Btrfs and compression is attempted.
 </p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> 
+<ul>
+<li>Compression mount options are shared across all mount points of the same filesystem (including different subvolumes and bind mounts) <a rel="nofollow" class="external autonumber" href="https://btrfs.readthedocs.io/en/latest/Compression.html#incompressible-data">[5]</a>.</li>
+<li>If one write to a file cannot be compressed, subsequent writes will not be compressed either.</li>
+</ul>
+</div>
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
 <div>
-<b>Reason:</b> Missing reference for the "empirical testing" mentioned in the following paragraph. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Btrfs.html">Talk:Btrfs</a>)</div>
+<b>Reason:</b> Missing reference for the "empirical testing" mentioned in the following paragraph, and the percentage descriptions in the original text are not accurate. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Btrfs.html">Talk:Btrfs</a>)</div>
 </div>
-<p>The <code>compress-force=<i>alg[:level]</i></code> mount option can be used instead, which makes Btrfs skip checking if compression shrinks the first portion, and enables automatic compression try for every file.  In a worst-case scenario, this can cause (slightly) more CPU usage for no purpose. However, empirical testing on multiple mixed-use systems showed a significant improvement of about 10% disk compression from using <code>compress-force=<i>zstd</i></code> over just <code>compress=<i>zstd</i></code>, which also had 10% disk compression. However, keep in mind that forcing compression is against <a rel="nofollow" class="external text" href="https://btrfs.readthedocs.io/en/latest/Compression.html#incompressible-data">official Btrfs guidelines</a>.
+<p>The <code>compress-force=<i>alg[:level]</i></code> mount option can be used instead, which makes Btrfs check <b>each data block of every write</b> and decide whether to compress them individually. Empirical testing on multiple mixed-use systems showed that using <code>compress-force=zstd</code> can significantly improve space savings (from 10% to 20%) compared to <code>compress=zstd</code>, but this causes (slightly) higher CPU usage and longer write times without purpose. However, forcing compression is against <a rel="nofollow" class="external text" href="https://btrfs.readthedocs.io/en/latest/Compression.html#incompressible-data">official Btrfs guidelines</a>.
 </p>
-<p>Only files created or modified after the mount option is added will be compressed.
-</p>
-<p>To apply compression to existing files, use the <code>btrfs filesystem defragment -c<i>alg</i></code> command, where <code><i>alg</i></code> is either <code>zlib</code>, <code>lzo</code> or <code>zstd</code>. For example, in order to re-compress the whole file system with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=zstd">zstd</a></span>, run the following command:
-</p>
-<pre># btrfs filesystem defragment -r -v -czstd /
-</pre>
-<div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> Defragmenting a file which has a COW copy (either a snapshot copy or one made with <code>cp</code> or bcp) plus using the <code>-c</code> switch with a compression algorithm may result in two unrelated files effectively increasing the disk usage.</div>
-<p>To enable compression when installing Arch to an empty Btrfs partition, use the <code>compress</code> option when <a href="../en/File_systems.html#Mount_a_file_system" class="mw-redirect" title="Mounting">mounting</a> the file system: <code>mount -o compress=zstd /dev/sd<i>xY</i> /mnt/</code>. During configuration, add <code>compress=zstd</code> to the mount options of the root file system in <a href="../en/Fstab.html" title="Fstab">fstab</a>.
+<p>Only files created or modified after adding either of the above mount options will be automatically compressed.
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> Compression can also be enabled per-file without using the <code>compress</code> mount option; to do so, apply <code>chattr +c</code> <b>or</b> <code>btrfs property set <i>file</i> compression <i>alg</i></code> to the file. The first command is using legacy interface of file attributes inherited from ext2 filesystem and is not flexible, so by default the <code>zlib</code> compression is set. The other command sets a property on the file with the given algorithm. (Note: setting level that way is not yet implemented.) When applied to directories, it will cause new files to be automatically compressed as they come.</div>
-<div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> 
-<ul>
-<li>Systems using older kernels or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=btrfs-progs">btrfs-progs</a></span> without <code>zstd</code> support may be unable to read or repair your file system if you use this option.</li>
-<li>
-<a href="../en/GRUB.html" title="GRUB">GRUB</a> introduced <i>zstd</i> support in 2.04.  Make sure you have actually upgraded the <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> installed in your MBR/ESP since then, by running <code>grub-install</code> with the appropriate options for your BIOS/UEFI setup, since that is not done automatically. See <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/63235">FS#63235</a>.</li>
-</ul>
-</div>
-<h4><span class="mw-headline" id="View_compression_types_and_ratios">View compression types and ratios</span></h4>
-<p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=compsize">compsize</a></span> takes a list of files (or an entire Btrfs file system) and measures compression types used and effective compression ratios.  Uncompressed size may not match the number given by other programs such as <span class="plainlinks archwiki-template-man" title="$ man 1 du"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/du.1">du(1)</a></span>, because every extent is counted once, even if it is reflinked several times, and even if a part of it is no longer used anywhere but has not been garbage collected.  The <code>-x</code> option keeps it on a single file system, which is useful in situations like <code>compsize -x /</code> to avoid it from attempting to look in non-Btrfs subdirectories and fail the entire run.
+<strong>Tip</strong> To enable compression when installing Arch to an empty Btrfs partition, use the <code>compress</code> option when <a href="../en/File_systems.html#Mount_a_file_system" class="mw-redirect" title="Mounting">mounting</a> the file system before installation: <code>mount -o compress=zstd /dev/sd<i>xY</i> /mnt/</code>. During configuration, add the same <code>compress</code> mount option to the root file system in <a href="../en/Fstab.html" title="Fstab">fstab</a>.</div>
+<div class="mw-heading mw-heading5"><h5 id="For_existing_files">For existing files</h5></div>
+<p>To apply compression to existing files, use the <code>btrfs filesystem defragment -c<i>alg</i></code> command, where <code><i>alg</i></code> is either <code>zlib</code>, <code>lzo</code> or <code>zstd</code>. To specify the compression level, use the <code>-L</code> option, otherwise the default level is used (not applicable for <code>lzo</code>). For example, to re-compress all files with <code>zstd</code> and compression level 1, run the following command:
 </p>
-<h3><span class="mw-headline" id="Subvolumes">Subvolumes</span></h3>
-<p>"A Btrfs subvolume is not a block device (and cannot be treated as one) instead, a Btrfs subvolume can be thought of as a POSIX file namespace. This namespace can be accessed via the top-level subvolume of the file system, or it can be mounted in its own right." <a rel="nofollow" class="external autonumber" href="https://archive.kernel.org/oldwiki/btrfs.wiki.kernel.org/index.php/SysadminGuide.html#Subvolumes">[5]</a>
+<pre># btrfs -v filesystem defragment -r -czstd -L1 /
+</pre>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning</strong> Defragmenting a file which has a COW copy (either a snapshot copy or one made with <code>cp</code>) may result in two unrelated files, potentially greatly increasing disk usage.</div>
+<p>Using the above method to compress files is not persistent; other write operations will apply the original compression settings.
+</p>
+<p>The following two methods can persistently enable compression for individual files:
+</p>
+<pre>$ chattr +c <i>file</i>
+$ btrfs property set <i>file</i> compression zstd
+</pre>
+<p>The first command uses the legacy interface of file attributes inherited from the ext2 filesystem and is not flexible, defaulting to <code>zlib</code> compression algorithm. The second command can specify the compression algorithm, but specifying compression levels is not yet implemented, so the default level 3 is used (not applicable for <code>lzo</code>).
+</p>
+<div class="mw-heading mw-heading4"><h4 id="View_compression_types_and_ratios">View compression types and ratios</h4></div>
+<p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=compsize">compsize</a></span> takes a list of files or directories (or an entire Btrfs file system) and outputs the compression types used and actual compression ratios (compressed size/uncompressed size). Uncompressed size may not match the number given by other programs such as <span class="plainlinks archwiki-template-man" title="$ man 1 du"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/du.1">du(1)</a></span>, because every extent is counted once and only once—even if it has multiple <a rel="nofollow" class="external text" href="https://btrfs.readthedocs.io/en/latest/Reflink.html#reflink">reflinks</a>, or if parts of it are no longer used anywhere but have not been garbage collected.
+</p>
+<p>The <code>-x</code> option keeps it on a single file system, which is useful in situations like <code>compsize -x /</code> to avoid it from attempting to access non-Btrfs subdirectories and failing the entire run.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Subvolumes">Subvolumes</h3></div>
+<p>"A Btrfs subvolume is not a block device (and cannot be treated as one) instead, a Btrfs subvolume can be thought of as a POSIX file namespace. This namespace can be accessed via the top-level subvolume of the file system, or it can be mounted in its own right." <a rel="nofollow" class="external autonumber" href="https://archive.kernel.org/oldwiki/btrfs.wiki.kernel.org/index.php/SysadminGuide.html#Subvolumes">[6]</a>
 </p>
 <p>Each Btrfs file system has a top-level subvolume with ID 5. This subvolume cannot be removed or replaced by another subvolume. The top-level subvolume has path <code>/</code> on the file system and other subvolumes are <i>nested</i> below the top-level subvolume. However, subvolumes can be moved around in the file system and their path may change, whereas their ID cannot.
 </p>
@@ -965,21 +1215,26 @@ Make sure that the data are not used during this process. Also note that <code>m
 <li><a rel="nofollow" class="external text" href="https://archive.kernel.org/oldwiki/btrfs.wiki.kernel.org/index.php/SysadminGuide.html#Subvolumes">Btrfs Wiki SysadminGuide#Subvolumes</a></li>
 <li><a rel="nofollow" class="external text" href="https://archive.kernel.org/oldwiki/btrfs.wiki.kernel.org/index.php/Trees.html">Btrfs Wiki Trees</a></li>
 </ul>
-<h4><span class="mw-headline" id="Creating_a_subvolume">Creating a subvolume</span></h4>
-<p>To create a subvolume, the Btrfs file system must be mounted. The subvolume's name is set using the last argument.
+<div class="mw-heading mw-heading4"><h4 id="Creating_a_subvolume">Creating a subvolume</h4></div>
+<p>To create a subvolume, the Btrfs file system must be mounted.
 </p>
 <pre># btrfs subvolume create <i>/path/to/subvolume</i>
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> You can use <code>--parents</code> to automatically create parent directories if they do not exist.</div>
-<h4><span class="mw-headline" id="Listing_subvolumes">Listing subvolumes</span></h4>
+<strong>Note</strong> 
+<ul>
+<li>You can use <code>--parents</code> to automatically create parent directories if they do not exist.</li>
+<li>If the top-level subvolume is not mounted and you want to create subvolumes inside it, you can temporarily mount it by specifying <code>subvolid=5</code>. See <a href="#Mounting_subvolumes">#Mounting subvolumes</a>.</li>
+</ul>
+</div>
+<div class="mw-heading mw-heading4"><h4 id="Listing_subvolumes">Listing subvolumes</h4></div>
 <p>To see a list of all subvolumes of the filesystem that <code><i>path</i></code> belongs to:
 </p>
 <pre># btrfs subvolume list -t <i>path</i>
 </pre>
 <p><code>-t</code> triggers a more readable table view.
 </p>
-<h4><span class="mw-headline" id="Deleting_a_subvolume">Deleting a subvolume</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="Deleting_a_subvolume">Deleting a subvolume</h4></div>
 <p>To delete a subvolume:
 </p>
 <pre># btrfs subvolume delete <i>/path/to/subvolume</i>
@@ -987,88 +1242,217 @@ Make sure that the data are not used during this process. Also note that <code>m
 <p>If the subvolume contains other subvolumes that should be deleted, add the <code>-R</code>/<code>--recursive</code> option. Alternatively, a subvolume can be deleted like a regular directory (<code>rm -r</code>, <code>rmdir</code>).
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> Make sure that a subvolume is not mounted before deleting it. Deleting a mounted subvolume can lead to filesystem inconsistencies.</div>
-<h4><span class="mw-headline" id="Mounting_subvolumes">Mounting subvolumes</span></h4>
-<p>Subvolumes can be mounted like file system partitions using the <code>subvol=<i>/path/to/subvolume</i></code> or <code>subvolid=<i>objectid</i></code> mount flags. For example, you could have a subvolume named <code>subvol_root</code> and mount it as <code>/</code>.  One can mimic traditional file system partitions by creating various subvolumes under the top level of the file system and then mounting them at the appropriate mount points. It is preferable to mount using <code>subvol=<i>/path/to/subvolume</i></code>, rather than the subvolid, as the subvolid may change when restoring <a href="#Snapshots">#Snapshots</a>, requiring a change of mount configuration.
+<strong>Warning</strong> Make sure that a subvolume is not mounted before deleting it. Deleting a mounted subvolume can lead to filesystem inconsistencies.</div>
+<div class="mw-heading mw-heading4"><h4 id="Mounting_subvolumes">Mounting subvolumes</h4></div>
+<p>Subvolumes can be mounted using the <code>subvol=<i>/path/to/subvolume</i></code> or <code>subvolid=<i>objectid</i></code> mount options. One can mimic traditional file system partitions by creating various subvolumes under the top level of the file system and then mounting them at the appropriate mount points.
+</p>
+<p>For example, the following mounts the top-level subvolume to <code>/mnt/</code> and creates two subvolumes named <code>subvol_root</code> and <code>subvol_home</code>. When the top-level subvolume is unmounted, the new subvolumes are mounted to <code>/mnt/</code> and <code>/mnt/home/</code>:
+</p>
+<pre># mount <i>device</i> /mnt/ -o subvolid=5
+# btrfs subvolume create /mnt/subvol_root/
+# btrfs subvolume create /mnt/subvol_home/
+# umount /mnt/
+# mount -o subvol=/subvol_root <i>device</i> /mnt/
+# mount -o subvol=/subvol_home --mkdir <i>device</i> /mnt/home/
+</pre>
+<p>Referencing a subvolume with the <code>subvol</code> mount option requires using the path relative to the <i>top-level subvolume</i>. This can be different from the path where the top-level subvolume is mounted.
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> Changing subvolume layouts is made simpler by not using the top-level subvolume (ID=5) as <code>/</code> (which is done by default). Instead, consider creating a subvolume to house your actual data and mounting it as <code>/</code>.</div>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> From <span class="plainlinks archwiki-template-man" title="$ man 5 btrfs"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/btrfs.5#MOUNT_OPTIONS">btrfs(5) § MOUNT OPTIONS</a></span>: "Most mount options apply to the <b>whole file system</b>, and only the options for the first subvolume to be mounted will take effect. This is due to lack of implementation and may change in the future."
-<p>See the <a rel="nofollow" class="external text" href="https://archive.kernel.org/oldwiki/btrfs.wiki.kernel.org/index.php/FAQ.html#Can_I_mount_subvolumes_with_different_mount_options.3F">Btrfs Wiki FAQ</a> for which mount options can be used per subvolume.
-</p>
+<strong>Tip</strong> 
+<ul>
+<li>It is preferable to mount using <code>subvol=<i>/path/to/subvolume</i></code>, rather than the subvolid, as the subvolid may change when restoring <a href="#Snapshots">#Snapshots</a>, requiring a change of mount configuration.</li>
+<li>Changing subvolume layouts is made simpler by not using the top-level subvolume (ID=5) as <code>/</code> (which is done by default). Instead, consider creating a subvolume to house your actual data and mounting it as <code>/</code>.</li>
+</ul>
 </div>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> From <span class="plainlinks archwiki-template-man" title="$ man 5 btrfs"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/btrfs.5#MOUNT_OPTIONS">btrfs(5) § MOUNT OPTIONS</a></span>: "Most mount options apply to the <b>whole file system</b>, and only the options for the first subvolume to be mounted will take effect. This is due to lack of implementation and may change in the future."</div>
 <p>See <a href="../en/Snapper.html#Suggested_filesystem_layout" title="Snapper">Snapper#Suggested filesystem layout</a>, <a rel="nofollow" class="external text" href="https://archive.kernel.org/oldwiki/btrfs.wiki.kernel.org/index.php/SysadminGuide.html#Managing_Snapshots">Btrfs SysadminGuide#Managing Snapshots</a>, and <a rel="nofollow" class="external text" href="https://archive.kernel.org/oldwiki/btrfs.wiki.kernel.org/index.php/SysadminGuide.html#Layout">SysadminGuide#Layout</a> for example file system layouts using subvolumes.
 </p>
-<p>See <span class="plainlinks archwiki-template-man" title="$ man 5 btrfs"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/btrfs.5">btrfs(5)</a></span> for a full list of Btrfs-specific mount options.
-</p>
-<h4><span class="mw-headline" id="Mounting_subvolume_as_root">Mounting subvolume as root</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="Mounting_subvolume_as_root">Mounting subvolume as root</h4></div>
 <p>To use a subvolume as the root mountpoint, either make it the <a href="#Changing_the_default_sub-volume">default subvolume</a>, or specify the subvolume via a <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a> using <code>rootflags=subvol=<i>/path/to/subvolume</i></code>. Edit the root mountpoint in <code>/etc/fstab</code> and specify the mount option <code>subvol=</code>. Alternatively, the subvolume can be specified with its id, <code>rootflags=subvolid=<i>objectid</i></code> as kernel parameter and <code>subvolid=<i>objectid</i></code> as mount option in <code>/etc/fstab</code>. It is preferable to mount using <code>subvol=<i>/path/to/subvolume</i></code>, rather than the subvolid, as the subvolid may change when restoring <a href="#Snapshots">#Snapshots</a>, requiring a change of mount configuration, or else the system will not boot.
 </p>
-<h4><span class="mw-headline" id="Changing_the_default_sub-volume">Changing the default sub-volume</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="Changing_the_default_sub-volume">Changing the default sub-volume</h4></div>
 <p>The default sub-volume is mounted if no <code>subvol=</code> mount option is provided. To change the default subvolume, do:
 </p>
 <pre># btrfs subvolume set-default <i>subvolume-id</i> /
 </pre>
 <p>where <i>subvolume-id</i> can be found by <a href="#Listing_subvolumes">listing</a>.
 </p>
+<p>Changing the default subvolume with <code>btrfs subvolume set-default</code> will make the top level of the file system inaccessible, except by use of the <code>subvol=/</code> or <code>subvolid=5</code> mount options <a rel="nofollow" class="external autonumber" href="https://btrfs.readthedocs.io/en/latest/Administration.html">[7]</a>.
+</p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> After changing the default subvolume on a system with <a href="../en/GRUB.html" title="GRUB">GRUB</a>, you should run <code>grub-install</code> again to notify the <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> of the changes. See <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?pid=1615373">this forum thread</a>.</div>
-<p>Changing the default subvolume with <code>btrfs subvolume set-default</code> will make the top level of the file system inaccessible, except by use of the <code>subvol=/</code> or <code>subvolid=5</code> mount options <a rel="nofollow" class="external autonumber" href="https://btrfs.readthedocs.io/en/latest/Administration.html">[6]</a>.
+<strong>Note</strong> 
+<ul>
+<li>
+<a href="../en/GRUB.html" title="GRUB">GRUB</a>'s <code>grub-mkconfig</code> script does <i>not</i> respect Btrfs default subvolume settings. If <code>/</code> is the top-level subvolume, it will never specify <code>subvol=/</code> or <code>subvolid=5</code> mount options, which may cause boot failure. If <code>/</code> is not the top-level subvolume, it will always specify the corresponding <code>subvol</code> option, making it impossible to fall back by simply setting the default subvolume (<a rel="nofollow" class="external text" href="https://savannah.gnu.org/bugs/?func=detailitem&amp;item_id=66509">bug report</a>). Currently this can be resolved by manually modifying the <code>rootflags</code> <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a> in <code>grub.cfg</code> (see <a href="#Mounting_subvolumes">#Mounting subvolumes</a>), or by using tools to automatically create boot entries for snapshots in <a href="../en/GRUB.html" title="GRUB">GRUB</a> (see <a href="#Booting_into_snapshots">#Booting into snapshots</a>). Additionally, if the actual location of <code>grub.cfg</code> changes, such as when the subvolume containing <code>/boot</code> changes, you need to run <code>grub-install</code> again. See <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?pid=1615373">this forum thread</a>.</li>
+<li>If you plan to use one of the <a href="../en/Synchronization_and_backup_programs.html" title="Synchronization and backup programs">Synchronization and backup programs</a>, it is recommended to not change the default subvolume as it can cause problems when restoring a snapshot for any subvolume other than the default. For instance, <a href="../en/Timeshift.html" title="Timeshift">Timeshift</a> creates a path <code>timeshift-btrfs</code> relative to the default subvolume of the filesystem to store the snapshots, and having a seperate non-default subvolume for root and home is preferred.</li>
+</ul>
+</div>
+<div class="mw-heading mw-heading3"><h3 id="Quota">Quota</h3></div>
+<p>The concept of <a href="https://en.wikipedia.org/wiki/Disk_quota" class="extiw" title="wikipedia:Disk quota">disk quota</a> has a long tradition in the Unix world. Traditional quotas are based on file ownership, controlling space usage by limiting the total size of all files owned by users. While this approach is straightforward for file management, it has limitations in directory-level restrictions, typically requiring partitioning at installation time and lacking dynamic adjustment capabilities. Btrfs adopts a different quota design philosophy from traditional Unix systems and does not support traditional <a href="../en/Users_and_groups.html" title="Users and groups">user- or group</a>-based quota functionality. This is because its modern storage features (such as <a href="#Snapshots">#Snapshots</a>, <a href="#Copy-on-Write_(CoW)">#Copy-on-Write (CoW)</a>, <a href="#Deduplication">#Deduplication</a>, and <a href="#Compression">#Compression</a>) make traditional quota space calculations extremely complex and inaccurate <a rel="nofollow" class="external autonumber" href="https://btrfs.readthedocs.io/en/latest/Qgroups.html">[8]</a>. As an alternative, Btrfs uses a subvolume-based quota mechanism, currently providing two implementation approaches — traditional <a href="#Quota_groups_(qgroups)">#Quota groups (qgroups)</a> and the newer <a href="#Simple_quotas_(squotas)">#Simple quotas (squotas)</a> (introduced in kernel 6.7 released in late 2023) to achieve similar space management effects. While this increases management complexity, it provides more flexible and precise storage control capabilities, allowing directory size limitations without partitioning and enabling dynamic quota adjustments.
 </p>
-<h3><span class="mw-headline" id="Quota">Quota</span></h3>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> Quota management is only possible after mounting a Btrfs filesystem (or any of its subvolumes).</div>
+<div class="mw-heading mw-heading4"><h4 id="Quota_groups_(qgroups)">
+<span id="Quota_groups_.28qgroups.29"></span>Quota groups (qgroups)</h4></div>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> Qgroup is not stable yet and combining quota with (too many) snapshots of subvolumes can cause performance problems, for example when deleting snapshots. Plus there are several more <a rel="nofollow" class="external text" href="https://archive.kernel.org/oldwiki/btrfs.wiki.kernel.org/index.php/Quota_support.html#Known_issues">known issues</a>.</div>
-<p>Quota support in Btrfs is implemented at a subvolume level by the use of quota groups or qgroup: Each subvolume is assigned a quota groups in the form of <i>0/subvolume_id</i> by default. However, it is possible to create a quota group using any number if desired.
+<strong>Warning</strong> While <a rel="nofollow" class="external text" href="https://btrfs.readthedocs.io/en/latest/Qgroups.html">Btrfs qgroups</a> are considered stable for general use, enabling qgroups, especially in environments with frequent creation of large numbers of snapshots, can still lead to performance degradation, particularly during snapshot deletion. Qgroup accounting introduces additional metadata overhead and may affect system responsiveness under high-intensity snapshot workloads.
+<p>Recent kernel improvements (5.15 and later versions) have fixed many <a rel="nofollow" class="external text" href="https://archive.kernel.org/oldwiki/btrfs.wiki.kernel.org/index.php/Quota_support.html#Known_issues">historical issues</a>, but <a rel="nofollow" class="external text" href="https://lwn.net/Articles/944371/">some limitations remain</a>, particularly in advanced application scenarios such as deeply nested subvolumes or complex qgroup hierarchical structures. The suggestion written here since 2016 — to carefully evaluate specific use cases before enabling qgroups — still applies today. Please be sure to consult the latest <a rel="nofollow" class="external text" href="https://btrfs.readthedocs.io/en/latest/Qgroups.html">Btrfs documentation</a> for current detailed information. It is worth noting that to address the performance issues of qgroups, Btrfs introduced the <a href="#Simple_quotas_(squotas)">#Simple quotas (squotas)</a> functionality, providing an alternative solution with slightly less flexibility but better performance.
 </p>
-<p>To use qgroups, you need to enable quota first using
+</div>
+<p>Btrfs's precise quota support is implemented through qgroups above subvolumes. Qgroups are represented using <i>qgroupids</i> in the format <code><i>level</i>/<i>ID</i></code>. Subvolumes have level 0, where <code>0/</code> can be omitted, and the corresponding <code><i>ID</i></code> is the subvolume ID. For example, <code>0/5</code> represents the qgroup of the top-level subvolume. Subvolume paths can also be used instead of the <code>0/<i>ID</i></code> representation. Qgroups form a <i>tree</i> hierarchy, but a qgroup can have multiple parent qgroups <a rel="nofollow" class="external autonumber" href="https://btrfs.readthedocs.io/en/latest/Qgroups.html">[9]</a>. Leaf qgroups have level 0, corresponding directly to subvolumes. The <code><i>ID</i></code> of all higher-level qgroups can be freely specified. Higher-level qgroups contain lower-level qgroups, and same-level groups cannot be nested, but level does not indicate nesting depth. For example, child qgroup <code>0/5</code> can be assigned to qgroup <code>5/100</code>.
+</p>
+<div class="mw-heading mw-heading5"><h5 id="Total_referenced_space_and_exclusively_referenced_space">Total referenced space and exclusively referenced space</h5></div>
+<p>Each qgroup primarily tracks two values: the amount of <i>total referenced space</i> and the amount of <i>exclusively referenced space</i>. <i>Total referenced space</i> refers to the storage space occupied by all data accessible from within the qgroup, while <i>exclusively referenced space</i> refers to the storage space occupied by data that is only referenced by <b>subvolumes</b> belonging to the qgroup (and not referenced by <b>subvolumes</b> outside the qgroup).
+</p>
+<div class="mw-heading mw-heading5"><h5 id="Enabling/disabling_qgroups">
+<span id="Enabling.2Fdisabling_qgroups"></span>Enabling/disabling qgroups</h5></div>
+<p>Use the following command to enable qgroups for the filesystem containing <i>path</i>:
 </p>
 <pre># btrfs quota enable <i>path</i>
 </pre>
-<p>From this point onwards, newly created subvolumes will be controlled by those groups.
-In order to retrospectively enable them for already existing subvolumes, enable quota normally, then create a qgroup (quota group) for each of those subvolume using their <i>subvolume_id</i> and rescan them:
+<p>Change <code>enable</code> to <code>disable</code> to disable qgroups.
 </p>
-<pre># btrfs subvolume list <i>path</i> | cut -d' ' -f2 | xargs -I{} -n1 btrfs qgroup create 0/{} <i>path</i>
-# btrfs quota rescan <i>path</i>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning</strong> Disabling qgroups will destroy all current qgroups and remove their relationships.</div>
+<div class="mw-heading mw-heading5"><h5 id="Creating/destroying_qgroups">
+<span id="Creating.2Fdestroying_qgroups"></span>Creating/destroying qgroups</h5></div>
+<p>Level 0 qgroups corresponding to subvolumes are always automatically created. Even if subvolumes are created before enabling quotas, the corresponding qgroups will be automatically created when quotas are enabled. Similarly, when <a href="#Deleting_a_subvolume">deleting subvolumes</a>, the corresponding qgroups will be deleted and automatically disassociate from higher-level qgroups that originally contained these qgroups.
+</p>
+<p>Use the following command to create qgroup <i>qgroupid</i> in the filesystem containing <i>path</i>:
+</p>
+<pre># btrfs qgroup create <i>qgroupid</i> <i>path</i>
 </pre>
-<p>Quota groups in Btrfs form a tree hierarchy, whereby qgroups are attached to subvolumes. The size limits are set per qgroup and apply when any limit is reached in tree that contains a given subvolume.
+<p>Change <code>create</code> to <code>destroy</code> to destroy the qgroup. Destroying a qgroup is similar to using <code>rm -d</code> to delete a directory — if the qgroup has child qgroups, relationships must be removed first; if only parent qgroups exist, relationships will be automatically removed.
 </p>
-<p>Limits on quota groups can be applied either to the total data usage, un-shared data usage, compressed data usage or both. File copy and file deletion may both affect limits since the unshared limit of another qgroup can change if the original volume's files are deleted and only one copy is remaining. For example, a fresh snapshot shares almost all the blocks with the original subvolume, new writes to either subvolume will raise towards the exclusive limit, deletions of common data in one volume raises towards the exclusive limit in the other one.
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> Qgroups corresponding to subvolumes cannot be deleted directly, but should be automatically deleted by directly deleting the subvolume.</div>
+<div class="mw-heading mw-heading5"><h5 id="Assigning/removing_child_qgroups">
+<span id="Assigning.2Fremoving_child_qgroups"></span>Assigning/removing child qgroups</h5></div>
+<p>Use the following command to assign <i>src</i> as the child qgroup of <i>dst</i> in the filesystem containing <i>path</i>, note that <i>dst</i> must be at a higher level than <i>src</i>:
 </p>
-<p>To apply a limit to a qgroup, use the command <code>btrfs qgroup limit</code>. Depending on your usage, either use a total limit, unshared limit (<code>-e</code>) or compressed limit (<code>-c</code>).
-To show usage and limits for a given path within a file system, use
-</p>
-<pre># btrfs qgroup show -reF <i>path</i>
+<pre># btrfs qgroup assign <i>src</i> <i>dst</i> <i>path</i>
 </pre>
-<h3><span class="mw-headline" id="Commit_interval">Commit interval</span></h3>
+<p>Change <code>assign</code> to <code>remove</code> to remove this relationship.
+</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> After assigning/removing child qgroups, <a href="#Quota_rescan">#Quota rescan</a> may be needed, which is automatically triggered in current versions, but may cause performance overhead. See the <a href="#Quota_rescan">#Quota rescan</a> section for details.</div>
+<div class="mw-heading mw-heading5"><h5 id="Limiting/unlimiting_qgroups">
+<span id="Limiting.2Funlimiting_qgroups"></span>Limiting/unlimiting qgroups</h5></div>
+<p>You can limit the total referenced space or exclusively referenced space of qgroups, or limit both simultaneously. For example, use the following command to limit the <b>total referenced space</b> of <i>qgroupid</i> to no more than 1G<b>i</b>B in the filesystem containing <i>path</i>:
+</p>
+<pre># btrfs qgroup limit 1G <i>qgroupid</i> <i>path</i>
+</pre>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> If <a href="#Enabling_compression">enabled compression</a>, Btrfs currently only supports limiting the space occupied by compressed data.</div>
+<p>If <i>qgroupid</i> is omitted, it attempts to interpret <i>path</i> as a subvolume path. Add the <code>-e</code> option (after <code>limit</code>) to limit <b>exclusively referenced space</b> instead. Change <i>size</i> to <code>none</code> to remove the limit.
+</p>
+<div class="mw-heading mw-heading5"><h5 id="Listing_qgroups">Listing qgroups</h5></div>
+<p>Use the following command to list all qgroups in the filesystem containing <i>path</i>:
+</p>
+<pre># btrfs qgroup show <i>path</i>
+</pre>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> Since <code>btrfs qgroup show</code> uses data from disk, <code>sync</code> may be needed before displaying accurate statistics. For this purpose, you can add the <code>--sync</code> option (after <code>show</code>) to first perform a forced synchronization operation on the filesystem containing <i>path</i>.</div>
+<p>The "Path" column in the output may display some special values with the following meanings:
+</p>
+<ul>
+<li>
+<code>&lt;toplevel&gt;</code>: Qgroup corresponding to the top-level subvolume.</li>
+<li>
+<code>&lt;under deletion&gt;</code>: The subvolume corresponding to this qgroup has been deleted (its directory has been removed), but the subvolume metadata has not been completely cleaned up.</li>
+</ul>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip</strong> You can use <code>btrfs subvolume sync <i>path</i> <i>subvolid</i></code> to wait for complete deletion of subvolumes in the filesystem containing <i>path</i> (multiple subvolume IDs can be specified; if none are specified, it waits for all currently pending subvolume deletions in the filesystem to complete). However, note to unmount the subvolume first.</div>
+<ul><li>
+<code>&lt;squota space holder&gt;</code>: (Only applicable to <a href="#Simple_quotas_(squotas)">#Simple quotas (squotas)</a>) The subvolume corresponding to this qgroup has been completely deleted but related statistics are still retained. This is because simple quotas only attribute extents to the subvolume that first allocated them, and while that subvolume has been completely deleted, the extents are still referenced by other subvolumes.</li></ul>
+<p>According to your needs, you can add some display options (after <code>show</code>). Common options include:
+</p>
+<ul>
+<li>
+<code>-p</code>: Show parent qgroups.</li>
+<li>
+<code>-c</code>: Show child qgroups.</li>
+<li>
+<code>-r</code>: Show total referenced space limits.</li>
+<li>
+<code>-e</code>: Show exclusively referenced space limits.</li>
+<li>
+<code>-f</code>: Only list qgroups corresponding to the subvolume containing <i>path</i>.</li>
+<li>
+<code>-F</code>: Only list qgroups corresponding to the subvolume containing <i>path</i> and higher-level qgroups that contain these qgroups.</li>
+</ul>
+<p>For more options, please refer to <span class="plainlinks archwiki-template-man" title="$ man 8 btrfs-qgroup"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/btrfs-qgroup.8#show">btrfs-qgroup(8) § show</a></span>.
+</p>
+<div class="mw-heading mw-heading5"><h5 id="Quota_rescan">Quota rescan</h5></div>
+<p><a rel="nofollow" class="external text" href="https://btrfs.readthedocs.io/en/latest/btrfs-qgroup.html#quota-rescan">Quota rescan</a> reads the metadata of all extents in the filesystem and updates the statistics of each qgroup accordingly.
+</p>
+<p>Btrfs qgroups can handle many complex extent sharing and unsharing scenarios (including deletion of subvolumes and child qgroups) while maintaining accurate counts of total referenced space and exclusively referenced space. However, when qgroup relationships change (manual <a href="#Assigning/removing_child_qgroups">assignment/removal of child qgroups</a>), due to insufficient recorded data (only recording total referenced space and exclusively referenced space, without explicitly recording which extents belong to shared or exclusive), quota rescan across the entire filesystem is usually required. At this time, qgroups will be marked as "inconsistent", indicating a state that requires quota rescan.
+</p>
+<p>The only exception in the current implementation is when a qgroup's total referenced space equals its exclusively referenced space, meaning all data is exclusive. In this case, when performing assign/remove operations on this subvolume, it only needs to add/subtract this qgroup's referenced space to/from the parent qgroup's total referenced space and exclusively referenced space simultaneously.
+</p>
+<p>Starting from kernel version 4.19, manual <a href="#Assigning/removing_child_qgroups">assignment/removal of child qgroups</a> automatically triggers quota rescan (when necessary). However, since quota rescan has high overhead, can only be performed once at a time, and this method cannot wait for the rescan to complete before returning, you can add the <code>--no-rescan</code> option (after <code>assign</code>/<code>remove</code>) to avoid automatic triggering and manually trigger it later.
+</p>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip</strong> After using the <code>--no-rescan</code> option for <a href="#Assigning/removing_child_qgroups">assignment/removal of child qgroups</a>, if quota rescan is needed, a corresponding warning will be displayed. Warnings can also be displayed through <a href="#Listing_qgroups">#Listing qgroups</a>.</div>
+<p>Use the following command to manually trigger quota rescan for the filesystem containing <i>path</i>:
+</p>
+<pre># btrfs quota rescan <i>path</i>
+</pre>
+<p>The command returns immediately. Add the <code>-w</code> (<code>--wait</code>) option (after <code>rescan</code>) to wait for the rescan to complete (even if already started) before returning. Use the <code>-W</code> (<code>--wait-norescan</code>) option to only wait for the currently running rescan to complete. Use the <code>-s</code> (<code>--status</code>) option to return current progress.
+</p>
+<div class="mw-heading mw-heading4"><h4 id="Simple_quotas_(squotas)">
+<span id="Simple_quotas_.28squotas.29"></span>Simple quotas (squotas)</h4></div>
+<p><a href="#Quota_groups_(qgroups)">Qgroups</a> can handle many complex extent sharing and unsharing scenarios (including deletion of subvolumes and child qgroups) while maintaining accurate counts of total referenced space and exclusively referenced space. However, this flexibility comes at a cost: many computational operations are global in nature, meaning that when extent reference relationships change, they affect the statistics of all qgroups that reference the extent. This can lead to slower transaction commit speeds and unacceptable delays, especially when the number of snapshots increases dramatically.
+</p>
+<p>To address this limitation of qgroups, Btrfs supports a second set of quota semantics: <a rel="nofollow" class="external text" href="https://btrfs.readthedocs.io/en/latest/Qgroups.html#simple-quotas-squota">simple quotas (squotas)</a>. Squotas reuse the qgroup API and hierarchical structure model but do not track shared and exclusive usage. Instead, squotas attribute all extents to the subvolume that first allocated them. By introducing a small amount of new metadata records, this allows all accounting decisions to be completed locally in operations involving the allocation or release of data blocks themselves, completely avoiding complex and time-consuming reverse reference resolution processes.
+</p>
+<p>Squotas need to be enabled at the filesystem level by simply adding the <code>-s</code> (<code>--simple</code>) option (after <code>enable</code>) to the <a href="#Enabling/disabling_qgroups">enabling qgroups</a> command. Note that if qgroups are already enabled, you need to first <a href="#Enabling/disabling_qgroups">disable qgroups</a> and then enable squotas, otherwise it will not take effect <a rel="nofollow" class="external autonumber" href="https://elixir.bootlin.com/linux/v6.16/source/fs/btrfs/qgroup.c#L1021-L1022">[10]</a>. Due to its simple calculation method, squota mode does not need (and cannot) perform <a href="#Quota_rescan">#Quota rescan</a>. Apart from these two points, squotas operate exactly the same as qgroups, but the so-called "total referenced space" and "exclusively referenced space" displayed and limited are all values calculated through the method described above (attributing all extents to the subvolume that first allocated them). Since squotas need to record the subvolume that first allocated extents, they only take effect for extents written after enabling. If squotas are enabled on a non-empty filesystem, the statistics will be 0 when first enabled, so only by enabling squota limits on empty subvolumes and then writing data can you ensure accurate statistics.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Commit_interval">Commit interval</h3></div>
 <p>The resolution at which data are written to the file system is dictated by Btrfs itself and by system-wide settings. Btrfs defaults to a 30 seconds checkpoint interval in which new data are committed to the file system. This can be changed by appending the <code>commit</code> mount option in <code>/etc/fstab</code> for the Btrfs partition.
 </p>
 <pre>LABEL=arch64 / btrfs defaults,compress=zstd,commit=120 0 0
 </pre>
 <p>System-wide settings also affect commit intervals. They include the files under <code>/proc/sys/vm/*</code> and are out-of-scope of this wiki article. The kernel documentation for them is available at <a rel="nofollow" class="external free" href="https://docs.kernel.org/admin-guide/sysctl/vm.html">https://docs.kernel.org/admin-guide/sysctl/vm.html</a>.
 </p>
-<h3><span class="mw-headline" id="SSD_TRIM">SSD TRIM</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="SSD_TRIM">SSD TRIM</h3></div>
 <p>A Btrfs file system is able to free unused blocks from an SSD drive supporting the TRIM command. Asynchronous discard support is available with mount option <code>discard=async</code>, and is enabled by default as of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span> 6.2. Freed extents are not discarded immediately, but grouped together and trimmed later by a separate worker thread, improving commit latency.
 </p>
-<p>Asynchronous discard can safely be used alongside periodic trim <a rel="nofollow" class="external autonumber" href="https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/thread/MLZIPQUXMJFRVSFJS6B2ACDKTYNSX3AX/">[7]</a>.
+<p>Asynchronous discard can safely be used alongside periodic trim <a rel="nofollow" class="external autonumber" href="https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/thread/MLZIPQUXMJFRVSFJS6B2ACDKTYNSX3AX/">[11]</a>.
 </p>
 <p>More information about enabling and using TRIM can be found in <a href="../en/Solid_state_drive.html#TRIM" title="Solid state drive">Solid state drive#TRIM</a>.
 </p>
-<h2><span class="mw-headline" id="Usage">Usage</span></h2>
-<h3><span class="mw-headline" id="Swap_file">Swap file</span></h3>
+<div class="mw-heading mw-heading2"><h2 id="Usage">Usage</h2></div>
+<div class="mw-heading mw-heading3"><h3 id="Swap_file">Swap file</h3></div>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> Swap files on file systems spanning multiple devices are not supported. See <span class="plainlinks archwiki-template-man" title="$ man 5 btrfs"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/btrfs.5#SWAPFILE_SUPPORT">btrfs(5) § SWAPFILE SUPPORT</a></span> for all limitations.</div>
-<p>To properly initialize a swap file, first create a <i>non-snapshotted</i> subvolume to host the file, e.g.
+<strong>Note</strong> 
+<p>There are some limitations of the implementation in Btrfs and Linux swap subsystem <a rel="nofollow" class="external autonumber" href="https://btrfs.readthedocs.io/en/latest/btrfs-man5.html#swapfile-support">[12]</a>:
+</p>
+<ul>
+<li>Swap files on file systems spanning multiple devices are not supported</li>
+<li>Data <a href="#Profiles">profile</a> must be <code>single</code>
+</li>
+<li>Snapshots cannot be created for subvolumes containing active swap files</li>
+<li>Swap files must be pre-allocated (i.e., no holes)</li>
+<li>Copy-on-write must be <a href="#Disabling_CoW">disabled</a> individually for swap files (i.e., swap files must have the NOCOW attribute)</li>
+</ul>
+<p>The last two limitations for swap files are automatically handled by the <code>btrfs filesystem mkswapfile</code> command.
+</p>
+</div>
+<p>For general information about swap files, see <a href="../en/Swap.html#Swap_file" title="Swap">Swap#Swap file</a>.
+</p>
+<p>To properly create a swap file on Btrfs, first <a href="#Creating_a_subvolume">create a subvolume</a> to store the swap file, as snapshots cannot be created for that subvolume afterwards. For example, create the <code>/swap</code> subvolume:
 </p>
 <pre># btrfs subvolume create /swap
 </pre>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> Consider creating the subvolume directly below the top-level subvolume, e.g. <code>@swap</code>. Then, make sure the subvolume is <a href="#Mounting_subvolumes">mounted</a> to <code>/swap</code> (or any other accessible location).</div>
-<p>Create the swap file:
+<strong>Tip</strong> Consider <a href="#Creating_a_subvolume">creating the subvolume</a> directly below the top-level subvolume, then <a href="#Mounting_subvolumes">mount</a> it to <code>/swap</code> (or any other accessible location).</div>
+<p>Create a 4 G<b>i</b>B swap file <code>swapfile</code> in <code>/swap/</code>:
 </p>
 <pre># btrfs filesystem mkswapfile --size 4g --uuid clear /swap/swapfile
 </pre>
-<p>If <code>--size</code> is omitted, the default of 2GiB is used.
+<p>The <code>--size</code> option specifies the swap file size, with a default of 2 GiB and minimum of 40 KiB.
 </p>
 <p>Activate the swap file:
 </p>
@@ -1081,42 +1465,43 @@ To show usage and limits for a given path within a file system, use
 </pre>
 <p>For additional information, see <a href="../en/Fstab.html#Usage" title="Fstab">fstab#Usage</a>.
 </p>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> You can also create the swap file manually, by <a href="#Disabling_CoW">setting the</a> <code>No_COW</code> attribute on the whole subvolume with <code>chattr</code>, then following the steps in <a href="../en/Swap.html#Swap_file_creation" title="Swap">Swap#Swap file creation</a>. See <span class="plainlinks archwiki-template-man" title="$ man 5 btrfs"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/btrfs.5#SWAPFILE_SUPPORT">btrfs(5) § SWAPFILE SUPPORT</a></span> for an alternative method.</div>
-<p>To use a swap file for hibernation, you might need to additionally follow the procedures described in <a href="../en/Power_management/Suspend_and_hibernate.html#Hibernation" class="mw-redirect" title="Hibernation">Hibernation</a>.
+<p>For more information about removing swap files and other details, see <a href="../en/Swap.html#Swap_file" title="Swap">Swap#Swap file</a>.
 </p>
-<h3>
-<span id="Displaying_used.2Ffree_space"></span><span class="mw-headline" id="Displaying_used/free_space">Displaying used/free space</span>
-</h3>
-<p>General linux userspace tools such as <span class="plainlinks archwiki-template-man" title="$ man 1 df"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/df.1">df(1)</a></span> will inaccurately report free space on a Btrfs partition. It is recommended to use <code>btrfs filesystem usage</code> to query Btrfs partitions. For example, for a full breakdown of device allocation and usage stats:
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip</strong> To use hibernation functionality, in addition to configuring the swap file, you need to complete additional steps described in <a href="../en/Power_management/Suspend_and_hibernate.html" title="Power management/Suspend and hibernate">Power management/Suspend and hibernate</a>.</div>
+<div class="mw-heading mw-heading3"><h3 id="Displaying_used/free_space">
+<span id="Displaying_used.2Ffree_space"></span>Displaying used/free space</h3></div>
+<p>General linux userspace tools such as <span class="plainlinks archwiki-template-man" title="$ man 1 df"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/df.1">df(1)</a></span> will inaccurately report free space on a Btrfs partition as they do not account for both file and metadata usage. It is recommended to use <code>btrfs filesystem usage</code> to query Btrfs partitions. For example, for a full breakdown of device allocation and usage stats:
 </p>
 <pre># btrfs filesystem usage /
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> The <code>btrfs filesystem usage</code> command does not currently work correctly with <code>RAID5/RAID6</code> RAID levels.</div>
+<strong>Note</strong> <code>btrfs filesystem usage</code> and <code>btrfs filesystem df</code> show inaccurate results if <code>RAID5</code> or <code>RAID6</code> <a href="#Profiles">profile</a> coexist with other profiles in the same filesystem (e.g. metadata using <code>DUP</code> while data uses <code>RAID5</code>) <a rel="nofollow" class="external autonumber" href="https://btrfs.readthedocs.io/en/latest/btrfs-man5.html#missing-incomplete-support">[13]</a>.</div>
 <p>Alternatively, <code>btrfs filesystem df</code> allows a quick check on usage of allocated space without the requirement to run as root:
 </p>
 <pre>$ btrfs filesystem df /
 </pre>
-<p>See <a rel="nofollow" class="external autonumber" href="https://archive.kernel.org/oldwiki/btrfs.wiki.kernel.org/index.php/FAQ.html#How_much_free_space_do_I_have.3F">[8]</a> for more information.
+<p>See <a rel="nofollow" class="external autonumber" href="https://archive.kernel.org/oldwiki/btrfs.wiki.kernel.org/index.php/FAQ.html#How_much_free_space_do_I_have.3F">[14]</a> for more information.
 </p>
-<p>The same limitations apply to tools which analyze space usage for some subset of the file system, such as <span class="plainlinks archwiki-template-man" title="$ man 1 du"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/du.1">du(1)</a></span> or <span class="plainlinks archwiki-template-man" title="$ man 1 ncdu"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/ncdu.1">ncdu(1)</a></span>, as they do not take into account reflinks, snapshots and compression. Instead, see <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/btdu/">btdu</a></span><sup><small>AUR</small></sup> and <a href="#View_compression_types_and_ratios">compsize</a> for Btrfs-aware alternatives.
+<p>The same limitations apply to tools which analyze space usage for some subset of the file system, such as <span class="plainlinks archwiki-template-man" title="$ man 1 du"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/du.1">du(1)</a></span> or <span class="plainlinks archwiki-template-man" title="$ man 1 ncdu"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/ncdu.1">ncdu(1)</a></span>, as they do not consider <a href="#Copy-on-Write_(CoW)">#Copy-on-Write (CoW)</a> or transparent <a href="#Compression">#Compression</a>. Instead, see <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/btdu/">btdu</a></span><sup><small>AUR</small></sup> and <a href="#View_compression_types_and_ratios">compsize</a> for Btrfs-aware alternatives.
 </p>
-<h3><span class="mw-headline" id="Defragmentation">Defragmentation</span></h3>
-<p>Btrfs supports online defragmentation through the mount option <code>autodefrag</code>; see <span class="plainlinks archwiki-template-man" title="$ man 5 btrfs"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/btrfs.5#MOUNT_OPTIONS">btrfs(5) § MOUNT OPTIONS</a></span>. To manually defragment your root, use:
+<div class="mw-heading mw-heading3"><h3 id="Defragmentation">Defragmentation</h3></div>
+<p>Btrfs supports online defragmentation through the mount option <code>autodefrag</code>; see <span class="plainlinks archwiki-template-man" title="$ man 5 btrfs"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/btrfs.5#MOUNT_OPTIONS">btrfs(5) § MOUNT OPTIONS</a></span>. To manually defragment your root (not descending to subvolumes, mount points and directory symlinks), use:
 </p>
 <pre># btrfs filesystem defragment -r /
 </pre>
-<p>Using the above command without the <code>-r</code> switch will result in only the metadata held by the subvolume containing the directory being defragmented. This allows for single file defragmentation by simply specifying the path.
-</p>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> Defragmenting a file which has a COW copy (either a snapshot copy or one made with <code>cp</code> or bcp) plus using the <code>-c</code> switch with a compression algorithm may result in two unrelated files effectively increasing the disk usage.</div>
-<h3><span class="mw-headline" id="RAID">RAID</span></h3>
+<strong>Warning</strong> Defragmenting will break up the reflinks of <a href="#Copy-on-Write_(CoW)">#Copy-on-Write (CoW)</a> data (for example files copied with <code>cp</code>, <a href="#Snapshots">#Snapshots</a> or <a href="#Deduplication">deduplicated</a> data). This may cause considerable increase of space usage depending on the broken up reflinks <a rel="nofollow" class="external autonumber" href="https://btrfs.readthedocs.io/en/latest/btrfs-filesystem.html#subcommand">[15]</a>.</div>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> Directory arguments without <code>-r</code> do not defragment files recursively but will defragment certain internal trees (extent tree and the subvolume tree). This has been confusing and could be removed in the future.</div>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip</strong> You can specify compression at the same time using options <code>-c</code> and <code>-L</code>; see <a href="#For_existing_files">#For existing files</a>.</div>
+<div class="mw-heading mw-heading3"><h3 id="RAID">RAID</h3></div>
 <p>Btrfs offers native "RAID" for <a href="#Multi-device_file_system">#Multi-device file systems</a>. Notable features which set Btrfs RAID apart from <a href="../en/RAID.html" class="mw-redirect" title="Mdadm">mdadm</a> are self-healing redundant arrays and online balancing. See <a rel="nofollow" class="external text" href="https://archive.kernel.org/oldwiki/btrfs.wiki.kernel.org/index.php/Using_Btrfs_with_Multiple_Devices.html">the Btrfs wiki page</a> for more information. The Btrfs sysadmin page also <a rel="nofollow" class="external text" href="https://archive.kernel.org/oldwiki/btrfs.wiki.kernel.org/index.php/SysadminGuide.html#RAID_and_data_replication">has a section</a> with some more technical background.
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> Parity RAID (RAID 5/6) code has multiple serious data-loss bugs in it. See the Btrfs Wiki's <a rel="nofollow" class="external text" href="https://btrfs.readthedocs.io/en/latest/btrfs-man5.html#raid56-status-and-recommended-practices">RAID5/6 page</a> and a bug report on <a rel="nofollow" class="external text" href="https://lore.kernel.org/linux-btrfs/8695beeb-f991-28c4-cf6b-8c92339e468f@inwind.it/">linux-btrfs mailing list</a> for more detailed information. In June 2020, somebody posted a <a rel="nofollow" class="external text" href="https://lore.kernel.org/linux-btrfs/20200627030614.GW10769@hungrycats.org/">comprehensive list of current issues</a> and a <a rel="nofollow" class="external text" href="https://lore.kernel.org/linux-btrfs/20200627032414.GX10769@hungrycats.org/">helpful recovery guide</a>. </div>
-<h4><span class="mw-headline" id="Scrub">Scrub</span></h4>
+<strong>Warning</strong> Parity RAID (RAID 5/6) code has multiple serious data-loss bugs in it. See the Btrfs Wiki's <a rel="nofollow" class="external text" href="https://btrfs.readthedocs.io/en/latest/btrfs-man5.html#raid56-status-and-recommended-practices">RAID5/6 page</a> and a bug report on <a rel="nofollow" class="external text" href="https://lore.kernel.org/linux-btrfs/8695beeb-f991-28c4-cf6b-8c92339e468f@inwind.it/">linux-btrfs mailing list</a> for more detailed information. In June 2020, somebody posted a <a rel="nofollow" class="external text" href="https://lore.kernel.org/linux-btrfs/20200627030614.GW10769@hungrycats.org/">comprehensive list of current issues</a> and a <a rel="nofollow" class="external text" href="https://lore.kernel.org/linux-btrfs/20200627032414.GX10769@hungrycats.org/">helpful recovery guide</a>. </div>
+<div class="mw-heading mw-heading4"><h4 id="Scrub">Scrub</h4></div>
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
 <div>
@@ -1125,8 +1510,8 @@ To show usage and limits for a given path within a file system, use
 <p>The <a rel="nofollow" class="external text" href="https://btrfs.readthedocs.io/en/latest/Glossary.html">Btrfs Wiki Glossary</a> says that Btrfs scrub is "[a]n online file system checking tool. Reads all the data and metadata on the file system and uses checksums and the duplicate copies from RAID storage to identify and repair any corrupt data."
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> A running scrub process will prevent the system from suspending, see <a rel="nofollow" class="external text" href="https://lore.kernel.org/linux-btrfs/20140227190656.GA28338@merlins.org/">this thread</a> for details.</div>
-<h5><span class="mw-headline" id="Start_manually">Start manually</span></h5>
+<strong>Note</strong> A running scrub process will prevent the system from suspending, see <a rel="nofollow" class="external text" href="https://lore.kernel.org/linux-btrfs/20140227190656.GA28338@merlins.org/">this thread</a> for details.</div>
+<div class="mw-heading mw-heading5"><h5 id="Start_manually">Start manually</h5></div>
 <p>To start a (background) scrub on the file system which contains <code>/</code>:
 </p>
 <pre># btrfs scrub start /
@@ -1135,23 +1520,23 @@ To show usage and limits for a given path within a file system, use
 </p>
 <pre># btrfs scrub status /
 </pre>
-<h5><span class="mw-headline" id="Start_with_a_service_or_timer">Start with a service or timer</span></h5>
+<div class="mw-heading mw-heading5"><h5 id="Start_with_a_service_or_timer">Start with a service or timer</h5></div>
 <p>The <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=btrfs-progs">btrfs-progs</a></span> package brings the <code>btrfs-scrub@.timer</code> unit for monthly scrubbing the specified mountpoint. <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">Enable</a> the timer with an escaped path, e.g. <code>btrfs-scrub@-.timer</code> for <code>/</code> and <code>btrfs-scrub@home.timer</code> for <code>/home</code>. You can use <code>systemd-escape -p <i>/path/to/mountpoint</i></code> to escape the path; see <span class="plainlinks archwiki-template-man" title="$ man 1 systemd-escape"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-escape.1">systemd-escape(1)</a></span> for details.
 </p>
 <p>You can also run the scrub by <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Starting">starting</a> <code>btrfs-scrub@.service</code> (with the same encoded path). The advantage of this over <code>btrfs scrub</code> (as the root user) is that the results of the scrub will be logged in the <a href="../en/Systemd/Journal.html" class="mw-redirect" title="Systemd journal">systemd journal</a>.
 </p>
 <p>On large NVMe drives with insufficient cooling (e.g. in a laptop), scrubbing can read the drive fast enough and long enough to get it very hot. If you are running scrubs with systemd, you can easily limit the rate of scrubbing with the <code>IOReadBandwidthMax</code> option described in <span class="plainlinks archwiki-template-man" title="$ man 5 systemd.resource-control"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd.resource-control.5">systemd.resource-control(5)</a></span> by using a <a href="../en/Systemd.html#Drop-in_files" class="mw-redirect" title="Drop-in file">drop-in file</a>.
 </p>
-<h4><span class="mw-headline" id="Balance">Balance</span></h4>
-<p>"A balance passes all data in the file system through the allocator again. It is primarily intended to rebalance the data in the file system across the devices when a device is added or removed. A balance will regenerate missing copies for the redundant RAID levels, if a device has failed." <a rel="nofollow" class="external autonumber" href="https://btrfs.readthedocs.io/en/latest/Glossary.html">[9]</a> See <a rel="nofollow" class="external text" href="https://archive.kernel.org/oldwiki/btrfs.wiki.kernel.org/index.php/FAQ.html#What_does_.22balance.22_do.3F">Upstream FAQ page</a>.
+<div class="mw-heading mw-heading4"><h4 id="Balance">Balance</h4></div>
+<p>"A balance passes all data in the file system through the allocator again. It is primarily intended to rebalance the data in the file system across the devices when a device is added or removed. A balance will regenerate missing copies for the redundant RAID levels, if a device has failed." <a rel="nofollow" class="external autonumber" href="https://btrfs.readthedocs.io/en/latest/Glossary.html">[16]</a> See <a rel="nofollow" class="external text" href="https://archive.kernel.org/oldwiki/btrfs.wiki.kernel.org/index.php/FAQ.html#What_does_.22balance.22_do.3F">Upstream FAQ page</a>.
 </p>
 <p>On a single-device filesystem, a balance may be also useful for (temporarily) reducing the amount of allocated but unused (meta)data chunks. Sometimes this is needed for fixing <a rel="nofollow" class="external text" href="https://archive.kernel.org/oldwiki/btrfs.wiki.kernel.org/index.php/FAQ.html#Help.21_Btrfs_claims_I.27m_out_of_space.2C_but_it_looks_like_I_should_have_lots_left.21">"file system full" issues</a>.
 </p>
 <pre># btrfs balance start --bg /
 # btrfs balance status /
 </pre>
-<h3><span class="mw-headline" id="Snapshots">Snapshots</span></h3>
-<p>"A snapshot is simply a subvolume that shares its data (and metadata) with some other subvolume, using Btrfs's COW capabilities." See <a rel="nofollow" class="external text" href="https://archive.kernel.org/oldwiki/btrfs.wiki.kernel.org/index.php/SysadminGuide.html#Snapshots">Btrfs Wiki SysadminGuide#Snapshots</a> for details.
+<div class="mw-heading mw-heading3"><h3 id="Snapshots">Snapshots</h3></div>
+<p>"A snapshot is simply a subvolume that shares its data (and metadata) with some other subvolume, using Btrfs's COW capabilities." See <a rel="nofollow" class="external text" href="https://archive.kernel.org/oldwiki/btrfs.wiki.kernel.org/index.php/SysadminGuide.html#Snapshots">Btrfs Wiki SysadminGuide#Snapshots</a> and <a rel="nofollow" class="external text" href="https://btrfs.readthedocs.io/en/latest/Subvolumes.html">the Btrfs documentation</a> for details.
 </p>
 <p>To create a snapshot:
 </p>
@@ -1160,15 +1545,14 @@ To show usage and limits for a given path within a file system, use
 <p>To create a readonly snapshot, add the <code>-r</code> flag. To create a writable version of a readonly snapshot, simply create a snapshot of it.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> 
+<strong>Note</strong> 
 <ul>
 <li>It is possible for a snapshot to be converted in-place from readonly to writeable with <code>btrfs property set -f -ts '/path/to/snapshot' ro false</code>. However, this is not recommended because it <a rel="nofollow" class="external text" href="https://lore.kernel.org/linux-btrfs/06e92a0b-e71b-eb21-edb5-9d2a5513b718@gmail.com/">causes issues</a> with any future incremental send/receive. Making a new writeable snapshot prevents such issues.</li>
 <li>Snapshots are not recursive. Every nested subvolume will be an empty directory inside the snapshot.</li>
 </ul>
 </div>
-<h3>
-<span id="Send.2Freceive"></span><span class="mw-headline" id="Send/receive">Send/receive</span>
-</h3>
+<div class="mw-heading mw-heading3"><h3 id="Send/receive">
+<span id="Send.2Freceive"></span>Send/receive</h3></div>
 <p>A subvolume can be sent to stdout or a file using the <code>send</code> command. This is usually most useful when piped to a Btrfs <code>receive</code> command. For example, to send a snapshot named <code>/root_backup</code> (perhaps of a snapshot you made of <code>/</code> earlier) to <code>/backup</code>, you would do the following:
 </p>
 <pre># btrfs send /root_backup | btrfs receive /backup
@@ -1191,14 +1575,14 @@ To show usage and limits for a given path within a file system, use
 </p>
 <p>See <a rel="nofollow" class="external text" href="https://archive.kernel.org/oldwiki/btrfs.wiki.kernel.org/index.php/Incremental_Backup.html">Btrfs Wiki's Incremental Backup page</a> and <a href="#Incremental_backup_to_external_drive">#Incremental backup to external drive</a> on how to use this for incremental backups and for tools that automate the process.
 </p>
-<h3><span class="mw-headline" id="Deduplication">Deduplication</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Deduplication">Deduplication</h3></div>
 <p>Using copy-on-write, Btrfs is able to copy files or whole subvolumes without actually copying the data. However, whenever a file is altered, a new <i>proper</i> copy is created. Deduplication takes this a step further by actively identifying blocks of data which share common sequences and combining them into an extent with the same copy-on-write semantics.
 </p>
 <p>Tools dedicated to deduplicate a Btrfs formatted partition include <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=duperemove">duperemove</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=bees">bees</a></span>. One may also want to merely deduplicate data on a file based level instead using e.g. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/rmlint-git/">rmlint-git</a></span><sup><small>AUR</small></sup>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=rdfind">rdfind</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/jdupes/">jdupes</a></span><sup><small>AUR</small></sup> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/dduper-git/">dduper-git</a></span><sup><small>AUR</small></sup>. For an overview of available features of those programs and additional information, have a look at the <a rel="nofollow" class="external text" href="https://btrfs.readthedocs.io/en/latest/Deduplication.html">upstream Wiki entry</a>.
 </p>
-<h3><span class="mw-headline" id="Resizing">Resizing</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Resizing">Resizing</h3></div>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> To avoid data loss, ensure that you back up your data before you begin any resizing task.</div>
+<strong>Warning</strong> To avoid data loss, ensure that you back up your data before you begin any resizing task.</div>
 <p>You can grow a file system to the maximum space available on the device, or specify an exact size. Ensure that you grow the size of the device or logical volume before you attempt to increase the size of the file system.
 When specifying an exact size for the file system on a device, either increasing or decreasing, ensure that the new size satisfies the following conditions:
 </p>
@@ -1207,7 +1591,7 @@ When specifying an exact size for the file system on a device, either increasing
 <li>The new size must be equal to or less than the current device size because the file system size cannot extend beyond the space available.</li>
 </ul>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> If you plan to also decrease the size of the logical volume that holds the file system, ensure that you decrease the size of the file system before you attempt to decrease the size of the device or logical volume.</div>
+<strong>Note</strong> If you plan to also decrease the size of the logical volume that holds the file system, ensure that you decrease the size of the file system before you attempt to decrease the size of the device or logical volume.</div>
 <p>To extend the file system size to the maximum available size of the device:
 </p>
 <pre># btrfs filesystem resize max /
@@ -1221,28 +1605,28 @@ When specifying an exact size for the file system on a device, either increasing
 <pre># btrfs filesystem resize +<i>size</i> /
 # btrfs filesystem resize -<i>size</i> /
 </pre>
-<h2><span class="mw-headline" id="Known_issues">Known issues</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="Known_issues">Known issues</h2></div>
 <p>A few limitations should be known before trying.
 </p>
-<h3><span class="mw-headline" id="Encryption">Encryption</span></h3>
-<p>Btrfs has no built-in encryption support, but there is an ongoing effort <a rel="nofollow" class="external autonumber" href="https://lore.kernel.org/linux-btrfs/20240124195831.GA1212739@perftesting/T/">[10]</a> to incorporate encryption based on <a href="../en/Fscrypt.html" title="Fscrypt">Fscrypt</a>.
+<div class="mw-heading mw-heading3"><h3 id="Encryption">Encryption</h3></div>
+<p>Btrfs has no built-in encryption support, but there is an ongoing effort <a rel="nofollow" class="external autonumber" href="https://lore.kernel.org/linux-btrfs/20240124195831.GA1212739@perftesting/T/">[17]</a> to incorporate encryption based on <a href="../en/Fscrypt.html" title="Fscrypt">Fscrypt</a>.
 </p>
 <p>Users can however encrypt the partition before running <code>mkfs.btrfs</code>, see <a href="../en/Dm-crypt/Encrypting_an_entire_system.html" title="Dm-crypt/Encrypting an entire system">dm-crypt/Encrypting an entire system</a>. Another approach is <a href="../en/Data-at-rest_encryption.html#Stacked_filesystem_encryption" title="Data-at-rest encryption">stacked filesystem encryption</a>.
 </p>
-<h3><span class="mw-headline" id="btrfs_check_issues">btrfs check issues</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="btrfs_check_issues">btrfs check issues</h3></div>
 <p>The tool <code>btrfs check</code> has known issues and should not be run without further reading; see section <a href="#btrfs_check">#btrfs check</a>.
 </p>
-<h2><span class="mw-headline" id="Tips_and_tricks">Tips and tricks</span></h2>
-<h3><span class="mw-headline" id="Partitionless_Btrfs_disk">Partitionless Btrfs disk</span></h3>
+<div class="mw-heading mw-heading2"><h2 id="Tips_and_tricks">Tips and tricks</h2></div>
+<div class="mw-heading mw-heading3"><h3 id="Partitionless_Btrfs_disk">Partitionless Btrfs disk</h3></div>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> This type of setup is not ideal for a boot device and it is recommended to instead set up a Btrfs partition along with a separate <a href="../en/EFI_system_partition.html" title="EFI system partition">EFI system partition</a>. Furthermore, GRUB strongly discourages installation to a partitionless disk.</div>
+<strong>Warning</strong> This type of setup is not ideal for a boot device and it is recommended to instead set up a Btrfs partition along with a separate <a href="../en/EFI_system_partition.html" title="EFI system partition">EFI system partition</a>. Furthermore, GRUB strongly discourages installation to a partitionless disk.</div>
 <p>Btrfs can occupy an entire data storage device, replacing the <a href="../en/Partitioning.html#Master_Boot_Record" class="mw-redirect" title="MBR">MBR</a> or <a href="../en/Partitioning.html#GUID_Partition_Table" class="mw-redirect" title="GPT">GPT</a> partitioning schemes, using <a href="#Subvolumes">subvolumes</a> to simulate partitions. However, using a partitionless setup is not required to simply <a href="#File_system_creation">create a Btrfs file system</a> on an existing <a href="../en/Partitioning.html" class="mw-redirect" title="Partition">partition</a> that was created using another method. There are some limitations to partitionless single disk setups:
 </p>
 <ul>
 <li>Cannot place other <a href="../en/File_systems.html" title="File systems">file systems</a> on another partition on the same disk.</li>
 <li>Due to the previous point, having an <a href="../en/EFI_system_partition.html" class="mw-redirect" title="ESP">ESP</a> on this disk is not possible. Another device is necessary for <a href="../en/Unified_Extensible_Firmware_Interface.html" class="mw-redirect" title="UEFI">UEFI</a> boot.</li>
 </ul>
-<p>To overwrite the existing partition table with Btrfs, run the following command:
+<p>To create a partitionless Btrfs disk, run the following command:
 </p>
 <pre># mkfs.btrfs /dev/sd<i>X</i>
 </pre>
@@ -1250,33 +1634,55 @@ When specifying an exact size for the file system on a device, either increasing
 </p>
 <p>Install the <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> like you would for a data storage device with a <a href="../en/Partitioning.html#Master_Boot_Record" class="mw-redirect" title="Master Boot Record">Master Boot Record</a>. See <a href="../en/Syslinux.html#Manually" title="Syslinux">Syslinux#Manually</a> or <a href="../en/GRUB/Tips_and_tricks.html#Install_to_partition_or_partitionless_disk" title="GRUB/Tips and tricks">GRUB/Tips and tricks#Install to partition or partitionless disk</a>. If your kernel does not boot due to <code>Failed to mount /sysroot.</code>, please add <code>GRUB_PRELOAD_MODULES="btrfs"</code> in <code>/etc/default/grub</code> and <a href="../en/GRUB.html#Generate_the_main_configuration_file" title="GRUB">generate</a> the grub configuration.
 </p>
-<h3>
-<span id="Ext3.2F4_to_Btrfs_conversion"></span><span class="mw-headline" id="Ext3/4_to_Btrfs_conversion">Ext3/4 to Btrfs conversion</span>
-</h3>
+<div class="mw-heading mw-heading3"><h3 id="Conversion">Conversion</h3></div>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> There are many reports on the btrfs mailing list about incomplete/corrupt/broken conversions. Make sure you have <i>working</i> backups of any data you cannot afford to lose. See the <a rel="nofollow" class="external text" href="https://btrfs.readthedocs.io/en/latest/Convert.html">Convert</a> page on the Btrfs wiki for more information.
-</div>
+<strong>Warning</strong> There are many reports on the btrfs mailing list about incomplete/corrupt/broken conversions. Make sure you have <i>working</i> backups of any data you cannot afford to lose. See the <a rel="nofollow" class="external text" href="https://btrfs.readthedocs.io/en/latest/Convert.html">Convert</a> page on the Btrfs wiki for more information.</div>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> Converting an existing filesystem to Btrfs is a time consuming operation. For a 4 TiB file system and a regular HDD, it can take up to 10 hours.</div>
+<div class="mw-heading mw-heading4"><h4 id="Ext3/4_to_Btrfs_conversion">
+<span id="Ext3.2F4_to_Btrfs_conversion"></span>Ext3/4 to Btrfs conversion</h4></div>
 <p>Boot from an install CD, then convert by doing:
 </p>
 <pre># btrfs-convert /dev/<i>partition</i>
 </pre>
-<p>Mount the partition and test the conversion by checking the files.  Be sure to change the <code>/etc/fstab</code> to reflect the change (<b>type</b> to <code>btrfs</code> and <b>fs_passno</b> [the last field] to <code>0</code> as Btrfs does not do a file system check on boot). Also note that the UUID of the partition will have changed, so update fstab accordingly when using UUIDs. <code>chroot</code> into the system and rebuild your boot loader's menu list (see <a href="../en/Install_Arch_Linux_from_existing_Linux.html" class="mw-redirect" title="Install from existing Linux">Install from existing Linux</a>). If converting a root file system, while still chrooted, run <code>mkinitcpio -p linux</code> to regenerate the initramfs or the system will not successfully boot.
+<p>Mount the partition and test the conversion by checking the files.  Be sure to change the <code>/etc/fstab</code> to reflect the change (<i>type</i> to <code>btrfs</code> and <i>fs_passno</i> −the last field− to <code>0</code> as Btrfs does not do a file system check on boot). Also note that the UUID of the partition will have changed, so update fstab accordingly when using UUIDs. <code>chroot</code> into the system and rebuild your boot loader's menu list (see <a href="../en/Install_Arch_Linux_from_existing_Linux.html" class="mw-redirect" title="Install from existing Linux">Install from existing Linux</a>). If converting a root file system, while still chrooted, <a href="../en/Mkinitcpio.html#Image_creation_and_activation" class="mw-redirect" title="Regenerate the initramfs">regenerate the initramfs</a> or the system will not successfully boot.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> If there is anything wrong, either unable to mount or write files to the newly converted Btrfs; there is always the option to rollback as long as the backup subvolume <code>/ext2_saved</code> is still there. Use the <code>btrfs-convert -r /dev/<i>partition</i></code> command to rollback; this will discard any modifications to the newly converted Btrfs file system.</div>
+<strong>Note</strong> 
+<ul>
+<li>If there is anything wrong, either unable to mount or write files to the newly converted Btrfs; there is always the option to rollback as long as the backup subvolume <code>/ext2_saved</code> is still there. Use the <code>btrfs-convert -r /dev/<i>partition</i></code> command to rollback; this will discard any modifications to the newly converted Btrfs file system.</li>
+<li>If mounting a converted ext partition results in an error like <code>ERROR: dev extent devid 1 physical offset XXX len XXX is beyond device boundary XXX</code>, the conversion might succeed if you create some empty space after the partition first. Rollback the conversion, then use <code>resize2fs</code> to shrink the partition by 50000 blocks and then grow it by 5000 blocks (creating 45000 free blocks). Then try the conversion again. See <a rel="nofollow" class="external text" href="https://bugzilla.kernel.org/show_bug.cgi?id=206995">upstream bug report</a>.</li>
+</ul>
+</div>
 <p>After confirming that there are no problems, complete the conversion by deleting the backup <code>ext2_saved</code> sub-volume. Note that you cannot revert back to ext3/4 without it.
 </p>
 <pre># btrfs subvolume delete /ext2_saved
 </pre>
-<p>Finally, <a href="#Balance">balance</a> the file system to reclaim the space.
-</p>
 <p>Remember that some applications which were installed prior have to be adapted to Btrfs.
 </p>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> Ext3/4 to Btrfs conversion is a time consuming operation. For a 4 TiB file system and a regular HDD, it can take up to 10 hours.</div>
-<h3><span class="mw-headline" id="Corruption_recovery">Corruption recovery</span></h3>
+<div class="mw-heading mw-heading4"><h4 id="NTFS_to_Btrfs_conversion">NTFS to Btrfs conversion</h4></div>
+<p>NTFS can be converted using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/ntfs2btrfs/">ntfs2btrfs</a></span><sup><small>AUR</small></sup> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/ntfs2btrfs-git/">ntfs2btrfs-git</a></span><sup><small>AUR</small></sup>.
+</p>
+<p>Unmount the target filesystem and run the conversion, the exact compression and checksum types can be specified:
+</p>
+<pre># ntfs2btrfs -c zstd -h crc32c /dev/partition
+</pre>
+<p>If everything works well after the conversion, you can delete the <code>image/ntfs.img</code> image otherwise used for restoring the original filesystem.
+</p>
+<div class="mw-heading mw-heading4"><h4 id="After_conversion">After conversion</h4></div>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> The tool <code>btrfs check</code> has known issues, see section <a href="#btrfs_check">#btrfs check</a>
+<strong>Warning</strong> Only ever take these steps after confirming you're not going to revert to the original filesystem, as they make doing so impossible, even if you kept the recovery files.</div>
+<p>There are some steps you can take after converting an existing filesystem into Btrfs.
+</p>
+<p>Make file data more contiguous
+</p>
+<pre># btrfs filesystem defrag -v -r -f -t 32M /mnt/filesystem
+</pre>
+<p><a href="#Balance">#Balance</a> to make Btrfs metadata more compact
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Corruption_recovery">Corruption recovery</h3></div>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning</strong> The tool <code>btrfs check</code> has known issues, see section <a href="#btrfs_check">#btrfs check</a>
 </div>
 <p><i>btrfs-check</i> cannot be used on a mounted file system. To be able to use <i>btrfs-check</i> without booting from a live USB, add it to the initial ramdisk:
 </p>
@@ -1287,10 +1693,10 @@ When specifying an exact size for the file system on a device, either increasing
 <p>Then if there is a problem booting, the utility is available for repair.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> If the fsck process has to invalidate the space cache (and/or other caches?), it is normal for a subsequent boot to hang up for a while (it may give console messages about btrfs-transaction being hung). The system should recover from this after a while.</div>
+<strong>Note</strong> If the fsck process has to invalidate the space cache (and/or other caches?), it is normal for a subsequent boot to hang up for a while (it may give console messages about btrfs-transaction being hung). The system should recover from this after a while.</div>
 <p>See <span class="plainlinks archwiki-template-man" title="$ man 8 btrfs-check"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/btrfs-check.8">btrfs-check(8)</a></span> for more information.
 </p>
-<h3><span class="mw-headline" id="Booting_into_snapshots">Booting into snapshots</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Booting_into_snapshots">Booting into snapshots</h3></div>
 <p>In order to boot into a snapshot, the same procedure applies as for mounting a subvolume as your root partition, as given in section <a href="#Mounting_subvolume_as_root">mounting a subvolume as your root partition</a>, because snapshots can be mounted like subvolumes.
 </p>
 <ul>
@@ -1298,15 +1704,20 @@ When specifying an exact size for the file system on a device, either increasing
 <li>If using <a href="../en/REFInd.html" title="REFInd">rEFInd</a>, you can automatically populate your boot menu with Btrfs snapshots with the help of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/refind-btrfs/">refind-btrfs</a></span><sup><small>AUR</small></sup>, after <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enabling">enabling</a> <code>refind-btrfs.service</code>.</li>
 <li>If using <a href="../en/Limine.html" title="Limine">Limine</a>, you can install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/limine-snapper-sync/">limine-snapper-sync</a></span><sup><small>AUR</small></sup>, which automatically generates snapshot entries in your boot menu whenever your <a href="../en/Snapper.html" title="Snapper">Snapper</a> list changes after enabling <code>limine-snapper-sync.service</code>. See <a href="../en/Limine.html#Snapper_snapshot_integration_for_Btrfs" title="Limine">Limine#Snapper snapshot integration for Btrfs</a> for more information.</li>
 </ul>
-<h3><span class="mw-headline" id="Use_Btrfs_subvolumes_with_systemd-nspawn">Use Btrfs subvolumes with systemd-nspawn</span></h3>
-<p>See the <a href="../en/Systemd-nspawn.html#Use_Btrfs_subvolume_as_container_root" title="Systemd-nspawn">Systemd-nspawn#Use Btrfs subvolume as container root</a> and <a href="../en/Systemd-nspawn.html#Use_temporary_Btrfs_snapshot_of_container" title="Systemd-nspawn">Systemd-nspawn#Use temporary Btrfs snapshot of container</a> articles.
+<div class="mw-heading mw-heading3"><h3 id="Use_Btrfs_subvolumes_with_systemd-nspawn">Use Btrfs subvolumes with systemd-nspawn</h3></div>
+<p>See the <a href="../en/Systemd-nspawn.html#Use_Btrfs_subvolume_as_container_root" title="Systemd-nspawn">systemd-nspawn#Use Btrfs subvolume as container root</a> and <a href="../en/Systemd-nspawn.html#Use_temporary_Btrfs_snapshot_of_container" title="Systemd-nspawn">systemd-nspawn#Use temporary Btrfs snapshot of container</a> articles.
 </p>
-<h3><span class="mw-headline" id="Reducing_access_time_metadata_updates">Reducing access time metadata updates</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Reducing_access_time_metadata_updates">Reducing access time metadata updates</h3></div>
 <p>Because of the copy-on-write nature of Btrfs, simply accessing files can trigger the metadata copy and writing. Reducing the frequency of access time updates may eliminate this unexpected disk usage and increase performance. See <a href="../en/Fstab.html#atime_options" title="Fstab">fstab#atime options</a> for the available options.
 </p>
-<h3><span class="mw-headline" id="Incremental_backup_to_external_drive">Incremental backup to external drive</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Incremental_backup_to_external_drive">Incremental backup to external drive</h3></div>
 <p>The following packages use <code>btrfs send</code> and <code>btrfs receive</code> to send backups incrementally to an external drive. Refer to their documentation to see differences in implementation, features, and requirements.
 </p>
+<ul><li>
+<b>snbk</b> — A command-line tool provided by <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=snapper">snapper</a></span> for copying snapper snapshots to remote or local backups.</li></ul>
+<dl><dd>
+<a rel="nofollow" class="external free" href="http://snapper.io/">http://snapper.io/</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=snapper">snapper</a></span>
+</dd></dl>
 <ul><li>
 <b>btrbk</b> — Tool for creating snapshots and remote backups of Btrfs subvolumes.</li></ul>
 <dl><dd>
@@ -1317,22 +1728,17 @@ When specifying an exact size for the file system on a device, either increasing
 <dl><dd>
 <a rel="nofollow" class="external free" href="https://github.com/wesbarnett/snap-sync">https://github.com/wesbarnett/snap-sync</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/snap-sync/">snap-sync</a></span><sup><small>AUR</small></sup>
 </dd></dl>
-<ul><li>
-<b>snapsync</b> — A synchronization tool for <a href="../en/Snapper.html" title="Snapper">Snapper</a>.</li></ul>
-<dl><dd>
-<a rel="nofollow" class="external free" href="https://github.com/doudou/snapsync">https://github.com/doudou/snapsync</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/ruby-snapsync/">ruby-snapsync</a></span><sup><small>AUR</small></sup>
-</dd></dl>
-<p>The following package allows backing up snapper snapshots to non-Btrfs file systems.
+<p>The following package allows backing up snapper snapshots to non-Btrfs file systems:
 </p>
 <ul><li>
 <b>snapborg</b> — borgmatic-like tool which integrates snapper snapshots with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=borg">borg</a></span> backups.</li></ul>
 <dl><dd>
 <a rel="nofollow" class="external free" href="https://github.com/enzingerm/snapborg">https://github.com/enzingerm/snapborg</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/snapborg/">snapborg</a></span><sup><small>AUR</small></sup>
 </dd></dl>
-<h3><span class="mw-headline" id="Automatic_snapshots">Automatic snapshots</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Automatic_snapshots">Automatic snapshots</h3></div>
 <p>For the managing and automatic creation of Btrfs snapshot, one may use a snapshot manager such as <a href="../en/Snapper.html" title="Snapper">Snapper</a>, <a href="../en/Timeshift.html" title="Timeshift">Timeshift</a> or <a href="../en/Yabsnap.html" title="Yabsnap">Yabsnap</a>.
 </p>
-<h3><span class="mw-headline" id="Automatic_notifications">Automatic notifications</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Automatic_notifications">Automatic notifications</h3></div>
 <p>Desktop notifications help you notice serious Btrfs issues immediately, offering better awareness compared to having no notifications at all.
 </p>
 <p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/btrfs-desktop-notification/">btrfs-desktop-notification</a></span><sup><small>AUR</small></sup> provides desktop notifications for the following events:
@@ -1343,16 +1749,16 @@ When specifying an exact size for the file system on a device, either increasing
 </ul>
 <p>See <a rel="nofollow" class="external free" href="https://gitlab.com/Zesko/btrfs-desktop-notification">https://gitlab.com/Zesko/btrfs-desktop-notification</a> for more information and configuration.
 </p>
-<h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="Troubleshooting">Troubleshooting</h2></div>
 <p>See the <a rel="nofollow" class="external text" href="https://btrfs.readthedocs.io/en/latest/trouble-index.html">Btrfs Troubleshooting pages</a> and <a rel="nofollow" class="external text" href="https://archive.kernel.org/oldwiki/btrfs.wiki.kernel.org/index.php/Problem_FAQ.html">Btrfs Problem FAQ</a> for general troubleshooting.
 </p>
-<h3><span class="mw-headline" id="GRUB">GRUB</span></h3>
-<h4><span class="mw-headline" id="Partition_offset">Partition offset</span></h4>
+<div class="mw-heading mw-heading3"><h3 id="GRUB">GRUB</h3></div>
+<div class="mw-heading mw-heading4"><h4 id="Partition_offset">Partition offset</h4></div>
 <p>The offset problem may happen when you try to embed <code>core.img</code> into a partitioned disk. It means that <a href="../Special:Diff/319474.html" title="Special:Diff/319474">it is OK</a> to embed GRUB's <code>core.img</code> into a Btrfs pool on a partitionless disk (e.g. <code>/dev/sd<i>X</i></code>) directly.
 </p>
 <p><a href="../en/GRUB.html" title="GRUB">GRUB</a> can boot Btrfs partitions, however the module may be larger than other <a href="../en/File_systems.html" title="File systems">file systems</a>. And the <code>core.img</code> file made by <code>grub-install</code> may not fit in the first 63 sectors (31.5KiB) of the drive between the MBR and the first partition. Up-to-date partitioning tools such as <code>fdisk</code> and <code>gdisk</code> avoid this issue by offsetting the first partition by roughly 1MiB or 2MiB.
 </p>
-<h4><span class="mw-headline" id="Missing_root">Missing root</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="Missing_root">Missing root</h4></div>
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
 <div>
@@ -1361,21 +1767,27 @@ When specifying an exact size for the file system on a device, either increasing
 <p>Users experiencing the following: <code>error no such device: root</code> when booting from a RAID style setup then edit /usr/share/grub/grub-mkconfig_lib and remove both quotes from the line <code>echo "  search --no-floppy --fs-uuid --set=root ${hints} ${fs_uuid}"</code>. Regenerate the config for grub and the system should boot without an error.
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> Overwriting package files is discouraged and the file will be overwritten by next update.</div>
-<h3><span class="mw-headline" id="Mounting_timed_out">Mounting timed out</span></h3>
+<strong>Warning</strong> Overwriting package files is discouraged and the file will be overwritten by next update.</div>
+<div class="mw-heading mw-heading3"><h3 id="Long_boot_time">Long boot time</h3></div>
+<p>Sometimes a large (&gt; 4TB) Btrfs volume can take a long time to mount, slowing down boots.
+Changing the group tree to block group tree can help with that
+</p>
+<pre># btrfstune --convert-to-block-group-tree /dev/sd<i>X</i>
+</pre>
+<div class="mw-heading mw-heading3"><h3 id="Mounting_timed_out">Mounting timed out</h3></div>
 <p>Sometimes, especially with large RAID1 arrays, mounting might time out during boot with a journal message such as:
 </p>
 <pre>Jan 25 18:05:12 host systemd[1]: storage.mount: Mounting timed out. Terminating.
 Jan 25 18:05:46 host systemd[1]: storage.mount: Mount process exited, code=killed, status=15/TERM
 Jan 25 18:05:46 host systemd[1]: storage.mount: Failed with result 'timeout'.
-Jan 25 18:05:46 host systemd[1]: Failed to mount /storage.
+Jan 25 18:05:46 host systemd[1]: Failed to mount /data.
 Jan 25 18:05:46 host systemd[1]: Startup finished in 32.943s (firmware) + 3.097s (loader) + 7.247s (kernel)&gt;
 Jan 25 18:05:46 host kernel: BTRFS error (device sda): open_ctree failed</pre>
 <p>This can easily be worked around by providing a longer timeout via the systemd-specific mount option <code>x-systemd.mount-timeout</code> in <a href="../en/Fstab.html" title="Fstab">fstab</a>. For example:
 </p>
-<pre>/dev/sda                /storage    btrfs       rw,relatime,x-systemd.mount-timeout=5min  0 0
+<pre>UUID=<i>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</i>  /data  btrfs  rw,relatime,x-systemd.mount-timeout=5min  0 0
 </pre>
-<h3><span class="mw-headline" id="BTRFS:_open_ctree_failed">BTRFS: open_ctree failed</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="BTRFS:_open_ctree_failed">BTRFS: open_ctree failed</h3></div>
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
 <div>
@@ -1400,17 +1812,17 @@ You are now being dropped into an emergency shell.
 </p>
 <p>See the <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?id=189845">original forums thread</a> and <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/42884">FS#42884</a> for further information and discussion.
 </p>
-<h3><span class="mw-headline" id="btrfs_check">btrfs check</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="btrfs_check">btrfs check</h3></div>
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:View-refresh-red.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is out of date.</b></p>
 <div>
 <b>Reason:</b> The "heavy development" status is old. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Btrfs.html">Talk:Btrfs</a>)</div>
 </div>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> Since Btrfs is under heavy development, especially the <code>btrfs check</code> command, it is highly recommended to create a <a href="../en/System_maintenance.html#Backup" class="mw-redirect" title="Backup">backup</a> and consult <span class="plainlinks archwiki-template-man" title="$ man 8 btrfs-check"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/btrfs-check.8">btrfs-check(8)</a></span> before executing <code>btrfs check</code> with the <code>--repair</code> switch.</div>
+<strong>Warning</strong> Since Btrfs is under heavy development, especially the <code>btrfs check</code> command, it is highly recommended to create a <a href="../en/System_maintenance.html#Backup" class="mw-redirect" title="Backup">backup</a> and consult <span class="plainlinks archwiki-template-man" title="$ man 8 btrfs-check"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/btrfs-check.8">btrfs-check(8)</a></span> before executing <code>btrfs check</code> with the <code>--repair</code> switch.</div>
 <p>The <span class="plainlinks archwiki-template-man" title="$ man 8 btrfs-check"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/btrfs-check.8">btrfs-check(8)</a></span> command can be used to check or repair an unmounted Btrfs file system. However, this repair tool is still immature and not able to repair certain file system errors even those that do not render the file system unmountable.
 </p>
-<h3><span class="mw-headline" id="Constant_drive_activity">Constant drive activity</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Constant_drive_activity">Constant drive activity</h3></div>
 <p>Since the <a href="../en/Kernel.html" title="Kernel">kernel</a> version 6.2, <code>discard=async</code> <span class="plainlinks archwiki-template-man" title="$ man 8 mount"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/mount.8">mount(8)</a></span> option is set by default. This <a rel="nofollow" class="external text" href="https://lore.kernel.org/linux-btrfs/Y%2F%2Bn1wS%2F4XAH7X1p@nz/#r">has been reported</a> to cause constant drive activity on some drives even while idle, as the discard queue is filled faster than it is processed. This can cause increased power usage, especially on NVMe-based drives.
 </p>
 <p>As of kernel version 6.3, the default discard <code>iops_limit</code> has been changed from 100 to 1000 to address this issue. You can manually set it to a desired value on an old kernel version, e.g.
@@ -1426,7 +1838,7 @@ You are now being dropped into an emergency shell.
 </pre>
 <p>Alternatively, one can disable asynchronous discard altogether by mounting using the <code>nodiscard</code> mount option in <a href="../en/Fstab.html" title="Fstab">fstab</a>, and instead use <a href="../en/Solid_state_drive.html#Periodic_TRIM" title="Solid state drive">Periodic TRIM</a>.
 </p>
-<h3><span class="mw-headline" id="Device_total_bytes_should_be_at_most_X_but_found_Y">Device total_bytes should be at most X but found Y</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Device_total_bytes_should_be_at_most_X_but_found_Y">Device total_bytes should be at most X but found Y</h3></div>
 <p>If a drive has been moved from another computer or the order of devices has changed, and the difference in sizes reported is tiny (at most megabytes), it is possible <a href="https://en.wikipedia.org/wiki/Host_protected_area" class="extiw" title="wikipedia:Host protected area">HPA (Host Protected Area)</a> is in effect.
 </p>
 <p>To verify if HPA is enabled, use <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=hdparm">hdparm</a></span>:
@@ -1437,7 +1849,7 @@ You are now being dropped into an emergency shell.
 </p>
 <p>If motherboard sets this forcefully and the firmware provides no option to turn that off, the only option is to shrink the affected file system.  This is most easily done on the original computer, or on any machine that does not apply HPA.
 </p>
-<h3><span class="mw-headline" id="No_space_left_on_device">No space left on device</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="No_space_left_on_device">No space left on device</h3></div>
 <p>The blog post <a rel="nofollow" class="external text" href="https://marc.merlins.org/perso/btrfs/post_2014-05-04_Fixing-Btrfs-Filesystem-Full-Problems.html">Fixing Btrfs Filesystem Full Problems</a> suggests and explains the following checks/steps:
 </p>
 <ol>
@@ -1447,7 +1859,9 @@ You are now being dropped into an emergency shell.
 <li>Is your filesystem really full? Mis-balanced metadata</li>
 <li>Balance cannot run because the filesystem is full (temporarily add a device such as USB key or loop device to the btrfs filesystem using <code>btrfs device add</code> before running <code>btrfs balance</code>)</li>
 </ol>
-<h2><span class="mw-headline" id="See_also">See also</span></h2>
+<p>For more up-to-date instructions regarding ENOSPC ("Out of disk space"), see <a rel="nofollow" class="external text" href="https://wiki.tnonline.net/w/Btrfs/ENOSPC">ENOSPC - No available disk space | Forza's Ramblings</a>.
+</p>
+<div class="mw-heading mw-heading2"><h2 id="See_also">See also</h2></div>
 <ul>
 <li>
 <b>Official site</b>
@@ -1469,6 +1883,8 @@ You are now being dropped into an emergency shell.
 <li>
 <b>Miscellaneous</b>
 <ul>
+<li><a href="https://wiki.debian.org/Btrfs" class="extiw" title="debian:Btrfs">Debian:Btrfs</a></li>
+<li><a href="https://wiki.gentoo.org/wiki/Btrfs" class="extiw" title="gentoo:Btrfs">Gentoo:Btrfs</a></li>
 <li><a href="https://www.funtoo.org/BTRFS_Fun" class="extiw" title="funtoo:BTRFS Fun">Funtoo:BTRFS Fun</a></li>
 <li>
 <a rel="nofollow" class="external text" href="https://www.phoronix.com/scan.php?page=news_item&amp;px=MTA0ODU">Avi Miller presenting Btrfs</a> at SCALE 10x, January 2012.</li>
@@ -1487,9 +1903,10 @@ You are now being dropped into an emergency shell.
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:File_systems.html" title="Category:File systems">File systems</a></li></ul>
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Out_of_date.html" title="Category:Pages or sections flagged with Template:Out of date">Pages or sections flagged with Template:Out of date</a></li>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Out_of_date.html" title="Category:Pages or sections flagged with Template:Out of date">Pages or sections flagged with Template:Out of date</a></li>
 </ul>
 </div>
 </div>
@@ -1501,8 +1918,8 @@ You are now being dropped into an emergency shell.
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Btrfs&amp;oldid=833472">https://wiki.archlinux.org/index.php?title=Btrfs&amp;oldid=833472</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 8 May 2025, at 08:04.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Btrfs&amp;oldid=854610">https://wiki.archlinux.org/index.php?title=Btrfs&amp;oldid=854610</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 30 November 2025, at 02:39.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>
@@ -1517,7 +1934,7 @@ You are now being dropped into an emergency shell.
 
 	<ul id="footer-icons" class="noprint">
 	<li id="footer-copyrightico"><a href="https://www.gnu.org/copyleft/fdl.html" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled"><img src="/resources/assets/licenses/gnu-fdl.png" alt="GNU Free Documentation License 1.3 or later" width="88" height="31" loading="lazy"></a></li>
-	<li id="footer-poweredbyico"><img src="/resources/assets/poweredby_mediawiki.svg" width="88" height="31" loading="lazy"></li>
+	<li id="footer-poweredbyico"><picture><source media="(min-width: 500px)" srcset="/resources/assets/poweredby_mediawiki.svg" width="88" height="31"><img src="/resources/assets/mediawiki_compact.svg" width="25" height="25" loading="lazy"></picture></li>
 </ul>
 
 </footer>
@@ -1525,8 +1942,100 @@ You are now being dropped into an emergency shell.
 		</div>
 	</div> 
 </div> 
-<div class="vector-settings" id="p-dock-bottom">
-	<ul></ul>
+<div class="vector-header-container vector-sticky-header-container">
+	<div id="vector-sticky-header" class="vector-sticky-header">
+		<div class="vector-sticky-header-start">
+			<div class="vector-sticky-header-icon-start vector-button-flush-left vector-button-flush-right" aria-hidden="true">
+				<button class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-sticky-header-search-toggle" tabindex="-1" data-event-name="ui.vector-sticky-search-form.icon"><span class="vector-icon mw-ui-icon-search mw-ui-icon-wikimedia-search"></span>
+
+<span>Search</span>
+			</button>
+		</div>
+			
+		<div role="search" class="vector-search-box-vue vector-search-box">
+			<div class="vector-typeahead-search-container">
+				<div class="cdx-typeahead-search">
+					<form action="/index.php" id="vector-sticky-search-form" class="cdx-search-input cdx-search-input--has-end-button">
+						<div class="cdx-search-input__input-wrapper" data-search-loc="header-moved">
+							<div class="cdx-text-input cdx-text-input--has-start-icon">
+								<input class="cdx-text-input__input" type="search" name="search" placeholder="Search ArchWiki">
+								<span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
+							</div>
+							<input type="hidden" name="title" value="Special:Search">
+						</div>
+						<button class="cdx-button cdx-search-input__end-button">Search</button>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="vector-sticky-header-context-bar">
+				<nav aria-label="Contents" class="vector-toc-landmark">
+						
+					<div id="vector-sticky-header-toc" class="vector-dropdown mw-portlet mw-portlet-sticky-header-toc vector-sticky-header-toc vector-button-flush-left">
+						<input type="checkbox" id="vector-sticky-header-toc-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-vector-sticky-header-toc" class="vector-dropdown-checkbox " aria-label="Toggle the table of contents">
+						<label id="vector-sticky-header-toc-label" for="vector-sticky-header-toc-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only " aria-hidden="true"><span class="vector-icon mw-ui-icon-listBullet mw-ui-icon-wikimedia-listBullet"></span>
+
+<span class="vector-dropdown-label-text">Toggle the table of contents</span>
+						</label>
+						<div class="vector-dropdown-content">
+					
+						<div id="vector-sticky-header-toc-unpinned-container" class="vector-unpinned-container">
+						</div>
+					
+						</div>
+					</div>
+			</nav>
+				<div class="vector-sticky-header-context-bar-primary" aria-hidden="true"><span class="mw-page-title-main">Btrfs</span></div>
+			</div>
+		</div>
+		<div class="vector-sticky-header-end" aria-hidden="true">
+			<div class="vector-sticky-header-icons">
+				<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-talk-sticky-header" tabindex="-1" data-event-name="talk-sticky-header"><span class="vector-icon mw-ui-icon-speechBubbles mw-ui-icon-wikimedia-speechBubbles"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-subject-sticky-header" tabindex="-1" data-event-name="subject-sticky-header"><span class="vector-icon mw-ui-icon-article mw-ui-icon-wikimedia-article"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-history-sticky-header" tabindex="-1" data-event-name="history-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-history mw-ui-icon-wikimedia-wikimedia-history"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only mw-watchlink" id="ca-watchstar-sticky-header" tabindex="-1" data-event-name="watch-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-star mw-ui-icon-wikimedia-wikimedia-star"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-edit-sticky-header" tabindex="-1" data-event-name="wikitext-edit-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-wikiText mw-ui-icon-wikimedia-wikimedia-wikiText"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-ve-edit-sticky-header" tabindex="-1" data-event-name="ve-edit-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-edit mw-ui-icon-wikimedia-wikimedia-edit"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-viewsource-sticky-header" tabindex="-1" data-event-name="ve-edit-protected-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-editLock mw-ui-icon-wikimedia-wikimedia-editLock"></span>
+
+<span></span>
+			</a>
+		</div>
+			<div class="vector-sticky-header-buttons">
+				<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive" id="ca-addsection-sticky-header" tabindex="-1" data-event-name="addsection-sticky-header"><span class="vector-icon mw-ui-icon-speechBubbleAdd-progressive mw-ui-icon-wikimedia-speechBubbleAdd-progressive"></span>
+
+<span>Add topic</span>
+			</a>
+		</div>
+			<div class="vector-sticky-header-icon-end">
+				<div class="vector-user-links">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="mw-portlet mw-portlet-dock-bottom emptyPortlet" id="p-dock-bottom">
+	<ul>
+		
+	</ul>
 </div>
 </body>
 </html>

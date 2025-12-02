@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-os vector-sticky-header-enabled vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>LDAP authentication - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.1">
+<meta name="generator" content="MediaWiki 1.44.2">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -269,10 +269,10 @@
 		</div>
 		<div class="mw-content-container">
 			<main id="content" class="mw-body" style="margin: 0">
-				<header class="mw-body-header vector-page-titlebar">
+				<header class="mw-body-header vector-page-titlebar vector-feature-custom-font-size-clientpref--excluded">
 					<nav aria-label="Contents" class="vector-toc-landmark">
 						
-<div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left">
+<div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left" title="Table of Contents">
 	<input type="checkbox" id="vector-page-titlebar-toc-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-vector-page-titlebar-toc" class="vector-dropdown-checkbox " aria-label="Toggle the table of contents">
 	<label id="vector-page-titlebar-toc-label" for="vector-page-titlebar-toc-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only " aria-hidden="true"><span class="vector-icon mw-ui-icon-listBullet mw-ui-icon-wikimedia-listBullet"></span>
 
@@ -310,7 +310,7 @@
 	</div>
 </div>
 </header>
-				<div class="vector-column-end">
+				<div class="vector-column-end vector-feature-custom-font-size-clientpref--excluded">
 					<div class="vector-sticky-pinned-container">
 						<nav class="vector-page-tools-landmark" aria-label="Page tools">
 							<div id="vector-page-tools-pinned-container" class="vector-pinned-container">
@@ -365,15 +365,15 @@
 <p>So to summarize, we need to configure NSS to use the OpenLDAP server as a source for the <code>passwd</code>, <code>shadow</code> and other configuration databases and then configure PAM to use these sources to authenticate its users.
 </p>
 <meta property="mw:PageProp/toc">
-<h2><span class="mw-headline" id="LDAP_server_setup">LDAP server setup</span></h2>
-<h3><span class="mw-headline" id="Installation">Installation</span></h3>
+<div class="mw-heading mw-heading2"><h2 id="LDAP_server_setup">LDAP server setup</h2></div>
+<div class="mw-heading mw-heading3"><h3 id="Installation">Installation</h3></div>
 <p><a href="../en/OpenLDAP.html#Installation" title="OpenLDAP">Install the OpenLDAP server</a> and configure the <a href="../en/OpenLDAP.html#The_server" title="OpenLDAP">server</a> and <a href="../en/OpenLDAP.html#The_client" title="OpenLDAP">client</a>. After you have completed that, return here.
 </p>
-<h3><span class="mw-headline" id="Set_up_access_controls">Set up access controls</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Set_up_access_controls">Set up access controls</h3></div>
 <p>To make sure that no-one can read the (encrypted) passwords from the LDAP server, but still allowing users to edit some of their own select attributes (such as own password and photo), create the temporary LDIF <code>allowpwchange.ldif</code>
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> Alter the domain components "example" and "org" to your needs</div>
+<strong>Note</strong> Alter the domain components "example" and "org" to your needs</div>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">allowpwchange.ldif</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">dn: olcDatabase={1}mdb,cn=config
 changetype: modify
@@ -386,7 +386,7 @@ olcAccess: {1}to * by self read by dn.base="cn=Manager,dc=example,dc=org" write 
 </pre>
 <p>Then <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Restart">restart</a> <code>slapd.service</code> afterwards.
 </p>
-<h3><span class="mw-headline" id="Populate_LDAP_tree_with_base_data">Populate LDAP tree with base data</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Populate_LDAP_tree_with_base_data">Populate LDAP tree with base data</h3></div>
 <p>Create a temporary file called <code>base.ldif</code> with the following text.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">base.ldif</pre>
@@ -424,7 +424,7 @@ objectClass: organizationalUnit</pre>
 </p>
 <pre>$ ldapsearch -x -b 'dc=example,dc=org' '(objectclass=*)'
 </pre>
-<h3><span class="mw-headline" id="Adding_users">Adding users</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Adding_users">Adding users</h3></div>
 <p>To manually add a user, create an <code>.ldif</code> file like this:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">user_joe.ldif</pre>
@@ -464,14 +464,14 @@ objectClass: posixGroup
 cn: joe
 gidNumber: 9999</pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> You can automatically migrate all of your local accounts (and groups, etc.) to the LDAP directory using PADL Software's <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/openldap-migrationtools/">openldap-migrationtools</a></span><sup><small>AUR</small></sup>.</div>
-<h2><span class="mw-headline" id="Client_setup">Client setup</span></h2>
+<strong>Note</strong> You can automatically migrate all of your local accounts (and groups, etc.) to the LDAP directory using PADL Software's <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/openldap-migrationtools/">openldap-migrationtools</a></span><sup><small>AUR</small></sup>.</div>
+<div class="mw-heading mw-heading2"><h2 id="Client_setup">Client setup</h2></div>
 <p>Install the OpenLDAP client as described in <a href="../en/OpenLDAP.html" title="OpenLDAP">OpenLDAP</a>. Make sure you can query the server with <code>ldapsearch</code>.
 </p>
 <p>Depending on your target, choose either <a href="#Online_authentication">online-only</a> or <a href="#Online_and_offline_authentication_with_SSSD">online and offline</a> authentication.
 </p>
-<h3><span class="mw-headline" id="Online_authentication">Online authentication</span></h3>
-<h4><span class="mw-headline" id="NSS_configuration">NSS configuration</span></h4>
+<div class="mw-heading mw-heading3"><h3 id="Online_authentication">Online authentication</h3></div>
+<div class="mw-heading mw-heading4"><h4 id="NSS_configuration">NSS configuration</h4></div>
 <p>NSS is a system facility which manages different sources as configuration databases. For example, <code>/etc/passwd</code> is a <code>file</code> type source for the <code>passwd</code> database, which stores the user accounts.
 </p>
 <p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nss-pam-ldapd">nss-pam-ldapd</a></span> package.
@@ -490,36 +490,47 @@ shadow: files ldap
 </p>
 <p>You now should see your LDAP users when running <code>getent passwd</code> on the client.
 </p>
-<h4><span class="mw-headline" id="PAM_configuration">PAM configuration</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="PAM_configuration">PAM configuration</h4></div>
 <p>The basic rule of thumb for PAM configuration is to include <code>pam_ldap.so</code> wherever <code>pam_unix.so</code> is included. Arch moving to <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pambase">pambase</a></span> has helped decrease the amount of edits required. For more details about configuring pam, the <a rel="nofollow" class="external text" href="https://access.redhat.com/site/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Managing_Smart_Cards/PAM_Configuration_Files.html">Red Hat Documentation</a> is quite good. You might also want the upstream documentation for <a rel="nofollow" class="external text" href="https://arthurdejong.org/nss-pam-ldapd/">nss-pam-ldapd</a>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> If you want to prevent UID clashes with local users on your system, you might want to include <code>minimum_uid=10000</code> or similar on the end of the <code>pam_ldap.so</code> lines. You will have to make sure the LDAP server returns uidNumber fields that match the restriction.</div>
+<strong>Tip</strong> If you want to prevent UID clashes with local users on your system, you might want to include <code>minimum_uid=10000</code> or similar on the end of the <code>pam_ldap.so</code> lines. You will have to make sure the LDAP server returns uidNumber fields that match the restriction.</div>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> Each facility (auth, session, password, account) forms a separate chain and the order matters. Sufficient lines will sometimes "short circuit" and skip the rest of the section, so the rule of thumb for <i>auth</i>, <i>password</i>, and <i>account</i> is <i>sufficient</i> lines before <i>required</i>, but after required lines for the <i>session</i> section; <i>optional</i> can almost always go at the end. When adding your <code>pam_ldap.so</code> lines, do not change the relative order of the other lines without good reason! Simply insert LDAP within the chain.</div>
+<strong>Note</strong> Each facility (auth, session, password, account) forms a separate chain and the order matters. Sufficient lines will sometimes "short circuit" and skip the rest of the section, so the rule of thumb for <i>auth</i>, <i>password</i>, and <i>account</i> is <i>sufficient</i> lines before <i>required</i>, but after required lines for the <i>session</i> section; <i>optional</i> can almost always go at the end. When adding your <code>pam_ldap.so</code> lines, do not change the relative order of the other lines without good reason! Simply insert LDAP within the chain.</div>
 <p>First edit <code>/etc/pam.d/system-auth</code>. This file is included in most of the other files in <code>pam.d</code>, so changes here propagate nicely. Updates to <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pambase">pambase</a></span> may change this file.
 </p>
-<p>Make <code>pam_ldap.so</code> sufficient at the top of each section, except in the <i>session</i> section, where we make it optional.
+<p>Make <code>pam_ldap.so</code> sufficient at the top of each section, except in the <i>session</i> section, where we make it optional. Note the incremented numbers in the <code>pam_systemd_home.so</code> lines too. Refer to <span class="plainlinks archwiki-template-man" title="$ man 5 pam.conf"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/pam.conf.5">pam.conf(5)</a></span> if in doubt.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pam.d/system-auth</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"><b>auth      sufficient pam_ldap.so</b>
-auth      required  pam_unix.so     try_first_pass nullok
-auth      optional  pam_permit.so
-auth      required  pam_env.so
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">auth       required                    pam_faillock.so      preauth
+# Optionally use requisite above if you do not want to prompt for the password
+# on locked accounts.
+-auth      [success=<b>3</b> default=ignore]  pam_systemd_home.so
+<b>auth       [success=2 default=ignore]  pam_ldap.so</b>
+auth       [success=1 default=bad]     pam_unix.so          try_first_pass nullok
+auth       [default=die]               pam_faillock.so      authfail
+auth       optional                    pam_permit.so
+auth       required                    pam_env.so
+auth       required                    pam_faillock.so      authsucc
+# If you drop the above call to pam_faillock.so the lock will be done also
+# on non-consecutive authentication failures.
 
-<b>account   sufficient pam_ldap.so</b>
-account   required  pam_unix.so
-account   optional  pam_permit.so
-account   required  pam_time.so
+-account   [success=<b>2</b> default=ignore]  pam_systemd_home.so
+<b>account    [success=1 default=ignore]  pam_ldap.so</b>
+account    required                    pam_unix.so
+account    optional                    pam_permit.so
+account    required                    pam_time.so
 
-<b>password  sufficient pam_ldap.so</b>
-password  required  pam_unix.so     try_first_pass nullok sha512 shadow
-password  optional  pam_permit.so
+-password  [success=<b>2</b> default=ignore]  pam_systemd_home.so
+<b>password   [success=1 default=ignore]  pam_ldap.so</b>
+password   required                    pam_unix.so          try_first_pass nullok shadow
+password   optional                    pam_permit.so
 
-session   required  pam_limits.so
-session   required  pam_unix.so
-<b>session   optional  pam_ldap.so</b>
-session   optional  pam_permit.so
+-session   optional                    pam_systemd_home.so
+session    required                    pam_limits.so
+session    required                    pam_unix.so
+<b>session    optional                    pam_ldap.so</b>
+session    optional                    pam_permit.so
 </pre>
 <p>Then edit both <code>/etc/pam.d/su</code> and <code>/etc/pam.d/su-l</code> identically. The <code>su-l</code> file is used when the user runs <code>su --login</code>.
 </p>
@@ -545,7 +556,7 @@ session   required	pam_unix.so
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">#%PAM-1.0
 <b>password        sufficient      pam_ldap.so</b>
 password        required        pam_unix.so sha512 shadow nullok</pre>
-<h5><span class="mw-headline" id="Create_home_folders_at_login">Create home folders at login</span></h5>
+<div class="mw-heading mw-heading5"><h5 id="Create_home_folders_at_login">Create home folders at login</h5></div>
 <p>If you want home folders to be created at login (eg: if you are not using NFS to store home folders), edit <code>/etc/pam.d/system-login</code> and add <code>pam_mkhomedir.so</code> to the <i>session</i> section above any "sufficient" items. This will cause home folder creation when logging in at a tty, from ssh, xdm, sddm, gdm, etc. You might choose to edit additional files in the same way, such as <code>/etc/pam.d/su</code> and <code>/etc/pam.d/su-l</code> to enable it for <code>su</code> and <code>su --login</code>. If you do not want to do this for ssh logins, edit <code>system-local-login</code> instead of <code>system-login</code>, etc.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pam.d/system-login</pre>
@@ -562,7 +573,7 @@ session    required   pam_env.so
 <b>session         required        pam_mkhomedir.so skel=/etc/skel umask=0077</b>
 session         sufficient      pam_ldap.so
 session         required        pam_unix.so</pre>
-<h5><span class="mw-headline" id="Enable_sudo">Enable sudo</span></h5>
+<div class="mw-heading mw-heading5"><h5 id="Enable_sudo">Enable sudo</h5></div>
 <p>To enable sudo from an LDAP user, edit <code>/etc/pam.d/sudo</code>. You will also need to modify sudoers accordingly.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pam.d/sudo</pre>
@@ -575,12 +586,12 @@ auth      required      pam_nologin.so
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/openldap/ldap.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">sudoers_base ou=sudoers,dc=example,dc=org</pre>
-<h3><span class="mw-headline" id="Online_and_offline_authentication_with_SSSD">Online and offline authentication with SSSD</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Online_and_offline_authentication_with_SSSD">Online and offline authentication with SSSD</h3></div>
 <p>See <a href="../en/SSSD.html" title="SSSD">SSSD</a> for an overview and installation.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> You must configure <a href="../en/OpenLDAP.html#OpenLDAP_over_TLS" title="OpenLDAP">StartTLS</a> for your LDAP server, or SSSD will not work</div>
-<h4><span class="mw-headline" id="SSSD_configuration">SSSD configuration</span></h4>
+<strong>Note</strong> You must configure <a href="../en/OpenLDAP.html#OpenLDAP_over_TLS" title="OpenLDAP">StartTLS</a> for your LDAP server, or SSSD will not work</div>
+<div class="mw-heading mw-heading4"><h4 id="SSSD_configuration">SSSD configuration</h4></div>
 <p>If it does not exist create <code>/etc/sssd/sssd.conf</code>.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/sssd/sssd.conf</pre>
@@ -618,7 +629,7 @@ ldap_group_member = uniqueMember</pre>
 </p>
 <p>Finally set the file permissions <code>chmod 600 /etc/sssd/sssd.conf</code> otherwise SSSD will fail to start.
 </p>
-<h4><span class="mw-headline" id="NSCD_configuration">NSCD configuration</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="NSCD_configuration">NSCD configuration</h4></div>
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:View-refresh-red.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is out of date.</b></p>
 <div>
@@ -641,7 +652,7 @@ enable-cache		netgroup	<b>no</b>
 <i>[...]</i>
 # End /etc/nscd.conf
 </pre>
-<h4><span class="mw-headline" id="NSS_configuration_2">NSS configuration</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="NSS_configuration_2">NSS configuration</h4></div>
 <p>Edit <code>/etc/nsswitch.conf</code> as follows:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/nsswitch.conf</pre>
@@ -666,7 +677,7 @@ netgroup: files
 
 # End /etc/nsswitch.conf
 </pre>
-<h4><span class="mw-headline" id="PAM_configuration_2">PAM configuration</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="PAM_configuration_2">PAM configuration</h4></div>
 <p>The first step is to edit <code>/etc/pam.d/system-auth</code> as follows:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pam.d/system-auth</pre>
@@ -692,7 +703,7 @@ session required pam_unix.so
 <b>session optional pam_sss.so</b>
 session optional pam_permit.so</pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> If you happen to use <a href="../en/GNOME/Keyring.html" title="GNOME/Keyring">GNOME/Keyring</a>: adding 'sufficient' in the beginning of the PAM stack results in Gnome Keyring not being unlocked. For a solution, look at <a rel="nofollow" class="external text" href="https://wiki.gnome.org/Projects/GnomeKeyring/Pam#Advanced_configuration">Advanced PAM Configuration</a>.</div>
+<strong>Note</strong> If you happen to use <a href="../en/GNOME/Keyring.html" title="GNOME/Keyring">GNOME/Keyring</a>: adding 'sufficient' in the beginning of the PAM stack results in Gnome Keyring not being unlocked. For a solution, look at <a rel="nofollow" class="external text" href="https://wiki.gnome.org/Projects/GnomeKeyring/Pam#Advanced_configuration">Advanced PAM Configuration</a>.</div>
 <p>These PAM changes will apply to fresh login. To also allow the <code>su</code> command to authenticate through SSSD, edit <code>/etc/pam.d/su</code>:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pam.d/su</pre>
@@ -707,7 +718,7 @@ account         required        pam_unix.so
 
 session         required        pam_unix.so
 <b>session optional pam_sss.so</b></pre>
-<h5><span class="mw-headline" id="Enable_sudo_2">Enable sudo</span></h5>
+<div class="mw-heading mw-heading5"><h5 id="Enable_sudo_2">Enable sudo</h5></div>
 <p>Edit <code>/etc/pam.d/sudo</code> as follows:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pam.d/sudo</pre>
@@ -730,7 +741,7 @@ ldap_sudo_search_base = ou=sudoers,dc=example,dc=org
 ...</pre>
 <p>Alternately, <a href="../en/Sudo.html#Configuration" title="Sudo">configure sudo</a> to allow the desired LDAP users to use <i>sudo</i>.
 </p>
-<h5><span class="mw-headline" id="Password_management">Password management</span></h5>
+<div class="mw-heading mw-heading5"><h5 id="Password_management">Password management</h5></div>
 <p>For changing expired passwords when logging in using <code>su</code> add a password entry to <code>/etc/pam.d/su</code> if it is missing:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pam.d/su</pre>
@@ -748,7 +759,7 @@ session     include     system-auth
 </p>
 <p>Once you have logged in with a user the credentials will be cached and you will be able to login using the cached credentials when the ldap server is offline or unavailable.
 </p>
-<h2><span class="mw-headline" id="See_also">See also</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="See_also">See also</h2></div>
 <ul>
 <li><a rel="nofollow" class="external text" href="https://arthurdejong.org/nss-pam-ldapd/setup">The official page of the nss-pam-ldapd packet</a></li>
 <li><a href="https://wiki.debian.org/LDAP/NSS" class="extiw" title="debian:LDAP/NSS">Debian Wiki - LDAP/NSS</a></li>
@@ -778,8 +789,8 @@ session     include     system-auth
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=LDAP_authentication&amp;oldid=819777">https://wiki.archlinux.org/index.php?title=LDAP_authentication&amp;oldid=819777</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 28 October 2024, at 14:40.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=LDAP_authentication&amp;oldid=845659">https://wiki.archlinux.org/index.php?title=LDAP_authentication&amp;oldid=845659</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 29 August 2025, at 12:36.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>
@@ -794,7 +805,7 @@ session     include     system-auth
 
 	<ul id="footer-icons" class="noprint">
 	<li id="footer-copyrightico"><a href="https://www.gnu.org/copyleft/fdl.html" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled"><img src="/resources/assets/licenses/gnu-fdl.png" alt="GNU Free Documentation License 1.3 or later" width="88" height="31" loading="lazy"></a></li>
-	<li id="footer-poweredbyico"><img src="/resources/assets/poweredby_mediawiki.svg" width="88" height="31" loading="lazy"></li>
+	<li id="footer-poweredbyico"><picture><source media="(min-width: 500px)" srcset="/resources/assets/poweredby_mediawiki.svg" width="88" height="31"><img src="/resources/assets/mediawiki_compact.svg" width="25" height="25" loading="lazy"></picture></li>
 </ul>
 
 </footer>
@@ -802,8 +813,100 @@ session     include     system-auth
 		</div>
 	</div> 
 </div> 
-<div class="vector-settings" id="p-dock-bottom">
-	<ul></ul>
+<div class="vector-header-container vector-sticky-header-container">
+	<div id="vector-sticky-header" class="vector-sticky-header">
+		<div class="vector-sticky-header-start">
+			<div class="vector-sticky-header-icon-start vector-button-flush-left vector-button-flush-right" aria-hidden="true">
+				<button class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-sticky-header-search-toggle" tabindex="-1" data-event-name="ui.vector-sticky-search-form.icon"><span class="vector-icon mw-ui-icon-search mw-ui-icon-wikimedia-search"></span>
+
+<span>Search</span>
+			</button>
+		</div>
+			
+		<div role="search" class="vector-search-box-vue vector-search-box">
+			<div class="vector-typeahead-search-container">
+				<div class="cdx-typeahead-search">
+					<form action="/index.php" id="vector-sticky-search-form" class="cdx-search-input cdx-search-input--has-end-button">
+						<div class="cdx-search-input__input-wrapper" data-search-loc="header-moved">
+							<div class="cdx-text-input cdx-text-input--has-start-icon">
+								<input class="cdx-text-input__input" type="search" name="search" placeholder="Search ArchWiki">
+								<span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
+							</div>
+							<input type="hidden" name="title" value="Special:Search">
+						</div>
+						<button class="cdx-button cdx-search-input__end-button">Search</button>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="vector-sticky-header-context-bar">
+				<nav aria-label="Contents" class="vector-toc-landmark">
+						
+					<div id="vector-sticky-header-toc" class="vector-dropdown mw-portlet mw-portlet-sticky-header-toc vector-sticky-header-toc vector-button-flush-left">
+						<input type="checkbox" id="vector-sticky-header-toc-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-vector-sticky-header-toc" class="vector-dropdown-checkbox " aria-label="Toggle the table of contents">
+						<label id="vector-sticky-header-toc-label" for="vector-sticky-header-toc-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only " aria-hidden="true"><span class="vector-icon mw-ui-icon-listBullet mw-ui-icon-wikimedia-listBullet"></span>
+
+<span class="vector-dropdown-label-text">Toggle the table of contents</span>
+						</label>
+						<div class="vector-dropdown-content">
+					
+						<div id="vector-sticky-header-toc-unpinned-container" class="vector-unpinned-container">
+						</div>
+					
+						</div>
+					</div>
+			</nav>
+				<div class="vector-sticky-header-context-bar-primary" aria-hidden="true"><span class="mw-page-title-main">LDAP authentication</span></div>
+			</div>
+		</div>
+		<div class="vector-sticky-header-end" aria-hidden="true">
+			<div class="vector-sticky-header-icons">
+				<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-talk-sticky-header" tabindex="-1" data-event-name="talk-sticky-header"><span class="vector-icon mw-ui-icon-speechBubbles mw-ui-icon-wikimedia-speechBubbles"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-subject-sticky-header" tabindex="-1" data-event-name="subject-sticky-header"><span class="vector-icon mw-ui-icon-article mw-ui-icon-wikimedia-article"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-history-sticky-header" tabindex="-1" data-event-name="history-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-history mw-ui-icon-wikimedia-wikimedia-history"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only mw-watchlink" id="ca-watchstar-sticky-header" tabindex="-1" data-event-name="watch-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-star mw-ui-icon-wikimedia-wikimedia-star"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-edit-sticky-header" tabindex="-1" data-event-name="wikitext-edit-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-wikiText mw-ui-icon-wikimedia-wikimedia-wikiText"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-ve-edit-sticky-header" tabindex="-1" data-event-name="ve-edit-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-edit mw-ui-icon-wikimedia-wikimedia-edit"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-viewsource-sticky-header" tabindex="-1" data-event-name="ve-edit-protected-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-editLock mw-ui-icon-wikimedia-wikimedia-editLock"></span>
+
+<span></span>
+			</a>
+		</div>
+			<div class="vector-sticky-header-buttons">
+				<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive" id="ca-addsection-sticky-header" tabindex="-1" data-event-name="addsection-sticky-header"><span class="vector-icon mw-ui-icon-speechBubbleAdd-progressive mw-ui-icon-wikimedia-speechBubbleAdd-progressive"></span>
+
+<span>Add topic</span>
+			</a>
+		</div>
+			<div class="vector-sticky-header-icon-end">
+				<div class="vector-user-links">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="mw-portlet mw-portlet-dock-bottom emptyPortlet" id="p-dock-bottom">
+	<ul>
+		
+	</ul>
 </div>
 </body>
 </html>

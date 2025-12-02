@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-os vector-sticky-header-enabled vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Anything-sync-daemon - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.1">
+<meta name="generator" content="MediaWiki 1.44.2">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -170,10 +170,10 @@
 		</div>
 		<div class="mw-content-container">
 			<main id="content" class="mw-body" style="margin: 0">
-				<header class="mw-body-header vector-page-titlebar">
+				<header class="mw-body-header vector-page-titlebar vector-feature-custom-font-size-clientpref--excluded">
 					<nav aria-label="Contents" class="vector-toc-landmark">
 						
-<div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left">
+<div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left" title="Table of Contents">
 	<input type="checkbox" id="vector-page-titlebar-toc-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-vector-page-titlebar-toc" class="vector-dropdown-checkbox " aria-label="Toggle the table of contents">
 	<label id="vector-page-titlebar-toc-label" for="vector-page-titlebar-toc-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only " aria-hidden="true"><span class="vector-icon mw-ui-icon-listBullet mw-ui-icon-wikimedia-listBullet"></span>
 
@@ -212,7 +212,7 @@
 	</div>
 </div>
 </header>
-				<div class="vector-column-end">
+				<div class="vector-column-end vector-feature-custom-font-size-clientpref--excluded">
 					<div class="vector-sticky-pinned-container">
 						<nav class="vector-page-tools-landmark" aria-label="Page tools">
 							<div id="vector-page-tools-pinned-container" class="vector-pinned-container">
@@ -265,12 +265,12 @@
 <p>Since the sync target(s) is relocated into <a href="../en/Tmpfs.html" title="Tmpfs">tmpfs</a> (RAM disk), the corresponding onslaught of I/O associated with system usage of them is also redirected from the physical drive to RAM, thus reducing wear to the physical drive and also improving speed and responsiveness. The access time of RAM is on the order of nanoseconds while the access time of physical discs is on the order of milliseconds. This is a difference of six orders of magnitude or 1,000,000 times faster.
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> If syncing browser profiles is desired, it is recommended NOT to use asd for this purpose.  Instead, use <a href="../en/Profile-sync-daemon.html" title="Profile-sync-daemon">Profile-sync-daemon</a> which has built in sanity checks for unique situations specific to running a browser profile in tmpfs.  Anything-sync-daemon does not have these checks; under certain circumstances, browser profile data can be lost.  You have been warned.</div>
+<strong>Warning</strong> If syncing browser profiles is desired, it is recommended NOT to use asd for this purpose.  Instead, use <a href="../en/Profile-sync-daemon.html" title="Profile-sync-daemon">Profile-sync-daemon</a> which has built in sanity checks for unique situations specific to running a browser profile in tmpfs.  Anything-sync-daemon does not have these checks; under certain circumstances, browser profile data can be lost.  You have been warned.</div>
 <meta property="mw:PageProp/toc">
-<h2><span class="mw-headline" id="Installation">Installation</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="Installation">Installation</h2></div>
 <p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=anything-sync-daemon">anything-sync-daemon</a></span> package.
 </p>
-<h2><span class="mw-headline" id="Configuration">Configuration</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="Configuration">Configuration</h2></div>
 <p>User managed settings are defined in <code>/etc/asd.conf</code> which is included in the package. 
 </p>
 <ul>
@@ -279,7 +279,7 @@
 <li>Optionally enable the use of overlayfs to improve sync speed even further and use a smaller memory footprint.  Note that this option requires your kernel be configured to use either the 'overlay' kernel module. See <a href="#Overlayfs_mode">#Overlayfs mode</a> for additional details.</li>
 </ul>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> The default value of <code>/tmp</code> should work just fine for the VOLATILE setting. If using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=bleachbit">bleachbit</a></span>, do NOT invoke it with the <code>--clean system.tmp</code> switch or you will remove a key dot file (.foo) from <code>/tmp</code> that asd needs to keep track of sync status. Also note that using a value of <code>/dev/shm</code> can cause problems with systemd's NAMESPACE spawning only when users enable the overlayfs option.</div>
+<strong>Note</strong> The default value of <code>/tmp</code> should work just fine for the VOLATILE setting. If using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=bleachbit">bleachbit</a></span>, do NOT invoke it with the <code>--clean system.tmp</code> switch or you will remove a key dot file (.foo) from <code>/tmp</code> that asd needs to keep track of sync status. Also note that using a value of <code>/dev/shm</code> can cause problems with systemd's NAMESPACE spawning only when users enable the overlayfs option.</div>
 <p>Example:
 </p>
 <pre>WHATTOSYNC=('/var/lib/monitorix' '/srv/http' '/foo/bar')
@@ -292,16 +292,15 @@
 '/foo/bar'
 )
 </pre>
-<h2><span class="mw-headline" id="Usage">Usage</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="Usage">Usage</h2></div>
 <p><a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start/enable">Start/enable</a> <code>asd.service</code>. Additionally, a provided resync-timer will run an hourly resync from tmpfs back to the disk. The resync-timer is started automatically with <code>asd.service</code> so there is no need to manually start the timer.
 </p>
-<h3>
-<span id="Preview_.28parse.29_mode"></span><span class="mw-headline" id="Preview_(parse)_mode">Preview (parse) mode</span>
-</h3>
+<div class="mw-heading mw-heading3"><h3 id="Preview_(parse)_mode">
+<span id="Preview_.28parse.29_mode"></span>Preview (parse) mode</h3></div>
 <p>Run <code>asd parse</code> to view what what asd will do/is doing based on the entries in <code>/etc/asd.conf</code>. It will also provide useful information such as dir size, paths, and if any recovery snapshots have been created.
 </p>
-<h2><span class="mw-headline" id="Tips_and_tricks">Tips and tricks</span></h2>
-<h3><span class="mw-headline" id="Sync_at_more_frequent_intervals">Sync at more frequent intervals</span></h3>
+<div class="mw-heading mw-heading2"><h2 id="Tips_and_tricks">Tips and tricks</h2></div>
+<div class="mw-heading mw-heading3"><h3 id="Sync_at_more_frequent_intervals">Sync at more frequent intervals</h3></div>
 <p>The package provided re-sync timer triggers once per hour. Users may optionally redefine this behavior simply by <a href="../en/Systemd.html#Editing_provided_units" title="Systemd">extending the systemd unit</a>. The example below changes the timer to sync once every ten minutes (note that <code>OnUnitActiveSec</code> needs to be cleared before being re-assigned <a rel="nofollow" class="external autonumber" href="https://bugzilla.redhat.com/show_bug.cgi?id=756787#c9">[1]</a>):
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/asd-resync.timer.d/frequency.conf</pre>
@@ -313,16 +312,16 @@ OnUnitActiveSec=
 OnUnitActiveSec=10min</pre>
 <p>See <span class="plainlinks archwiki-template-man" title="$ man 5 systemd.timer"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd.timer.5">systemd.timer(5)</a></span> for additional options.
 </p>
-<h3><span class="mw-headline" id="Overlayfs_mode">Overlayfs mode</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Overlayfs_mode">Overlayfs mode</h3></div>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> There are several versions of overlayfs available to the Linux kernel in production in various distributions. Versions 22 and lower have a module called 'overlayfs' while newer versions (23 and higher) have a module called 'overlay' -- note the lack of the 'fs' in the newer version. Asd will automatically detect the overlayfs available to your kernel if it is configured to use one of them.</div>
+<strong>Note</strong> There are several versions of overlayfs available to the Linux kernel in production in various distributions. Versions 22 and lower have a module called 'overlayfs' while newer versions (23 and higher) have a module called 'overlay' -- note the lack of the 'fs' in the newer version. Asd will automatically detect the overlayfs available to your kernel if it is configured to use one of them.</div>
 <p>Overlayfs is a simple union file-system mainlined in the Linux kernel version 3.18.0. Starting with asd version 5.54, overlayfs can be used to reduce the memory footprint of asd's tmpfs space and to speed up sync and unsync operations. The magic is in how the overlay mount only writes out data that has changed rather than the entire sync target. The same recovery features asd uses in its default mode are also active when running in overlayfs mode. Overlayfs mode is enabled by uncommenting the <code>USE_OVERLAYFS="yes"</code> line in <code>/etc/asd.conf</code> followed by a <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Restart">restart</a> of the daemon.
 </p>
-<h3><span class="mw-headline" id="Snapshots">Snapshots</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Snapshots">Snapshots</h3></div>
 <p>Odds are the "last good" backup of your sync target(s) is just fine still sitting happily on your filesystem. Upon restarting asd (on a reboot for example), a check is performed to see if asd was exited in some corrupted state. If it is detected, asd will snapshot the "last good" backup before it rotates it back into place. Note that, since asd tries to decrease the disk usage, it never really "copies" the full contents of the directory and just uses the hardlinks to the previous files. And during the rsync step, it creates new files so that the previous hardlinks are untouched. So trying to modify the directory during the time asd is trying to backup can leave the directory in some corrupted state.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> Users can disable the snapshot/backup feature entirely by uncommenting and setting the <code>USE_BACKUPS</code> variable to <code>"no"</code> in <code>/etc/asd.conf</code> if desired.</div>
+<strong>Note</strong> Users can disable the snapshot/backup feature entirely by uncommenting and setting the <code>USE_BACKUPS</code> variable to <code>"no"</code> in <code>/etc/asd.conf</code> if desired.</div>
 <p>You will find the snapshot in the same directory as the sync target and it will contain a date-time-stamp that corresponds to the time at which the recovery took place. For example, a <code>/foo/bar</code> snapshot will be <code>/foo/.bar-backup_asd-crashrecovery-20141221_070112.tar.zstd</code> -- of course, the date_time suffix will be different for you.
 </p>
 <p>To restore your snapshots:
@@ -340,12 +339,12 @@ OnUnitActiveSec=10min</pre>
 $ mv bar bar-bad
 $ tar -xvf .bar-backup_asd-crashrecovery-20141221_070112.tar.zstd
 </pre>
-<h4><span class="mw-headline" id="Clean_all_the_snapshot_with_the_clean_mode">Clean all the snapshot with the clean mode</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="Clean_all_the_snapshot_with_the_clean_mode">Clean all the snapshot with the clean mode</h4></div>
 <p>Running <code>asd clean</code> will delete ALL recovery snapshots that have accumulated. Run this only if you are sure that you want to delete them.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> If a sync target is owned by root or another user, and if asd is called to clean, it will throw errors based on the permissions of the sync targets. One can call this function with sudo or as root to avoid these errors.</div>
-<h2><span class="mw-headline" id="Support">Support</span></h2>
+<strong>Note</strong> If a sync target is owned by root or another user, and if asd is called to clean, it will throw errors based on the permissions of the sync targets. One can call this function with sudo or as root to avoid these errors.</div>
+<div class="mw-heading mw-heading2"><h2 id="Support">Support</h2></div>
 <p>Post in the <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?id=139141">discussion thread</a> with comments or concerns.
 </p>
 </div>
@@ -377,7 +376,7 @@ $ tar -xvf .bar-backup_asd-crashrecovery-20141221_070112.tar.zstd
 
 	<ul id="footer-icons" class="noprint">
 	<li id="footer-copyrightico"><a href="https://www.gnu.org/copyleft/fdl.html" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled"><img src="/resources/assets/licenses/gnu-fdl.png" alt="GNU Free Documentation License 1.3 or later" width="88" height="31" loading="lazy"></a></li>
-	<li id="footer-poweredbyico"><img src="/resources/assets/poweredby_mediawiki.svg" width="88" height="31" loading="lazy"></li>
+	<li id="footer-poweredbyico"><picture><source media="(min-width: 500px)" srcset="/resources/assets/poweredby_mediawiki.svg" width="88" height="31"><img src="/resources/assets/mediawiki_compact.svg" width="25" height="25" loading="lazy"></picture></li>
 </ul>
 
 </footer>
@@ -385,8 +384,100 @@ $ tar -xvf .bar-backup_asd-crashrecovery-20141221_070112.tar.zstd
 		</div>
 	</div> 
 </div> 
-<div class="vector-settings" id="p-dock-bottom">
-	<ul></ul>
+<div class="vector-header-container vector-sticky-header-container">
+	<div id="vector-sticky-header" class="vector-sticky-header">
+		<div class="vector-sticky-header-start">
+			<div class="vector-sticky-header-icon-start vector-button-flush-left vector-button-flush-right" aria-hidden="true">
+				<button class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-sticky-header-search-toggle" tabindex="-1" data-event-name="ui.vector-sticky-search-form.icon"><span class="vector-icon mw-ui-icon-search mw-ui-icon-wikimedia-search"></span>
+
+<span>Search</span>
+			</button>
+		</div>
+			
+		<div role="search" class="vector-search-box-vue vector-search-box">
+			<div class="vector-typeahead-search-container">
+				<div class="cdx-typeahead-search">
+					<form action="/index.php" id="vector-sticky-search-form" class="cdx-search-input cdx-search-input--has-end-button">
+						<div class="cdx-search-input__input-wrapper" data-search-loc="header-moved">
+							<div class="cdx-text-input cdx-text-input--has-start-icon">
+								<input class="cdx-text-input__input" type="search" name="search" placeholder="Search ArchWiki">
+								<span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
+							</div>
+							<input type="hidden" name="title" value="Special:Search">
+						</div>
+						<button class="cdx-button cdx-search-input__end-button">Search</button>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="vector-sticky-header-context-bar">
+				<nav aria-label="Contents" class="vector-toc-landmark">
+						
+					<div id="vector-sticky-header-toc" class="vector-dropdown mw-portlet mw-portlet-sticky-header-toc vector-sticky-header-toc vector-button-flush-left">
+						<input type="checkbox" id="vector-sticky-header-toc-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-vector-sticky-header-toc" class="vector-dropdown-checkbox " aria-label="Toggle the table of contents">
+						<label id="vector-sticky-header-toc-label" for="vector-sticky-header-toc-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only " aria-hidden="true"><span class="vector-icon mw-ui-icon-listBullet mw-ui-icon-wikimedia-listBullet"></span>
+
+<span class="vector-dropdown-label-text">Toggle the table of contents</span>
+						</label>
+						<div class="vector-dropdown-content">
+					
+						<div id="vector-sticky-header-toc-unpinned-container" class="vector-unpinned-container">
+						</div>
+					
+						</div>
+					</div>
+			</nav>
+				<div class="vector-sticky-header-context-bar-primary" aria-hidden="true"><span class="mw-page-title-main">Anything-sync-daemon</span></div>
+			</div>
+		</div>
+		<div class="vector-sticky-header-end" aria-hidden="true">
+			<div class="vector-sticky-header-icons">
+				<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-talk-sticky-header" tabindex="-1" data-event-name="talk-sticky-header"><span class="vector-icon mw-ui-icon-speechBubbles mw-ui-icon-wikimedia-speechBubbles"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-subject-sticky-header" tabindex="-1" data-event-name="subject-sticky-header"><span class="vector-icon mw-ui-icon-article mw-ui-icon-wikimedia-article"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-history-sticky-header" tabindex="-1" data-event-name="history-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-history mw-ui-icon-wikimedia-wikimedia-history"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only mw-watchlink" id="ca-watchstar-sticky-header" tabindex="-1" data-event-name="watch-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-star mw-ui-icon-wikimedia-wikimedia-star"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-edit-sticky-header" tabindex="-1" data-event-name="wikitext-edit-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-wikiText mw-ui-icon-wikimedia-wikimedia-wikiText"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-ve-edit-sticky-header" tabindex="-1" data-event-name="ve-edit-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-edit mw-ui-icon-wikimedia-wikimedia-edit"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-viewsource-sticky-header" tabindex="-1" data-event-name="ve-edit-protected-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-editLock mw-ui-icon-wikimedia-wikimedia-editLock"></span>
+
+<span></span>
+			</a>
+		</div>
+			<div class="vector-sticky-header-buttons">
+				<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive" id="ca-addsection-sticky-header" tabindex="-1" data-event-name="addsection-sticky-header"><span class="vector-icon mw-ui-icon-speechBubbleAdd-progressive mw-ui-icon-wikimedia-speechBubbleAdd-progressive"></span>
+
+<span>Add topic</span>
+			</a>
+		</div>
+			<div class="vector-sticky-header-icon-end">
+				<div class="vector-user-links">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="mw-portlet mw-portlet-dock-bottom emptyPortlet" id="p-dock-bottom">
+	<ul>
+		
+	</ul>
 </div>
 </body>
 </html>

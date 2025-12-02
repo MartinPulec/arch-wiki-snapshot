@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-os vector-sticky-header-enabled vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Kdump - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.1">
+<meta name="generator" content="MediaWiki 1.44.2">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -187,10 +187,10 @@
 		</div>
 		<div class="mw-content-container">
 			<main id="content" class="mw-body" style="margin: 0">
-				<header class="mw-body-header vector-page-titlebar">
+				<header class="mw-body-header vector-page-titlebar vector-feature-custom-font-size-clientpref--excluded">
 					<nav aria-label="Contents" class="vector-toc-landmark">
 						
-<div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left">
+<div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left" title="Table of Contents">
 	<input type="checkbox" id="vector-page-titlebar-toc-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-vector-page-titlebar-toc" class="vector-dropdown-checkbox " aria-label="Toggle the table of contents">
 	<label id="vector-page-titlebar-toc-label" for="vector-page-titlebar-toc-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only " aria-hidden="true"><span class="vector-icon mw-ui-icon-listBullet mw-ui-icon-wikimedia-listBullet"></span>
 
@@ -228,7 +228,7 @@
 	</div>
 </div>
 </header>
-				<div class="vector-column-end">
+				<div class="vector-column-end vector-feature-custom-font-size-clientpref--excluded">
 					<div class="vector-sticky-pinned-container">
 						<nav class="vector-page-tools-landmark" aria-label="Page tools">
 							<div id="vector-page-tools-pinned-container" class="vector-pinned-container">
@@ -276,16 +276,16 @@
 <p>In server production environments, the system and kdump kernels could be different - system kernel needs a lot of features and is compiled with a many kernel flags/drivers, while the kdump kernel goal is to be minimalistic and take as small amount of memory as possible, e.g. it could be compiled without network support if we store the crash dump to disk only. But for desktops and in general, for non-specific setups, the same kernel is used both as system and kdump kernels. It means we will load the same kernel code twice - one time as normal system kernel, another one to the reserved memory area, but with different kernel parameters.
 </p>
 <meta property="mw:PageProp/toc">
-<h2><span class="mw-headline" id="Alternatives_to_setup_kdump">Alternatives to setup kdump</span></h2>
-<h3><span class="mw-headline" id="The_automatic_way:_kdumpst">The automatic way: kdumpst</span></h3>
+<div class="mw-heading mw-heading2"><h2 id="Alternatives_to_setup_kdump">Alternatives to setup kdump</h2></div>
+<div class="mw-heading mw-heading3"><h3 id="The_automatic_way:_kdumpst">The automatic way: kdumpst</h3></div>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> kdumpst implicitly depends on GRUB and does not work with other <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loaders</a>, see <a rel="nofollow" class="external free" href="https://gitlab.freedesktop.org/gpiccoli/kdumpst/-/issues/21">https://gitlab.freedesktop.org/gpiccoli/kdumpst/-/issues/21</a>
+<strong>Note</strong> kdumpst implicitly depends on GRUB and does not work with other <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loaders</a>, see <a rel="nofollow" class="external free" href="https://gitlab.freedesktop.org/gpiccoli/kdumpst/-/issues/21">https://gitlab.freedesktop.org/gpiccoli/kdumpst/-/issues/21</a>
 </div>
 <p>The <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/kdumpst/">kdumpst</a></span><sup><small>AUR</small></sup> tool is an automatic way for loading kdump. It is highly customizable - it defaults to another method of log collecting (called pstore), but can be easily set to use kdump (a matter of setting <code>USE_PSTORE_RAM=0</code> on <code>/usr/share/kdumpst.d/00-default</code>. The tool also fallbacks to kdump in case pstore RAM region is not available.
 </p>
 <p>After installing kdumpst, one can check the journal and the following message means kdump is loaded: <code>kdumpst: panic kexec loaded successfully</code>. If a kernel crash happens, the kdump will be collected and in the subsequent boot, a message indicates the success of the operation: <code>kdumpst: logs saved in "/var/crash/kdumpst/logs"</code>. In that folder, the user will find a lightweight zip blob, that included a dmesg plus some extra data. The vmcore itself is saved on <code>/var/crash/kdumpst/crash</code>. For questions/issues, the #kdump IRC channel at OFTC could be used, or open issues in the kdumpst repository.
 </p>
-<h3><span class="mw-headline" id="The_automatic_way:_simple-kdump">The automatic way: simple-kdump</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="The_automatic_way:_simple-kdump">The automatic way: simple-kdump</h3></div>
 <p>The <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/simple-kdump/">simple-kdump</a></span><sup><small>AUR</small></sup> tool provides a simple and easy-to-config way to setup and collect kdump.
 Unlike <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/kdumpst/">kdumpst</a></span><sup><small>AUR</small></sup>, it is boot loader independent, has one and only one objective, save the vmcore file
 to <code>/var/crash/</code>.
@@ -303,10 +303,10 @@ It is recommended to use the Arch Linux linux or linux-lts kernel, which already
 </p>
 <p>After the reboot, there should be a new crash dump at <code>/var/crash/crashdump-*</code>.
 </p>
-<h3><span class="mw-headline" id="Manual_steps">Manual steps</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Manual_steps">Manual steps</h3></div>
 <p>In case the preference is for doing that manually, the below guide will help with that.
 </p>
-<h4><span class="mw-headline" id="Compiling_kernel">Compiling kernel</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="Compiling_kernel">Compiling kernel</h4></div>
 <p>Both System/kdump kernels requires some configuration flags that may not be set by default. Please consult <a href="../en/Kernel.html#Compilation" class="mw-redirect" title="Kernel Compilation">Kernel Compilation</a> article for more information about compiling a custom kernel in Arch. Here we will emphasize on Kdump specific configurations. Current default Arch kernel builds have these flags already set.  You can verify if your running kernel has these set by looking in <code>/proc/config.gz</code>.
 </p>
 <p>Please note that, the default <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-lts">linux-lts</a></span> kernels all have the needed options enabled.
@@ -327,7 +327,7 @@ COFNIG_DEBUG_INFO_BTF=y</pre>
 </p>
 <p>For reference, some details about building a kdump kernel or configuring the kernel parameters for kdump could be found in the kernel <a rel="nofollow" class="external text" href="https://docs.kernel.org/admin-guide/kdump/kdump.html">Kdump</a> documentation.
 </p>
-<h4><span class="mw-headline" id="Reuse_existing_kernel_and_initramfs">Reuse existing kernel and initramfs</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="Reuse_existing_kernel_and_initramfs">Reuse existing kernel and initramfs</h4></div>
 <p>The simplest way to setup kdump is to use the existing kernel and initramfs.
 The example here will use <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span> kernel as an example,
 which generates its initramfs at <code>/boot/initramfs-linux.img</code>.
@@ -337,7 +337,7 @@ But with extra systemd options to slightly change the boot sequence (to skip re-
 </p>
 <p>Thus we do not need to generate a special initramfs, unlike other distros (and our default initramfs generated by <a href="../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a> is already way smaller than our competitors).
 </p>
-<h4><span class="mw-headline" id="Setup_the_kdump_kernel">Setup the kdump kernel</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="Setup_the_kdump_kernel">Setup the kdump kernel</h4></div>
 <p>First, you need to reserve memory in the system kernel, for the kdump kernel loading. Edit your boot loader configuration and add <code>crashkernel=[size]</code> <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a>.
 </p>
 <p>Depending on the machine and how the kdump kernel was built, something from <i>256M</i> to <i>512M</i> is usually enough - it worth trying after setting everything to check if it succeeds. Note that the reserved memory is unavailable to the system kernel.
@@ -351,7 +351,7 @@ But with extra systemd options to slightly change the boot sequence (to skip re-
 <p>It loads the kdump kernel into the reserved area. Without the <code>-p</code> flag <i>kexec</i> would boot the kernel right away, but in presence of such flag, the kdump kernel will be loaded into the reserved memory but its boot is postponed until a crash happens.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> The parameter <code>nr_cpus=1</code> restricts the CPUs to 1 in the kdump environment, which is both memory saving (CPUs structures consume memory!) and also safer, as it restricts the surface for potential concurrency issues. If that option for some reason fails, there is another one to be used, instead: <code>maxcpus=1</code>. The second one consumes a bit more memory, since it initializes other CPUS structures but disables such CPUS except CPU0, whereas the <code>nr_cpus</code> one effectively drops the other CPUs structures. More information in the kernel <a rel="nofollow" class="external text" href="https://docs.kernel.org/core-api/cpu_hotplug.html">CPU hotplug</a> docs.</div>
+<strong>Note</strong> The parameter <code>nr_cpus=1</code> restricts the CPUs to 1 in the kdump environment, which is both memory saving (CPUs structures consume memory!) and also safer, as it restricts the surface for potential concurrency issues. If that option for some reason fails, there is another one to be used, instead: <code>maxcpus=1</code>. The second one consumes a bit more memory, since it initializes other CPUS structures but disables such CPUS except CPU0, whereas the <code>nr_cpus</code> one effectively drops the other CPUs structures. More information in the kernel <a rel="nofollow" class="external text" href="https://docs.kernel.org/core-api/cpu_hotplug.html">CPU hotplug</a> docs.</div>
 <p>Instead of running <i>kexec</i> manually you might want to setup <a href="../en/Systemd.html" title="Systemd">Systemd</a> service that will run kexec on boot:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/kdump.service</pre>
@@ -378,16 +378,16 @@ Thus in the <code>--append=</code> option, <code>systemd.mask=kdump.service</cod
 </p>
 <pre>$ cat /sys/kernel/kexec_crash_loaded
 </pre>
-<h4><span class="mw-headline" id="Testing_kdump_by_crashing_the_kernel">Testing kdump by crashing the kernel</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="Testing_kdump_by_crashing_the_kernel">Testing kdump by crashing the kernel</h4></div>
 <p>
 If you want to test crash then you can use <i>sysrq</i> for this. </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> a kernel crash may corrupt data on your disks, run it at your own risk!</div>
+<strong>Warning</strong> a kernel crash may corrupt data on your disks, run it at your own risk!</div>
 <pre># sync; echo 1 &gt; /proc/sys/kernel/sysrq; echo c &gt; /proc/sysrq-trigger
 </pre>
 <p>Once crash happens kexec will load your kdump kernel, which should look exactly like a regular boot, but with much smaller memory (the reserved size) and only one CPU core.
 </p>
-<h4><span class="mw-headline" id="Saving_the_crashed_kernel_memory">Saving the crashed kernel memory</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="Saving_the_crashed_kernel_memory">Saving the crashed kernel memory</h4></div>
 <p>Once booted into the kdump kernel, the idea is to save the relevant contents from <code>/proc/vmcore</code> to analyze it later. Though this is exposed as a file (hence it is possible to copy it, like in <code>cp /proc/vmcore /root/vmcore.crashdump</code>, this is not the recommended way. The vmcore is a full copy of system memory, so this file will have 64G if your machine has 64G, for example. It includes all data from all the userpace loaded, as well as free memory. So, the best way for saving it is use the <code>makedumpfile</code> utility. Such application is able to remove free memory and userspace irrelevant data, as well as compress the vmcore! Example of the usage:
 </p>
 <pre># makedumpfile -z -d 31 /proc/vmcore /root/vmcore.crashdump_compressed
@@ -425,7 +425,7 @@ ExecStop=/usr/bin/kexec -p -u
 [Install]
 WantedBy=multi-user.target
 </pre>
-<h4><span class="mw-headline" id="Early_kdump_using_mkinitcpio">Early kdump using mkinitcpio</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="Early_kdump_using_mkinitcpio">Early kdump using mkinitcpio</h4></div>
 <p>You might encounter a situation where the kernel crashes before the systemd service can be started.  In this case, it might be helpful to run kexec as a mkinitcpio hook rather than a service.
 </p>
 <p>First make a copy of your initramfs.  This will be used to run the crash kernel. 
@@ -474,7 +474,7 @@ HELPEOF
 </pre>
 <p>Now you can save the dump using makedumpfile (see <a href="#Saving_the_crashed_kernel_memory">#Saving the crashed kernel memory</a>)
 </p>
-<h2><span class="mw-headline" id="Analyzing_the_kernel_core_dump">Analyzing the kernel core dump</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="Analyzing_the_kernel_core_dump">Analyzing the kernel core dump</h2></div>
 <p>The best way for studying the saved kernel core dump involves tools aimed specifically at that. The most common alternative is the gdb-based <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=crash">crash</a></span>. Run <i>crash</i> as in
 </p>
 <pre>$ crash <i>vmlinux</i> <i>path</i>/crash.dump
@@ -485,7 +485,7 @@ HELPEOF
 </p>
 <p>Another recent alternative is <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=drgn">drgn</a></span>, a python-based and fully scriptable tool to extract information from the vmcore.
 </p>
-<h2><span class="mw-headline" id="See_also">See also</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="See_also">See also</h2></div>
 <ul>
 <li>
 <a rel="nofollow" class="external free" href="https://docs.kernel.org/admin-guide/kdump/kdump.html">https://docs.kernel.org/admin-guide/kdump/kdump.html</a> - Official kdump documentation</li>
@@ -530,7 +530,7 @@ HELPEOF
 
 	<ul id="footer-icons" class="noprint">
 	<li id="footer-copyrightico"><a href="https://www.gnu.org/copyleft/fdl.html" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled"><img src="/resources/assets/licenses/gnu-fdl.png" alt="GNU Free Documentation License 1.3 or later" width="88" height="31" loading="lazy"></a></li>
-	<li id="footer-poweredbyico"><img src="/resources/assets/poweredby_mediawiki.svg" width="88" height="31" loading="lazy"></li>
+	<li id="footer-poweredbyico"><picture><source media="(min-width: 500px)" srcset="/resources/assets/poweredby_mediawiki.svg" width="88" height="31"><img src="/resources/assets/mediawiki_compact.svg" width="25" height="25" loading="lazy"></picture></li>
 </ul>
 
 </footer>
@@ -538,8 +538,100 @@ HELPEOF
 		</div>
 	</div> 
 </div> 
-<div class="vector-settings" id="p-dock-bottom">
-	<ul></ul>
+<div class="vector-header-container vector-sticky-header-container">
+	<div id="vector-sticky-header" class="vector-sticky-header">
+		<div class="vector-sticky-header-start">
+			<div class="vector-sticky-header-icon-start vector-button-flush-left vector-button-flush-right" aria-hidden="true">
+				<button class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-sticky-header-search-toggle" tabindex="-1" data-event-name="ui.vector-sticky-search-form.icon"><span class="vector-icon mw-ui-icon-search mw-ui-icon-wikimedia-search"></span>
+
+<span>Search</span>
+			</button>
+		</div>
+			
+		<div role="search" class="vector-search-box-vue vector-search-box">
+			<div class="vector-typeahead-search-container">
+				<div class="cdx-typeahead-search">
+					<form action="/index.php" id="vector-sticky-search-form" class="cdx-search-input cdx-search-input--has-end-button">
+						<div class="cdx-search-input__input-wrapper" data-search-loc="header-moved">
+							<div class="cdx-text-input cdx-text-input--has-start-icon">
+								<input class="cdx-text-input__input" type="search" name="search" placeholder="Search ArchWiki">
+								<span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
+							</div>
+							<input type="hidden" name="title" value="Special:Search">
+						</div>
+						<button class="cdx-button cdx-search-input__end-button">Search</button>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="vector-sticky-header-context-bar">
+				<nav aria-label="Contents" class="vector-toc-landmark">
+						
+					<div id="vector-sticky-header-toc" class="vector-dropdown mw-portlet mw-portlet-sticky-header-toc vector-sticky-header-toc vector-button-flush-left">
+						<input type="checkbox" id="vector-sticky-header-toc-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-vector-sticky-header-toc" class="vector-dropdown-checkbox " aria-label="Toggle the table of contents">
+						<label id="vector-sticky-header-toc-label" for="vector-sticky-header-toc-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only " aria-hidden="true"><span class="vector-icon mw-ui-icon-listBullet mw-ui-icon-wikimedia-listBullet"></span>
+
+<span class="vector-dropdown-label-text">Toggle the table of contents</span>
+						</label>
+						<div class="vector-dropdown-content">
+					
+						<div id="vector-sticky-header-toc-unpinned-container" class="vector-unpinned-container">
+						</div>
+					
+						</div>
+					</div>
+			</nav>
+				<div class="vector-sticky-header-context-bar-primary" aria-hidden="true"><span class="mw-page-title-main">Kdump</span></div>
+			</div>
+		</div>
+		<div class="vector-sticky-header-end" aria-hidden="true">
+			<div class="vector-sticky-header-icons">
+				<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-talk-sticky-header" tabindex="-1" data-event-name="talk-sticky-header"><span class="vector-icon mw-ui-icon-speechBubbles mw-ui-icon-wikimedia-speechBubbles"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-subject-sticky-header" tabindex="-1" data-event-name="subject-sticky-header"><span class="vector-icon mw-ui-icon-article mw-ui-icon-wikimedia-article"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-history-sticky-header" tabindex="-1" data-event-name="history-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-history mw-ui-icon-wikimedia-wikimedia-history"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only mw-watchlink" id="ca-watchstar-sticky-header" tabindex="-1" data-event-name="watch-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-star mw-ui-icon-wikimedia-wikimedia-star"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-edit-sticky-header" tabindex="-1" data-event-name="wikitext-edit-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-wikiText mw-ui-icon-wikimedia-wikimedia-wikiText"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-ve-edit-sticky-header" tabindex="-1" data-event-name="ve-edit-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-edit mw-ui-icon-wikimedia-wikimedia-edit"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-viewsource-sticky-header" tabindex="-1" data-event-name="ve-edit-protected-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-editLock mw-ui-icon-wikimedia-wikimedia-editLock"></span>
+
+<span></span>
+			</a>
+		</div>
+			<div class="vector-sticky-header-buttons">
+				<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive" id="ca-addsection-sticky-header" tabindex="-1" data-event-name="addsection-sticky-header"><span class="vector-icon mw-ui-icon-speechBubbleAdd-progressive mw-ui-icon-wikimedia-speechBubbleAdd-progressive"></span>
+
+<span>Add topic</span>
+			</a>
+		</div>
+			<div class="vector-sticky-header-icon-end">
+				<div class="vector-user-links">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="mw-portlet mw-portlet-dock-bottom emptyPortlet" id="p-dock-bottom">
+	<ul>
+		
+	</ul>
 </div>
 </body>
 </html>

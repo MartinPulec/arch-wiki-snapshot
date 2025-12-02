@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-os vector-sticky-header-enabled vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Intel GVT-g - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.1">
+<meta name="generator" content="MediaWiki 1.44.2">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -526,10 +526,10 @@
 		</div>
 		<div class="mw-content-container">
 			<main id="content" class="mw-body" style="margin: 0">
-				<header class="mw-body-header vector-page-titlebar">
+				<header class="mw-body-header vector-page-titlebar vector-feature-custom-font-size-clientpref--excluded">
 					<nav aria-label="Contents" class="vector-toc-landmark">
 						
-<div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left">
+<div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left" title="Table of Contents">
 	<input type="checkbox" id="vector-page-titlebar-toc-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-vector-page-titlebar-toc" class="vector-dropdown-checkbox " aria-label="Toggle the table of contents">
 	<label id="vector-page-titlebar-toc-label" for="vector-page-titlebar-toc-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only " aria-hidden="true"><span class="vector-icon mw-ui-icon-listBullet mw-ui-icon-wikimedia-listBullet"></span>
 
@@ -568,7 +568,7 @@
 	</div>
 </div>
 </header>
-				<div class="vector-column-end">
+				<div class="vector-column-end vector-feature-custom-font-size-clientpref--excluded">
 					<div class="vector-sticky-pinned-container">
 						<nav class="vector-page-tools-landmark" aria-label="Page tools">
 							<div id="vector-page-tools-pinned-container" class="vector-pinned-container">
@@ -611,15 +611,22 @@
 <li><a href="../en/Intel_graphics.html" title="Intel graphics">Intel graphics</a></li>
 </ul>
 </div>
-<p><a rel="nofollow" class="external text" href="https://github.com/intel/gvt-linux/wiki/GVTg_Setup_Guide">Intel GVT-g</a> is a technology that provides mediated device passthrough for Intel GPUs (Broadwell and newer). It can be used to virtualize the GPU for multiple guest virtual machines, effectively providing near-native graphics performance in the virtual machine and still letting your host use the virtualized GPU normally. This is useful if you want accelerated graphics in Windows virtual machines running on ultrabooks without dedicated GPUs for <a href="../en/PCI_passthrough_via_OVMF.html" title="PCI passthrough via OVMF">full device passthrough</a>. (Similar technologies exist for NVIDIA and AMD GPUs, but they are available only in the "professional" GPU lines like Quadro, Radeon Pro and so on.)
+<p><a rel="nofollow" class="external text" href="https://github.com/intel/gvt-linux/wiki/GVTg_Setup_Guide">Intel GVT-g</a> is a deprecated technology that provides mediated device passthrough for Intel iGPUs on 5th generation (Broadwell) through 10th generation (Comet Lake) processors. It can be used to virtualize the GPU for multiple guest virtual machines, effectively providing near-native graphics performance in the virtual machine and still letting your host use the virtualized GPU normally. This is useful if you want accelerated graphics in Windows virtual machines running on ultrabooks without dedicated GPUs for <a href="../en/PCI_passthrough_via_OVMF.html" title="PCI passthrough via OVMF">full device passthrough</a>. (Similar technologies exist for NVIDIA and AMD GPUs, but they are available only in the "professional" GPU lines like Quadro, Radeon Pro and so on.)
 </p>
-<p>There is also a variant of this technology called GVT-d - it is essentially Intel's name for full device passthrough with the vfio-pci driver. With GVT-d, the host cannot use the virtualized GPU.
+<p>There is also a variant of this technology called GVT-d, which is Intel's name for full device passthrough using the vfio-pci driver. With GVT-d, the host cannot use the GPU while it is passed through to a guest.
 </p>
 <meta property="mw:PageProp/toc">
-<h2><span class="mw-headline" id="Prerequisite">Prerequisite</span></h2>
-<p>Intel GVT-g currently only works with Intel Broadwell (5th gen) to Comet Lake (10th gen), this is due to a lack of support in the i915 driver for Ice Lake (10th gen mobile processors), Rocket Lake (11th gen desktop) and newer. See this <a rel="nofollow" class="external text" href="https://www.intel.com/content/www/us/en/support/articles/000058558/graphics.html">Intel Support Post</a> and this <a rel="nofollow" class="external text" href="https://github.com/intel/gvt-linux/issues/126">Github Issue</a> for details. 
+<div class="mw-heading mw-heading2"><h2 id="Prerequisite">Prerequisite</h2></div>
+<p>Intel GVT-g support is limited to processors from the 5th generation (Broadwell) through the 10th generation (Comet Lake). This is due to a lack of support in the i915 driver for the Gen11 graphics architecture found in 10th generation mobile processors (Ice Lake), and all subsequent architectures <a rel="nofollow" class="external autonumber" href="https://github.com/intel/gvt-linux/issues/126">[1]</a>, <a rel="nofollow" class="external autonumber" href="https://www.intel.com/content/www/us/en/support/articles/000058558/graphics.html">[2]</a>. While Ice Lake processors support GVT-d (full GPU passthrough), they do not support GVT-g.
 </p>
-<p>Currently Ice Lake supports GVT-d only. For <a href="https://en.wikipedia.org/wiki/Intel_Graphics_Technology#Xe_LP_Architecture_.28Gen12.29" class="extiw" title="wikipedia:Intel Graphics Technology">Xe Architecture (Gen12)</a> based GPUs, SR-IOV feature is needed instead. Refer to <a href="../en/QEMU/Guest_graphics_acceleration.html#SR-IOV" title="QEMU/Guest graphics acceleration">QEMU/Guest graphics acceleration#SR-IOV</a> for more details.
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> <a rel="nofollow" class="external text" href="https://github.com/intel/gvt-linux">The official Intel GVT-g GitHub repository</a> has been archived with the following notice:
+<p>"This project will no longer be maintained by Intel.  
+This project has been identified as having known security escapes.  
+Intel has ceased development and contributions including, but not limited to, maintenance, bug fixes, new releases, or updates, to this project.  
+</p>
+Intel no longer accepts patches to this project."</div>
+<p>For <a href="https://en.wikipedia.org/wiki/Intel_Graphics_Technology#Xe_LP_Architecture_.28Gen12.29" class="extiw" title="wikipedia:Intel Graphics Technology">Xe Architecture (Gen12)</a> and newer, the SR-IOV feature is the intended replacement. Refer to. Refer to <a href="../en/QEMU/Guest_graphics_acceleration.html#SR-IOV" title="QEMU/Guest graphics acceleration">QEMU/Guest graphics acceleration#SR-IOV</a> for more details.
 </p>
 <p>You will have to create a virtual GPU first, then assign it to your virtual machine. The guest with a virtual GPU sees it as a "regular" GPU - just install the latest native drivers. (The virtual GPU actually does need specialized drivers to work correctly, but all the required changes are present in the latest upstream Linux/Windows drivers.)
 </p>
@@ -637,7 +644,7 @@
 </ul>
 <p>After rebooting with the <code>i915.enable_gvt=1</code> flag, you should be able to create virtual GPUs.
 </p>
-<h3><span class="mw-headline" id="With_mdevctl">With mdevctl</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="With_mdevctl">With mdevctl</h3></div>
 <p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/mdevctl/">mdevctl</a></span><sup><small>AUR</small></sup>.
 </p>
 <ul><li>You can list the types of virtual GPUs which can be created on your system like this:</li></ul>
@@ -655,7 +662,7 @@
 <pre># mdevctl start --uuid 8629ed0d-f6a9-458c-a54c-5650e39180e2
 </pre>
 <ul><li>You may need to restart libvirtd daemon to get the devices to show up.</li></ul>
-<h3><span class="mw-headline" id="Without_mdevctl">Without mdevctl</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Without_mdevctl">Without mdevctl</h3></div>
 <p>Use this section if for some reason you don't want to or cannot use the mdevctl instructions above.
 </p>
 <ul>
@@ -673,7 +680,7 @@
 <pre>$ cat /sys/devices/pci0000\:00/$GVT_PCI/mdev_supported_types/$GVT_TYPE/description
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> If the directory is presented but contains nothing, you may try to increase the AGP aperture size in your computer firmware.</div>
+<strong>Note</strong> If the directory is presented but contains nothing, you may try to increase the AGP aperture size in your computer firmware.</div>
 <p>Pick a type you want to use - we will refer to it as <code>$GVT_TYPE</code> below.
 </p>
 <p>Use the GUID you have created to create a virtual GPU with a chosen type:
@@ -686,7 +693,7 @@
 </pre>
 <p>Continue with one of the two options below based on your preference.
 </p>
-<h4><span class="mw-headline" id="Option_1:_libvirt_QEMU_hook">Option 1: libvirt QEMU hook</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="Option_1:_libvirt_QEMU_hook">Option 1: libvirt QEMU hook</h4></div>
 <p>With libvirt, a <a rel="nofollow" class="external text" href="https://www.libvirt.org/hooks.html">libvirt QEMU hook</a> can be used to automatically create the virtual GPU when the machine is started, and to remove it when the machine is stopped. Replace the variables with the values you found above and the DOMAIN with the name of the machine.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/libvirt/hooks/qemu</pre>
@@ -706,14 +713,14 @@ fi
 <p>Do not forget to make the file <a href="../en/Help:Reading.html#Make_executable" class="mw-redirect" title="Executable">executable</a> and to quote each variable value e.g. <code>GVT_PCI="0000:00:02.0"</code>. You will also need to restart the libvirtd daemon so that it is aware of the new hook. 
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> 
+<strong>Note</strong> 
 <ul>
 <li>If you use libvirt user session, you need to tweak the script to use <a href="../en/General_recommendations.html#Security" title="General recommendations">privilege elevation</a> commands, such as <span class="plainlinks archwiki-template-man" title="$ man 1 pkexec"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/pkexec.1">pkexec(1)</a></span> or a no-password <a href="../en/Sudo.html" title="Sudo">sudo</a>.</li>
 <li>The XML of the domain is feed to the hook script through stdin. You can use <code>xmllint</code> and XPath expression to extract <code>GVT_GUID</code> from stdin, e.g.: <pre>GVT_GUID="$(xmllint --xpath 'string(/domain/devices/hostdev[@type="mdev"][@display="on"]/source/address/@uuid)' -)"</pre>
 </li>
 </ul>
 </div>
-<h4><span class="mw-headline" id="Option_2:_systemd_service_at_boot">Option 2: systemd service at boot</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="Option_2:_systemd_service_at_boot">Option 2: systemd service at boot</h4></div>
 <p>Alternatively to a QEMU hook, you can let systemd create the virtual GPU at boot. This does not rely on libvirt and appears to have no GPU performance drawbacks on the host machine as long as the virtual GPU is not used by a virtual machine.
 </p>
 <p>Create a <a href="../en/Bash.html" title="Bash">bash</a> script and place the <i>echo</i> command to create the virtual GPU determined in <a href="#Prerequisite">Prerequisite</a> inside. Make it <a href="../en/Help:Reading.html#Make_executable" class="mw-redirect" title="Executable">executable</a>. Ensure that the script cannot be modified by unprivileged users as it will be run as root at boot.
@@ -724,17 +731,17 @@ fi
 Type=oneshot
 User=root
 </pre>
-<h2><span class="mw-headline" id="Assign_a_virtual_GPU_to_the_virtual_machine">Assign a virtual GPU to the virtual machine</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="Assign_a_virtual_GPU_to_the_virtual_machine">Assign a virtual GPU to the virtual machine</h2></div>
 <p>If you run <code>qemu</code> or <code>libvirtd</code> as a regular user, it may complain that some path <code>/dev/vfio/<i>number</i></code> is not writeable. You need to enable write access to that path for the account, with <code>chmod</code> or <code>setfacl</code>.
 </p>
-<h3><span class="mw-headline" id="QEMU_CLI">QEMU CLI</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="QEMU_CLI">QEMU CLI</h3></div>
 <p>To create a virtual machine with the virtualized GPU, add this parameter to the QEMU command line:
 </p>
 <pre>-device vfio-pci,sysfsdev=/sys/bus/mdev/devices/$GVT_GUID
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> KVM must be enabled by <code>-enable-kvm</code>.</div>
-<h3><span class="mw-headline" id="libvirt">libvirt</span></h3>
+<strong>Note</strong> KVM must be enabled by <code>-enable-kvm</code>.</div>
+<div class="mw-heading mw-heading3"><h3 id="libvirt">libvirt</h3></div>
 <p>Add the following device to the <code><i>devices</i></code> element of the virtual machine definition:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ virsh edit <i>vmname</i></pre>
@@ -747,18 +754,18 @@ User=root
 ...</pre>
 <p>Replace <code><i>GVT_GUID</i></code> with the UUID of your virtual GPU.
 </p>
-<h2><span class="mw-headline" id="Getting_virtual_GPU_display_contents">Getting virtual GPU display contents</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="Getting_virtual_GPU_display_contents">Getting virtual GPU display contents</h2></div>
 <p>There are several possible ways to retrieve the display contents from the virtual GPU.
 </p>
-<h3><span class="mw-headline" id="Using_DMA-BUF_display">Using DMA-BUF display</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Using_DMA-BUF_display">Using DMA-BUF display</h3></div>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> According to this <a rel="nofollow" class="external text" href="https://github.com/intel/gvt-linux/issues/20">issue</a>, this method will not work with UEFI guests using (unmodified) OVMF. Use a BIOS-based guest (e.g. using SeaBIOS) or see below for patches/workarounds.</div>
-<h4><span class="mw-headline" id="QEMU_CLI_2">QEMU CLI</span></h4>
+<strong>Warning</strong> According to this <a rel="nofollow" class="external text" href="https://github.com/intel/gvt-linux/issues/20">issue</a>, this method will not work with UEFI guests using (unmodified) OVMF. Use a BIOS-based guest (e.g. using SeaBIOS) or see below for patches/workarounds.</div>
+<div class="mw-heading mw-heading4"><h4 id="QEMU_CLI_2">QEMU CLI</h4></div>
 <p>Add <code>display=on,x-igd-opregion=on</code> to the end of <code>-device vfio-pci</code> parameter, e.g.:
 </p>
 <pre>-device vfio-pci,sysfsdev=/sys/bus/mdev/devices/$GVT_GUID,display=on,x-igd-opregion=on
 </pre>
-<h4><span class="mw-headline" id="libvirt_2">libvirt</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="libvirt_2">libvirt</h4></div>
 <p>First, modify the XML schema of the virtual machine definition so that we can use QEMU-specific elements later. Change
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ virsh edit <i>vmname</i></pre>
@@ -783,18 +790,17 @@ User=root
   &lt;/qemu:override&gt;
 ...
 </pre>
-<h3>
-<span id="Using_DMA-BUF_with_UEFI.2FOVMF"></span><span class="mw-headline" id="Using_DMA-BUF_with_UEFI/OVMF">Using DMA-BUF with UEFI/OVMF</span>
-</h3>
-<p>As stated above, DMA-BUF display will not work with UEFI-based guests using (unmodified) OVMF because it will not create the necessary ACPI OpRegion exposed via QEMU's nonstandard fw_cfg interface. See <a rel="nofollow" class="external text" href="https://bugzilla.tianocore.org/show_bug.cgi?id=935">this OVMF bug</a><sup title="Last check status: domain name not resolved">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2025-03-15 ⓘ]</sup> for details of this issue.
+<div class="mw-heading mw-heading3"><h3 id="Using_DMA-BUF_with_UEFI/OVMF">
+<span id="Using_DMA-BUF_with_UEFI.2FOVMF"></span>Using DMA-BUF with UEFI/OVMF</h3></div>
+<p>As stated above, DMA-BUF display will not work with UEFI-based guests using (unmodified) OVMF because it will not create the necessary ACPI OpRegion exposed via QEMU's nonstandard fw_cfg interface. See <a rel="nofollow" class="external text" href="https://bugzilla.tianocore.org/show_bug.cgi?id=935">this OVMF bug</a><sup>[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2025-03-15—domain name not resolved]</sup> for details of this issue.
 </p>
 <p>According to <a rel="nofollow" class="external text" href="https://github.com/intel/gvt-linux/issues/23#issuecomment-468125999">this GitHub comment</a>, the OVMF bug report suggests several solutions to the problem. It is possible to:
 </p>
 <ul>
 <li>
-<a rel="nofollow" class="external text" href="https://bugzilla.tianocore.org/attachment.cgi?id=165">patch</a><sup title="Last check status: domain name not resolved">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2025-03-15 ⓘ]</sup> OVMF (<a rel="nofollow" class="external text" href="https://bugzilla.tianocore.org/show_bug.cgi?id=935#c4">details</a><sup title="Last check status: domain name not resolved">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2025-03-15 ⓘ]</sup>) to add an Intel-specific quirk (most straightforward but non-upstreamable solution);</li>
+<a rel="nofollow" class="external text" href="https://bugzilla.tianocore.org/attachment.cgi?id=165">patch</a><sup>[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2025-03-15—domain name not resolved]</sup> OVMF (<a rel="nofollow" class="external text" href="https://bugzilla.tianocore.org/show_bug.cgi?id=935#c4">details</a><sup>[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2025-03-15—domain name not resolved]</sup>) to add an Intel-specific quirk (most straightforward but non-upstreamable solution);</li>
 <li>
-<a rel="nofollow" class="external text" href="https://bugzilla.tianocore.org/attachment.cgi?id=168">patch</a><sup title="Last check status: domain name not resolved">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2025-03-15 ⓘ]</sup> the host kernel (<a rel="nofollow" class="external text" href="https://bugzilla.tianocore.org/show_bug.cgi?id=935#c12">details</a><sup title="Last check status: domain name not resolved">[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2025-03-15 ⓘ]</sup>) to automatically provide an option ROM for the virtual GPU containing basically the same code but in option ROM format;</li>
+<a rel="nofollow" class="external text" href="https://bugzilla.tianocore.org/attachment.cgi?id=168">patch</a><sup>[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2025-03-15—domain name not resolved]</sup> the host kernel (<a rel="nofollow" class="external text" href="https://bugzilla.tianocore.org/show_bug.cgi?id=935#c12">details</a><sup>[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2025-03-15—domain name not resolved]</sup>) to automatically provide an option ROM for the virtual GPU containing basically the same code but in option ROM format;</li>
 <li>
 <a rel="nofollow" class="external text" href="http://120.25.59.132:3000/vbios_gvt_uefi.rom">extract the OpROM</a> from the kernel patch (<a rel="nofollow" class="external text" href="https://www.reddit.com/r/VFIO/comments/av736o/creating_a_clover_bios_nonuefi_install_for_qemu/ehdz6mf/">source</a>) and feed it to QEMU as an override.</li>
 </ul>
@@ -805,16 +811,16 @@ User=root
 <p>Download <code>vbios_gvt_uefi.rom</code> and place it somewhere world-accessible (we will use <code>/</code> to make an example).
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> 
+<strong>Note</strong> 
 <ul>
 <li>If using <a href="../en/SELinux.html" title="SELinux">SELinux</a>, it will deny access to the <i>.rom</i> file resulting in a message that QEMU is unable to locate it.</li>
 <li>To securely grant access to the <i>.rom</i> file without disabling SELinux or switching to passive mode, put the <code>vbios_gvt_uefi.rom</code> file in <code>/var/lib/libvirt</code> then run <code>restorecon -Rv /var/lib/libvirt</code> as root. SELinux will then apply the proper labels, granting access to QEMU's svirt_t policy.</li>
 </ul>
 </div>
-<h4><span class="mw-headline" id="QEMU_CLI_3">QEMU CLI</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="QEMU_CLI_3">QEMU CLI</h4></div>
 <p>To specify the vBIOS ROM file, append <code>,romfile=/path/to/vbios_gvt_uefi.rom</code> to <code>-device vfio-pci,...</code>.
 </p>
-<h4><span class="mw-headline" id="libvirt_3">libvirt</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="libvirt_3">libvirt</h4></div>
 <p>Then edit the virtual machine definition, appending this configuration to the <code>&lt;qemu:override&gt;</code> element we added earlier:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ virsh edit <i>vmname</i></pre>
@@ -830,17 +836,16 @@ User=root
   &lt;/qemu:override&gt;
 ...
 </pre>
-<h3>
-<span id="Enable_RAMFB_display_.28optional.29"></span><span class="mw-headline" id="Enable_RAMFB_display_(optional)">Enable RAMFB display (optional)</span>
-</h3>
+<div class="mw-heading mw-heading3"><h3 id="Enable_RAMFB_display_(optional)">
+<span id="Enable_RAMFB_display_.28optional.29"></span>Enable RAMFB display (optional)</h3></div>
 <p>This should be combined with the above DMA-BUF configuration in order to also display everything that happens before the guest Intel driver is loaded (i.e. POST, the firmware interface, and the guest initialization).
 </p>
-<h4><span class="mw-headline" id="QEMU_CLI_4">QEMU CLI</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="QEMU_CLI_4">QEMU CLI</h4></div>
 <p>Add <code>ramfb=on,driver=vfio-pci-nohotplug</code> to the end of <code>-device vfio-pci</code> parameter, e.g.:
 </p>
 <pre>-device vfio-pci,sysfsdev=/sys/bus/mdev/devices/$GVT_GUID,display=on,x-igd-opregion=on,ramfb=on,driver=vfio-pci-nohotplug
 </pre>
-<h4><span class="mw-headline" id="libvirt_4">libvirt</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="libvirt_4">libvirt</h4></div>
 <p>First, follow the first step of <a href="#libvirt_2">this section</a> to modify the XML schema.
 </p>
 <p>Then add this configuration to the end of the <code>&lt;domain&gt;</code> element, i.e. insert this text right above the closing <code>&lt;/domain&gt;</code> tag:
@@ -858,10 +863,10 @@ User=root
   &lt;/qemu:override&gt;
 ...
 </pre>
-<h2><span class="mw-headline" id="Display_virtual_GPU_output">Display virtual GPU output</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="Display_virtual_GPU_output">Display virtual GPU output</h2></div>
 <p>Due to an <a rel="nofollow" class="external text" href="https://gitlab.freedesktop.org/spice/spice-gtk/issues/100">issue</a> with spice-gtk, the configuration is different depending on the SPICE client EGL implementation.
 </p>
-<h3><span class="mw-headline" id="Output_using_QEMU_GTK_display">Output using QEMU GTK display</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Output_using_QEMU_GTK_display">Output using QEMU GTK display</h3></div>
 <p>This method will get you higher refresh rate and less lag / input delay than SPICE display on weak CPUs, at least with Windows guests. Also it is less CPU-intensive than Looking Glass. But you lose useful SPICE display features, such as:
 </p>
 <ul>
@@ -878,11 +883,11 @@ User=root
 <li>If you need access to the BIOS, you need to <a href="#Enable_RAMFB_display_(optional)">enable the RAMFB display</a>.</li>
 </ul>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> In QEMU GTK, <code>Ctrl+Alt+G</code> grabs or releases the mouse cursor, <code>Ctrl+Alt+F</code> switches between windowed and fullscreen modes.</div>
-<h4><span class="mw-headline" id="QEMU_CLI_5">QEMU CLI</span></h4>
+<strong>Tip</strong> In QEMU GTK, <code>Ctrl+Alt+G</code> grabs or releases the mouse cursor, <code>Ctrl+Alt+F</code> switches between windowed and fullscreen modes.</div>
+<div class="mw-heading mw-heading4"><h4 id="QEMU_CLI_5">QEMU CLI</h4></div>
 <p>Add <code>-display gtk,gl=on</code> to the command line. The QEMU VGA adapter can be disabled by adding <code>-vga none</code>, or you have two virtual screens, and the one connected to the QEMU VGA adapter is blank.
 </p>
-<h4><span class="mw-headline" id="libvirt_5">libvirt</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="libvirt_5">libvirt</h4></div>
 <ul>
 <li>Ensure the above added <code>&lt;hostdev&gt;</code> device have the <code>display</code> attribute set to <code>'off'</code>.</li>
 <li>Ensure you have added the dummy line <code>xmlns:qemu='http://libvirt.org/schemas/domain/qemu/1.0'</code> to your <code>domain</code> (from step <a href="#libvirt_2">Using DMA-BUF display</a>).</li>
@@ -912,12 +917,12 @@ Insert the number you just determined in the <code>env name='DISPLAY'</code> lin
     &lt;/qemu:device&gt;
   &lt;/qemu:override&gt;
 ...</pre>
-<h4><span class="mw-headline" id="scaling">scaling</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="scaling">scaling</h4></div>
 <p>In windowed mode, <code>-display gtk,gl=on,zoom-to-fit=off</code> makes the GTK display window size be as large as the resolution of the guest display is, this gives you 1:1 pixel aspect ratio. Turning this on or leaving it out makes the guest display stretch/shrink to how big the GTK window happens to be (ugly scaling).
 </p>
 <p>In fullscreen, you will get scaling anyways and when you change the guest resolution, the scaling only updates when lowering the resolution. When you increase the resolution the image grows larger than your display, so you need to exit fullscreen and enter it again.
 </p>
-<h4><span class="mw-headline" id="GTK_display_CPU_load">GTK display CPU load</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="GTK_display_CPU_load">GTK display CPU load</h4></div>
 <p>This is a tradeoff between methods of copying the guest framebuffer to the GTK display window.
 </p>
 <p><code>gl=es</code> in place of <code>gl=on</code> delegates the task of copying the guest framebuffer to the GPU (via DMA).
@@ -926,11 +931,11 @@ Insert the number you just determined in the <code>env name='DISPLAY'</code> lin
 </p>
 <p>When this frame buffer copy operation shares GPU resources with an application loading the GPU, the displayed FPS are likely to drop and stuttering (irregular intervals between displayed frames) is likely to occur.
 </p>
-<h3><span class="mw-headline" id="Output_using_SPICE_with_MESA_EGL">Output using SPICE with MESA EGL</span></h3>
-<h4><span class="mw-headline" id="QEMU_CLI_6">QEMU CLI</span></h4>
+<div class="mw-heading mw-heading3"><h3 id="Output_using_SPICE_with_MESA_EGL">Output using SPICE with MESA EGL</h3></div>
+<div class="mw-heading mw-heading4"><h4 id="QEMU_CLI_6">QEMU CLI</h4></div>
 <p>Add <code>-display spice-app,gl=on</code> to the command line. <code>virt-viewer</code> must be installed.
 </p>
-<h4><span class="mw-headline" id="libvirt_6">libvirt</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="libvirt_6">libvirt</h4></div>
 <ol>
 <li>Ensure the above added <code>&lt;hostdev&gt;</code> device have the <code>display</code> attribute set to <code>'on'</code>.</li>
 <li>Remove all <code>&lt;graphics&gt;</code> and <code>&lt;video&gt;</code> devices.</li>
@@ -951,8 +956,8 @@ Insert the number you just determined in the <code>env name='DISPLAY'</code> lin
 </p>
 <pre>&lt;gl enable='yes' rendernode='/dev/dri/by-path/pci-0000:00:02.0-render'/&gt;
 </pre>
-<h3><span class="mw-headline" id="Output_using_SPICE_with_NVIDIA_EGL_or_VNC">Output using SPICE with NVIDIA EGL or VNC</span></h3>
-<h4><span class="mw-headline" id="libvirt_7">libvirt</span></h4>
+<div class="mw-heading mw-heading3"><h3 id="Output_using_SPICE_with_NVIDIA_EGL_or_VNC">Output using SPICE with NVIDIA EGL or VNC</h3></div>
+<div class="mw-heading mw-heading4"><h4 id="libvirt_7">libvirt</h4></div>
 <ol>
 <li>Ensure the above added &lt;hostdev&gt; device have the display attribute set to 'on'.</li>
 <li>Remove all &lt;graphics&gt; and &lt;video&gt; devices.</li>
@@ -977,13 +982,13 @@ Insert the number you just determined in the <code>env name='DISPLAY'</code> lin
   &lt;gl rendernode='/dev/dri/by-path/pci-0000:00:02.0-render'/&gt;
 &lt;/graphics&gt;
 </pre>
-<h3><span class="mw-headline" id="Disable_all_outputs">Disable all outputs</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Disable_all_outputs">Disable all outputs</h3></div>
 <p>If all outputs are disabled, the only way to see the display output would then be using a software server like RDP, VNC or Looking Glass. See <a href="../en/PCI_passthrough_via_OVMF.html#Using_Looking_Glass_to_stream_guest_screen_to_the_host" title="PCI passthrough via OVMF">PCI passthrough via OVMF#Using Looking Glass to stream guest screen to the host</a> for details.
 </p>
-<h4><span class="mw-headline" id="QEMU_CLI_7">QEMU CLI</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="QEMU_CLI_7">QEMU CLI</h4></div>
 <p>In the <code>-device vfio-pci</code> parameter, remove <code>ramfb=on</code> and change to <code>display=off</code>. Add <code>-vga none</code> to disable the QEMU VGA adapter.
 </p>
-<h4><span class="mw-headline" id="libvirt_8">libvirt</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="libvirt_8">libvirt</h4></div>
 <p>To ensure no emulated GPU is added, one can edit the virtual machine configuration and do the following changes:
 </p>
 <ol>
@@ -991,8 +996,8 @@ Insert the number you just determined in the <code>env name='DISPLAY'</code> lin
 <li>Change the &lt;video&gt; device to be type 'none'.</li>
 <li>Ensure the above added &lt;hostdev&gt; device have the <code>display</code> attribute set to 'off'.</li>
 </ol>
-<h2><span class="mw-headline" id="Troubleshooting">Troubleshooting</span></h2>
-<h3><span class="mw-headline" id="Missing_mdev_supported_types_directory">Missing mdev_supported_types directory</span></h3>
+<div class="mw-heading mw-heading2"><h2 id="Troubleshooting">Troubleshooting</h2></div>
+<div class="mw-heading mw-heading3"><h3 id="Missing_mdev_supported_types_directory">Missing mdev_supported_types directory</h3></div>
 <p>If you have followed instructions and added <code>i915.enable_gvt=1</code> kernel parameter, but there is still no <code>/sys/bus/pci/devices/0000:02:00.0/mdev_supported_types</code> directory, first double-check that the <code>kvmgt</code> module is loaded.
 </p>
 <p>You should also check whether your hardware is supported. Check the output of <a href="../en/Core_utilities.html#Essentials" class="mw-redirect" title="Dmesg">dmesg</a> for this message:
@@ -1002,16 +1007,16 @@ Insert the number you just determined in the <code>env name='DISPLAY'</code> lin
 <p>If that is the case, you may want to check upstream for support plans.
 For example, for the "Coffee Lake" (CFL) platform support, see <a rel="nofollow" class="external free" href="https://github.com/intel/gvt-linux/issues/53">https://github.com/intel/gvt-linux/issues/53</a>
 </p>
-<h3><span class="mw-headline" id="Windows_hanging_with_bad_memory_error">Windows hanging with bad memory error</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Windows_hanging_with_bad_memory_error">Windows hanging with bad memory error</h3></div>
 <p>If Windows is hanging due to a Bad Memory error look for more details via <i>dmesg</i>. If the host kernel logs show something like rlimit memory exceeded, you may need to increase the max memory Linux allows QEMU to allocate. Assuming you are in the group <code>kvm</code>, add the following to <code>/etc/security/limits.d/42-intel-gvtg.conf</code> and restarting the system.
 </p>
 <pre># qemu kvm, need high memlock to allocate memory for vga-passthrough
 @kvm - memlock 8388608
 </pre>
-<h3><span class="mw-headline" id="Using_Intel_GVT-G_in_combination_with_PRIME_render_offload">Using Intel GVT-G in combination with PRIME render offload</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Using_Intel_GVT-G_in_combination_with_PRIME_render_offload">Using Intel GVT-G in combination with PRIME render offload</h3></div>
 <p>Using Intel GVT-G while also using NVIDIA's <a href="../en/PRIME.html#PRIME_render_offload" title="PRIME">PRIME render offload</a> on the host causes several <a rel="nofollow" class="external text" href="https://github.com/intel/gvt-linux/issues/162">issues</a> on the guest. It is suggested to use <a href="../en/Bumblebee.html#Power_management" class="mw-redirect" title="Bbswitch">bbswitch</a> to keep the card powered off or use it in conjunction with <a href="../en/Bumblebee.html" title="Bumblebee">Bumblebee</a>, <a href="../en/Nvidia-xrun.html" title="Nvidia-xrun">nvidia-xrun</a> or <a href="../en/NVIDIA_Optimus.html#Using_optimus-manager" title="NVIDIA Optimus">optimus-manager</a>.
 </p>
-<h3><span class="mw-headline" id="No_display">No display</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="No_display">No display</h3></div>
 <p>If your virtual machine is not displaying anything when using RAMFB display, try setting the following additional options to the existing &lt;qemu:commandline&gt; tag:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ virsh edit <i>vmname</i></pre>
@@ -1022,8 +1027,8 @@ For example, for the "Coffee Lake" (CFL) platform support, see <a rel="nofollow"
   &lt;/qemu:commandline&gt;
 ...</pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> As of QEMU 8.1.0, qemu-ui-gtk with OpenGL <a rel="nofollow" class="external text" href="https://gitlab.com/qemu-project/qemu/-/issues/1891">is reported to be broken</a> for GVT-g, resulting in a black guest display after guest driver initialization and the message <code>qemu: eglCreateImageKHR failed</code> being printed to the terminal if running <i>qemu</i> directly (without libvirt). <a href="../en/Downgrading_packages.html" class="mw-redirect" title="Downgrade">Downgrade</a> to 8.0.4 for a temporary fix.</div>
-<h3><span class="mw-headline" id="Garbled_graphics">Garbled graphics</span></h3>
+<strong>Note</strong> As of QEMU 8.1.0, qemu-ui-gtk with OpenGL <a rel="nofollow" class="external text" href="https://gitlab.com/qemu-project/qemu/-/issues/1891">is reported to be broken</a> for GVT-g, resulting in a black guest display after guest driver initialization and the message <code>qemu: eglCreateImageKHR failed</code> being printed to the terminal if running <i>qemu</i> directly (without libvirt). <a href="../en/Downgrading_packages.html" class="mw-redirect" title="Downgrade">Downgrade</a> to 8.0.4 for a temporary fix.</div>
+<div class="mw-heading mw-heading3"><h3 id="Garbled_graphics">Garbled graphics</h3></div>
 <p>If your virtual machine is displaying artifacts when the mouse enters the virtual machine screen, the following <a rel="nofollow" class="external text" href="https://github.com/intel/gvt-linux/issues/152#issuecomment-637790127">workaround</a> might work.
 </p>
 <p>First modify the XML schema as shown on <a href="#libvirt_2">#libvirt 2</a>.
@@ -1036,12 +1041,12 @@ For example, for the "Coffee Lake" (CFL) platform support, see <a rel="nofollow"
     &lt;qemu:env name="MESA_LOADER_DRIVER_OVERRIDE" value="i965"/&gt;
   &lt;/qemu:commandline&gt;
 ...</pre>
-<h3><span class="mw-headline" id="Host_hanging_when_trying_to_suspend">Host hanging when trying to suspend</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Host_hanging_when_trying_to_suspend">Host hanging when trying to suspend</h3></div>
 <p>After creating a GVT-g virtual GPU, host may hang when trying to suspend. See <a rel="nofollow" class="external text" href="https://github.com/intel/gvt-linux/issues/156">github</a> to trace this bug.
 </p>
 <p>A workaround is to remove the created GVT-g virtual GPUs before suspend and recreate the GVT-g virtual GPUs after waking from suspend. You can install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/gvtg_vgpu-git/">gvtg_vgpu-git</a></span><sup><small>AUR</small></sup> package to automatically do this for you.
 </p>
-<h3><span class="mw-headline" id="Changing_the_display_resolution_of_virtual_GPU">Changing the display resolution of virtual GPU</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Changing_the_display_resolution_of_virtual_GPU">Changing the display resolution of virtual GPU</h3></div>
 <p>The display resolution of vGPU, by default, is the maximum resolution the vGPU is capable of. The display content will be scaled to this resolution by vGPU regardless of what resolution is set by guest OS. This would produce bad quality pictures in the viewer.
 </p>
 <p>To change the display resolution, append <code>xres</code> and <code>yres</code> configuration into the <code>&lt;qemu:override&gt;</code> element:
@@ -1059,7 +1064,7 @@ For example, for the "Coffee Lake" (CFL) platform support, see <a rel="nofollow"
     &lt;/qemu:device&gt;
   &lt;/qemu:override&gt;
 ...</pre>
-<h2><span class="mw-headline" id="See_also">See also</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="See_also">See also</h2></div>
 <ul>
 <li><a rel="nofollow" class="external text" href="https://github.com/intel/gvt-linux/wiki/GVTg_Setup_Guide">Official GVT-g Setup Guide</a></li>
 <li>
@@ -1085,8 +1090,8 @@ For example, for the "Coffee Lake" (CFL) platform support, see <a rel="nofollow"
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Intel_GVT-g&amp;oldid=830234">https://wiki.archlinux.org/index.php?title=Intel_GVT-g&amp;oldid=830234</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 30 March 2025, at 22:39.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Intel_GVT-g&amp;oldid=850224">https://wiki.archlinux.org/index.php?title=Intel_GVT-g&amp;oldid=850224</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 22 October 2025, at 13:51.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>
@@ -1101,7 +1106,7 @@ For example, for the "Coffee Lake" (CFL) platform support, see <a rel="nofollow"
 
 	<ul id="footer-icons" class="noprint">
 	<li id="footer-copyrightico"><a href="https://www.gnu.org/copyleft/fdl.html" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled"><img src="/resources/assets/licenses/gnu-fdl.png" alt="GNU Free Documentation License 1.3 or later" width="88" height="31" loading="lazy"></a></li>
-	<li id="footer-poweredbyico"><img src="/resources/assets/poweredby_mediawiki.svg" width="88" height="31" loading="lazy"></li>
+	<li id="footer-poweredbyico"><picture><source media="(min-width: 500px)" srcset="/resources/assets/poweredby_mediawiki.svg" width="88" height="31"><img src="/resources/assets/mediawiki_compact.svg" width="25" height="25" loading="lazy"></picture></li>
 </ul>
 
 </footer>
@@ -1109,8 +1114,100 @@ For example, for the "Coffee Lake" (CFL) platform support, see <a rel="nofollow"
 		</div>
 	</div> 
 </div> 
-<div class="vector-settings" id="p-dock-bottom">
-	<ul></ul>
+<div class="vector-header-container vector-sticky-header-container">
+	<div id="vector-sticky-header" class="vector-sticky-header">
+		<div class="vector-sticky-header-start">
+			<div class="vector-sticky-header-icon-start vector-button-flush-left vector-button-flush-right" aria-hidden="true">
+				<button class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-sticky-header-search-toggle" tabindex="-1" data-event-name="ui.vector-sticky-search-form.icon"><span class="vector-icon mw-ui-icon-search mw-ui-icon-wikimedia-search"></span>
+
+<span>Search</span>
+			</button>
+		</div>
+			
+		<div role="search" class="vector-search-box-vue vector-search-box">
+			<div class="vector-typeahead-search-container">
+				<div class="cdx-typeahead-search">
+					<form action="/index.php" id="vector-sticky-search-form" class="cdx-search-input cdx-search-input--has-end-button">
+						<div class="cdx-search-input__input-wrapper" data-search-loc="header-moved">
+							<div class="cdx-text-input cdx-text-input--has-start-icon">
+								<input class="cdx-text-input__input" type="search" name="search" placeholder="Search ArchWiki">
+								<span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
+							</div>
+							<input type="hidden" name="title" value="Special:Search">
+						</div>
+						<button class="cdx-button cdx-search-input__end-button">Search</button>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="vector-sticky-header-context-bar">
+				<nav aria-label="Contents" class="vector-toc-landmark">
+						
+					<div id="vector-sticky-header-toc" class="vector-dropdown mw-portlet mw-portlet-sticky-header-toc vector-sticky-header-toc vector-button-flush-left">
+						<input type="checkbox" id="vector-sticky-header-toc-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-vector-sticky-header-toc" class="vector-dropdown-checkbox " aria-label="Toggle the table of contents">
+						<label id="vector-sticky-header-toc-label" for="vector-sticky-header-toc-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only " aria-hidden="true"><span class="vector-icon mw-ui-icon-listBullet mw-ui-icon-wikimedia-listBullet"></span>
+
+<span class="vector-dropdown-label-text">Toggle the table of contents</span>
+						</label>
+						<div class="vector-dropdown-content">
+					
+						<div id="vector-sticky-header-toc-unpinned-container" class="vector-unpinned-container">
+						</div>
+					
+						</div>
+					</div>
+			</nav>
+				<div class="vector-sticky-header-context-bar-primary" aria-hidden="true"><span class="mw-page-title-main">Intel GVT-g</span></div>
+			</div>
+		</div>
+		<div class="vector-sticky-header-end" aria-hidden="true">
+			<div class="vector-sticky-header-icons">
+				<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-talk-sticky-header" tabindex="-1" data-event-name="talk-sticky-header"><span class="vector-icon mw-ui-icon-speechBubbles mw-ui-icon-wikimedia-speechBubbles"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-subject-sticky-header" tabindex="-1" data-event-name="subject-sticky-header"><span class="vector-icon mw-ui-icon-article mw-ui-icon-wikimedia-article"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-history-sticky-header" tabindex="-1" data-event-name="history-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-history mw-ui-icon-wikimedia-wikimedia-history"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only mw-watchlink" id="ca-watchstar-sticky-header" tabindex="-1" data-event-name="watch-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-star mw-ui-icon-wikimedia-wikimedia-star"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-edit-sticky-header" tabindex="-1" data-event-name="wikitext-edit-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-wikiText mw-ui-icon-wikimedia-wikimedia-wikiText"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-ve-edit-sticky-header" tabindex="-1" data-event-name="ve-edit-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-edit mw-ui-icon-wikimedia-wikimedia-edit"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-viewsource-sticky-header" tabindex="-1" data-event-name="ve-edit-protected-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-editLock mw-ui-icon-wikimedia-wikimedia-editLock"></span>
+
+<span></span>
+			</a>
+		</div>
+			<div class="vector-sticky-header-buttons">
+				<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive" id="ca-addsection-sticky-header" tabindex="-1" data-event-name="addsection-sticky-header"><span class="vector-icon mw-ui-icon-speechBubbleAdd-progressive mw-ui-icon-wikimedia-speechBubbleAdd-progressive"></span>
+
+<span>Add topic</span>
+			</a>
+		</div>
+			<div class="vector-sticky-header-icon-end">
+				<div class="vector-user-links">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="mw-portlet mw-portlet-dock-bottom emptyPortlet" id="p-dock-bottom">
+	<ul>
+		
+	</ul>
 </div>
 </body>
 </html>

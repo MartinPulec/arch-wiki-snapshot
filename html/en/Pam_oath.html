@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-os vector-sticky-header-enabled vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>pam_oath - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.1">
+<meta name="generator" content="MediaWiki 1.44.2">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -105,10 +105,10 @@
 		</div>
 		<div class="mw-content-container">
 			<main id="content" class="mw-body" style="margin: 0">
-				<header class="mw-body-header vector-page-titlebar">
+				<header class="mw-body-header vector-page-titlebar vector-feature-custom-font-size-clientpref--excluded">
 					<nav aria-label="Contents" class="vector-toc-landmark">
 						
-<div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left">
+<div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left" title="Table of Contents">
 	<input type="checkbox" id="vector-page-titlebar-toc-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-vector-page-titlebar-toc" class="vector-dropdown-checkbox " aria-label="Toggle the table of contents">
 	<label id="vector-page-titlebar-toc-label" for="vector-page-titlebar-toc-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only " aria-hidden="true"><span class="vector-icon mw-ui-icon-listBullet mw-ui-icon-wikimedia-listBullet"></span>
 
@@ -147,7 +147,7 @@
 	</div>
 </div>
 </header>
-				<div class="vector-column-end">
+				<div class="vector-column-end vector-feature-custom-font-size-clientpref--excluded">
 					<div class="vector-sticky-pinned-container">
 						<nav class="vector-page-tools-landmark" aria-label="Page tools">
 							<div id="vector-page-tools-pinned-container" class="vector-pinned-container">
@@ -193,27 +193,27 @@
 <p>The <a rel="nofollow" class="external text" href="https://www.nongnu.org/oath-toolkit/index.html">OATH Toolkit</a> provides one-time password (OTP) components for authentication systems. It contains a PAM authentication module that supports technologies include the event-based <a href="https://en.wikipedia.org/wiki/HMAC-based_One-time_Password_Algorithm" class="extiw" title="w:HMAC-based One-time Password Algorithm">HOTP algorithm</a> (<a href="https://tools.ietf.org/html/rfc4226" class="extiw" title="rfc:4226">RFC 4226</a>) and the time-based <a href="https://en.wikipedia.org/wiki/Time-based_One-time_Password_Algorithm" class="extiw" title="w:Time-based One-time Password Algorithm">TOTP algorithm</a> (<a href="https://tools.ietf.org/html/rfc6238" class="extiw" title="rfc:6238">RFC 6238</a>). The OTP generator applications are available for Android, iOS, Blackberry and other devices. Similar to <a href="../en/Google_Authenticator.html" title="Google Authenticator">Google Authenticator</a> the authentication mechanism integrates into the Linux <a href="../en/PAM.html" title="PAM">PAM</a> system. This guide shows the installation and configuration of this mechanism.
 </p>
 <meta property="mw:PageProp/toc">
-<h2><span class="mw-headline" id="Installation">Installation</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="Installation">Installation</h2></div>
 <p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=oath-toolkit">oath-toolkit</a></span> package.
 </p>
-<h2><span class="mw-headline" id="Setting_up_the_OATH">Setting up the OATH</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="Setting_up_the_OATH">Setting up the OATH</h2></div>
 <p>The OATH seed is an hexadecimal number that should be unique per user. To generate a new seed for a user, you could use the following command line:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ openssl rand -hex 10</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">12345678909876543210
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> The above output seed is used as example in this article and <b>must not</b> be used directly.</div>
+<strong>Note</strong> The above output seed is used as example in this article and <b>must not</b> be used directly.</div>
 <p>There needs to be one OATH per user and link to it in a configuration file <code>/etc/users.oath</code>. While being <a href="../en/Users_and_groups.html#Overview" class="mw-redirect" title="Root user">Root user</a> create the file and insert the user seed:
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> Log in to a session with root user privileges in one terminal and modify the PAM configuration in another terminal. In this way, if you have a problem with your PAM settings, you still have an account to log in and fix it, which is especially useful when connecting remotely.</div>
+<strong>Tip</strong> Log in to a session with root user privileges in one terminal and modify the PAM configuration in another terminal. In this way, if you have a problem with your PAM settings, you still have an account to log in and fix it, which is especially useful when connecting remotely.</div>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/users.oath</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># Option User Prefix Seed
 HOTP/T30/6 <i>user</i> - <i>12345678909876543210</i>
 </pre>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> Do not set T bigger than 60，otherwise you will get error：(OATH_UNKNOWN_USER: Cannot find information about user).</div>
+<strong>Warning</strong> Do not set T bigger than 60，otherwise you will get error：(OATH_UNKNOWN_USER: Cannot find information about user).</div>
 <p>If you need HOTP, use this configuration:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/users.oath</pre>
@@ -225,7 +225,7 @@ HOTP <i>user</i> - <i>12345678909876543210</i>
 <pre># chmod 600 /etc/users.oath
 # chown root /etc/users.oath
 </pre>
-<h2><span class="mw-headline" id="Setting_up_the_PAM">Setting up the PAM</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="Setting_up_the_PAM">Setting up the PAM</h2></div>
 <p>To enable OATH for a specific service only, like <a href="../en/OpenSSH.html" title="OpenSSH">OpenSSH</a>, you can edit the file <code>/etc/pam.d/sshd</code> and add at the beginning of the file the following line:
 </p>
 <pre>auth	  sufficient pam_oath.so usersfile=/etc/users.oath window=30 digits=6
@@ -248,14 +248,14 @@ KbdInteractiveAuthentication yes
 PasswordAuthentication yes
 </pre>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip:</strong> For local login, just edit <code>/etc/pam.d/login</code>.</div>
-<h2><span class="mw-headline" id="Logging_with_an_OATH_password">Logging with an OATH password</span></h2>
+<strong>Tip</strong> For local login, just edit <code>/etc/pam.d/login</code>.</div>
+<div class="mw-heading mw-heading2"><h2 id="Logging_with_an_OATH_password">Logging with an OATH password</h2></div>
 <p>For logging in with TOTP:
 </p>
 <pre>$ oathtool -v --totp -d 6 <i>12345678909876543210</i>
 </pre>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning:</strong> There is an error when TOTP mode setting <code>SHA512</code>, but the developers did not fix it. See the <a rel="nofollow" class="external text" href="https://gitlab.com/oath-toolkit/oath-toolkit/issues/8">open issue on Gitlab</a>.</div>
+<strong>Warning</strong> There is an error when TOTP mode setting <code>SHA512</code>, but the developers did not fix it. See the <a rel="nofollow" class="external text" href="https://codeberg.org/oath-toolkit/oath-toolkit/issues/8">open issue on Codeberg</a>.</div>
 <p>If you are logging in with HOTP:
 </p>
 <pre>$ oathtool -v -d 6 <i>12345678909876543210</i>
@@ -281,8 +281,8 @@ Start counter: 0x0 (0)
 <p>It is pretty straight forward to use <a rel="nofollow" class="external text" href="https://f-droid.org/packages/com.beemdevelopment.aegis/">Aegis Authenticator</a> or <a rel="nofollow" class="external text" href="https://f-droid.org/packages/org.liberty.android.freeotpplus/">FreeOTP+</a> to then take a screenshot of that <code><i>user</i>.png</code> (or ASCII-art like image) and get it to display OTP password when needed.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> The secret key of your users is the most important information in this system. Once you setup a phone to provide OTP, it does have that key, the QR code in that <code><i>user</i>.png</code> file does have that key. You need to take extra care of this file, they should only be stored on encrypted medium (Your phone need to be using encryption for any sane level of security). If not even confined in a sandbox like Samsung Knox to prevent third party application to potentially access them.</div>
-<h2><span class="mw-headline" id="See_also">See also</span></h2>
+<strong>Note</strong> The secret key of your users is the most important information in this system. Once you setup a phone to provide OTP, it does have that key, the QR code in that <code><i>user</i>.png</code> file does have that key. You need to take extra care of this file, they should only be stored on encrypted medium (Your phone need to be using encryption for any sane level of security). If not even confined in a sandbox like Samsung Knox to prevent third party application to potentially access them.</div>
+<div class="mw-heading mw-heading2"><h2 id="See_also">See also</h2></div>
 <ul>
 <li><a rel="nofollow" class="external text" href="https://spod.cx/blog/two-factor-ssh-auth-with-pam_oath-google-authenticator.shtml">Two-factor time based (TOTP) SSH authentication with pam_oath and Google Authenticator</a></li>
 <li><a rel="nofollow" class="external text" href="https://www.nongnu.org/oath-toolkit/pam_oath.html">pam_oath manual</a></li>
@@ -303,8 +303,8 @@ Start counter: 0x0 (0)
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Pam_oath&amp;oldid=795624">https://wiki.archlinux.org/index.php?title=Pam_oath&amp;oldid=795624</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 30 December 2023, at 20:30.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Pam_oath&amp;oldid=848080">https://wiki.archlinux.org/index.php?title=Pam_oath&amp;oldid=848080</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 3 October 2025, at 18:25.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>
@@ -319,7 +319,7 @@ Start counter: 0x0 (0)
 
 	<ul id="footer-icons" class="noprint">
 	<li id="footer-copyrightico"><a href="https://www.gnu.org/copyleft/fdl.html" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled"><img src="/resources/assets/licenses/gnu-fdl.png" alt="GNU Free Documentation License 1.3 or later" width="88" height="31" loading="lazy"></a></li>
-	<li id="footer-poweredbyico"><img src="/resources/assets/poweredby_mediawiki.svg" width="88" height="31" loading="lazy"></li>
+	<li id="footer-poweredbyico"><picture><source media="(min-width: 500px)" srcset="/resources/assets/poweredby_mediawiki.svg" width="88" height="31"><img src="/resources/assets/mediawiki_compact.svg" width="25" height="25" loading="lazy"></picture></li>
 </ul>
 
 </footer>
@@ -327,8 +327,100 @@ Start counter: 0x0 (0)
 		</div>
 	</div> 
 </div> 
-<div class="vector-settings" id="p-dock-bottom">
-	<ul></ul>
+<div class="vector-header-container vector-sticky-header-container">
+	<div id="vector-sticky-header" class="vector-sticky-header">
+		<div class="vector-sticky-header-start">
+			<div class="vector-sticky-header-icon-start vector-button-flush-left vector-button-flush-right" aria-hidden="true">
+				<button class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-sticky-header-search-toggle" tabindex="-1" data-event-name="ui.vector-sticky-search-form.icon"><span class="vector-icon mw-ui-icon-search mw-ui-icon-wikimedia-search"></span>
+
+<span>Search</span>
+			</button>
+		</div>
+			
+		<div role="search" class="vector-search-box-vue vector-search-box">
+			<div class="vector-typeahead-search-container">
+				<div class="cdx-typeahead-search">
+					<form action="/index.php" id="vector-sticky-search-form" class="cdx-search-input cdx-search-input--has-end-button">
+						<div class="cdx-search-input__input-wrapper" data-search-loc="header-moved">
+							<div class="cdx-text-input cdx-text-input--has-start-icon">
+								<input class="cdx-text-input__input" type="search" name="search" placeholder="Search ArchWiki">
+								<span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
+							</div>
+							<input type="hidden" name="title" value="Special:Search">
+						</div>
+						<button class="cdx-button cdx-search-input__end-button">Search</button>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="vector-sticky-header-context-bar">
+				<nav aria-label="Contents" class="vector-toc-landmark">
+						
+					<div id="vector-sticky-header-toc" class="vector-dropdown mw-portlet mw-portlet-sticky-header-toc vector-sticky-header-toc vector-button-flush-left">
+						<input type="checkbox" id="vector-sticky-header-toc-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-vector-sticky-header-toc" class="vector-dropdown-checkbox " aria-label="Toggle the table of contents">
+						<label id="vector-sticky-header-toc-label" for="vector-sticky-header-toc-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only " aria-hidden="true"><span class="vector-icon mw-ui-icon-listBullet mw-ui-icon-wikimedia-listBullet"></span>
+
+<span class="vector-dropdown-label-text">Toggle the table of contents</span>
+						</label>
+						<div class="vector-dropdown-content">
+					
+						<div id="vector-sticky-header-toc-unpinned-container" class="vector-unpinned-container">
+						</div>
+					
+						</div>
+					</div>
+			</nav>
+				<div class="vector-sticky-header-context-bar-primary" aria-hidden="true">pam_oath</div>
+			</div>
+		</div>
+		<div class="vector-sticky-header-end" aria-hidden="true">
+			<div class="vector-sticky-header-icons">
+				<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-talk-sticky-header" tabindex="-1" data-event-name="talk-sticky-header"><span class="vector-icon mw-ui-icon-speechBubbles mw-ui-icon-wikimedia-speechBubbles"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-subject-sticky-header" tabindex="-1" data-event-name="subject-sticky-header"><span class="vector-icon mw-ui-icon-article mw-ui-icon-wikimedia-article"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-history-sticky-header" tabindex="-1" data-event-name="history-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-history mw-ui-icon-wikimedia-wikimedia-history"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only mw-watchlink" id="ca-watchstar-sticky-header" tabindex="-1" data-event-name="watch-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-star mw-ui-icon-wikimedia-wikimedia-star"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-edit-sticky-header" tabindex="-1" data-event-name="wikitext-edit-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-wikiText mw-ui-icon-wikimedia-wikimedia-wikiText"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-ve-edit-sticky-header" tabindex="-1" data-event-name="ve-edit-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-edit mw-ui-icon-wikimedia-wikimedia-edit"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-viewsource-sticky-header" tabindex="-1" data-event-name="ve-edit-protected-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-editLock mw-ui-icon-wikimedia-wikimedia-editLock"></span>
+
+<span></span>
+			</a>
+		</div>
+			<div class="vector-sticky-header-buttons">
+				<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive" id="ca-addsection-sticky-header" tabindex="-1" data-event-name="addsection-sticky-header"><span class="vector-icon mw-ui-icon-speechBubbleAdd-progressive mw-ui-icon-wikimedia-speechBubbleAdd-progressive"></span>
+
+<span>Add topic</span>
+			</a>
+		</div>
+			<div class="vector-sticky-header-icon-end">
+				<div class="vector-user-links">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="mw-portlet mw-portlet-dock-bottom emptyPortlet" id="p-dock-bottom">
+	<ul>
+		
+	</ul>
 </div>
 </body>
 </html>

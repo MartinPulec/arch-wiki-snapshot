@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-sticky-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-day vector-toc-available" lang="en" dir="ltr">
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-os vector-sticky-header-enabled vector-toc-available" lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <title>Kernel mode setting (Français) - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.43.1">
+<meta name="generator" content="MediaWiki 1.44.2">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -197,10 +197,10 @@
 		</div>
 		<div class="mw-content-container">
 			<main id="content" class="mw-body" style="margin: 0">
-				<header class="mw-body-header vector-page-titlebar">
+				<header class="mw-body-header vector-page-titlebar vector-feature-custom-font-size-clientpref--excluded">
 					<nav aria-label="Contents" class="vector-toc-landmark">
 						
-<div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left">
+<div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left" title="Table of Contents">
 	<input type="checkbox" id="vector-page-titlebar-toc-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-vector-page-titlebar-toc" class="vector-dropdown-checkbox " aria-label="Toggle the table of contents">
 	<label id="vector-page-titlebar-toc-label" for="vector-page-titlebar-toc-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only " aria-hidden="true"><span class="vector-icon mw-ui-icon-listBullet mw-ui-icon-wikimedia-listBullet"></span>
 
@@ -243,7 +243,7 @@
 	</div>
 </div>
 </header>
-				<div class="vector-column-end">
+				<div class="vector-column-end vector-feature-custom-font-size-clientpref--excluded">
 					<div class="vector-sticky-pinned-container">
 						<nav class="vector-page-tools-landmark" aria-label="Page tools">
 							<div id="vector-page-tools-pinned-container" class="vector-pinned-container">
@@ -293,14 +293,14 @@
 <p>L'implémentation de KMS par le noyau Linux permet une résolution native dans le framebuffer et permet une permutation instantanée vers la console (tty). KMS permet également d'utiliser des technologies plus récentes (telles que DRI2) qui contribuent à réduire les artefacts et à augmenter les performances 3D, et même les économies d'énergie depuis le noyau.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> Le pilote propriétaire <a href="../en/NVIDIA.html" title="NVIDIA">NVIDIA</a> (depuis 364.12) implémente également KMS, mais il n'utilise pas l'implémentation intégrée du noyau et il lui manque un pilote fbdev pour la console haute résolution</div>
+<strong>Note</strong> Le pilote propriétaire <a href="../en/NVIDIA.html" title="NVIDIA">NVIDIA</a> (depuis 364.12) implémente également KMS, mais il n'utilise pas l'implémentation intégrée du noyau et il lui manque un pilote fbdev pour la console haute résolution</div>
 <meta property="mw:PageProp/toc">
-<h2><span class="mw-headline" id="Contexte">Contexte</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="Contexte">Contexte</h2></div>
 <p>Auparavant, la configuration de la carte vidéo était la tâche du serveur X. De ce fait, il n'était pas facile de configurer la carte vidéo. Pour cette raison, il n'était pas facile d'avoir des graphismes sophistiqués dans les <a href="../en/Linux_console.html#Virtual_consoles" class="mw-redirect" title="Virtual console">consoles virtuelles</a>. De plus, chaque fois que l'on passait de X à une console virtuelle (<code>Ctrl+Alt+F2</code>), le serveur devait donner le contrôle de la carte vidéo au noyau, ce qui était lent et provoquait des scintillements. Le même processus "douloureux" se produisait lorsque le contrôle était rendu au serveur X (<code>Alt+F7</code> lorsque X fonctionne en VT7).
 </p>
 <p>Avec Kernel Mode Setting (KMS), le noyau est maintenant capable de définir le mode de la carte vidéo. Cela rend possible, entre autres, les graphismes sophistiqués pendant le démarrage, la console virtuelle et la permutation rapide avec X.
 </p>
-<h2><span class="mw-headline" id="Installation">Installation</span></h2>
+<div class="mw-heading mw-heading2"><h2 id="Installation">Installation</h2></div>
 <p>Tout d'abord, notez que pour <i>toute</i> méthode que vous utilisez, vous devez <i>toujours</i> désactiver :
 </p>
 <ul>
@@ -308,18 +308,16 @@
 <li>Toute ligne <code>video=</code> qui active un framebuffer en conflit avec le pilote.</li>
 <li>Tout autre pilote de framebuffer (tel que <a href="../en/Uvesafb.html" title="Uvesafb">uvesafb</a>).</li>
 </ul>
-<h3>
-<span id="D.C3.A9marrage_tardif_de_KMS"></span><span class="mw-headline" id="Démarrage_tardif_de_KMS">Démarrage tardif de KMS</span>
-</h3>
+<div class="mw-heading mw-heading3"><h3 id="Démarrage_tardif_de_KMS">
+<span id="D.C3.A9marrage_tardif_de_KMS"></span>Démarrage tardif de KMS</h3></div>
 <p>Les pilotes <a href="../en/Intel_graphics.html" class="mw-redirect" title="Intel graphics (Français)">Intel</a>, <a href="../fr/Nouveau.html" title="Nouveau (Français)">Nouveau</a>, <a href="../en/ATI.html" class="mw-redirect" title="ATI (Français)">ATI</a> et <a href="../en/AMDGPU.html" title="AMDGPU">AMDGPU</a> activent déjà KMS automatiquement pour tous les chipsets, vous n'avez donc pas besoin de l'installer manuellement.
 </p>
 <p>Le pilote propriétaire <a href="../en/NVIDIA.html" title="NVIDIA">NVIDIA</a> prend en charge KMS (depuis 364.12), qui doit être <a href="../en/NVIDIA.html#DRM_kernel_mode_setting" class="mw-redirect" title="NVIDIA (Français)">activé manuellement</a>.
 </p>
-<h3>
-<span id="D.C3.A9marrage_pr.C3.A9coce_de_KMS"></span><span class="mw-headline" id="Démarrage_précoce_de_KMS">Démarrage précoce de KMS</span>
-</h3>
+<div class="mw-heading mw-heading3"><h3 id="Démarrage_précoce_de_KMS">
+<span id="D.C3.A9marrage_pr.C3.A9coce_de_KMS"></span>Démarrage précoce de KMS</h3></div>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Astuce:</strong> Si vous rencontrez des problèmes de résolution, vous pouvez vérifier si <a href="#Forcer_les_modes_et_l'EDID">Forcer les modes</a> aide.</div>
+<strong>Astuce</strong> Si vous rencontrez des problèmes de résolution, vous pouvez vérifier si <a href="#Forcer_les_modes_et_l'EDID">Forcer les modes</a> aide.</div>
 <p>KMS est généralement initialisé après l'étape <a href="../fr/Arch_boot_process.html#Initramfs" title="Arch boot process (Français)">initramfs</a>. Cependant, il est possible d'activer KMS déjà pendant l'étape initramfs. Ajoutez le module requis pour le <a href="../fr/Xorg.html#Installation_des_pilotes" title="Xorg (Français)">pilote vidéo</a> au fichier de configuration initramfs :
 </p>
 <ul>
@@ -360,20 +358,20 @@
 </ul>
 <p>Les instructions de configuration d'initramfs sont légèrement différentes selon le générateur d'initramfs que vous utilisez.
 </p>
-<h4><span class="mw-headline" id="mkinitcpio">mkinitcpio</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="mkinitcpio">mkinitcpio</h4></div>
 <p>Par exemple, pour activer le KMS précoce pour le pilote graphique Intel :
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/mkinitcpio.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">MODULES=(... i915 ...)</pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> Les utilisateurs d'Intel peuvent avoir besoin d'ajouter <code>intel_agp</code> avant <code>i915</code> pour supprimer les erreurs ACPI (consultez la sortie de <code>lsmod</code> sur votre système en fonctionnement pour voir si <code>intel_agp</code> est chargé). Cela peut être nécessaire pour que la reprise depuis une hibernation fonctionne avec une configuration d'affichage modifiée. Si vous utilisez PRIME GPU avec Intel IGP comme GPU principal et AMD comme GPU dédié, l'ajout de <code>intel_agp</code> peut entraîner des problèmes lors de la reprise après une hibernation (le moniteur ne reçoit aucun signal). Consultez <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=262043">[2]</a> pour plus d'informations.</div>
+<strong>Note</strong> Les utilisateurs d'Intel peuvent avoir besoin d'ajouter <code>intel_agp</code> avant <code>i915</code> pour supprimer les erreurs ACPI (consultez la sortie de <code>lsmod</code> sur votre système en fonctionnement pour voir si <code>intel_agp</code> est chargé). Cela peut être nécessaire pour que la reprise depuis une hibernation fonctionne avec une configuration d'affichage modifiée. Si vous utilisez PRIME GPU avec Intel IGP comme GPU principal et AMD comme GPU dédié, l'ajout de <code>intel_agp</code> peut entraîner des problèmes lors de la reprise après une hibernation (le moniteur ne reçoit aucun signal). Consultez <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=262043">[2]</a> pour plus d'informations.</div>
 <p>Si vous utilisez un fichier EDID personnalisé (non applicable pour les résolutions intégrées), vous devez également l'intégrer dans l'<a href="../fr/Arch_boot_process.html#Initramfs" title="Arch boot process (Français)">initramfs</a> :
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/mkinitcpio.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">FILES=(/usr/lib/firmware/edid/<i>your_edid</i>.bin)</pre>
 <p>Puis <a href="../fr/Mkinitcpio.html#Cr%C3%A9ation_et_activation_d'images" class="mw-redirect" title="Régénérez l'initramfs">régénérez l'initramfs</a>.
 </p>
-<h4><span class="mw-headline" id="Booster">Booster</span></h4>
+<div class="mw-heading mw-heading4"><h4 id="Booster">Booster</h4></div>
 <p>Si vous utilisez <a href="../en/Booster.html" title="Booster">Booster</a>, vous pouvez charger les modules nécessaires avec ce changement de configuration :
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/booster.yaml</pre>
@@ -384,28 +382,25 @@
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/booster.yaml</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">extra_files : /usr/lib/firmware/edid/<i>your_edid</i>.bin
 </pre>
-<p>Puis <a href="../en/Booster.html#Regenerate_booster_images" title="Booster">régénérez</a> les images booster.
+<p>Puis <a href="../en/Booster.html#Regenerate_booster_images" title="Booster">régénérez</a><sup>[<a href="../en/Help:Procedures.html#Fix_broken_section_links" title="Help:Procedures">broken link</a>: invalid section]</sup> les images booster.
 </p>
-<h2>
-<span id="D.C3.A9pannage"></span><span class="mw-headline" id="Dépannage">Dépannage</span>
-</h2>
-<h3><span class="mw-headline" id="Mes_polices_sont_trop_petites">Mes polices sont trop petites</span></h3>
+<div class="mw-heading mw-heading2"><h2 id="Dépannage">
+<span id="D.C3.A9pannage"></span>Dépannage</h2></div>
+<div class="mw-heading mw-heading3"><h3 id="Mes_polices_sont_trop_petites">Mes polices sont trop petites</h3></div>
 <p>Consultez <a href="../en/Linux_console.html#Fonts" title="Linux console">Linux console#Fonts</a> pour savoir comment changer la police de votre console en une grande police. La police Terminus (<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=terminus-font">terminus-font</a></span>) est disponible en plusieurs tailles, comme <code>ter-132n</code> qui est plus grande.
 </p>
 <p>Alternativement, <a href="#D%C3%A9sactiver_modesetting">désactiver modesetting</a> peut passer à une résolution inférieure et faire apparaître les polices plus grandes.
 </p>
-<h3>
-<span id="Probl.C3.A8me_au_d.C3.A9marrage_et_dans_dmesg"></span><span class="mw-headline" id="Problème_au_démarrage_et_dans_dmesg">Problème au démarrage et dans dmesg</span>
-</h3>
+<div class="mw-heading mw-heading3"><h3 id="Problème_au_démarrage_et_dans_dmesg">
+<span id="Probl.C3.A8me_au_d.C3.A9marrage_et_dans_dmesg"></span>Problème au démarrage et dans dmesg</h3></div>
 <p>L'interrogation des périphériques d'affichage connectés sur les anciens systèmes peut être assez coûteuse. L'interrogation se fait périodiquement et peut dans le pire des cas prendre plusieurs centaines de millisecondes, selon le matériel. Cela provoquera des blocages visibles, par exemple dans la lecture vidéo. Ces blocages peuvent se produire même si votre vidéo est sur la sortie HDP mais que vous avez d'autres sorties non HDP dans votre configuration matérielle. Si vous constatez des blocages de la sortie d'affichage toutes les 10 secondes, la désactivation de l'interrogation peut vous aider.
 </p>
 <p>Si vous consultez un code d'erreur de <code>0x00000010 (2)</code> lors du démarrage (vous obtiendrez environ 10 lignes de texte, la dernière partie indiquant le code d'erreur), utilisez la commande suivante :
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/modprobe.d/modprobe.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">options drm_kms_helper poll=0</pre>
-<h2>
-<span id="Forcer_les_modes_et_l.27EDID"></span><span class="mw-headline" id="Forcer_les_modes_et_l'EDID">Forcer les modes et l'EDID</span>
-</h2>
+<div class="mw-heading mw-heading2"><h2 id="Forcer_les_modes_et_l'EDID">
+<span id="Forcer_les_modes_et_l.27EDID"></span>Forcer les modes et l'EDID</h2></div>
 <p>Si votre résolution native n'est pas automatiquement configurée ou si aucun affichage n'est détecté, alors votre moniteur peut ne pas envoyer de fichier <a href="https://en.wikipedia.org/wiki/fr:Extended_Display_Identification_Data" class="extiw" title="wikipedia:fr:Extended Display Identification Data">EDID</a> ou seulement un fichier biaisé. Le noyau essaiera d'appréhender ce cas et définira l'une des résolutions les plus courantes.
 </p>
 <p>Si vous avez le fichier EDID de votre moniteur, il vous suffit de l'appliquer explicitement (consultez ci-dessous). Cependant, le plus souvent, on n'a pas d'accès direct à un fichier sain et il est nécessaire soit d'extraire un fichier existant et de le corriger, soit d'en générer un nouveau.
@@ -485,9 +480,9 @@ L'extraction d'un EDID existant est dans la plupart des cas plus facile, par exe
 </p>
 <pre># echo -n reset &gt; /sys/kernel/debug/dri/0/HDMI-A-2/edid_override
 </pre>
-<h3><span class="mw-headline" id="Forcer_les_modes">Forcer les modes</span></h3>
+<div class="mw-heading mw-heading3"><h3 id="Forcer_les_modes">Forcer les modes</h3></div>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Attention:</strong> La méthode décrite ci-dessous est en quelque sorte incomplète car, par exemple, <a href="../fr/Xorg.html" title="Xorg (Français)">Xorg</a> ne prend pas en compte la résolution spécifiée, les utilisateurs sont donc encouragés à utiliser la méthode décrite ci-dessus. Cependant, spécifier la résolution avec la ligne de commande <code>video=</code> peut être utile dans certains scénarios.</div>
+<strong>Attention</strong> La méthode décrite ci-dessous est en quelque sorte incomplète car, par exemple, <a href="../fr/Xorg.html" title="Xorg (Français)">Xorg</a> ne prend pas en compte la résolution spécifiée, les utilisateurs sont donc encouragés à utiliser la méthode décrite ci-dessus. Cependant, spécifier la résolution avec la ligne de commande <code>video=</code> peut être utile dans certains scénarios.</div>
 <p>Extrait du <a rel="nofollow" class="external text" href="https://nouveau.freedesktop.org/wiki/KernelModeSetting">wiki de nouveau</a> :
 </p>
 <dl><dd>Un mode peut être forcé sur la ligne de commande du noyau. Malheureusement, l'option de ligne de commande video est mal documentée dans le cas du DRM. Des bribes sur la façon de l'utiliser peuvent être trouvées dans
@@ -535,23 +530,26 @@ L'extraction d'un EDID existant est dans la plupart des cas plus facile, par exe
 HDMI-A-1 : disconnected
 VGA-1 : disconnected
 </pre>
-<h2>
-<span id="D.C3.A9sactiver_modesetting"></span><span class="mw-headline" id="Désactiver_modesetting">Désactiver modesetting</span>
-</h2>
+<div class="mw-heading mw-heading2"><h2 id="Désactiver_modesetting">
+<span id="D.C3.A9sactiver_modesetting"></span>Désactiver modesetting</h2></div>
 <p>Vous pouvez vouloir désactiver KMS pour diverses raisons. Pour désactiver KMS, ajoutez <code>nomodeset</code> comme paramètre du noyau. Consultez <a href="../en/Kernel_parameters.html" title="Kernel parameters">Kernel parameters</a> pour plus d'informations.
 </p>
 <p>En plus du paramètre du noyau <code>nomodeset</code>, pour les cartes graphiques Intel, vous devez ajouter <code>i915.modeset=0</code> et pour les cartes graphiques Nvidia, vous devez ajouter <code>nouveau.modeset=0</code>. Pour un système Nvidia Optimus avec deux cartes, vous devez ajouter les trois paramètres du noyau (c'est-à-dire <code>"nomodeset i915.modeset=0 nouveau.modeset=0"</code>).
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note:</strong> Certains pilotes <a href="../fr/Xorg.html" title="Xorg (Français)">Xorg</a> ne fonctionneront pas avec KMS désactivé. Consultez la page wiki de votre pilote spécifique pour plus de détails.</div>
+<strong>Note</strong> Certains pilotes <a href="../fr/Xorg.html" title="Xorg (Français)">Xorg</a> ne fonctionneront pas avec KMS désactivé. Consultez la page wiki de votre pilote spécifique pour plus de détails.</div>
 </div>
 </div>
-					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
+					<div id="catlinks" class="catlinks" data-mw="interface">
+<div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Categories</a>: <ul>
 <li><a href="../fr/Category:Graphics.html" title="Category:Graphics (Français)">Graphics (Français)</a></li>
 <li><a href="../fr/Category:Kernel.html" title="Category:Kernel (Français)">Kernel (Français)</a></li>
 </ul>
-</div></div>
+</div>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_with_broken_section_links.html" title="Category:Pages with broken section links">Pages with broken section links</a></li></ul>
+</div>
+</div>
 				</div>
 			</main>
 			
@@ -560,8 +558,8 @@ VGA-1 : disconnected
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Kernel_mode_setting_(Fran%C3%A7ais)&amp;oldid=801699">https://wiki.archlinux.org/index.php?title=Kernel_mode_setting_(Français)&amp;oldid=801699</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 29 February 2024, at 15:21.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Kernel_mode_setting_(Fran%C3%A7ais)&amp;oldid=844316">https://wiki.archlinux.org/index.php?title=Kernel_mode_setting_(Français)&amp;oldid=844316</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 16 August 2025, at 09:02.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>
@@ -576,7 +574,7 @@ VGA-1 : disconnected
 
 	<ul id="footer-icons" class="noprint">
 	<li id="footer-copyrightico"><a href="https://www.gnu.org/copyleft/fdl.html" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled"><img src="/resources/assets/licenses/gnu-fdl.png" alt="GNU Free Documentation License 1.3 or later" width="88" height="31" loading="lazy"></a></li>
-	<li id="footer-poweredbyico"><img src="/resources/assets/poweredby_mediawiki.svg" width="88" height="31" loading="lazy"></li>
+	<li id="footer-poweredbyico"><picture><source media="(min-width: 500px)" srcset="/resources/assets/poweredby_mediawiki.svg" width="88" height="31"><img src="/resources/assets/mediawiki_compact.svg" width="25" height="25" loading="lazy"></picture></li>
 </ul>
 
 </footer>
@@ -584,8 +582,100 @@ VGA-1 : disconnected
 		</div>
 	</div> 
 </div> 
-<div class="vector-settings" id="p-dock-bottom">
-	<ul></ul>
+<div class="vector-header-container vector-sticky-header-container">
+	<div id="vector-sticky-header" class="vector-sticky-header">
+		<div class="vector-sticky-header-start">
+			<div class="vector-sticky-header-icon-start vector-button-flush-left vector-button-flush-right" aria-hidden="true">
+				<button class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-sticky-header-search-toggle" tabindex="-1" data-event-name="ui.vector-sticky-search-form.icon"><span class="vector-icon mw-ui-icon-search mw-ui-icon-wikimedia-search"></span>
+
+<span>Search</span>
+			</button>
+		</div>
+			
+		<div role="search" class="vector-search-box-vue vector-search-box">
+			<div class="vector-typeahead-search-container">
+				<div class="cdx-typeahead-search">
+					<form action="/index.php" id="vector-sticky-search-form" class="cdx-search-input cdx-search-input--has-end-button">
+						<div class="cdx-search-input__input-wrapper" data-search-loc="header-moved">
+							<div class="cdx-text-input cdx-text-input--has-start-icon">
+								<input class="cdx-text-input__input" type="search" name="search" placeholder="Search ArchWiki">
+								<span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
+							</div>
+							<input type="hidden" name="title" value="Special:Search">
+						</div>
+						<button class="cdx-button cdx-search-input__end-button">Search</button>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="vector-sticky-header-context-bar">
+				<nav aria-label="Contents" class="vector-toc-landmark">
+						
+					<div id="vector-sticky-header-toc" class="vector-dropdown mw-portlet mw-portlet-sticky-header-toc vector-sticky-header-toc vector-button-flush-left">
+						<input type="checkbox" id="vector-sticky-header-toc-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-vector-sticky-header-toc" class="vector-dropdown-checkbox " aria-label="Toggle the table of contents">
+						<label id="vector-sticky-header-toc-label" for="vector-sticky-header-toc-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only " aria-hidden="true"><span class="vector-icon mw-ui-icon-listBullet mw-ui-icon-wikimedia-listBullet"></span>
+
+<span class="vector-dropdown-label-text">Toggle the table of contents</span>
+						</label>
+						<div class="vector-dropdown-content">
+					
+						<div id="vector-sticky-header-toc-unpinned-container" class="vector-unpinned-container">
+						</div>
+					
+						</div>
+					</div>
+			</nav>
+				<div class="vector-sticky-header-context-bar-primary" aria-hidden="true"><span class="mw-page-title-main">Kernel mode setting (Français)</span></div>
+			</div>
+		</div>
+		<div class="vector-sticky-header-end" aria-hidden="true">
+			<div class="vector-sticky-header-icons">
+				<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-talk-sticky-header" tabindex="-1" data-event-name="talk-sticky-header"><span class="vector-icon mw-ui-icon-speechBubbles mw-ui-icon-wikimedia-speechBubbles"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-subject-sticky-header" tabindex="-1" data-event-name="subject-sticky-header"><span class="vector-icon mw-ui-icon-article mw-ui-icon-wikimedia-article"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-history-sticky-header" tabindex="-1" data-event-name="history-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-history mw-ui-icon-wikimedia-wikimedia-history"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only mw-watchlink" id="ca-watchstar-sticky-header" tabindex="-1" data-event-name="watch-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-star mw-ui-icon-wikimedia-wikimedia-star"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-edit-sticky-header" tabindex="-1" data-event-name="wikitext-edit-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-wikiText mw-ui-icon-wikimedia-wikimedia-wikiText"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-ve-edit-sticky-header" tabindex="-1" data-event-name="ve-edit-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-edit mw-ui-icon-wikimedia-wikimedia-edit"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-viewsource-sticky-header" tabindex="-1" data-event-name="ve-edit-protected-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-editLock mw-ui-icon-wikimedia-wikimedia-editLock"></span>
+
+<span></span>
+			</a>
+		</div>
+			<div class="vector-sticky-header-buttons">
+				<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive" id="ca-addsection-sticky-header" tabindex="-1" data-event-name="addsection-sticky-header"><span class="vector-icon mw-ui-icon-speechBubbleAdd-progressive mw-ui-icon-wikimedia-speechBubbleAdd-progressive"></span>
+
+<span>Add topic</span>
+			</a>
+		</div>
+			<div class="vector-sticky-header-icon-end">
+				<div class="vector-user-links">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="mw-portlet mw-portlet-dock-bottom emptyPortlet" id="p-dock-bottom">
+	<ul>
+		
+	</ul>
 </div>
 </body>
 </html>
