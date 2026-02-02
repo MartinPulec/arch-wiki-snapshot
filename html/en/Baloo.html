@@ -5,7 +5,7 @@
 <title>Baloo - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.44.2">
+<meta name="generator" content="MediaWiki 1.45.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -132,6 +132,17 @@
 			<ul id="toc-Plasma_Vault_Files_are_indexed_and_available_even_when_vault_is_closed-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Baloo_keeps_running_and_slowing_down_the_system,_even_when_given_the_command_to_stop" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Baloo_keeps_running_and_slowing_down_the_system,_even_when_given_the_command_to_stop">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">6.3</span>
+					<span>Baloo keeps running and slowing down the system, even when given the command to stop</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Baloo_keeps_running_and_slowing_down_the_system,_even_when_given_the_command_to_stop-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 </ul>
@@ -143,7 +154,7 @@
 		</div>
 		<div class="mw-content-container">
 			<main id="content" class="mw-body" style="margin: 0">
-				<header class="mw-body-header vector-page-titlebar vector-feature-custom-font-size-clientpref--excluded">
+				<header class="mw-body-header vector-page-titlebar no-font-mode-scale">
 					<nav aria-label="Contents" class="vector-toc-landmark">
 						
 <div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left" title="Table of Contents">
@@ -164,28 +175,8 @@
 					</nav>
 					<h1 id="firstHeading" class="firstHeading mw-first-heading"><span class="mw-page-title-main">Baloo</span></h1>
 							
-<div id="p-lang-btn" class="vector-dropdown mw-portlet mw-portlet-lang">
-	<input type="checkbox" id="p-lang-btn-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-p-lang-btn" class="vector-dropdown-checkbox mw-interlanguage-selector" aria-label="Go to an article in another language. Available in 2 languages">
-	<label id="p-lang-btn-label" for="p-lang-btn-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive mw-portlet-lang-heading-2" aria-hidden="true"><span class="vector-icon mw-ui-icon-language-progressive mw-ui-icon-wikimedia-language-progressive"></span>
-
-<span class="vector-dropdown-label-text">2 languages</span>
-	</label>
-	<div class="vector-dropdown-content">
-
-		<div class="vector-menu-content">
-			
-			<ul class="vector-menu-content-list">
-				
-				<li class="interlanguage-link interwiki-ja mw-list-item"><a href="https://wiki.archlinux.jp/index.php/Baloo" title="Baloo – 日本語" lang="ja" hreflang="ja" data-title="Baloo" data-language-autonym="日本語" data-language-local-name="日本語" class="interlanguage-link-target"><span>日本語</span></a></li>
-<li class="interlanguage-link interwiki-zh-hans mw-list-item"><a href="https://wiki.archlinuxcn.org/wiki/Baloo" title="Baloo – 中文（简体）" lang="zh-Hans" hreflang="zh-Hans" data-title="Baloo" data-language-autonym="中文（简体）" data-language-local-name="中文（简体）" class="interlanguage-link-target"><span>中文（简体）</span></a></li>
-			</ul>
-			
-		</div>
-
-	</div>
-</div>
 </header>
-				<div class="vector-column-end vector-feature-custom-font-size-clientpref--excluded">
+				<div class="vector-column-end no-font-mode-scale">
 					<div class="vector-sticky-pinned-container">
 						<nav class="vector-page-tools-landmark" aria-label="Page tools">
 							<div id="vector-page-tools-pinned-container" class="vector-pinned-container">
@@ -298,6 +289,18 @@ $ balooctl6 purge
 $ balooctl6 enable
 $ balooctl6 check
 </pre>
+<div class="mw-heading mw-heading3"><h3 id="Baloo_keeps_running_and_slowing_down_the_system,_even_when_given_the_command_to_stop">
+<span id="Baloo_keeps_running_and_slowing_down_the_system.2C_even_when_given_the_command_to_stop"></span>Baloo keeps running and slowing down the system, even when given the command to stop</h3></div>
+<p>Sometimes the daemon might be indexing a large amount of files (e.g. when looking through all the dotfiles in your <code>/home</code> directory), leading to a big consumption of the machine's resources and, potentially, to an unresponsive system.
+</p>
+<p>If <code>balooctl6 suspend</code> does not work, you can kill the process directly with <span class="plainlinks archwiki-template-man" title="$ man 1 pkill"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/pkill.1">pkill(1)</a></span> <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=297990">[1]</a>:
+</p>
+<pre>$ pkill -9 <i>baloo_process</i>
+</pre>
+<p>Afterwards, you can <a href="#Disabling_the_indexer">disable the indexer</a>.
+</p>
+<p>Alternatively, since nowadays the daemon is run via systemd, if you wish to keep the indexer running but without saturating the I/O bandwidth, you can adjust the daemon's <a href="../en/User_unit.html" class="mw-redirect" title="User unit">user unit</a> to e.g. give it a higher memory limit, prevent it from using swap, etc. <a rel="nofollow" class="external autonumber" href="https://bugs.kde.org/show_bug.cgi?id=487916#c10">[2]</a>
+</p>
 </div>
 </div>
 					<div id="catlinks" class="catlinks" data-mw="interface">
@@ -318,8 +321,8 @@ $ balooctl6 check
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Baloo&amp;oldid=853003">https://wiki.archlinux.org/index.php?title=Baloo&amp;oldid=853003</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 16 November 2025, at 19:14.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Baloo&amp;oldid=860634">https://wiki.archlinux.org/index.php?title=Baloo&amp;oldid=860634</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 9 January 2026, at 13:46.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>
@@ -342,7 +345,7 @@ $ balooctl6 check
 		</div>
 	</div> 
 </div> 
-<div class="vector-header-container vector-sticky-header-container">
+<div class="vector-header-container vector-sticky-header-container no-font-mode-scale">
 	<div id="vector-sticky-header" class="vector-sticky-header">
 		<div class="vector-sticky-header-start">
 			<div class="vector-sticky-header-icon-start vector-button-flush-left vector-button-flush-right" aria-hidden="true">
@@ -352,13 +355,13 @@ $ balooctl6 check
 			</button>
 		</div>
 			
-		<div role="search" class="vector-search-box-vue vector-search-box">
+		<div role="search" class="vector-search-box-vue  vector-search-box-show-thumbnail vector-search-box">
 			<div class="vector-typeahead-search-container">
-				<div class="cdx-typeahead-search">
+				<div class="cdx-typeahead-search cdx-typeahead-search--show-thumbnail">
 					<form action="/index.php" id="vector-sticky-search-form" class="cdx-search-input cdx-search-input--has-end-button">
 						<div class="cdx-search-input__input-wrapper" data-search-loc="header-moved">
 							<div class="cdx-text-input cdx-text-input--has-start-icon">
-								<input class="cdx-text-input__input" type="search" name="search" placeholder="Search ArchWiki">
+								<input class="cdx-text-input__input mw-searchInput" autocomplete="off" type="search" name="search" placeholder="Search ArchWiki">
 								<span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
 							</div>
 							<input type="hidden" name="title" value="Special:Search">
@@ -403,6 +406,10 @@ $ balooctl6 check
 <span></span>
 			</a>
 			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only mw-watchlink" id="ca-watchstar-sticky-header" tabindex="-1" data-event-name="watch-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-star mw-ui-icon-wikimedia-wikimedia-star"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only reading-lists-bookmark" id="ca-bookmark-sticky-header" tabindex="-1" data-event-name="watch-sticky-bookmark"><span class="vector-icon mw-ui-icon-wikimedia-bookmarkOutline mw-ui-icon-wikimedia-wikimedia-bookmarkOutline"></span>
 
 <span></span>
 			</a>

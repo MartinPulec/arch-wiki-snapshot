@@ -5,7 +5,7 @@
 <title>SSH keys - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.44.2">
+<meta name="generator" content="MediaWiki 1.45.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -554,7 +554,7 @@
 		</div>
 		<div class="mw-content-container">
 			<main id="content" class="mw-body" style="margin: 0">
-				<header class="mw-body-header vector-page-titlebar vector-feature-custom-font-size-clientpref--excluded">
+				<header class="mw-body-header vector-page-titlebar no-font-mode-scale">
 					<nav aria-label="Contents" class="vector-toc-landmark">
 						
 <div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left" title="Table of Contents">
@@ -575,28 +575,8 @@
 					</nav>
 					<h1 id="firstHeading" class="firstHeading mw-first-heading"><span class="mw-page-title-main">SSH keys</span></h1>
 							
-<div id="p-lang-btn" class="vector-dropdown mw-portlet mw-portlet-lang">
-	<input type="checkbox" id="p-lang-btn-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-p-lang-btn" class="vector-dropdown-checkbox mw-interlanguage-selector" aria-label="Go to an article in another language. Available in 2 languages">
-	<label id="p-lang-btn-label" for="p-lang-btn-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive mw-portlet-lang-heading-2" aria-hidden="true"><span class="vector-icon mw-ui-icon-language-progressive mw-ui-icon-wikimedia-language-progressive"></span>
-
-<span class="vector-dropdown-label-text">2 languages</span>
-	</label>
-	<div class="vector-dropdown-content">
-
-		<div class="vector-menu-content">
-			
-			<ul class="vector-menu-content-list">
-				
-				<li class="interlanguage-link interwiki-ja mw-list-item"><a href="https://wiki.archlinux.jp/index.php/SSH_%E9%8D%B5" title="SSH 鍵 – 日本語" lang="ja" hreflang="ja" data-title="SSH 鍵" data-language-autonym="日本語" data-language-local-name="日本語" class="interlanguage-link-target"><span>日本語</span></a></li>
-<li class="interlanguage-link interwiki-zh-hans mw-list-item"><a href="https://wiki.archlinuxcn.org/wiki/SSH_keys" title="SSH keys – 中文（简体）" lang="zh-Hans" hreflang="zh-Hans" data-title="SSH keys" data-language-autonym="中文（简体）" data-language-local-name="中文（简体）" class="interlanguage-link-target"><span>中文（简体）</span></a></li>
-			</ul>
-			
-		</div>
-
-	</div>
-</div>
 </header>
-				<div class="vector-column-end vector-feature-custom-font-size-clientpref--excluded">
+				<div class="vector-column-end no-font-mode-scale">
 					<div class="vector-sticky-pinned-container">
 						<nav class="vector-page-tools-landmark" aria-label="Page tools">
 							<div id="vector-page-tools-pinned-container" class="vector-pinned-container">
@@ -864,36 +844,38 @@ Host SERVER2 SERVER3
 <p>Once you have generated a key pair, you will need to copy the public key to the remote server so that it will use SSH key authentication.  The public key file shares the same name as the private key except that it is appended with a <code>.pub</code> extension.  Note that the private key is not shared and remains on the local machine.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Simple_method">Simple method</h3></div>
-<p>If your key file is <code>~/.ssh/id_rsa.pub</code> you can simply enter the following command.
+<p>If your key file name matches <code>~/.ssh/id*.pub</code> pattern (which is the default name format for <code>ssh-keygen</code>) you can simply enter the following command:
 </p>
-<pre>$ ssh-copy-id remote-server.org
+<pre>$ ssh-copy-id remote-server.example
 </pre>
-<p>If your username differs on remote machine, be sure to prepend the username followed by <code>@</code> to the server name.
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> <code>ssh-copy-id</code> chooses the most recent file that matches. If you have multiple files that would match the pattern, either update the timestamp of the desired file with <code>touch</code> or see the next part for further instructions.</div>
+<p>If your public key filename differs from the default of <code>~/.ssh/id_{ed25519,ed25519_sk,rsa,ecdsa,ecdsa_sk} </code>, or if you have multiple files that match the default format, you need to explicitly specify the location of the public key:
 </p>
-<pre>$ ssh-copy-id username@remote-server.org
+<pre>$ ssh-copy-id -i ~/.ssh/<i>your_key_name</i>.pub remote-server.example
 </pre>
-<p>If your public key filename is anything other than the default of <code>~/.ssh/id_rsa.pub</code> you will get an error stating <code>/usr/bin/ssh-copy-id: ERROR: No identities found</code>. In this case, you must explicitly provide the location of the public key.
+<p>If your username differs on remote machine, be sure to prepend the username followed by <code>@</code> to the server name:
 </p>
-<pre>$ ssh-copy-id -i ~/.ssh/id_ed25519.pub username@remote-server.org
+<pre>$ ssh-copy-id -i ~/.ssh/<i>your_key_name</i>.pub <i>username</i>@remote-server.example
 </pre>
-<p>If the ssh server is listening on a port other than default of 22, be sure to include it within the host argument.
+<p>If the ssh server is listening on a port other than default of 22, be sure to include it within the host argument:
 </p>
-<pre>$ ssh-copy-id -i ~/.ssh/id_ed25519.pub -p 221 username@remote-server.org
+<pre>$ ssh-copy-id -i ~/.ssh/<i>your_key_name</i>.pub -p 39901 <i>username</i>@remote-server.example
 </pre>
 <div class="mw-heading mw-heading3"><h3 id="Manual_method">Manual method</h3></div>
 <p>By default, for OpenSSH, the public key needs to be concatenated with <code>~/.ssh/authorized_keys</code>.  Begin by copying the public key to the remote server.
 </p>
-<pre>$ scp ~/.ssh/id_ecdsa.pub username@remote-server.org<b>:</b>
+<pre>$ scp ~/.ssh/id_ed25519.pub username@remote-server.org<b>:</b>
 </pre>
-<p>The above example copies the public key (<code>id_ecdsa.pub</code>) to your home directory on the remote server via <code>scp</code>.  Do not forget to include the <code>:</code> at the end of the server address.  Also note that the name of your public key may differ from the example given.
+<p>The above example copies the public key (<code>id_ed25519.pub</code>) to your home directory on the remote server via <code>scp</code>.  Do not forget to include the <code>:</code> at the end of the server address.  Also note that the name of your public key may differ from the example given.
 </p>
 <p>On the remote server, you will need to create the <code>~/.ssh</code> directory if it does not yet exist and append your public key to the <code>authorized_keys</code> file.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ ssh username@remote-server.org</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">username@remote-server.org's password:</pre>
 <pre>$ install -dm700 ~/.ssh
-$ cat ~/id_ecdsa.pub &gt;&gt; ~/.ssh/authorized_keys
-$ rm ~/id_ecdsa.pub
+$ cat ~/id_ed25519.pub &gt;&gt; ~/.ssh/authorized_keys
+$ rm ~/id_ed25519.pub
 $ chmod 600 ~/.ssh/authorized_keys
 </pre>
 <p>The last two commands remove the public key file from the server and set the permissions on the <code>authorized_keys</code> file such that it is only readable and writable by you, the owner.
@@ -941,7 +923,7 @@ fi
 <p>There also exist a number of front-ends to <code>ssh-agent</code> and alternative agents described later in this section which avoid this problem.
 </p>
 <div class="mw-heading mw-heading4"><h4 id="Start_ssh-agent_with_systemd_user">Start ssh-agent with systemd user</h4></div>
-<p>If you would like your ssh agent to run when you are logged in, regardless of whether X is running, a handy <code>ssh-agent.service</code> is included in <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=openssh">openssh</a></span> since the version 9.4p1-3, which can be <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enabled">enabled</a> as a <a href="../en/Systemd/User.html" class="mw-redirect" title="User unit">user unit</a>.
+<p>If you would like your ssh agent to run when you are logged in, regardless of whether X is running, a handy <code>ssh-agent.service</code> is included in <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=openssh">openssh</a></span> since the version 9.4p1-3, which can be <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enabled">enabled</a> as a <a href="../en/User_unit.html" class="mw-redirect" title="User unit">user unit</a>.
 </p>
 <p>Then <a href="../en/Environment_variables.html#Per_user" title="Environment variables">set the environment variable</a> <code>SSH_AUTH_SOCK</code> to <code>$XDG_RUNTIME_DIR/ssh-agent.socket</code>.
 </p>
@@ -987,12 +969,12 @@ fi
 <strong>Note</strong>  When also using <a href="../en/GnuPG.html" title="GnuPG">GnuPG</a> while running this agent, it is required to <a href="../en/GnuPG.html#GnuPG_with_pcscd_(PCSC_Lite)" title="GnuPG">use it with pcscd</a> and configure <a href="../en/GnuPG.html#Shared_access_with_pcscd" title="GnuPG">shared access with pcscd</a>.</div>
 <p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=openpgp-card-ssh-agent">openpgp-card-ssh-agent</a></span> and <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> and <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start">start</a> the <code>openpgp-card-ssh-agent.socket</code> user unit.
 </p>
-<p>Afterwards add the relevant <a href="../en/Environment_variables.html" class="mw-redirect" title="Environment variable">environment variable</a> for this agent:
+<p>Afterwards add the relevant <a href="../en/Environment_variable.html" class="mw-redirect" title="Environment variable">environment variable</a> for this agent:
 </p>
 <pre>SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/openpgp-card/ssh-agent.sock"
 </pre>
 <div class="mw-heading mw-heading4"><h4 id="User_PIN_handling">User PIN handling</h4></div>
-<p>The user PIN for the <a href="../en/OpenPGP.html" title="OpenPGP">OpenPGP</a> card is persisted via an <a rel="nofollow" class="external text" href="https://archlinux.org/packages/?q=org.freedesktop.secrets">org.freedesktop.secrets</a> provider (such as <a href="../en/GNOME/Keyring.html" class="mw-redirect" title="GNOME Keyring">GNOME Keyring</a>, <a href="../en/KeePass.html#Secret_Service" title="KeePass">KeePassXC</a> or <a href="../en/KDE_Wallet.html" title="KDE Wallet">KDE Wallet</a>) by default. The PIN storage backend is <a rel="nofollow" class="external text" href="https://codeberg.org/openpgp-card/state">configurable and extendable</a>.
+<p>The user PIN for the <a href="../en/OpenPGP.html" title="OpenPGP">OpenPGP</a> card is persisted via an <a rel="nofollow" class="external text" href="https://archlinux.org/packages/?q=org.freedesktop.secrets">org.freedesktop.secrets</a> provider (such as <a href="../en/GNOME_Keyring.html" class="mw-redirect" title="GNOME Keyring">GNOME Keyring</a>, <a href="../en/KeePass.html#Secret_Service" title="KeePass">KeePassXC</a> or <a href="../en/KDE_Wallet.html" title="KDE Wallet">KDE Wallet</a>) by default. The PIN storage backend is <a rel="nofollow" class="external text" href="https://codeberg.org/openpgp-card/state">configurable and extendable</a>.
 </p>
 <p>The user PIN needs to be persisted only once for each <a href="../en/OpenPGP.html" title="OpenPGP">OpenPGP</a> card. Prior to the first SSH connection with this agent, list the available SSH public keys and add their respective card identifiers:
 </p>
@@ -1060,7 +1042,7 @@ fi
 <p>Edit your <code>~/.xinitrc</code> file to include the following lines, replacing the name and location of your private key if necessary. Be sure to place these commands <b>before</b> the line which invokes your window manager.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.xinitrc</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">keychain ~/.ssh/id_ecdsa
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">keychain ~/.ssh/id_ed25519
 [ -f ~/.keychain/$HOSTNAME-sh ] &amp;&amp; . ~/.keychain/$HOSTNAME-sh 2&gt;/dev/null
 [ -f ~/.keychain/$HOSTNAME-sh-gpg ] &amp;&amp; . ~/.keychain/$HOSTNAME-sh-gpg 2&gt;/dev/null
 ...
@@ -1100,17 +1082,17 @@ exec openbox-session</pre>
 <li><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lxqt-openssh-askpass">lxqt-openssh-askpass</a></span></li>
 </ul>
 <div class="mw-heading mw-heading3"><h3 id="pam_ssh">pam_ssh</h3></div>
-<p>The <a rel="nofollow" class="external text" href="https://pam-ssh.sourceforge.net/">pam_ssh</a> project exists to provide a <a href="../en/PAM.html" class="mw-redirect" title="Pluggable Authentication Module">Pluggable Authentication Module</a> (PAM) for SSH private keys.  This module can provide single sign-on behavior for your SSH connections.  On login, your SSH private key passphrase can be entered in place of, or in addition to, your traditional system password.  Once you have been authenticated, the pam_ssh module spawns ssh-agent to store your decrypted private key for the duration of the session.
+<p>The <a rel="nofollow" class="external text" href="https://pam-ssh.sourceforge.net/">pam_ssh</a> project exists to provide a <a href="../en/Pluggable_Authentication_Module.html" class="mw-redirect" title="Pluggable Authentication Module">Pluggable Authentication Module</a> (PAM) for SSH private keys.  This module can provide single sign-on behavior for your SSH connections.  On login, your SSH private key passphrase can be entered in place of, or in addition to, your traditional system password.  Once you have been authenticated, the pam_ssh module spawns ssh-agent to store your decrypted private key for the duration of the session.
 </p>
 <p>To enable single sign-on behavior at the tty login prompt, install the unofficial <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/pam_ssh/">pam_ssh</a></span><sup><small>AUR</small></sup> package.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note</strong> pam_ssh 2.0 now requires that all private keys used in the authentication process be located under <code>~/.ssh/login-keys.d/</code>.</div>
-<p>Create a symlink to your private key file and place it in <code>~/.ssh/login-keys.d/</code>.  Replace the <code>id_rsa</code> in the example below with the name of your own private key file.
+<p>Create a symlink to your private key file and place it in <code>~/.ssh/login-keys.d/</code>.  Replace the <code>id_ed25519</code> in the example below with the name of your own private key file, if needed.
 </p>
 <pre>$ mkdir ~/.ssh/login-keys.d/
 $ cd ~/.ssh/login-keys.d/
-$ ln -s ../id_rsa
+$ ln -s ../id_ed25519
 </pre>
 <p>Edit the <code>/etc/pam.d/login</code> configuration file to include the text highlighted in bold in the example below.  The order in which these lines appear is significiant and can affect login behavior.
 </p>
@@ -1167,7 +1149,7 @@ session   optional  pam_permit.so
 <p>As an alternative to <a href="#pam_ssh">pam_ssh</a> you can use <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/pam_exec-ssh-git/">pam_exec-ssh-git</a></span><sup><small>AUR</small></sup>. It is a shell script that uses pam_exec. Help for configuration can be found <a rel="nofollow" class="external text" href="https://github.com/x70b1/pam_exec-ssh">upstream</a>.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="GNOME_Keyring">GNOME Keyring</h3></div>
-<p>The <a href="../en/GNOME/Keyring.html" class="mw-redirect" title="GNOME Keyring">GNOME Keyring</a> tool can act as a wrapper around ssh-agent, providing GUI and/or automatic key unlocking. See <a href="../en/GNOME/Keyring.html#SSH_keys" class="mw-redirect" title="GNOME Keyring">GNOME Keyring#SSH keys</a> for further details.
+<p>The <a href="../en/GNOME_Keyring.html" class="mw-redirect" title="GNOME Keyring">GNOME Keyring</a> tool can act as a wrapper around ssh-agent, providing GUI and/or automatic key unlocking. See <a href="../en/GNOME_Keyring.html#SSH_keys" class="mw-redirect" title="GNOME Keyring">GNOME Keyring#SSH keys</a> for further details.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Store_SSH_keys_with_Kwallet">Store SSH keys with Kwallet</h3></div>
 <p>For instructions on how to use kwallet to store your SSH keys, see <a href="../en/KDE_Wallet.html#Using_the_KDE_Wallet_to_store_ssh_key_passphrases" title="KDE Wallet">KDE Wallet#Using the KDE Wallet to store ssh key passphrases</a>.
@@ -1254,8 +1236,8 @@ $ chmod 600 ~/.ssh/authorized_keys
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=SSH_keys&amp;oldid=852693">https://wiki.archlinux.org/index.php?title=SSH_keys&amp;oldid=852693</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 14 November 2025, at 17:43.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=SSH_keys&amp;oldid=862888">https://wiki.archlinux.org/index.php?title=SSH_keys&amp;oldid=862888</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 26 January 2026, at 12:55.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>
@@ -1278,7 +1260,7 @@ $ chmod 600 ~/.ssh/authorized_keys
 		</div>
 	</div> 
 </div> 
-<div class="vector-header-container vector-sticky-header-container">
+<div class="vector-header-container vector-sticky-header-container no-font-mode-scale">
 	<div id="vector-sticky-header" class="vector-sticky-header">
 		<div class="vector-sticky-header-start">
 			<div class="vector-sticky-header-icon-start vector-button-flush-left vector-button-flush-right" aria-hidden="true">
@@ -1288,13 +1270,13 @@ $ chmod 600 ~/.ssh/authorized_keys
 			</button>
 		</div>
 			
-		<div role="search" class="vector-search-box-vue vector-search-box">
+		<div role="search" class="vector-search-box-vue  vector-search-box-show-thumbnail vector-search-box">
 			<div class="vector-typeahead-search-container">
-				<div class="cdx-typeahead-search">
+				<div class="cdx-typeahead-search cdx-typeahead-search--show-thumbnail">
 					<form action="/index.php" id="vector-sticky-search-form" class="cdx-search-input cdx-search-input--has-end-button">
 						<div class="cdx-search-input__input-wrapper" data-search-loc="header-moved">
 							<div class="cdx-text-input cdx-text-input--has-start-icon">
-								<input class="cdx-text-input__input" type="search" name="search" placeholder="Search ArchWiki">
+								<input class="cdx-text-input__input mw-searchInput" autocomplete="off" type="search" name="search" placeholder="Search ArchWiki">
 								<span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
 							</div>
 							<input type="hidden" name="title" value="Special:Search">
@@ -1339,6 +1321,10 @@ $ chmod 600 ~/.ssh/authorized_keys
 <span></span>
 			</a>
 			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only mw-watchlink" id="ca-watchstar-sticky-header" tabindex="-1" data-event-name="watch-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-star mw-ui-icon-wikimedia-wikimedia-star"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only reading-lists-bookmark" id="ca-bookmark-sticky-header" tabindex="-1" data-event-name="watch-sticky-bookmark"><span class="vector-icon mw-ui-icon-wikimedia-bookmarkOutline mw-ui-icon-wikimedia-wikimedia-bookmarkOutline"></span>
 
 <span></span>
 			</a>

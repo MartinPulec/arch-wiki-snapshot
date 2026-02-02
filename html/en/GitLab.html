@@ -5,7 +5,7 @@
 <title>GitLab - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.44.2">
+<meta name="generator" content="MediaWiki 1.45.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -515,7 +515,7 @@
 		</div>
 		<div class="mw-content-container">
 			<main id="content" class="mw-body" style="margin: 0">
-				<header class="mw-body-header vector-page-titlebar vector-feature-custom-font-size-clientpref--excluded">
+				<header class="mw-body-header vector-page-titlebar no-font-mode-scale">
 					<nav aria-label="Contents" class="vector-toc-landmark">
 						
 <div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left" title="Table of Contents">
@@ -536,28 +536,8 @@
 					</nav>
 					<h1 id="firstHeading" class="firstHeading mw-first-heading"><span class="mw-page-title-main">GitLab</span></h1>
 							
-<div id="p-lang-btn" class="vector-dropdown mw-portlet mw-portlet-lang">
-	<input type="checkbox" id="p-lang-btn-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-p-lang-btn" class="vector-dropdown-checkbox mw-interlanguage-selector" aria-label="Go to an article in another language. Available in 2 languages">
-	<label id="p-lang-btn-label" for="p-lang-btn-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive mw-portlet-lang-heading-2" aria-hidden="true"><span class="vector-icon mw-ui-icon-language-progressive mw-ui-icon-wikimedia-language-progressive"></span>
-
-<span class="vector-dropdown-label-text">2 languages</span>
-	</label>
-	<div class="vector-dropdown-content">
-
-		<div class="vector-menu-content">
-			
-			<ul class="vector-menu-content-list">
-				
-				<li class="interlanguage-link interwiki-ja mw-list-item"><a href="https://wiki.archlinux.jp/index.php/Gitlab" title="Gitlab – 日本語" lang="ja" hreflang="ja" data-title="Gitlab" data-language-autonym="日本語" data-language-local-name="日本語" class="interlanguage-link-target"><span>日本語</span></a></li>
-<li class="interlanguage-link interwiki-zh-hans mw-list-item"><a href="https://wiki.archlinuxcn.org/wiki/GitLab" title="GitLab – 中文（简体）" lang="zh-Hans" hreflang="zh-Hans" data-title="GitLab" data-language-autonym="中文（简体）" data-language-local-name="中文（简体）" class="interlanguage-link-target"><span>中文（简体）</span></a></li>
-			</ul>
-			
-		</div>
-
-	</div>
-</div>
 </header>
-				<div class="vector-column-end vector-feature-custom-font-size-clientpref--excluded">
+				<div class="vector-column-end no-font-mode-scale">
 					<div class="vector-sticky-pinned-container">
 						<nav class="vector-page-tools-landmark" aria-label="Page tools">
 							<div id="vector-page-tools-pinned-container" class="vector-pinned-container">
@@ -610,11 +590,11 @@
 </p>
 <p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=gitlab">gitlab</a></span> package.
 </p>
-<p>Finally, a <a href="../en/List_of_applications/Internet.html#Web_servers" class="mw-redirect" title="Web server">web server</a> has to be installed and configured. The configuration for GitLab will be discussed in the <a href="#Web_server_configuration">#Web server configuration</a> section.
+<p>Finally, a <a href="../en/Web_server.html" class="mw-redirect" title="Web server">web server</a> has to be installed and configured. The configuration for GitLab will be discussed in the <a href="#Web_server_configuration">#Web server configuration</a> section.
 </p>
 <div class="mw-heading mw-heading2"><h2 id="Configuration">Configuration</h2></div>
 <div class="mw-heading mw-heading3"><h3 id="Preliminary_notes">Preliminary notes</h3></div>
-<p>GitLab is composed of multiple components, see the <a rel="nofollow" class="external text" href="https://docs.gitlab.com/ce/development/architecture.html">architecture overview page</a>.
+<p>GitLab is composed of multiple components, see the <a rel="nofollow" class="external text" href="https://docs.gitlab.com/development/architecture/">architecture overview page</a>.
 </p>
 <p>The <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=gitlab">gitlab</a></span> package installs GitLab's files in a manner that more closely follow standard Linux conventions:
 </p>
@@ -715,7 +695,7 @@
 </p>
 <p><b>Timezone (optional):</b> The <code>time_zone:</code> parameter is optional, but may be useful to force the zone of GitLab applications.
 </p>
-<p>Based on the table in <a href="#Preliminary_notes">#Preliminary notes</a> above, the following paths have to be configured in <code>gitlab.yml</code>:
+<p>Based on the table in <a href="#Preliminary_notes">#Preliminary notes</a> above, the following paths have to be configured in <code>gitlab.yml</code>. The GitLab FOSS repo has a <a rel="nofollow" class="external text" href="https://gitlab.com/gitlab-org/gitlab-foss/-/blob/master/config/gitlab.yml.example">full example</a> which includes field descriptions:
 </p>
 <ul>
 <li><code>repository_downloads_path: "/var/lib/gitlab/shared/cache/archive/"</code></li>
@@ -775,7 +755,7 @@ bind 'tcp://127.0.0.1:8080'</pre>
 <pre># hexdump -v -n 64 -e '1/1 "%02x"' /dev/urandom &gt; /etc/webapps/gitlab-shell/secret
 # chmod 640 /etc/webapps/gitlab-shell/secret
 </pre>
-<p>Also fill in (new) secret strings for <code>secrets.yml</code>:
+<p>Also fill in (new) secret strings for <code>secrets.yml</code> described in <a rel="nofollow" class="external text" href="https://gitlab.com/gitlab-org/gitlab-foss/-/blob/master/doc/development/application_secrets.md#secret-entries">application_secrets.md</a>:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/webapps/gitlab/secrets.yml</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">production:
@@ -790,7 +770,7 @@ bind 'tcp://127.0.0.1:8080'</pre>
 <div class="mw-heading mw-heading3"><h3 id="Valkey">Valkey</h3></div>
 <p>In order to provide sufficient performance you will need a cache database. <a href="../en/Valkey.html#Installation" title="Valkey">Install</a> and <a href="../en/Valkey.html#Configuration" title="Valkey">configure</a> a Valkey instance, being careful to the section dedicated to listening via a socket.
 </p>
-<p>Add the <code>gitlab</code> user to the <code>valkey</code> <a href="../en/Users_and_groups.html#Group_management" class="mw-redirect" title="User group">user group</a> and update these configuration files:
+<p>Add the <code>gitlab</code> user to the <code>valkey</code> <a href="../en/User_group.html" class="mw-redirect" title="User group">user group</a> and update these configuration files:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/webapps/gitlab/cable.yml</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">development:
@@ -1198,7 +1178,7 @@ hostname 127.0.0.1; # Your server name or IP</pre>
 <p>You also need to change the corresponding options (e.g. ssh_user, ssh_host, admin_uri) in the <code>/etc/webapps/gitlab/gitlab.yml</code> file.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Sending_emails_from_GitLab">Sending emails from GitLab</h3></div>
-<p>GitLab can send emails either using a local <a href="../en/Mail_server.html" class="mw-redirect" title="Mail transfer agent">mail transfer agent</a> (via <i>sendmail</i>) or using <a href="https://en.wikipedia.org/wiki/SMTP" class="extiw" title="wikipedia:SMTP">SMTP</a>.
+<p>GitLab can send emails either using a local <a href="../en/Mail_transfer_agent.html" class="mw-redirect" title="Mail transfer agent">mail transfer agent</a> (via <i>sendmail</i>) or using <a href="https://en.wikipedia.org/wiki/SMTP" class="extiw" title="wikipedia:SMTP">SMTP</a>.
 </p>
 <p>To use <i>sendmail</i>, edit <code>/etc/webapps/gitlab/smtp_settings.rb</code> and comment out all lines. Then mail delivery should work without any further configuration in GitLab, assuming that the local mail transfer agent is configured properly.
 </p>
@@ -1386,8 +1366,8 @@ $ sudo -u gitlab $(cat environment | xargs) bundle exec rake cache:clear
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GitLab&amp;oldid=846734">https://wiki.archlinux.org/index.php?title=GitLab&amp;oldid=846734</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 12 September 2025, at 09:13.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GitLab&amp;oldid=858655">https://wiki.archlinux.org/index.php?title=GitLab&amp;oldid=858655</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 23 December 2025, at 17:12.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>
@@ -1410,7 +1390,7 @@ $ sudo -u gitlab $(cat environment | xargs) bundle exec rake cache:clear
 		</div>
 	</div> 
 </div> 
-<div class="vector-header-container vector-sticky-header-container">
+<div class="vector-header-container vector-sticky-header-container no-font-mode-scale">
 	<div id="vector-sticky-header" class="vector-sticky-header">
 		<div class="vector-sticky-header-start">
 			<div class="vector-sticky-header-icon-start vector-button-flush-left vector-button-flush-right" aria-hidden="true">
@@ -1420,13 +1400,13 @@ $ sudo -u gitlab $(cat environment | xargs) bundle exec rake cache:clear
 			</button>
 		</div>
 			
-		<div role="search" class="vector-search-box-vue vector-search-box">
+		<div role="search" class="vector-search-box-vue  vector-search-box-show-thumbnail vector-search-box">
 			<div class="vector-typeahead-search-container">
-				<div class="cdx-typeahead-search">
+				<div class="cdx-typeahead-search cdx-typeahead-search--show-thumbnail">
 					<form action="/index.php" id="vector-sticky-search-form" class="cdx-search-input cdx-search-input--has-end-button">
 						<div class="cdx-search-input__input-wrapper" data-search-loc="header-moved">
 							<div class="cdx-text-input cdx-text-input--has-start-icon">
-								<input class="cdx-text-input__input" type="search" name="search" placeholder="Search ArchWiki">
+								<input class="cdx-text-input__input mw-searchInput" autocomplete="off" type="search" name="search" placeholder="Search ArchWiki">
 								<span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
 							</div>
 							<input type="hidden" name="title" value="Special:Search">
@@ -1471,6 +1451,10 @@ $ sudo -u gitlab $(cat environment | xargs) bundle exec rake cache:clear
 <span></span>
 			</a>
 			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only mw-watchlink" id="ca-watchstar-sticky-header" tabindex="-1" data-event-name="watch-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-star mw-ui-icon-wikimedia-wikimedia-star"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only reading-lists-bookmark" id="ca-bookmark-sticky-header" tabindex="-1" data-event-name="watch-sticky-bookmark"><span class="vector-icon mw-ui-icon-wikimedia-bookmarkOutline mw-ui-icon-wikimedia-wikimedia-bookmarkOutline"></span>
 
 <span></span>
 			</a>

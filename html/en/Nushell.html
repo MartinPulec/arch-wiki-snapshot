@@ -5,7 +5,7 @@
 <title>nushell - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.44.2">
+<meta name="generator" content="MediaWiki 1.45.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -247,7 +247,7 @@
 		</div>
 		<div class="mw-content-container">
 			<main id="content" class="mw-body" style="margin: 0">
-				<header class="mw-body-header vector-page-titlebar vector-feature-custom-font-size-clientpref--excluded">
+				<header class="mw-body-header vector-page-titlebar no-font-mode-scale">
 					<nav aria-label="Contents" class="vector-toc-landmark">
 						
 <div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left" title="Table of Contents">
@@ -268,27 +268,8 @@
 					</nav>
 					<h1 id="firstHeading" class="firstHeading mw-first-heading">nushell</h1>
 							
-<div id="p-lang-btn" class="vector-dropdown mw-portlet mw-portlet-lang">
-	<input type="checkbox" id="p-lang-btn-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-p-lang-btn" class="vector-dropdown-checkbox mw-interlanguage-selector" aria-label="Go to an article in another language. Available in 1 language">
-	<label id="p-lang-btn-label" for="p-lang-btn-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive mw-portlet-lang-heading-1" aria-hidden="true"><span class="vector-icon mw-ui-icon-language-progressive mw-ui-icon-wikimedia-language-progressive"></span>
-
-<span class="vector-dropdown-label-text">1 language</span>
-	</label>
-	<div class="vector-dropdown-content">
-
-		<div class="vector-menu-content">
-			
-			<ul class="vector-menu-content-list">
-				
-				<li class="interlanguage-link interwiki-ja mw-list-item"><a href="https://wiki.archlinux.jp/index.php/Nushell" title="Nushell – 日本語" lang="ja" hreflang="ja" data-title="Nushell" data-language-autonym="日本語" data-language-local-name="日本語" class="interlanguage-link-target"><span>日本語</span></a></li>
-			</ul>
-			
-		</div>
-
-	</div>
-</div>
 </header>
-				<div class="vector-column-end vector-feature-custom-font-size-clientpref--excluded">
+				<div class="vector-column-end no-font-mode-scale">
 					<div class="vector-sticky-pinned-container">
 						<nav class="vector-page-tools-landmark" aria-label="Page tools">
 							<div id="vector-page-tools-pinned-container" class="vector-pinned-container">
@@ -408,15 +389,13 @@
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">&gt; ls -a --never-gonna-give-you-up /tmp</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Error: nu::parser::unknown_flag
 
- × The `ls` command doesn't have flag `never-gonna-give-you-up`.
-   ╭─[entry #24:1:1]
- 1 │ ls -a --never-gonna-give-you-up /tmp
-   ·       ────────────┬────────────
-   ·                   ╰── unknown flag
+  × The `ls` command doesn't have flag `never-gonna-give-you-up`.
+   ╭─[entry #1:1:8]
+ 1 │  ls -a --never-gonna-give-you-up /tmp
+   ·        ────────────┬────────────
+   ·                    ╰── unknown flag
    ╰────
-  help: Available flags: --help(-h), --all(-a), --long(-l),
-        --short-names(-s), --full-paths(-f), --du(-d), --directory(-D),
-        --mime-type(-m). Use `--help` for more information.
+  help: Use `--help` to see available flags
 </pre>
 <div class="mw-heading mw-heading3"><h3 id="Input">Input</h3></div>
 <div class="mw-heading mw-heading4"><h4 id="Input_from_data_files">Input from data files</h4></div>
@@ -434,7 +413,7 @@
 </pre>
 <p>Using <i>open</i> would produce the following:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">open movies.yaml</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">&gt; open movies.yaml</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">╭───┬───────────────────┬─────────────────╮
 │ # │       movie       │      genre      │
 ├───┼───────────────────┼─────────────────┤
@@ -443,10 +422,10 @@
 │   │                   │ │ 0 │ Action  │ │
 │   │                   │ │ 1 │ Fantasy │ │
 │   │                   │ ╰───┴─────────╯ │
-│ 1 │ Independence Day  │ ╭───┬─────────╮ │
-│   │                   │ │ 0 │ Action  │ │
-│   │                   │ │ 1 │ Sci-Fi  │ │
-│   │                   │ ╰───┴─────────╯ │
+│ 2 │ Independence Day  │ ╭───┬────────╮  │
+│   │                   │ │ 0 │ Action │  │
+│   │                   │ │ 1 │ Sci-Fi │  │
+│   │                   │ ╰───┴────────╯  │
 ╰───┴───────────────────┴─────────────────╯
 </pre>
 <div class="mw-heading mw-heading4"><h4 id="Input_from_external_programs">Input from external programs</h4></div>
@@ -456,31 +435,31 @@
 <p>Parsing external program output can be easily performed using the <code>parse</code> builtin. One typical workflow is using the <code>-r</code> switch, which tells <code>parse</code> to use a <a href="https://en.wikipedia.org/wiki/Regular_expression" class="extiw" title="wikipedia:Regular expression">regular expression</a> for extracting fields out of each line of text in the input. For example, to parse the output of <a href="../en/Pacman.html" title="Pacman">pacman</a>'s <code>-Si</code> <a href="../en/Pacman.html#Querying_package_databases" title="Pacman">command</a>, one might do something like this:
 </p>
 <pre>&gt; pacman -Si rclone | parse -r '(?P&lt;name&gt;.*\w) +: (?P&lt;value&gt;.+)'
-╭────┬────────────────┬─────────────────────────────────────────────────╮
-│  # │      name      │                    value                        │
-├────┼────────────────┼─────────────────────────────────────────────────┤
-│  0 │ Repository     │ extra                                           │
-│  1 │ Name           │ rclone                                          │
-│  2 │ Version        │ 1.62.2-1                                        │
-│  3 │ Description    │ Sync files to and from Google Drive, S3, Swift, │
-│    │                │ Cloudfiles, Dropbox and Google Cloud Storage    │
-│  4 │ Architecture   │ x86_64                                          │
-│  5 │ URL            │ https://rclone.org/                             │
-│  6 │ Licenses       │ MIT                                             │
-│  7 │ Groups         │ None                                            │
-│  8 │ Provides       │ None                                            │
-│  9 │ Depends On     │ glibc                                           │
-│ 10 │ Optional Deps  │ fuse2: for rclone mount                         │
-│ 11 │ Conflicts With │ None                                            │
-│ 12 │ Replaces       │ None                                            │
-│ 13 │ Download Size  │ 18.12 MiB                                       │
-│ 14 │ Installed Size │ 75.93 MiB                                       │
-│ 15 │ Packager       │ Morten Linderud &lt;foxboron@archlinux.org&gt;        │
-│ 16 │ Build Date     │ Sun 02 Apr 2023 14:09:44 EEST                   │
-│ 17 │ Validated By   │ MD5 Sum  SHA-256 Sum  Signature                 │
-╰────┴────────────────┴─────────────────────────────────────────────────╯
+╭────┬────────────────┬─────────────────────────────────────────╮
+│  # │      name      │                  value                  │
+├────┼────────────────┼─────────────────────────────────────────┤
+│  0 │ Repository     │ extra                                   │
+│  1 │ Name           │ rclone                                  │
+│  2 │ Version        │ 1.72.1-1                                │
+│  3 │ Description    │ rsync for cloud storage                 │
+│  4 │ Architecture   │ x86_64                                  │
+│  5 │ URL            │ https://github.com/rclone/rclone        │
+│  6 │ Licenses       │ MIT                                     │
+│  7 │ Groups         │ None                                    │
+│  8 │ Provides       │ None                                    │
+│  9 │ Depends On     │ glibc                                   │
+│ 10 │ Optional Deps  │ fuse3: for rclone mount                 │
+│ 11 │ Conflicts With │ None                                    │
+│ 12 │ Replaces       │ None                                    │
+│ 13 │ Download Size  │ 25.99 MiB                               │
+│ 14 │ Installed Size │ 98.07 MiB                               │
+│ 15 │ Packager       │ T.J. Townsend &lt;blakkheim@archlinux.org&gt; │
+│ 16 │ Build Date     │ Wed Dec 10 18:03:32 2025                │
+│ 17 │ Validated By   │ SHA-256 Sum  Signature                  │
+╰────┴────────────────┴─────────────────────────────────────────╯
 </pre>
-<p><b>nushell</b> uses a Perl-like regular expression syntax, which is provided by the <a rel="nofollow" class="external text" href="https://github.com/rust-lang/regex">Regex crate</a> (of the <a href="../en/Rust.html" title="Rust">Rust</a> programming language). The syntax is described in the <a rel="nofollow" class="external text" href="https://docs.rs/regex/latest/regex/#syntax">crate's documentation</a>.
+<p><br>
+<b>nushell</b> uses a Perl-like regular expression syntax, which is provided by the <a rel="nofollow" class="external text" href="https://github.com/rust-lang/regex">Regex crate</a> (of the <a href="../en/Rust.html" title="Rust">Rust</a> programming language). The syntax is described in the <a rel="nofollow" class="external text" href="https://docs.rs/regex/latest/regex/#syntax">crate's documentation</a>.
 </p>
 <div class="mw-heading mw-heading5"><h5 id="Using_parse_with_template_string">Using parse with template string</h5></div>
 <p>Another way, which does not require regular expression knowledge, is by omitting the <code>-r</code> switch and providing <code>parse</code> with a template string. However, depending on the case, it may necessitate extra steps for pre- and post-processsing the results. For example:
@@ -498,7 +477,7 @@
 <p>The data can then be freely manipulated or converted by piping it to other commands. For example:
 </p>
 <pre>&gt; open movies.yaml | first 2 | to json --raw
-[{"movie": "Matrix","genre": "Action"},{"movie": "Lord of the Rings","genre":["Action","Fantasy"]}]
+[{"movie":"Matrix","genre":"Action"},{"movie":"Lord of the Rings","genre":["Action","Fantasy"]}]
 &gt; open movies.yaml | first 2 | to json --raw | save movies.json
 &gt; cat movies.json
 <i>(same output as above)</i>
@@ -554,8 +533,8 @@ It can be used directly in the former example above, if system's <code>ls</code>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Nushell&amp;oldid=852219">https://wiki.archlinux.org/index.php?title=Nushell&amp;oldid=852219</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 9 November 2025, at 11:16.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Nushell&amp;oldid=862942">https://wiki.archlinux.org/index.php?title=Nushell&amp;oldid=862942</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 27 January 2026, at 18:10.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>
@@ -578,7 +557,7 @@ It can be used directly in the former example above, if system's <code>ls</code>
 		</div>
 	</div> 
 </div> 
-<div class="vector-header-container vector-sticky-header-container">
+<div class="vector-header-container vector-sticky-header-container no-font-mode-scale">
 	<div id="vector-sticky-header" class="vector-sticky-header">
 		<div class="vector-sticky-header-start">
 			<div class="vector-sticky-header-icon-start vector-button-flush-left vector-button-flush-right" aria-hidden="true">
@@ -588,13 +567,13 @@ It can be used directly in the former example above, if system's <code>ls</code>
 			</button>
 		</div>
 			
-		<div role="search" class="vector-search-box-vue vector-search-box">
+		<div role="search" class="vector-search-box-vue  vector-search-box-show-thumbnail vector-search-box">
 			<div class="vector-typeahead-search-container">
-				<div class="cdx-typeahead-search">
+				<div class="cdx-typeahead-search cdx-typeahead-search--show-thumbnail">
 					<form action="/index.php" id="vector-sticky-search-form" class="cdx-search-input cdx-search-input--has-end-button">
 						<div class="cdx-search-input__input-wrapper" data-search-loc="header-moved">
 							<div class="cdx-text-input cdx-text-input--has-start-icon">
-								<input class="cdx-text-input__input" type="search" name="search" placeholder="Search ArchWiki">
+								<input class="cdx-text-input__input mw-searchInput" autocomplete="off" type="search" name="search" placeholder="Search ArchWiki">
 								<span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
 							</div>
 							<input type="hidden" name="title" value="Special:Search">
@@ -639,6 +618,10 @@ It can be used directly in the former example above, if system's <code>ls</code>
 <span></span>
 			</a>
 			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only mw-watchlink" id="ca-watchstar-sticky-header" tabindex="-1" data-event-name="watch-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-star mw-ui-icon-wikimedia-wikimedia-star"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only reading-lists-bookmark" id="ca-bookmark-sticky-header" tabindex="-1" data-event-name="watch-sticky-bookmark"><span class="vector-icon mw-ui-icon-wikimedia-bookmarkOutline mw-ui-icon-wikimedia-wikimedia-bookmarkOutline"></span>
 
 <span></span>
 			</a>

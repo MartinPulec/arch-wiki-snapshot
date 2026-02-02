@@ -5,7 +5,7 @@
 <title>ASUS TUF DASH F15 (2022) - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.44.2">
+<meta name="generator" content="MediaWiki 1.45.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -274,7 +274,7 @@
 		</div>
 		<div class="mw-content-container">
 			<main id="content" class="mw-body" style="margin: 0">
-				<header class="mw-body-header vector-page-titlebar vector-feature-custom-font-size-clientpref--excluded">
+				<header class="mw-body-header vector-page-titlebar no-font-mode-scale">
 					<nav aria-label="Contents" class="vector-toc-landmark">
 						
 <div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left" title="Table of Contents">
@@ -295,7 +295,7 @@
 					</nav>
 					<h1 id="firstHeading" class="firstHeading mw-first-heading"><span class="mw-page-title-main">ASUS TUF DASH F15 (2022)</span></h1>
 				</header>
-				<div class="vector-column-end vector-feature-custom-font-size-clientpref--excluded">
+				<div class="vector-column-end no-font-mode-scale">
 					<div class="vector-sticky-pinned-container">
 						<nav class="vector-page-tools-landmark" aria-label="Page tools">
 							<div id="vector-page-tools-pinned-container" class="vector-pinned-container">
@@ -433,7 +433,7 @@
 <div>
 <b>Reason:</b> Have the patches been included? <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-lts">linux-lts</a></span> is more recent than the listed kernel versions. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:ASUS_TUF_DASH_F15_(2022).html">Talk:ASUS TUF DASH F15 (2022)</a>)</div>
 </div>
-<p>The keyboard does not have RGB support, as is stated on <a rel="nofollow" class="external text" href="https://www.asus.com/laptops/for-gaming/tuf-gaming/asus-tuf-dash-f15-2022/techspec/">Asus' support website</a>. It does, however, have support for simple lighting effects such as strobing.
+<p>The keyboard does not have RGB support, as is stated on <a rel="nofollow" class="external text" href="https://www.asus.com/laptops/for-gaming/tuf-gaming/asus-tuf-dash-f15-2022/techspec/">ASUS' support website</a>. It does, however, have support for simple lighting effects such as strobing.
 </p>
 <p>The patches for controlling the backlight effects have been submitted for inclusion with <a href="../en/Kernel.html" title="Kernel">Kernel</a> version 6.10, as of right now you can install the G14 custom kernel, as outlined in the <a href="../en/ASUS_Linux.html#Custom_kernel" title="ASUS Linux">ASUS Linux#Custom kernel</a> section.
 </p>
@@ -445,7 +445,7 @@
 </ul>
 </div>
 <div class="mw-heading mw-heading3"><h3 id="Dedicated_GPU_mode">Dedicated GPU mode</h3></div>
-<p>While <code>asusctl bios -D 0</code> is able to set this laptop into Dedicated(Ultimate) mode, doing this will make video output unavailable even on bios screen, Asus logo, until you reach a X session. If you have any extra input configuration like <code>luks</code> you will have to touch type your passphrase in. There is an ongoing issue at <a rel="nofollow" class="external free" href="https://gitlab.com/asus-linux/asusctl/-/issues/404">https://gitlab.com/asus-linux/asusctl/-/issues/404</a>
+<p>While <code>asusctl bios -D 0</code> is able to set this laptop into Dedicated(Ultimate) mode, doing this will make video output unavailable even on bios screen, ASUS logo, until you reach a X session. If you have any extra input configuration like <code>luks</code> you will have to touch type your passphrase in. There is an ongoing issue at <a rel="nofollow" class="external free" href="https://gitlab.com/asus-linux/asusctl/-/issues/404">https://gitlab.com/asus-linux/asusctl/-/issues/404</a>
 </p>
 <div class="mw-heading mw-heading2"><h2 id="Firmware">Firmware</h2></div>
 <p>Other than changing the boot device order, no firmware changes are required for this laptop.
@@ -456,21 +456,25 @@
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning</strong> Grub users must first reinstall grub with the <a href="../en/Trusted_Platform_Module.html" class="mw-redirect" title="Tpm">tpm</a> module included and the shim module disabled before enabling Secure Boot. Failure to do so will likely render the system unbootable until you disable secure boot in firmware. For this laptop you should follow the instructions in the <code>ca keys</code> section of <a href="../en/GRUB.html#Secure_Boot_support" title="GRUB">GRUB#Secure Boot support</a>.</div>
 <div class="mw-heading mw-heading4"><h4 id="Manual_Setup">Manual Setup</h4></div>
-<p>Firmware will allow you to easily put <a href="../en/Unified_Extensible_Firmware_Interface/Secure_Boot.html" class="mw-redirect" title="Secure Boot">Secure Boot</a> into Setup/Custom mode so you can deploy your own keys with <code>keytool</code>. 
+<p>Firmware will allow you to easily put <a href="../en/Secure_Boot.html" class="mw-redirect" title="Secure Boot">Secure Boot</a> into Setup/Custom mode so you can deploy your own keys with <code>keytool</code>. 
 </p>
 <p>There is no need to reset the TPM state to put firmware into setup mode, and also, if you have a usb thumbdrive with your CA files, or they are placed inside your ESP, you can deploy these certificates directly from the firmware as well.
 </p>
 <p>Also, right after deploying your CA information, this laptop firmware will delete any additional EFI external drive boot entry it might have configured(USB, CD, PXE).
 </p>
 <div class="mw-heading mw-heading4"><h4 id="Automated_Setup">Automated Setup</h4></div>
-<p>If you do not want the hassle of manually handling keys then <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sbctl">sbctl</a></span> fully supports this laptop. See <a href="../en/Unified_Extensible_Firmware_Interface/Secure_Boot.html#Assisted_process_with_sbctl" class="mw-redirect" title="Secure Boot">Secure Boot#Assisted process with sbctl</a> for instructions.
+<p>If you do not want the hassle of manually handling keys then <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sbctl">sbctl</a></span> fully supports this laptop. See <a href="../en/Secure_Boot.html#Assisted_process_with_sbctl" class="mw-redirect" title="Secure Boot">Secure Boot#Assisted process with sbctl</a> for instructions.
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning</strong> Model <code>FX517ZR</code> will prompt a warning that permanent damage might happen if you deploy your CA files using <code>sbctl enroll-keys</code>. You can proceed by enrolling your CA through the Asus firmware directly and copying the files from <code>/var/lib/sbctl</code> or your currently configured directory that holds those to a safe disk that you will <code>keytool</code> the files after the deploy </div>
+<strong>Warning</strong> Model <code>FX517ZR</code> will prompt a warning that permanent damage might happen if you deploy your CA files using <code>sbctl enroll-keys</code>. You can proceed by enrolling your CA through the ASUS firmware directly and copying the files from <code>/var/lib/sbctl</code> or your currently configured directory that holds those to a safe disk that you will <code>keytool</code> the files after the deploy </div>
 <div class="mw-heading mw-heading4"><h4 id="Standalone_Firmware_Update_Files_Availability">Standalone Firmware Update Files Availability</h4></div>
-<p>Some UEFI upgrades might not be available directly from Asus website and will require Windows 10 or 11 to fetch them because those are only provided through the "MyASUS" Windows Store app only.
+<p>Some UEFI upgrades were not be available directly from ASUS website and required Windows 10 or 11 to fetch them because those are only provided through the "MyASUS" Windows Store app only (versions <code>FX517ZR.318</code> and <code>FX517ZR.319</code> specifically).
 </p>
-<p>As an example, when accessing Asus Support website for the model <code>FX517ZR</code> <a rel="nofollow" class="external text" href="https://www.asus.com/laptops/for-gaming/tuf-gaming/asus-tuf-dash-f15-2022/helpdesk_bios?model2Name=FX517ZR">here</a>, the last UEFI firmware version available to download is <code>v317</code>. However, on the Linux Hardware Database, there is a report for this model <a rel="nofollow" class="external text" href="https://linux-hardware.org/?probe=87836c3a98">here</a> running firmware version <code>FX517ZR.319</code>, indicating that this user is dual-booting Windows to receive such UEFI updates or used Windows in the past to apply such updates.
+<p>ASUS provides firmware version <code>FX517ZR.320</code> on <a rel="nofollow" class="external text" href="https://www.asus.com/laptops/for-gaming/tuf-gaming/asus-tuf-dash-f15-2022/helpdesk_bios?model2Name=FX517ZR">its website</a>, and an ASUS EZ Flash version of the file is available for users to flash from within the Setup interface. 
+</p>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning</strong> Be aware that you have to disable Secure Boot or the Setup Interface will tell you it is an "Invalid Secure Boot EFI file" for this, and that some configurations like NVME VDM mode are reverted to the defaults after the upgrade which can be misleading and interpreted as unavailable disks or wrong <code>UUID</code> during boot making the boot process to fail.</div>
+<p>It is confirmed that the <code>S3</code> suspend-to-ram issue highlighted on the next topic still persists, and the laptop does a "hard reboot" after back from suspension and configuring <code>s2idle</code> is the available workaround.
 </p>
 <div class="mw-heading mw-heading2"><h2 id="D-Bus_notifications">D-Bus notifications</h2></div>
 <p>Notifications provide feedback when a setting is changed using <code>asusctl</code>, they used to rely on a systemd service but have since been integrated into <a href="../en/Asusctl.html" title="Asusctl">asusctl</a> and should now work with no user intervention.
@@ -549,11 +553,11 @@
 </td>
 </tr>
 <tr>
-<td>Asus Key</td>
+<td>ASUS Key</td>
 <td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes</td>
 <td class="archwiki-table-cell archwiki-template-r" data-sort-value="1">No</td>
 <td>
-<code>KEY_PROG3</code> code <code>202</code>. This key has a generic stamp on it which is bound to Asus internal design.
+<code>KEY_PROG3</code> code <code>202</code>. This key has a generic stamp on it which is bound to ASUS internal design.
 </td>
 </tr>
 <tr>
@@ -745,7 +749,7 @@
 <ul>
 <li><a rel="nofollow" class="external text" href="https://linux-hardware.org/?probe=f5c538e2c7">Hardware Probe - i5 + RTX3060 version</a></li>
 <li><a rel="nofollow" class="external text" href="https://linux-hardware.org/?probe=87331b21e8">Hardware Probe - i7 + RTX3070 version (additional Sabrent drive not included with base model)</a></li>
-<li><a rel="nofollow" class="external text" href="https://www.asus.com/laptops/for-gaming/tuf-gaming/asus-tuf-dash-f15-2022/">Official Asus TUF Dash F15(2022) page</a></li>
+<li><a rel="nofollow" class="external text" href="https://www.asus.com/laptops/for-gaming/tuf-gaming/asus-tuf-dash-f15-2022/">Official ASUS TUF Dash F15(2022) page</a></li>
 <li><a rel="nofollow" class="external text" href="https://www.asus.com/laptops/for-gaming/tuf-gaming/asus-tuf-dash-f15-2022/helpdesk_manual/">TUF Dash F15 Online PDF manuals</a></li>
 </ul>
 </div>
@@ -765,8 +769,8 @@
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=ASUS_TUF_DASH_F15_(2022)&amp;oldid=845563">https://wiki.archlinux.org/index.php?title=ASUS_TUF_DASH_F15_(2022)&amp;oldid=845563</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 29 August 2025, at 08:17.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=ASUS_TUF_DASH_F15_(2022)&amp;oldid=860164">https://wiki.archlinux.org/index.php?title=ASUS_TUF_DASH_F15_(2022)&amp;oldid=860164</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 4 January 2026, at 21:42.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>
@@ -789,7 +793,7 @@
 		</div>
 	</div> 
 </div> 
-<div class="vector-header-container vector-sticky-header-container">
+<div class="vector-header-container vector-sticky-header-container no-font-mode-scale">
 	<div id="vector-sticky-header" class="vector-sticky-header">
 		<div class="vector-sticky-header-start">
 			<div class="vector-sticky-header-icon-start vector-button-flush-left vector-button-flush-right" aria-hidden="true">
@@ -799,13 +803,13 @@
 			</button>
 		</div>
 			
-		<div role="search" class="vector-search-box-vue vector-search-box">
+		<div role="search" class="vector-search-box-vue  vector-search-box-show-thumbnail vector-search-box">
 			<div class="vector-typeahead-search-container">
-				<div class="cdx-typeahead-search">
+				<div class="cdx-typeahead-search cdx-typeahead-search--show-thumbnail">
 					<form action="/index.php" id="vector-sticky-search-form" class="cdx-search-input cdx-search-input--has-end-button">
 						<div class="cdx-search-input__input-wrapper" data-search-loc="header-moved">
 							<div class="cdx-text-input cdx-text-input--has-start-icon">
-								<input class="cdx-text-input__input" type="search" name="search" placeholder="Search ArchWiki">
+								<input class="cdx-text-input__input mw-searchInput" autocomplete="off" type="search" name="search" placeholder="Search ArchWiki">
 								<span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
 							</div>
 							<input type="hidden" name="title" value="Special:Search">
@@ -850,6 +854,10 @@
 <span></span>
 			</a>
 			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only mw-watchlink" id="ca-watchstar-sticky-header" tabindex="-1" data-event-name="watch-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-star mw-ui-icon-wikimedia-wikimedia-star"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only reading-lists-bookmark" id="ca-bookmark-sticky-header" tabindex="-1" data-event-name="watch-sticky-bookmark"><span class="vector-icon mw-ui-icon-wikimedia-bookmarkOutline mw-ui-icon-wikimedia-wikimedia-bookmarkOutline"></span>
 
 <span></span>
 			</a>

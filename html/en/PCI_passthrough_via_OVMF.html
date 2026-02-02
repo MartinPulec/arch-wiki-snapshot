@@ -5,7 +5,7 @@
 <title>PCI passthrough via OVMF - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.44.2">
+<meta name="generator" content="MediaWiki 1.45.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -1284,7 +1284,7 @@
 		</div>
 		<div class="mw-content-container">
 			<main id="content" class="mw-body" style="margin: 0">
-				<header class="mw-body-header vector-page-titlebar vector-feature-custom-font-size-clientpref--excluded">
+				<header class="mw-body-header vector-page-titlebar no-font-mode-scale">
 					<nav aria-label="Contents" class="vector-toc-landmark">
 						
 <div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left" title="Table of Contents">
@@ -1305,28 +1305,8 @@
 					</nav>
 					<h1 id="firstHeading" class="firstHeading mw-first-heading"><span class="mw-page-title-main">PCI passthrough via OVMF</span></h1>
 							
-<div id="p-lang-btn" class="vector-dropdown mw-portlet mw-portlet-lang">
-	<input type="checkbox" id="p-lang-btn-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-p-lang-btn" class="vector-dropdown-checkbox mw-interlanguage-selector" aria-label="Go to an article in another language. Available in 2 languages">
-	<label id="p-lang-btn-label" for="p-lang-btn-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive mw-portlet-lang-heading-2" aria-hidden="true"><span class="vector-icon mw-ui-icon-language-progressive mw-ui-icon-wikimedia-language-progressive"></span>
-
-<span class="vector-dropdown-label-text">2 languages</span>
-	</label>
-	<div class="vector-dropdown-content">
-
-		<div class="vector-menu-content">
-			
-			<ul class="vector-menu-content-list">
-				
-				<li class="interlanguage-link interwiki-ja mw-list-item"><a href="https://wiki.archlinux.jp/index.php/OVMF_%E3%81%AB%E3%82%88%E3%82%8B_PCI_%E3%83%91%E3%82%B9%E3%82%B9%E3%83%AB%E3%83%BC" title="OVMF による PCI パススルー – 日本語" lang="ja" hreflang="ja" data-title="OVMF による PCI パススルー" data-language-autonym="日本語" data-language-local-name="日本語" class="interlanguage-link-target"><span>日本語</span></a></li>
-<li class="interlanguage-link interwiki-zh-hans mw-list-item"><a href="https://wiki.archlinuxcn.org/wiki/PCI_passthrough_via_OVMF" title="PCI passthrough via OVMF – 中文（简体）" lang="zh-Hans" hreflang="zh-Hans" data-title="PCI passthrough via OVMF" data-language-autonym="中文（简体）" data-language-local-name="中文（简体）" class="interlanguage-link-target"><span>中文（简体）</span></a></li>
-			</ul>
-			
-		</div>
-
-	</div>
-</div>
 </header>
-				<div class="vector-column-end vector-feature-custom-font-size-clientpref--excluded">
+				<div class="vector-column-end no-font-mode-scale">
 					<div class="vector-sticky-pinned-container">
 						<nav class="vector-page-tools-landmark" aria-label="Page tools">
 							<div id="vector-page-tools-pinned-container" class="vector-pinned-container">
@@ -1431,7 +1411,7 @@
 [    0.537549] IOMMU: Setting identity map for device 0000:00:1f.0 [0x0 - 0xffffff]
 [    2.182790] [drm] DMAR active, disabling use of stolen memory
 </pre>
-<p>To manually enable IOMMU support, set the correct <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a> depending on the type of CPU in use:
+<p>To manually enable IOMMU support, set the correct <a href="../en/Kernel_parameter.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a> depending on the type of CPU in use:
 </p>
 <ul>
 <li>For Intel CPUs (VT-d) set <code>intel_iommu=on</code>, unless your kernel sets the <code>CONFIG_INTEL_IOMMU_DEFAULT_ON</code> config option.</li>
@@ -1504,7 +1484,7 @@ IOMMU Group 13:
 <li>Binding the audio device (<code>10de:0fbb</code> in above's example) is optional. Libvirt is able to unbind it from the <code>snd_hda_intel</code> driver on its own.</li>
 </ul>
 </div>
-<p>Providing the device IDs is done via the <a href="../en/Kernel_module.html#Setting_module_options" class="mw-redirect" title="Kernel module parameter">kernel module parameter</a> <code>ids=10de:13c2,10de:0fbb</code> for <code>vfio-pci</code>.
+<p>Providing the device IDs is done via the <a href="../en/Kernel_module_parameter.html" class="mw-redirect" title="Kernel module parameter">kernel module parameter</a> <code>ids=10de:13c2,10de:0fbb</code> for <code>vfio-pci</code>.
 </p>
 <p>In case of wanting to keep the HDAudio in the host it can be detached by using the kernel module parameters <code>gpu_bind=0</code> for <code>snd-hda-core</code> and <code>enable_acomp=n</code> for <code>snd-hda-codec-hdmi</code>.
 </p>
@@ -1542,7 +1522,7 @@ function unbind_vfio {
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/modprobe.d/vfio.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">softdep drm pre: vfio-pci</pre>
-<p>If you are passing through an Nvidia GPU and have the proprietary <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nvidia">nvidia</a></span> driver installed, use the following instead:
+<p>If you are passing through an NVIDIA GPU and have the proprietary <a href="../en/NVIDIA.html" title="NVIDIA">NVIDIA</a> driver installed, use the following instead:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/modprobe.d/vfio.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">softdep nvidia pre: vfio-pci</pre>
@@ -1566,7 +1546,7 @@ function unbind_vfio {
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/mkinitcpio.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">HOOKS=(... modconf ...)</pre>
-<p>Since new modules have been added to the initramfs configuration, you must <a href="../en/Mkinitcpio.html#Image_creation_and_activation" class="mw-redirect" title="Regenerate the initramfs">regenerate the initramfs</a>.
+<p>Since new modules have been added to the initramfs configuration, you must <a href="../en/Regenerate_the_initramfs.html" class="mw-redirect" title="Regenerate the initramfs">regenerate the initramfs</a>.
 </p>
 <div class="mw-heading mw-heading5"><h5 id="booster">booster</h5></div>
 <p>Similar to mkinitcpio you need to specify modules to load early:
@@ -2168,9 +2148,10 @@ fi</pre>
 </p>
 <div class="mw-heading mw-heading4"><h4 id="Script_variants">Script variants</h4></div>
 <div class="mw-heading mw-heading5"><h5 id="Passthrough_all_GPUs_but_the_boot_GPU">Passthrough all GPUs but the boot GPU</h5></div>
-<p>Here, we will make a script to bind vfio-pci to all GPUs but the boot gpu. Create the script <code>/usr/local/bin/vfio-pci-override.sh</code>:
+<p>Here, we will make a script to bind vfio-pci to all GPUs but the boot gpu. Create the following script (and do not forget to make it <a href="../en/Help:Reading.html#Make_executable" class="mw-redirect" title="Executable">executable</a>):
 </p>
-<pre>#!/bin/sh
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/usr/local/bin/vfio-pci-override.sh</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">#!/bin/sh
 
 for i in /sys/bus/pci/devices/*/boot_vga; do
     if [ $(cat "$i") -eq 0 ]; then
@@ -2229,7 +2210,7 @@ modprobe -i vfio-pci</pre>
 <li>Add the following line: <code>install vfio-pci /usr/local/bin/vfio-pci-override.sh</code>
 </li>
 <li>
-<a href="../en/Mkinitcpio.html#Image_creation_and_activation" class="mw-redirect" title="Regenerate the initramfs">Regenerate the initramfs</a> and reboot.</li>
+<a href="../en/Regenerate_the_initramfs.html" class="mw-redirect" title="Regenerate the initramfs">Regenerate the initramfs</a> and reboot.</li>
 </ol>
 <div class="mw-heading mw-heading3"><h3 id="Passing_the_boot_GPU_to_the_guest">Passing the boot GPU to the guest</h3></div>
 <div class="noprint archwiki-template-message">
@@ -2647,9 +2628,9 @@ WantedBy=default.target</pre>
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip</strong> If you are using <a href="../en/PipeWire.html" title="PipeWire">PipeWire</a>, replace <code>pulseaudio.service</code> with <code>pipewire-pulse.service</code> and add <code>After=wireplumber.service</code>.</div>
-<p>Now <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start">start</a> the <code>scream-ivshmem-pulse.service</code> <a href="../en/Systemd/User.html" class="mw-redirect" title="User unit">user unit</a>.
+<p>Now <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start">start</a> the <code>scream-ivshmem-pulse.service</code> <a href="../en/User_unit.html" class="mw-redirect" title="User unit">user unit</a>.
 </p>
-<p>To have it automatically start on next login, <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> the <a href="../en/Systemd/User.html" class="mw-redirect" title="User unit">user unit</a>.
+<p>To have it automatically start on next login, <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> the <a href="../en/User_unit.html" class="mw-redirect" title="User unit">user unit</a>.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Physical_disk/partition">
 <span id="Physical_disk.2Fpartition"></span>Physical disk/partition</h3></div>
@@ -2774,7 +2755,7 @@ cBcBC9A5C1gCCywBCjwKPA0ADQANTElPTgANABQSX0JTVACkEgoEAAALcBcL0Dk=' | base64 -d &g
 # echo 1 &gt; /sys/bus/pci/rescan
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note</strong> Probably setting <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a> <code>video=efifb:off</code> is required as well. <a rel="nofollow" class="external text" href="https://pve.proxmox.com/wiki/Pci_passthrough#BAR_3:_can.27t_reserve_.5Bmem.5D_error">Source</a>
+<strong>Note</strong> Probably setting <a href="../en/Kernel_parameter.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a> <code>video=efifb:off</code> is required as well. <a rel="nofollow" class="external text" href="https://pve.proxmox.com/wiki/Pci_passthrough#BAR_3:_can.27t_reserve_.5Bmem.5D_error">Source</a>
 </div>
 <p>In addition try adding kernel parameter <code>pci=realloc</code> which also <a rel="nofollow" class="external text" href="https://github.com/Dunedan/mbp-2016-linux/issues/60#issuecomment-396311301">helps with hotplugging issues</a>.
 </p>
@@ -2903,7 +2884,7 @@ EndSection
 <div class="mw-heading mw-heading3"><h3 id="Chromium_ignores_integrated_graphics_for_acceleration">Chromium ignores integrated graphics for acceleration</h3></div>
 <p>Chromium and friends will try to detect as many GPUs as they can in the system and pick which one is preferred (usually discrete NVIDIA/AMD graphics). It tries to pick a GPU by looking at PCI devices, not OpenGL renderers available in the system - the result is that Chromium may ignore the integrated GPU available for rendering and try to use the dedicated GPU bound to the <code>vfio-pci</code> driver, and unusable on the host system, regardless of whenever a guest virtual machine is running or not. This results in software rendering being used (leading to higher CPU load, which may also result in choppy video playback, scrolling and general un-smoothness).
 </p>
-<p>This can be fixed by <a href="../en/Chromium.html#Forcing_specific_GPU" class="mw-redirect" title="Chromium/Tips and tricks">explicitly telling Chromium which GPU you want to use</a>.
+<p>This can be fixed by <a href="../en/Chromium/Tips_and_tricks.html#Forcing_specific_GPU" class="mw-redirect" title="Chromium/Tips and tricks">explicitly telling Chromium which GPU you want to use</a>.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Virtual_machine_only_uses_one_core">Virtual machine only uses one core</h3></div>
 <p>For some users, even if IOMMU is enabled and the core count is set to more than 1, the virtual machine still only uses one CPU core and thread. To solve this enable "Manually set CPU topology" in <code>virt-manager</code> and set it to the desirable amount of CPU sockets, cores and threads. Keep in mind that "Threads" refers to the thread count per CPU, not the total count.
@@ -3109,8 +3090,8 @@ ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x1002", ATTR{device}=="0x73bf",
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PCI_passthrough_via_OVMF&amp;oldid=848810">https://wiki.archlinux.org/index.php?title=PCI_passthrough_via_OVMF&amp;oldid=848810</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 13 October 2025, at 13:00.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PCI_passthrough_via_OVMF&amp;oldid=860635">https://wiki.archlinux.org/index.php?title=PCI_passthrough_via_OVMF&amp;oldid=860635</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 9 January 2026, at 14:08.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>
@@ -3133,7 +3114,7 @@ ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x1002", ATTR{device}=="0x73bf",
 		</div>
 	</div> 
 </div> 
-<div class="vector-header-container vector-sticky-header-container">
+<div class="vector-header-container vector-sticky-header-container no-font-mode-scale">
 	<div id="vector-sticky-header" class="vector-sticky-header">
 		<div class="vector-sticky-header-start">
 			<div class="vector-sticky-header-icon-start vector-button-flush-left vector-button-flush-right" aria-hidden="true">
@@ -3143,13 +3124,13 @@ ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x1002", ATTR{device}=="0x73bf",
 			</button>
 		</div>
 			
-		<div role="search" class="vector-search-box-vue vector-search-box">
+		<div role="search" class="vector-search-box-vue  vector-search-box-show-thumbnail vector-search-box">
 			<div class="vector-typeahead-search-container">
-				<div class="cdx-typeahead-search">
+				<div class="cdx-typeahead-search cdx-typeahead-search--show-thumbnail">
 					<form action="/index.php" id="vector-sticky-search-form" class="cdx-search-input cdx-search-input--has-end-button">
 						<div class="cdx-search-input__input-wrapper" data-search-loc="header-moved">
 							<div class="cdx-text-input cdx-text-input--has-start-icon">
-								<input class="cdx-text-input__input" type="search" name="search" placeholder="Search ArchWiki">
+								<input class="cdx-text-input__input mw-searchInput" autocomplete="off" type="search" name="search" placeholder="Search ArchWiki">
 								<span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
 							</div>
 							<input type="hidden" name="title" value="Special:Search">
@@ -3194,6 +3175,10 @@ ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x1002", ATTR{device}=="0x73bf",
 <span></span>
 			</a>
 			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only mw-watchlink" id="ca-watchstar-sticky-header" tabindex="-1" data-event-name="watch-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-star mw-ui-icon-wikimedia-wikimedia-star"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only reading-lists-bookmark" id="ca-bookmark-sticky-header" tabindex="-1" data-event-name="watch-sticky-bookmark"><span class="vector-icon mw-ui-icon-wikimedia-bookmarkOutline mw-ui-icon-wikimedia-wikimedia-bookmarkOutline"></span>
 
 <span></span>
 			</a>

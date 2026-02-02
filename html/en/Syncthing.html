@@ -5,7 +5,7 @@
 <title>Syncthing - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.44.2">
+<meta name="generator" content="MediaWiki 1.45.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -372,7 +372,7 @@
 		</div>
 		<div class="mw-content-container">
 			<main id="content" class="mw-body" style="margin: 0">
-				<header class="mw-body-header vector-page-titlebar vector-feature-custom-font-size-clientpref--excluded">
+				<header class="mw-body-header vector-page-titlebar no-font-mode-scale">
 					<nav aria-label="Contents" class="vector-toc-landmark">
 						
 <div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left" title="Table of Contents">
@@ -393,28 +393,8 @@
 					</nav>
 					<h1 id="firstHeading" class="firstHeading mw-first-heading"><span class="mw-page-title-main">Syncthing</span></h1>
 							
-<div id="p-lang-btn" class="vector-dropdown mw-portlet mw-portlet-lang">
-	<input type="checkbox" id="p-lang-btn-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-p-lang-btn" class="vector-dropdown-checkbox mw-interlanguage-selector" aria-label="Go to an article in another language. Available in 2 languages">
-	<label id="p-lang-btn-label" for="p-lang-btn-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive mw-portlet-lang-heading-2" aria-hidden="true"><span class="vector-icon mw-ui-icon-language-progressive mw-ui-icon-wikimedia-language-progressive"></span>
-
-<span class="vector-dropdown-label-text">2 languages</span>
-	</label>
-	<div class="vector-dropdown-content">
-
-		<div class="vector-menu-content">
-			
-			<ul class="vector-menu-content-list">
-				
-				<li class="interlanguage-link interwiki-ja mw-list-item"><a href="https://wiki.archlinux.jp/index.php/Syncthing" title="Syncthing – 日本語" lang="ja" hreflang="ja" data-title="Syncthing" data-language-autonym="日本語" data-language-local-name="日本語" class="interlanguage-link-target"><span>日本語</span></a></li>
-<li class="interlanguage-link interwiki-ru mw-list-item"><a href="../ru/Syncthing.html" title="Syncthing – русский" lang="ru" hreflang="ru" data-title="Syncthing" data-language-autonym="Русский" data-language-local-name="русский" class="interlanguage-link-target"><span>Русский</span></a></li>
-			</ul>
-			
-		</div>
-
-	</div>
-</div>
 </header>
-				<div class="vector-column-end vector-feature-custom-font-size-clientpref--excluded">
+				<div class="vector-column-end no-font-mode-scale">
 					<div class="vector-sticky-pinned-container">
 						<nav class="vector-page-tools-landmark" aria-label="Page tools">
 							<div id="vector-page-tools-pinned-container" class="vector-pinned-container">
@@ -479,7 +459,7 @@
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning</strong> If running the service for an account where you've configured a non-default <a href="../en/Umask.html" title="Umask">umask</a>, then the default <code>syncthing@<i>username</i>.service</code> file will <i>not</i> respect that <a href="../en/Umask.html" title="Umask">umask</a> value, instead using the default for systemd services (typically <code>0022</code>, which implies global readability). Notably, any devices which use different permission systems (for example - when using <code>Syncthing-Fork</code> on Android) may make files downloaded from that device globally readable by any user on your system if the synchronized directory is not within another directory that your user has exclusive access to.
-<p>To set the <code>umask</code> in the service for all users, consider using a systemd <a href="../en/Systemd.html#Drop-in_files" class="mw-redirect" title="Drop-in file">drop-in file</a>:
+<p>To set the <code>umask</code> in the service for all users, consider using a systemd <a href="../en/Drop-in_file.html" class="mw-redirect" title="Drop-in file">drop-in file</a>:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/syncthing@.service.d/override.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Service]
@@ -492,9 +472,9 @@ UMask=0077</pre>
 </p>
 </div>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note</strong> If a service account was created explicitly for syncthing (e.g. via <code>useradd -r</code>) then ensure that the user has a valid home directory otherwise the service will immediately fail. Syncthing attempts to put configuration files into <code>$XDG_STATE_HOME/syncthing</code> or <code>$HOME/.local/state/syncthing</code>.</div>
+<strong>Note</strong> If a service account was created explicitly for syncthing (e.g. via <code>useradd -r</code>) then ensure that the user has a valid home directory otherwise the service will immediately fail. Syncthing attempts to put configuration files into <code>$XDG_STATE_HOME/syncthing</code> or <code>~/.local/state/syncthing</code>.</div>
 <div class="mw-heading mw-heading4"><h4 id="User_service:_on_login">User service: on login</h4></div>
-<p>Running Syncthing as a <i>systemd user</i> service ensures that Syncthing only starts after the user has logged into the system (e.g., via the graphical login screen, or ssh). This method is intended to be used on a (multiuser) computer. To run the user service, <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start/enable">start/enable</a> the <a href="../en/Systemd/User.html" class="mw-redirect" title="User unit">user unit</a> <code>syncthing.service</code> (i.e. with the <code>--user</code> flag).
+<p>Running Syncthing as a <i>systemd user</i> service ensures that Syncthing only starts after the user has logged into the system (e.g., via the graphical login screen, or ssh). This method is intended to be used on a (multiuser) computer. To run the user service, <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start/enable">start/enable</a> the <a href="../en/User_unit.html" class="mw-redirect" title="User unit">user unit</a> <code>syncthing.service</code> (i.e. with the <code>--user</code> flag).
 </p>
 <div class="mw-heading mw-heading4"><h4 id="User_service:_on_boot">User service: on boot</h4></div>
 <p>The systemd-user service can be started at boot time (i.e. without logging in) using <a href="../en/Systemd/User.html#Automatic_start-up_of_systemd_user_instances" title="Systemd/User">systemd/User#Automatic start-up of systemd user instances</a>.
@@ -557,7 +537,7 @@ If you specify "dynamic" for the address, the syncthing announce server will be 
 <div class="mw-heading mw-heading3"><h3 id="Running_a_relay">Running a relay</h3></div>
 <p>Syncthing has the ability to connect two devices via a <a rel="nofollow" class="external text" href="https://docs.syncthing.net/users/relaying.html">relay</a> when it is not possible to establish a direct connection between them. Relayed connections are end-to-end encrypted in the usual manner, so the relay has no insight into the connection other than the knowledge of the IP addresses and device IDs.
 </p>
-<p>Anyone can run a <a rel="nofollow" class="external text" href="https://docs.syncthing.net/users/strelaysrv.html">relay server</a> and it will automatically join the <a rel="nofollow" class="external text" href="https://relays.syncthing.net/">Syncthing relay pool</a> and be available to all Syncthing's users. To run your own relay, <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=syncthing-relaysrv">syncthing-relaysrv</a></span> and <a href="../en/Systemd.html#Using_units" title="Systemd">Start/Enable</a> <code>syncthing-relaysrv.service</code>. Rate limiting and other options can be configured via the command line. These options can be set in the <code>ExecStart</code> directive of the service <a href="../en/Systemd.html#Drop-in_files" class="mw-redirect" title="Drop-in file">drop-in file</a> as follows:
+<p>Anyone can run a <a rel="nofollow" class="external text" href="https://docs.syncthing.net/users/strelaysrv.html">relay server</a> and it will automatically join the <a rel="nofollow" class="external text" href="https://relays.syncthing.net/">Syncthing relay pool</a> and be available to all Syncthing's users. To run your own relay, <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=syncthing-relaysrv">syncthing-relaysrv</a></span> and <a href="../en/Systemd.html#Using_units" title="Systemd">Start/Enable</a> <code>syncthing-relaysrv.service</code>. Rate limiting and other options can be configured via the command line. These options can be set in the <code>ExecStart</code> directive of the service <a href="../en/Drop-in_file.html" class="mw-redirect" title="Drop-in file">drop-in file</a> as follows:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/syncthing-relaysrv.service.d/override.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Service]
@@ -610,8 +590,7 @@ WantedBy=multi-user.target</pre>
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/syncthing@.service.d/nospam.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Service]
-ExecStart=
-ExecStart=/usr/bin/syncthing serve --no-browser --no-restart --log-level=WARN</pre>
+Environment="STLOGLEVEL=WARN"</pre>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note</strong> Users upgrading from Syncthing &lt;2.0.0 who were following this tip may have used a previous ExecStart line below, which piped the log output through grep. The format of Syncthing's command line options changed in 2.0.0. The "serve" verb is now required, options now use the double-hyphen prefix, and the option -logflags has been removed. Due to the new --log-level option, it no longer necessary to pipe the output through grep in the custom ExecStart line.
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/syncthing@.service.d/nospam.conf</pre>
@@ -665,9 +644,9 @@ Environment="no_proxy=127.0.0.1"</pre>
 </p>
 <pre>$ systemctl cat syncthing@.service
 </pre>
-<p>Within the <code>[Service]</code> part, there is a <code>Hardening</code> part and below that, a <code>ProtectSystem</code> directive which is set to <code>full</code> by default. See <span class="plainlinks archwiki-template-man" title="$ man 5 systemd.exec"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd.exec.5#SANDBOXING">systemd.exec(5) § SANDBOXING</a></span> for more information on this directive.
+<p>Within the <code>[Service]</code> section, there may be a <code>ProtectSystem</code> directive set to <code>full</code>, which makes <code>/usr</code> and <code>/etc</code> read-only for Syncthing. (See <span class="plainlinks archwiki-template-man" title="$ man 5 systemd.exec"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd.exec.5#SANDBOXING">systemd.exec(5) § SANDBOXING</a></span> for more information on this directive.)
 </p>
-<p>Create a <a href="../en/Systemd.html#Drop-in_files" class="mw-redirect" title="Drop-in file">drop-in file</a> to override the value to something that suits your needs. If you are trying to sync a sub-folder of <code>/etc</code>, <code>ProtectSystem=<b>true</b></code> should do the trick.
+<p>To fix the error, add a <code>ReadWritePaths</code> directive listing the directory that Syncthing writes backups to, for example using a <a href="../en/Drop-in_file.html" class="mw-redirect" title="Drop-in file">drop-in file</a>.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Others">Others</h3></div>
 <p>See <a rel="nofollow" class="external text" href="https://docs.syncthing.net/dev/debugging.html">Debugging Syncthing</a>.
@@ -690,8 +669,8 @@ Environment="no_proxy=127.0.0.1"</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Syncthing&amp;oldid=845789">https://wiki.archlinux.org/index.php?title=Syncthing&amp;oldid=845789</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 31 August 2025, at 10:01.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Syncthing&amp;oldid=860747">https://wiki.archlinux.org/index.php?title=Syncthing&amp;oldid=860747</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 10 January 2026, at 22:10.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>
@@ -714,7 +693,7 @@ Environment="no_proxy=127.0.0.1"</pre>
 		</div>
 	</div> 
 </div> 
-<div class="vector-header-container vector-sticky-header-container">
+<div class="vector-header-container vector-sticky-header-container no-font-mode-scale">
 	<div id="vector-sticky-header" class="vector-sticky-header">
 		<div class="vector-sticky-header-start">
 			<div class="vector-sticky-header-icon-start vector-button-flush-left vector-button-flush-right" aria-hidden="true">
@@ -724,13 +703,13 @@ Environment="no_proxy=127.0.0.1"</pre>
 			</button>
 		</div>
 			
-		<div role="search" class="vector-search-box-vue vector-search-box">
+		<div role="search" class="vector-search-box-vue  vector-search-box-show-thumbnail vector-search-box">
 			<div class="vector-typeahead-search-container">
-				<div class="cdx-typeahead-search">
+				<div class="cdx-typeahead-search cdx-typeahead-search--show-thumbnail">
 					<form action="/index.php" id="vector-sticky-search-form" class="cdx-search-input cdx-search-input--has-end-button">
 						<div class="cdx-search-input__input-wrapper" data-search-loc="header-moved">
 							<div class="cdx-text-input cdx-text-input--has-start-icon">
-								<input class="cdx-text-input__input" type="search" name="search" placeholder="Search ArchWiki">
+								<input class="cdx-text-input__input mw-searchInput" autocomplete="off" type="search" name="search" placeholder="Search ArchWiki">
 								<span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
 							</div>
 							<input type="hidden" name="title" value="Special:Search">
@@ -775,6 +754,10 @@ Environment="no_proxy=127.0.0.1"</pre>
 <span></span>
 			</a>
 			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only mw-watchlink" id="ca-watchstar-sticky-header" tabindex="-1" data-event-name="watch-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-star mw-ui-icon-wikimedia-wikimedia-star"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only reading-lists-bookmark" id="ca-bookmark-sticky-header" tabindex="-1" data-event-name="watch-sticky-bookmark"><span class="vector-icon mw-ui-icon-wikimedia-bookmarkOutline mw-ui-icon-wikimedia-wikimedia-bookmarkOutline"></span>
 
 <span></span>
 			</a>

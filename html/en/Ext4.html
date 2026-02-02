@@ -5,7 +5,7 @@
 <title>Ext4 - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.44.2">
+<meta name="generator" content="MediaWiki 1.45.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -312,6 +312,17 @@
 			<ul id="toc-Enabling_case-insensitive_mode-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Resize_filesystem" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Resize_filesystem">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">4.6</span>
+					<span>Resize filesystem</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Resize_filesystem-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
@@ -334,7 +345,7 @@
 		</div>
 		<div class="mw-content-container">
 			<main id="content" class="mw-body" style="margin: 0">
-				<header class="mw-body-header vector-page-titlebar vector-feature-custom-font-size-clientpref--excluded">
+				<header class="mw-body-header vector-page-titlebar no-font-mode-scale">
 					<nav aria-label="Contents" class="vector-toc-landmark">
 						
 <div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left" title="Table of Contents">
@@ -355,33 +366,8 @@
 					</nav>
 					<h1 id="firstHeading" class="firstHeading mw-first-heading"><span class="mw-page-title-main">Ext4</span></h1>
 							
-<div id="p-lang-btn" class="vector-dropdown mw-portlet mw-portlet-lang">
-	<input type="checkbox" id="p-lang-btn-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-p-lang-btn" class="vector-dropdown-checkbox mw-interlanguage-selector" aria-label="Go to an article in another language. Available in 7 languages">
-	<label id="p-lang-btn-label" for="p-lang-btn-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive mw-portlet-lang-heading-7" aria-hidden="true"><span class="vector-icon mw-ui-icon-language-progressive mw-ui-icon-wikimedia-language-progressive"></span>
-
-<span class="vector-dropdown-label-text">7 languages</span>
-	</label>
-	<div class="vector-dropdown-content">
-
-		<div class="vector-menu-content">
-			
-			<ul class="vector-menu-content-list">
-				
-				<li class="interlanguage-link interwiki-de mw-list-item"><a href="https://wiki.archlinux.de/title/Ext4" title="Ext4 – Deutsch" lang="de" hreflang="de" data-title="Ext4" data-language-autonym="Deutsch" data-language-local-name="Deutsch" class="interlanguage-link-target"><span>Deutsch</span></a></li>
-<li class="interlanguage-link interwiki-es mw-list-item"><a href="../es/Ext4.html" title="Ext4 – español" lang="es" hreflang="es" data-title="Ext4" data-language-autonym="Español" data-language-local-name="español" class="interlanguage-link-target"><span>Español</span></a></li>
-<li class="interlanguage-link interwiki-fr mw-list-item"><a href="../fr/Ext4.html" title="Ext4 – français" lang="fr" hreflang="fr" data-title="Ext4" data-language-autonym="Français" data-language-local-name="français" class="interlanguage-link-target"><span>Français</span></a></li>
-<li class="interlanguage-link interwiki-hu mw-list-item"><a href="../hu/Ext4.html" title="Ext4 – magyar" lang="hu" hreflang="hu" data-title="Ext4" data-language-autonym="Magyar" data-language-local-name="magyar" class="interlanguage-link-target"><span>Magyar</span></a></li>
-<li class="interlanguage-link interwiki-ja mw-list-item"><a href="https://wiki.archlinux.jp/index.php/Ext4" title="Ext4 – 日本語" lang="ja" hreflang="ja" data-title="Ext4" data-language-autonym="日本語" data-language-local-name="日本語" class="interlanguage-link-target"><span>日本語</span></a></li>
-<li class="interlanguage-link interwiki-pt mw-list-item"><a href="../pt/Ext4.html" title="Ext4 – português" lang="pt" hreflang="pt" data-title="Ext4" data-language-autonym="Português" data-language-local-name="português" class="interlanguage-link-target"><span>Português</span></a></li>
-<li class="interlanguage-link interwiki-zh-hans mw-list-item"><a href="https://wiki.archlinuxcn.org/wiki/Ext4" title="Ext4 – 中文（简体）" lang="zh-Hans" hreflang="zh-Hans" data-title="Ext4" data-language-autonym="中文（简体）" data-language-local-name="中文（简体）" class="interlanguage-link-target"><span>中文（简体）</span></a></li>
-			</ul>
-			
-		</div>
-
-	</div>
-</div>
 </header>
-				<div class="vector-column-end vector-feature-custom-font-size-clientpref--excluded">
+				<div class="vector-column-end no-font-mode-scale">
 					<div class="vector-sticky-pinned-container">
 						<nav class="vector-page-tools-landmark" aria-label="Page tools">
 							<div id="vector-page-tools-pinned-container" class="vector-pinned-container">
@@ -561,15 +547,15 @@
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning</strong> 
 <ul>
-<li>If converting the system's root filesystem, ensure that the 'fallback' initramfs is available at reboot. Alternatively, add <code>ext4</code> according to <a href="../en/Mkinitcpio.html#MODULES" title="Mkinitcpio">Mkinitcpio#MODULES</a> and <a href="../en/Mkinitcpio.html#Image_creation_and_activation" class="mw-redirect" title="Regenerate the initramfs">regenerate the initramfs</a> before starting.</li>
-<li>If converting a separate <code>/boot</code> partition, ensure the <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> supports booting from ext4.</li>
+<li>If converting the system's root filesystem, ensure that the 'fallback' initramfs is available at reboot. Alternatively, add <code>ext4</code> according to <a href="../en/Mkinitcpio.html#MODULES" title="Mkinitcpio">Mkinitcpio#MODULES</a> and <a href="../en/Regenerate_the_initramfs.html" class="mw-redirect" title="Regenerate the initramfs">regenerate the initramfs</a> before starting.</li>
+<li>If converting a separate <code>/boot</code> partition, ensure the <a href="../en/Boot_loader.html" class="mw-redirect" title="Boot loader">boot loader</a> supports booting from ext4.</li>
 </ul>
 </div>
 <p>In the following steps <code>/dev/sdxX</code> denotes the path to the partition to be converted, such as <code>/dev/sda1</code>.
 </p>
 <ol>
 <li>
-<a href="../en/Synchronization_and_backup_programs.html" class="mw-redirect" title="Backup programs">Back up</a> all data on any ext3 partitions that are to be converted to ext4. A useful package, especially for root partitions, is <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=clonezilla">clonezilla</a></span>.</li>
+<a href="../en/Backup_programs.html" class="mw-redirect" title="Backup programs">Back up</a> all data on any ext3 partitions that are to be converted to ext4. A useful package, especially for root partitions, is <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=clonezilla">clonezilla</a></span>.</li>
 <li>Edit <code>/etc/fstab</code> and change the 'type' from ext3 to ext4 for any partitions that are to be converted to ext4.</li>
 <li>Boot the live medium (if necessary). The conversion process with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=e2fsprogs">e2fsprogs</a></span> must be done when the drive is not mounted. If converting a root partition, the simplest way to achieve this is to boot from some other live medium.</li>
 <li>Ensure the partition is <i>not</i> mounted</li>
@@ -710,6 +696,9 @@ It is expected to significantly increase the performance of the ext4 filesystem,
 </p>
 <pre># tune2fs -O '^fast_commit' /dev/<i>drivepartition</i>
 </pre>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning</strong> Enabling this feature can cause system corruption in case of a powercut, see this <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?id=311780">BBS thread.</a>
+</div>
 <div class="mw-heading mw-heading3"><h3 id="Enabling_case-insensitive_mode">Enabling case-insensitive mode</h3></div>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning</strong> 
@@ -725,11 +714,20 @@ It is expected to significantly increase the performance of the ext4 filesystem,
 </p>
 <pre># tune2fs -O casefold <i>/dev/path/to/disk</i>
 </pre>
-<p>Enable the case-insensitive <a href="../en/File_permissions_and_attributes.html#File_attributes" class="mw-redirect" title="File attribute">attribute</a> in any directory:
+<p>Enable the case-insensitive <a href="../en/File_attribute.html" class="mw-redirect" title="File attribute">attribute</a> in any directory:
 </p>
 <pre>$ chattr +F <i>/mnt/partition/case-insensitive-directory</i>
 </pre>
 <p>Note that the directory must be empty, and moving subdirectories from elsewhere will not cause them to inherit the attribute, so plan ahead accordingly.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Resize_filesystem">Resize filesystem</h3></div>
+<p>The <span class="plainlinks archwiki-template-man" title="$ man 8 resize2fs"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/resize2fs.8">resize2fs(8)</a></span> program can resize ext2, ext3, or ext4 file systems. It can be used to enlarge or shrink an unmounted file system located on device. To resize an ext4 filesystem to a specific size:
+</p>
+<pre># resize2fs /dev/<i>partition</i> <i>size</i>
+</pre>
+<p>If <i>size</i> parameter is not specified, it will default to the size of the partition.
+</p>
+<p>Make sure to prepare the required partition size beforehand (in case of inflating) with your favorite <a href="../en/Partitioning.html#Tools" title="Partitioning">partitioning tool</a>.
 </p>
 <div class="mw-heading mw-heading2"><h2 id="See_also">See also</h2></div>
 <ul>
@@ -756,8 +754,8 @@ It is expected to significantly increase the performance of the ext4 filesystem,
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Ext4&amp;oldid=850853">https://wiki.archlinux.org/index.php?title=Ext4&amp;oldid=850853</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 26 October 2025, at 19:19.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Ext4&amp;oldid=863052">https://wiki.archlinux.org/index.php?title=Ext4&amp;oldid=863052</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 29 January 2026, at 05:00.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>
@@ -780,7 +778,7 @@ It is expected to significantly increase the performance of the ext4 filesystem,
 		</div>
 	</div> 
 </div> 
-<div class="vector-header-container vector-sticky-header-container">
+<div class="vector-header-container vector-sticky-header-container no-font-mode-scale">
 	<div id="vector-sticky-header" class="vector-sticky-header">
 		<div class="vector-sticky-header-start">
 			<div class="vector-sticky-header-icon-start vector-button-flush-left vector-button-flush-right" aria-hidden="true">
@@ -790,13 +788,13 @@ It is expected to significantly increase the performance of the ext4 filesystem,
 			</button>
 		</div>
 			
-		<div role="search" class="vector-search-box-vue vector-search-box">
+		<div role="search" class="vector-search-box-vue  vector-search-box-show-thumbnail vector-search-box">
 			<div class="vector-typeahead-search-container">
-				<div class="cdx-typeahead-search">
+				<div class="cdx-typeahead-search cdx-typeahead-search--show-thumbnail">
 					<form action="/index.php" id="vector-sticky-search-form" class="cdx-search-input cdx-search-input--has-end-button">
 						<div class="cdx-search-input__input-wrapper" data-search-loc="header-moved">
 							<div class="cdx-text-input cdx-text-input--has-start-icon">
-								<input class="cdx-text-input__input" type="search" name="search" placeholder="Search ArchWiki">
+								<input class="cdx-text-input__input mw-searchInput" autocomplete="off" type="search" name="search" placeholder="Search ArchWiki">
 								<span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
 							</div>
 							<input type="hidden" name="title" value="Special:Search">
@@ -841,6 +839,10 @@ It is expected to significantly increase the performance of the ext4 filesystem,
 <span></span>
 			</a>
 			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only mw-watchlink" id="ca-watchstar-sticky-header" tabindex="-1" data-event-name="watch-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-star mw-ui-icon-wikimedia-wikimedia-star"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only reading-lists-bookmark" id="ca-bookmark-sticky-header" tabindex="-1" data-event-name="watch-sticky-bookmark"><span class="vector-icon mw-ui-icon-wikimedia-bookmarkOutline mw-ui-icon-wikimedia-wikimedia-bookmarkOutline"></span>
 
 <span></span>
 			</a>

@@ -5,7 +5,7 @@
 <title>Dovecot - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.44.2">
+<meta name="generator" content="MediaWiki 1.45.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -170,6 +170,17 @@
 			<ul id="toc-dovecot.service_does_not_start_after_updating_to_2.4-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Dovecot_and_Postfix:_cannot_read_SSL_private_key" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Dovecot_and_Postfix:_cannot_read_SSL_private_key">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">6.3</span>
+					<span>Dovecot and Postfix: cannot read SSL private key</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Dovecot_and_Postfix:_cannot_read_SSL_private_key-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 </ul>
@@ -181,7 +192,7 @@
 		</div>
 		<div class="mw-content-container">
 			<main id="content" class="mw-body" style="margin: 0">
-				<header class="mw-body-header vector-page-titlebar vector-feature-custom-font-size-clientpref--excluded">
+				<header class="mw-body-header vector-page-titlebar no-font-mode-scale">
 					<nav aria-label="Contents" class="vector-toc-landmark">
 						
 <div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left" title="Table of Contents">
@@ -202,27 +213,8 @@
 					</nav>
 					<h1 id="firstHeading" class="firstHeading mw-first-heading"><span class="mw-page-title-main">Dovecot</span></h1>
 							
-<div id="p-lang-btn" class="vector-dropdown mw-portlet mw-portlet-lang">
-	<input type="checkbox" id="p-lang-btn-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-p-lang-btn" class="vector-dropdown-checkbox mw-interlanguage-selector" aria-label="Go to an article in another language. Available in 1 language">
-	<label id="p-lang-btn-label" for="p-lang-btn-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive mw-portlet-lang-heading-1" aria-hidden="true"><span class="vector-icon mw-ui-icon-language-progressive mw-ui-icon-wikimedia-language-progressive"></span>
-
-<span class="vector-dropdown-label-text">1 language</span>
-	</label>
-	<div class="vector-dropdown-content">
-
-		<div class="vector-menu-content">
-			
-			<ul class="vector-menu-content-list">
-				
-				<li class="interlanguage-link interwiki-ja mw-list-item"><a href="https://wiki.archlinux.jp/index.php/Dovecot" title="Dovecot – 日本語" lang="ja" hreflang="ja" data-title="Dovecot" data-language-autonym="日本語" data-language-local-name="日本語" class="interlanguage-link-target"><span>日本語</span></a></li>
-			</ul>
-			
-		</div>
-
-	</div>
-</div>
 </header>
-				<div class="vector-column-end vector-feature-custom-font-size-clientpref--excluded">
+				<div class="vector-column-end no-font-mode-scale">
 					<div class="vector-sticky-pinned-container">
 						<nav class="vector-page-tools-landmark" aria-label="Page tools">
 							<div id="vector-page-tools-pinned-container" class="vector-pinned-container">
@@ -262,7 +254,7 @@
 <ul>
 <li><a href="../en/Mail_server.html" title="Mail server">Mail server</a></li>
 <li><a href="../en/SOGo.html" title="SOGo">SOGo</a></li>
-<li><a href="../en/Virtual_user_mail_system_with_Postfix,_Dovecot_and_Roundcube.html" class="mw-redirect" title="Virtual user mail system">Virtual user mail system</a></li>
+<li><a href="../en/Virtual_user_mail_system.html" class="mw-redirect" title="Virtual user mail system">Virtual user mail system</a></li>
 </ul>
 </div>
 <div class="archwiki-template-box archwiki-template-box-note">
@@ -284,7 +276,13 @@
 <ul><li>Mind that the migration can become challenging. Do not approach it lightly. The migration guide is terse, as the rest of Dovecot's documentation. Take your time. Make yourself comfortable with the subject. Most likely, you will have to go through a process of trial and error. If possible set up a testing environment that you can play around with. In the mean time consider using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dovecot23">dovecot23</a></span> for your production environment.</li></ul>
 </div>
 <p>Dovecot configuration is stored in <code>/etc/dovecot/dovecot.conf</code>.
-An example file is shipped with the package. 
+An example file is shipped with the package. To use the example config a few manual steps are still necessary:
+</p>
+<ul>
+<li>A <code>vmail</code> user and group needs to be created</li>
+<li>SSL certificate is necessary or needs to be created</li>
+</ul>
+<p>See the official documentation <a rel="nofollow" class="external text" href="https://doc.dovecot.org/latest/core/config/quick.html#tldr-i-just-want-dovecot-running">TLDR</a> and <a rel="nofollow" class="external text" href="https://doc.dovecot.org/latest/core/config/quick.html#ssl-and-plaintext-authentication">SSL and Plaintext Authentication</a> for more information.
 </p>
 <p>On top of that, the developers translated legacy examples to 2.4 syntax
 and <a rel="nofollow" class="external text" href="https://github.com/dovecot/tools/blob/main/dovecot-2.4.0-example-config.tar.gz">offer them on GitHub</a>.
@@ -362,6 +360,33 @@ mail postfix/pipe[1614231]: warning: pipe flag `D' requires dovecot_destination_
 </p>
 <p>As a temporary solution <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dovecot23">dovecot23</a></span> may be installed instead of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dovecot">dovecot</a></span>.
 </p>
+<div class="mw-heading mw-heading3"><h3 id="Dovecot_and_Postfix:_cannot_read_SSL_private_key">Dovecot and Postfix: cannot read SSL private key</h3></div>
+<p>If running dovecot 2.4 you encounter errors when running "any" dovecot executable as user, such as:
+</p>
+<pre>Fatal: Error in configuration file /etc/dovecot/dovecot.conf line 80: cert_file: open(/etc/letsencrypt/live/server.tld/fullchain.pem) failed: Permission denied
+</pre>
+<p>This is a known issue, since "deliver" has to be able to read every configuration. But running <code>/usr/lib/dovecot/deliver</code> as user is useful, with procmail for instance.
+</p>
+<p>To avoid the problem, dovecot provides a silently failing "include_try" mechanism, that you can use to make file unreadable <i>to user</i> but still enabling root to read SSL keys.
+</p>
+<p>1. Create <code>/etc/dovecot/dovecot-ssl.conf</code> that contains the content of <code>ssl_server {...}</code> (above defined), something like:
+</p>
+<pre>cert_file = /path/to/fullchain.pem
+key_file = /path/to/privkey.pem
+dh_file = /path/to/dhparams.pem
+</pre>
+<p>2. Prevent any user but "root" to read this file:
+</p>
+<pre>chmod 600 /etc/dovecot/dovecot-ssl.conf
+</pre>
+<p>3. Replace the ssl_server part of <code>dovecot.conf</code> with this:
+</p>
+<pre>ssl_server {
+   !include_try /etc/dovecot/dovecot-ssl.conf
+}
+</pre>
+<p>4. (to test) The <code>doveconf</code> command should print your "certs_file" lines as root (with your private keys listed) and not be listed as unprivileged user.
+</p>
 </div>
 </div>
 					<div id="catlinks" class="catlinks" data-mw="interface">
@@ -379,8 +404,8 @@ mail postfix/pipe[1614231]: warning: pipe flag `D' requires dovecot_destination_
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dovecot&amp;oldid=852829">https://wiki.archlinux.org/index.php?title=Dovecot&amp;oldid=852829</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 15 November 2025, at 16:42.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dovecot&amp;oldid=859141">https://wiki.archlinux.org/index.php?title=Dovecot&amp;oldid=859141</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 28 December 2025, at 11:41.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>
@@ -403,7 +428,7 @@ mail postfix/pipe[1614231]: warning: pipe flag `D' requires dovecot_destination_
 		</div>
 	</div> 
 </div> 
-<div class="vector-header-container vector-sticky-header-container">
+<div class="vector-header-container vector-sticky-header-container no-font-mode-scale">
 	<div id="vector-sticky-header" class="vector-sticky-header">
 		<div class="vector-sticky-header-start">
 			<div class="vector-sticky-header-icon-start vector-button-flush-left vector-button-flush-right" aria-hidden="true">
@@ -413,13 +438,13 @@ mail postfix/pipe[1614231]: warning: pipe flag `D' requires dovecot_destination_
 			</button>
 		</div>
 			
-		<div role="search" class="vector-search-box-vue vector-search-box">
+		<div role="search" class="vector-search-box-vue  vector-search-box-show-thumbnail vector-search-box">
 			<div class="vector-typeahead-search-container">
-				<div class="cdx-typeahead-search">
+				<div class="cdx-typeahead-search cdx-typeahead-search--show-thumbnail">
 					<form action="/index.php" id="vector-sticky-search-form" class="cdx-search-input cdx-search-input--has-end-button">
 						<div class="cdx-search-input__input-wrapper" data-search-loc="header-moved">
 							<div class="cdx-text-input cdx-text-input--has-start-icon">
-								<input class="cdx-text-input__input" type="search" name="search" placeholder="Search ArchWiki">
+								<input class="cdx-text-input__input mw-searchInput" autocomplete="off" type="search" name="search" placeholder="Search ArchWiki">
 								<span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
 							</div>
 							<input type="hidden" name="title" value="Special:Search">
@@ -464,6 +489,10 @@ mail postfix/pipe[1614231]: warning: pipe flag `D' requires dovecot_destination_
 <span></span>
 			</a>
 			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only mw-watchlink" id="ca-watchstar-sticky-header" tabindex="-1" data-event-name="watch-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-star mw-ui-icon-wikimedia-wikimedia-star"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only reading-lists-bookmark" id="ca-bookmark-sticky-header" tabindex="-1" data-event-name="watch-sticky-bookmark"><span class="vector-icon mw-ui-icon-wikimedia-bookmarkOutline mw-ui-icon-wikimedia-wikimedia-bookmarkOutline"></span>
 
 <span></span>
 			</a>

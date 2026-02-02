@@ -5,7 +5,7 @@
 <title>LVM on software RAID - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.44.2">
+<meta name="generator" content="MediaWiki 1.45.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -335,7 +335,7 @@
 		</div>
 		<div class="mw-content-container">
 			<main id="content" class="mw-body" style="margin: 0">
-				<header class="mw-body-header vector-page-titlebar vector-feature-custom-font-size-clientpref--excluded">
+				<header class="mw-body-header vector-page-titlebar no-font-mode-scale">
 					<nav aria-label="Contents" class="vector-toc-landmark">
 						
 <div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left" title="Table of Contents">
@@ -356,27 +356,8 @@
 					</nav>
 					<h1 id="firstHeading" class="firstHeading mw-first-heading"><span class="mw-page-title-main">LVM on software RAID</span></h1>
 							
-<div id="p-lang-btn" class="vector-dropdown mw-portlet mw-portlet-lang">
-	<input type="checkbox" id="p-lang-btn-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-p-lang-btn" class="vector-dropdown-checkbox mw-interlanguage-selector" aria-label="Go to an article in another language. Available in 1 language">
-	<label id="p-lang-btn-label" for="p-lang-btn-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive mw-portlet-lang-heading-1" aria-hidden="true"><span class="vector-icon mw-ui-icon-language-progressive mw-ui-icon-wikimedia-language-progressive"></span>
-
-<span class="vector-dropdown-label-text">1 language</span>
-	</label>
-	<div class="vector-dropdown-content">
-
-		<div class="vector-menu-content">
-			
-			<ul class="vector-menu-content-list">
-				
-				<li class="interlanguage-link interwiki-ja mw-list-item"><a href="https://wiki.archlinux.jp/index.php/%E3%82%BD%E3%83%95%E3%83%88%E3%82%A6%E3%82%A7%E3%82%A2_RAID_%E3%81%A8_LVM" title="ソフトウェア RAID と LVM – 日本語" lang="ja" hreflang="ja" data-title="ソフトウェア RAID と LVM" data-language-autonym="日本語" data-language-local-name="日本語" class="interlanguage-link-target"><span>日本語</span></a></li>
-			</ul>
-			
-		</div>
-
-	</div>
-</div>
 </header>
-				<div class="vector-column-end vector-feature-custom-font-size-clientpref--excluded">
+				<div class="vector-column-end no-font-mode-scale">
 					<div class="vector-sticky-pinned-container">
 						<nav class="vector-page-tools-landmark" aria-label="Page tools">
 							<div id="vector-page-tools-pinned-container" class="vector-pinned-container">
@@ -416,7 +397,7 @@
 <ul>
 <li><a href="../en/RAID.html" title="RAID">RAID</a></li>
 <li><a href="../en/LVM.html" title="LVM">LVM</a></li>
-<li><a href="../en/Install_Arch_Linux_with_Fake_RAID.html" class="mw-redirect" title="Installing with Fake RAID">Installing with Fake RAID</a></li>
+<li><a href="../en/Installing_with_Fake_RAID.html" class="mw-redirect" title="Installing with Fake RAID">Installing with Fake RAID</a></li>
 <li><a href="../en/Convert_a_single_drive_system_to_RAID.html" title="Convert a single drive system to RAID">Convert a single drive system to RAID</a></li>
 </ul>
 </div>
@@ -521,7 +502,7 @@
 <p>Many tutorials treat the swap space differently, either by creating a separate RAID1 array or a LVM logical volume. Creating the swap space on a separate array is not intended to provide additional redundancy, but instead, to prevent a corrupt swap space from rendering the system inoperable, which is more likely to happen when the swap space is located on the same partition as the root directory.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Boot_loader">Boot loader</h3></div>
-<p>This tutorial will use <a href="../en/Syslinux.html" title="Syslinux">Syslinux</a> instead of <a href="../en/GRUB.html" title="GRUB">GRUB</a>. GRUB when used in conjunction with <a href="../en/Partitioning.html#GUID_Partition_Table" class="mw-redirect" title="GPT">GPT</a> requires an additional <a href="../en/GRUB.html#GUID_Partition_Table_(GPT)_specific_instructions" class="mw-redirect" title="BIOS boot partition">BIOS boot partition</a>. 
+<p>This tutorial will use <a href="../en/Syslinux.html" title="Syslinux">Syslinux</a> instead of <a href="../en/GRUB.html" title="GRUB">GRUB</a>. GRUB when used in conjunction with <a href="../en/Partitioning.html#GUID_Partition_Table" class="mw-redirect" title="GPT">GPT</a> requires an additional <a href="../en/BIOS_boot_partition.html" class="mw-redirect" title="BIOS boot partition">BIOS boot partition</a>. 
 </p>
 <p>GRUB supports the default style of metadata currently created by mdadm (i.e. 1.2) when combined with an <a href="../en/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs">initramfs</a>, which has replaced in Arch Linux with <a href="../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a>. Syslinux only supports version 1.0, and therefore requires the <code>--metadata=1.0</code> option.
 </p>
@@ -701,7 +682,7 @@ md0 : active raid1 sdb1[0] sdc1[1]
 <pre># reboot
 </pre>
 <div class="mw-heading mw-heading3"><h3 id="Install_the_boot_loader_on_the_Alternate_Boot_Drives">Install the boot loader on the Alternate Boot Drives</h3></div>
-<p>Once you have successfully booted your new system for the first time, you will want to install the <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> onto the other two disks (or on the other disk if you have only 2 HDDs) so that, in the event of disk failure, the system can be booted from any of the remaining drives (e.g. by switching the boot order in the BIOS).  The method depends on the boot loader system you are using:
+<p>Once you have successfully booted your new system for the first time, you will want to install the <a href="../en/Boot_loader.html" class="mw-redirect" title="Boot loader">boot loader</a> onto the other two disks (or on the other disk if you have only 2 HDDs) so that, in the event of disk failure, the system can be booted from any of the remaining drives (e.g. by switching the boot order in the BIOS).  The method depends on the boot loader system you are using:
 </p>
 <div class="mw-heading mw-heading4"><h4 id="Syslinux">Syslinux</h4></div>
 <p>Log in to your new system as root and do:
@@ -784,7 +765,7 @@ Installed MBR (/usr/lib/syslinux/gptmbr.bin) to /dev/sdb
 		</div>
 	</div> 
 </div> 
-<div class="vector-header-container vector-sticky-header-container">
+<div class="vector-header-container vector-sticky-header-container no-font-mode-scale">
 	<div id="vector-sticky-header" class="vector-sticky-header">
 		<div class="vector-sticky-header-start">
 			<div class="vector-sticky-header-icon-start vector-button-flush-left vector-button-flush-right" aria-hidden="true">
@@ -794,13 +775,13 @@ Installed MBR (/usr/lib/syslinux/gptmbr.bin) to /dev/sdb
 			</button>
 		</div>
 			
-		<div role="search" class="vector-search-box-vue vector-search-box">
+		<div role="search" class="vector-search-box-vue  vector-search-box-show-thumbnail vector-search-box">
 			<div class="vector-typeahead-search-container">
-				<div class="cdx-typeahead-search">
+				<div class="cdx-typeahead-search cdx-typeahead-search--show-thumbnail">
 					<form action="/index.php" id="vector-sticky-search-form" class="cdx-search-input cdx-search-input--has-end-button">
 						<div class="cdx-search-input__input-wrapper" data-search-loc="header-moved">
 							<div class="cdx-text-input cdx-text-input--has-start-icon">
-								<input class="cdx-text-input__input" type="search" name="search" placeholder="Search ArchWiki">
+								<input class="cdx-text-input__input mw-searchInput" autocomplete="off" type="search" name="search" placeholder="Search ArchWiki">
 								<span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
 							</div>
 							<input type="hidden" name="title" value="Special:Search">
@@ -845,6 +826,10 @@ Installed MBR (/usr/lib/syslinux/gptmbr.bin) to /dev/sdb
 <span></span>
 			</a>
 			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only mw-watchlink" id="ca-watchstar-sticky-header" tabindex="-1" data-event-name="watch-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-star mw-ui-icon-wikimedia-wikimedia-star"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only reading-lists-bookmark" id="ca-bookmark-sticky-header" tabindex="-1" data-event-name="watch-sticky-bookmark"><span class="vector-icon mw-ui-icon-wikimedia-bookmarkOutline mw-ui-icon-wikimedia-wikimedia-bookmarkOutline"></span>
 
 <span></span>
 			</a>

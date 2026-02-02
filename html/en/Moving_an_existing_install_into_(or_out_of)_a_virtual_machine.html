@@ -5,7 +5,7 @@
 <title>Moving an existing install into (or out of) a virtual machine - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.44.2">
+<meta name="generator" content="MediaWiki 1.45.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -274,7 +274,7 @@
 		</div>
 		<div class="mw-content-container">
 			<main id="content" class="mw-body" style="margin: 0">
-				<header class="mw-body-header vector-page-titlebar vector-feature-custom-font-size-clientpref--excluded">
+				<header class="mw-body-header vector-page-titlebar no-font-mode-scale">
 					<nav aria-label="Contents" class="vector-toc-landmark">
 						
 <div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left" title="Table of Contents">
@@ -295,28 +295,8 @@
 					</nav>
 					<h1 id="firstHeading" class="firstHeading mw-first-heading"><span class="mw-page-title-main">Moving an existing install into (or out of) a virtual machine</span></h1>
 							
-<div id="p-lang-btn" class="vector-dropdown mw-portlet mw-portlet-lang">
-	<input type="checkbox" id="p-lang-btn-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-p-lang-btn" class="vector-dropdown-checkbox mw-interlanguage-selector" aria-label="Go to an article in another language. Available in 2 languages">
-	<label id="p-lang-btn-label" for="p-lang-btn-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive mw-portlet-lang-heading-2" aria-hidden="true"><span class="vector-icon mw-ui-icon-language-progressive mw-ui-icon-wikimedia-language-progressive"></span>
-
-<span class="vector-dropdown-label-text">2 languages</span>
-	</label>
-	<div class="vector-dropdown-content">
-
-		<div class="vector-menu-content">
-			
-			<ul class="vector-menu-content-list">
-				
-				<li class="interlanguage-link interwiki-ja mw-list-item"><a href="https://wiki.archlinux.jp/index.php/%E6%97%A2%E5%AD%98%E7%92%B0%E5%A2%83%E3%82%92%E4%BB%AE%E6%83%B3%E3%83%9E%E3%82%B7%E3%83%B3%E3%81%AB_(%E3%81%8B%E3%82%89)_%E7%A7%BB%E5%8B%95" title="既存環境を仮想マシンに (から) 移動 – 日本語" lang="ja" hreflang="ja" data-title="既存環境を仮想マシンに (から) 移動" data-language-autonym="日本語" data-language-local-name="日本語" class="interlanguage-link-target"><span>日本語</span></a></li>
-<li class="interlanguage-link interwiki-pt mw-list-item"><a href="../pt/Moving_an_existing_install_into_(or_out_of)_a_virtual_machine.html" title="Moving an existing install into (or out of) a virtual machine – português" lang="pt" hreflang="pt" data-title="Moving an existing install into (or out of) a virtual machine" data-language-autonym="Português" data-language-local-name="português" class="interlanguage-link-target"><span>Português</span></a></li>
-			</ul>
-			
-		</div>
-
-	</div>
-</div>
 </header>
-				<div class="vector-column-end vector-feature-custom-font-size-clientpref--excluded">
+				<div class="vector-column-end no-font-mode-scale">
 					<div class="vector-sticky-pinned-container">
 						<nav class="vector-page-tools-landmark" aria-label="Page tools">
 							<div id="vector-page-tools-pinned-container" class="vector-pinned-container">
@@ -398,7 +378,7 @@
 <p>Check with the <code>blkid</code> command, since <code>lsblk</code> is not very useful inside a chroot.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Re-generate_the_initramfs_image">Re-generate the initramfs image</h3></div>
-<p>Because the hardware has changed, while you are still in the chroot, <a href="../en/Mkinitcpio.html#Image_creation_and_activation" class="mw-redirect" title="Regenerate the initramfs">regenerate the initramfs</a>.
+<p>Because the hardware has changed, while you are still in the chroot, <a href="../en/Regenerate_the_initramfs.html" class="mw-redirect" title="Regenerate the initramfs">regenerate the initramfs</a>.
 </p>
 <p>And that is about it.
 </p>
@@ -419,14 +399,14 @@
 </div>
 <p>If you want to create one the exact size of your root partition, run <code>fdisk -l</code> and use the value from the <code>Blocks</code> column for the <code>count=</code> parameter. Note that you will transfer your entire root tree, so that includes the <code>/boot</code> and <code>/home</code> folders. If you have any separate partitions for those, you need to take them into account when creating the container.
 </p>
-<p>Partition the <code>/media/Backup/backup.img</code> file by running your favourite <a href="../en/Partitioning.html#Partitioning_tools" title="Partitioning">partitioning tool</a>. Create a partition table on it (e.g. <code>msdos</code>), choose the <a href="../en/Partitioning.html#Partition_scheme" class="mw-redirect" title="Partition scheme">partition scheme</a> and create the partitions. 
+<p>Partition the <code>/media/Backup/backup.img</code> file by running your favourite <a href="../en/Partitioning.html#Partitioning_tools" title="Partitioning">partitioning tool</a>. Create a partition table on it (e.g. <code>msdos</code>), choose the <a href="../en/Partition_scheme.html" class="mw-redirect" title="Partition scheme">partition scheme</a> and create the partitions. 
 </p>
 <p>Now load the necessary module and mount it as a loopback device, on <code>/dev/loop5</code> (for example):
 </p>
 <pre># modprobe loop
 # losetup --partscan /dev/loop5 /media/Backup/backup.img
 </pre>
-<p>Then create a <a href="../en/File_systems.html" class="mw-redirect" title="File system">file system</a> on the partitions, which will appear as <code>/dev/loop5p1</code>, <code>/dev/loop5p2</code>, etc.
+<p>Then create a <a href="../en/File_system.html" class="mw-redirect" title="File system">file system</a> on the partitions, which will appear as <code>/dev/loop5p1</code>, <code>/dev/loop5p2</code>, etc.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Transfer_the_system_2">Transfer the system</h3></div>
 <p>Mount the loopback device and <a href="../en/Rsync.html" title="Rsync">transfer</a> the system:
@@ -568,7 +548,7 @@ fsck.ext4: Unable to resolve '...'
 		</div>
 	</div> 
 </div> 
-<div class="vector-header-container vector-sticky-header-container">
+<div class="vector-header-container vector-sticky-header-container no-font-mode-scale">
 	<div id="vector-sticky-header" class="vector-sticky-header">
 		<div class="vector-sticky-header-start">
 			<div class="vector-sticky-header-icon-start vector-button-flush-left vector-button-flush-right" aria-hidden="true">
@@ -578,13 +558,13 @@ fsck.ext4: Unable to resolve '...'
 			</button>
 		</div>
 			
-		<div role="search" class="vector-search-box-vue vector-search-box">
+		<div role="search" class="vector-search-box-vue  vector-search-box-show-thumbnail vector-search-box">
 			<div class="vector-typeahead-search-container">
-				<div class="cdx-typeahead-search">
+				<div class="cdx-typeahead-search cdx-typeahead-search--show-thumbnail">
 					<form action="/index.php" id="vector-sticky-search-form" class="cdx-search-input cdx-search-input--has-end-button">
 						<div class="cdx-search-input__input-wrapper" data-search-loc="header-moved">
 							<div class="cdx-text-input cdx-text-input--has-start-icon">
-								<input class="cdx-text-input__input" type="search" name="search" placeholder="Search ArchWiki">
+								<input class="cdx-text-input__input mw-searchInput" autocomplete="off" type="search" name="search" placeholder="Search ArchWiki">
 								<span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
 							</div>
 							<input type="hidden" name="title" value="Special:Search">
@@ -629,6 +609,10 @@ fsck.ext4: Unable to resolve '...'
 <span></span>
 			</a>
 			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only mw-watchlink" id="ca-watchstar-sticky-header" tabindex="-1" data-event-name="watch-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-star mw-ui-icon-wikimedia-wikimedia-star"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only reading-lists-bookmark" id="ca-bookmark-sticky-header" tabindex="-1" data-event-name="watch-sticky-bookmark"><span class="vector-icon mw-ui-icon-wikimedia-bookmarkOutline mw-ui-icon-wikimedia-wikimedia-bookmarkOutline"></span>
 
 <span></span>
 			</a>

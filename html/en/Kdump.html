@@ -5,7 +5,7 @@
 <title>Kdump - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.44.2">
+<meta name="generator" content="MediaWiki 1.45.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -187,7 +187,7 @@
 		</div>
 		<div class="mw-content-container">
 			<main id="content" class="mw-body" style="margin: 0">
-				<header class="mw-body-header vector-page-titlebar vector-feature-custom-font-size-clientpref--excluded">
+				<header class="mw-body-header vector-page-titlebar no-font-mode-scale">
 					<nav aria-label="Contents" class="vector-toc-landmark">
 						
 <div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left" title="Table of Contents">
@@ -208,27 +208,8 @@
 					</nav>
 					<h1 id="firstHeading" class="firstHeading mw-first-heading"><span class="mw-page-title-main">Kdump</span></h1>
 							
-<div id="p-lang-btn" class="vector-dropdown mw-portlet mw-portlet-lang">
-	<input type="checkbox" id="p-lang-btn-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-p-lang-btn" class="vector-dropdown-checkbox mw-interlanguage-selector" aria-label="Go to an article in another language. Available in 1 language">
-	<label id="p-lang-btn-label" for="p-lang-btn-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive mw-portlet-lang-heading-1" aria-hidden="true"><span class="vector-icon mw-ui-icon-language-progressive mw-ui-icon-wikimedia-language-progressive"></span>
-
-<span class="vector-dropdown-label-text">1 language</span>
-	</label>
-	<div class="vector-dropdown-content">
-
-		<div class="vector-menu-content">
-			
-			<ul class="vector-menu-content-list">
-				
-				<li class="interlanguage-link interwiki-ja mw-list-item"><a href="https://wiki.archlinux.jp/index.php/Kdump" title="Kdump – 日本語" lang="ja" hreflang="ja" data-title="Kdump" data-language-autonym="日本語" data-language-local-name="日本語" class="interlanguage-link-target"><span>日本語</span></a></li>
-			</ul>
-			
-		</div>
-
-	</div>
-</div>
 </header>
-				<div class="vector-column-end vector-feature-custom-font-size-clientpref--excluded">
+				<div class="vector-column-end no-font-mode-scale">
 					<div class="vector-sticky-pinned-container">
 						<nav class="vector-page-tools-landmark" aria-label="Page tools">
 							<div id="vector-page-tools-pinned-container" class="vector-pinned-container">
@@ -279,7 +260,7 @@
 <div class="mw-heading mw-heading2"><h2 id="Alternatives_to_setup_kdump">Alternatives to setup kdump</h2></div>
 <div class="mw-heading mw-heading3"><h3 id="The_automatic_way:_kdumpst">The automatic way: kdumpst</h3></div>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note</strong> kdumpst implicitly depends on GRUB and does not work with other <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loaders</a>, see <a rel="nofollow" class="external free" href="https://gitlab.freedesktop.org/gpiccoli/kdumpst/-/issues/21">https://gitlab.freedesktop.org/gpiccoli/kdumpst/-/issues/21</a>
+<strong>Note</strong> kdumpst implicitly depends on GRUB and does not work with other <a href="../en/Boot_loader.html" class="mw-redirect" title="Boot loader">boot loaders</a>, see <a rel="nofollow" class="external free" href="https://gitlab.freedesktop.org/gpiccoli/kdumpst/-/issues/21">https://gitlab.freedesktop.org/gpiccoli/kdumpst/-/issues/21</a>
 </div>
 <p>The <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/kdumpst/">kdumpst</a></span><sup><small>AUR</small></sup> tool is an automatic way for loading kdump. It is highly customizable - it defaults to another method of log collecting (called pstore), but can be easily set to use kdump (a matter of setting <code>USE_PSTORE_RAM=0</code> on <code>/usr/share/kdumpst.d/00-default</code>. The tool also fallbacks to kdump in case pstore RAM region is not available.
 </p>
@@ -295,7 +276,7 @@ to <code>/var/crash/</code>.
 <p>After installing <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/simple-kdump/">simple-kdump</a></span><sup><small>AUR</small></sup>, fill <code>/etc/conf.d/simple-kdump.conf</code> using any booting kernel/initramfs combination, which has the <code>CONFIG_PROC_VMCORE=y</code> enabled.
 It is recommended to use the Arch Linux linux or linux-lts kernel, which already have all the needed features enabled.
 </p>
-<p>Then add <code>crashkernel=[size]</code> <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a> and reboot. Recommended to use value no smaller than 512M
+<p>Then add <code>crashkernel=[size]</code> <a href="../en/Kernel_parameter.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a> and reboot. Recommended to use value no smaller than 512M
 </p>
 <p>Finally enable and start <code>simple-kdump-setup.service</code>, then refer to <a href="#Testing_kdump_by_crashing_the_kernel">#Testing kdump by crashing the kernel</a> to verify the kdump behavior.
 </p>
@@ -307,7 +288,7 @@ It is recommended to use the Arch Linux linux or linux-lts kernel, which already
 <p>In case the preference is for doing that manually, the below guide will help with that.
 </p>
 <div class="mw-heading mw-heading4"><h4 id="Compiling_kernel">Compiling kernel</h4></div>
-<p>Both System/kdump kernels requires some configuration flags that may not be set by default. Please consult <a href="../en/Kernel.html#Compilation" class="mw-redirect" title="Kernel Compilation">Kernel Compilation</a> article for more information about compiling a custom kernel in Arch. Here we will emphasize on Kdump specific configurations. Current default Arch kernel builds have these flags already set.  You can verify if your running kernel has these set by looking in <code>/proc/config.gz</code>.
+<p>Both System/kdump kernels requires some configuration flags that may not be set by default. Please consult <a href="../en/Kernel_Compilation.html" class="mw-redirect" title="Kernel Compilation">Kernel Compilation</a> article for more information about compiling a custom kernel in Arch. Here we will emphasize on Kdump specific configurations. Current default Arch kernel builds have these flags already set.  You can verify if your running kernel has these set by looking in <code>/proc/config.gz</code>.
 </p>
 <p>Please note that, the default <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-lts">linux-lts</a></span> kernels all have the needed options enabled.
 But unfortunately the default kernels have debug info striped, thus one still needs to recompile the kernel to have all the debug info so that the vmcore can be properly analyzed.
@@ -338,7 +319,7 @@ But with extra systemd options to slightly change the boot sequence (to skip re-
 <p>Thus we do not need to generate a special initramfs, unlike other distros (and our default initramfs generated by <a href="../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a> is already way smaller than our competitors).
 </p>
 <div class="mw-heading mw-heading4"><h4 id="Setup_the_kdump_kernel">Setup the kdump kernel</h4></div>
-<p>First, you need to reserve memory in the system kernel, for the kdump kernel loading. Edit your boot loader configuration and add <code>crashkernel=[size]</code> <a href="../en/Kernel_parameters.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a>.
+<p>First, you need to reserve memory in the system kernel, for the kdump kernel loading. Edit your boot loader configuration and add <code>crashkernel=[size]</code> <a href="../en/Kernel_parameter.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a>.
 </p>
 <p>Depending on the machine and how the kdump kernel was built, something from <i>256M</i> to <i>512M</i> is usually enough - it worth trying after setting everything to check if it succeeds. Note that the reserved memory is unavailable to the system kernel.
 </p>
@@ -538,7 +519,7 @@ HELPEOF
 		</div>
 	</div> 
 </div> 
-<div class="vector-header-container vector-sticky-header-container">
+<div class="vector-header-container vector-sticky-header-container no-font-mode-scale">
 	<div id="vector-sticky-header" class="vector-sticky-header">
 		<div class="vector-sticky-header-start">
 			<div class="vector-sticky-header-icon-start vector-button-flush-left vector-button-flush-right" aria-hidden="true">
@@ -548,13 +529,13 @@ HELPEOF
 			</button>
 		</div>
 			
-		<div role="search" class="vector-search-box-vue vector-search-box">
+		<div role="search" class="vector-search-box-vue  vector-search-box-show-thumbnail vector-search-box">
 			<div class="vector-typeahead-search-container">
-				<div class="cdx-typeahead-search">
+				<div class="cdx-typeahead-search cdx-typeahead-search--show-thumbnail">
 					<form action="/index.php" id="vector-sticky-search-form" class="cdx-search-input cdx-search-input--has-end-button">
 						<div class="cdx-search-input__input-wrapper" data-search-loc="header-moved">
 							<div class="cdx-text-input cdx-text-input--has-start-icon">
-								<input class="cdx-text-input__input" type="search" name="search" placeholder="Search ArchWiki">
+								<input class="cdx-text-input__input mw-searchInput" autocomplete="off" type="search" name="search" placeholder="Search ArchWiki">
 								<span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
 							</div>
 							<input type="hidden" name="title" value="Special:Search">
@@ -599,6 +580,10 @@ HELPEOF
 <span></span>
 			</a>
 			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only mw-watchlink" id="ca-watchstar-sticky-header" tabindex="-1" data-event-name="watch-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-star mw-ui-icon-wikimedia-wikimedia-star"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only reading-lists-bookmark" id="ca-bookmark-sticky-header" tabindex="-1" data-event-name="watch-sticky-bookmark"><span class="vector-icon mw-ui-icon-wikimedia-bookmarkOutline mw-ui-icon-wikimedia-wikimedia-bookmarkOutline"></span>
 
 <span></span>
 			</a>

@@ -5,7 +5,7 @@
 <title>fprint - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.44.2">
+<meta name="generator" content="MediaWiki 1.45.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -236,7 +236,7 @@
 		</div>
 		<div class="mw-content-container">
 			<main id="content" class="mw-body" style="margin: 0">
-				<header class="mw-body-header vector-page-titlebar vector-feature-custom-font-size-clientpref--excluded">
+				<header class="mw-body-header vector-page-titlebar no-font-mode-scale">
 					<nav aria-label="Contents" class="vector-toc-landmark">
 						
 <div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left" title="Table of Contents">
@@ -257,30 +257,8 @@
 					</nav>
 					<h1 id="firstHeading" class="firstHeading mw-first-heading">fprint</h1>
 							
-<div id="p-lang-btn" class="vector-dropdown mw-portlet mw-portlet-lang">
-	<input type="checkbox" id="p-lang-btn-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-p-lang-btn" class="vector-dropdown-checkbox mw-interlanguage-selector" aria-label="Go to an article in another language. Available in 4 languages">
-	<label id="p-lang-btn-label" for="p-lang-btn-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive mw-portlet-lang-heading-4" aria-hidden="true"><span class="vector-icon mw-ui-icon-language-progressive mw-ui-icon-wikimedia-language-progressive"></span>
-
-<span class="vector-dropdown-label-text">4 languages</span>
-	</label>
-	<div class="vector-dropdown-content">
-
-		<div class="vector-menu-content">
-			
-			<ul class="vector-menu-content-list">
-				
-				<li class="interlanguage-link interwiki-es mw-list-item"><a href="../es/Fprint.html" title="Fprint – español" lang="es" hreflang="es" data-title="Fprint" data-language-autonym="Español" data-language-local-name="español" class="interlanguage-link-target"><span>Español</span></a></li>
-<li class="interlanguage-link interwiki-ja mw-list-item"><a href="https://wiki.archlinux.jp/index.php/Fprint" title="Fprint – 日本語" lang="ja" hreflang="ja" data-title="Fprint" data-language-autonym="日本語" data-language-local-name="日本語" class="interlanguage-link-target"><span>日本語</span></a></li>
-<li class="interlanguage-link interwiki-pt mw-list-item"><a href="../pt/Fprint.html" title="Fprint – português" lang="pt" hreflang="pt" data-title="Fprint" data-language-autonym="Português" data-language-local-name="português" class="interlanguage-link-target"><span>Português</span></a></li>
-<li class="interlanguage-link interwiki-zh-hans mw-list-item"><a href="https://wiki.archlinuxcn.org/wiki/Fprint" title="Fprint – 中文（简体）" lang="zh-Hans" hreflang="zh-Hans" data-title="Fprint" data-language-autonym="中文（简体）" data-language-local-name="中文（简体）" class="interlanguage-link-target"><span>中文（简体）</span></a></li>
-			</ul>
-			
-		</div>
-
-	</div>
-</div>
 </header>
-				<div class="vector-column-end vector-feature-custom-font-size-clientpref--excluded">
+				<div class="vector-column-end no-font-mode-scale">
 					<div class="vector-sticky-pinned-container">
 						<nav class="vector-page-tools-landmark" aria-label="Page tools">
 							<div id="vector-page-tools-pinned-container" class="vector-pinned-container">
@@ -364,10 +342,12 @@
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note</strong> 
 <ul>
-<li>If you use <a href="../en/GDM.html" title="GDM">GDM</a>, the fingerprint-option is already available in the login menu (if not add yourself to the <code>input</code> <a href="../en/Users_and_groups.html#Group_management" class="mw-redirect" title="User group">user group</a>). You can skip this section!</li>
+<li>If you use <a href="../en/GDM.html" title="GDM">GDM</a>, the fingerprint-option is already available in the login menu (if not add yourself to the <code>input</code> <a href="../en/User_group.html" class="mw-redirect" title="User group">user group</a>). You can skip this section!</li>
 <li>If you use <a href="../en/SDDM.html" title="SDDM">SDDM</a>, see <a href="../en/SDDM.html#Using_a_fingerprint_reader" title="SDDM">SDDM#Using a fingerprint reader</a>.</li>
 </ul>
 </div>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning</strong>  This setting (fingerprint-only authentication) is a security breach if used for su, polkit, or sudo as it allows background processes to obtain permissions without prompting the user for a fingerprint (via fingerprint hijacking). See <a rel="nofollow" class="external text" href="https://nvd.nist.gov/vuln/detail/cve-2024-37408">CVE-2024-37408</a>.</div>
 <p>Add <code>pam_fprintd.so</code> as <i>sufficient</i> to the top of the auth section of <code>/etc/pam.d/system-local-login</code>:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pam.d/system-local-login</pre>
@@ -377,15 +357,7 @@ auth      include   system-login
 </pre>
 <p>This tries to use fingerprint login first, and if it fails or if it finds no fingerprint signatures in the given user's home directory, it proceeds to password login.
 </p>
-<div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning</strong> This setting is a security breach for su and sudo as it allows background processes to obtain permissions without prompting the user. See: <a rel="nofollow" class="external text" href="https://nvd.nist.gov/vuln/detail/cve-2024-37408">CVE-2024-37408</a>
-<p>Put this right before <code>auth sufficient pam_fprintd.so</code> to disallow fingerprint with sudo/su when it can't show a prompt. 
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># Disallow fingerprint in sudo/su without tty</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">auth       [success=1 default=ignore]  pam_succeed_if.so    service in sudo:su:su-l tty in :unknown
-</pre>
-</div>
-<p>You can also modify other files in <code>/etc/pam.d/{login,su,sudo,gdm,lightdm}</code> in the same way. For example <code>/etc/pam.d/polkit-1</code> for <a href="../en/Polkit.html" title="Polkit">polkit</a> based authentication (GNOME &amp; many other desktop environments). If <code>/etc/pam.d/polkit-1</code> does not exist, copy it from <code>/usr/lib/pam.d/polkit-1</code>.
+<p>You can also modify other files in <code>/etc/pam.d/{login,gdm,lightdm}</code> in the same way.
 </p>
 <p>KDE already has fingerprint authentication configured in <code>/etc/pam.d/kde-fingerprint</code> so you do not need to edit that file. For a minimal working setup, which asks for your fingerprint first and requires password authentification if it fails on KDE Plasma, it suffices to change the following lines to <code>/etc/pam.d/system-auth</code>:
 </p>
@@ -529,7 +501,7 @@ WantedBy=sleep.target
 <p>See also <a rel="nofollow" class="external free" href="https://gitlab.freedesktop.org/libfprint/libfprint/-/issues/174">https://gitlab.freedesktop.org/libfprint/libfprint/-/issues/174</a>
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Unable_to_enroll_as_user">Unable to enroll as user</h3></div>
-<p>If you get an error like <code>EnrollStart failed: GDBus.Error:net.reactivated.Fprint.Error.PermissionDenied: Not Authorized: net.reactivated.fprint.device.enroll</code>, ensure <a rel="nofollow" class="external text" href="../en/Polkit.html#Authentication_agents|your">authentication agent</a>, which prompts the password of the user being enrolled, is properly functioning. However, this can be bypassed by running the command as root:
+<p>If you get an error like <code>EnrollStart failed: GDBus.Error:net.reactivated.Fprint.Error.PermissionDenied: Not Authorized: net.reactivated.fprint.device.enroll</code>, ensure <a href="../en/Polkit.html#Authentication_agents" title="Polkit">your authentication agent</a>, which prompts the password of the user being enrolled, is properly functioning. However, this can be bypassed by running the command as root:
 </p>
 <p><code>sudo fprintd-enroll "$(whoami)"</code>
 </p>
@@ -556,8 +528,8 @@ WantedBy=sleep.target
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Fprint&amp;oldid=853113">https://wiki.archlinux.org/index.php?title=Fprint&amp;oldid=853113</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 17 November 2025, at 04:32.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Fprint&amp;oldid=859412">https://wiki.archlinux.org/index.php?title=Fprint&amp;oldid=859412</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 31 December 2025, at 15:41.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>
@@ -580,7 +552,7 @@ WantedBy=sleep.target
 		</div>
 	</div> 
 </div> 
-<div class="vector-header-container vector-sticky-header-container">
+<div class="vector-header-container vector-sticky-header-container no-font-mode-scale">
 	<div id="vector-sticky-header" class="vector-sticky-header">
 		<div class="vector-sticky-header-start">
 			<div class="vector-sticky-header-icon-start vector-button-flush-left vector-button-flush-right" aria-hidden="true">
@@ -590,13 +562,13 @@ WantedBy=sleep.target
 			</button>
 		</div>
 			
-		<div role="search" class="vector-search-box-vue vector-search-box">
+		<div role="search" class="vector-search-box-vue  vector-search-box-show-thumbnail vector-search-box">
 			<div class="vector-typeahead-search-container">
-				<div class="cdx-typeahead-search">
+				<div class="cdx-typeahead-search cdx-typeahead-search--show-thumbnail">
 					<form action="/index.php" id="vector-sticky-search-form" class="cdx-search-input cdx-search-input--has-end-button">
 						<div class="cdx-search-input__input-wrapper" data-search-loc="header-moved">
 							<div class="cdx-text-input cdx-text-input--has-start-icon">
-								<input class="cdx-text-input__input" type="search" name="search" placeholder="Search ArchWiki">
+								<input class="cdx-text-input__input mw-searchInput" autocomplete="off" type="search" name="search" placeholder="Search ArchWiki">
 								<span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
 							</div>
 							<input type="hidden" name="title" value="Special:Search">
@@ -641,6 +613,10 @@ WantedBy=sleep.target
 <span></span>
 			</a>
 			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only mw-watchlink" id="ca-watchstar-sticky-header" tabindex="-1" data-event-name="watch-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-star mw-ui-icon-wikimedia-wikimedia-star"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only reading-lists-bookmark" id="ca-bookmark-sticky-header" tabindex="-1" data-event-name="watch-sticky-bookmark"><span class="vector-icon mw-ui-icon-wikimedia-bookmarkOutline mw-ui-icon-wikimedia-wikimedia-bookmarkOutline"></span>
 
 <span></span>
 			</a>

@@ -5,7 +5,7 @@
 <title>iMac Aluminum - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.44.2">
+<meta name="generator" content="MediaWiki 1.45.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -208,7 +208,7 @@
 		</div>
 		<div class="mw-content-container">
 			<main id="content" class="mw-body" style="margin: 0">
-				<header class="mw-body-header vector-page-titlebar vector-feature-custom-font-size-clientpref--excluded">
+				<header class="mw-body-header vector-page-titlebar no-font-mode-scale">
 					<nav aria-label="Contents" class="vector-toc-landmark">
 						
 <div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left" title="Table of Contents">
@@ -229,7 +229,7 @@
 					</nav>
 					<h1 id="firstHeading" class="firstHeading mw-first-heading">iMac Aluminum</h1>
 				</header>
-				<div class="vector-column-end vector-feature-custom-font-size-clientpref--excluded">
+				<div class="vector-column-end no-font-mode-scale">
 					<div class="vector-sticky-pinned-container">
 						<nav class="vector-page-tools-landmark" aria-label="Page tools">
 							<div id="vector-page-tools-pinned-container" class="vector-pinned-container">
@@ -293,13 +293,13 @@ Moreover, the hardware it discusses is considered <a rel="nofollow" class="exter
 <p>You can also use an external USB or Firewire drive with which to boot OS X for the firmware updates, and possibly even via optical drive.
 </p>
 <div class="mw-heading mw-heading2"><h2 id="Install_additional_boot_loader">Install additional boot loader</h2></div>
-<p>Apple computers have a built-in <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> that can be accessed by holding down the <code>Alt</code> key when switched on. This allows you to boot from CD, HDD and via WiFi. If your iMac has a separate EFI system partition, this menu will also allow you to boot Arch Linux directly (follow these instructions: <a href="../en/GRUB/Tips_and_tricks.html#GRUB_standalone" title="GRUB/Tips and tricks">GRUB/Tips and tricks#GRUB standalone</a>). This built-in boot loader sometimes has problems booting from USB, so it might be a good idea to  install <a href="../en/REFInd.html" title="REFInd">rEFInd</a> on your OS X partition. You will probably want to lower the timeout and make Linux the default option, for that you must edit the <code>refind.conf</code> file (See <a href="../en/REFInd.html#Configuration" title="REFInd">REFInd#Configuration</a>). 
+<p>Apple computers have a built-in <a href="../en/Boot_loader.html" class="mw-redirect" title="Boot loader">boot loader</a> that can be accessed by holding down the <code>Alt</code> key when switched on. This allows you to boot from CD, HDD and via WiFi. If your iMac has a separate EFI system partition, this menu will also allow you to boot Arch Linux directly (follow these instructions: <a href="../en/GRUB/Tips_and_tricks.html#GRUB_standalone" title="GRUB/Tips and tricks">GRUB/Tips and tricks#GRUB standalone</a>). This built-in boot loader sometimes has problems booting from USB, so it might be a good idea to  install <a href="../en/REFInd.html" title="REFInd">rEFInd</a> on your OS X partition. You will probably want to lower the timeout and make Linux the default option, for that you must edit the <code>refind.conf</code> file (See <a href="../en/REFInd.html#Configuration" title="REFInd">REFInd#Configuration</a>). 
 </p>
 <p><i>After</i> successfully installing Arch and Grub you may remove rEFInd (first make sure your stand-alone UEFI app shows up in the Apple boot loader). To change the default boot-option to Arch Linux, you need to <i>bless</i> the earlier created stand-alone UEFI app. It is best to rename the created <code>EFI/arch_grub/grubx64_standalone.efi</code> to <code>EFI/BOOT/BOOTX64.EFI</code>, then run the following command from macOS, after mounting the EFI system partition: 
 </p>
 <pre># bless --folder=/Volumes/EFI --file=/Volumes/EFI/efi/BOOT/BOOTX64.EFI --setBoot
 </pre>
-<p>When booting through the Apple boot loader (instead of rEFInd) you will be booting in full UEFI mode, instead of BIOS compatibility. This means you will probably need to boot your <i>archlinux-fallback</i> image the first time; and <a href="../en/Mkinitcpio.html#Image_creation_and_activation" class="mw-redirect" title="Regenerate the initramfs">regenerate the initramfs</a> to successfully switch from BIOS to UEFI.
+<p>When booting through the Apple boot loader (instead of rEFInd) you will be booting in full UEFI mode, instead of BIOS compatibility. This means you will probably need to boot your <i>archlinux-fallback</i> image the first time; and <a href="../en/Regenerate_the_initramfs.html" class="mw-redirect" title="Regenerate the initramfs">regenerate the initramfs</a> to successfully switch from BIOS to UEFI.
 </p>
 <div class="mw-heading mw-heading2"><h2 id="Partitioning_&amp;_Filesystems">
 <span id="Partitioning_.26_Filesystems"></span>Partitioning &amp; Filesystems</h2></div>
@@ -335,7 +335,7 @@ The only present limitation that GParted has with the HFS+ file system, is that 
 <div class="mw-heading mw-heading3"><h3 id="The_GPT_partitioning_scheme_that_Apple_uses">The GPT partitioning scheme that Apple uses</h3></div>
 <p><a rel="nofollow" class="external autonumber" href="https://developer.apple.com/library/content/technotes/tn2166/_index.html">[1]</a> used to limit OS X, to only being able to use 4 partitions from which you could boot a system. If you have not allowed your older Mactel, Apple machines to upgrade for quite some time then their firmware is still suffering under this limitation (I'm told) &amp; you should be aware of this fact. 
 </p>
-<p>Therefore you need to be sure to install your <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> i.e. GRUB/Lilo, &amp; any other partition that you may want OS X, to see (like a shared FAT32 data drive) on sda3 &amp; sda4, Windows must also be on sda3 or sda4.
+<p>Therefore you need to be sure to install your <a href="../en/Boot_loader.html" class="mw-redirect" title="Boot loader">boot loader</a> i.e. GRUB/Lilo, &amp; any other partition that you may want OS X, to see (like a shared FAT32 data drive) on sda3 &amp; sda4, Windows must also be on sda3 or sda4.
 </p>
 <p>Partitions beyond Apple's (previously) imposed limit of 4 can still be created &amp; used, e.g. Linux Swap, &amp; other partitions, but they will not be accessible by OS X, or directly bootable, though I see no reason why a boot loader like GRUB positioned on sda3 or sda4 could not boot other OS's on partitions numbered greater than sda4.
 </p>
@@ -506,7 +506,7 @@ int main(int argc, char** argv)
 <p>Using the above gives a workable <i>alsamixer</i>.  I have found that using VLC &amp; its mixer is very helpful when watching DVD's. I have not tested the line out or mic, though I believe that they are working properly with this configuration.
 </p>
 <div class="mw-heading mw-heading2"><h2 id="Troubleshooting">Troubleshooting</h2></div>
-<p>If you experience weird boot freeze just after <a href="../en/Arch_boot_process.html#Boot_loader" class="mw-redirect" title="Boot loader">boot loader</a> (basically after Grub loaded Linux, which you can verify by appending <code>ignore_loglevel</code> to the Linux command line), then you may fix the problem by resetting the PRAM (press <code>Cmd+Alt+Shift+P+R</code> just after boot), and resetting the power management system (by unplugging your iMac for 15 seconds, then plugging it back, waiting 5 seconds, and then powering it up).
+<p>If you experience weird boot freeze just after <a href="../en/Boot_loader.html" class="mw-redirect" title="Boot loader">boot loader</a> (basically after Grub loaded Linux, which you can verify by appending <code>ignore_loglevel</code> to the Linux command line), then you may fix the problem by resetting the PRAM (press <code>Cmd+Alt+Shift+P+R</code> just after boot), and resetting the power management system (by unplugging your iMac for 15 seconds, then plugging it back, waiting 5 seconds, and then powering it up).
 </p>
 <div class="mw-heading mw-heading2"><h2 id="See_also">See also</h2></div>
 <p><a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?id=35355A">A forum thread regarding installation of Arch Linux on the iMac</a>
@@ -556,7 +556,7 @@ int main(int argc, char** argv)
 		</div>
 	</div> 
 </div> 
-<div class="vector-header-container vector-sticky-header-container">
+<div class="vector-header-container vector-sticky-header-container no-font-mode-scale">
 	<div id="vector-sticky-header" class="vector-sticky-header">
 		<div class="vector-sticky-header-start">
 			<div class="vector-sticky-header-icon-start vector-button-flush-left vector-button-flush-right" aria-hidden="true">
@@ -566,13 +566,13 @@ int main(int argc, char** argv)
 			</button>
 		</div>
 			
-		<div role="search" class="vector-search-box-vue vector-search-box">
+		<div role="search" class="vector-search-box-vue  vector-search-box-show-thumbnail vector-search-box">
 			<div class="vector-typeahead-search-container">
-				<div class="cdx-typeahead-search">
+				<div class="cdx-typeahead-search cdx-typeahead-search--show-thumbnail">
 					<form action="/index.php" id="vector-sticky-search-form" class="cdx-search-input cdx-search-input--has-end-button">
 						<div class="cdx-search-input__input-wrapper" data-search-loc="header-moved">
 							<div class="cdx-text-input cdx-text-input--has-start-icon">
-								<input class="cdx-text-input__input" type="search" name="search" placeholder="Search ArchWiki">
+								<input class="cdx-text-input__input mw-searchInput" autocomplete="off" type="search" name="search" placeholder="Search ArchWiki">
 								<span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
 							</div>
 							<input type="hidden" name="title" value="Special:Search">
@@ -617,6 +617,10 @@ int main(int argc, char** argv)
 <span></span>
 			</a>
 			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only mw-watchlink" id="ca-watchstar-sticky-header" tabindex="-1" data-event-name="watch-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-star mw-ui-icon-wikimedia-wikimedia-star"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only reading-lists-bookmark" id="ca-bookmark-sticky-header" tabindex="-1" data-event-name="watch-sticky-bookmark"><span class="vector-icon mw-ui-icon-wikimedia-bookmarkOutline mw-ui-icon-wikimedia-wikimedia-bookmarkOutline"></span>
 
 <span></span>
 			</a>

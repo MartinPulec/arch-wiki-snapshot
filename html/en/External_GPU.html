@@ -5,7 +5,7 @@
 <title>External GPU - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.44.2">
+<meta name="generator" content="MediaWiki 1.45.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -219,7 +219,7 @@
 		</div>
 		<div class="mw-content-container">
 			<main id="content" class="mw-body" style="margin: 0">
-				<header class="mw-body-header vector-page-titlebar vector-feature-custom-font-size-clientpref--excluded">
+				<header class="mw-body-header vector-page-titlebar no-font-mode-scale">
 					<nav aria-label="Contents" class="vector-toc-landmark">
 						
 <div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left" title="Table of Contents">
@@ -240,28 +240,8 @@
 					</nav>
 					<h1 id="firstHeading" class="firstHeading mw-first-heading"><span class="mw-page-title-main">External GPU</span></h1>
 							
-<div id="p-lang-btn" class="vector-dropdown mw-portlet mw-portlet-lang">
-	<input type="checkbox" id="p-lang-btn-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-p-lang-btn" class="vector-dropdown-checkbox mw-interlanguage-selector" aria-label="Go to an article in another language. Available in 2 languages">
-	<label id="p-lang-btn-label" for="p-lang-btn-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive mw-portlet-lang-heading-2" aria-hidden="true"><span class="vector-icon mw-ui-icon-language-progressive mw-ui-icon-wikimedia-language-progressive"></span>
-
-<span class="vector-dropdown-label-text">2 languages</span>
-	</label>
-	<div class="vector-dropdown-content">
-
-		<div class="vector-menu-content">
-			
-			<ul class="vector-menu-content-list">
-				
-				<li class="interlanguage-link interwiki-ja mw-list-item"><a href="https://wiki.archlinux.jp/index.php/%E5%A4%96%E4%BB%98%E3%81%91_GPU" title="外付け GPU – 日本語" lang="ja" hreflang="ja" data-title="外付け GPU" data-language-autonym="日本語" data-language-local-name="日本語" class="interlanguage-link-target"><span>日本語</span></a></li>
-<li class="interlanguage-link interwiki-zh-hans mw-list-item"><a href="https://wiki.archlinuxcn.org/wiki/%E5%A4%96%E6%8E%A5%E6%98%BE%E5%8D%A1" title="外接显卡 – 中文（简体）" lang="zh-Hans" hreflang="zh-Hans" data-title="外接显卡" data-language-autonym="中文（简体）" data-language-local-name="中文（简体）" class="interlanguage-link-target"><span>中文（简体）</span></a></li>
-			</ul>
-			
-		</div>
-
-	</div>
-</div>
 </header>
-				<div class="vector-column-end vector-feature-custom-font-size-clientpref--excluded">
+				<div class="vector-column-end no-font-mode-scale">
 					<div class="vector-sticky-pinned-container">
 						<nav class="vector-page-tools-landmark" aria-label="Page tools">
 							<div id="vector-page-tools-pinned-container" class="vector-pinned-container">
@@ -299,6 +279,7 @@
 <div class="archwiki-template-meta-related-articles">
 <p>Related articles</p>
 <ul>
+<li><a href="../en/Graphics_processing_unit.html" title="Graphics processing unit">Graphics processing unit</a></li>
 <li><a href="../en/Xorg.html" title="Xorg">Xorg</a></li>
 <li><a href="../en/PRIME.html" title="PRIME">PRIME</a></li>
 <li><a href="../en/Thunderbolt.html" title="Thunderbolt">Thunderbolt</a></li>
@@ -325,6 +306,31 @@
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># dmesg | grep PCIe</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[19888.928225] pci 0000:1a:10.3: 8.000 Gb/s available PCIe bandwidth, limited by 2.5 GT/s PCIe x4 link at 0000:05:01.0 (capable of 126.016 Gb/s with 8.0 GT/s PCIe x16 link)
 </pre>
+<p>You may need to make your system hotplug aware by adding the following <a href="../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a>:
+</p>
+<pre>pcie_ports=native pci=assign-busses,hpbussize=0x33,realloc,hpmmiosize=128M,hpmmioprefsize=16G
+</pre>
+<p>This tells the kernel that your PCIe is hot-pluggable, which is required for Thunderbolt.
+</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> After adding this setting, your network adapter device names may change. This may break custom eccentric network setups (for example, if network bonding is used to bond two or more network ports into a single interface). If this happens simply rebuild your network rules. It may also affect services that bind to the adapter like <a href="../en/Samba.html" title="Samba">Samba</a>, <a href="../en/Squid.html" title="Squid">Squid</a> or <a href="../en/Dnsmasq.html" title="Dnsmasq">dnsmasq</a>, in wich you will need to correct the configuration file for the services affected.</div>
+<p>You may also need to add a modprobe rule to ensure the driver loads after thunderbolt, if your thunderbolt GPU is using the same drivers as your internal GPU (whether discrete or integrated)
+</p>
+<p>The below example is for <code>amdgpu</code>. <a href="../en/Help:Reading.html#Append,_add,_create,_edit" class="mw-redirect" title="Create">Create</a>:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/modprobe.d/amdgpu.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">softdep amdgpu pre: thunderbolt
+</pre>
+<p>Substitute <code>amdgpu</code> for the driver of your choice if you are not using an AMD GPU.
+</p>
+<p>You may also need to tell mkinitcpio to load the thunderbolt driver before executing any hooks by modifying the <code>MODULES=()</code> line in <code>mkinitcpio.conf</code>:
+</p>
+<pre>MODULES=(thunderbolt)
+</pre>
+<p>after that, <a href="../en/Regenerate_the_initramfs.html" class="mw-redirect" title="Regenerate the initramfs">regenerate the initramfs</a> and reboot.
+</p>
+<p>This ensures that the amdgpu driver loads only after the thunderbolt driver has initialized the subsystem and has made the external GPU also available, allowing it to properly initialize both GPUs.
+</p>
 <div class="mw-heading mw-heading3"><h3 id="Drivers">Drivers</h3></div>
 <p>A driver compatible with your GPU model should be installed:
 </p>
@@ -498,7 +504,7 @@ Provider 1: id: 0x24a cap: 0x2, Sink Output crtcs: 4 outputs: 4 associated provi
 <div class="mw-heading mw-heading3"><h3 id="Hotplugging_NVIDIA_eGPU">Hotplugging NVIDIA eGPU</h3></div>
 <p>It is possible to hotplug eGPU when using Wayland, and use PRIME feature. NVIDIA already has great implementation of PRIME for dGPUs, and it is working same way for eGPU.
 </p>
-<p>First you need to make sure that no program uses NVIDIA modules. EGL programs tend to use 1MB dGPU memory per program, even if they run on iGPU, and it can be seen in <code>nvidia-smi</code>. To avoid this, add <code>__EGL_VENDOR_LIBRARY_FILENAMES=/usr/share/glvnd/egl_vendor.d/50_mesa.json</code> as <a href="../en/Environment_variables.html" class="mw-redirect" title="Environment variable">environment variable</a>. Best place for that is <code>/etc/environment.d/50_mesa.conf</code>.
+<p>First you need to make sure that no program uses NVIDIA modules. EGL programs tend to use 1MB dGPU memory per program, even if they run on iGPU, and it can be seen in <code>nvidia-smi</code>. To avoid this, add <code>__EGL_VENDOR_LIBRARY_FILENAMES=/usr/share/glvnd/egl_vendor.d/50_mesa.json</code> as <a href="../en/Environment_variable.html" class="mw-redirect" title="Environment variable">environment variable</a>. Best place for that is <code>/etc/environment.d/50_mesa.conf</code>.
 </p>
 <p>Then you unload NVIDIA modules:
 </p>
@@ -564,8 +570,8 @@ Provider 1: id: 0x24a cap: 0x2, Sink Output crtcs: 4 outputs: 4 associated provi
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=External_GPU&amp;oldid=854767">https://wiki.archlinux.org/index.php?title=External_GPU&amp;oldid=854767</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 30 November 2025, at 17:42.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=External_GPU&amp;oldid=860361">https://wiki.archlinux.org/index.php?title=External_GPU&amp;oldid=860361</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 6 January 2026, at 10:02.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>
@@ -588,7 +594,7 @@ Provider 1: id: 0x24a cap: 0x2, Sink Output crtcs: 4 outputs: 4 associated provi
 		</div>
 	</div> 
 </div> 
-<div class="vector-header-container vector-sticky-header-container">
+<div class="vector-header-container vector-sticky-header-container no-font-mode-scale">
 	<div id="vector-sticky-header" class="vector-sticky-header">
 		<div class="vector-sticky-header-start">
 			<div class="vector-sticky-header-icon-start vector-button-flush-left vector-button-flush-right" aria-hidden="true">
@@ -598,13 +604,13 @@ Provider 1: id: 0x24a cap: 0x2, Sink Output crtcs: 4 outputs: 4 associated provi
 			</button>
 		</div>
 			
-		<div role="search" class="vector-search-box-vue vector-search-box">
+		<div role="search" class="vector-search-box-vue  vector-search-box-show-thumbnail vector-search-box">
 			<div class="vector-typeahead-search-container">
-				<div class="cdx-typeahead-search">
+				<div class="cdx-typeahead-search cdx-typeahead-search--show-thumbnail">
 					<form action="/index.php" id="vector-sticky-search-form" class="cdx-search-input cdx-search-input--has-end-button">
 						<div class="cdx-search-input__input-wrapper" data-search-loc="header-moved">
 							<div class="cdx-text-input cdx-text-input--has-start-icon">
-								<input class="cdx-text-input__input" type="search" name="search" placeholder="Search ArchWiki">
+								<input class="cdx-text-input__input mw-searchInput" autocomplete="off" type="search" name="search" placeholder="Search ArchWiki">
 								<span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
 							</div>
 							<input type="hidden" name="title" value="Special:Search">
@@ -649,6 +655,10 @@ Provider 1: id: 0x24a cap: 0x2, Sink Output crtcs: 4 outputs: 4 associated provi
 <span></span>
 			</a>
 			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only mw-watchlink" id="ca-watchstar-sticky-header" tabindex="-1" data-event-name="watch-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-star mw-ui-icon-wikimedia-wikimedia-star"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only reading-lists-bookmark" id="ca-bookmark-sticky-header" tabindex="-1" data-event-name="watch-sticky-bookmark"><span class="vector-icon mw-ui-icon-wikimedia-bookmarkOutline mw-ui-icon-wikimedia-wikimedia-bookmarkOutline"></span>
 
 <span></span>
 			</a>

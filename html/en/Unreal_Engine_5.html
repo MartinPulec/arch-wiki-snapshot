@@ -5,7 +5,7 @@
 <title>Unreal Engine 5 - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.44.2">
+<meta name="generator" content="MediaWiki 1.45.1">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -263,6 +263,17 @@
 			<ul id="toc-Flickering_shadows,_stuttering,_random_crashes-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-FAB_plugin_does_not_load" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#FAB_plugin_does_not_load">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">4.11</span>
+					<span>FAB plugin does not load</span>
+				</div>
+			</a>
+			
+			<ul id="toc-FAB_plugin_does_not_load-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-Additional_Content" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
@@ -312,7 +323,7 @@
 		</div>
 		<div class="mw-content-container">
 			<main id="content" class="mw-body" style="margin: 0">
-				<header class="mw-body-header vector-page-titlebar vector-feature-custom-font-size-clientpref--excluded">
+				<header class="mw-body-header vector-page-titlebar no-font-mode-scale">
 					<nav aria-label="Contents" class="vector-toc-landmark">
 						
 <div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left" title="Table of Contents">
@@ -333,27 +344,8 @@
 					</nav>
 					<h1 id="firstHeading" class="firstHeading mw-first-heading"><span class="mw-page-title-main">Unreal Engine 5</span></h1>
 							
-<div id="p-lang-btn" class="vector-dropdown mw-portlet mw-portlet-lang">
-	<input type="checkbox" id="p-lang-btn-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-p-lang-btn" class="vector-dropdown-checkbox mw-interlanguage-selector" aria-label="Go to an article in another language. Available in 1 language">
-	<label id="p-lang-btn-label" for="p-lang-btn-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive mw-portlet-lang-heading-1" aria-hidden="true"><span class="vector-icon mw-ui-icon-language-progressive mw-ui-icon-wikimedia-language-progressive"></span>
-
-<span class="vector-dropdown-label-text">1 language</span>
-	</label>
-	<div class="vector-dropdown-content">
-
-		<div class="vector-menu-content">
-			
-			<ul class="vector-menu-content-list">
-				
-				<li class="interlanguage-link interwiki-ja mw-list-item"><a href="https://wiki.archlinux.jp/index.php/Unreal_Engine_5" title="Unreal Engine 5 – 日本語" lang="ja" hreflang="ja" data-title="Unreal Engine 5" data-language-autonym="日本語" data-language-local-name="日本語" class="interlanguage-link-target"><span>日本語</span></a></li>
-			</ul>
-			
-		</div>
-
-	</div>
-</div>
 </header>
-				<div class="vector-column-end vector-feature-custom-font-size-clientpref--excluded">
+				<div class="vector-column-end no-font-mode-scale">
 					<div class="vector-sticky-pinned-container">
 						<nav class="vector-page-tools-landmark" aria-label="Page tools">
 							<div id="vector-page-tools-pinned-container" class="vector-pinned-container">
@@ -515,7 +507,7 @@ If it does not work, check the file Engine/Source/Developer/DesktopPlatform/Priv
 <p>UE4's mouse-over tooltips might be rendered very slow. They can be disabled by adding to:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">Engine/Config/ConsoleVariables.ini</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Slate.AllowToolTips=0</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Slate.EnableToolTips=0</pre>
 <div class="mw-heading mw-heading3"><h3 id="Random_freeze_under_KDE">Random freeze under KDE</h3></div>
 <p>Disable index file content in the KDE file search options.
 </p>
@@ -534,9 +526,26 @@ If it does not work, check the file Engine/Source/Developer/DesktopPlatform/Priv
 </p>
 <p>If you're experiencing issues, try launching your project like so:
 </p>
-<pre>$ /Path/To/Unreal/Engine/Binaries/Linux/UnrealEditor "/Path/To/YourProject/YourProject.uproject" -NoParallelRendering -onethread 
+<pre>$ /Path/To/Unreal/Engine/Binaries/Linux/UnrealEditor "/Path/To/YourProject/YourProject.uproject" -NoParallelRendering -onethread
 </pre>
-<p><br>
+<div class="mw-heading mw-heading3"><h3 id="FAB_plugin_does_not_load">FAB plugin does not load</h3></div>
+<p>The FAB plugin, as well as other Unreal Engine components that rely on web services via CEF (Chromium Embedded Framework), may fail to load or work only partially on some systems.
+</p>
+<p>This issue is related to name resolution via glibc NSS when using systemd-resolved. In particular, configurations that include the <i>resolve</i> NSS module with conditional return rules (such as <i>[!UNAVAIL=return]</i>) may cause DNS resolution failures inside CEF-based applications. As a result, CEF is unable to resolve Epic Games service endpoints, causing the FAB plugin to malfunction or remain blank.
+</p>
+<p>This problem is most likely to affect Unreal Engine 5.6 and later versions, which ship with newer CEF builds (CEF 128 and newer).
+</p>
+<p>A workaround is to simplify the <i>hosts</i> line in <i>/etc/nsswitch.conf</i> to use a more traditional and deterministic resolution order:
+</p>
+<p>For example:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/nsswitch.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># Default configuration (commented out)
+#hosts: mymachines resolve [!UNAVAIL=return] files myhostname dns
+
+# Simplified configuration to improve compatibility with CEF-based components
+hosts: files dns</pre>
+<p>After applying the change, restart Unreal Editor.
 </p>
 <div class="mw-heading mw-heading2"><h2 id="Additional_Content">Additional Content</h2></div>
 <div class="mw-heading mw-heading3"><h3 id="Starter_Content">Starter Content</h3></div>
@@ -577,8 +586,8 @@ If it does not work, check the file Engine/Source/Developer/DesktopPlatform/Priv
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Unreal_Engine_5&amp;oldid=849246">https://wiki.archlinux.org/index.php?title=Unreal_Engine_5&amp;oldid=849246</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 16 October 2025, at 10:00.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Unreal_Engine_5&amp;oldid=860485">https://wiki.archlinux.org/index.php?title=Unreal_Engine_5&amp;oldid=860485</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 8 January 2026, at 01:47.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>
@@ -601,7 +610,7 @@ If it does not work, check the file Engine/Source/Developer/DesktopPlatform/Priv
 		</div>
 	</div> 
 </div> 
-<div class="vector-header-container vector-sticky-header-container">
+<div class="vector-header-container vector-sticky-header-container no-font-mode-scale">
 	<div id="vector-sticky-header" class="vector-sticky-header">
 		<div class="vector-sticky-header-start">
 			<div class="vector-sticky-header-icon-start vector-button-flush-left vector-button-flush-right" aria-hidden="true">
@@ -611,13 +620,13 @@ If it does not work, check the file Engine/Source/Developer/DesktopPlatform/Priv
 			</button>
 		</div>
 			
-		<div role="search" class="vector-search-box-vue vector-search-box">
+		<div role="search" class="vector-search-box-vue  vector-search-box-show-thumbnail vector-search-box">
 			<div class="vector-typeahead-search-container">
-				<div class="cdx-typeahead-search">
+				<div class="cdx-typeahead-search cdx-typeahead-search--show-thumbnail">
 					<form action="/index.php" id="vector-sticky-search-form" class="cdx-search-input cdx-search-input--has-end-button">
 						<div class="cdx-search-input__input-wrapper" data-search-loc="header-moved">
 							<div class="cdx-text-input cdx-text-input--has-start-icon">
-								<input class="cdx-text-input__input" type="search" name="search" placeholder="Search ArchWiki">
+								<input class="cdx-text-input__input mw-searchInput" autocomplete="off" type="search" name="search" placeholder="Search ArchWiki">
 								<span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
 							</div>
 							<input type="hidden" name="title" value="Special:Search">
@@ -662,6 +671,10 @@ If it does not work, check the file Engine/Source/Developer/DesktopPlatform/Priv
 <span></span>
 			</a>
 			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only mw-watchlink" id="ca-watchstar-sticky-header" tabindex="-1" data-event-name="watch-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-star mw-ui-icon-wikimedia-wikimedia-star"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only reading-lists-bookmark" id="ca-bookmark-sticky-header" tabindex="-1" data-event-name="watch-sticky-bookmark"><span class="vector-icon mw-ui-icon-wikimedia-bookmarkOutline mw-ui-icon-wikimedia-wikimedia-bookmarkOutline"></span>
 
 <span></span>
 			</a>
