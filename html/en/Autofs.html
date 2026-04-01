@@ -163,17 +163,6 @@
 			<ul id="toc-Remote_FTP-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Remote_SSH" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Remote_SSH">
-				<div class="vector-toc-text">
-					<span class="vector-toc-numb">2.4.2</span>
-					<span>Remote SSH</span>
-				</div>
-			</a>
-			
-			<ul id="toc-Remote_SSH-sublist" class="vector-toc-list">
-			</ul>
-		</li>
 	</ul>
 		</li>
 	</ul>
@@ -528,52 +517,6 @@ fusermount -u $1
 </pre>
 <p>After a restart your new FTP server should be accessible through <code>/media/ftp/servername</code>.
 </p>
-<div class="mw-heading mw-heading4"><h4 id="Remote_SSH">Remote SSH</h4></div>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
-<div>
-<b>Reason:</b> This does not work and should be reworked or completely removed, discuss in <a href="../en/Talk:Autofs.html#Remote_SSH_session_info_does_not_work" title="Talk:Autofs">Talk</a>. All the <i>ssh*</i> commands should be executed as the same user, as before <a rel="nofollow" class="external text" href="https://wiki.archlinux.org/index.php?title=Autofs&amp;diff=prev&amp;oldid=318335">this edit</a>. It should not matter if it is root or unprivileged. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Autofs.html">Talk:Autofs</a>)</div>
-</div>
-<p>These are basic instructions to access a remote filesystem over <a href="../en/Secure_Shell.html" class="mw-redirect" title="SSH">SSH</a> with AutoFS.
-</p>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note</strong> Password-less authentication may be convenient but also has security implications. See <a href="../en/Using_SSH_Keys.html" class="mw-redirect" title="Using SSH Keys">SSH keypair</a> for more details</div>
-<p>Install the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sshfs">sshfs</a></span> package.
-</p>
-<p>Load the <code>fuse</code> module:
-</p>
-<pre># modprobe fuse
-</pre>
-<p>Create a <code>/etc/modules-load.d/fuse.conf</code> file containing <code>fuse</code> to load it on each system boot if you have not one yet.
-</p>
-<p>Install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=openssh">openssh</a></span>.
-</p>
-<p>Generate an <a href="../en/Using_SSH_Keys.html" class="mw-redirect" title="Using SSH Keys">SSH keypair</a>:
-</p>
-<pre>$ ssh-keygen
-</pre>
-<p>When the generator ask for a passphrase, just press <code>ENTER</code>. Using SSH keys without a passphrase is less secure, yet running AutoFS together with passphrases poses some additional difficulties which are not (yet) covered in this article.
-</p>
-<p>Next, copy the public key to the remote SSH server:
-</p>
-<pre>$ ssh-copy-id username@remotehost
-</pre>
-<p><b>As root</b>, see that you can login to the remote server:
-</p>
-<pre># ssh username@remotehost
-</pre>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note</strong> This will add the remote server to root's list of <code>known_hosts</code>. Hosts can be also be manually added to <code>/etc/ssh/ssh_known_hosts</code>.</div>
-<p>Create a new entry for SSH servers in <code>/etc/autofs/auto.master</code>:
-</p>
-<pre>/media/ssh		/etc/autofs/auto.ssh	--timeout=60
-</pre>
-<p>Create the file <code>/etc/autofs/auto.ssh</code> and add an SSH server:
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/autofs/auto.ssh</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">servername     -fstype=fuse,rw,allow_other,IdentityFile=/home/username/.ssh/id_rsa :sshfs\#username@host\:/</pre>
-<p>After a restart your SSH server should be accessible through <code>/media/ssh/servername</code>.
-</p>
 <div class="mw-heading mw-heading2"><h2 id="MTP">MTP</h2></div>
 <p>Media Transfer Protocol (<a href="../en/Media_Transfer_Protocol.html" class="mw-redirect" title="MTP">MTP</a>) is used in some Android devices.
 </p>
@@ -678,10 +621,7 @@ May  7 19:44:16 peterix automount[15218]: failed to mount /media/cifs/petr
 <div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:File_systems.html" title="Category:File systems">File systems</a></li></ul>
 </div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
-</ul>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li></ul>
 </div>
 </div>
 				</div>
@@ -692,8 +632,8 @@ May  7 19:44:16 peterix automount[15218]: failed to mount /media/cifs/petr
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Autofs&amp;oldid=857548">https://wiki.archlinux.org/index.php?title=Autofs&amp;oldid=857548</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 20 December 2025, at 19:53.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Autofs&amp;oldid=868960">https://wiki.archlinux.org/index.php?title=Autofs&amp;oldid=868960</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 13 March 2026, at 13:41.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

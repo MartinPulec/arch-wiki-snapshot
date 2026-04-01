@@ -697,6 +697,17 @@
 			<ul id="toc-Flickering_in_games_with_NVIDIA_GPUs-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Screencast_/_WebRTC_not_working" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Screencast_/_WebRTC_not_working">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">5.12</span>
+					<span>Screencast / WebRTC not working</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Screencast_/_WebRTC_not_working-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1">
@@ -867,7 +878,7 @@ input &lt;identifier&gt; repeat_rate 30
 <p>Sway ships with a default status bar in the form of <i>swaybar</i> which runs in a pure <a href="../en/Wayland.html" title="Wayland">Wayland</a> environment. <i>swaybar</i> can call a shell script or other program to show information in the status bar. See <span class="plainlinks archwiki-template-man" title="$ man 5 sway-bar"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/sway-bar.5">sway-bar(5)</a></span> and <span class="plainlinks archwiki-template-man" title="$ man 7 swaybar-protocol"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/swaybar-protocol.7">swaybar-protocol(7)</a></span> for details.
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip</strong> <i>swaybar</i> does not fully support <a rel="nofollow" class="external text" href="https://github.com/swaywm/sway/issues/3799">tray icons</a>. Consider an alternative like <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=waybar">waybar</a></span> which can be enabled by setting <code>swaybar_command waybar</code> in the <code>bar</code> section.</div>
+<strong>Tip</strong> <i>swaybar</i> does not fully support <a rel="nofollow" class="external text" href="https://github.com/swaywm/sway/issues/3799">tray icons</a>. Consider an alternative like <a href="../en/Waybar.html" title="Waybar">waybar</a> which can be enabled by setting <code>swaybar_command waybar</code> in the <code>bar</code> section.</div>
 <p>Installing <a href="../en/I3.html#i3status" title="I3">i3status</a> is an option to obtain a practical, default status bar under Wayland. All you have to do is add the following snippet at the end of your sway config:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.config/sway/config</pre>
@@ -1087,8 +1098,8 @@ exec swayidle -w \
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">for_window [app_id="galculator"] floating enable
 for_window [window_type="dialog"] floating enable
 for_window [window_role="dialog"] floating enable
-assign [class="firefox"] -&gt; 3
-assign [class="^Urxvt$" instance="^htop$"] -&gt; 9</pre>
+assign [app_id="firefox"] 3
+assign [class="^Urxvt$" instance="^htop$"] 9</pre>
 <p>This is similar to using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xorg-xprop">xorg-xprop</a></span> to find the <code>class</code> or <code>wm_name</code> attributes in <a href="../en/Xorg.html" class="mw-redirect" title="X11">X11</a>.
 </p>
 <p>When using multiple monitors, the floating scratchpad window can get too large, covering more than one monitor. This command centers and resizes the floating window to 80% of the current monitor's size:
@@ -1445,6 +1456,18 @@ exec_always xrandr --output XWAYLAND0 --primary
 <div class="mw-heading mw-heading3"><h3 id="Flickering_in_games_with_NVIDIA_GPUs">Flickering in games with NVIDIA GPUs</h3></div>
 <p>Although proprietary graphics drivers like NVIDIA are <a rel="nofollow" class="external text" href="https://github.com/swaywm/sway/wiki#nvidia-users">officially not supported</a>, it is possible to use them, even for gaming. If you choose to do so, you may encounter flickering on the upper half of the screen, which can be worked around by replacing <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=wlroots0.19">wlroots0.19</a></span> with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/wlroots-nvidia/">wlroots-nvidia</a></span><sup><small>AUR</small></sup>, or manually compiling your own version with the patch.
 </p>
+<p><br>
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Screencast_/_WebRTC_not_working">
+<span id="Screencast_.2F_WebRTC_not_working"></span>Screencast / WebRTC not working</h3></div>
+<p>Make sure to have this in you config:
+</p>
+<pre>include /etc/sway/config.d/*
+</pre>
+<p>However, some git packages from the aur don't provide /etc/sway/config.d at all. In that case, add to your config:
+</p>
+<pre>exec dbus-update-activation-environment DISPLAY I3SOCK SWAYSOCK WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+</pre>
 <div class="mw-heading mw-heading2"><h2 id="See_also">See also</h2></div>
 <ul>
 <li><a rel="nofollow" class="external text" href="https://github.com/swaywm/sway">GitHub project</a></li>
@@ -1469,8 +1492,8 @@ exec_always xrandr --output XWAYLAND0 --primary
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Sway&amp;oldid=861033">https://wiki.archlinux.org/index.php?title=Sway&amp;oldid=861033</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 13 January 2026, at 06:37.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Sway&amp;oldid=868334">https://wiki.archlinux.org/index.php?title=Sway&amp;oldid=868334</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 7 March 2026, at 22:22.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

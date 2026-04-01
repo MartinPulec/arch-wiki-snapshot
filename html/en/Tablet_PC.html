@@ -170,17 +170,6 @@
 		</li>
 	</ul>
 		</li>
-		<li id="toc-Xfce:_Stylus_and_screen_rotation" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Xfce:_Stylus_and_screen_rotation">
-				<div class="vector-toc-text">
-					<span class="vector-toc-numb">3.3</span>
-					<span>Xfce: Stylus and screen rotation</span>
-				</div>
-			</a>
-			
-			<ul id="toc-Xfce:_Stylus_and_screen_rotation-sublist" class="vector-toc-list">
-			</ul>
-		</li>
 	</ul>
 	</li>
 	<li id="toc-Automatic_rotation" class="vector-toc-list-item vector-toc-level-1">
@@ -671,48 +660,6 @@ The <code>xrandr -o</code> option is quite old. Using <span class="plainlinks ar
 </p>
 <p>If you still cannot change the rotation, you can try to use xinput.
 </p>
-<div class="mw-heading mw-heading3"><h3 id="Xfce:_Stylus_and_screen_rotation">Xfce: Stylus and screen rotation</h3></div>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-cut.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is being considered for removal.</b></p>
-<div>
-<b>Reason:</b> This feels clunky compared to the auto-rotation solutions below. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Tablet_PC.html">Talk:Tablet PC</a>)</div>
-</div>
-<p>The following script will rotate the display 90 degrees clockwise every time it is executed. It will also rotate the Wacom pointer so that the stylus will still work.
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">rotate.sh</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">#!/bin/bash
-
-case $(xfconf-query -c pointers -p /Wacom_ISDv4_90_Pen_stylus/Properties/Wacom_Rotation) in
-    2)  # Currently top is rotated left, we should set it normal (0°)
-          xrandr -o 0
-          xfconf-query -c pointers -p /Wacom_ISDv4_90_Pen_stylus/Properties/Wacom_Rotation -s 0
-          xfconf-query -c xsettings -p /Xft/RGBA -s rgb
-          ;;
-    0)  # Screen is not rotated, we should rotate it right (90°)
-           xrandr -o 3
-           xfconf-query -c pointers -p /Wacom_ISDv4_90_Pen_stylus/Properties/Wacom_Rotation -s 1
-           xfconf-query -c xsettings -p /Xft/RGBA -s vbgr
-           ;;
-    1)    # Top of screen is rotated right, we should invert it (180°)
-           xrandr -o 2
-           xfconf-query -c pointers -p /Wacom_ISDv4_90_Pen_stylus/Properties/Wacom_Rotation -s 3
-           xfconf-query -c xsettings -p /Xft/RGBA -s bgr
-           ;;
-    3)  # Screen is inverted, we should rotate it left (270°)
-           xrandr -o 1
-           xfconf-query -c pointers -p /Wacom_ISDv4_90_Pen_stylus/Properties/Wacom_Rotation -s 2
-           xfconf-query -c xsettings -p /Xft/RGBA -s vrgb
-           ;;
-    *)
-           echo "Unknown result from 'xfconf-query -c pointers -p /Wacom_ISDv4_90_Pen_stylus/Properties/Wacom_Rotation'" &gt;&amp;2
-           exit 1
-           ;;
-esac
-</pre>
-<p>Save the file and make it <a href="../en/Help:Reading.html#Make_executable" class="mw-redirect" title="Executable">executable</a>. 
-</p>
-<p>You can create a link to it on your desktop or panel, or link it to a keyboard shortcut or special button on your tablet.
-</p>
 <div class="mw-heading mw-heading2"><h2 id="Automatic_rotation">Automatic rotation</h2></div>
 <div class="mw-heading mw-heading3"><h3 id="With_Xorg">With Xorg</h3></div>
 <p>A simple <a href="../en/Xorg.html" title="Xorg">Xorg</a> auto-rotate script could be implemented as follows (uses <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xorg-xinput">xorg-xinput</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xorg-xrandr">xorg-xrandr</a></span> and <i>monitor-sensor</i> from <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=iio-sensor-proxy">iio-sensor-proxy</a></span>):
@@ -1186,10 +1133,7 @@ xidump -u stylus
 <div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Tablet_PCs.html" title="Category:Tablet PCs">Tablet PCs</a></li></ul>
 </div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li>
-<li><a href="../en/Category:Sections_flagged_with_Template:Remove.html" title="Category:Sections flagged with Template:Remove">Sections flagged with Template:Remove</a></li>
-</ul>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li></ul>
 </div>
 </div>
 				</div>
@@ -1200,8 +1144,8 @@ xidump -u stylus
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Tablet_PC&amp;oldid=860344">https://wiki.archlinux.org/index.php?title=Tablet_PC&amp;oldid=860344</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 6 January 2026, at 04:15.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Tablet_PC&amp;oldid=868345">https://wiki.archlinux.org/index.php?title=Tablet_PC&amp;oldid=868345</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 8 March 2026, at 09:40.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

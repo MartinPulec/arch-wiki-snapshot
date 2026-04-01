@@ -1674,16 +1674,10 @@ KVNO Principal
 <p>Some common mistakes here are a) forgetting the trailing $ or b) ignoring case sensitivity - it needs to look exactly like the entry in the keytab (usually you cannot to much wrong with all capital)
 </p>
 <div class="mw-heading mw-heading4"><h4 id="Preparing_sshd_on_server">Preparing sshd on server</h4></div>
-<p>All we need to do is add some options to our <code>sshd_config</code> and <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Restart">restart</a> the <code>sshd.service</code>.
+<p>Add these options to the <code>sshd_config</code> and <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Restart">restart</a> <code>sshd.service</code> after making the changes.
 </p>
-<p>Edit <code>/etc/ssh/sshd_config</code> to look like this in the appropriate places:
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># /etc/ssh/sshd_config</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">
-
-...
-
-# Change to no to disable s/key passwords
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/ssh/sshd_config</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># Change to no to disable s/key passwords
 ChallengeResponseAuthentication no
 
 # Kerberos options
@@ -1695,24 +1689,18 @@ KerberosGetAFSToken yes
 # GSSAPI options
 GSSAPIAuthentication yes
 GSSAPICleanupCredentials yes
-
-...
-
 </pre>
-<p><a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Restart">Restart</a> the <code>sshd.service</code>.
-</p>
 <div class="mw-heading mw-heading4"><h4 id="Adding_necessary_options_on_client">Adding necessary options on client</h4></div>
-<p>First we need to make sure that the tickets on our client are forwardable. This is usually standard but we better check anyways. You have to look for the  forwardable option and set it to 'true' in the Kerberos configuration file <code>/etc/krb5.conf</code>
+<p>First we need to make sure that the tickets on our client are forwardable. This is usually standard but we better check anyways. You have to look for the <code>forwardable</code> option and set it to 'true' in the Kerberos configuration file:
 </p>
-<pre>forwardable     =       true
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/krb5.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">forwardable     =       true</pre>
+<p>Secondly we need to add the following options to the user-specific SSH client configuration file to tell <span class="plainlinks archwiki-template-man" title="$ man 1 ssh"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/ssh.1">ssh(1)</a></span> to use these options - alternatively they can be invoked using the <code>-o</code> options directly.
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.ssh/config</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">GSSAPIAuthentication yes
+GSSAPIDelegateCredentials yes
 </pre>
-<p>Secondly we need to add the options 
-</p>
-<pre> GSSAPIAuthentication yes
- GSSAPIDelegateCredentials yes
-</pre>
-<p>to our <code>.ssh/config</code> file to tell ssh to use this options - alternatively they can be invoked using the <code>-o</code> options directly in the ssh command (see <span class="plainlinks archwiki-template-man" title="$ man 1 ssh"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/ssh.1">ssh(1)</a></span> for help).
-</p>
 <div class="mw-heading mw-heading4"><h4 id="Testing_the_setup">Testing the setup</h4></div>
 <p>On Client:
 </p>
@@ -1720,12 +1708,14 @@ GSSAPICleanupCredentials yes
 </p>
 <p>then use ssh to connect to you machine
 </p>
-<pre>ssh myarchlinux.example.com </pre>
+<pre>$ ssh <i>myarchlinux.example.com</i>
+</pre>
 <p>you should get connected without needing to enter your password.
 </p>
 <p>if you have key authentication additionally activated then you should perform
 </p>
-<pre>ssh -v myarchlinux.example.com </pre>
+<pre>$ ssh -v <i>myarchlinux.example.com</i>
+</pre>
 <p>to see which authentication method it actually uses.
 </p>
 <p>For debugging you can enable DEBUG3 on the server and look into the journal using <a href="../en/Systemd/Journal.html" class="mw-redirect" title="Journalctl">journalctl</a>.
@@ -1737,15 +1727,16 @@ GSSAPICleanupCredentials yes
 <p>On a system let the user run:
 </p>
 <pre>ktutil
-addent -password -p username@EXAMPLE.COM -k 1 -e RC4-HMAC
+addent -password -p ''username@EXAMPLE.COM'' -k 1 -e RC4-HMAC
 - enter password for username -
 wkt username.keytab
 q
 </pre>
 <p>Now test the file by invoking:
 </p>
-<pre>kinit username@EXAMPLE.COM -kt username.keytab</pre>
-<p>It should not promt you to give your password nor should it give any other feedback. If it worked you are basically done - just put the line above into your ~./bashrc - you can now get kerberos tickets without typing a password and with that you can connect to your workstation without typing a password while being completely kerberized and able to authenticate against NFSv4 and CIFS via tickets - pretty neat.
+<pre>$ kinit <i>username@EXAMPLE.COM</i> -kt username.keytab
+</pre>
+<p>It should not prompt you to give your password nor should it give any other feedback. If it worked you are basically done - just put the line above into e.g your <a href="../en/Command-line_shell.html#Configuration_files" title="Command-line shell">shell configuration file</a> - you can now get kerberos tickets without typing a password and with that you can connect to your workstation without typing a password while being completely kerberized and able to authenticate against NFSv4 and CIFS via tickets.
 </p>
 <div class="mw-heading mw-heading4"><h4 id="Nice_to_know">Nice to know</h4></div>
 <p>The file 'username.keytab' is not machinespecific and can therefore be copied around. E.g. we created the files on a linux machine and copied them to our Mac clients as the commands on Macs are different ...
@@ -1791,8 +1782,8 @@ q
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Active_Directory_integration&amp;oldid=849982">https://wiki.archlinux.org/index.php?title=Active_Directory_integration&amp;oldid=849982</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 20 October 2025, at 20:13.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Active_Directory_integration&amp;oldid=870340">https://wiki.archlinux.org/index.php?title=Active_Directory_integration&amp;oldid=870340</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 31 March 2026, at 10:52.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

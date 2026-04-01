@@ -261,7 +261,7 @@
 					<div id="mw-content-text" class="mw-body-content">
 <div class="mw-content-ltr mw-parser-output" lang="hu" dir="ltr">
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Fordítás állapota:</strong> Ez a cikk az angol <a href="../en/Advanced_Format.html" title="Advanced Format">Advanced Format</a> című cikk magyar nyelvre lefordított változata. Utolsó fordítás dátuma: 2025.11.16. Amennyiben a lefordítás időpontja óta az angol nyelvű cikkben történtek újabb <a rel="nofollow" class="external text" href="https://wiki.archlinux.org/index.php?title=Advanced_Format&amp;diff=0&amp;oldid=838226">módosítások</a>, akkor Ön segíthet hozzászinkronizálni az angolhoz ezt a magyar nyelvű fordítást.</div>
+<strong>Fordítás állapota:</strong> Ez az oldal az angol <a href="../en/Advanced_Format.html" title="Advanced Format">Advanced Format</a> című oldal magyar nyelvre lefordított változata. Utolsó fordítás dátuma: 2026.02.07. Amennyiben a lefordítás időpontja óta az angol nyelvű oldalon történtek újabb <a rel="nofollow" class="external text" href="https://wiki.archlinux.org/index.php?title=Advanced_Format&amp;diff=0&amp;oldid=838226">módosítások</a>, akkor Ön segíthet hozzászinkronizálni az angolhoz ezt a magyar nyelvű fordítást.</div>
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-go-next.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is a candidate for moving to <a href="/index.php?title=Storage_layout_and_alignment&amp;action=edit&amp;redlink=1" class="new" title="Storage layout and alignment (page does not exist)">Storage layout and alignment</a>.</b></p>
 <div>
@@ -303,8 +303,8 @@ $ cat /sys/class/block/<i>drive</i>/queue/logical_block_size
 </p>
 <meta property="mw:PageProp/toc">
 <div class="mw-heading mw-heading2"><h2 id="Changing_sector_size">Changing sector size</h2></div>
-<p><a href="/index.php?title=Template:Warning_(Magyar&amp;action=edit&amp;redlink=1" class="new" title="Template:Warning (Magyar (page does not exist)">Template:Warning (Magyar</a>
-</p>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Figyelmeztetés</strong> Changing a drive's sector size will irrevocably erase all the data on the drive.</div>
 <p>Some NVMe drives and "enterprise" SATA hard disk drives support changing their reported sector size using standard NVMe (<code>Format NVM</code> from NVM Command Set Specification 1.0 or later) or ATA (<code>SET SECTOR CONFIGURATION EXT</code> from ATA Command Set - 4 or later) commands, respectively. For hard disk drives this changes the logical sector size in order to match the physical sector size for optimal performance. While for NVMe solid state drives, both the logical and physical sector size values get changed.
 </p>
 <p>SATA solid state drives typically do not support changing their sector size. Exception are certain Intel SATA SSDs that can change the reported physical sector size, but not the logical sector size.<a rel="nofollow" class="external autonumber" href="https://superuser.com/q/982680">[2]</a> Follow <a href="#Intel">#Intel</a> to change their reported physical sector size.
@@ -316,8 +316,8 @@ $ cat /sys/class/block/<i>drive</i>/queue/logical_block_size
 </p>
 <pre># hdparm -I /dev/sd<i>X</i> | grep 'Sector size:'
 </pre>
-<p><a href="/index.php?title=Template:Note_(Magyar&amp;action=edit&amp;redlink=1" class="new" title="Template:Note (Magyar (page does not exist)">Template:Note (Magyar</a>
-</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Megjegyzés</strong> For USB-attached drives, the USB bridge needs to support <a href="https://en.wikipedia.org/wiki/SCSI_/_ATA_Translation" class="extiw" title="wikipedia:SCSI / ATA Translation">SAT aka SCSI/ATA Translation</a> (ANSI INCITS 431-2007).</div>
 <p>Advanced Format drives whose Sector Configuration Log lists multiple logical sector sizes will show a list of them:
 </p>
 <pre>        Logical  Sector size:                   512 bytes [ Supported: 512 4096 ]
@@ -371,8 +371,8 @@ Id Fmt  Data  Metadt  Rel_Perf
  0 +     512       0         2
  1 -    4096       0         1
 </pre>
-<p><a href="/index.php?title=Template:Warning_(Magyar&amp;action=edit&amp;redlink=1" class="new" title="Template:Warning (Magyar (page does not exist)">Template:Warning (Magyar</a>
-</p>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Figyelmeztetés</strong> Some NVMe SSDs report they support 4K sectors but encounter sporadic instability upon enabling them, especially under heavy random read loads.<a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?pid=2238884#p2238884">[3]</a><a rel="nofollow" class="external autonumber" href="https://halestrom.net/darksleep/blog/054_nvme/">[4]</a> Make sure to test the new configuration thoroughly before storing data you cannot afford to lose on it. If encountering this issue, simply revert back to a 512 sector configuration.</div>
 <p>To change the logical block address size, use <code>nvme format</code> and specify the preferred value with the <code>--lbaf</code> parameter:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># nvme format --lbaf=1 /dev/nvme0n1</pre>
@@ -385,14 +385,14 @@ Sending format operation ...
 Success formatting namespace:1</pre>
 <p>This should take just a few seconds to proceed.
 </p>
-<p><a href="/index.php?title=Template:Note_(Magyar&amp;action=edit&amp;redlink=1" class="new" title="Template:Note (Magyar (page does not exist)">Template:Note (Magyar</a>
-</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Megjegyzés</strong> Make sure to follow <a href="#Partition_alignment">#Partition alignment</a><sup>[<a href="../en/Help:Procedures.html#Fix_broken_section_links" title="Help:Procedures">Hibás hivatkozás</a>: Érvénytelen szekció]</sup> when partitioning, otherwise any performance benefit will be void.</div>
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
 <div>
 <b>Reason:</b> Before fiddling with power state or UEFI settings, users are encouraged to use native <code>nvme</code> commands to check operation logs, or soft reset the controller with <i>e.g.</i> <code>nvme reset</code>. (Discuss in <a rel="nofollow" class="external text" href="../hu/Talk:Advanced_Format.html">Talk:Advanced Format (Magyar)</a>)</div>
 </div>
-<p>Drives older than 2020 can block the <code>Format NVM</code> command when used on systems that issue a non-standard "security freeze" at the end of POST.<a rel="nofollow" class="external autonumber" href="https://github.com/linux-nvme/nvme-cli/issues/816">[3]</a><a rel="nofollow" class="external autonumber" href="https://forums.lenovo.com/topic/findpost/1300/5043069/5167342">[4]</a> If <code>nvme format</code> fails, try to <a href="../en/Systemd.html#Power_management" title="Systemd">suspend the system</a> (make sure to <a href="../en/Power_management/Suspend_and_hibernate.html#Changing_suspend_method" title="Power management/Suspend and hibernate">use S3 sleep not S0ix</a>) and then try running <code>nvme format</code> again after waking it.<a rel="nofollow" class="external autonumber" href="https://github.com/linux-nvme/nvme-cli/issues/84">[5]</a><a rel="nofollow" class="external autonumber" href="https://forums.sandisk.com/t/sn750-cannot-format-using-the-nvme-command/253702">[6]</a>
+<p>Drives older than 2020 can block the <code>Format NVM</code> command when used on systems that issue a non-standard "security freeze" at the end of POST.<a rel="nofollow" class="external autonumber" href="https://github.com/linux-nvme/nvme-cli/issues/816">[5]</a><a rel="nofollow" class="external autonumber" href="https://forums.lenovo.com/topic/findpost/1300/5043069/5167342">[6]</a> If <code>nvme format</code> fails, try to <a href="../en/Systemd.html#Power_management" title="Systemd">suspend the system</a> (make sure to <a href="../en/Power_management/Suspend_and_hibernate.html#Changing_suspend_method" title="Power management/Suspend and hibernate">use S3 sleep not S0ix</a>) and then try running <code>nvme format</code> again after waking it.<a rel="nofollow" class="external autonumber" href="https://github.com/linux-nvme/nvme-cli/issues/84">[7]</a><a rel="nofollow" class="external autonumber" href="https://forums.sandisk.com/t/sn750-cannot-format-using-the-nvme-command/253702">[8]</a>
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Using_manufacturer_specific_programs">Using manufacturer specific programs</h3></div>
 <p>If the above generic utilities do not allow changing the sector size, it may still be possible to change it using an utility from the drive's manufacturer.
@@ -400,8 +400,8 @@ Success formatting namespace:1</pre>
 <div class="mw-heading mw-heading4"><h4 id="Intel">Intel</h4></div>
 <p>For Intel use the <a rel="nofollow" class="external text" href="https://downloadcenter.intel.com/download/29337/Intel-Memory-and-Storage-Tool-CLI-Command-Line-Interface-?product=83425">Intel Memory and Storage (MAS) Tool</a> (<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/intel-mas-cli-tool/">intel-mas-cli-tool</a></span><sup><small>AUR</small></sup>) with the <code>-set PhysicalSectorSize=4096</code> option. Notice that only reported physical sector size will be changed, logical sector size will remain the same.
 </p>
-<p><a href="/index.php?title=Template:Note_(Magyar&amp;action=edit&amp;redlink=1" class="new" title="Template:Note (Magyar (page does not exist)">Template:Note (Magyar</a>
-</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Megjegyzés</strong> Ever since Intel's SSD business was bought by SK Hynix under the Solidigm brand, Intel MAS cannot be used to manage SSDs, only Optane products. Solidigm provides <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/solidigm-sst-storage-tool-cli/">solidigm-sst-storage-tool-cli</a></span><sup><small>AUR</small></sup> to perform the same functions Intel MAS used to offer; see <a href="../en/Solid_state_drive/NVMe.html#Intel/Solidigm" title="Solid state drive/NVMe">Solid state drive/NVMe#Intel/Solidigm</a>.</div>
 <div class="mw-heading mw-heading4"><h4 id="Seagate">Seagate</h4></div>
 <p>For Seagate use <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/openseachest/">openseachest</a></span><sup><small>AUR</small></sup>.
 </p>
@@ -426,8 +426,8 @@ Success formatting namespace:1</pre>
 <span id="Part.C3.ADci.C3.B3igaz.C3.ADt.C3.A1s"></span>Partícióigazítás</h2></div>
 <p>Aligning partitions correctly avoids excessive read-modify-write cycles. A typical practice for personal computers is to have each partition's start and size aligned to 1 MiB (1 048 576 bytes) marks. This covers all common page and block size scenarios, as it is divisible by all commonly used sizes—1 MiB, 512 KiB, 128 KiB, 4 KiB, and 512 B.
 </p>
-<p><a href="/index.php?title=Template:Warning_(Magyar&amp;action=edit&amp;redlink=1" class="new" title="Template:Warning (Magyar (page does not exist)">Template:Warning (Magyar</a>
-</p>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Figyelmeztetés</strong> Misaligned partitions will prevent being able to use 4096 byte sectors with dm-crypt/LUKS. See <a rel="nofollow" class="external autonumber" href="https://lore.kernel.org/dm-crypt/fe8cd3b4-6d50-66d3-375c-254e278a6443@gmail.com/">[9]</a>.</div>
 <ul>
 <li>
 <a href="../en/Fdisk.html" title="Fdisk">fdisk, cfdisk and sfdisk</a> handle alignment automatically.</li>
@@ -447,7 +447,7 @@ Success formatting namespace:1</pre>
 <div>
 <b>Reason:</b> Add example for plain dm-crypt. (Discuss in <a rel="nofollow" class="external text" href="../hu/Talk:Advanced_Format.html">Talk:Advanced Format (Magyar)</a>)</div>
 </div>
-<p>As of <a href="../en/Dm-crypt/Device_encryption.html#Cryptsetup_usage" class="mw-redirect" title="Cryptsetup">Cryptsetup</a> 2.4.0, <code>luksFormat</code> automatically detects the optimal encryption sector size for LUKS2 format <a rel="nofollow" class="external autonumber" href="https://mirrors.edge.kernel.org/pub/linux/utils/cryptsetup/v2.4/v2.4.0-ReleaseNotes">[7]</a>. 
+<p>As of <a href="../en/Dm-crypt/Device_encryption.html#Cryptsetup_usage" class="mw-redirect" title="Cryptsetup">Cryptsetup</a> 2.4.0, <code>luksFormat</code> automatically detects the optimal encryption sector size for LUKS2 format <a rel="nofollow" class="external autonumber" href="https://mirrors.edge.kernel.org/pub/linux/utils/cryptsetup/v2.4/v2.4.0-ReleaseNotes">[10]</a>. 
 </p>
 <p>However, for this to work, the device needs to report the correct default sector size, see <a href="#Changing_sector_size">#Changing sector size</a>.
 </p>
@@ -466,12 +466,12 @@ Success formatting namespace:1</pre>
 Verify passphrase: 
 Device size is not aligned to requested sector size.
 </pre>
-<p><a href="/index.php?title=Template:Note_(Magyar&amp;action=edit&amp;redlink=1" class="new" title="Template:Note (Magyar (page does not exist)">Template:Note (Magyar</a>
-</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Megjegyzés</strong> See <a rel="nofollow" class="external text" href="https://gitlab.com/cryptsetup/cryptsetup/-/issues/585">cryptsetup issue 585</a> for why the command may fail while the underlying drive does use 4 KiB physical sectors.</div>
 <p>If you encrypted your device with the wrong sector size, the device can be re-encrypted by running:
 </p>
-<p><a href="/index.php?title=Template:Warning_(Magyar&amp;action=edit&amp;redlink=1" class="new" title="Template:Warning (Magyar (page does not exist)">Template:Warning (Magyar</a>
-</p>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Figyelmeztetés</strong> The contained file system must have a block size of 4096 bytes or a multiple of it, otherwise it will break.</div>
 <pre># cryptsetup reencrypt --sector-size=4096 <i>device</i>
 </pre>
 <div class="mw-heading mw-heading2"><h2 id="Fájlrendszerek">
@@ -588,8 +588,8 @@ Device size is not aligned to requested sector size.
 </p>
 <p>In particular <i>shingled magnetic recording</i> (SMR) drives that are firmware-managed are severely and negatively impacted if using a logical sector size of 512 bytes if their physical sector size is of 4096 bytes. Those drives have different performance writing zones and remapping reallocation occurs while being idle, but during heavy active writes (e.g., RAID resilvering, backups, writing many small files, rsync, etc.), a different file system sector size could drop write speed to single digit megabytes/second, as the higher performance write areas get depleted, and the sector translation layer gets overworked on the shingled areas. 
 </p>
-<p><a href="/index.php?title=Template:Note_(Magyar&amp;action=edit&amp;redlink=1" class="new" title="Template:Note (Magyar (page does not exist)">Template:Note (Magyar</a>
-</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Megjegyzés</strong> On x86_64 systems Linux cannot mount file systems with a block size larger than 4 KiB. See <a rel="nofollow" class="external text" href="https://kernelnewbies.org/KernelProjects/large-block-size">Large block sizes (LBS)</a> for details and current progress.</div>
 <p>Here are some examples to set the 4096-byte sector size explicitly:
 </p>
 <ul>
@@ -629,7 +629,7 @@ Device size is not aligned to requested sector size.
 <ul>
 <li><a rel="nofollow" class="external text" href="https://www.anandtech.com/Show/Index/2888">Western Digital’s Advanced Format: The 4K Sector Transition Begins</a></li>
 <li><a rel="nofollow" class="external text" href="https://www.wdc.com/wdproducts/library/WhitePapers/ENG/2579-771430.pdf">White paper entitled "Advanced Format Technology."</a></li>
-<li>Failure to align one's HDD results in poor read/write performance.  See <a rel="nofollow" class="external autonumber" href="https://linuxconfig.org/linux-wd-ears-advanced-format">[8]</a> for specific examples.</li>
+<li>Failure to align one's HDD results in poor read/write performance.  See <a rel="nofollow" class="external autonumber" href="https://linuxconfig.org/linux-wd-ears-advanced-format">[11]</a> for specific examples.</li>
 </ul>
 </div>
 </div>
@@ -653,8 +653,8 @@ Device size is not aligned to requested sector size.
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Advanced_Format_(Magyar)&amp;oldid=859456">https://wiki.archlinux.org/index.php?title=Advanced_Format_(Magyar)&amp;oldid=859456</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 31 December 2025, at 19:10.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Advanced_Format_(Magyar)&amp;oldid=864258">https://wiki.archlinux.org/index.php?title=Advanced_Format_(Magyar)&amp;oldid=864258</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 7 February 2026, at 04:31.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

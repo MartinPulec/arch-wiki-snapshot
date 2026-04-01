@@ -453,6 +453,17 @@
 			<ul id="toc-Steam_Flatpak_start_(run)_issues-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-SteamCMD_in_flatpak" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#SteamCMD_in_flatpak">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">5.15.3</span>
+					<span>SteamCMD in flatpak</span>
+				</div>
+			</a>
+			
+			<ul id="toc-SteamCMD_in_flatpak-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 		</li>
 		<li id="toc-Steam_settings_to_reduce_video_card_memory_usage" class="vector-toc-list-item vector-toc-level-2">
@@ -581,7 +592,7 @@
 <p><a rel="nofollow" class="external text" href="https://store.steampowered.com/about/">Steam</a> is a popular game distribution platform by Valve.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note</strong> Steam for Linux only supports the latest Ubuntu or Ubuntu LTS.<a rel="nofollow" class="external autonumber" href="https://help.steampowered.com/en/faqs/view/1114-3F74-0B8A-B784">[1]</a><a rel="nofollow" class="external autonumber" href="https://github.com/ValveSoftware/steam-for-linux">[2]</a> Thus, do not turn to Valve for support for issues with Steam on Arch Linux.</div>
+<strong>Note</strong> Steam for Linux only supports the latest Ubuntu or Ubuntu LTS.<a rel="nofollow" class="external autonumber" href="https://help.steampowered.com/en/faqs/view/1114-3F74-0B8A-B784">[1]</a><a rel="nofollow" class="external autonumber" href="https://github.com/ValveSoftware/steam-for-linux?tab=readme-ov-file#hardware-and-software-requirements">[2]</a> Thus, do not turn to Valve for support for issues with Steam on Arch Linux.</div>
 <meta property="mw:PageProp/toc">
 <div class="mw-heading mw-heading2"><h2 id="Installation">Installation</h2></div>
 <p>Enable the <a href="../en/Official_repositories.html#multilib" class="mw-redirect" title="Multilib">multilib</a> repository and <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=steam">steam</a></span> package (recommended) or alternatively the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/steam-native-runtime/">steam-native-runtime</a></span><sup><small>AUR</small></sup> package for running Steam with native system libraries. See <a href="../en/Steam/Troubleshooting.html#Steam_runtime" title="Steam/Troubleshooting">/Troubleshooting#Steam runtime</a>.
@@ -658,7 +669,7 @@ pass the launch command as an argument to another command you can use the <code>
 </p>
 <p>"Proton Experimental" is enabled by default on the Steam client: <i>Steam &gt; Settings &gt; Compatibility</i>. You can enable Steam Play for games that have and have not been whitelisted by Valve in that dialog.
 </p>
-<p>Proton supports <i>Easy AntiCheat</i> integration if the developer activates it, however EAC may require a particular <a rel="nofollow" class="external text" href="https://github.com/ValveSoftware/Proton/issues/5214">patched version</a> of glibc: if a game is been reported to be working but is not in your machine, try using Steam Flatpak because it comes with glibc patched. Additionally, <a href="../en/Security.html#hidepid" title="Security">setting the procfs mount option <code>hidepid</code> to a hardened value</a> may cause Easy Anti-Cheat to fail with the message "Launch Error: 261".
+<p>Proton supports <i>Easy AntiCheat</i> integration if the developer activates it, however EAC may require a particular <a rel="nofollow" class="external text" href="https://github.com/ValveSoftware/Proton/issues/5214">patched version</a> of glibc: if a game is been reported to be working but is not in your machine, try using Steam Flatpak because it comes with glibc patched. Additionally, <a href="../en/Security.html#hidepid" title="Security">setting the procfs mount option "hidepid" to a hardened value</a> may cause Easy Anti-Cheat to fail with the message "Launch Error: 261".
 </p>
 <div class="mw-heading mw-heading4"><h4 id="Force_Proton_usage">Force Proton usage</h4></div>
 <p>If needed, to force enable Proton or a specific version of Proton for a game, right click on the game, click <i>Properties &gt; Compatibility &gt; Force the use of a specific Steam Play compatibility tool</i>, and select the desired version. Doing so can also be used to force games that have a Linux port to use the Windows version.
@@ -771,7 +782,7 @@ Type=Application</pre>
 <strong>Warning</strong> The "Switch to desktop" menu entry softlocks the session. To exit to the display manager you need to run <code>steam -shutdown</code>. To do this from Steam, you can either:
 <ul>
 <li>Add <code>-steamos3</code> to the Steam command-line arguments, which makes in the menu entry execute <code>steamos-session-select</code> when selected. You can then add a script with this name in your <a href="../en/Environment_variables.html#Examples" class="mw-redirect" title="PATH">PATH</a> to customize the behavior; see <a rel="nofollow" class="external text" href="https://gist.github.com/Rishikant181/e26fb23d4c57db74bddaa0a57b26cd26#5-creating-a-script-to-switch-back-to-desktop-mode-close-steam">this guide</a> for an example (note that <code>~/.local/bin</code> is not part of Arch's default <code>PATH</code>).
-<ul><li>Be warned that <code>-steamos3</code> has other effects such as <a rel="nofollow" class="external text" href="https://www.reddit.com/r/linux_gaming/comments/1f8zq0i/">replacing the in-game overlay with an inaccessible Steam Deck overlay</a>.</li></ul>
+<ul><li>Be warned that <code>-steamos3</code> might have other unintended effects.</li></ul>
 </li>
 <li>Create a script with this command and add it as a non-Steam game. This creates a "shortcut" to exit back to the display manager.</li>
 </ul>
@@ -971,6 +982,11 @@ $ flatpak run com.valvesoftware.Steam
 </pre>
 <p>For an alternative way to control permissions, install <a rel="nofollow" class="external text" href="https://flathub.org/apps/com.github.tchx84.Flatseal">flatseal</a>.
 </p>
+<div class="mw-heading mw-heading4"><h4 id="SteamCMD_in_flatpak">SteamCMD in flatpak</h4></div>
+<p><a href="../en/Steam.html#SteamCMD" class="mw-redirect" title="SteamCMD">SteamCMD</a> can also be used within the flatpak.
+</p>
+<pre>$ flatpak run --command=steamcmd com.valvesoftware.Steam
+</pre>
 <div class="mw-heading mw-heading3"><h3 id="Steam_settings_to_reduce_video_card_memory_usage">Steam settings to reduce video card memory usage</h3></div>
 <p>This is useful for video cards with a small amount of video memory.
 </p>
@@ -1047,8 +1063,8 @@ Exec = /usr/bin/sed -i '/^KERNEL=="uinput"/s/TAG+="uaccess"/GROUP="steam"/g' /us
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Steam&amp;oldid=862817">https://wiki.archlinux.org/index.php?title=Steam&amp;oldid=862817</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 26 January 2026, at 00:00.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Steam&amp;oldid=868658">https://wiki.archlinux.org/index.php?title=Steam&amp;oldid=868658</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 10 March 2026, at 10:59.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

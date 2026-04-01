@@ -727,19 +727,27 @@ fi
 </p>
 <p>rsync's <i>archive</i> mode comes close to being fit for the job, but it does not back up the special file system metadata such as access control lists, extended attributes or sparse file properties. For successful cloning at the file system level, some additional options need to be provided:
 </p>
-<pre>rsync -qaHAXS SOURCE_DIR DESTINATION_DIR
+<pre>rsync -qaAXHSU SOURCE_DIR DESTINATION_DIR
 </pre>
 <p>And their meaning is (from the manpage):
 </p>
-<pre>--hard-links, -H         preserve hard links
---acls, -A               preserve ACLs (implies --perms)
+<pre>--acls, -A               preserve ACLs (implies --perms)
 --xattrs, -X             preserve extended attributes
+--hard-links, -H         preserve hard links
 --sparse, -S             turn sequences of nulls into sparse blocks
+--atimes, -U             preserve access (use) times
 </pre>
 <p>Additionally, use <code>-x</code> if you have other filesystems mounted under the tree that you want to exclude from the copy.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note</strong> If you are using rsync to migrate your Arch installation to a new drive, remember to include a trailing slash at the end of <code>SOURCE_DIR</code>, for the reason mentioned in <a href="#Trailing_slash_caveat">#Trailing slash caveat</a>.</div>
+<strong>Note</strong> 
+<ul>
+<li>If you are using rsync to migrate your Arch installation to a new drive, remember to include a trailing slash at the end of <code>SOURCE_DIR</code>, for the reason mentioned in <a href="#Trailing_slash_caveat">#Trailing slash caveat</a>.</li>
+<li>Create/birth time (<code>crtime</code>) will not be preserved. There is a <code>-N</code>/<code>--crtimes</code> flag for that, but it is not supported on Linux.</li>
+</ul>
+</div>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip</strong> If you use <a href="../en/Btrfs.html" title="Btrfs">btrfs</a> consider using <a href="../en/Btrfs.html#Send/receive" title="Btrfs">send/receive</a>.</div>
 <p>The produced copy can be simply reread and checked (for example after a data recovery attempt) at the file system level with <code>diff</code>'s recursive option:
 </p>
 <pre>diff -r SOURCE_DIR DESTINATION_DIR
@@ -818,8 +826,8 @@ read only = yes
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Rsync&amp;oldid=844465">https://wiki.archlinux.org/index.php?title=Rsync&amp;oldid=844465</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 17 August 2025, at 16:02.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Rsync&amp;oldid=865131">https://wiki.archlinux.org/index.php?title=Rsync&amp;oldid=865131</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 12 February 2026, at 09:58.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

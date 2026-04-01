@@ -55,15 +55,15 @@
 			</button>
 		
 		<ul id="toc-PRIME_GPU_offloading-sublist" class="vector-toc-list">
-			<li id="toc-For_open_source_drivers_-_PRIME" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#For_open_source_drivers_-_PRIME">
+			<li id="toc-For_open_source_drivers—PRIME" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#For_open_source_drivers%E2%80%94PRIME">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">1.1</span>
-					<span>For open source drivers - PRIME</span>
+					<span>For open source drivers—PRIME</span>
 				</div>
 			</a>
 			
-			<ul id="toc-For_open_source_drivers_-_PRIME-sublist" class="vector-toc-list">
+			<ul id="toc-For_open_source_drivers—PRIME-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 		<li id="toc-Note_about_Windows_games" class="vector-toc-list-item vector-toc-level-2">
@@ -449,16 +449,22 @@
 <div>
 <b>Reason:</b> The following subsections are a messy, we name a subsection PRIME render offload without stating it's NVIDIA-centric, we shove generic PCI-E power management for the open source drivers inside, the merge flag from <a href="../en/External_GPU.html#Xorg_rendered_on_iGPU,_PRIME_render_offload_to_eGPU" title="External GPU">External GPU#Xorg rendered on iGPU, PRIME render offload to eGPU</a> should probably be addressed on the other page, once this has cleaned up and we can link to here for the environment variables to use. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:PRIME.html">Talk:PRIME</a>)</div>
 </div>
-<div class="mw-heading mw-heading3"><h3 id="For_open_source_drivers_-_PRIME">For open source drivers - PRIME</h3></div>
+<div class="mw-heading mw-heading3"><h3 id="For_open_source_drivers—PRIME">
+<span id="For_open_source_drivers.E2.80.94PRIME"></span>For open source drivers—PRIME</h3></div>
 <p>To use your discrete card for the applications who need it the most (for example games, 3D modellers...), prepend the <code>DRI_PRIME=1</code> environment variable:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ DRI_PRIME=1 glxinfo | grep "OpenGL renderer"</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">OpenGL renderer string: Gallium 0.4 on AMD TURKS</pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note</strong> Instead of numerical value, you can also specify a PCI device name. Format used is similar to <code>/sys/bus/pci/devices/</code>, but prefix with <code>pci-</code> and replace semicolons and dots by underscores, e.g. <code>DRI_PRIME=pci-0000_01_00_0</code>.</div>
+<strong>Note</strong> 
+<ul>
+<li>Instead of numerical value, you can also specify a PCI device name. Format used is similar to <code>/sys/bus/pci/devices/</code>, but prefix with <code>pci-</code> and replace semicolons and dots by underscores, e.g. <code>DRI_PRIME=pci-0000_01_00_0</code>. You can list graphic devices by PCIe ID with <code>lspci -nnd ::03xx</code>.</li>
+<li>For Vulkan rendering, you can append <code>!</code> to only expose the selected GPU to the application, e.g. <code>DRI_PRIME=1!</code>.</li>
+</ul>
+</div>
 <p>Other applications will still use the less power-hungry integrated card. These settings are lost once the X server restarts, you may want to make a script and auto-run it at the startup of your desktop environment (alternatively, put it in <code>/etc/X11/xinit/xinitrc.d/</code>). This may reduce your battery life and increase heat though.
 </p>
-<p>See <a href="https://wiki.gentoo.org/wiki/AMDGPU#Identifying_which_graphics_card_is_in_use" class="extiw" title="gentoo:AMDGPU">Gentoo:AMDGPU#Identifying_which_graphics_card_is_in_use</a> for more information.
+<p>See <a href="https://wiki.gentoo.org/wiki/AMDGPU#Identifying_which_graphics_card_is_in_use" class="extiw" title="gentoo:AMDGPU">Gentoo:AMDGPU#Identifying which graphics card is in use</a> for more information.
 </p>
 <p>For <code>DRI_PRIME</code> to work on Vulkan applications <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=vulkan-mesa-layers">vulkan-mesa-layers</a></span> needs to be installed, as well as <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lib32-vulkan-mesa-layers">lib32-vulkan-mesa-layers</a></span> for 32 bit applications.
 </p>
@@ -578,7 +584,7 @@ ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030200"
 </p>
 <p>The GNOME, KDE Plasma, Cinnamon, COSMIC and Budgie desktop environments will respect the <code>PrefersNonDefaultGPU</code> property in the <a href="../en/Desktop_entry.html" class="mw-redirect" title="Desktop entry">desktop entry</a>, and automatically launch apps on the specified GPU.
 </p>
-<p>Alternatively, on GNOME and Cinnamon, you can launch applications with GPU by right-clicking on the icon and choosing <i>Launch using Discrete Graphics Card</i> or <i>Run with dedicated GPU</i>, respectively.
+<p>Alternatively, on GNOME, Cinnamon, and COSMIC, you can launch applications with GPU by right-clicking on the icon and choosing <i>Launch using Discrete Graphics Card</i> (GNOME), <i>Run with dedicated GPU</i> (Cinnamon), and <i>Run with (GPU name)</i> (COSMIC), respectively.
 </p>
 <div class="mw-heading mw-heading4"><h4 id="Troubleshooting">Troubleshooting</h4></div>
 <p>If you have <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=bumblebee">bumblebee</a></span> installed, you should remove it because it blacklists the <code>nvidia_drm</code> driver which is required to load the NVIDIA driver by X server for offloading.
@@ -782,7 +788,7 @@ This can be done by explicitly setting the configurations as environment variabl
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/environment</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">__EGL_VENDOR_LIBRARY_FILENAMES=/usr/share/glvnd/egl_vendor.d/50_mesa.json
-VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/intel_icd.x86_64.json
+VK_DRIVER_FILES=/usr/share/vulkan/icd.d/intel_icd.json
 __GLX_VENDOR_LIBRARY_NAME=mesa</pre>
 <div class="mw-heading mw-heading3"><h3 id="Error_when_running_Wine_games_with_DXVK">Error when running Wine games with DXVK</h3></div>
 <p>When using PRIME offload, encountering the <code>Major opcode of failed request: 156 (NV-GLX)</code> is a known problem. The only known workaround is to start X session <a href="../en/NVIDIA_Optimus.html#Use_NVIDIA_graphics_only" title="NVIDIA Optimus">entirely on NVIDIA GPU</a>. A user friendly way to switching between NVIDIA only and PRIME offload method is the <a href="../en/NVIDIA_Optimus.html#Using_optimus-manager" title="NVIDIA Optimus">optimus-manager</a> utility or write some automation scripts yourself.
@@ -794,7 +800,10 @@ __GLX_VENDOR_LIBRARY_NAME=mesa</pre>
 <p>This means removing <code>nvidia_drm.modeset=0</code> from Kernel parameters if present.
 </p>
 <div class="mw-heading mw-heading2"><h2 id="See_also">See also</h2></div>
-<ul><li><a rel="nofollow" class="external text" href="https://wiki.freedesktop.org/nouveau/Optimus/">Nouveau Optimus</a></li></ul>
+<ul>
+<li><a rel="nofollow" class="external text" href="https://wiki.freedesktop.org/nouveau/Optimus/">Nouveau Optimus</a></li>
+<li><a rel="nofollow" class="external text" href="https://docs.mesa3d.org/envvars.html#envvar-DRI_PRIME">DRI_PRIME on Mesa</a></li>
+</ul>
 </div>
 </div>
 					<div id="catlinks" class="catlinks" data-mw="interface">
@@ -817,8 +826,8 @@ __GLX_VENDOR_LIBRARY_NAME=mesa</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PRIME&amp;oldid=862952">https://wiki.archlinux.org/index.php?title=PRIME&amp;oldid=862952</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 27 January 2026, at 22:21.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PRIME&amp;oldid=867518">https://wiki.archlinux.org/index.php?title=PRIME&amp;oldid=867518</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 27 February 2026, at 13:18.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

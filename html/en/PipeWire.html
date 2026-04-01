@@ -88,10 +88,21 @@
 		</li>
 	</ul>
 		</li>
+		<li id="toc-Startup" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Startup">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">1.2</span>
+					<span>Startup</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Startup-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 		<li id="toc-GUI" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#GUI">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">1.2</span>
+					<span class="vector-toc-numb">1.3</span>
 					<span>GUI</span>
 				</div>
 			</a>
@@ -102,7 +113,7 @@
 		<li id="toc-TUI" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#TUI">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">1.3</span>
+					<span class="vector-toc-numb">1.4</span>
 					<span>TUI</span>
 				</div>
 			</a>
@@ -992,8 +1003,6 @@
 <div class="mw-heading mw-heading2"><h2 id="Installation">Installation</h2></div>
 <p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pipewire">pipewire</a></span> package from the official repositories. There is also <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lib32-pipewire">lib32-pipewire</a></span> for <a href="../en/Official_repositories.html#multilib" class="mw-redirect" title="Multilib">multilib</a> support.
 </p>
-<p>Pipewire uses <a href="../en/Systemd/User.html" title="Systemd/User">systemd/User</a> for management of the server and automatic socket activation.
-</p>
 <p>Optionally, install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pipewire-docs">pipewire-docs</a></span> to review the documentation.
 </p>
 <p>Pipewire can work as drop-in replacement for other audio servers. See <a href="#Audio">#Audio</a> for details.
@@ -1010,6 +1019,11 @@
 </p>
 <div class="mw-heading mw-heading4"><h4 id="PipeWire_Media_Session">PipeWire Media Session</h4></div>
 <p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pipewire-media-session">pipewire-media-session</a></span> is deprecated and no longer recommended. It was mostly implemented for testing and as an example for building new session managers.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Startup">Startup</h3></div>
+<p>Pipewire uses <a href="../en/Systemd/User.html" title="Systemd/User">systemd/User</a> for management of the server and automatic <a href="../en/Socket_activation.html" class="mw-redirect" title="Socket activation">socket activation</a>: it will start automatically when needed.
+</p>
+<p>To preemptively start PipeWire at login, <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable/start">enable/start</a> the <code>pipewire.service</code>, <code>pipewire-pulse.service</code> and <code>wireplumber.service</code> <a href="../en/User_unit.html" class="mw-redirect" title="User unit">user units</a>.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="GUI">GUI</h3></div>
 <ul><li>
@@ -1225,13 +1239,18 @@ $ pactl load-module module-zeroconf-publish
 </p>
 <pre>$ pactl load-module module-zeroconf-discover
 </pre>
-<p>It is also possible to load the modules automatically by creating a dedicated configuration file:
+<p>It is also possible to load the modules automatically by creating a dedicated configuration file. On the host:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pipewire/pipewire-pulse.conf.d/50-network-party.conf (or ~/.config/pipewire/pipewire-pulse.conf.d/50-network-party.conf)</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pipewire/pipewire-pulse.conf.d/50-zeroconf-publish.conf (or ~/.config/pipewire/pipewire-pulse.conf.d/50-zeroconf-publish.conf)</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">pulse.cmd = [
     { cmd = "load-module" args = "module-native-protocol-tcp listen=<i>192.168.1.10</i>" }
-    { cmd = "load-module" args = "module-zeroconf-discover" }
     { cmd = "load-module" args = "module-zeroconf-publish" }
+]</pre>
+<p>On the client:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pipewire/pipewire-pulse.conf.d/50-zeroconf-discover.conf (or ~/.config/pipewire/pipewire-pulse.conf.d/50-zeroconf-discover.conf)</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">pulse.cmd = [
+    { cmd = "load-module" args = "module-zeroconf-discover" }
 ]</pre>
 <div class="mw-heading mw-heading5"><h5 id="Streaming_audio_to_an_AirPlay_receiver">Streaming audio to an AirPlay receiver</h5></div>
 <p>It is possible to stream audio to a device that is posing as an <a href="https://en.wikipedia.org/wiki/AirPlay#Receivers" class="extiw" title="wikipedia:AirPlay">AirPlay Receiver</a>. To enable this functionality, load the <a rel="nofollow" class="external text" href="https://docs.pipewire.org/page_module_raop_discover.html">RAOP Discover module</a>:
@@ -1534,17 +1553,15 @@ To list plugin labels and available controls provided by a specific file use <co
     filename = "/path/to/parametric.txt"
 }</pre>
 <div class="mw-heading mw-heading3"><h3 id="EasyEffects">EasyEffects</h3></div>
-<p>EasyEffects (former PulseEffects, with GTK) is a Qt utility which provides a large array of audio effects and filters to individual application output streams and microphone input streams. Notable effects include an input/output equalizer, output loudness equalization and bass enhancement, input de-esser and noise reduction plug-in. See <a rel="nofollow" class="external text" href="https://github.com/wwmm/easyeffects">the GitHub page</a> for a full list of effects.
+<p>EasyEffects (formerly <a href="../en/PulseAudio.html#PulseEffects" title="PulseAudio">PulseEffects</a>) is a Qt utility which provides a large array of audio effects and filters to individual application output streams and microphone input streams. Notable effects include an input/output equalizer, output loudness equalization and bass enhancement, input de-esser and noise reduction plug-in. See <a rel="nofollow" class="external text" href="https://github.com/wwmm/easyeffects#readme">the GitHub page</a> for a full list of effects.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note</strong> Firefox has an issue with microphone stream, see <a rel="nofollow" class="external text" href="https://github.com/wwmm/easyeffects/issues/957#issuecomment-830640221">Github issue</a>.</div>
+<strong>Note</strong> Firefox has an issue with microphone stream, see <a rel="nofollow" class="external text" href="https://github.com/wwmm/easyeffects/issues/957#issuecomment-830640221">GitHub issue</a>.</div>
 <p>In order to use EasyEffects, install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=easyeffects">easyeffects</a></span>. See <a rel="nofollow" class="external text" href="https://github.com/wwmm/easyeffects/wiki/Community-presets">Community Presets</a> for a collection of preset configurations. See <a rel="nofollow" class="external text" href="https://github.com/jaakkopasanen/AutoEq">AutoEq</a> for collection of algorithmically generated EQ presets for headphones.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note</strong> EasyEffects may crash after starting, throwing gtk errors, see
-<a rel="nofollow" class="external text" href="https://github.com/wwmm/easyeffects/issues/3406">Github issue</a> for work around.</div>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note</strong> For PulseEffects legacy version, see <a href="../en/PulseAudio.html#PulseEffects" title="PulseAudio">PulseAudio#PulseEffects</a>.</div>
+<strong>Note</strong> EasyEffects may crash after starting, throwing GTK errors, see
+<a rel="nofollow" class="external text" href="https://github.com/wwmm/easyeffects/issues/3406">GitHub issue</a> for a workaround.</div>
 <div class="mw-heading mw-heading3"><h3 id="NoiseTorch">NoiseTorch</h3></div>
 <p>NoiseTorch is an alternative way for noise suppression, packaged with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/noisetorch/">noisetorch</a></span><sup><small>AUR</small></sup>. There also exists <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/noisetorch-git/">noisetorch-git</a></span><sup><small>AUR</small></sup>.
 </p>
@@ -1555,8 +1572,15 @@ To list plugin labels and available controls provided by a specific file use <co
 <div class="mw-heading mw-heading3"><h3 id="Noise_suppression_for_voice">Noise suppression for voice</h3></div>
 <p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=noise-suppression-for-voice">noise-suppression-for-voice</a></span> package.
 </p>
-<p>Then simply follow the instructions given on <a rel="nofollow" class="external text" href="https://github.com/werman/noise-suppression-for-voice#pipewire">GitHub</a>.
+<p>You may follow the instructions given on <a rel="nofollow" class="external text" href="https://github.com/werman/noise-suppression-for-voice#pipewire">GitHub</a>.
 </p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> If following the instructions above and since PipeWire <a rel="nofollow" class="external text" href="https://gitlab.freedesktop.org/pipewire/pipewire/-/releases/1.4.10">1.4.10</a>, you may need to specify that your audio input is Mono. You can do this by adding the following 2 lines to the end of both the <code>capture.props</code> and <code>playback.props</code> sections of your config:
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.config/pipewire/pipewire.conf.d/99-input-denoising.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">audio.channels = 1
+audio.position = [ MONO ]
+</pre>
+</div>
 <div class="mw-heading mw-heading3"><h3 id="JamesDSP">JamesDSP</h3></div>
 <p><a rel="nofollow" class="external text" href="https://github.com/Audio4Linux/JDSP4Linux#readme">JamesDSP for Linux</a> (available as <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/jamesdsp/">jamesdsp</a></span><sup><small>AUR</small></sup>) provides open-source sound effects for PipeWire and PulseAudio. It uses its own effects engine and without depending on LADSPA, Calf, etc. JamesDSP was initially published as an audio effects processor for Android devices.
 </p>
@@ -2304,8 +2328,8 @@ info: [pipewire] playing stream…
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PipeWire&amp;oldid=859683">https://wiki.archlinux.org/index.php?title=PipeWire&amp;oldid=859683</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 1 January 2026, at 10:04.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PipeWire&amp;oldid=869209">https://wiki.archlinux.org/index.php?title=PipeWire&amp;oldid=869209</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 15 March 2026, at 16:14.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

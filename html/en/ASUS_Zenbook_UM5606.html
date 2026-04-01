@@ -119,7 +119,51 @@
 			</a>
 			
 			<ul id="toc-Wake_from_suspend-sublist" class="vector-toc-list">
+				<li id="toc-Screen_Freeze_Issues" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Screen_Freeze_Issues">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">4.3.1</span>
+					<span>Screen Freeze Issues</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Screen_Freeze_Issues-sublist" class="vector-toc-list">
 			</ul>
+		</li>
+		<li id="toc-Bluetooth_issues_after_resume" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Bluetooth_issues_after_resume">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">4.3.2</span>
+					<span>Bluetooth issues after resume</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Bluetooth_issues_after_resume-sublist" class="vector-toc-list">
+				<li id="toc-Power_management_workaround" class="vector-toc-list-item vector-toc-level-4">
+			<a class="vector-toc-link" href="#Power_management_workaround">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">4.3.2.1</span>
+					<span>Power management workaround</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Power_management_workaround-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Hardware_reset" class="vector-toc-list-item vector-toc-level-4">
+			<a class="vector-toc-link" href="#Hardware_reset">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">4.3.2.2</span>
+					<span>Hardware reset</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Hardware_reset-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+		</li>
+	</ul>
 		</li>
 		<li id="toc-Reduce_idle_power_at_2880x1800@120_Hz_(MCLK/FCLK_stuck_high)" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Reduce_idle_power_at_2880x1800@120_Hz_(MCLK/FCLK_stuck_high)">
@@ -432,6 +476,7 @@ Environment="KWIN_DRM_DISABLE_TRIPLE_BUFFERING=1"</pre>
 <p>The firmware supports four fan profiles: standard, quiet, high-performance, and full-performance. Out of the box, it's set to standard, but this can be changed with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/asus-5606-fan-state-git/">asus-5606-fan-state-git</a></span><sup><small>AUR</small></sup>.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Wake_from_suspend">Wake from suspend</h3></div>
+<div class="mw-heading mw-heading4"><h4 id="Screen_Freeze_Issues">Screen Freeze Issues</h4></div>
 <p>There is currently known a problem when waking up from suspend (s2idle) that the screen will freeze for about 10 seconds. This problem is currently caused by the <code>mt7925e</code> kernel module failing to properly re-initialize the MT7925 wireless card after resuming. This has been fixed in Linux ≥6.14-rc1.
 </p>
 <p>However, as a temporary workaround for older kernel, you can unbind the device from the driver before suspending and later rebind it after resuming. This can be achieved using the following two systemd service units:
@@ -460,6 +505,27 @@ RemainAfterExit=false
 
 [Install]
 WantedBy=suspend.target</pre>
+<div class="mw-heading mw-heading4"><h4 id="Bluetooth_issues_after_resume">Bluetooth issues after resume</h4></div>
+<p>Even with Linux ≥ 6.14 where the Wi-Fi freeze is fixed, the Bluetooth component of the MT7925 (which typically connects via the USB bus internally) may fail to initialize after resuming from suspend (s2idle). Symptoms include <code>bluetoothctl</code> showing "No default controller available" and <code>dmesg</code> reporting <code>xhci_hcd</code> timeouts or <code>error -110</code> (device descriptor read/64).
+</p>
+<div class="mw-heading mw-heading5"><h5 id="Power_management_workaround">Power management workaround</h5></div>
+<p>This is often caused by the USB autosuspend feature being too aggressive for the MediaTek controller during the wake-up transition. You can disable autosuspend specifically for the Bluetooth module via a <a href="../en/Udev.html" title="Udev">udev</a> rule.
+</p>
+<p>First, identify your Bluetooth device ID (usually under IMC Networks or MediaTek):
+</p>
+<pre> $ lsusb | grep -i blue
+ Bus 003 Device 002: ID 13d3:3602 IMC Networks Wireless_Device
+</pre>
+<p>Create a udev rule to keep the device powered on during suspend:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/udev/rules.d/80-mt7925-bt.rules</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># Disable autosuspend for MT7925 Bluetooth to fix resume timeouts
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="13d3", ATTR{idProduct}=="3602", ATTR{power/control}="on"</pre>
+<p>Replace <code>13d3</code> and <code>3602</code> with your actual vendor and product IDs.
+</p>
+<div class="mw-heading mw-heading5"><h5 id="Hardware_reset">Hardware reset</h5></div>
+<p>If the Bluetooth module has already entered a deadlocked state (showing repeated <code>error -110</code> in logs), a simple reboot might not be enough due to residual power. A "cold boot" is required: power off the laptop, disconnect the power adapter, and hold the power button for 20-30 seconds to perform a full hardware reset.
+</p>
 <div class="mw-heading mw-heading3"><h3 id="Reduce_idle_power_at_2880x1800@120_Hz_(MCLK/FCLK_stuck_high)">
 <span id="Reduce_idle_power_at_2880x1800.40120_Hz_.28MCLK.2FFCLK_stuck_high.29"></span>Reduce idle power at 2880x1800@120 Hz (MCLK/FCLK stuck high)</h3></div>
 <div class="archwiki-template-box archwiki-template-box-warning">
@@ -763,8 +829,8 @@ capturer = "none"</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=ASUS_Zenbook_UM5606&amp;oldid=862960">https://wiki.archlinux.org/index.php?title=ASUS_Zenbook_UM5606&amp;oldid=862960</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 28 January 2026, at 02:05.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=ASUS_Zenbook_UM5606&amp;oldid=864599">https://wiki.archlinux.org/index.php?title=ASUS_Zenbook_UM5606&amp;oldid=864599</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 8 February 2026, at 06:06.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -576,6 +576,7 @@
 <p>Related articles</p>
 <ul>
 <li><a href="../en/Haskell_package_guidelines.html" title="Haskell package guidelines">Haskell package guidelines</a></li>
+<li><a href="../en/List_of_programming_languages.html" title="List of programming languages">List of programming languages</a></li>
 </ul>
 </div>
 <p>From <a href="https://en.wikipedia.org/wiki/Haskell_(programming_language)" class="extiw" title="wikipedia:Haskell (programming language)">Wikipedia</a>:
@@ -592,8 +593,8 @@
 </p>
 <p>Using dynamic linking typically results in faster builds and smaller disk and RAM usage (by sharing pages between multiple running Haskell programs), and will free you from troubleshooting cross-GHC mixing errors. For this reason using <a href="../en/Pacman.html" title="Pacman">pacman</a> and the <a href="../en/Official_repositories.html" title="Official repositories">official repositories</a> is preferred for managing end-user applications. But it has its own disadvantage: <b>all tools you install from source will break</b> on every update of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=ghc">ghc</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=ghc-libs">ghc-libs</a></span> or <a rel="nofollow" class="external text" href="https://archlinux.org/packages/?q=haskell">haskell-*</a> packages since libraries compiled with GHC do not provide a stable <a href="https://en.wikipedia.org/wiki/Application_binary_interface" class="extiw" title="wikipedia:Application binary interface">ABI</a>. When running such broken binary, you will see the usual message:
 </p>
-<p><code>error while loading shared libraries: libHS...so: cannot open shared object file: No such file or directory</code>
-</p>
+<pre>error while loading shared libraries: libHS...so: cannot open shared object file: No such file or directory
+</pre>
 <p>To fix this, just rebuild and reinstall the broken tool in order to relink it to newer libraries.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
@@ -632,15 +633,15 @@ $ ./Main</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Hello, World
 </pre>
 <div class="mw-heading mw-heading4"><h4 id="Configuring_Cabal_for_dynamic_linking">Configuring Cabal for dynamic linking</h4></div>
-<p>First, run the following command to download the latest list of packages from Hackage and create global configuration file <code>~/.cabal/config</code> (or the file <code>$CABAL_CONFIG</code> points to):
+<p>First, run the following command to download the latest list of packages from Hackage and create global configuration file <code>~/.config/cabal/config</code> (or the file <code>$CABAL_CONFIG</code> points to):
 </p>
 <pre>$ cabal update
 </pre>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip</strong> It is advisable to periodically run <code>cabal update</code> to synchronize your local list of packages and dependencies with the newest version on Hackage.</div>
-<p>To configure Cabal for dynamic linking, uncomment and edit the following options in <code>~/.cabal/config</code>:
+<p>To configure Cabal for dynamic linking, uncomment and edit the following options in <code>~/.config/cabal/config</code>:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.cabal/config</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.config/cabal/config</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">library-vanilla: False
 shared: True
 executable-dynamic: True
@@ -671,7 +672,7 @@ program-default-options
 </p>
 <p>Stackage typically lags behind new GHC releases. It may happen that no Stackage snapshot for your system GHC has yet been released. In this case you might want to choose a snapshot for some earlier minor version of GHC or temporarily downgrade your Haskell installation and wait until support for newer GHC releases finally lands on Stackage.
 </p>
-<p>To configure Stack for dynamic linking, add the following snippet to <code>~/.stack/config.yaml</code>:
+<p>To configure Stack for dynamic linking, add the following snippet:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.stack/config.yaml</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># Stop downloading GHCs into isolated locations under ~/.stack.
@@ -789,14 +790,14 @@ In the context of this article, <i>Cabal</i> usually means <code>cabal</code> co
 <div class="mw-heading mw-heading4"><h4 id="Installing_packages">Installing packages</h4></div>
 <p>To run user-wide executables installed by Cabal, <code>~/.cabal/bin</code> must be added to the <code>$PATH</code> <a href="../en/Environment_variable.html" class="mw-redirect" title="Environment variable">environment variable</a>.
 </p>
-<pre>PATH="$HOME/.cabal/bin:$PATH"
+<pre>export PATH="$HOME/.cabal/bin:$PATH"
 </pre>
 <p>Run the following command to install a Hackage package and all of its dependencies in a single step:
 </p>
 <pre>$ cabal install <i>package</i>
 </pre>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning</strong> If you are using <i>cabal</i> from the <a href="../en/Official_repositories.html" title="Official repositories">official repositories</a>, as of December 2024 Cabal <a rel="nofollow" class="external text" href="https://github.com/haskell/cabal/issues/6505">ignores</a> <code>ghc-options</code> from <code>~/.cabal/config</code> while building packages with <code>build-type: Custom</code>. Therefore, it is necessary to specify <code>--ghc-options=-dynamic</code> flag on the command line  otherwise you might experience build errors.</div>
+<strong>Warning</strong> If you are using <i>cabal</i> from the <a href="../en/Official_repositories.html" title="Official repositories">official repositories</a>, as of December 2024 Cabal <a rel="nofollow" class="external text" href="https://github.com/haskell/cabal/issues/6505">ignores</a> <code>ghc-options</code> from <code>~/.config/cabal/config</code> while building packages with <code>build-type: Custom</code>. Therefore, it is necessary to specify <code>--ghc-options=-dynamic</code> flag on the command line  otherwise you might experience build errors.</div>
 <p>You can also build and install a Haskell package from source. To do this, run <code>cabal install</code> without specifying any package in the directory with the sources.
 </p>
 <p>Each Cabal package should specify a list of its dependencies and their version constraints in the <code>.cabal</code> file according to the <a rel="nofollow" class="external text" href="https://pvp.haskell.org">Package Versioning Policy</a> (PVP). During the package installation, Cabal tries to find a set of dependencies that satisfies all the constraints. This process is called <i>dependency resolution</i>.
@@ -814,19 +815,19 @@ In the context of this article, <i>Cabal</i> usually means <code>cabal</code> co
 <p>Stack is another tool to manage Haskell packages. It has slightly different goals than Cabal, with a slightly different philosophy. It uses Cabal library under the hood and integrates with Hackage — but maintains its own repositories of packages (snapshots) on Stackage with the promise that snapshots are curated and include packages which work well together.
 </p>
 <div class="mw-heading mw-heading4"><h4 id="Installing_packages_2">Installing packages</h4></div>
-<p>In its default configuration, Stack installs compiled executables to <code>~/.local/bin</code>. Add this directory to the <code>$PATH</code> environment variable in your shell configuration file, for instance <code>~/.bashrc</code> for <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=bash">bash</a></span> or <code>~/.zshrc</code> for <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=zsh">zsh</a></span>:
+<p>In its default configuration, Stack installs compiled executables to <code>~/.local/bin</code>. Add this directory to the <code>$PATH</code> <a href="../en/Environment_variable.html" class="mw-redirect" title="Environment variable">environment variable</a>, ideally via your <a href="../en/Command-line_shell.html#Configuration_files" title="Command-line shell">shell configuration file</a>:
 </p>
 <pre>export PATH="$HOME/.local/bin:$PATH"
 </pre>
 <p>Run the following command to download, build and install a Stackage package:
 </p>
-<pre>stack install <i>package</i>
+<pre>$ stack install <i>package</i>
 </pre>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning</strong> As of December 2024 Stack <a rel="nofollow" class="external text" href="https://github.com/commercialhaskell/stack/issues/3409">ignores</a> <code>ghc-options</code> from <code>~/.stack/config.yaml</code> while building <code>Setup.hs</code>. If you experience build errors in <code>Setup.hs</code> like <code>Could not find module ‘Prelude’ There are files missing in the ‘base-...’ package</code>, try to install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=ghc-static">ghc-static</a></span> package as a workaround.</div>
 <p>You can also build and install a Haskell package from source by running the following command from the package directory:
 </p>
-<pre>stack install --resolver <i>resolver</i>
+<pre>$ stack install --resolver <i>resolver</i>
 </pre>
 <p>Note that you should specify the same resolver as one used for <code>stack setup</code> command.
 </p>
@@ -933,11 +934,11 @@ In the context of this article, <i>Cabal</i> usually means <code>cabal</code> co
 </pre>
 <p>You can also install a specific version of GHC, for example:
 </p>
-<pre>$ ghcup install ghc 8.10.2
+<pre>$ ghcup install ghc <i>8.10.2</i>
 </pre>
 <p>The commands above do not automatically make GHC available on the <code>$PATH</code>. You need to select which GHC version to use by default:
 </p>
-<pre>$ ghcup set ghc 8.10.2
+<pre>$ ghcup set ghc <i>8.10.2</i>
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note</strong> GHCup is commonly used in combination with Cabal to manage other Haskell packages, you can use it to install Stack see <a href="#Stack">#Stack</a>.</div>
@@ -952,11 +953,11 @@ In the context of this article, <i>Cabal</i> usually means <code>cabal</code> co
 <p>For more information, refer to official <a rel="nofollow" class="external text" href="https://ghcup.readthedocs.io/en/latest/guide">ghcup</a> and <a rel="nofollow" class="external text" href="https://cabal.readthedocs.io/en/latest">Cabal</a> documentation.
 </p>
 <div class="mw-heading mw-heading4"><h4 id="Using_along_native_installation">Using along native installation</h4></div>
-<p>In case you decide to use <b>GHCup and Cabal</b> along the native installation you need to specify Cabal which GHC to use specifying the path of the GHC version to use in <code>$HOME/.config/cabal/config</code>, search for the line <code>with-compiler:</code> and uncomment it:
+<p>In case you decide to use <b>GHCup and Cabal</b> along the native installation you need to specify Cabal which GHC to use specifying the path of the GHC version to use, search for the line <code>with-compiler:</code> and uncomment it:
 </p>
-<pre> with-compiler: <i>path_of_your_ghc</i>
-</pre>
-<p>Remember that the path of your GHC in case of using GHCup is going to be under <code>$HOME/.ghcup/bin</code>. Also GHCup, once you set the GHC version you wish, will link that version to <code>$HOME/.ghcup/bin/ghc</code>. If you set that path in the Cabal configuration, you can change which version of GHC Cabal uses using GHCup.
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.config/cabal/config</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">with-compiler: <i>path_of_your_ghc</i></pre>
+<p>Remember that the path of your GHC in case of using GHCup is going to be under <code>~/.ghcup/bin</code>. Also GHCup, once you set the GHC version you wish, will link that version to <code>~/.ghcup/bin/ghc</code>. If you set that path in the Cabal configuration, you can change which version of GHC Cabal uses using GHCup.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Stack_2">Stack</h3></div>
 <p>You can install Stack using the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/stack-bin/">stack-bin</a></span><sup><small>AUR</small></sup> package or using GHCup (see <a href="#ghcup">#ghcup</a>). Alternatively, you may follow official <a rel="nofollow" class="external text" href="https://docs.haskellstack.org/en/stable/install_and_upgrade">installation instructions</a> or manually download <a rel="nofollow" class="external text" href="https://github.com/commercialhaskell/stack/releases">Stack binary</a> and place it somewhere into your <code>$PATH</code>.
@@ -1020,9 +1021,9 @@ Use -v (or `:set -v` in ghci) to see a list of the files searched for.
 <pre>$ ghc -clear-package-db -package-db "$(ghc --print-global-package-db | sed 's/\(package\.conf\.d\)$/static-\1/')" -user-package-db ...
 </pre>
 <div class="mw-heading mw-heading4"><h4 id="ghc-pristine">ghc-pristine</h4></div>
-<p>Install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/ghc-pristine/">ghc-pristine</a></span><sup><small>AUR</small></sup> package, which wraps over an existing GHC installation to create a separate GHC distribution in <code>/usr/share/ghc-pristine</code>, with a package database that contains only boot libraries. This effectively creates a semi-isolated environment without dynamically linked <code>haskell-*</code> packages, but still makes use of the GHC compiler from the official repositories. Then, to build software with static linking, one simply needs to invoke the wrapped compiler <code>/usr/share/ghc-pristine/bin/ghc</code>. For Cabal, this amounts to the following configuration in <code>~/.cabal/config</code>:
+<p>Install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/ghc-pristine/">ghc-pristine</a></span><sup><small>AUR</small></sup> package, which wraps over an existing GHC installation to create a separate GHC distribution in <code>/usr/share/ghc-pristine</code>, with a package database that contains only boot libraries. This effectively creates a semi-isolated environment without dynamically linked <code>haskell-*</code> packages, but still makes use of the GHC compiler from the official repositories. Then, to build software with static linking, one simply needs to invoke the wrapped compiler <code>/usr/share/ghc-pristine/bin/ghc</code>. For Cabal, this amounts to the following configuration in <code>~/.config/cabal/config</code>:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.cabal/config</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.config/cabal/config</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">with-compiler: /usr/share/ghc-pristine/bin/ghc
 </pre>
 <p>You can also specify the path to the compiler on a per-project basis by running the following command from the project directory:
@@ -1084,8 +1085,8 @@ compiler-check: newer-minor
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Haskell&amp;oldid=855001">https://wiki.archlinux.org/index.php?title=Haskell&amp;oldid=855001</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 2 December 2025, at 20:21.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Haskell&amp;oldid=868719">https://wiki.archlinux.org/index.php?title=Haskell&amp;oldid=868719</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 11 March 2026, at 01:33.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

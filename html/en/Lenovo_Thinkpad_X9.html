@@ -348,7 +348,7 @@
 <tr>
 <td>Ambient light sensor</td>
 <td></td>
-<td class="archwiki-table-cell archwiki-template-r" data-sort-value="1">No
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes
 </td>
 </tr>
 <tr>
@@ -367,16 +367,8 @@
 </table>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note</strong> The 14-inch model and the 15-inch model are two different models designed by two different teams. They do not use the same firmware release package. The following description may not apply to certain models. </div>
-<p>In general, Linux kernel 6.14 minimum is required for most peripherals to function properly.
-</p>
 <meta property="mw:PageProp/toc">
 <div class="mw-heading mw-heading2"><h2 id="ForcePad">ForcePad</h2></div>
-<p>The ForcePad functions needs kernel driver for Intel THC (Touch Host Controller) which is upstreamed to Linux kernel 6.14. The following config is already enabled for <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span>: 
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">config</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">CONFIG_INTEL_THC_HID=m
-CONFIG_INTEL_QUICKSPI=m
-CONFIG_INTEL_QUICKI2C=m</pre>
 <p>For 14" Sensel touchpad, you can adjust haptic feedback using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=hid-tools">hid-tools</a></span>:
 </p>
 <pre># hid-feature set /dev/hidraw1 -f b0000 &lt;value 1-100&gt;
@@ -404,38 +396,24 @@ CONFIG_INTEL_QUICKI2C=m</pre>
 <p>See <a href="../en/Power_management/Suspend_and_hibernate.html#Changing_suspend_method" title="Power management/Suspend and hibernate">Power management/Suspend and hibernate#Changing suspend method</a>.
 </p>
 <div class="mw-heading mw-heading2"><h2 id="Ambient_Light_Sensor">Ambient Light Sensor</h2></div>
-<p>This model needs a custom Intel ISH (Integrated Sensors Hub) firmware for the ambient light sensors. The custom firmware is 
-not upstreamed yet and can be extracted from the Windows driver package through <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=innoextract">innoextract</a></span>.
-The ISH firmware is located at:
+<p>This model needs <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-firmware-intel">linux-firmware-intel</a></span> for the ambient light sensors.
 </p>
-<pre>/lib/firmware/intel/ish/ish_lnlm.bin.zst
-</pre>
 <div class="mw-heading mw-heading2"><h2 id="Webcam">Webcam</h2></div>
 <p>Certain models feature a MIPI camera (Sony IMX471 sensor) connected to the Intel IPU7 interface. Unlike standard USB webcams, this requires a complex driver stack and is not yet supported out-of-the-box.
 </p>
-<p>Conversely, non-MIPI cameras are expected to work out of the box.
-</p>
 <div class="mw-heading mw-heading3"><h3 id="Kernel_Support">Kernel Support</h3></div>
-<p>Support for IPU7 was merged into the staging area of kernel 6.17, however the driver for the IMX471 sensor was not upstreamed.
+<p>The camera sensor driver is yet to be upstreamed, but for now can be installed using DKMS (<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/imx471-dkms-git/">imx471-dkms-git</a></span><sup><small>AUR</small></sup>) with at least Linux kernel 6.19.
 </p>
-<p>To enable the camera, you can compile a kernel (6.17+) with the following modifications:
-</p>
-<ol>
-<li>The sensor driver must be added to <code>drivers/media/i2c/</code> (and enabled in kernel config).</li>
-<li>
-<code>drivers/media/pci/intel/ipu-bridge.c</code> must be patched to support the sensor. (May not be required <a rel="nofollow" class="external text" href="https://lore.kernel.org/lkml/20251201104226.2120e916@foz.lan/">from kernel 6.19</a>).</li>
-</ol>
-<p>You can verify the module is loaded with <code>$ lsmod | grep imx471</code>
-</p>
-<p>See <a rel="nofollow" class="external text" href="https://github.com/intel/ipu6-drivers/issues/346#issuecomment-3275372796">this GitHub issue</a> for patch details.
+<p>After install, you can verify the module is loaded with <code>$ lsmod | grep imx471</code>
 </p>
 <div class="mw-heading mw-heading3"><h3 id="User_Space">User Space</h3></div>
-<p>The proprietary Intel HAL is currently difficult to setup on Arch. An alternative is using <a href="../en/Libcamera.html" title="Libcamera">Libcamera</a>'s SoftISP, which processes the raw data on the CPU. 
+<p>The proprietary Intel HAL is currently difficult to setup on Arch. An alternative is using <a href="../en/Libcamera.html" title="Libcamera">libcamera</a>'s SoftISP, which processes the raw sensor data on the GPU or CPU.
 </p>
-<p>There is a caveat that picture quality is worse than the proprietary stack. 
+<p>There is a caveat that picture quality is currently worse than the proprietary stack. 
 </p>
 <ol>
-<li>Install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=libcamera">libcamera</a></span>, which as of v0.6.0 supports IPU7.</li>
+<li>Install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=libcamera">libcamera</a></span>
+</li>
 <li>Install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pipewire-libcamera">pipewire-libcamera</a></span> to bridge the camera to <a href="../en/PipeWire.html" title="PipeWire">PipeWire</a>.</li>
 </ol>
 <p>You can check if your camera is working with <code>$ qcam</code>.
@@ -450,7 +428,7 @@ The ISH firmware is located at:
   }
 }
 </pre>
-<p>Restart the relevant user services:
+<p>Restart the relevant services:
 <code>$ systemctl --user restart wireplumber pipewire</code>
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
@@ -722,8 +700,8 @@ The ISH firmware is located at:
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Lenovo_Thinkpad_X9&amp;oldid=855208">https://wiki.archlinux.org/index.php?title=Lenovo_Thinkpad_X9&amp;oldid=855208</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 5 December 2025, at 14:40.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Lenovo_Thinkpad_X9&amp;oldid=868628">https://wiki.archlinux.org/index.php?title=Lenovo_Thinkpad_X9&amp;oldid=868628</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 10 March 2026, at 00:15.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

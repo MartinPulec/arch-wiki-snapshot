@@ -578,22 +578,33 @@ Errors occurred, no packages were upgraded.
 </p>
 <pre>error: <i>package-name</i>: signature from "<i>packager</i>" is unknown trust
 </pre>
-<p>This occurs because the <code><i>packager</i></code>'s key used in the package <code><i>package-name</i></code> is not present and/or not trusted in the local pacman-key gpg database. Pacman does not seem to always be able to check if the key was received and marked as trusted before continuing. This could also be because a key has expired since it was added to your keychain.
+<p>This occurs because the <code><i>packager</i></code>'s key used in the package <code><i>package-name</i></code> is not present and/or not trusted in the local pacman-key gpg database. 
 </p>
-<p>Mitigate by:
+<p>This can occur when:
+</p>
+<ul>
+<li>a new packager recently got their key signed, pushes a package, but your keyring does not contain their key yet,</li>
+<li>a key has expired since it was added to your keychain,</li>
+<li>a new master key is introduced to replace a previous one (usually when a master key holder resigns).</li>
+</ul>
+<p>Pacman has built-in mechanisms to handle the first two cases. For an unkown key, pacman will attempt to import the key using WKD first; if it fails, pacman goes back to the old keyserver infrastructure (which will probably fail too). Since version 7.1, pacman will automatically refresh known keys from WKD and keyservers when it encounters an expired key.<a rel="nofollow" class="external autonumber" href="https://reddit.com/r/archlinux/comments/1rafluf/pacman_and_keyring_issues/">[1]</a>
+</p>
+<p>If you encounter the error, mitigate by:
 </p>
 <ul>
 <li>
-<a href="#Upgrade_system_regularly">Manually upgrading the archlinux-keyring package prior to the system upgrade</a>, or</li>
+<a href="#Upgrade_system_regularly">manually upgrading the archlinux-keyring package prior to the system upgrade</a>, or</li>
 <li>refreshing your keys with <code>pacman-key --refresh-keys</code>, or</li>
 <li>
-<a href="#Resetting_all_the_keys">resetting all the keys</a>, or</li>
-<li>
-<a href="#Adding_unofficial_keys">manually signing the untrusted key locally</a> (not recommended), or</li>
-<li>setting temporarily <code>SigLevel</code> to <code>TrustAll</code> (not recommended).</li>
+<a href="#Resetting_all_the_keys">resetting all the keys</a>.</li>
 </ul>
-<p>The last two options above break the chain of trust, and should be used with care.
+<p>The last two options at your disposal break the chain of trust, and should not be used:
 </p>
+<ul>
+<li>
+<a href="#Adding_unofficial_keys">manually signing the untrusted key locally</a>, or</li>
+<li>setting temporarily <code>SigLevel</code> to <code>TrustAll</code>.</li>
+</ul>
 <div class="mw-heading mw-heading3"><h3 id="Updating_keys_via_proxy">Updating keys via proxy</h3></div>
 <p>In order to use a proxy when updating keys the <code>honor-http-proxy</code> option must be set in both <code>/etc/gnupg/dirmngr.conf</code> and <code>/etc/pacman.d/gnupg/dirmngr.conf</code>. See <a href="../../en/GnuPG.html#Use_a_keyserver" title="GnuPG">GnuPG#Use a keyserver</a> for more information.
 </p>
@@ -651,8 +662,8 @@ causing it downloading the wrong file.
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Pacman/Package_signing&amp;oldid=859136">https://wiki.archlinux.org/index.php?title=Pacman/Package_signing&amp;oldid=859136</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 28 December 2025, at 10:48.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Pacman/Package_signing&amp;oldid=866946">https://wiki.archlinux.org/index.php?title=Pacman/Package_signing&amp;oldid=866946</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 23 February 2026, at 09:29.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

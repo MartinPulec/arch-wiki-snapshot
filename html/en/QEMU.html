@@ -1913,15 +1913,15 @@ On Intel CPU based systems creating an IOMMU device in a QEMU guest with <code>-
 <li>
 <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/edk2-ovmf-fedora/">edk2-ovmf-fedora</a></span><sup><small>AUR</small></sup>.</li>
 <li>Use either <code>/usr/share/edk2/ovmf/OVMF_CODE.secboot.<b>fd</b></code> or <code>/usr/share/edk2/ovmf/OVMF_CODE_4M.secboot.<b>qcow2</b></code> as your firmware file.</li>
-<li>If you need NVRAM (optional for Windows 10 &amp; 11 machines), use <code>/usr/share/edk2/ovmf/<b>OVMF_VARS.secboot.fd</b></code> or <code>/usr/share/edk2/ovmf/<b>OVMF_VARS_4M.secboot.qcow2</b></code> as your template.</li>
+<li>If you need NVRAM (optional for Windows 10 and 11 machines), use <code>/usr/share/edk2/ovmf/<b>OVMF_VARS.secboot.fd</b></code> or <code>/usr/share/edk2/ovmf/<b>OVMF_VARS_4M.secboot.qcow2</b></code> as your template.</li>
 <li>Ensure QEMU is using the <code>q35</code> chipset machine type (<code>-machine q35</code>).</li>
 </ul>
-<p>With that, Secure Boot is now enabled on your VMs!
+<p>With that, Secure Boot is now enabled on your virtual machines.
 </p>
 <p>Alternatively, you can provide your own OVMF files and manually enroll those with your own keys. See <a href="../en/KVM.html#Secure_Boot" title="KVM">KVM#Secure Boot</a> on how to do this.
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip</strong> A more cumbersome (although slightly more upstream-aligned) workaround to manually enroll keys in a vanilla OVMF_VARS file is described in <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?pid=2212587#p2212587">this forum post</a>.</div>
+<strong>Tip</strong> A more cumbersome (although slightly more upstream-aligned) workaround to manually enroll keys in a vanilla <code>OVMF_VARS</code> file is described in <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?pid=2212587#p2212587">[2]</a>.</div>
 <div class="mw-heading mw-heading3"><h3 id="Trusted_Platform_Module_emulation">Trusted Platform Module emulation</h3></div>
 <p>QEMU can emulate <a href="../en/Trusted_Platform_Module.html" title="Trusted Platform Module">Trusted Platform Module</a>, which is required by some systems such as Windows 11 (which requires TPM 2.0).
 </p>
@@ -1955,7 +1955,7 @@ It will not be possible for the host OS to access servers running on the guest O
 <div class="mw-heading mw-heading3"><h3 id="QEMU's_port_forwarding">
 <span id="QEMU.27s_port_forwarding"></span>QEMU's port forwarding</h3></div>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note</strong> QEMU's port forwarding is IPv4-only. IPv6 port forwarding is not implemented and the last patches were proposed in 2018 <a rel="nofollow" class="external autonumber" href="https://lore.kernel.org/qemu-devel/1540512223-21199-1-git-send-email-max7255@yandex-team.ru/T/#u">[2]</a>. If you need full IPv6 support, check <a href="#passt">#passt</a>
+<strong>Note</strong> QEMU's port forwarding is IPv4-only. IPv6 port forwarding is not implemented and the last patches were proposed in 2018 <a rel="nofollow" class="external autonumber" href="https://lore.kernel.org/qemu-devel/1540512223-21199-1-git-send-email-max7255@yandex-team.ru/T/#u">[3]</a>. If you need full IPv6 support, check <a href="#passt">#passt</a>
 </div>
 <p>QEMU can forward ports from the host to the guest to enable e.g. connecting from the host to an SSH server running on the guest.
 </p>
@@ -1974,15 +1974,15 @@ It will not be possible for the host OS to access servers running on the guest O
 <pre>$ qemu-system-x86_64 <i>disk_image</i> -nic user,hostfwd=tcp::60022-:22,hostfwd=tcp::5900-:5900
 </pre>
 <div class="mw-heading mw-heading3"><h3 id="Accessing_SSH_via_vsock">Accessing SSH via vsock</h3></div>
-<p>A secure and convenient way to connect to the VM is to use SSH over <span class="plainlinks archwiki-template-man" title="$ man 7 vsock"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/vsock.7">vsock(7)</a></span>. Your VM needs to be systemd-based for this to work out of the box.
+<p>A secure and convenient way to connect to the virtual machine is to use SSH over <span class="plainlinks archwiki-template-man" title="$ man 7 vsock"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/vsock.7">vsock(7)</a></span>. Your virtual machine needs to be systemd-based for this to work out of the box.
 </p>
 <p>First, launch QEMU with a special device:
 </p>
 <pre>-device vhost-vsock-pci,id=vhost-vsock-pci0,guest-cid=555
 </pre>
-<p>The <code>cid</code> needs to be picked by the user to be a valid 32-bit number (see <span class="plainlinks archwiki-template-man" title="$ man 7 vsock"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/vsock.7">vsock(7)</a></span>). When systemd detects the VM has been launched with a <code>vhost-vsock</code> device, it will automatically launch an SSH server via <code>systemd-ssh-generator</code>.
+<p>The <code>cid</code> needs to be picked by the user to be a valid 32-bit number (see <span class="plainlinks archwiki-template-man" title="$ man 7 vsock"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/vsock.7">vsock(7)</a></span>). When systemd detects the virtual machine has been launched with a <code>vhost-vsock</code> device, it will automatically launch an SSH server via <code>systemd-ssh-generator</code>.
 </p>
-<p>You can then connect to the VM like this:
+<p>You can then connect to the virtual machine like this:
 </p>
 <pre>$ ssh user@vsock/555
 </pre>
@@ -2045,7 +2045,7 @@ force user=<i>username</i>" &gt;&gt; $conf
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Host_file_sharing_with_9pfs_VirtFS">Host file sharing with 9pfs VirtFS</h3></div>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note</strong> 9pfs is fairly slow as it was not specifically developed for high-performance local VM usage. Users are advised to look into <a href="#Host_file_sharing_with_virtiofsd">#Host file sharing with virtiofsd</a> instead which was specifically made with VM performance in mind.</div>
+<strong>Note</strong> 9pfs is fairly slow as it was not specifically developed for high-performance local virtual machine usage. Users are advised to look into <a href="#Host_file_sharing_with_virtiofsd">#Host file sharing with virtiofsd</a> instead which was specifically made with virtual machine performance in mind.</div>
 <p>See the <a rel="nofollow" class="external text" href="https://wiki.qemu.org/Documentation/9psetup">QEMU documentation</a>.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Host_file_sharing_with_virtiofsd">Host file sharing with virtiofsd</h3></div>
@@ -2308,7 +2308,7 @@ qemu-system-x86_64 -name "$vm_name" -net nic,macaddr=$(qemu-mac-hasher.py "$vm_n
 </p>
 <pre>-device virtio-net,netdev=network0 -netdev tap,id=network0,ifname=tap0,script=no,downscript=no,vhost=on
 </pre>
-<p>See <a rel="nofollow" class="external autonumber" href="https://web.archive.org/web/20160222161955/http://www.linux-kvm.com:80/content/how-maximize-virtio-net-performance-vhost-net">[3]</a> for more information.
+<p>See <a rel="nofollow" class="external autonumber" href="https://web.archive.org/web/20160222161955/http://www.linux-kvm.com:80/content/how-maximize-virtio-net-performance-vhost-net">[4]</a> for more information.
 </p>
 <div class="mw-heading mw-heading4"><h4 id="Host-only_networking">Host-only networking</h4></div>
 <p>If the bridge is given an IP address and traffic destined for it is allowed, but no real interface (e.g. <code>eth0</code>) is connected to the bridge, then the virtual machines will be able to talk to each other and the host system. However, they will not be able to talk to anything on the external network, provided that you do not set up IP masquerading on the physical host. This configuration is called <i>host-only networking</i> by other virtualization software such as <a href="../en/VirtualBox.html" title="VirtualBox">VirtualBox</a>.
@@ -2354,7 +2354,7 @@ allow <i>br1</i>
 <pre>$ qemu-system-x86_64 -nic bridge,br=<i>br1</i>,model=virtio-net-pci <i>[...]</i>
 </pre>
 <div class="mw-heading mw-heading4"><h4 id="Advanced_network_configuration">Advanced network configuration</h4></div>
-<p>If you need more control over your virtual machine's networking or you have very specific needs that arent covered in the previous setctions, see <a href="../en/QEMU/Advanced_networking.html" title="QEMU/Advanced networking">QEMU/Advanced networking</a>.
+<p>If you need more control over your virtual machine's networking or you have very specific needs that are not covered in the previous sections, see <a href="../en/QEMU/Advanced_networking.html" title="QEMU/Advanced networking">QEMU/Advanced networking</a>.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Shorthand_configuration">Shorthand configuration</h3></div>
 <p>If you are using QEMU with various networking options a lot, you probably have created a lot of <code>-netdev</code> and <code>-device</code> argument pairs, which gets quite repetitive. You can instead use the <code>-nic</code> argument to combine <code>-netdev</code> and <code>-device</code> together, so that, for example, these arguments:
@@ -2396,7 +2396,7 @@ allow <i>br1</i>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[drm] pci: virtio-vga detected
 [drm] virgl 3d acceleration enabled
 </pre>
-<p>To enable <a href="../en/Vulkan.html" title="Vulkan">Vulkan</a> support in the guest, use options like <code>-device virtio-vga-gl,hostmem=2G,blob=true,venus=true</code> and <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=vulkan-virtio">vulkan-virtio</a></span> in the guest system <a rel="nofollow" class="external autonumber" href="https://gist.github.com/peppergrayxyz/fdc9042760273d137dddd3e97034385f">[4]</a>.
+<p>To enable <a href="../en/Vulkan.html" title="Vulkan">Vulkan</a> support in the guest, use options like <code>-device virtio-vga-gl,hostmem=2G,blob=true,venus=true</code> and <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=vulkan-virtio">vulkan-virtio</a></span> in the guest system <a rel="nofollow" class="external autonumber" href="https://gist.github.com/peppergrayxyz/fdc9042760273d137dddd3e97034385f">[5]</a>.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="cirrus">cirrus</h3></div>
 <p>The cirrus graphical adapter was the default <a rel="nofollow" class="external text" href="https://wiki.qemu.org/ChangeLog/2.2#VGA">before 2.2</a>. It <a rel="nofollow" class="external text" href="https://www.kraxel.org/blog/2014/10/qemu-using-cirrus-considered-harmful/">should not</a> be used on modern systems.
@@ -3034,7 +3034,7 @@ ExecStop=/usr/bin/bash -c 'while nc localhost 7100; do sleep 1; done'
 WantedBy=multi-user.target</pre>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note</strong> This service will wait for the console port to be released, which means that the virtual machine has been shutdown, to graciously end.</div>
-<p>Then create per-VM configuration files, named <code>/etc/conf.d/qemu.d/<i>vm_name</i></code>, with the variables <code>args</code> and <code>haltcmd</code> set. Example configs:
+<p>Then create per virtual machine configuration files, named <code>/etc/conf.d/qemu.d/<i>vm_name</i></code>, with the variables <code>args</code> and <code>haltcmd</code> set. Example configs:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/conf.d/qemu.d/one</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">args="-hda /dev/vg0/vm1 -serial telnet:localhost:7000,server,nowait,nodelay \
@@ -3220,7 +3220,7 @@ To remedy this you can <a href="../en/System_time.html#UTC_in_Microsoft_Windows"
 <span id="Chrooting_into_arm.2Farm64_environment_from_x86_64"></span>Chrooting into arm/arm64 environment from x86_64</h3></div>
 <p>Sometimes it is easier to work directly on a disk image instead of the real ARM based device. This can be achieved by mounting an SD card/storage containing the <i>root</i> partition and chrooting into it.
 </p>
-<p>Another use case for an ARM chroot is building ARM packages on an x86_64 machine. Here, the chroot environment can be created from an image tarball from <a rel="nofollow" class="external text" href="https://archlinuxarm.org">Arch Linux ARM</a> - see <a rel="nofollow" class="external autonumber" href="https://nerdstuff.org/posts/2020/04/25/creating-arm-chroot-in-arch/">[5]</a> for a detailed description of this approach.
+<p>Another use case for an ARM chroot is building ARM packages on an x86_64 machine. Here, the chroot environment can be created from an image tarball from <a rel="nofollow" class="external text" href="https://archlinuxarm.org">Arch Linux ARM</a> - see <a rel="nofollow" class="external autonumber" href="https://nerdstuff.org/posts/2020/04/25/creating-arm-chroot-in-arch/">[6]</a> for a detailed description of this approach.
 </p>
 <p>Either way, from the chroot it should be possible to run <i>pacman</i> and install more packages, compile large libraries etc. Since the executables are for the ARM architecture, the translation to x86 needs to be performed by QEMU.
 </p>
@@ -3351,8 +3351,8 @@ mask ffffffffffffff00fffffffffffffffffeffffff
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=QEMU&amp;oldid=862718">https://wiki.archlinux.org/index.php?title=QEMU&amp;oldid=862718</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 25 January 2026, at 15:42.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=QEMU&amp;oldid=869362">https://wiki.archlinux.org/index.php?title=QEMU&amp;oldid=869362</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 18 March 2026, at 14:44.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

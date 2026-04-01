@@ -425,22 +425,22 @@
 <p><a href="../en/32-bit_package_guidelines.html" title="32-bit package guidelines">32-bit</a> – <a href="../en/CLR_package_guidelines.html" title="CLR package guidelines">CLR</a> – <a href="../en/CMake_package_guidelines.html" title="CMake package guidelines">CMake</a> – <a href="../en/Cross-compiling_tools_package_guidelines.html" title="Cross-compiling tools package guidelines">Cross</a> – <a href="../en/DKMS_package_guidelines.html" title="DKMS package guidelines">DKMS</a> – <a href="../en/Eclipse_plugin_package_guidelines.html" title="Eclipse plugin package guidelines">Eclipse</a> – <a href="../en/Electron_package_guidelines.html" title="Electron package guidelines">Electron</a> – <a href="../en/Font_package_guidelines.html" title="Font package guidelines">Font</a> – <a href="../en/Free_Pascal_package_guidelines.html" title="Free Pascal package guidelines">Free Pascal</a> – <a href="../en/GNOME_package_guidelines.html" title="GNOME package guidelines">GNOME</a> – <a href="../en/Go_package_guidelines.html" title="Go package guidelines">Go</a> – <a href="../en/Haskell_package_guidelines.html" title="Haskell package guidelines">Haskell</a> – <a href="../en/Java_package_guidelines.html" title="Java package guidelines">Java</a> – <a href="../en/KDE_package_guidelines.html" title="KDE package guidelines">KDE</a> – <a href="../en/Kernel_module_package_guidelines.html" title="Kernel module package guidelines">Kernel modules</a> – <a href="../en/Lisp_package_guidelines.html" title="Lisp package guidelines">Lisp</a> – <a href="../en/Meson_package_guidelines.html" title="Meson package guidelines">Meson</a> – <a href="../en/MinGW_package_guidelines.html" title="MinGW package guidelines">MinGW</a> – <a href="../en/Node.js_package_guidelines.html" title="Node.js package guidelines">Node.js</a> – <a href="../en/Nonfree_applications_package_guidelines.html" title="Nonfree applications package guidelines">Nonfree</a> – <a href="../en/OCaml_package_guidelines.html" title="OCaml package guidelines">OCaml</a> – <a class="mw-selflink selflink">Perl</a> – <a href="../en/PHP_package_guidelines.html" title="PHP package guidelines">PHP</a> – <a href="../en/Python_package_guidelines.html" title="Python package guidelines">Python</a> – <a href="../en/R_package_guidelines.html" title="R package guidelines">R</a> – <a href="../en/Ruby_package_guidelines.html" title="Ruby package guidelines">Ruby</a> – <a href="../en/Rust_package_guidelines.html" title="Rust package guidelines">Rust</a> - <a href="../en/Arch_package_guidelines/Security.html" title="Arch package guidelines/Security">Security</a> – <a href="../en/Shell_package_guidelines.html" title="Shell package guidelines">Shell</a> – <a href="../en/VCS_package_guidelines.html" title="VCS package guidelines">VCS</a> – <a href="../en/Web_application_package_guidelines.html" title="Web application package guidelines">Web</a> – <a href="../en/Wine_package_guidelines.html" title="Wine package guidelines">Wine</a>
 </p>
 </div>
-<p>This document covers the creation of <a href="../en/PKGBUILD.html" title="PKGBUILD">PKGBUILDs</a> for perl modules distributed over CPAN, the Comprehensive Perl Authors Network. The target audience of this document is intended to be packagers of perl modules. For Perl policies see <a href="../en/Perl_Policy.html" title="Perl Policy">Perl Policy</a>.
+<p>This document covers the creation of <a href="../en/PKGBUILD.html" title="PKGBUILD">PKGBUILDs</a> for Perl modules distributed over CPAN, the Comprehensive Perl Authors Network. The target audience of this document is intended to be packagers of Perl modules. For Perl policies see <a href="../en/Perl_Policy.html" title="Perl Policy">Perl Policy</a>.
 </p>
 <meta property="mw:PageProp/toc">
 <div class="mw-heading mw-heading2"><h2 id="Arch_Linux_packaging_conventions">Arch Linux packaging conventions</h2></div>
-<p>The following conventions should be used to keep perl module packages consistent. This section serves as an introduction to the concept of perl packaging, from the point of view of Arch Linux; that is, package management and system administration. In an effort to please the casual TL;DR reader, the easiest and/or most popular material is at the top.
+<p>The following conventions should be used to keep Perl module packages consistent. This section serves as an introduction to the concept of Perl packaging, from the point of view of Arch Linux; that is, package management and system administration. In an effort to please the casual TL;DR reader, the easiest and/or most popular material is at the top.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Package_names">Package names</h3></div>
 <p>For modules the package name should begin with <code>perl-</code> and the rest of the name should be constructed from the module name by converting it to lowercase and then replacing colons with hyphens. For example the package name corresponding to <code>HTML::Parser</code> will be <code>perl-html-parser</code>. Perl applications should have the same name as that of the application but in lowercase.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Package_file_placement">Package file placement</h3></div>
-<p>Perl packages should install module files into <code>/usr/lib/perl5/$version/vendor_perl/</code> (use <code>perl -V:vendorarch</code> in scripts), or <code>/usr/share/perl5/vendor_perl/</code>. This is done by setting the <code>INSTALLDIRS</code> command line parameter to <code>vendor</code> as shown below. No files should be stored in <code>/usr/lib/perl5/$version/site_perl/</code> as that directory is reserved for use by the system administrator to install Perl packages outside the package management system. When a user installs modules system-wide by using the <i>cpan</i> shell, modules end up in the site-perl sub-directories.
+<p>Perl packages should install module files into <code>/usr/lib/perl5/<i>version</i>/vendor_perl/</code> (use <code>perl -V:vendorarch</code> in scripts), or <code>/usr/share/perl5/vendor_perl/</code>. This is done by setting the <code>INSTALLDIRS</code> command line parameter to <code>vendor</code> as shown below. No files should be stored in <code>/usr/lib/perl5/<i>version</i>/site_perl/</code> as that directory is reserved for use by the system administrator to install Perl packages outside the package management system. When a user installs modules system-wide by using the <i>cpan</i> shell, modules end up in the site-perl sub-directories.
 </p>
 <p>The files <code>perllocal.pod</code> and <code>.packlist</code> also should not be present; this is taken care of by the example PKGBUILD described below.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Architecture">Architecture</h3></div>
-<p>In most cases, the <code>arch</code> array should contain <code>'any'</code> because most Perl packages are architecture independent. XS modules are compiled into dynamically loaded libraries (.so files) and should explicitly set their architecture to <code>('x86_64')</code> in order to indicate that they are architecture dependent when built. An XS module usually contains one or more .xs files which dynamically generate .c files.
+<p>In most cases, the <code>arch</code> array should contain <code>'any'</code> because most Perl packages are architecture independent. XS modules are compiled into dynamically loaded libraries (<i>.so</i> files) and should explicitly set their architecture to <code>('x86_64')</code> in order to indicate that they are architecture dependent when built. An XS module usually contains one or more <i>.xs</i> files which dynamically generate <i>.c</i> files.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Automation">Automation</h3></div>
 <p>A plugin for the second-generation CPAN shell, CPANPLUS, is available in the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/perl-cpanplus-dist-arch/">perl-cpanplus-dist-arch</a></span><sup><small>AUR</small></sup> package. This plugin packages distributions on the fly as they are installed by CPANPLUS. Online documentation is available at <a rel="nofollow" class="external free" href="https://metacpan.org/release/CPANPLUS-Dist-Arch">https://metacpan.org/release/CPANPLUS-Dist-Arch</a>
@@ -451,76 +451,88 @@
 <p>The following two PKGBUILD examples use techniques, introduced in this page, that are intended to make a PKGBUILD more resilient to more sophisticated problems. Because there are two styles of build scripts, there are two example PKGBUILDS. The first PKGBUILD is an example of how to package a distribution that uses <code>Makefile.PL</code>. The second PKGBUILD can be used as a starting point for a distribution which uses <code>Build.PL</code>.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">PKGBUILD</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># Contributor: Your Name &lt;youremail@domain.example&gt;
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># Maintainer: Your Name &lt;youremail@domain.example&gt;
+
+_dist=Foo-Bar
 pkgname=perl-foo-bar
 pkgver=1.0
 pkgrel=1
 pkgdesc='This packages the Foo-Bar distribution, containing the Foo::Bar module!'
-_dist=Foo-Bar
 arch=('any')
 url="https://metacpan.org/release/$_dist"
 license=('Artistic-1.0-Perl OR GPL-1.0-or-later')
 depends=('perl')
-options=('!emptydirs' 'purge')
+options=('!emptydirs')
 source=("https://cpan.metacpan.org/authors/id/BAZ/$_dist-$pkgver.tar.gz")
-b2sums=(...)
+sha256sums=(...)
 
 build() {
-  cd $_dist-$pkgver
-  unset PERL5LIB PERL_MM_OPT PERL_LOCAL_LIB_ROOT
-  export PERL_MM_USE_DEFAULT=1 PERL_AUTOINSTALL=--skipdeps
-  /usr/bin/perl Makefile.PL
-  make
+    cd $_dist-$pkgver
+
+    unset PERL_MM_OPT PERL5LIB PERL_LOCAL_LIB_ROOT
+    export PERL_MM_USE_DEFAULT=1 PERL_AUTOINSTALL=--skipdeps
+
+    /usr/bin/perl Makefile.PL NO_PACKLIST=1 NO_PERLLOCAL=1
+    make
 }
 
 check() {
-  cd $_dist-$pkgver
-  unset PERL5LIB PERL_MM_OPT PERL_LOCAL_LIB_ROOT
-  export PERL_MM_USE_DEFAULT=1
-  make test
+    cd $_dist-$pkgver
+
+    unset PERL5LIB PERL_LOCAL_LIB_ROOT
+
+    make test
 }
 
 package() {
-  cd $_dist-$pkgver
-  unset PERL5LIB PERL_MM_OPT PERL_LOCAL_LIB_ROOT
-  make install INSTALLDIRS=vendor DESTDIR="$pkgdir"
+    cd $_dist-$pkgver
+
+    unset PERL5LIB PERL_LOCAL_LIB_ROOT
+
+    make install INSTALLDIRS=vendor DESTDIR="$pkgdir"
 }
 </pre>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">PKGBUILD</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># Contributor: Your Name &lt;youremail@domain.example&gt;
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># Maintainer: Your Name &lt;youremail@domain.example&gt;
+
+_dist=Foo-Bar
 pkgname=perl-foo-bar
 pkgver=1.0
 pkgrel=1
 pkgdesc='This packages the Foo-Bar distribution, containing the Foo::Bar module!'
-_dist=Foo-Bar
 arch=('any')
 url="https://metacpan.org/release/$_dist"
 license=('Artistic-1.0-Perl OR GPL-1.0-or-later')
 depends=('perl')
 makedepends=('perl-module-build')
-options=('!emptydirs' 'purge')
+options=('!emptydirs')
 source=("https://cpan.metacpan.org/authors/id/BAZ/$_dist-$pkgver.tar.gz")
-b2sums=(...)
+sha256sums=(...)
 
 build() {
-  cd $_dist-$pkgver
-  unset PERL5LIB PERL_MM_OPT PERL_MB_OPT PERL_LOCAL_LIB_ROOT
-  export PERL_MM_USE_DEFAULT=1 MODULEBUILDRC=/dev/null
-  /usr/bin/perl Build.PL
-  ./Build
+    cd $_dist-$pkgver
+
+    unset PERL_MB_OPT PERL5LIB PERL_LOCAL_LIB_ROOT
+    export PERL_MM_USE_DEFAULT=1 MODULEBUILDRC=/dev/null
+
+    /usr/bin/perl Build.PL --create_packlist=0
+    ./Build
 }
 
 check() {
-  cd $_dist-$pkgver
-  unset PERL5LIB PERL_MM_OPT PERL_MB_OPT PERL_LOCAL_LIB_ROOT
-  export PERL_MM_USE_DEFAULT=1
-  ./Build test
+    cd $_dist-$pkgver
+
+    unset PERL5LIB PERL_LOCAL_LIB_ROOT
+
+    ./Build test
 }
 
 package() {
-  cd $_dist-$pkgver
-  unset PERL5LIB PERL_MM_OPT PERL_MB_OPT PERL_LOCAL_LIB_ROOT
-  ./Build install --installdirs=vendor --destdir="$pkgdir"
+    cd $_dist-$pkgver
+
+    unset PERL5LIB PERL_LOCAL_LIB_ROOT
+
+    ./Build install --installdirs=vendor --destdir="$pkgdir"
 }
 </pre>
 <p>Justification for the added complexity of these PKGBUILDs is attempted in the latter sections.
@@ -529,23 +541,23 @@ package() {
 <p>There are a number of carefully, and not so carefully, designed mechanics that work together to create the module system. When making use of the CPAN, procedures must be followed to fetch the source code of a module, build that fetched module, and insert it into the system software for later execution. In order to understand how modules should be packaged, it helps immensely if one understands how modules work without any involvement from pacman and Arch Linux packages. Our goal in the end is to try to be unobtrusive as possible, while improving organization and consistency in the end product.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Modules">Modules</h3></div>
-<p>Modules are declared with the <code>package</code> keyword in perl.  Modules are contained inside a <code>.pm</code> ("dot-pee-em") file.  Though it is possible more than one module (<code>package</code>) is in the file.  Modules have namespaces separated with <code>::</code> (double colons), like: <code>Archlinux::Module</code>.  When loading a module, the <code>::</code>s are replaced with directory separators.  For example: <code>Archlinux/Module.pm</code> will be loaded for the module <code>Archlinux::Module</code>.
+<p>Modules are declared with the <code>package</code> keyword in Perl. Modules are contained inside a <i>.pm</i> ("dot-pee-em") file. Though it is possible more than one module (<code>package</code>) is in the file. Modules have namespaces separated with <code>::</code> (double colons), like: <code>Archlinux::Module</code>. When loading a module, the <code>::</code>s are replaced with directory separators. For example: <code>Archlinux/Module.pm</code> will be loaded for the module <code>Archlinux::Module</code>.
 </p>
-<p>Core modules are included with an installation of perl.  Some core modules are <i>only</i> available bundled with perl.  Other modules can still be downloaded and installed separately from CPAN.
+<p>Core modules are included with an installation of Perl. Some core modules are <i>only</i> available bundled with Perl. Other modules can still be downloaded and installed separately from CPAN.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Distributions">Distributions</h3></div>
-<p>(aka dist, package)  This is the equivalent of an Arch Linux package in CPAN-lingo.  Distributions are <code>.tar.gz</code> archives full of files.  These archives contain primarily .pm module files, tests for the included modules, documentation for the modules, and whatever else is deemed necessary.
+<p>(aka dist, package) This is the equivalent of an Arch Linux package in CPAN-lingo. Distributions are <i>.tar.gz</i> archives full of files. These archives contain primarily <i>.pm</i> module files, tests for the included modules, documentation for the modules, and whatever else is deemed necessary.
 </p>
-<p>Usually a distribution contains a primary module with the same name.  Sometimes this is not true, like with the Template-Toolkit distribution.  The latest package, <code>Template-Toolkit-2.22.tar.gz</code>, for the <code>Template-Toolkit</code> dist, contains no <code>Template::Toolkit</code> module!
+<p>Usually a distribution contains a primary module with the same name. Sometimes this is not true, like with the Template-Toolkit distribution. The latest package, <code>Template-Toolkit-2.22.tar.gz</code>, for the <code>Template-Toolkit</code> dist, contains no <code>Template::Toolkit</code> module!
 </p>
-<p>Sometimes because distributions are named after a main module, their names are used interchangeably and they get muddled together.  However it is sometimes useful to consider them a separate entity (like in Template-Toolkit's case).
+<p>Sometimes because distributions are named after a main module, their names are used interchangeably and they get muddled together. However it is sometimes useful to consider them a separate entity (like in Template-Toolkit's case).
 </p>
 <div class="mw-heading mw-heading3"><h3 id="CPAN">CPAN</h3></div>
-<p>Each CPAN mirror contains indices that list the distributions on CPAN, the modules in the dists, and the name of the author who uploaded the dist. These are simply text files. The most useful index is in the <code>/modules/02packages.details.txt.gz</code> file available from each CPAN mirror. The term "packages" here refers to the <code>package</code> keyword in the perl language itself, not something similar to pacman packages. The CPAN shell, referred to as lowercased, italicized <i>cpan</i>, is simply the venerable perl script which navigates indices to find the module you want to install.
+<p>Each CPAN mirror contains indices that list the distributions on CPAN, the modules in the dists, and the name of the author who uploaded the dist. These are simply text files. The most useful index is in the <code>/modules/02packages.details.txt.gz</code> file available from each CPAN mirror. The term "packages" here refers to the <code>package</code> keyword in the Perl language itself, not something similar to pacman packages. The CPAN shell, referred to as lowercased, italicized <i>cpan</i>, is simply the venerable perl script which navigates indices to find the module you want to install.
 </p>
 <p>Modules are found in the <code>02packages.details.txt.gz</code> list. On the same line as the module/package name is the path to the distribution tarball that contains the module. When you ask <i>cpan</i> to install a module, it will look up the module and install the relevant distribution. As the distribution is installing it will generate a list of module dependencies. <i>Cpan</i> will try to load each module dependency into the perl interpreter. If a module of the given version cannot be loaded the process is repeated.
 </p>
-<p>The <i>cpan</i> shell does not have to worry about what version of the required module it is installing. <i>cpan</i> can rely on the fact that the latest version of the module must satisfy the requirements of the original module that it began installing in the first place. Only the latest versions of modules are listed in the packages details file. Unfortunately for the perl package author, we cannot always rely on the fact that our packages offer the most recent version of a perl distribution and the modules contained within. Pacman dependency checking is much more static and strongly enforced.
+<p>The <i>cpan</i> shell does not have to worry about what version of the required module it is installing. <i>cpan</i> can rely on the fact that the latest version of the module must satisfy the requirements of the original module that it began installing in the first place. Only the latest versions of modules are listed in the packages details file. Unfortunately for the perl package author, we cannot always rely on the fact that our packages offer the most recent version of a Perl distribution and the modules contained within. Pacman dependency checking is much more static and strongly enforced.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Module_dependencies">Module dependencies</h3></div>
 <p>Perl has a unique way of defining dependencies compared to similar systems like Python eggs and Ruby gems. Eggs define dependencies on other eggs. Gems depend on gems. Perl dists depend on modules. Modules are only available from CPAN distributions, so in a way Perl distributions depend on distributions only indirectly. Modules can define their own versions independent from distributions inside the module source code. This is done by defining a <i>package</i> variable called <code>$VERSION</code>. When using <code>strict</code> and <code>warnings</code>, this is defined with the <code>our</code> keyword. For example:
@@ -554,13 +566,13 @@ package() {
 use warnings;
 use strict;
 our $VERSION = '1.00';</pre>
-<p>Modules can change their versions however they like and even have a version distinct from the distribution version. The utility of this is questionable but it is important to keep in mind. Module versions are more difficult to determine from outside of the perl interpreter and require parsing the perl code itself, and maybe even loading the module into perl. The advantage is that from inside the perl interpreter, module versions are easy to determine. For example:
+<p>Modules can change their versions however they like and even have a version distinct from the distribution version. The utility of this is questionable but it is important to keep in mind. Module versions are more difficult to determine from outside of the perl interpreter and require parsing the Perl code itself, and maybe even loading the module into Perl. The advantage is that from inside the perl interpreter, module versions are easy to determine. For example:
 </p>
 <pre>use Foo::Module;
 print $Foo::Module::VERSION, "\n";
 </pre>
 <div class="mw-heading mw-heading3"><h3 id="Dependency_definition">Dependency definition</h3></div>
-<p>Where are dependencies defined in perl distributions? They are "defined" inside of the <code>Makefile.PL</code> or <code>Build.PL</code> script. For example, inside of the <code>Makefile.PL</code> script the <code>WriteMakeFile</code> function is called to generate the <code>Makefile</code> like this:
+<p>Where are dependencies defined in Perl distributions? They are "defined" inside of the <code>Makefile.PL</code> or <code>Build.PL</code> script. For example, inside of the <code>Makefile.PL</code> script the <code>WriteMakeFile</code> function is called to generate the <code>Makefile</code> like this:
 </p>
 <pre>use ExtUtils::MakeMaker;
 WriteMakeFile(
@@ -569,9 +581,9 @@ WriteMakeFile(
     'PREREQ_PM' =&gt; { 'POSIX' =&gt; '0.01' },
 );
 </pre>
-<p>This is a contrived example but it is important to understand the dependencies are not final until after the <code>Makefile.PL</code> or <code>Build.PL</code> script is run. Dependencies are specified at runtime, which means they can be changed or modified using the full power of perl. This means the module author can add, remove, or change versions of dependencies right before the distribution is installed. Some modules authors use this to do overly clever things like depend on modules only if they are installed. Some multi-platform dists also depend on system-specific modules when installed on different operating systems.
+<p>This is a contrived example but it is important to understand the dependencies are not final until after the <code>Makefile.PL</code> or <code>Build.PL</code> script is run. Dependencies are specified at runtime, which means they can be changed or modified using the full power of Perl. This means the module author can add, remove, or change versions of dependencies right before the distribution is installed. Some modules authors use this to do overly clever things like depend on modules only if they are installed. Some multi-platform dists also depend on system-specific modules when installed on different operating systems.
 </p>
-<p>As an example, the CPANPLUS distribution looks for CPANPLUS::Dist plugins that are currently installed. If any plugins are installed for the currently installed version of CPANPLUS it adds them to the new CPANPLUS's prerequisites. I'm not quite sure why. Luckily for the perl packager most dependencies are static like in the above example that requires the POSIX module with a minimum version of 0.01.
+<p>As an example, the CPANPLUS distribution looks for CPANPLUS::Dist plugins that are currently installed. If any plugins are installed for the currently installed version of CPANPLUS it adds them to the new CPANPLUS's prerequisites. I'm not quite sure why. Luckily for the Perl packager most dependencies are static like in the above example that requires the POSIX module with a minimum version of 0.01.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Meta_information">Meta information</h3></div>
 <p>Meta files are included in recent distributions which contain meta-information about distributions such as the name, author, abstract description, and module requirements. Previously there were <code>META.yml</code> files in the YAML format but more recently the switch has been made to <code>META.json</code> files in the JSON format. These files can
@@ -587,9 +599,9 @@ be edited by hand but more often they are generated automatically by <code>Makef
 <div>
 <b>Reason:</b> This section and its subsections seems too informal for an ArchWiki article (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Perl_package_guidelines.html">Talk:Perl package guidelines</a>)</div>
 </div>
-<p>One of perl's greatest strengths is the sheer number of modules available on CPAN.  Not too surprisingly, there are also several different modules used for installing... well... modules!  TMTOWTDI!  I am not aware of a standard name for these types of modules, so I just called them "Installation Modules".
+<p>One of Perl's greatest strengths is the sheer number of modules available on CPAN. Not too surprisingly, there are also several different modules used for installing... well... modules! TMTOWTDI! I am not aware of a standard name for these types of modules, so I just called them "Installation Modules".
 </p>
-<p>These modules are concerned with building the distribution and installing module files wherever the user prefers.  This seems straightforward, but considering the number of different systems perl runs on, this can get complex.  Installation modules all place a perl code file inside the dist tarball.  Running this perl script will initiate the build and install process.  The script always ends with the <code>.PL</code> suffix and is termed the "Build script" in the below list.
+<p>These modules are concerned with building the distribution and installing module files wherever the user prefers. This seems straightforward, but considering the number of different systems Perl runs on, this can get complex. Installation modules all place a Perl code file inside the dist tarball. Running this perl script will initiate the build and install process. The script always ends with the <i>.PL</i> suffix and is termed the "Build script" in the below list.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="ExtUtils::MakeMaker">ExtUtils::MakeMaker</h3></div>
 <dl>
@@ -598,7 +610,7 @@ be edited by hand but more often they are generated automatically by <code>Makef
 <dt>CPAN link</dt>
 <dd><a rel="nofollow" class="external free" href="https://search.cpan.org/dist/ExtUtils-MakeMaker">https://search.cpan.org/dist/ExtUtils-MakeMaker</a></dd>
 </dl>
-<p>The original, oldest module for installing modules is <code>ExtUtils::MakeMaker</code>.  The major downside to this module is that it requires the <code>make</code> program to build and install everything.  This may not seem like a big deal to linux users but is a real hassle for Windows people!
+<p>The original, oldest module for installing modules is <code>ExtUtils::MakeMaker</code>. The major downside to this module is that it requires the <code>make</code> program to build and install everything. This may not seem like a big deal to linux users but is a real hassle for Windows people!
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Module::Build">Module::Build</h3></div>
 <dl>
@@ -607,7 +619,7 @@ be edited by hand but more often they are generated automatically by <code>Makef
 <dt>CPAN link</dt>
 <dd><a rel="nofollow" class="external free" href="https://search.cpan.org/dist/Module-Build">https://search.cpan.org/dist/Module-Build</a></dd>
 </dl>
-<p>The main advantage of Module::Build is that it is pure-perl.  This means it does not require a <code>make</code> program to be installed for you to build/install modules.  Its adoption was rocky because if <code>Module::Build</code> was not already installed, you could not run the bundled <code>Build.PL</code> script!  This is not a problem with recent versions of perl because <code>Module::Build</code> is a core module. (<b>NOTE</b> As of perl 5.22, Module::Build will no longer be a core module)
+<p>The main advantage of Module::Build is that it is pure-perl. This means it does not require a <code>make</code> program to be installed for you to build/install modules. Its adoption was rocky because if <code>Module::Build</code> was not already installed, you could not run the bundled <code>Build.PL</code> script! This is not a problem with recent versions of Perl because <code>Module::Build</code> is a core module. (<b>NOTE</b> As of Perl 5.22, Module::Build will no longer be a core module)
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Module::Build::Tiny">Module::Build::Tiny</h3></div>
 <dl>
@@ -625,32 +637,32 @@ be edited by hand but more often they are generated automatically by <code>Makef
 <dt>CPAN link</dt>
 <dd><a rel="nofollow" class="external free" href="https://search.cpan.org/dist/Module-Install">https://search.cpan.org/dist/Module-Install</a></dd>
 </dl>
-<p>Another modern build/installation module, <code>Module::Install</code> still requires the <code>make</code> program be installed to function.  <code>MI</code> was designed as a drop-in replacement for <code>MakeMaker</code>, to address some of <code>MakeMaker</code>'s shortcomings. Ironically, it depends on <code>MakeMaker</code> in order to operate. The <code>Makefile.PL</code> files that are generated by <code>MI</code> look much different and are implemented using a simple domain specific language.
+<p>Another modern build/installation module, <code>Module::Install</code> still requires the <code>make</code> program be installed to function. <code>MI</code> was designed as a drop-in replacement for <code>MakeMaker</code>, to address some of <code>MakeMaker</code>'s shortcomings. Ironically, it depends on <code>MakeMaker</code> in order to operate. The <code>Makefile.PL</code> files that are generated by <code>MI</code> look much different and are implemented using a simple domain specific language.
 </p>
-<p>One very interesting feature is that <code>Module::Install</code> bundles a <i>complete</i> <i>copy</i> of itself into the distribution file.  Because of this, unlike <code>MakeMaker</code> or <code>M::B</code>, you do not need <code>Module::Install</code> to be installed on your system.
+<p>One very interesting feature is that <code>Module::Install</code> bundles a <i>complete</i> <i>copy</i> of itself into the distribution file. Because of this, unlike <code>MakeMaker</code> or <code>M::B</code>, you do not need <code>Module::Install</code> to be installed on your system.
 </p>
-<p>Another very unique feature is auto-install.  <i>Though not recommended by <code>Module::Install</code>'s authors this feature is used quite often.</i>  When the module author enables auto-install for their distribution, <code>Module::Install</code> will search for and install any pre-requisite modules that are not installed when <code>Makefile.PL</code> is executed.  This feature is skipped when <code>Module::Install</code> detects it is being run by <code>CPAN</code> or <code>CPANPLUS</code>.  However, this feature is not skipped when run inside... oh I do not know... a <b>PKGBUILD</b>!  I hope you can see how a rogue perl program downloading and installing modules willy-nilly <i>inside a PKGBUILD</i> can be a problem.  See the <a href="#PERL_AUTOINSTALL">#PERL_AUTOINSTALL</a> environment variable to see how to fix this.
+<p>Another very unique feature is auto-install. <i>Though not recommended by <code>Module::Install</code>'s authors this feature is used quite often.</i> When the module author enables auto-install for their distribution, <code>Module::Install</code> will search for and install any pre-requisite modules that are not installed when <code>Makefile.PL</code> is executed. This feature is skipped when <code>Module::Install</code> detects it is being run by <code>CPAN</code> or <code>CPANPLUS</code>. However, this feature is not skipped when run inside... oh I do not know... a <b>PKGBUILD</b>! I hope you can see how a rogue perl program downloading and installing modules willy-nilly <i>inside a PKGBUILD</i> can be a problem. See the <a href="#PERL_AUTOINSTALL">#PERL_AUTOINSTALL</a> environment variable to see how to fix this.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Environment_variables">Environment variables</h3></div>
-<p>A number of environment variables can affect the way the modules are built or installed.  Some have a very dramatic effect and can cause problems if misunderstood.  An advanced user could be using these environment variables.  Some of these will break an unsuspecting PKGBUILD or cause unexpected behavior.
+<p>A number of environment variables can affect the way the modules are built or installed. Some have a very dramatic effect and can cause problems if misunderstood. An advanced user could be using these environment variables. Some of these will break an unsuspecting PKGBUILD or cause unexpected behavior.
 </p>
 <div class="mw-heading mw-heading4"><h4 id="PERL_MM_USE_DEFAULT">PERL_MM_USE_DEFAULT</h4></div>
-<p>When this variable is set to a true value, the installation module will pretend the default answer was given to any question it would normally ask.  This does not <i>always</i> work, but all of the installation modules honour it.  <i>That does not mean the module author will!</i>
+<p>When this variable is set to a true value, the installation module will pretend the default answer was given to any question it would normally ask. This does not <i>always</i> work, but all of the installation modules honour it. <i>That does not mean the module author will!</i>
 </p>
 <div class="mw-heading mw-heading4"><h4 id="PERL_AUTOINSTALL">PERL_AUTOINSTALL</h4></div>
-<p>You can pass additional command-line arguments to <code>Module::Install</code>'s <code>Makefile.PL</code> with this variable.  In order to turn off auto-install (<i>highly recommended</i>), assign <code>--skipdeps</code> to this.
+<p>You can pass additional command-line arguments to <code>Module::Install</code>'s <code>Makefile.PL</code> with this variable. In order to turn off auto-install (<i>highly recommended</i>), assign <code>--skipdeps</code> to this.
 </p>
 <pre>export PERL_AUTOINSTALL='--skipdeps'</pre>
 <div class="mw-heading mw-heading4"><h4 id="PERL_MM_OPT">PERL_MM_OPT</h4></div>
-<p>You can pass additional command-line arguments to <code>Makefile.PL</code> and/or <code>Build.PL</code> with this variable.  For example, you can install modules into your home-dir by using:
+<p>You can pass additional command-line arguments to <code>Makefile.PL</code> with this variable. For example, you can install modules into your home-dir by using:
 </p>
 <pre>export PERL_MM_OPT=INSTALLBASE=~/perl5</pre>
 <div class="mw-heading mw-heading4"><h4 id="PERL_MB_OPT">PERL_MB_OPT</h4></div>
-<p>This is the same thing as <code>PERL_MM_OPT</code> except it is only for <code>Module::Build</code>.  For example, you could install modules into your home-dir by using: 
+<p>This is the same thing as <code>PERL_MM_OPT</code> except it is only for <code>Module::Build</code>. For example, you could install modules into your home-dir by using: 
 </p>
 <pre>export PERL_MB_OPT=--install_base=~/perl5</pre>
 <div class="mw-heading mw-heading4"><h4 id="MODULEBUILDRC">MODULEBUILDRC</h4></div>
-<p><code>Module::Build</code> allows you to override its command-line-arguments with an rcfile.  This defaults to <code>~/.modulebuildrc</code>.  This is considered deprecated within the perl toolchain. You can override which file it uses by setting the path to the rcfile in <code>MODULEBUILDRC</code>.  The paranoid might set <code>MODULEBUILDRC</code> to <code>/dev/null</code>... just in case.
+<p><code>Module::Build</code> allows you to override its command-line-arguments with an rcfile. This defaults to <code>~/.modulebuildrc</code>. This is considered deprecated within the Perl toolchain. You can override which file it uses by setting the path to the rcfile in <code>MODULEBUILDRC</code>. The paranoid might set <code>MODULEBUILDRC</code> to <code>/dev/null</code>... just in case.
 </p>
 <div class="mw-heading mw-heading4"><h4 id="PERL5LIB">PERL5LIB</h4></div>
 <p>The directories searched for libraries can be set by the user (particularly if they are using <code>Local::Lib</code>) by setting <code>PERL5LIB</code>. That should be cleared before building.
@@ -659,11 +671,11 @@ be edited by hand but more often they are generated automatically by <code>Makef
 <p>If the user is using <code>Local::Lib</code> it will set <code>PERL_LOCAL_LIB_ROOT</code>. That should be cleared before building.
 </p>
 <div class="mw-heading mw-heading2"><h2 id="Problems_with_user-installed_perl">Problems with user-installed perl</h2></div>
-<p>A subtle problem is that advanced perl programmers may like to have multiple versions of perl installed. This is useful for testing backwards-compatibility in created programs. There are also speed benefits to compiling your own custom perl interpreter (i.e. without threads). Another reason for a custom <i>perl</i> is simply because the official perl Arch Linux package sometimes lags behind perl releases. The user may be trying out the latest perl... who knows?
+<p>A subtle problem is that advanced Perl programmers may like to have multiple versions of perl installed. This is useful for testing backwards-compatibility in created programs. There are also speed benefits to compiling your own custom perl interpreter (i.e. without threads). Another reason for a custom <i>perl</i> is simply because the official perl Arch Linux package sometimes lags behind Perl releases. The user may be trying out the latest perl... who knows?
 </p>
 <p>If the user has the custom perl executable in their <code>$PATH</code>, the custom perl will be run when the user types the <i>perl</i> command on the shell. In fact the custom perl will run inside the <code>PKGBUILD</code> as well! This can lead to insidious problems that are difficult to understand.
 </p>
-<p>The problem lies in compiled XS modules. These modules bridge perl and C. As such they must use perl's internal C API to accomplish this bridge. Perl's C API changes slightly with different versions of perl. If the user has a different version of perl than the system perl (<code>/usr/bin/perl</code>) then any XS module compiled with the user's perl will be incompatible with the system-wide perl. When trying to use the compiled XS module with the system perl, the module will fail to load with a link error.
+<p>The problem lies in compiled XS modules. These modules bridge Perl and C. As such they must use Perl's internal C API to accomplish this bridge. Perl's C API changes slightly with different versions of Perl. If the user has a different version of Perl than the system perl (<code>/usr/bin/perl</code>) then any XS module compiled with the user's perl will be incompatible with the system-wide perl. When trying to use the compiled XS module with the system perl, the module will fail to load with a link error.
 </p>
 <p>A simple solution is to always use the absolute path of the system-wide perl interpreter (<code>/usr/bin/perl</code>) when running perl in the <code>PKGBUILD</code>.
 </p>
@@ -684,8 +696,8 @@ be edited by hand but more often they are generated automatically by <code>Makef
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Perl_package_guidelines&amp;oldid=848347">https://wiki.archlinux.org/index.php?title=Perl_package_guidelines&amp;oldid=848347</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 10 October 2025, at 02:00.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Perl_package_guidelines&amp;oldid=866229">https://wiki.archlinux.org/index.php?title=Perl_package_guidelines&amp;oldid=866229</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 19 February 2026, at 01:59.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

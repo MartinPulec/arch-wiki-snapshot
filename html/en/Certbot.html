@@ -280,17 +280,6 @@
 		</li>
 	</ul>
 		</li>
-		<li id="toc-Deploying_certificates_to_applications" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Deploying_certificates_to_applications">
-				<div class="vector-toc-text">
-					<span class="vector-toc-numb">3.3</span>
-					<span>Deploying certificates to applications</span>
-				</div>
-			</a>
-			
-			<ul id="toc-Deploying_certificates_to_applications-sublist" class="vector-toc-list">
-			</ul>
-		</li>
 	</ul>
 	</li>
 	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
@@ -668,46 +657,6 @@ dns_rfc2136_algorithm = HMAC-SHA512</pre>
 </pre>
 <p>If you pass the validation successfully and receive certificates, then you are good to go with automating certbot. Otherwise, something went wrong and you need to debug your setup. It basically boils down to running <code>certbot renew</code> from now on, see <a href="#Automatic_renewal">#Automatic renewal</a>.
 </p>
-<div class="mw-heading mw-heading3"><h3 id="Deploying_certificates_to_applications">Deploying certificates to applications</h3></div>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
-<div>
-<b>Reason:</b> Simply doing something like <code>chmod g+r</code> and <code>chgrp ssl-cert</code> without scripts should be enough in most cases (see <a rel="nofollow" class="external text" href="https://eff-certbot.readthedocs.io/en/stable/using.html#where-are-my-certificates">the official documentation</a>). (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Certbot.html">Talk:Certbot</a>)</div>
-</div>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
-<div>
-<b>Reason:</b> Missing references to the documentation regarding hook locations, arguments and environment variables. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Certbot.html">Talk:Certbot</a>)</div>
-</div>
-<p>certbot saves the certificates under <code>/etc/letsencrypt/live</code>. This directory can only be read by root user. A deploy hook script can be used to copy the certificates to app directory when they are renewed.
-</p>
-<p>Example script to copy certs to app's state directory with correct permissions and restart app service. Create below script with executable permissions.
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/letsencrypt/renewal-hooks/deploy/myapp_cert_copy.sh
-</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">#!/bin/sh
-set -eu
-
-if [ "$RENEWED_DOMAINS" = "myapp.mydomain.com" ]
-then
-	app=myapp
-	appuser=$app
-	certpath="/var/lib/$app/certs"
-
-	mkdir -p "$certpath"
-	chmod 750 "$certpath"
-
-	chown $appuser:$appuser "$certpath"
-	install -o "$appuser" -g "$appuser" -m 444 "$RENEWED_LINEAGE/fullchain.pem" -t "$certpath"
-	install -o "$appuser" -g "$appuser" -m 400 "$RENEWED_LINEAGE/privkey.pem" -t "$certpath"
-
-	systemctl restart $app.service
-	echo "$(date) Renewed and deployed certificates for $app" &gt;&gt; /var/log/cert-renew.log
-fi</pre>
-<p>If certificate was already generated, the deploy script can be run using this command to copy the certs without regenerating new certificates:
-</p>
-<pre>$ certbot certonly -d myapp.mydomain.com --run-deploy-hooks --dry-run
-</pre>
 <div class="mw-heading mw-heading2"><h2 id="See_also">See also</h2></div>
 <ul>
 <li>
@@ -741,8 +690,8 @@ fi</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Certbot&amp;oldid=857666">https://wiki.archlinux.org/index.php?title=Certbot&amp;oldid=857666</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 20 December 2025, at 19:57.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Certbot&amp;oldid=868969">https://wiki.archlinux.org/index.php?title=Certbot&amp;oldid=868969</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 13 March 2026, at 16:23.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

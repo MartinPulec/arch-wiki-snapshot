@@ -455,24 +455,17 @@
 <li><a href="#Vulkan_HDR_WSI">Vulkan WSI with HDR support</a></li>
 </ul>
 <div class="mw-heading mw-heading3"><h3 id="Vulkan_HDR_WSI">Vulkan HDR WSI</h3></div>
-<p><code>VK_EXT_swapchain_colorspace</code> and <code>VK_EXT_hdr_metadata</code> extensions are required for HDR support when using the Vulkan API. Users with certain GPUs or drivers may need to use <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/vk-hdr-layer-kwin6-git/">vk-hdr-layer-kwin6-git</a></span><sup><small>AUR</small></sup> to support these extensions.
+<p><code>VK_EXT_swapchain_colorspace</code> and <code>VK_EXT_hdr_metadata</code> extensions are required for HDR support when using the Vulkan API.
 </p>
 <ul>
 <li>
-<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mesa">mesa</a></span> 25.1+ supports these extensions and should not require package installation</li>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mesa">mesa</a></span> 25.1 and later includes these extensions by default.</li>
 <li>
-<a href="../en/NVIDIA.html" title="NVIDIA">NVIDIA</a> users must use <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/vk-hdr-layer-kwin6-git/">vk-hdr-layer-kwin6-git</a></span><sup><small>AUR</small></sup> for Vulkan HDR support
-<ul>
-<li>NVIDIA drivers since Vulkan beta 580.94.11 support <code>VK_EXT_hdr_metadata</code> on Wayland <a rel="nofollow" class="external autonumber" href="https://www.phoronix.com/news/NVIDIA-580.94.11-Linux-Driver">[1]</a>
-<ul><li>Stable NVIDIA drivers do <b>not</b> yet include this extension, including the R590 driver series</li></ul>
-</li>
-<li>NVIDIA drivers still lack support for <code>VK_EXT_swapchain_colorspace</code> on Linux <a rel="nofollow" class="external autonumber" href="https://developer.nvidia.com/vulkan-driver">[2]</a>
+<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nvidia-open">nvidia-open</a></span> 595.58.03 and later also <a rel="nofollow" class="external text" href="https://forums.developer.nvidia.com/t/595-release-feedback-discussion/362561/5?u=ifaigios">includes</a> these extensions by default.
+<ul><li>
+<a href="../en/NVIDIA.html" title="NVIDIA">NVIDIA</a> users on drivers <b>before</b> 595.58.03 must install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/vk-hdr-layer-kwin6-git/">vk-hdr-layer-kwin6-git</a></span><sup><small>AUR</small></sup> and set <code>ENABLE_HDR_WSI=1</code> in each game or application that will be used with HDR. Enabling this globally is <b>not</b> recommended.</li></ul>
 </li>
 </ul>
-</li>
-</ul>
-<p><code>ENABLE_HDR_WSI=1</code> can be used to enable the Vulkan HDR WSI layer. Enabling this globally is <b>not</b> recommended. Set this for individual games and applications that will be used with HDR.
-</p>
 <div class="mw-heading mw-heading2"><h2 id="Compositor_configuration">Compositor configuration</h2></div>
 <div class="mw-heading mw-heading3"><h3 id="KDE_Plasma">KDE Plasma</h3></div>
 <p>See <a href="../en/KDE.html#HDR" title="KDE">KDE#HDR</a>.
@@ -502,7 +495,7 @@
 <p>Enable HDR in GNOME's display settings. The HDR toggle is per-monitor and is located next to the resolution and refresh rate setting.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note</strong> Gamescope HDR appears "washed out" with GNOME as GNOME lacks scRGB or support for the <code>frog-color-management-v1</code> protocol <a rel="nofollow" class="external autonumber" href="https://gitlab.gnome.org/GNOME/mutter/-/issues/4083">[3]</a> <a rel="nofollow" class="external autonumber" href="https://github.com/ValveSoftware/gamescope/issues/1825">[4]</a>. See <a href="#With_Gamescope">#With Gamescope</a>
+<strong>Note</strong> Gamescope HDR appears "washed out" with GNOME as GNOME lacks scRGB or support for the <code>frog-color-management-v1</code> protocol <a rel="nofollow" class="external autonumber" href="https://gitlab.gnome.org/GNOME/mutter/-/issues/4083">[1]</a> <a rel="nofollow" class="external autonumber" href="https://github.com/ValveSoftware/gamescope/issues/1825">[2]</a>. See <a href="#With_Gamescope">#With Gamescope</a>
 </div>
 <div class="mw-heading mw-heading3"><h3 id="Gamescope_with_Steam_session">Gamescope with Steam session</h3></div>
 <p>Valve's Steam compositor <a href="../en/Gamescope.html" title="Gamescope">gamescope</a> offers experimental HDR support. Following these steps will allow you to try out Valve's Steam client running through the HDR capable gamescope.
@@ -573,19 +566,19 @@ fi
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note</strong> Wines native <a href="../en/Wayland.html" title="Wayland">Wayland</a> driver is experimental and may perform better or worse than Xwayland depending on the game.</div>
 <ul><li>
-<a rel="nofollow" class="external text" href="https://github.com/GloriousEggroll/proton-ge-custom">proton-ge-custom</a>: install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/proton-ge-custom-bin/">proton-ge-custom-bin</a></span><sup><small>AUR</small></sup> and set <code>PROTON_ENABLE_WAYLAND=1</code> and <code>PROTON_ENABLE_HDR=1</code> <a rel="nofollow" class="external autonumber" href="https://github.com/GloriousEggroll/proton-ge-custom/releases/tag/GE-Proton10-1">[5]</a>.</li></ul>
+<a rel="nofollow" class="external text" href="https://github.com/GloriousEggroll/proton-ge-custom">proton-ge-custom</a>: install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/proton-ge-custom-bin/">proton-ge-custom-bin</a></span><sup><small>AUR</small></sup> and set <code>PROTON_ENABLE_WAYLAND=1</code> and <code>PROTON_ENABLE_HDR=1</code> <a rel="nofollow" class="external autonumber" href="https://github.com/GloriousEggroll/proton-ge-custom/releases/tag/GE-Proton10-1">[3]</a>.</li></ul>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note</strong> <code>PROTON_ENABLE_HDR</code> sets <code>DXVK_HDR=1</code> <a rel="nofollow" class="external autonumber" href="https://github.com/GloriousEggroll/proton-ge-custom/blob/master/proton#L1718">[6]</a>.</div>
+<strong>Note</strong> <code>PROTON_ENABLE_HDR</code> sets <code>DXVK_HDR=1</code> <a rel="nofollow" class="external autonumber" href="https://github.com/GloriousEggroll/proton-ge-custom/blob/master/proton#L1718">[4]</a>.</div>
 <ul>
 <li>
 <a rel="nofollow" class="external text" href="https://github.com/Frogging-Family/wine-tkg-git">wine-tkg</a>: install wine-tkg, set <code>DXVK_HDR=1</code>, and unset <code>DISPLAY</code>.</li>
 <li>
-<a rel="nofollow" class="external text" href="https://github.com/cachyos/proton-cachyos">proton-cachyos</a> or <a rel="nofollow" class="external text" href="https://github.com/CachyOS/wine-cachyos">wine-cachyos</a>: install your choice of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/proton-cachyos/">proton-cachyos</a></span><sup><small>AUR</small></sup>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/wine-cachyos-opt/">wine-cachyos-opt</a></span><sup><small>AUR</small></sup>, or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/wine-cachyos/">wine-cachyos</a></span><sup><small>AUR</small></sup> and set <code>PROTON_ENABLE_WAYLAND=1</code> and <code>DXVK_HDR=1</code> <a rel="nofollow" class="external autonumber" href="https://www.reddit.com/r/linux_gaming/comments/1km81f4/proton_cachy_10_released_native_wayland_gaming/">[7]</a>.</li>
+<a rel="nofollow" class="external text" href="https://github.com/cachyos/proton-cachyos">proton-cachyos</a> or <a rel="nofollow" class="external text" href="https://github.com/CachyOS/wine-cachyos">wine-cachyos</a>: install your choice of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/proton-cachyos/">proton-cachyos</a></span><sup><small>AUR</small></sup>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/wine-cachyos-opt/">wine-cachyos-opt</a></span><sup><small>AUR</small></sup>, or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/wine-cachyos/">wine-cachyos</a></span><sup><small>AUR</small></sup> and set <code>PROTON_ENABLE_WAYLAND=1</code> and <code>DXVK_HDR=1</code> <a rel="nofollow" class="external autonumber" href="https://www.reddit.com/r/linux_gaming/comments/1km81f4/proton_cachy_10_released_native_wayland_gaming/">[5]</a>.</li>
 </ul>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip</strong> You can also easily install the aforementioned wine builds to Lutris, Bottles, or Steam using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/protonup-qt/">protonup-qt</a></span><sup><small>AUR</small></sup>.</div>
 <div class="mw-heading mw-heading4"><h4 id="With_Gamescope">With Gamescope</h4></div>
-<p>Gamescope with proper HDR requires scRGB and <code>xx-color-management-v4</code> protocol support or <a rel="nofollow" class="external text" href="https://gitlab.freedesktop.org/wayland/wayland-protocols/-/merge_requests/14"><code>frog-color-management-v1</code></a> protocol support in your compositor.
+<p>Gamescope with proper HDR requires scRGB and <code>xx-color-management-v4</code> protocol support or <a rel="nofollow" class="external text" href="https://gitlab.freedesktop.org/wayland/wayland-protocols/-/merge_requests/14">frog-color-management-v1</a> protocol support in your compositor.
 </p>
 <p>Because of this gamescope will not work with the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/vk-hdr-layer-kwin6-git/">vk-hdr-layer-kwin6-git</a></span><sup><small>AUR</small></sup> layer. Ensure <code>ENABLE_HDR_WSI</code> is not <code>1</code>.
 </p>
@@ -615,34 +608,34 @@ fi
 <pre>$ SDL_VIDEODRIVER=wayland quake2rtx
 </pre>
 <div class="mw-heading mw-heading3"><h3 id="mpv">mpv</h3></div>
-<p>For best image quality mpv maintainers recommend using the <code>gpu-next</code> <a rel="nofollow" class="external autonumber" href="https://github.com/mpv-player/mpv/discussions/16105#discussioncomment-12629196">[8]</a> video output driver, which is the default. <code>gpu-next</code> supports HDR with <code>--gpu-context=waylandvk</code>, which is selected by default on Wayland.
+<p>For best image quality mpv maintainers recommend using the <code>gpu-next</code> <a rel="nofollow" class="external autonumber" href="https://github.com/mpv-player/mpv/discussions/16105#discussioncomment-12629196">[6]</a> video output driver, which is the default. <code>gpu-next</code> supports HDR with <code>--gpu-context=waylandvk</code>, which is selected by default on Wayland.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note</strong> This requires a Vulkan WSI with HDR support, see <a href="#Vulkan_HDR_WSI">#Vulkan HDR WSI</a>
 </div>
-<pre>$ mpv --target-colorspace-hint "path/to/video"
+<pre>$ mpv "path/to/video"
 </pre>
 <p>Other ways of enabling <a rel="nofollow" class="external text" href="https://github.com/mpv-player/mpv/discussions/16105#discussioncomment-12619072">Wayland HDR support</a> include using the <code>dmabuf-wayland</code> video output and the <code>drm</code> GPU context.
 </p>
 <pre>$ mpv --vo=dmabuf-wayland "path/to/video"
 </pre>
 <ul><li>From the tty terminal, one could do (<code>--gpu-context=drm</code> is selected by default)</li></ul>
-<pre>$ mpv --target-colorspace-hint "path/to/video"
+<pre>$ mpv "path/to/video"
 </pre>
 <div class="mw-heading mw-heading3"><h3 id="Firefox">Firefox</h3></div>
 <p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=firefox">firefox</a></span> introduces working experimental HDR in 138.0 under the hidden preference <code>gfx.wayland.hdr</code>. You can enable it at <code>about:config</code>.
 </p>
-<p>Stable HDR is still in progress <a rel="nofollow" class="external autonumber" href="https://bugzilla.mozilla.org/show_bug.cgi?id=hdr">[9]</a> <a rel="nofollow" class="external autonumber" href="https://bugzilla.mozilla.org/show_bug.cgi?id=1642854">[10]</a>.
+<p>Stable HDR is still in progress <a rel="nofollow" class="external autonumber" href="https://bugzilla.mozilla.org/show_bug.cgi?id=hdr">[7]</a> <a rel="nofollow" class="external autonumber" href="https://bugzilla.mozilla.org/show_bug.cgi?id=1642854">[8]</a>.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Chromium">Chromium</h3></div>
-<p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=chromium">chromium</a></span> has work-in-progress HDR support <a rel="nofollow" class="external autonumber" href="https://chromium-review.googlesource.com/c/chromium/src/+/6771393">[11]</a>. Support has been merged as of version 141.0.7370.0.
+<p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=chromium">chromium</a></span> has work-in-progress HDR support <a rel="nofollow" class="external autonumber" href="https://chromium-review.googlesource.com/c/chromium/src/+/6771393">[9]</a>. Support has been merged as of version 141.0.7370.0.
 </p>
 <div class="mw-heading mw-heading2"><h2 id="Troubleshooting">Troubleshooting</h2></div>
 <div class="mw-heading mw-heading3"><h3 id="HDR_video_samples">HDR video samples</h3></div>
 <p><a href="../en/Kodi.html" title="Kodi">Kodi</a> wiki <a rel="nofollow" class="external text" href="https://kodi.wiki/view/Samples#4K_(UltraHD)_&amp;_HDR_Formats">maintains the list of fair use HDR video samples</a>. These can be used to test the HDR output using video players that support HDR such as <a href="#mpv">#mpv</a>.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Broken_screen_sharing_with_HDR10">Broken screen sharing with HDR10</h3></div>
-<p>Pipewire attempts to stream what it sees as BGRA, which WebRTC cannot interpret, due to its current lack of capacity to interpret it. As such, a "ParamId:EnumFormat: 0:0 Invalid argument" exception is thrown and the WebRTC socket crashes for that application <a rel="nofollow" class="external autonumber" href="https://github.com/hyprwm/xdg-desktop-portal-hyprland/issues/52">[12]</a>.
+<p>Pipewire attempts to stream what it sees as BGRA, which WebRTC cannot interpret, due to its current lack of capacity to interpret it. As such, a "ParamId:EnumFormat: 0:0 Invalid argument" exception is thrown and the WebRTC socket crashes for that application <a rel="nofollow" class="external autonumber" href="https://github.com/hyprwm/xdg-desktop-portal-hyprland/issues/52">[10]</a>.
 </p>
 <div class="mw-heading mw-heading2"><h2 id="See_also">See also</h2></div>
 <ul>
@@ -668,8 +661,8 @@ fi
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=HDR&amp;oldid=862686">https://wiki.archlinux.org/index.php?title=HDR&amp;oldid=862686</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 25 January 2026, at 02:00.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=HDR&amp;oldid=869865">https://wiki.archlinux.org/index.php?title=HDR&amp;oldid=869865</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 24 March 2026, at 20:26.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

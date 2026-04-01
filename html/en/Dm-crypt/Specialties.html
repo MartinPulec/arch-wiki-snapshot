@@ -190,40 +190,7 @@
 			</a>
 			
 			<ul id="toc-Busybox_based_initramfs_(built_with_mkinitcpio)-sublist" class="vector-toc-list">
-				<li id="toc-Enabling_Wi-Fi" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Enabling_Wi-Fi">
-				<div class="vector-toc-text">
-					<span class="vector-toc-numb">3.2.1</span>
-					<span>Enabling Wi-Fi</span>
-				</div>
-			</a>
-			
-			<ul id="toc-Enabling_Wi-Fi-sublist" class="vector-toc-list">
-				<li id="toc-Predefined_hook" class="vector-toc-list-item vector-toc-level-4">
-			<a class="vector-toc-link" href="#Predefined_hook">
-				<div class="vector-toc-text">
-					<span class="vector-toc-numb">3.2.1.1</span>
-					<span>Predefined hook</span>
-				</div>
-			</a>
-			
-			<ul id="toc-Predefined_hook-sublist" class="vector-toc-list">
 			</ul>
-		</li>
-		<li id="toc-Custom_hook" class="vector-toc-list-item vector-toc-level-4">
-			<a class="vector-toc-link" href="#Custom_hook">
-				<div class="vector-toc-text">
-					<span class="vector-toc-numb">3.2.1.2</span>
-					<span>Custom hook</span>
-				</div>
-			</a>
-			
-			<ul id="toc-Custom_hook-sublist" class="vector-toc-list">
-			</ul>
-		</li>
-	</ul>
-		</li>
-	</ul>
 		</li>
 		<li id="toc-systemd_based_initramfs_(built_with_dracut)" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#systemd_based_initramfs_(built_with_dracut)">
@@ -709,12 +676,12 @@ Please type uppercase yes to continue:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/mkinitcpio.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">HOOKS=(base systemd autodetect microcode modconf kms keyboard sd-vconsole block <b>sd-network</b> <b>sd-tinyssh</b> sd-encrypt filesystems fsck)
-<b>SD_TINYSSH_COMMAND="systemd-tty-ask-password-agent --query --watch"</b></pre>
-<p>When building the initramfs with <code>mkinitcpio</code> this setup copies the already existing configuration of <a href="../../en/Systemd-networkd.html" title="Systemd-networkd">systemd-networkd</a> from the main system and also tries to copy / convert existing SSH server keys from an existing TinySSH or OpenSSH installation. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=tinyssh">tinyssh</a></span> needs to be installed (but not necessarily enabled) on the main system. There are additional configuration parameters in case <a href="../../en/Systemd-networkd.html" title="Systemd-networkd">systemd-networkd</a> is not used by the main system. See the <a rel="nofollow" class="external text" href="https://github.com/wolegis/mkinitcpio-systemd-extras/wiki">documentation</a> of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/mkinitcpio-systemd-extras/">mkinitcpio-systemd-extras</a></span><sup><small>AUR</small></sup> for further details.
+<b>SD_TINYSSH_COMMAND="systemd-tty-ask-password-agent --query"</b></pre>
+<p>When building the initramfs with <code>mkinitcpio</code> this setup copies the already existing configuration of <a href="../../en/Systemd-networkd.html" title="Systemd-networkd">systemd-networkd</a> from the main system and also tries to copy / convert existing SSH server keys from an existing TinySSH or OpenSSH installation. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=tinyssh">tinyssh</a></span> needs to be installed (but not necessarily enabled) on the main system. There are some more configuration parameters to cover more use cases. See the <a rel="nofollow" class="external text" href="https://github.com/wolegis/mkinitcpio-systemd-extras/wiki">documentation</a> of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/mkinitcpio-systemd-extras/">mkinitcpio-systemd-extras</a></span><sup><small>AUR</small></sup> for further details.
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning</strong> 
-<p>With systemd by default you have 90 seconds to unlock the device containing your root filesystem. After that systemd will give up waiting for this device and enter some emergency mode. You are then effectively locked out! To avoid this painful situation define the kernel parameter <code>rootflags=x-systemd.device-timeout=0</code> in the configuration of your <a href="../../en/Boot_loader.html" class="mw-redirect" title="Boot loader">boot loader</a>. With this setting systemd will wait forever.
+<p>By default you have 90 seconds to unlock the device containing your root filesystem. After that systemd will give up waiting for this device and enter some emergency mode. You are then effectively locked out! To avoid this painful situation define the kernel parameter <code>rootflags=x-systemd.device-timeout=0</code> in the configuration of your <a href="../../en/Boot_loader.html" class="mw-redirect" title="Boot loader">boot loader</a>. With this setting systemd will wait forever.
 </p>
 </div>
 <div class="archwiki-template-box archwiki-template-box-note">
@@ -727,81 +694,30 @@ Please type uppercase yes to continue:
 </div>
 <div class="mw-heading mw-heading3"><h3 id="Busybox_based_initramfs_(built_with_mkinitcpio)">
 <span id="Busybox_based_initramfs_.28built_with_mkinitcpio.29"></span>Busybox based initramfs (built with mkinitcpio)</h3></div>
-<p>For busybox based initramfs the packages <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mkinitcpio-netconf">mkinitcpio-netconf</a></span> and/or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/mkinitcpio-ppp/">mkinitcpio-ppp</a></span><sup><small>AUR</small></sup> provide network connectivity. As <a href="../../en/Secure_Shell.html" class="mw-redirect" title="SSH">SSH</a> server you have the option of using either <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mkinitcpio-dropbear">mkinitcpio-dropbear</a></span> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mkinitcpio-tinyssh">mkinitcpio-tinyssh</a></span>. Those hooks do not install any shell, so you also need to <a href="../../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mkinitcpio-utils">mkinitcpio-utils</a></span> package. The instructions below can be used in any combination of the packages above. When there are different paths, it will be noted.
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> This section used to recommend the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mkinitcpio-netconf">mkinitcpio-netconf</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mkinitcpio-dropbear">mkinitcpio-dropbear</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mkinitcpio-tinyssh">mkinitcpio-tinyssh</a></span> packages but no longer does so as they are unmaintained. See <a href="../../en/Talk:Dm-crypt/Specialties.html#Recommending_a_fork_should_not_be_a_warning" title="Talk:Dm-crypt/Specialties">this discussion</a> for more info.</div>
+<p>For busybox based initramfs the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/mkinitcpio-extras/">mkinitcpio-extras</a></span><sup><small>AUR</small></sup> package provides the <code>dropbear</code>, <code>tinyssh</code> and <code>netconf</code> hooks needed for network connectivity and SSH access during the boot process. After installing the package, check its optional dependencies and manually <a href="../../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> those required by the hooks you plan to use. E.g. to use the <code>netconf</code> and <code>dropbear</code> hooks, you have to install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mkinitcpio-nfs-utils">mkinitcpio-nfs-utils</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dropbear">dropbear</a></span>. You also need to install the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mkinitcpio-utils">mkinitcpio-utils</a></span> package which provides the <code>encryptssh</code> hook, a drop-in replacement for the <code>encrypt</code> hook that prompts for the passphrase upon SSH login.
 </p>
-<div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip</strong> Alternatively, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/mkinitcpio-extras/">mkinitcpio-extras</a></span><sup><small>AUR</small></sup> provides the functionality of the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/mkinitcpio-dropbear/">mkinitcpio-dropbear</a></span><sup><small>AUR</small></sup>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/mkinitcpio-netconf/">mkinitcpio-netconf</a></span><sup><small>AUR</small></sup>, and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/mkinitcpio-tinyssh/">mkinitcpio-tinyssh</a></span><sup><small>AUR</small></sup> hooks (plus additional functionality such as configuring a shell, changing the port of the SSH server, etc.) and is actively maintained.</div>
 <ol>
-<li>If you do not have an SSH key pair yet, <a href="../../en/SSH_keys.html#Generating_an_SSH_key_pair" title="SSH keys">generate one</a> on the client system (the one which will be used to unlock the remote machine). <div class="archwiki-template-box archwiki-template-box-note">
+<li>If you don't have an SSH key pair yet, <a href="../../en/SSH_keys.html#Generating_an_SSH_key_pair" title="SSH keys">generate one</a> on the client system (the one which will be used to unlock the remote machine). <div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> <code>tinyssh</code> only supports <a href="../../en/SSH_keys.html#Ed25519" title="SSH keys">Ed25519</a> and <a href="../../en/SSH_keys.html#ECDSA" title="SSH keys">ECDSA</a> key types without passphrase.</div>
+</li>
+<li>Add your SSH public key(s) or copy an existing <code>~/.ssh/authorized_keys</code> file to the remote machine's <code>/etc/dropbear/root_key</code> or <code>/etc/tinyssh/root_key</code> file. <div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip</strong> Remember to <a href="../../en/Regenerate_the_initramfs.html" class="mw-redirect" title="Regenerate the initramfs">regenerate the initramfs</a> whenever you add or remove keys from the <code>root_key</code> file.</div>
+</li>
+<li>Add the <code>&lt;netconf&gt; &lt;dropbear or tinyssh&gt; encryptssh</code> hooks to the <a href="../../en/Mkinitcpio.html#HOOKS" title="Mkinitcpio">HOOKS</a> array in <code>/etc/mkinitcpio.conf</code>, before <code>filesystems</code>, and <a href="../../en/Regenerate_the_initramfs.html" class="mw-redirect" title="Regenerate the initramfs">regenerate the initramfs</a>. The <code>encryptssh</code> hook replaces the <code>encrypt</code> hook. <pre>HOOKS=(... netconf &lt;tinyssh&gt;|&lt;dropbear&gt; encryptssh filesystems ...)</pre>
+</li>
+<li>Configure the required <code>cryptdevice=</code> <a href="../../en/Dm-crypt/System_configuration.html#Kernel_parameters" title="Dm-crypt/System configuration">parameter</a> and add the <code>ip=</code> <a href="../../en/Kernel_parameters.html" title="Kernel parameters">kernel parameter</a> to your boot loader configuration. E.g. if you use DHCP for network configuration: <pre>ip=dhcp</pre> The hook will wait up to 120 seconds for a response from the DHCP server. This can be adjusted with the <code>netconf_timeout=</code> <a href="../../en/Kernel_parameters.html" title="Kernel parameters">kernel parameter</a>. Alternatively, configure a static IP: <pre>ip=192.168.1.1:::::eth0:none</pre> You can also specify the subnet mask and gateway if necessary: <pre>ip=192.168.1.1::192.168.1.254:255.255.255.0::eth0:none</pre> The <code>ip=</code> parameter supports many more options, e.g configuring multiple interfaces, etc. For more info see the hook's documentation: <pre>mkinitcpio -H netconf</pre> The examples above assume an Ethernet connection. If using Wi-Fi instead, <a href="../../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/mkinitcpio-wifi/">mkinitcpio-wifi</a></span><sup><small>AUR</small></sup> package and create a <i>wpa_supplicant</i> configuration: <pre>wpa_passphrase "ESSID" "passphrase" &gt; /etc/wpa_supplicant/initcpio.conf</pre> Then add the <code>wifi</code> hook before <code>netconf</code> in <code>/etc/mkinitcpio.conf</code>, make sure your Wi-Fi related modules are in the <a href="../../en/Mkinitcpio.html#MODULES" title="Mkinitcpio">MODULES</a> array, and use <code>ip=:::::wlan0:dhcp</code> as the kernel parameter.<div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note</strong>
 <ul>
-<li>
-<code>tinyssh</code> only supports <a href="../../en/SSH_keys.html#Ed25519" title="SSH keys">Ed25519</a> and <a href="../../en/SSH_keys.html#ECDSA" title="SSH keys">ECDSA</a> key types without passphrase. If you chose to use <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mkinitcpio-tinyssh">mkinitcpio-tinyssh</a></span>, you need to create/use one of these.</li>
-<li>
-<code>mkinitcpio-dropbear</code> in version 0.0.3-5 is not compatible with the current dropbear implementation that removed dss. See <a rel="nofollow" class="external text" href="https://github.com/grazzolini/mkinitcpio-dropbear/issues/8">Github</a> for details and a fix.</li>
+<li>Keep in mind to use kernel device names for the network interface (e.g. <code>eth0</code>) and not <a href="../../en/Udev.html" title="Udev">udev</a>'s names (e.g. <code>enp1s0</code>), as those aren't available during early userspace. Use <a href="../../en/Core_utilities.html#Essentials" class="mw-redirect" title="Dmesg">dmesg</a> to find the kernel device name.</li>
+<li>It may be necessary to add the module for your <a href="../../en/Network_configuration/Ethernet.html#Device_driver" title="Network configuration/Ethernet">ethernet</a> or <a href="../../en/Network_configuration/Wireless.html#Device_driver" title="Network configuration/Wireless">wireless</a> network card to the <a href="../../en/Mkinitcpio.html#MODULES" title="Mkinitcpio">MODULES</a> array.</li>
+<li>Don't forget to update the configuration of your <a href="../../en/Boot_loader.html" class="mw-redirect" title="Boot loader">boot loader</a> after making any changes to kernel parameters.</li>
 </ul>
 </div>
 </li>
-<li class="mw-empty-elt"></li>
-<li>Insert your SSH public key (i.e. the one you usually put onto hosts so that you can ssh in without a password, or the one you just created and which ends with <i>.pub</i>) into the remote machine's <code>/etc/dropbear/root_key</code> or <code>/etc/tinyssh/root_key</code> file. <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip</strong> This method can later be used to add other SSH public keys as needed; In the case of simply copying the content of the remote's <code>~/.ssh/authorized_keys</code>, be sure to verify that it only contains keys you intend to be using to unlock the remote machine. When adding additional keys, <a href="../../en/Regenerate_the_initramfs.html" class="mw-redirect" title="Regenerate the initramfs">regenerate the initramfs</a>. See also <a href="../../en/OpenSSH.html#Protection" title="OpenSSH">OpenSSH#Protection</a>.</div>
-</li>
-<li>Add all three <code>&lt;netconf and/or ppp&gt; &lt;dropbear or tinyssh&gt; encryptssh</code> <a href="../../en/Mkinitcpio.html#HOOKS" title="Mkinitcpio">hooks</a> before <code>filesystems</code> within the "HOOKS" array in <code>/etc/mkinitcpio.conf</code> (the <code>encryptssh</code> replaces the <code>encrypt</code> hook). Then <a href="../../en/Regenerate_the_initramfs.html" class="mw-redirect" title="Regenerate the initramfs">regenerate the initramfs</a>. <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note</strong> The <code>net</code> hook provided by <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mkinitcpio-nfs-utils">mkinitcpio-nfs-utils</a></span> is <b>not</b> needed.</div>
-</li>
-<li>Configure the required <code>cryptdevice=</code> <a href="../../en/Dm-crypt/System_configuration.html#Kernel_parameters" title="Dm-crypt/System configuration">parameter</a> and add the <code>ip=</code> <a href="../../en/Kernel_parameters.html" title="Kernel parameters">kernel command parameter</a> to your boot loader configuration with the appropriate arguments. For example, if you want the IP address to be assigned by DHCP, you can use the following parameter: <pre>ip=dhcp</pre> This is most useful if your DHCP server is configured to always assign the same IP for this host, as otherwise accessing the system via SSH is going to be difficult. In that case, you can use a static IP: <pre>ip=192.168.1.1:::::eth0:none</pre> Alternatively, you can also specify the subnet mask and gateway required by the network:<pre>ip=192.168.1.1::192.168.1.254:255.255.255.0::eth0:none</pre> If using DHCP, consider adding the <code>netconf_timeout=</code> kernel parameter, to prevent netconf from trying to obtain an IP forever. For a detailed description of the <code>ip=</code> parameter, have a look at the <a href="../../en/Mkinitcpio.html#Using_net" title="Mkinitcpio">according mkinitcpio section</a>. When finished, update the configuration of your <a href="../../en/Boot_loader.html" class="mw-redirect" title="Boot loader">boot loader</a>.<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note</strong>
-<ul>
-<li>As of version 0.0.4 of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mkinitcpio-netconf">mkinitcpio-netconf</a></span>, you can nest multiple <code>ip=</code> parameters in order to configure multiple interfaces. You cannot mix it with <code>ip=dhcp</code> (<code>ip=:::::eth0:dhcp</code>) alone. An interface needs to be specified.<pre>ip=ip=192.168.1.1:::::eth0:none:ip=172.16.1.1:::::eth1:none</pre>
-</li>
-<li>Keep in mind to use kernel device names for the network interface (e.g. <code>eth0</code>) and not <a href="../../en/Udev.html" title="Udev">udev's</a> ones (e.g. <code>enp1s0</code>), as those will not work.</li>
-<li>By default, Predictable Network Interface Names are activated and change the kernel device name during late boot. Use <a href="../../en/Core_utilities.html#Essentials" class="mw-redirect" title="Dmesg">dmesg</a> and look what your Network kernel module does to find the original name (e.g. <code>eth0</code>)</li>
-<li>It could be necessary to add the module for your <a href="../../en/Network_configuration/Ethernet.html#Device_driver" title="Network configuration/Ethernet">ethernet</a> or <a href="../../en/Network_configuration/Wireless.html#Device_driver" title="Network configuration/Wireless">wireless</a> network card to the <a href="../../en/Mkinitcpio.html#MODULES" title="Mkinitcpio">MODULES</a> array.</li>
-</ul>
-</div>
-</li>
-<li>Finally, restart the remote system and try to <a href="../../en/OpenSSH.html#Client_usage" title="OpenSSH">ssh to it</a>, <b>explicitly stating the "root" username</b> (even if the root account is disabled on the machine, this root user is used only in the initramfs for the purpose of unlocking the remote system). If you are using the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mkinitcpio-dropbear">mkinitcpio-dropbear</a></span> package and you also have the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=openssh">openssh</a></span> package installed, then you will probably not get any warnings before logging in, because it converts and uses the same host keys openssh uses (except Ed25519 keys, as dropbear does not support them). In the case you are using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mkinitcpio-tinyssh">mkinitcpio-tinyssh</a></span>, a script <code>tinyssh-convert</code> is bundled, so you can use the same keys as your <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=openssh">openssh</a></span> installation (currently only Ed25519 keys). It may be required to manually copy the host key, via <code>tinyssh-convert</code>, to <code>/etc/tinyssh/sshkeydir</code>. In either case, you should have run <a href="../../en/OpenSSH.html#Daemon_management" title="OpenSSH">the ssh daemon</a> at least once, using the provided systemd units, so the keys can be generated first. After rebooting the machine and connecting via ssh, you should be prompted for the passphrase to unlock the device, after which the system will complete its boot process and you can then ssh to it <a href="../../en/OpenSSH.html#Client_usage" title="OpenSSH">as you normally would</a> (with the remote user of your choice).</li>
+<li>Restart the remote system and <a href="../../en/OpenSSH.html#Client_usage" title="OpenSSH">ssh to it</a> on port 222 as the <code>root</code> user. The SSH server in the initramfs generates its own set of host keys and listens on a non-standard port by default to allow your SSH client to verify a separate set of host keys for the initramfs and the main SSH server. Reusing host keys from the main SSH server isn't recommended as the initramfs image may be world-readable which would expose them and make the system vulnerable to MITM attacks. Both the listening port and the host key types can be configured, see the hook documentation for details (<code>mkinitcpio -H dropbear</code> or <code>mkinitcpio -H tinyssh</code>). You will be prompted for the passphrase to unlock the encrypted device. After unlocking, the system will complete its boot process and you can ssh to it <a href="../../en/OpenSSH.html#Client_usage" title="OpenSSH">as you normally would</a>.</li>
 </ol>
-<div class="mw-heading mw-heading4"><h4 id="Enabling_Wi-Fi">Enabling Wi-Fi</h4></div>
-<p>The <code>netconf</code> hook is normally used with an Ethernet connection. In case you want to setup a computer with wireless only, and unlock it via Wi-Fi, you can use a predefined hook or create a custom hook to connect to a Wi-Fi network before the <code>netconf</code> hook is run.
-</p>
-<div class="mw-heading mw-heading5"><h5 id="Predefined_hook">Predefined hook</h5></div>
-<p>You can install a predefined hook based on the one in this wiki:
-</p>
-<ol>
-<li>Install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/mkinitcpio-wifi/">mkinitcpio-wifi</a></span><sup><small>AUR</small></sup>.</li>
-<li>Configure your Wi-Fi connection by creating a <i>wpa_supplicant</i> configuration with your network properties: <pre>wpa_passphrase "ESSID" "passphrase" &gt; /etc/wpa_supplicant/initcpio.conf</pre>
-</li>
-<li>Add the <code>wifi</code> hook before <code>netconf</code> in your <code>/etc/mkinitcpio.conf</code>. Your Wi-Fi-related modules should be auto-detected, if not: add them to the <code>MODULES</code> section.</li>
-<li>Add <code>ip=:::::wlan0:dhcp</code> to the <a href="../../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a>.</li>
-<li>
-<a href="../../en/Regenerate_the_initramfs.html" class="mw-redirect" title="Regenerate the initramfs">Regenerate the initramfs</a>.</li>
-<li>Update the configuration of your <a href="../../en/Boot_loader.html" class="mw-redirect" title="Boot loader">boot loader</a>.</li>
-</ol>
-<div class="mw-heading mw-heading5"><h5 id="Custom_hook">Custom hook</h5></div>
-<p>Below example shows a setup using a USB Wi-Fi adapter, connecting to a Wi-Fi network protected with WPA2-PSK. In case you use for example WEP or another initramfs generator, you might need to adjust accordingly.
-</p>
-<ol>
-<li>Modify <code>/etc/mkinitcpio.conf</code>:
-<ul>
-<li>Add the needed kernel module for your specific Wi-Fi adapter.</li>
-<li>Include the <code>wpa_passphrase</code> and <code>wpa_supplicant</code> binaries.</li>
-<li>Add a hook <code>wifi</code> (or a name of your choice, this is the custom hook that will be created) before the <code>net</code> hook.<pre>MODULES=(<i>module</i>)<br>BINARIES=(wpa_passphrase wpa_supplicant)<br>HOOKS=(base udev autodetect ... <b>wifi</b> net ... dropbear encryptssh ...)</pre>
-</li>
-</ul>
-</li>
-<li>Create the <code>wifi</code> hook in <code>/etc/initcpio/hooks/wifi</code>:<pre>run_hook ()<br>{<br>	# Sleep a couple of seconds so wlan0 is setup by kernel<br>	sleep 5<br><br>	# Set wlan0 to up<br>	ip link set wlan0 up<br><br>	# Associate with Wi-Fi network<br>	# 1. Save temp config file<br>	wpa_passphrase "<i>network ESSID</i>" "<i>pass phrase</i>" &gt; /tmp/wifi<br><br>	# 2. Associate<br>	wpa_supplicant -B -D nl80211,wext -i wlan0 -c /tmp/wifi<br><br>	# Sleep a couple of seconds so that wpa_supplicant finishes connecting<br>	sleep 5<br><br>	# wlan0 should now be connected and ready to be assigned an ip by the net hook<br>}<br><br>run_cleanuphook ()<br>{<br>	# Kill wpa_supplicant running in the background<br>	killall wpa_supplicant<br><br>	# Set wlan0 link down<br>	ip link set wlan0 down<br><br>	# wlan0 should now be fully disconnected from the Wi-Fi network<br>}</pre>
-</li>
-<li>Create the hook installation file in <code>/etc/initcpio/install/wifi</code>:<pre>build ()<br>{<br>	add_runscript<br>}<br>help ()<br>{<br>cat&lt;&lt;HELPEOF<br>	Enables Wi-Fi on boot, for dropbear ssh unlocking of disk.<br>HELPEOF<br>}</pre>
-</li>
-<li>Add <code>ip=:::::wlan0:dhcp</code> to the <a href="../../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a>. Remove <code>ip=:::::eth0:dhcp</code> so it does not conflict.</li>
-<li>Optionally create an additional boot entry with kernel parameter <code>ip=:::::eth0:dhcp</code>.</li>
-<li>
-<a href="../../en/Regenerate_the_initramfs.html" class="mw-redirect" title="Regenerate the initramfs">Regenerate the initramfs</a>.</li>
-<li>Update the configuration of your <a href="../../en/Boot_loader.html" class="mw-redirect" title="Boot loader">boot loader</a>.</li>
-</ol>
-<p>Remember to setup <a href="../../en/Network_configuration/Wireless.html" class="mw-redirect" title="Wi-Fi">Wi-Fi</a>, so you are able to login once the system is fully booted. In case you are unable to connect to the Wi-Fi network, try increasing the sleep times a bit.
-</p>
 <div class="mw-heading mw-heading3"><h3 id="systemd_based_initramfs_(built_with_dracut)">
 <span id="systemd_based_initramfs_.28built_with_dracut.29"></span>systemd based initramfs (built with dracut)</h3></div>
 <p>If you are using <a href="../../en/Dracut.html" title="Dracut">dracut</a> instead of <a href="../../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a>, you might want to check out <a rel="nofollow" class="external text" href="https://github.com/gsauthof/dracut-sshd">dracut-sshd</a> as an alternative to the above options.
@@ -1264,8 +1180,8 @@ HOOKS=(base udev autodetect microcode modconf kms keyboard keymap consolefont bl
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/Specialties&amp;oldid=862935">https://wiki.archlinux.org/index.php?title=Dm-crypt/Specialties&amp;oldid=862935</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 27 January 2026, at 06:46.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/Specialties&amp;oldid=868342">https://wiki.archlinux.org/index.php?title=Dm-crypt/Specialties&amp;oldid=868342</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 8 March 2026, at 08:36.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

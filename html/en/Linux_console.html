@@ -218,8 +218,35 @@
 			</div>
 		</a>
 		
+			<button aria-controls="toc-Automatic_suspend-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle Automatic suspend subsection</span>
+			</button>
+		
 		<ul id="toc-Automatic_suspend-sublist" class="vector-toc-list">
-		</ul>
+			<li id="toc-consoleblank" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#consoleblank">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">7.1</span>
+					<span>consoleblank</span>
+				</div>
+			</a>
+			
+			<ul id="toc-consoleblank-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-setterm" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#setterm">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">7.2</span>
+					<span>setterm</span>
+				</div>
+			</a>
+			
+			<ul id="toc-setterm-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
 	</li>
 	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
 		<a class="vector-toc-link" href="#See_also">
@@ -316,7 +343,7 @@
 <div class="mw-heading mw-heading2"><h2 id="Implementation">Implementation</h2></div>
 <p>The console, unlike most services that interact directly with users, is implemented in the kernel. This contrasts with terminal emulation software, such as <a href="../en/Xterm.html" title="Xterm">Xterm</a>, which is implemented in user space as a normal application. The console has always been part of released Linux kernels, but has undergone changes in its history, most notably the transition to using the <a href="https://en.wikipedia.org/wiki/Linux_framebuffer" class="extiw" title="wikipedia:Linux framebuffer">framebuffer</a> and support for <a href="https://en.wikipedia.org/wiki/Unicode" class="extiw" title="wikipedia:Unicode">Unicode</a>.
 </p>
-<p>Despite many improvements in the console, its full backward compatibility with legacy hardware means it is limited compared to a graphical terminal emulator.  The main difference between the Linux console and graphical terminal emulators is the shells in the Linux console are attached directly to <a href="../en/Getty.html" class="mw-redirect" title="Tty">TTY</a> devices (<code>/dev/tty*</code>), whereas the shells in a graphical terminal emulator are attached to pseudo-TTYs (<code>/dev/pty*</code>).
+<p>Despite many improvements in the console, its full backward compatibility with legacy hardware means it is limited compared to a graphical terminal emulator.  The main difference between the Linux console and graphical terminal emulators is the shells in the Linux console are attached directly to <a href="../en/Getty.html" class="mw-redirect" title="Tty">TTY</a> devices (<code>/dev/tty*</code>), whereas the shells in a graphical terminal emulator are attached to pseudo-TTYs slave (<code>/dev/pts/*</code>).
 </p>
 <p>Also, graphical terminal emulators can have many more features than the Linux console, including a richer set of available fonts, multiple tabs/windows, split views, scrollback buffers/sliders, background colors/images (optionally with transparency), etc.  Some of these features can be used in the Linux console with terminal multiplexers, such as <a href="../en/Tmux.html" title="Tmux">Tmux</a> or <a href="../en/GNU_Screen.html" title="GNU Screen">GNU Screen</a>, or in certain text user interface programs (TUI) typically relying on libraries such as ncurses and the like, e.g. <a href="../en/Vim.html" title="Vim">Vim</a>, <a href="../en/Nano.html" title="Nano">nano</a>, or <a href="../en/Emacs.html" title="Emacs">Emacs</a>.  These can also be used in graphical terminal emulators, if desired.
 </p>
@@ -372,7 +399,7 @@
 <td>
 <code>Scroll Lock</code>
 </td>
-<td>When Scroll Lock is activated, input/output is locked
+<td>When Scroll Lock is activated, input/output is locked. With PCs, <code>Ctrl+s</code> activates, <code>Ctrl+q</code> deactivates.
 </td>
 </tr>
 <tr>
@@ -423,19 +450,19 @@ special characters <a rel="nofollow" class="external autonumber" href="https://l
 </p>
 <p><code>setfont</code> temporarily changes the font if passed a font name (in <code>/usr/share/kbd/consolefonts/</code>) such as
 </p>
-<pre>$ setfont lat2-16 -m 8859-2
+<pre>$ setfont lat2-16 --consolemap 8859-2
 </pre>
 <p>Font names are case-sensitive. With no parameter, <code>setfont</code> returns the console to the default font.
 </p>
 <p>So to have a <b>small 8x8</b> font, with that font installed like seen below, use e.g.:
 </p>
-<pre>$ setfont -h8 /usr/share/kbd/consolefonts/drdos8x8.psfu.gz
+<pre>$ setfont --font-height=8 /usr/share/kbd/consolefonts/drdos8x8.psfu.gz
 </pre>
 <p>To have a <b>bigger</b> font, the Terminus font (<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=terminus-font">terminus-font</a></span>) is available in many sizes, such as <code>ter-132b</code> which is large.
 </p>
-<p>You can also append <code>-d</code> for double size. This would be using a 64*64 font:
+<p>You can further enlarge it. This would be using a 64*64 font:
 </p>
-<pre>$ setfont -d ter-132n
+<pre>$ setfont --double ter-132n
 </pre>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip</strong> 
@@ -659,9 +686,23 @@ FONT_MAP=8859-2</pre>
 <p>See <a href="../en/PC_speaker.html#beep" title="PC speaker">PC speaker#beep</a>.
 </p>
 <div class="mw-heading mw-heading2"><h2 id="Automatic_suspend">Automatic suspend</h2></div>
-<p>You can configure the Linux console to clear the screen (and, on many devices, turn off the display power) when unused for some time, similar to the behavior of most desktop environments.
+<p>You can configure the Linux console to blank the screen (and, on many devices, turn off the display power) when unused for some time, similar to the behavior of most desktop environments.
 </p>
-<p>To do so, add the <code>consoleblank=<i>x</i></code> <a href="../en/Kernel_parameter.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a>, where <code><i>x</i></code> is the number of seconds before the console should go to sleep.
+<div class="mw-heading mw-heading3"><h3 id="consoleblank">consoleblank</h3></div>
+<p>One way to do so is by the <code>consoleblank=<i>x</i></code> <a href="../en/Kernel_parameter.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a>, where <code><i>x</i></code> is the number of seconds before the console should go to sleep. One can examine the current value by <code>cat /sys/module/kernel/parameters/consoleblank</code>. One thing this method differ from the <a href="#setterm">#setterm</a> method below is that it will also blank a login screen if no one logged in at it for more than the value of <code>/sys/module/kernel/parameters/consoleblank</code> seconds.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="setterm">setterm</h3></div>
+<p>Alternatively, from within a shell prompt, use, for example
+</p>
+<pre>$ setterm --blank 5 --powerdown 1
+</pre>
+<p>With this command, the values of 5 and 1 denote time in minutes. When having this line in a shell configuration file such as <code>.profile</code> or <code>.zprofile</code>, wrapping the command as below is an attempt to have it run only when a linux console is used.
+</p>
+<pre>if [[ "$TERM" == "linux" ]]; then 
+    setterm --blank 5 --powerdown 1
+fi
+</pre>
+<p>This method does not require root privileges. On the other hand, it requires logging in before it begins counting idle times.
 </p>
 <div class="mw-heading mw-heading2"><h2 id="See_also">See also</h2></div>
 <ul><li><a rel="nofollow" class="external text" href="https://www.linusakesson.net/programming/tty/">The TTY demystified – Linus Åkesson</a></li></ul>
@@ -682,8 +723,8 @@ FONT_MAP=8859-2</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Linux_console&amp;oldid=862819">https://wiki.archlinux.org/index.php?title=Linux_console&amp;oldid=862819</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 26 January 2026, at 00:08.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Linux_console&amp;oldid=869363">https://wiki.archlinux.org/index.php?title=Linux_console&amp;oldid=869363</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 18 March 2026, at 16:02.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

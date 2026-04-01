@@ -227,10 +227,21 @@
 		</li>
 	</ul>
 	</li>
+	<li id="toc-cfdisk" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#cfdisk">
+			<div class="vector-toc-text">
+				<span class="vector-toc-numb">7</span>
+				<span>cfdisk</span>
+			</div>
+		</a>
+		
+		<ul id="toc-cfdisk-sublist" class="vector-toc-list">
+		</ul>
+	</li>
 	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
 		<a class="vector-toc-link" href="#See_also">
 			<div class="vector-toc-text">
-				<span class="vector-toc-numb">7</span>
+				<span class="vector-toc-numb">8</span>
 				<span>See also</span>
 			</div>
 		</a>
@@ -319,12 +330,16 @@
 </div>
 <p><a rel="nofollow" class="external text" href="https://git.kernel.org/cgit/utils/util-linux/util-linux.git/">util-linux fdisk</a> is a dialogue-driven command-line utility that creates and manipulates partition tables and partitions on a hard disk. Hard disks are divided into partitions and this division is described in the partition table.
 </p>
-<p>This article covers <span class="plainlinks archwiki-template-man" title="$ man 8 fdisk"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/fdisk.8">fdisk(8)</a></span> and its related <span class="plainlinks archwiki-template-man" title="$ man 8 sfdisk"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/sfdisk.8">sfdisk(8)</a></span> utility.
+<p>This article covers 3 partitioning tools with different interfaces:
 </p>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note</strong> <i>fdisk</i> supports <a href="../en/Partitioning.html#GUID_Partition_Table" class="mw-redirect" title="GPT">GPT</a> since <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=util-linux">util-linux</a></span> 2.23. <a rel="nofollow" class="external autonumber" href="https://git.kernel.org/pub/scm/utils/util-linux/util-linux.git/commit/?id=766d5156c43b784700d28d1c1141008b2bf35ed7">[1]</a> Alternatively, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=gptfdisk">gptfdisk</a></span> may be used; see <a href="../en/GPT_fdisk.html" class="mw-redirect" title="Gdisk">gdisk</a> for more information.</div>
-<div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip</strong> For basic partitioning functionality with a <a href="https://en.wikipedia.org/wiki/curses_(programming_library)" class="extiw" title="wikipedia:curses (programming library)">curses</a>-based user interface, <span class="plainlinks archwiki-template-man" title="$ man 8 cfdisk"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/cfdisk.8">cfdisk(8)</a></span> can be used.</div>
+<ul>
+<li>
+<span class="plainlinks archwiki-template-man" title="$ man 8 fdisk"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/fdisk.8">fdisk(8)</a></span> - the main dialog-driven interactive tool,</li>
+<li>
+<span class="plainlinks archwiki-template-man" title="$ man 8 sfdisk"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/sfdisk.8">sfdisk(8)</a></span> - scripting-friendly tool, used for automatic provisioning and backing up/restoring partitioning,</li>
+<li>
+<span class="plainlinks archwiki-template-man" title="$ man 8 cfdisk"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/cfdisk.8">cfdisk(8)</a></span> - TUI-oriented interactive tool, often considered more user-friendly.</li>
+</ul>
 <meta property="mw:PageProp/toc">
 <div class="mw-heading mw-heading2"><h2 id="Installation">Installation</h2></div>
 <p><i>fdisk</i> and its associated utilities are provided by the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=util-linux">util-linux</a></span> package, which is a dependency of the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=base">base</a></span> <a href="../en/Meta_package.html" class="mw-redirect" title="Meta package">meta package</a>.
@@ -480,6 +495,18 @@ sector-size: 512
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note</strong> The kernel must read the new partition table for the partitions (e.g. <code>/dev/sda1</code>) to be usable. Reboot the system or tell the kernel to <a rel="nofollow" class="external text" href="https://serverfault.com/questions/36038/reread-partition-table-without-rebooting">reread the partition table</a> (i.e. <code>partprobe /dev/sda</code>).</div>
+<div class="mw-heading mw-heading2"><h2 id="cfdisk">cfdisk</h2></div>
+<p>The <span class="plainlinks archwiki-template-man" title="$ man 8 cfdisk"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/cfdisk.8">cfdisk(8)</a></span> utility offers a <a href="https://en.wikipedia.org/wiki/curses_(programming_library)" class="extiw" title="wikipedia:curses (programming library)">curses</a>-based TUI that is more user-friendly than fdisk, but does not support most fdisk features listed under extra/expert commands. Launch it like this:
+</p>
+<pre># cfdisk /dev/sda
+</pre>
+<ul>
+<li>You can press the <code>?</code> key on your keyboard to display the help screen for the TUI.</li>
+<li>When cfdisk starts, the TUI displays the current partition list on top of the screen. One of the partitions is always selected with a <code>&gt;&gt;</code> cursor and the inverted background - you can move the selection with up/down arrow keys.</li>
+<li>On the bottom, cfdisk displays details on the currently selected partition and a list of commands that can be performed on it - use left/right arrow keys to select a command, then Enter to run it. Help text is displayed under the commands.</li>
+<li>Similar to standard fdisk, all actions are queued up and executed only when you run the <code>Write</code> command - nothing happens on the disk until then. You can quit the program at any time to safely discard all your changes.</li>
+<li>If your disk does not have a partition table already, you will be prompted to create one. If you want to change the existing partition table format, you must either wipe the disk contents or use classic fdisk to <a class="mw-selflink-fragment" href="#Create_new_table">clear and recreate the partition table</a>.</li>
+</ul>
 <div class="mw-heading mw-heading2"><h2 id="See_also">See also</h2></div>
 <ul><li><a rel="nofollow" class="external text" href="https://www.redhat.com/sysadmin/partitions-fdisk">Managing partitions in Linux with fdisk</a></li></ul>
 </div>
@@ -499,8 +526,8 @@ sector-size: 512
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Fdisk&amp;oldid=846675">https://wiki.archlinux.org/index.php?title=Fdisk&amp;oldid=846675</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 11 September 2025, at 10:32.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Fdisk&amp;oldid=869036">https://wiki.archlinux.org/index.php?title=Fdisk&amp;oldid=869036</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 14 March 2026, at 09:09.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

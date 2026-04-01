@@ -943,7 +943,7 @@ proxyAddresses: smtp:administrator@<b>internal</b>.<b>domain</b>.<b>tld</b>
 </p>
 <ol>
 <li>Ensure the sogo user is created in the database (see <a href="#MySQL/MariaDB">#MySQL/MariaDB</a>).</li>
-<li>Ensure that there is a database named sogo with the database scheme utf8 (and not utf8mb4). This is necessary because the automatic creation of the <i>sogo_sessions_folder</i> table will fail otherwise:</li>
+<li>Ensure that there is a database named sogo with the database scheme utf8 (and not utf8mb4). This is necessary because the automatic creation of the <i>sogo_sessions_folder</i> table will fail with the following output:</li>
 </ol>
 <pre> SQL: SELECT count(*) FROM sogo_sessions_folder;
  ERROR: Table 'sogo.sogo_sessions_folder' doesn't exist
@@ -952,7 +952,7 @@ proxyAddresses: smtp:administrator@<b>internal</b>.<b>domain</b>.<b>tld</b>
 </pre>
 <p>Scheme can be altered via
 </p>
-<pre> ALTER SCHEMA `sogo`  DEFAULT CHARACTER SET utf8
+<pre>ALTER SCHEMA `sogo`  DEFAULT CHARACTER SET utf8;
 </pre>
 <p>Update: There seems to be a way around this and utf8mb4 could be used. Check page 33 ff of SOGo installation guide pdf.
 </p>
@@ -988,81 +988,79 @@ proxyAddresses: smtp:administrator@<b>internal</b>.<b>domain</b>.<b>tld</b>
 <p>Create a very basic dovecot configuration layout:
 </p>
 <pre># install -vdm755 /etc/dovecot/conf.d
-# cp /usr/share/doc/dovecot/example-config/dovecot.conf /etc/dovecot/
-# cp -r /usr/share/doc/dovecot/example-config/conf.d /etc/dovecot/conf.d.dist
 </pre>
-<p>Remove the submission protocol from the <code>/etc/dovecot/dovecot.conf</code> file (this will be handled by postfix). Additionally, remove pop3 if you do not wish to provide POP3 support:
+<p>Make a backup of the default <code>/etc/dovecot/dovecot.conf</code> file:
+</p>
+<pre># cp /etc/dovecot/dovecot.conf{,.orig}
+</pre>
+<p>Create a very simple dovecot.conf file by removing everything after the protocols section.
 </p>
 <pre>...
-protocols = imap lmtp
+# Enable wanted protocols:
+protocols {
+  imap = yes
+  lmtp = yes
+}
 ...
 </pre>
 <p>Then create the file <code>/etc/dovecot/conf.d/local.conf</code> with this content:
 </p>
-<pre>auth_mechanisms = plain login
-disable_plaintext_auth = no
-ssl = no
-auth_username_format = %n
-mail_location = /home/vmail/%Lu/Maildir
+<pre># --- Security &amp; Auth ---
+auth_mechanisms = plain login
+auth_username_format = %{user | username}
 </pre>
 <p>Enable and start <code>dovecot</code>.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="User_sources">User sources</h3></div>
 <div class="mw-heading mw-heading4"><h4 id="Active_Directory_2">Active Directory</h4></div>
-<p>Add the LDAP lookup configuration <code>/etc/dovecot/conf.d/ldap.conf</code>:
+<p>Add the LDAP lookup configuration <code>/etc/dovecot/conf.d/ldap.conf</code>. Replace dc=<b>internal</b>,dc=<b>domain</b>,dc=<b>tld</b>, <b>INTERNAL</b>, and <b>ldapPW</b> with appropriate values:
 </p>
-<pre>passdb ldap {
-    driver = ldap
-    args = /etc/dovecot/dovecot-ldap-passdb.conf
-}
-userdb ldap {
-    driver = ldap
-    args = /etc/dovecot/dovecot-ldap-userdb.conf
-}
-</pre>
-<p>Set permissions:
-</p>
-<pre># chmod 0644 /etc/dovecot/conf.d/ldap.conf
-# chown root:root /etc/dovecot/conf.d/ldap.conf
-</pre>
-<p>Create the LDAP user and password configuration files (replace dc=<b>internal</b>,dc=<b>domain</b>,dc=<b>tld</b>, <b>INTERNAL</b>, and <b>ldapPW</b> with appropriate values). Remove the tls lines below if you have not enabled the TLS configuration in your directory:
-</p>
-<p><code>/etc/dovecot/dovecot-ldap-passdb.conf</code>
-</p>
-<pre>hosts = localhost
-auth_bind = yes
-auth_bind_userdn = <b>INTERNAL</b>\%u
-ldap_version = 3
-tls = yes
-base = dc=<b>internal</b>,dc=<b>domain</b>,dc=<b>tld</b>
-scope = subtree
-deref = never
-pass_filter = (&amp;(objectClass=person)(sAMAccountName=%u)(mail=*))
-</pre>
-<p><code>/etc/dovecot/dovecot-ldap-userdb.conf</code>
-</p>
-<pre>hosts = localhost
-dn = cn=ldap,cn=Users,dc=<b>internal</b>,dc=<b>domain</b>,dc=<b>tld</b>
-dnpass = <b>ldapPW</b>
-ldap_version = 3
-tls = yes
-base = cn=Users,dc=<b>internal</b>,dc=<b>domain</b>,dc=<b>tld</b>
-user_attrs = =uid=5000,=gid=5000,=home=/home/vmail/%Lu,=mail=maildir:/home/vmail/%Lu/Maildir/
-user_filter = (&amp;(objectClass=person)(sAMAccountName=%u)(mail=*))
+<pre># Dovecot 2.4 LDAP configuration
 
-# Attributes and filter to get a list of all users
-iterate_attrs = sAMAccountName=user
-iterate_filter = (objectClass=person)
+# Connection
+ldap_uris = ldap://<b>server</b>.<b>internal</b>.<b>domain</b>.<b>tld</b>/
+ldap_starttls = yes
+
+# Service account used for DN lookup
+ldap_auth_dn = cn=ldap,cn=Users,dc=<b>internal</b>,dc=<b>domain</b>,dc=<b>tld</b>
+ldap_auth_dn_password = <b>ldapPW</b>
+
+# Search base
+ldap_base = dc=<b>internal</b>,dc=<b>domain</b>,dc=<b>tld</b>
+ldap_scope = subtree
+
+# PassDB settings
+passdb ldap {
+  # Explicitly enable auth bind (bind as user DN with provided password)
+  passdb_ldap_bind = yes
+
+  # Lookup user DN safely using sAMAccountName
+  passdb_ldap_filter = (&amp;(objectClass=person)(sAMAccountName=%{user | username})(mail=*))
+}
+
+# UserDB settings
+userdb ldap {
+  userdb_ldap_filter = (&amp;(objectClass=person)(sAMAccountName=%{user | username})(mail=*))
+
+  userdb_fields {
+    uid  = 5000
+    gid  = 5000
+    home = /home/vmail/%{user | lower}
+    mail_driver = maildir
+    mail_path   = /home/vmail/%{user | lower}/Maildir
+  }
+}
 </pre>
-<p>Set permissions:
+<p><br>
+Set permissions:
 </p>
-<pre># chown root:root /etc/dovecot/dovecot-ldap-{pass,user}db.conf
-# chmod 0600 /etc/dovecot/dovecot-ldap-userdb.conf
-# chmod 0644 /etc/dovecot/dovecot-ldap-passdb.conf
+<pre># chmod 0600 /etc/dovecot/conf.d/ldap.conf
+# chown root:root /etc/dovecot/conf.d/ldap.conf
 </pre>
 <p>Create the SASL configuration <code>/etc/dovecot/conf.d/sasl.conf</code>:
 </p>
-<pre>service auth {
+<pre># Dovecot 2.4 SASL configuration
+service auth {
     unix_listener /var/spool/postfix/private/auth {
         mode = 0660
         user = postfix
@@ -1114,7 +1112,7 @@ Connection closed by foreign host.
 <div class="mw-heading mw-heading3"><h3 id="LMTP_configuration">LMTP configuration</h3></div>
 <p>Create the LMTP configuration file <code>/etc/dovecot/conf.d/lmtp.conf</code>:
 </p>
-<pre>mail_location = /home/vmail/%Lu/Maildir
+<pre># Dovecot 2.4 LMTP configuration
 service lmtp {
   unix_listener /var/spool/postfix/private/dovecot-lmtp {
     mode = 0600
@@ -1134,41 +1132,42 @@ protocol lmtp {
 <div class="mw-heading mw-heading3"><h3 id="TLS_configuration">TLS configuration</h3></div>
 <p>Put your certificates into place and create the TLS configuration file <code>/etc/dovecot/conf.d/tls.conf</code> (adjust paths and names as necessary). The keyfile should be owned by root with 0600 permissions. Any intermediate certificates should be concatenated after the public cert:
 </p>
-<pre>ssl = yes
-ssl_cert = &lt;/etc/dovecot/ssl/<b>host</b>.<b>domain</b>.<b>tld</b>.pem
-ssl_key = &lt;/etc/dovecot/ssl/<b>host</b>.<b>domain</b>.<b>tld</b>.key
+<pre># --- Dovecot 2.4 TLS configuration ---
+ssl = required
+ssl_server_cert_file = /etc/dovecot/ssl/<b>host</b>.<b>domain</b>.<b>tld</b>.pem
+ssl_server_key_file = /etc/dovecot/ssl/<b>host</b>.<b>domain</b>.<b>tld</b>.key
 </pre>
 <pre># chmod 644 /etc/dovecot/conf.d/tls.conf
 # chmod 600 /etc/dovecot/ssl/<b>host</b>.<b>domain</b>.<b>tld</b>.key
 </pre>
-<p>Add the imaps protocol to the <code>/etc/dovecot/dovecot.conf</code> file:
+<p>Reload Dovecot:
 </p>
-<pre>...
-protocols = imap imaps lmtp
-...
-</pre>
-<p>Remove the earlier explicitly defined values from <code>local.conf</code> and reload Dovecot:
-</p>
-<pre># sed -e '/^ssl/d' -e '/disable_plaintext/s/no/yes/' \
-      -i /etc/dovecot/conf.d/local.conf
-# dovecot reload
+<pre># dovecot reload
 </pre>
 <div class="mw-heading mw-heading3"><h3 id="Sieve_configuration">Sieve configuration</h3></div>
-<p>If you wish to support sieve configurations, install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pigeonhole">pigeonhole</a></span> and edit <code>/etc/dovecot/dovecot.conf</code>.
-Uncomment the protocols line and add sieve as a service. Remove submission (this will be handled by <a href="../en/Postfix.html" title="Postfix">Postfix</a> or <a href="../en/Exim.html" title="Exim">Exim</a>) and pop3 (if you do not intend to provide pop access):
+<p>If you wish to support sieve configurations, install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pigeonhole">pigeonhole</a></span>.
+</p>
+<p>If you want to provie ManageSieve service so that users can upload thier own sieve configuration, add sieve to the protocols section in <code>/etc/dovecot/dovecot.conf</code>.
 </p>
 <pre>...
-protocols = imap imaps lmtp sieve
+protocols {
+  imap  = yes
+  lmtp  = yes
+  sieve = yes
+}
 ...
 </pre>
-<p>Append the following to <code>/etc/dovecot/conf.d/local.conf</code>:
+<p>To use sieve in LMTP delivery, add the following to the protocol section in <code>/etc/dovecot/conf.d/lmtp.conf</code>:
 </p>
 <pre>...
-plugin {
-   sieve_before = /home/vmail/sieve/spam-global.sieve
-   sieve=/home/vmail/%Lu/dovecot.sieve
-   sieve_dir=/home/vmail/%Lu/sieve
+protocol lmtp {
+  postmaster_address = postmaster@<b>domain</b>.<b>tld</b>
+  # Run Sieve at delivery time (LMTP)
+  mail_plugins {
+    sieve = yes
+  }
 }
+...
 </pre>
 <p>Create the global sieve directory:
 </p>
@@ -1177,36 +1176,21 @@ plugin {
 <p>Create the <code>/home/vmail/sieve/spam-global.sieve</code> file with the following contents:
 </p>
 <pre>require "fileinto";
+
 if header :contains "X-Spam-Flag" "YES" {
   fileinto "Spam";
 }
 </pre>
+<p>Complie the global sieve configuration.
+</p>
+<pre>sievec /home/vmail/sieve/spam-global.sieve
+
+</pre>
 <p>Set permissions on the directory (and file):
 </p>
 <pre>chown -R vmail:vmail /home/vmail/sieve
-</pre>
-<p>Modify the <code>/etc/dovecot/conf.d/lmtp.conf</code> file, adding the bold text below:
-</p>
-<pre>mail_location = /home/vmail/%Lu/Maildir
-service lmtp {
-  unix_listener /var/spool/postfix/private/dovecot-lmtp {
-    mode = 0600
-    user = postfix
-    group = postfix
-  }
-  user = vmail
-}
-
-protocol lmtp {
-  postmaster_address = postmaster@domain.tld
-  <b>mail_plugins = sieve</b>
-}
-
-<b>plugin {</b>
-  <b>sieve_before = /home/vmail/sieve/spam-global.sieve</b>
-  <b>sieve = /home/vmail/%Lu/dovecot.sieve</b>
-  <b>sieve_dir = /home/vmail/%Lu/sieve</b>
-<b>}</b>
+chmod 750 /home/vmail/sieve
+chmod 640 /home/vmail/sieve/spam-global.*
 </pre>
 <p>Reload dovecot
 </p>
@@ -1237,7 +1221,7 @@ protocol lmtp {
 <p>Install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=postfix-ldap">postfix-ldap</a></span> and create a LDAP alias and group maps for Postfix by pasting the following lines in the file <code>/etc/postfix/ldap-alias.cf</code> as root (replace dc=<b>internal</b>,dc=<b>domain</b>,dc=<b>tld</b> with appropriate values and <b>ldapPW</b> with the password of the ldap user). If TLS has not been configured for your directory, remove the start_tls line:
 </p>
 <pre># Directory settings
-server_host = 127.0.0.1
+server_host = ldap://<b>server</b>.<b>internal</b>.<b>domain</b>.<b>tld</b>:389
 search_base = dc=<b>internal</b>,dc=<b>domain</b>,dc=<b>tld</b>
 scope = sub
 version = 3
@@ -1326,22 +1310,15 @@ leaf_result_attribute = mail
 <pre># postconf -e smtpd_tls_key_file=/etc/postfix/ssl/<b>mail.domain.tld.key</b>
 # postconf -e smtpd_tls_cert_file=/etc/postfix/ssl/<b>mail.domain.tld.pem</b>
 </pre>
-<p>Create a map to verify addresses to authenticated users <code>/etc/postfix/ldap-sender.cf</code>. If TLS has not been configured for your directory, remove the start_tls line:
+<p>Create a map to verify addresses to authenticated users <code>/etc/postfix/ldap-sender.cf</code>. 
 </p>
-<pre># Directory settings
-server_host = localhost
-search_base = dc=<b>internal</b>,dc=<b>domain</b>,dc=<b>tld</b>
-version = 3
-scope = sub
-start_tls = yes
-
-# User Binding
-bind = yes
-bind_dn = cn=ldap,cn=Users,dc=<b>internal</b>,dc=<b>domain</b>,dc=<b>tld</b>
-bind_pw = <b>ldapPW</b>
-
-# Filter
-query_filter = (&amp;(objectclass=person)(proxyAddresses=smtp:%s))
+<pre>sed -e '/^query/d' \
+    -e '/^result/d' \
+    /etc/postfix/ldap-alias.cf &gt; /etc/postfix/ldap-sender.cf
+</pre>
+<p>Now, edit the file and append the folowing lines:
+</p>
+<pre>query_filter = (&amp;(objectclass=person)(proxyAddresses=smtp:%s))
 leaf_result_attribute = proxyAddresses
 result_attribute = sAMAccountName
 </pre>
@@ -1367,24 +1344,26 @@ result_attribute = sAMAccountName
 </p>
 <pre>AEFkbWluaXN0cmF0b3IAVXNlclBhc3M=
 </pre>
-<p>Now, open a <i>telnet</i> session and test (commands you enter are in bold, replace <b>host.domain.tld</b> with the real external FQDN and <b>AEFkbWluaXN0cmF0b3IAVXNlclBhc3M=</b> with the result of the previous command):
+<p>Now, open an <i>openssl</i> session and test (commands you enter are in bold, replace <b>server.internal.domain.tld</b> with the real external FQDN and <b>AEFkbWluaXN0cmF0b3IAVXNlclBhc3M=</b> with the result of the previous command):
 </p>
-<pre>$ <b>telnet localhost 25</b>
-Trying 127.0.0.1...
-Connected to localhost.
-Escape character is '^]'.
-220 host.domain.tld ESMTP Postfix
-<b>ehlo host.domain.tld</b>
-250-host.domain.tld
+<pre>$ <b>openssl s_client -starttls smtp -crlf -connect server.internal.domain.tld:587</b>
+Connecting to 127.0.1.1
+CONNECTED(00000003)<b></b>
+...
+---
+read R BLOCK
+<b>ehlo server.internal.domain.tld</b>
+250-server.internal.domain.tld
 250-PIPELINING
 250-SIZE 10240000
 250-VRFY
 250-ETRN
-250-STARTTLS
 250-AUTH PLAIN LOGIN
 250-ENHANCEDSTATUSCODES
 250-8BITMIME
-250 DSN
+250-DSN
+250-SMTPUTF8
+250 CHUNKING
 <b>AUTH PLAIN AEFkbWluaXN0cmF0b3IAVXNlclBhc3M=</b>
 235 2.7.0 Authentication successful
 <b>quit</b>
@@ -1395,74 +1374,68 @@ Connection closed by foreign host.
 </p>
 <div class="mw-heading mw-heading2"><h2 id="SOGo_configuration">SOGo configuration</h2></div>
 <div class="mw-heading mw-heading3"><h3 id="Basic_configuration_3">Basic configuration</h3></div>
-<p>Edit the SOGo http configuration file, <code>/etc/httpd/conf/extra/SOGo.conf</code>, and comment out the following lines for testing (until SSL certs are in place and configuration is complete):
-</p>
-<pre>## adjust the following to your configuration
-#  RequestHeader set "x-webobjects-server-port" "443"
-#  RequestHeader set "x-webobjects-server-name" "yourhostname"
-#  RequestHeader set "x-webobjects-server-url" "https://yourhostname"
-</pre>
 <p>Create a suitable SOGo configuration file in <code>/etc/sogo/sogo.conf</code> (replace items in bold with appropriate values). If using PostgreSQL, replace the "mysql:" lines with the appropriate "postgresql:" lines (as above):
 </p>
 <pre>{
-    /* Database Configuration */
-    SOGoProfileURL = "mysql://sogo:<b>SogoPW</b>@localhost/sogo/sogo_user_profile";
-    OCSFolderInfoURL = "mysql://sogo:<b>SogoPW</b>@localhost/sogo/sogo_folder_info";
-    OCSSessionsFolderURL = "mysql://sogo:<b>SogoPW</b>@localhost/sogo/sogo_sessions_folder";
+  /* Database Configuration */
+  SOGoProfileURL = "mysql://sogo:<b>SogoPW</b>@localhost/sogo/sogo_user_profile";
+  OCSFolderInfoURL = "mysql://sogo:<b>SogoPW</b>@localhost/sogo/sogo_folder_info";
+  OCSSessionsFolderURL = "mysql://sogo:<b>SogoPW</b>@localhost/sogo/sogo_sessions_folder";
 
-    /* Mail */
-    SOGoDraftsFolderName = Drafts;
-    SOGoSentFolderName = Sent;
-    SOGoTrashFolderName = Trash;
-    SOGoJunkFolderName = Junk;
-    SOGoIMAPServer = localhost;
-    SOGoSieveServer = sieve://127.0.0.1:4190;
-    SOGoSMTPServer = 127.0.0.1;
-    SOGoMailDomain = <b>internal</b>.<b>domain</b>.<b>tld</b>;
-    SOGoMailingMechanism = smtp;
-    SOGoForceExternalLoginWithEmail = NO;
-    SOGoMailSpoolPath = /var/spool/sogo;
-    NGImap4ConnectionStringSeparator = "/";
+  /* Mail */
+  SOGoDraftsFolderName = Drafts;
+  SOGoSentFolderName = Sent;
+  SOGoTrashFolderName = Trash;
+  SOGoJunkFolderName = Junk;
+  SOGoIMAPServer = <b>server</b>.<b>internal</b>.<b>domain</b>.<b>tld</b>;
+  SOGoSieveServer = sieve://<b>server</b>.<b>internal</b>.<b>domain</b>.<b>tld</b>:4190;
+  SOGoSMTPServer = smtp://<b>server</b>.<b>internal</b>.<b>domain</b>.<b>tld</b>;
+  SOGoMailDomain = <b>internal</b>.<b>domain</b>.<b>tld</b>;
+  SOGoMailingMechanism = smtp;
+  SOGoForceExternalLoginWithEmail = NO;
+  SOGoMailSpoolPath = /var/spool/sogo;
+  NGImap4AuthMechanism = "plain";
+  NGImap4ConnectionStringSeparator = "/";
 
-    /* Notifications */
-    SOGoAppointmentSendEMailNotifications = <b>YES</b>;
-    SOGoACLsSendEMailNotifications = NO;
-    SOGoFoldersSendEMailNotifications = NO;
+  /* Notifications */
+  SOGoAppointmentSendEMailNotifications = <b>YES</b>;
+  SOGoACLsSendEMailNotifications = NO;
+  SOGoFoldersSendEMailNotifications = NO;
 
-    /* Authentication */
-    SOGoPasswordChangeEnabled = YES;
+  /* Authentication */
+  SOGoPasswordChangeEnabled = YES;
 
-    /* Web Interface */
-    SOGoPageTitle = SOGo;
-    SOGoVacationEnabled = YES;
-    SOGoForwardEnabled = YES;
-    SOGoSieveScriptsEnabled = YES;
-    SOGoMailAuxiliaryUserAccountsEnabled = YES;
-    SOGoTrustProxyAuthentication = NO;
-    SOGoXSRFValidationEnabled = NO;
+  /* Web Interface */
+  SOGoPageTitle = SOGo;
+  SOGoVacationEnabled = YES;
+  SOGoForwardEnabled = YES;
+  SOGoSieveScriptsEnabled = YES;
+  SOGoMailAuxiliaryUserAccountsEnabled = YES;
+  SOGoTrustProxyAuthentication = NO;
+  SOGoXSRFValidationEnabled = NO;
 
-    /* General */
-    SOGoLanguage = <b>English</b>;
-    SOGoTimeZone = <b>America/Chicago</b>;
-    SOGoCalendarDefaultRoles = (
-        PublicDAndTViewer,
-        ConfidentialDAndTViewer
-    );
-    SOGoSuperUsernames = (<b>administrator</b>);
-    SxVMemLimit = 384;
-    //WOPidFile = "/var/run/sogo/sogo.pid";
-    SOGoMemcachedHost = "<b>127.0.0.1</b>";
+  /* General */
+  SOGoLanguage = <b>English</b>;
+  SOGoTimeZone = <b>America/Chicago</b>;
+  SOGoCalendarDefaultRoles = (
+      PublicDAndTViewer,
+      ConfidentialDAndTViewer
+  );
+  SOGoSuperUsernames = (<b>administrator</b>);
+  SxVMemLimit = 384;
+  //WOPidFile = "/var/run/sogo/sogo.pid";
+  SOGoMemcachedHost = "<b>127.0.0.1</b>";
 
-    /* Debug */
-    //SOGoDebugRequests = YES;
-    //SoDebugBaseURL = YES;
-    //ImapDebugEnabled = YES;
-    //LDAPDebugEnabled = YES;
-    //PGDebugEnabled = YES;
-    //MySQL4DebugEnabled = YES;
-    //SOGoUIxDebugEnabled = YES;
-    //WODontZipResponse = YES;
-    //WOLogFile = /var/log/sogo/sogo.log;
+  /* Debug */
+  //SOGoDebugRequests = YES;
+  //SoDebugBaseURL = YES;
+  //ImapDebugEnabled = YES;
+  //LDAPDebugEnabled = YES;
+  //PGDebugEnabled = YES;
+  //MySQL4DebugEnabled = YES;
+  //SOGoUIxDebugEnabled = YES;
+  //WODontZipResponse = YES;
+  //WOLogFile = /var/log/sogo/sogo.log;
 
 }
 </pre>
@@ -1478,62 +1451,65 @@ Connection closed by foreign host.
 <div class="mw-heading mw-heading4"><h4 id="Active_Directory_4">Active Directory</h4></div>
 <p>Modify the <code>/etc/sogo/sogo.conf</code> file and add the LDAP user sources (and global address list). Place the following contents before the <i>Web Interface</i> section. If TLS is not configured for your Directory, exclude the "<b>/????!StartTLS</b>" strings at the end of the LDAP URIs:
 </p>
-<pre>    /* User Authentication */
-    SOGoUserSources = (
-     {
-        id = directory;
-        displayName = "Active Directory";
-        canAuthenticate = YES;
-        type = ldap;
-        CNFieldName = cn;
-        IDFieldName = sAMAccountName;
-        UIDFieldName = sAMAccountName;
-        baseDN = "dc=<b>internal</b>,dc=<b>domain</b>,dc=<b>tld</b>";
-        bindDN = "cn=ldap,cn=Users,dc=<b>internal</b>,dc=<b>domain</b>,dc=<b>tld</b>";
-        bindFields = (sAMAccountName);
-        bindPassword = "<b>ldapPW</b>";
-        hostname = ldap://<b>server</b>.<b>internal</b>.<b>domain</b>.<b>tld</b>:389/????!StartTLS;
-      },
-      {
-        id = sambaShared;
-        displayName = "Shared Addressbook";
-        canAuthenticate = NO;
-        isAddressBook = YES;
-        type = ldap;
-        CNFieldName = cn;
-        IDFieldName = mail;
-        UIDFieldName = mail;
-        hostname = ldap://<b>server</b>.<b>internal</b>.<b>domain</b>.<b>tld</b>:389/????!StartTLS;
-        baseDN = "dc=<b>internal</b>,dc=<b>domain</b>,dc=<b>tld</b>";
-        bindDN = "cn=ldap,cn=Users,dc=<b>internal</b>,dc=<b>domain</b>,dc=<b>tld</b>";
-        bindPassword = "<b>ldapPW</b>";
-        filter = "((NOT isCriticalSystemObject='TRUE') AND (mail=\'*\') AND (NOT objectClass=contact))";
-        //Uncomment to list local users in WebUI without searching (small directories only)
-        //listRequiresDot = NO;
-      },
-      {
-        id = sambaContacts;
-        displayName = "Shared Contacts";
-        canAuthenticate = NO;
-        isAddressBook = YES;
-        type = ldap;
-        CNFieldName = cn;
-        IDFieldName = mail;
-        UIDFieldName = mail;
-        hostname = ldap://<b>server</b>.<b>internal</b>.<b>domain</b>.<b>tld</b>:389/????!StartTLS;
-        baseDN = "dc=<b>internal</b>,dc=<b>domain</b>,dc=<b>tld</b>";
-        bindDN = "cn=ldap,cn=Users,dc=<b>internal</b>,dc=<b>domain</b>,dc=<b>tld</b>";
-        bindPassword = "<b>ldapPW</b>";
-        filter = "((((objectClass=person) AND (objectClass=contact) AND ((uidNumber&gt;=2000) OR (mail='*')))
-                 AND (NOT isCriticalSystemObject='TRUE') AND (NOT showInAdvancedViewOnly='TRUE') AND (NOT uid=Guest))
-                 OR (((objectClass=group) AND (gidNumber&gt;=2000)) AND (NOT isCriticalSystemObject='TRUE') AND (NOT showInAdvancedViewOnly='TRUE')))";
-        mapping = {
-            displayname = ("cn");
-        //Uncomment to list contacts in WebUI without searching (few contacts only)
-        //listRequiresDot = NO;
-        };
-      }
-    );
+<pre>  /* User Authentication */
+  SOGoUserSources = (
+   {
+      type = ldap;
+      CNFieldName = cn;
+      UIDFieldName = sAMAccountName;
+      IDFieldName = sAMAccountName;
+      bindFields = (sAMAccountName);
+      baseDN = "dc=internal,dc=domain,dc=tld";
+      bindDN = "cn=ldap,cn=Users,dc=internal,dc=domain,dc=tld";
+      bindPassword = "ldapPW";
+      canAuthenticate = YES;
+      displayName = "Active Directory";
+      hostname = ldap://server.internal.domain.tld:389/????!StartTLS;
+      id = directory;
+      isAddressBook = NO;
+    },
+    {
+      type = ldap;
+      CNFieldName = cn;
+      UIDFieldName = mail;
+      IDFieldName = mail;
+      baseDN = "dc=internal,dc=domain,dc=tld";
+      bindDN = "cn=ldap,cn=Users,dc=internal,dc=domain,dc=tld";
+      bindPassword = "ldapPW";
+      hostname = ldap://server.internal.domain.tld:389/????!StartTLS;
+      filter = "((NOT isCriticalSystemObject='TRUE') AND (mail=\'*\') AND (NOT objectClass=contact))";
+      //Uncomment to list local users in WebUI without searching (small directories only)
+      //listRequiresDot = NO;
+      canAuthenticate = NO;
+      displayName = "Shared Addressbook";
+      hostname = ldap://server.internal.domain.tld:389/????!StartTLS;
+      id = sambaShared;
+      isAddressBook = YES;
+    },
+    {
+      type = ldap;
+      CNFieldName = cn;
+      UIDFieldName = mail;
+      IDFieldName = mail;
+      baseDN = "dc=internal,dc=domain,dc=tld";
+      bindDN = "cn=ldap,cn=Users,dc=internal,dc=domain,dc=tld";
+      bindPassword = "ldapPW";
+      filter = "((((objectClass=person) AND (objectClass=contact) AND ((uidNumber&gt;=2000) OR (mail='*')))
+               AND (NOT isCriticalSystemObject='TRUE') AND (NOT showInAdvancedViewOnly='TRUE') AND (NOT uid=Guest))
+               OR (((objectClass=group) AND (gidNumber&gt;=2000)) AND (NOT isCriticalSystemObject='TRUE')
+               AND (NOT showInAdvancedViewOnly='TRUE')))";
+      mapping = {
+          displayname = ("cn");
+      //Uncomment to list contacts in WebUI without searching (few contacts only)
+      //listRequiresDot = NO;
+      canAuthenticate = NO;
+      displayName = "Shared Contacts";
+      hostname = ldap://server.internal.domain.tld:389/????!StartTLS;
+      id = sambaContacts;
+      isAddressBook = YES;
+      };
+    }
+  );
 </pre>
 <div class="mw-heading mw-heading4"><h4 id="Maria_DB_3">Maria DB</h4></div>
 <p>For debugging purposes, edit the <code>/etc/sogo/sogo.conf</code> to enable all debugging switches:
@@ -1637,8 +1613,8 @@ ProxyPass /Microsoft-Server-ActiveSync \
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=SOGo&amp;oldid=846724">https://wiki.archlinux.org/index.php?title=SOGo&amp;oldid=846724</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 12 September 2025, at 07:30.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=SOGo&amp;oldid=867914">https://wiki.archlinux.org/index.php?title=SOGo&amp;oldid=867914</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 2 March 2026, at 03:46.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

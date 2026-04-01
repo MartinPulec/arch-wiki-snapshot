@@ -1130,7 +1130,7 @@
 <p>Passwords are key to a secure system. They secure your <a href="../en/Users_and_groups.html" title="Users and groups">user accounts</a>, <a href="../en/Data-at-rest_encryption.html" title="Data-at-rest encryption">encrypted filesystems</a>, and <a href="../en/SSH_keys.html" title="SSH keys">SSH</a>/<a href="../en/GnuPG.html" class="mw-redirect" title="GPG">GPG</a> keys. They are the main way a computer chooses to trust the person using it, so a big part of security is just about picking secure passwords and protecting them.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Choosing_secure_passwords">Choosing secure passwords</h3></div>
-<p>Passwords must be complex enough to not be easily guessed from e.g. personal information, or <a href="https://en.wikipedia.org/wiki/Password_cracking" class="extiw" title="wikipedia:Password cracking">cracked</a> using methods like social engineering or brute-force attacks. The tenets of strong passwords are based on <i>length</i> and <i>randomness</i>. In cryptography the quality of a password is often referred to as its <a href="https://en.wikipedia.org/wiki/Password_strength#Entropy_as_a_measure_of_password_strength" class="extiw" title="wikipedia:Password strength">entropy</a>.
+<p>Passwords must be complex enough to not be easily guessed from e.g. personal information, or <a href="https://en.wikipedia.org/wiki/Password_cracking" class="extiw" title="wikipedia:Password cracking">cracked</a> using methods like brute-force attacks. The tenets of strong passwords are based on <i>length</i> and <i>randomness</i>. In cryptography the quality of a password is often referred to as its <a href="https://en.wikipedia.org/wiki/Password_strength#Entropy_as_a_measure_of_password_strength" class="extiw" title="wikipedia:Password strength">entropy</a>.
 </p>
 <p>Insecure passwords include those containing or those using as a base before substitution/variation:
 </p>
@@ -1171,7 +1171,7 @@ Some password managers compute the contained passwords based on the master passw
 <p>If you use the same passphrase for disk encryption as you use for your login password (useful e.g. to auto-mount the encrypted partition or folder on login), make sure that <code>/etc/shadow</code> ends up on an encrypted partition or/and uses a strong key derivation function (i.e. yescrypt/argon2 or sha512 with PBKDF2, but not md5 or low iterations in PBKDF2) for the stored password hash (see <a href="../en/SHA_password_hashes.html" class="mw-redirect" title="SHA password hashes">SHA password hashes</a> for more information).
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip</strong> Arch Linux switched the <a rel="nofollow" class="external text" href="https://archlinux.org/news/changes-to-default-password-hashing-algorithm-and-umask-settings/">default hashing</a> algorithm to yescrypt. If you have not customized the default, executing a password change with <code>passwd</code> is necessary (and sufficient) to apply the new default.</div>
+<strong>Tip</strong> In 2023 Arch Linux switched the <a rel="nofollow" class="external text" href="https://archlinux.org/news/changes-to-default-password-hashing-algorithm-and-umask-settings/">default hashing</a> algorithm to yescrypt. If you have not customized the default, executing a password change with <code>passwd</code> is necessary (and sufficient) to apply the new default.</div>
 <p>If you are backing up your password database, make sure that each copy is not stored behind any other passphrase which in turn is stored in it, e.g. an encrypted drive or an authenticated remote storage service, or you will not be able to access it in case of need; a useful trick is to protect the drives or accounts where the database is backed up using a simple cryptographic hash of the master password. Maintain a list of all the backup locations: if one day you fear that the master passphrase has been compromised you will have to change it immediately on all the database backups and the locations protected with keys derived from the master password.
 </p>
 <p>Version-controlling the database in a secure way can be very complicated: if you choose to do it, you must have a way to update the master password of all the database versions. It may not always be immediately clear when the master password is leaked: to reduce the risk of somebody else discovering your password before you realize that it leaked, you may choose to change it on a periodical basis. If you fear that you have lost control over a copy of the database, you will need to change all the passwords contained in it within the time that it may take to brute-force the master password, according to its entropy.
@@ -1196,7 +1196,7 @@ Some password managers compute the contained passwords based on the master passw
 <p>In contrast, the compute time for the SHA-512 hash function is configured by a parameter with a linear influence. See <a href="../en/SHA_password_hashes.html" class="mw-redirect" title="SHA password hashes">SHA password hashes</a> for information on the previous Arch default. Note the yescrypt algorithm internally uses SHA-256, HMAC and PBKDF2 to compute its password-hash. The main reason is to combine positive attributes of these widely used and tested functions for an enhanced resistance to attacks. For example, the usability of SHA for various purposes has resulted in hardware support for the function, i.e. the performance to compute a pure SHA hash has accelerated considerably, making its application as a password-hash function more and more derelict.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Enforcing_strong_passwords_with_pam_pwquality">Enforcing strong passwords with pam_pwquality</h3></div>
-<p><i>pam_pwquality</i> provides protection against <a href="https://en.wikipedia.org/wiki/Dictionary_attack" class="extiw" title="wikipedia:Dictionary attack">Dictionary attacks</a> and helps configure a password policy that can be enforced throughout the system. It is based on <i>pam_cracklib</i>, so it is backwards compatible with its options.
+<p>PAM stands for the Pluggable Authentication Modules. <i>pam_pwquality</i> provides protection against <a href="https://en.wikipedia.org/wiki/Dictionary_attack" class="extiw" title="wikipedia:Dictionary attack">Dictionary attacks</a> and helps configure a password policy that can be enforced throughout the system. It is based on <i>pam_cracklib</i>, so it is backwards compatible with its options.
 </p>
 <p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=libpwquality">libpwquality</a></span> package.
 </p>
@@ -1257,19 +1257,6 @@ password required pam_unix.so use_authtok sha512 shadow</pre>
 <div class="mw-heading mw-heading2"><h2 id="Memory">Memory</h2></div>
 <div class="mw-heading mw-heading3"><h3 id="Hardened_malloc">Hardened malloc</h3></div>
 <p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/hardened_malloc/">hardened_malloc</a></span><sup><small>AUR</small></sup> is a hardened replacement for <a href="https://en.wikipedia.org/wiki/GNU_C_Library" class="extiw" title="wikipedia:GNU C Library">glibc</a>'s malloc(). The project was originally developed for integration into Android's <a href="https://en.wikipedia.org/wiki/Bionic_(software)" class="extiw" title="wikipedia:Bionic (software)">Bionic</a> and <a href="https://en.wikipedia.org/wiki/musl" class="extiw" title="wikipedia:musl">musl</a> by Daniel Micay, of <a href="https://en.wikipedia.org/wiki/GrapheneOS" class="extiw" title="wikipedia:GrapheneOS">GrapheneOS</a>, but he has also built in support for standard Linux distributions on the x86_64 architecture.
-</p>
-<p>While hardened_malloc is not yet integrated into glibc (assistance and pull requests welcome) it can be used easily with LD_PRELOAD. In testing so far, it only causes issues with a handful of applications if enabled globally in <code>/etc/ld.so.preload</code>. Since hardened_malloc has a performance cost, you may want to decide which implementation to use on a case-by-case basis based on attack surface and performance needs.
-</p>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
-<div>
-<b>Reason:</b> Firefox may require a rebuild for use with hardened-malloc to be effective (Discuss in <a href="../en/Talk:Security.html#Use_of_hardened-malloc_with_Firefox" title="Talk:Security">Talk:Security#Use of hardened-malloc with Firefox</a>)</div>
-</div>
-<p>To try it out in a standalone manner, use the hardened-malloc-preload wrapper script, or manually start an application with the proper preload value:
-</p>
-<pre>LD_PRELOAD="/usr/lib/libhardened_malloc.so" /usr/bin/firefox
-</pre>
-<p>Proper usage with <a href="../en/Firejail.html" title="Firejail">Firejail</a> can be found on its wiki page, and some configurable build options for hardened_malloc can be found on the github repo.
 </p>
 <div class="mw-heading mw-heading2"><h2 id="Storage">Storage</h2></div>
 <div class="mw-heading mw-heading3"><h3 id="Data-at-rest_encryption">Data-at-rest encryption</h3></div>
@@ -1423,6 +1410,8 @@ password required pam_unix.so use_authtok sha512 shadow</pre>
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pam.d/system-login</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">auth optional pam_faildelay.so delay=4000000</pre>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> This line needs to be the first line in the file.</div>
 <p><code>4000000</code> is the time in microseconds to delay.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
@@ -1460,6 +1449,12 @@ In order to completely remove this delay, you need to add the <code>nodelay</cod
 </p>
 <p>No restart is required for changes to take effect. See <span class="plainlinks archwiki-template-man" title="$ man 5 faillock.conf"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/faillock.conf.5">faillock.conf(5)</a></span> for further configuration options, such as enabling lockout for the root account, disabling for centralized login (e.g. LDAP), etc.
 </p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> If you make locks persistant, following the changes introduced in polkit 127: you may have to relax the sandbox of its helper agent in order to keep it functional. The best way is to create a drop-in for its systemd unit via <code>systemctl edit polkit-agent-helper\@.service</code> and add:
+<pre>[Service]
+ReadWritePaths=/var/lib/faillock
+</pre>
+</div>
 <div class="mw-heading mw-heading3"><h3 id="Limit_amount_of_processes">Limit amount of processes</h3></div>
 <p>On systems with many, or untrusted users, it is important to limit the number of processes each can run at once, therefore preventing <a href="https://en.wikipedia.org/wiki/Fork_bomb" class="extiw" title="wikipedia:Fork bomb">fork bombs</a> and other denial of service attacks. The <code>/etc/security/limits.conf</code> configuration determines how many processes each user, or group can have open, and is empty (except for useful comments) by default. Adding the following lines to this file will limit all users to 100 active processes, unless they use the <code>prlimit</code> command to explicitly raise their maximum to 200 for that session. These values can be changed according to the appropriate number of processes a user should have running, or the hardware of the box you are administrating.
 </p>
@@ -1754,7 +1749,7 @@ SupplementaryGroups=proc</pre>
 <ul>
 <li>Kernel lockdown cannot be disabled at runtime.</li>
 <li>Kernel lockdown disables <a href="../en/Power_management/Suspend_and_hibernate.html#Hibernation" class="mw-redirect" title="Hibernation">hibernation</a>.</li>
-<li>The <span class="plainlinks archwiki-template-man" title="$ man 7 kernel_lockdown"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/kernel_lockdown.7">kernel_lockdown(7)</a></span> man page incorrectly states that "lockdown will be automatically enabled if the system boots in EFI Secure Boot mode". This is not the behaviour of the upstream kernel, nor Arch's packaged <a href="../en/Kernel.html" title="Kernel">kernels</a>.</li>
+<li>Versions &lt;6.17 of the <span class="plainlinks archwiki-template-man" title="$ man 7 kernel_lockdown"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/kernel_lockdown.7">kernel_lockdown(7)</a></span> man page incorrectly state that "lockdown will be automatically enabled if the system boots in EFI Secure Boot mode". This is not the behaviour of the upstream kernel, nor Arch's packaged <a href="../en/Kernel.html" title="Kernel">kernels</a>.</li>
 </ul>
 </div>
 <p>See also <span class="plainlinks archwiki-template-man" title="$ man 7 kernel_lockdown"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/kernel_lockdown.7">kernel_lockdown(7)</a></span>.
@@ -1780,15 +1775,10 @@ SupplementaryGroups=proc</pre>
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note</strong> The user namespace configuration item <code>CONFIG_USER_NS</code> is currently enabled in <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-lts">linux-lts</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-zen">linux-zen</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-hardened">linux-hardened</a></span>. Lack of it may prevent certain sandboxing features from being made available to applications.</div>
-<div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning</strong> Unprivileged user namespace usage (<code>CONFIG_USER_NS_UNPRIVILEGED</code>) is enabled by default in <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-lts">linux-lts</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-zen">linux-zen</a></span>, which greatly increases the attack surface for local privilege escalation (see <a rel="nofollow" class="external text" href="https://gitlab.com/apparmor/apparmor/-/wikis/unprivileged_userns_restriction">AppArmor's Wiki</a> and <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/36969">FS#36969</a>).</div>
-<p>To mitigate this, either:
-</p>
-<ul>
-<li>use the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-hardened">linux-hardened</a></span> kernel which has the safe default, or</li>
-<li>set the <code>kernel.unprivileged_userns_clone</code> <a href="../en/Sysctl.html" title="Sysctl">sysctl</a> to <code>0</code>.</li>
-</ul>
-<p>Note that this can break applications such as <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nsjail">nsjail</a></span>. <a href="../en/Chromium.html" title="Chromium">Chromium</a> based applications need SUID bit for <code>chrome-sandbox</code> to work with this setting.
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip</strong> User namespaces have been available from Linux 3.8 (24 years ago). All the security vulnerabilities have been patched, and no security issues have emerged in recent years. Therefore, they can be considered safe for unprivileged users. 
+Additionally, <a href="../en/Systemd.html" title="Systemd">systemd</a>, <a href="../en/Bubblewrap.html" title="Bubblewrap">bubblewrap</a>, <a href="../en/Firefox.html" title="Firefox">Firefox</a> and many other tools require them to implement efficient sandboxes, therefore it is wise to enable them also with the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-hardened">linux-hardened</a></span> kernel</div>
+<p>Of all the officially supported kernels, only <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-hardened">linux-hardened</a></span> disables user namespaces for unprivilegied users. In order to efficiently sandbox applications without requiring root privilegies it is advisable to set <code>kernel.unprivileged_userns_clone</code> to <code>1</code>.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Firejail">Firejail</h3></div>
 <p><a href="../en/Firejail.html" title="Firejail">Firejail</a> is an easy to use tool for sandboxing applications and servers alike. It was originally created for browsers and internet facing applications, but supports a large number of applications by now. To establish a sandboxed environment with a variety of features, it is installed as a suid binary and builds a sandboxed runtime environment for the target application based on black and white lists.
@@ -1828,6 +1818,8 @@ SupplementaryGroups=proc</pre>
 <li>
 <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=opensnitch">opensnitch</a></span> is a configurable inbound and outbound firewall with support for configurable rules by application, port, host, etc.</li>
 </ul>
+<p>A quick way to setup a basic firewall is to use the tool <code>ufw</code> (Uncomplicated Fire Wall). Then set <code>ufw default deny incoming</code> and <code>ufw default allow outgoing</code> and enabling it with <code>ufw enable</code> and <code>systemctl enable ufw</code>.
+</p>
 <div class="mw-heading mw-heading4"><h4 id="Open_ports">Open ports</h4></div>
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-clear.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs language, wiki syntax or style improvements. See <a href="../en/Help:Style.html" title="Help:Style">Help:Style</a> for reference.</b></p>
@@ -1872,9 +1864,9 @@ SupplementaryGroups=proc</pre>
 <div class="mw-heading mw-heading2"><h2 id="Physical_security">Physical security</h2></div>
 <p>Physical access to a computer is root access given enough time and resources. However, a high <i>practical</i> level of security can be obtained by putting up enough barriers.
 </p>
-<p>An attacker can gain full control of your computer on the next boot by simply attaching a malicious IEEE 1394 (FireWire), Thunderbolt or PCI Express device as they are given full memory access by default.<a rel="nofollow" class="external autonumber" href="https://web.archive.org/web/20210312083421/http://breaknenter.org/2014/09/inception-metasploit-integration/">[14]</a> For Thunderbolt, you can restrict the direct memory access completely or to known devices, see <a href="../en/Thunderbolt.html#User_device_authorization" title="Thunderbolt">Thunderbolt#User device authorization</a>. For Firewire and PCI Express, there is little you can do from preventing this, or modification of the hardware itself - such as flashing malicious firmware onto a drive. However, the vast majority of attackers will not be this knowledgeable and determined.
+<p>An attacker can gain full control of your computer on the next boot by simply attaching a malicious IEEE 1394 (FireWire), Thunderbolt or PCI Express device as they are given full memory access by default.<a rel="nofollow" class="external autonumber" href="https://web.archive.org/web/20210312083421/http://breaknenter.org/2014/09/inception-metasploit-integration/">[14]</a> For Thunderbolt, you can restrict the direct memory access completely or to known devices, see <a href="../en/Thunderbolt.html#User_device_authorization" title="Thunderbolt">user device authorization</a>. For Firewire and PCI Express, there is little you can do from preventing this, or modification of the hardware itself - such as flashing malicious firmware onto a drive. However, the vast majority of attackers will not be this knowledgeable and determined.
 </p>
-<p><a href="#Data-at-rest_encryption">#Data-at-rest encryption</a> will prevent access to your data if the computer is stolen, but malicious firmware can be installed to obtain this data upon your next log in by a resourceful attacker.
+<p><a href="#Data-at-rest_encryption">Data-at-rest encryption</a> will prevent access to your data if the computer is stolen, but malicious firmware can be installed to obtain this data upon your next log in by a resourceful attacker.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Locking_down_BIOS">Locking down BIOS</h3></div>
 <p>Adding a password to the BIOS prevents someone from booting into removable media, which is basically the same as having root access to your computer. You should make sure your drive is first in the boot order and disable the other drives from being bootable if you can.
@@ -1889,7 +1881,7 @@ SupplementaryGroups=proc</pre>
 <p><a href="../en/GRUB.html" title="GRUB">GRUB</a> supports boot loader passwords as well. See <a href="../en/GRUB/Tips_and_tricks.html#Password_protection_of_GRUB_menu" title="GRUB/Tips and tricks">GRUB/Tips and tricks#Password protection of GRUB menu</a> for details. It also has support for <a href="../en/GRUB.html#Encrypted_/boot" title="GRUB">encrypted /boot</a>, which only leaves some parts of the boot loader code unencrypted. GRUB's configuration, <a href="../en/Kernel.html" title="Kernel">kernel</a> and <a href="../en/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs">initramfs</a> are encrypted.
 </p>
 <div class="mw-heading mw-heading4"><h4 id="systemd-boot">systemd-boot</h4></div>
-<p><a href="../en/Systemd-boot.html" title="Systemd-boot">systemd-boot</a> disables editing of kernel parameters when <a href="#Secure_Boot">#Secure Boot</a> is enabled. Alternatively, see <a href="../en/Systemd-boot.html#Kernel_parameters_editor_with_password_protection" title="Systemd-boot">systemd-boot#Kernel parameters editor with password protection</a> for a more traditional password-based option.
+<p><a href="../en/Systemd-boot.html" title="Systemd-boot">systemd-boot</a> disables editing of kernel parameters when <a href="#Secure_Boot">Secure Boot</a> is enabled. Alternatively, you can set <a href="../en/Systemd-boot.html#Kernel_parameters_editor_with_password_protection" title="Systemd-boot">kernel parameters for password protection</a> in systemd-boot for a more traditional password-based option.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Secure_Boot">Secure Boot</h3></div>
 <p><a href="../en/Secure_Boot.html" class="mw-redirect" title="Secure Boot">Secure Boot</a> is a feature of <a href="../en/Unified_Extensible_Firmware_Interface.html" class="mw-redirect" title="UEFI">UEFI</a> that allows authentication of the files your computer boots. This helps preventing some <a href="https://en.wikipedia.org/wiki/Evil_maid_attack" class="extiw" title="wikipedia:Evil maid attack">evil maid attacks</a> such as replacing files inside the boot partition. Normally computers come with keys that are enrolled by vendors (OEM). However these can be removed and allow the computer to enter <i>Setup Mode</i> which allows the user to enroll and manage their own keys.
@@ -1939,7 +1931,9 @@ esac
 <p>It is important to regularly <a href="../en/System_maintenance.html#Upgrading_the_system" title="System maintenance">upgrade the system</a>.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Follow_vulnerability_alerts">Follow vulnerability alerts</h3></div>
-<p>Subscribe to the Common Vulnerabilities and Exposure (CVE) Security Alert updates, made available by National Vulnerability Database, and found on the <a rel="nofollow" class="external text" href="https://nvd.nist.gov/download.cfm">NVD Download webpage</a>. The <a rel="nofollow" class="external text" href="https://security.archlinux.org/">Arch Linux Security Tracker</a> serves as a particularly useful resource in that it combines Arch Linux Security Advisory (ASA), Arch Linux Vulnerability Group (AVG) and CVE data sets in tabular format. The tool <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=arch-audit">arch-audit</a></span> can be used to check for vulnerabilities affecting the running system. A graphical system tray, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=arch-audit-gtk">arch-audit-gtk</a></span>, can also be used. See also <a href="../en/Arch_Security_Team.html" title="Arch Security Team">Arch Security Team</a>.
+<p>Subscribe to the Common Vulnerabilities and Exposure (CVE) Security Alert updates, made available by National Vulnerability Database, and found on the <a rel="nofollow" class="external text" href="https://nvd.nist.gov/download.cfm">NVD Download webpage</a>. 
+</p>
+<p>The tool <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=arch-audit">arch-audit</a></span> can be used to check for vulnerabilities affecting the running system. A graphical system tray, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=arch-audit-gtk">arch-audit-gtk</a></span>, can also be used. See also <a href="../en/Arch_Security_Team.html" title="Arch Security Team">Arch Security Team</a>.
 </p>
 <p>You should also consider subscribing to the release notifications for software you use, especially if you install software through means other than the main repositories or AUR. Some software have mailing lists you can subscribe to for security notifications. Source code hosting sites often offer RSS feeds for new releases.
 </p>
@@ -2084,8 +2078,8 @@ esac
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Security&amp;oldid=863044">https://wiki.archlinux.org/index.php?title=Security&amp;oldid=863044</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 28 January 2026, at 23:00.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Security&amp;oldid=870235">https://wiki.archlinux.org/index.php?title=Security&amp;oldid=870235</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 30 March 2026, at 17:17.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

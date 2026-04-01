@@ -597,7 +597,7 @@ Exec = /bin/sh -c "/usr/bin/limine bios-install <i>/dev/sdX</i> &amp;&amp; /usr/
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note</strong> 
 <ul>
-<li>When updating or reinstalling Limine, its EFI image is automatically deployed to the ESP on UEFI system with x86_64 architecture.</li>
+<li>When updating or reinstalling Limine, its EFI image is automatically copied to the ESP on UEFI x86_64 system at <code><i>esp</i>/EFI/limine/limine_x64.efi</code>.</li>
 <li>When using legacy BIOS or alternative CPU architectures such as ARM or RISC-V, automatic deployment of the EFI binary is disabled. In those cases, a specific Limine binary must be manually deployed to your boot partition.</li>
 </ul>
 </div>
@@ -620,24 +620,27 @@ To skip UEFI detection and registration and set Limine as the fallback boot load
 </p>
 <ul>
 <li>If <code>bootctl --print-esp-path</code> does not detect your ESP, manually set <code>ESP_PATH</code> to any mounted FAT32 boot partition you want to use. Then run <code>limine-install</code> to install the Limine EFI binary.</li>
-<li>(Optional) Set <code>KERNEL_CMDLINE[default]+=</code> with your preferred complete <a href="../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a>.</li>
+<li>Configure permanent <a href="../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a> as described below.</li>
 </ul>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip</strong> 
 <ul>
-<li>If unsure about which kernel parameters to use, copy them from <code>/proc/cmdline</code> into <code>KERNEL_CMDLINE[default]=</code>, <b>but do not do this from a live ISO, temporary environment, or snapshot.</b>
+<li>If you want to use the same <a href="../en/Kernel_command_line.html" class="mw-redirect" title="Kernel command line">kernel command line</a> for all installed kernels, the <b>recommended and default location</b> is <code>/etc/kernel/cmdline</code>. This file is supported by most initramfs tools and systemd.</li>
+<li>If unsure about which kernel parameters to use, copy them from <code>/proc/cmdline</code>, <b>but do not do this from a live ISO, temporary environment, or snapshot.</b>
 </li>
-<li>If <code>KERNEL_CMDLINE[default]=</code> or <code>KERNEL_CMDLINE=</code> is not set, the tool will first try to read from the file <code>/etc/kernel/cmdline</code>. If unavailable, it will fall back to reading from <code>/proc/cmdline</code>.</li>
+<li>Optionally, if <code>KERNEL_CMDLINE[default]</code> is set, it takes precedence over <code>/etc/kernel/cmdline</code> and <code>/proc/cmdline</code>.</li>
 <li>Optionally, <code>KERNEL_CMDLINE[fallback]=</code> applies to kernel entries containing the name <i>fallback</i>.</li>
-<li>Additionally, <code>KERNEL_CMDLINE[<i>kernel name</i>]=</code> corresponds to kernel entry name in the boot menu, allowing unique kernel cmdline/parameters per kernel entry. For example, <code>KERNEL_CMDLINE[linux-lts]=</code> for <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-lts">linux-lts</a></span> kernel entry.</li>
+<li>Additionally, <code>KERNEL_CMDLINE[<i>kernel name</i>]=</code> corresponds to kernel entry name in the boot menu, allowing unique <a href="../en/Kernel_command_line.html" class="mw-redirect" title="Kernel command line">kernel command line</a> per kernel entry. For example, <code>KERNEL_CMDLINE[linux-lts]=</code> for <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-lts">linux-lts</a></span> kernel entry.</li>
 <li>
 <code>KERNEL_CMDLINE[<i>key</i>]+=</code> appends kernel parameters to the existing <code>KERNEL_CMDLINE[<i>key</i>]</code> values defined in drop-in config files under <code>/etc/limine-entry-tool.d/*.conf</code>. In contrast, <code>KERNEL_CMDLINE[<i>key</i>]=</code> fully replaces them according to config priority.</li>
+<li>Support for multiple <code>initrd=</code> parameters parsed from kernel cmdline and converted into Limine module paths for non-UKI entries.</li>
+<li>No quotes are needed at the start or end of cmdlines, since quotes inside are not escaped.</li>
 </ul>
 <p><b>Note:</b> <code>/etc/default/limine</code> has the highest priority and overrides all drop-in configs. Therefore, using <code>+=</code> is recommended when appending kernel parameters.
 Example:
 </p>
-<pre><code>KERNEL_CMDLINE[default]+="rw root=UUID=..."</code> 
-<code>KERNEL_CMDLINE[default]+="quiet splash"</code>
+<pre><code>KERNEL_CMDLINE[default]+=rw root=UUID=...</code> 
+<code>KERNEL_CMDLINE[default]+=quiet splash initrd=/amd-ucode.img</code>
 </pre>
 </div>
 <ul>
@@ -675,8 +678,14 @@ Example:
 </li>
 </ul>
 </li></ul>
-<ul><li>
-<code>limine-scan</code> detects active EFI boot entries (dual boot) and allows you to easily add them to Limine.</li></ul>
+<ul>
+<li>
+<code>limine-scan</code> detects active EFI boot entries (dual boot) and allows you to easily add them to Limine.</li>
+<li>
+<code>limine-list</code> displays boot entries in a hierarchical tree view with a default depth of 3.</li>
+<li>
+<code>limine-entry-tool --remove-os "<i>Windows Boot Manager</i>"</code> removes an OS entry matching the specified name, leaving its bootable files intact.</li>
+</ul>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip</strong>  Managing kernels manually with limine-entry-tool
 <p>If you do not use an initramfs tool or use a different one like <a href="../en/Booster.html" title="Booster">booster</a>,
@@ -691,8 +700,9 @@ You are free to create custom scripts using the <code>limine-entry-tool</code> c
 <li>Booting into selected <a href="../en/Snapper.html" title="Snapper">Snapper</a> snapshot.</li>
 <li>Providing 3 different methods for restoring a system snapshot: <code>rsync</code>, <code>replace</code> or native <code>snapper</code>.</li>
 <li>Adding a "backup" snapshot entry to the Limine bootloader after restoring a snapshot, making it easy to revert if needed.</li>
-<li>Automatically repairing corrupted bootable files from old snapshots on the ESP when a new snapshot with the same bootable files is created.</li>
-<li>Automatically logging error messages about potential hardware issues if two hashes of the same bootable file do not match on the ESP.</li>
+<li>Automatically repairing corrupted bootable files on the boot partition by copying them from a newly created snapshot containing the same bootable files.</li>
+<li>Automatically notifying the desktop about potential hardware issues if two independently generated hashes of a bootable file do not match.</li>
+<li>Supporting an A/B-like system via multiple independent root subvolumes, each with its own Limine snapshot entries, requiring a unique machine-ID and a custom subvolume path in the kernel command line for booting.</li>
 <li>Testing read-only snapshots: Use <a href="../en/Overlay_filesystem.html" class="mw-redirect" title="Overlayfs">overlayfs</a> to test any installed packages on an immutable-like system without modifying the original data. Note that this does not mean testing the boot partition or a separate home subvolume/partition.</li>
 </ul>
 <div class="archwiki-template-box archwiki-template-box-tip">
@@ -701,6 +711,12 @@ You are free to create custom scripts using the <code>limine-entry-tool</code> c
 </p>
 <p>For <a href="../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a>, manually add the <code>btrfs-overlayfs</code> or <code>sd-btrfs-overlayfs</code> <a href="../en/Mkinitcpio.html#HOOKS" title="Mkinitcpio">hook</a> after the <code>filesystems</code> hook. Both are provided by <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/limine-mkinitcpio-hook/">limine-mkinitcpio-hook</a></span><sup><small>AUR</small></sup>.<br>
 When using the <a href="../en/Mkinitcpio.html#Common_hooks" title="Mkinitcpio">systemd hooks</a>, use <code>sd-btrfs-overlayfs</code>, as <code>btrfs-overlayfs</code> is incompatible.
+</p>
+<p>Alternatively, when using <b>systemd init</b>, edit:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/default/limine</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">SNAPSHOT_KERNEL_PARAMETERS+=systemd.volatile=overlay</pre>
+<p>When doing so, manually exclude the <code>btrfs-snapshot-overlay</code> module for <b>dracut</b>, or manually add <code>sd-volatile</code> after the <code>systemd</code> hook for <b>mkinitcpio</b>, then rebuild the initramfs.
 </p>
 </div>
 <div class="archwiki-template-box archwiki-template-box-note">
@@ -746,8 +762,8 @@ comment: machine-id=<i>yyyyyyyyyyyyyyyyyy</i>
 </p>
 <ul>
 <li>If <code>bootctl --print-esp-path</code> does not detect your ESP, manually set <code>ESP_PATH</code> to your <a href="../en/EFI_system_partition.html" class="mw-redirect" title="ESP">ESP</a>/boot mount point.</li>
-<li>(Optional) Set <code>MAX_SNAPSHOT_ENTRIES</code> to limit the number of snapshot entries. The default is 8.</li>
 <li>(Optional) Set <code>LIMIT_USAGE_PERCENT</code> to stop creating new snapshot entries when the limit of ESP usage is exceeded. The default is 85.</li>
+<li>(Optional) Set <code>MAX_SNAPSHOT_ENTRIES</code> to limit the number of snapshot boot entries, or use <code>auto</code>. In <code>auto</code> mode, older snapshot boot entries are removed when a new snapshot entry with new kernel versions is created and <code>LIMIT_USAGE_PERCENT</code> is reached, without warning.</li>
 </ul>
 <ul><li>If using <b>custom</b> Snapper layout, make sure to configure the following:
 <ul>
@@ -783,6 +799,8 @@ comment: machine-id=<i>yyyyyyyyyyyyyyyyyy</i>
 <code>limine-snapper-info</code> provides detailed information about versions, the total number of bootable snapshots, and verifies bootable files.</li>
 <li>
 <code>limine-snapper-restore</code> restores your system, including matching kernel versions, from a selected bootable snapshot.</li>
+<li>
+<code>limine-snapper-remove <i>number1</i>..<i>number2</i></code> removes snapshot boot entries to free up space on the boot partition. It does not  delete the corresponding Snapper snapshots.</li>
 </ul>
 <div class="mw-heading mw-heading4"><h4 id="Known_issues">Known issues</h4></div>
 <ul>
@@ -807,8 +825,8 @@ comment: machine-id=<i>yyyyyyyyyyyyyyyyyy</i>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Limine&amp;oldid=856685">https://wiki.archlinux.org/index.php?title=Limine&amp;oldid=856685</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 19 December 2025, at 10:38.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Limine&amp;oldid=869634">https://wiki.archlinux.org/index.php?title=Limine&amp;oldid=869634</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 21 March 2026, at 09:17.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

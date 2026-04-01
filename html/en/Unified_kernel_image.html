@@ -567,14 +567,12 @@ $ objcopy \
 uki="$3"
 [[ -n "$uki" ]] || exit 0
 
-keypairs=(<i>/path/to/</i>db.key <i>/path/to/</i>db.crt)
+key=<i>/path/to/</i>db.key
+cert=<i>/path/to/</i>db.crt
 
-for (( i=0; i&lt;${#keypairs[@]}; i+=2 )); do
-    key="${keypairs[$i]}" cert="${keypairs[(( i + 1 ))]}"
-    if ! sbverify --cert "$cert" "$uki" &amp;&gt;/dev/null; then
-        sbsign --key "$key" --cert "$cert" --output "$uki" "$uki"
-    fi
-done</pre>
+if ! sbverify --cert "$cert" "$uki" &amp;&gt;/dev/null; then
+    sbsign "$uki" --key "$key" --cert "$cert" --output "$uki"
+fi</pre>
 <p>Replace <code><i>/path/to/</i>db.key</code> and <code><i>/path/to/</i>db.crt</code> with the paths to the key pair you want to use for signing the image.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="ukify_2">ukify</h3></div>
@@ -610,12 +608,12 @@ SecureBootCertificate=<i>/etc/kernel/secure-boot-certificate.pem</i></pre>
   path: boot():/EFI/Linux/arch-linux.efi</pre>
 <p><b>Example 2: Booting a UKI from another partition</b>
 </p>
-<p>If a UKI file is located on a different <a href="../en/FAT.html" class="mw-redirect" title="FAT32">FAT32</a> partition, use <code>guid(<i>PARTUUID</i>)</code> with the <a href="../en/Persistent_block_device_naming.html#by-partuuid" class="mw-redirect" title="PARTUUID">PARTUUID</a> instead:
+<p>If a UKI file is located on a different <a href="../en/FAT.html" class="mw-redirect" title="FAT32">FAT32</a> partition, use <code>uuid(<i>PARTUUID</i>)</code> with the <a href="../en/Persistent_block_device_naming.html#by-partuuid" class="mw-redirect" title="PARTUUID">PARTUUID</a> instead:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">limine.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">/Arch Linux
   protocol: efi
-  path: guid(<i>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</i>):/EFI/Linux/arch-linux.efi</pre>
+  path: uuid(<i>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</i>):/EFI/Linux/arch-linux.efi</pre>
 <p>For more details about supported paths and configuration options, see the <a rel="nofollow" class="external text" href="https://github.com/limine-bootloader/limine/blob/v8.x/CONFIG.md#Paths">Limine Paths documentation</a>.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="systemd-boot">systemd-boot</h3></div>
@@ -667,8 +665,8 @@ SecureBootCertificate=<i>/etc/kernel/secure-boot-certificate.pem</i></pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Unified_kernel_image&amp;oldid=862485">https://wiki.archlinux.org/index.php?title=Unified_kernel_image&amp;oldid=862485</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 23 January 2026, at 12:15.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Unified_kernel_image&amp;oldid=866948">https://wiki.archlinux.org/index.php?title=Unified_kernel_image&amp;oldid=866948</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 23 February 2026, at 10:02.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

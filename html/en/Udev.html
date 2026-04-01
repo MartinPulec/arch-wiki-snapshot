@@ -168,7 +168,18 @@
 			</a>
 			
 			<ul id="toc-Event_environment-sublist" class="vector-toc-list">
+				<li id="toc-Useful_device_properties" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Useful_device_properties">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.3.1</span>
+					<span>Useful device properties</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Useful_device_properties-sublist" class="vector-toc-list">
 			</ul>
+		</li>
+	</ul>
 		</li>
 		<li id="toc-Device_tags" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Device_tags">
@@ -197,15 +208,15 @@
 			</button>
 		
 		<ul id="toc-Hardware_database-sublist" class="vector-toc-list">
-			<li id="toc-evdev_devices" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#evdev_devices">
+			<li id="toc-Event_devices_(evdev)" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Event_devices_(evdev)">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">4.1</span>
-					<span>evdev devices</span>
+					<span>Event devices (evdev)</span>
 				</div>
 			</a>
 			
-			<ul id="toc-evdev_devices-sublist" class="vector-toc-list">
+			<ul id="toc-Event_devices_(evdev)-sublist" class="vector-toc-list">
 				<li id="toc-Keyboard_devices" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Keyboard_devices">
 				<div class="vector-toc-text">
@@ -915,6 +926,37 @@ KERNEL[26652.639153] add      /devices/pci0000:00/0000:00:01.2/0000:02:00.0/0000
 </p>
 <p>Unlike with attributes, udev rules are allowed to set event properties arbitrarily, and there is also no concept of "parent properties" to inspect beyond the ones that are set on the event (which is why there is no <code>ENVS{...}==""</code> directive). Note that <b>setting a property with a udev rule sets a device property</b>, which will be stored until the device is removed and will thus appear in every event raised by that device (unless the property's name starts with a period, like <code>ENV{.PART_SUFFIX</code>}, which will be added to the <i>event properties</i> with the leading dot in the name and be usable by other rules, but not stored).
 </p>
+<div class="mw-heading mw-heading4"><h4 id="Useful_device_properties">Useful device properties</h4></div>
+<p>There are a number of device properties that other programs listen to, and which can be used to affect how they recognize or handle a device that has them.
+</p>
+<table class="wikitable">
+<tbody>
+<tr>
+<th>Property name</th>
+<th>Usage</th>
+<th>Software listening</th>
+<th>Documentation
+</th>
+</tr>
+<tr>
+<td><code>KEYBOARD_KEY_&lt;hex scan code&gt;</code></td>
+<td>Can be used to remap any keyboard scancode to any logical key by name in <a rel="nofollow" class="external text" href="https://github.com/torvalds/linux/blob/master/include/uapi/linux/input-event-codes.h">input-event-codes.h</a> (with the name in lowercase, only those that start with <code>KEY_</code> without the prefix or those with <code>BTN_</code> <i>with the prefix</i>).</td>
+<td>
+<code>60-evdev.rules</code> and udev-builtin-keyboard</td>
+<td>
+<a href="#Keyboard_devices">#Keyboard_devices</a> and <a rel="nofollow" class="external text" href="https://github.com/systemd/systemd/blob/8df624bfdd658a68cf51825e30f60a39d34558da/hwdb.d/60-keyboard.hwdb#L60-L91">60-keyboard.hwdb</a>
+</td>
+</tr>
+<tr>
+<td><code>LIBINPUT_IGNORE_DEVICE</code></td>
+<td>Input device is disregarded if property is non-zero.</td>
+<td><a href="../en/Libinput.html" title="Libinput">libinput</a></td>
+<td>
+<a rel="nofollow" class="external text" href="https://wayland.freedesktop.org/libinput/doc/latest/ignoring-devices.html">Ignoring specific devices</a>
+</td>
+</tr>
+</tbody>
+</table>
 <div class="mw-heading mw-heading3"><h3 id="Device_tags">Device tags</h3></div>
 <p>Tags (added using <code>TAG+="foo"</code>, removed with <code>TAG-="foo"</code>, matched with <code>TAG=="foo"</code>) are used by userspace software interacting with udev to list and identify all devices they should be acting upon. Those can also be arbitrary, but there are a few well-known ones.
 </p>
@@ -971,12 +1013,13 @@ KERNEL[26652.639153] add      /devices/pci0000:00/0000:00:01.2/0000:02:00.0/0000
 </tbody>
 </table>
 <div class="mw-heading mw-heading2"><h2 id="Hardware_database">Hardware database</h2></div>
-<p>udev's hardware database (<i>hwdb</i>) contains any configuration data specific to device models, such as keyboard scancodes, mice DPI, and USB classes/models. The database is compiled from files with <i>.hwdb</i> extension located in directories <code>/usr/lib/udev/hwdb.d/</code>, <code>/run/udev/hwdb.d/</code> and <code>/etc/udev/hwdb.d/</code>. See <span class="plainlinks archwiki-template-man" title="$ man 7 hwdb"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/hwdb.7">hwdb(7)</a></span> for details.
+<p>udev's hardware database (<i>hwdb</i>) contains lists of <a href="#Event_environment">device properties</a> to be assigned to specific devices based solely on <a href="../en/Modalias.html" title="Modalias">modalias</a> patterns, similar to how kernel modules declare what devices they should be attached to. This is commonly used to configure keyboard scancodes, mice DPI, and USB classes/models, among other things. The database is compiled from files with <i>.hwdb</i> extension located in directories <code>/usr/lib/udev/hwdb.d/</code>, <code>/run/udev/hwdb.d/</code> and <code>/etc/udev/hwdb.d/</code>. See <span class="plainlinks archwiki-template-man" title="$ man 7 hwdb"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/hwdb.7">hwdb(7)</a></span> for details.
 </p>
 <p>Each <i>.hwdb</i> file can apply properties to one or more devices based on hardware ID glob patterns. You may obtain device identification info by running <span class="plainlinks archwiki-template-man" title="$ man 1 evemu-describe"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/evemu-describe.1">evemu-describe(1)</a></span> as the root user. This command is provided by the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=evemu">evemu</a></span> package.
 </p>
-<div class="mw-heading mw-heading3"><h3 id="evdev_devices">evdev devices</h3></div>
-<p><a href="../en/Xorg.html" class="mw-redirect" title="Evdev">evdev</a> devices (including keyboards and mice) can be matched with the <code>evdev:</code> prefix in one of the following formats:
+<div class="mw-heading mw-heading3"><h3 id="Event_devices_(evdev)">
+<span id="Event_devices_.28evdev.29"></span>Event devices (evdev)</h3></div>
+<p><a href="../en/Xorg.html" class="mw-redirect" title="Evdev">Event devices</a> (evdev), which include input devices like keyboards, mice and gamepads (but also power buttons, laptop lid switches, remote controls, and anything that can raise "input" events) can be matched with the <code>evdev:</code> prefix in one of the following formats:
 </p>
 <ul><li>Using the kernel <a href="../en/Modalias.html" title="Modalias">modalias</a>:</li></ul>
 <dl>
@@ -1210,12 +1253,16 @@ LABEL="persistent_printer_end"</pre>
 <div class="mw-heading mw-heading3"><h3 id="Force_USB_device_features_to_be_re-added_after_suspend">Force USB device features to be re-added after suspend</h3></div>
 <p>USB devices need to be reset after exiting a suspended state (whether from the system resuming from sleep or from a port being turned off when the device was idle for power saving), which the Linux kernel <a rel="nofollow" class="external text" href="https://docs.kernel.org/driver-api/usb/persist.html">handles mostly transparently</a> in a process called <a rel="nofollow" class="external text" href="https://docs.kernel.org/driver-api/usb/power-management.html">reset-resume</a>, so that USB drives do not look like they have been disconnected and reconnected every time. This is mostly desirable, but some devices, like USB TTY interfaces, do need to be manually reconfigured after being power cycled, which is not signalled by any uevent from the relevent drivers.
 </p>
-<p>The one uevent that does get raised, however, is the one from losing and regaining power/wakeup, since USB devices are unusable while unconfigured and would be unable to wake up the system from sleep in this state. These two events have no unique event properties, but the first one can still be easily identified because <code>DEVNUM</code> is set to zero (which is not a valid device number) <a rel="nofollow" class="external text" href="https://github.com/torvalds/linux/blob/8d561baae505bab6b3f133e10dc48e27e4505cbe/drivers/usb/core/hub.c#L3167-L3178">immediately before</a> the device is unconfigured and loses <code>power/wakeup</code>, raising the uevent. When that happens, one can simply touch the <code>bConfigurationValue</code> sysfs attribute to <a rel="nofollow" class="external text" href="https://docs.kernel.org/admin-guide/abi-stable.html#abi-sys-bus-usb-devices-bconfigurationvalue">force the system to reconfigure</a> the device <i>non-transparently</i>, as if it had been disconnected during sleep, which unbinds all drivers and removes all children devices before adding them back when the device is ready again.
+<p>The one uevent that does get raised, however, is the one from losing and regaining <code>power/wakeup</code>, since USB devices are unusable while they are unconfigured, so they cannot issue  <a href="../en/Wakeup_triggers.html" class="mw-redirect" title="Wakeup triggers">wakeup triggers</a> while in this state. That uevent has no distinctive properties and is issued once for losing <code>power/wakeup</code> (when the device state becomes <code>default</code>), and then a second time when regaining it (as the device state reaches <code>addressed</code>). The first event can still be easily identified because <code>DEVNUM</code> is set to zero (which is not a valid device number) <a rel="nofollow" class="external text" href="https://github.com/torvalds/linux/blob/8d561baae505bab6b3f133e10dc48e27e4505cbe/drivers/usb/core/hub.c#L3167-L3178">immediately before</a> the device is unconfigured and loses <code>power/wakeup</code>. When that happens, one can simply touch the <code>bConfigurationValue</code> sysfs attribute to <a rel="nofollow" class="external text" href="https://docs.kernel.org/admin-guide/abi-stable.html#abi-sys-bus-usb-devices-bconfigurationvalue">force the system to reconfigure</a> the device <i>non-transparently</i>, as if it had been disconnected during sleep, which unbinds all drivers and removes all children devices before adding them back when the device is ready again.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note</strong> <code>DEVNUM</code> will not be set to zero if the attribute <code>power/persist</code> (which controls the <a rel="nofollow" class="external text" href="https://docs.kernel.org/driver-api/usb/persist.html">USB-persist feature</a>) is set to <code>1</code>. USB-persist is not usually enabled by default, but there are kernels that turn on the <code>CONFIG_USB_DEFAULT_PERSIST</code> option at compilation, which sees that feature enabled for all devices.</div>
-<pre># The actual rule to be run
-ACTION=="add" SUBSYSTEM=="tty" SUBSYSTEMS="usb" ATTRS{manufacturer}=="Foo" ATTRS{product}=="Bar" TAG+="systemd" ENV{SYSTEMD_WANTS}="setup-usb-tty@$devnode.service"
+<strong>Note</strong> <code>DEVNUM</code> will not be set to zero if the attribute <code>power/persist</code> (which controls the <a rel="nofollow" class="external text" href="https://docs.kernel.org/driver-api/usb/persist.html">USB-persist feature</a>) is set to <code>1</code>. USB-persist is enabled by default on the default kernel of several Linux distributions (<a rel="nofollow" class="external text" href="https://gitlab.archlinux.org/archlinux/packaging/packages/linux/-/blob/main/config.x86_64?ref_type=heads#L8676">including</a> Arch's <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span> kernel) using the <code>CONFIG_USB_DEFAULT_PERSIST</code> option at compilation. If so, the USB-persist feature needs to be disabled on that device in order to work properly.</div>
+<pre># Make sure that power/persist is and stays off,
+# in case CONFIG_USB_DEFAULT_PERSIST enables it by default
+SUBSYSTEM=="usb" ATTR{manufacturer}=="Foo" ATTR{product}=="Bar" ATTR{power/persist}="0"
+
+# The actual rule to be run
+ACTION=="add" SUBSYSTEM=="tty" SUBSYSTEMS=="usb" ATTRS{manufacturer}=="Foo" ATTRS{product}=="Bar" TAG+="systemd" ENV{SYSTEMD_WANTS}="setup-usb-tty@$devnode.service"
 
 # The rule that will get the above rule to re-run when the computer comes out of sleep
 # Can't use $attr{bConfigurationValue} in ATTR{}, so make sure to replace
@@ -1351,8 +1398,8 @@ SUBSYSTEMS=="scsi", KERNEL=="s[rg][0-9]*", ATTRS{type}=="5", GROUP="optical"</pr
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Udev&amp;oldid=863084">https://wiki.archlinux.org/index.php?title=Udev&amp;oldid=863084</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 29 January 2026, at 12:39.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Udev&amp;oldid=868333">https://wiki.archlinux.org/index.php?title=Udev&amp;oldid=868333</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 7 March 2026, at 21:28.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

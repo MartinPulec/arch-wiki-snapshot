@@ -285,13 +285,44 @@ mmcblk0
 </pre>
 <p>For those using <a href="../en/Partitioning.html#GUID_Partition_Table" class="mw-redirect" title="GPT">GPT</a>, use the <code>blkid</code> command instead. The latter is more convenient for scripts, but more difficult to read.
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># blkid</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">/dev/sda1: UUID="CBB6-24F2" TYPE="vfat" PARTLABEL="EFI system partition" PARTUUID="d0d0d110-0a71-4ed6-936a-304969ea36af"
-/dev/sda2: LABEL="Arch Linux" UUID="0a3407de-014b-458b-b5c1-848e92a327a3" TYPE="ext4" PARTLABEL="GNU/Linux" PARTUUID="98a81274-10f7-40db-872a-03df048df366"
-/dev/sda3: LABEL="Data" UUID="b411dc99-f0a0-4c87-9e05-184977be8539" TYPE="ext4" PARTLABEL="Home" PARTUUID="7280201c-fc5d-40f2-a9b2-466611d3d49e"
-/dev/sda4: UUID="f9fe0b69-a280-415d-a03a-a32752370dee" TYPE="swap" PARTLABEL="Swap" PARTUUID="039b6c1c-7553-4455-9537-1befbc9fbc5b"
-/dev/mmcblk0: PTUUID="0003e1e5" PTTYPE="dos"
-/dev/mmcblk0p1: UUID="F4CA-5D75" TYPE="vfat" PARTUUID="0003e1e5-01"</pre>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip</strong> You can change the layout to something more readable with <code>-o</code> - see <span class="plainlinks archwiki-template-man" title="$ man 8 blkid"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/blkid.8">blkid(8)</a></span> for a list and description of all possible layouts supported.</div>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ blkid -o export</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">DEVNAME=/dev/sda1
+UUID="CBB6-24F2"
+TYPE="vfat"
+PARTLABEL="EFI system partition"
+PARTUUID="d0d0d110-0a71-4ed6-936a-304969ea36af"
+
+DEVNAME=/dev/sda2
+LABEL="Arch Linux"
+UUID="0a3407de-014b-458b-b5c1-848e92a327a3"
+TYPE="ext4"
+PARTLABEL="GNU/Linux"
+PARTUUID="98a81274-10f7-40db-872a-03df048df366"
+
+DEVNAME=/dev/sda3
+LABEL="Data"
+UUID="b411dc99-f0a0-4c87-9e05-184977be8539"
+TYPE="ext4"
+PARTLABEL="Home"
+PARTUUID="7280201c-fc5d-40f2-a9b2-466611d3d49e"
+
+DEVNAME=/dev/sda4
+UUID="f9fe0b69-a280-415d-a03a-a32752370dee"
+TYPE="swap"
+PARTLABEL="Swap"
+PARTUUID="039b6c1c-7553-4455-9537-1befbc9fbc5b"
+
+DEVNAME=/dev/mmcblk0
+PTUUID="0003e1e5"
+PTTYPE="dos"
+
+DEVNAME=/dev/mmcblk0p1
+UUID="F4CA-5D75"
+TYPE="vfat"
+PARTUUID="0003e1e5-01"
+</pre>
 <div class="mw-heading mw-heading3"><h3 id="by-label">by-label</h3></div>
 <p>Almost every <a href="../en/File_systems.html#Types_of_file_systems" title="File systems">file system type</a> can have a label. All your volumes that have one are listed in the <code>/dev/disk/by-label</code> directory.
 </p>
@@ -311,6 +342,10 @@ lrwxrwxrwx 1 root root 10  Arch\x20Linux -&gt; ../../sda2
 <dd>
 <code>cryptsetup config --label="<i>new label</i>" /dev/<i>XXX</i></code> using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=cryptsetup">cryptsetup</a></span>
 </dd>
+<dt>vfat/fat</dt>
+<dd>
+<code>fatlabel /dev/<i>XXX</i> "<i>new label</i>"</code> using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dosfstools">dosfstools</a></span>
+</dd>
 <dt>exfat</dt>
 <dd>
 <code>tune.exfat -L "<i>new label</i>" /dev/<i>XXX</i></code> using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=exfatprogs">exfatprogs</a></span>
@@ -325,10 +360,6 @@ lrwxrwxrwx 1 root root 10  Arch\x20Linux -&gt; ../../sda2
 <dt>f2fs</dt>
 <dd>
 <code>f2fslabel /dev/<i>XXX</i> "<i>new label</i>"</code> using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=f2fs-tools">f2fs-tools</a></span>
-</dd>
-<dt>fat/vfat</dt>
-<dd>
-<code>fatlabel /dev/<i>XXX</i> "<i>new label</i>"</code> using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=dosfstools">dosfstools</a></span>
 </dd>
 <dd>
 <code>mlabel -i /dev/<i>XXX</i> ::"<i>new label</i>"</code> using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mtools">mtools</a></span>
@@ -622,8 +653,8 @@ lrwxrwxrwx 1 root root 10  /dev/gpt-auto-root-luks -&gt; nvme1n1p3
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Persistent_block_device_naming&amp;oldid=854949">https://wiki.archlinux.org/index.php?title=Persistent_block_device_naming&amp;oldid=854949</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 2 December 2025, at 09:06.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Persistent_block_device_naming&amp;oldid=870353">https://wiki.archlinux.org/index.php?title=Persistent_block_device_naming&amp;oldid=870353</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 31 March 2026, at 22:58.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

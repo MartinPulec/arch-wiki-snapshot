@@ -203,10 +203,19 @@
 			</button>
 		
 		<ul id="toc-Copying_the_public_key_to_the_remote_server-sublist" class="vector-toc-list">
-			<li id="toc-Simple_method" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Simple_method">
+			<li id="toc-Scenario_1" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Scenario_1">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">3.1</span>
+					<span>Scenario 1</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Scenario_1-sublist" class="vector-toc-list">
+				<li id="toc-Simple_method" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Simple_method">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.1.1</span>
 					<span>Simple method</span>
 				</div>
 			</a>
@@ -214,15 +223,28 @@
 			<ul id="toc-Simple_method-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Manual_method" class="vector-toc-list-item vector-toc-level-2">
+		<li id="toc-Manual_method" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Manual_method">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">3.2</span>
+					<span class="vector-toc-numb">3.1.2</span>
 					<span>Manual method</span>
 				</div>
 			</a>
 			
 			<ul id="toc-Manual_method-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+		</li>
+		<li id="toc-Scenario_2" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Scenario_2">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.2</span>
+					<span>Scenario 2</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Scenario_2-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -836,14 +858,20 @@ Host SERVER2 SERVER3
 <li><a href="../en/Trusted_Platform_Module.html#SSH" title="Trusted Platform Module">Trusted Platform Module#SSH</a></li>
 </ul>
 <div class="mw-heading mw-heading2"><h2 id="Copying_the_public_key_to_the_remote_server">Copying the public key to the remote server</h2></div>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
-<div>
-<b>Reason:</b> How to do this if you <a href="../en/OpenSSH.html#Force_public_key_authentication" title="OpenSSH">force public key authentication</a>? (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:SSH_keys.html">Talk:SSH keys</a>)</div>
-</div>
 <p>Once you have generated a key pair, you will need to copy the public key to the remote server so that it will use SSH key authentication.  The public key file shares the same name as the private key except that it is appended with a <code>.pub</code> extension.  Note that the private key is not shared and remains on the local machine.
 </p>
-<div class="mw-heading mw-heading3"><h3 id="Simple_method">Simple method</h3></div>
+<p>There are essentially two scenarios:
+</p>
+<ul>
+<li>Scenario 1 is that password authentification is not disabled yet, in this case continue with section <a href="#Scenario_1">#Scenario 1</a>
+</li>
+<li>Scenario 2 is that public key authentication is forced and password authentication is disabled already, in this case continue with section <a href="#Scenario_2">#Scenario 2</a>
+</li>
+</ul>
+<div class="mw-heading mw-heading3"><h3 id="Scenario_1">Scenario 1</h3></div>
+<p>In case you can regularly login to a server with ssh via password authentication, you can either use the <a href="#Simple_method">#Simple method</a> or the <a href="#Manual_method">#Manual method</a> below.
+</p>
+<div class="mw-heading mw-heading4"><h4 id="Simple_method">Simple method</h4></div>
 <p>If your key file name matches <code>~/.ssh/id*.pub</code> pattern (which is the default name format for <code>ssh-keygen</code>) you can simply enter the following command:
 </p>
 <pre>$ ssh-copy-id remote-server.example
@@ -862,7 +890,7 @@ Host SERVER2 SERVER3
 </p>
 <pre>$ ssh-copy-id -i ~/.ssh/<i>your_key_name</i>.pub -p 39901 <i>username</i>@remote-server.example
 </pre>
-<div class="mw-heading mw-heading3"><h3 id="Manual_method">Manual method</h3></div>
+<div class="mw-heading mw-heading4"><h4 id="Manual_method">Manual method</h4></div>
 <p>By default, for OpenSSH, the public key needs to be concatenated with <code>~/.ssh/authorized_keys</code>.  Begin by copying the public key to the remote server.
 </p>
 <pre>$ scp ~/.ssh/id_ed25519.pub username@remote-server.org<b>:</b>
@@ -880,6 +908,17 @@ $ chmod 600 ~/.ssh/authorized_keys
 </pre>
 <p>The last two commands remove the public key file from the server and set the permissions on the <code>authorized_keys</code> file such that it is only readable and writable by you, the owner.
 </p>
+<div class="mw-heading mw-heading3"><h3 id="Scenario_2">Scenario 2</h3></div>
+<p>In case the server forces public key authentication and disabled password authentication already, you have the following potential options, depending on what the server and/or server provider supports. <br>
+</p>
+<p>In general you need to copy the public key to <code>~/.ssh/authorized_keys</code> on the server (for the user you want to connect to), using one of the below mentioned options:
+</p>
+<ul>
+<li>modify the OS image before it is installed on the server</li>
+<li>add <a href="../en/Cloud-init.html" title="Cloud-init">cloud-init</a> instructions, e.g. on OS installation</li>
+<li>use an Intelligent Platform Management Interface (IPMI) that allows for modifying a system independently of OS-level SSH</li>
+<li>if installed beforehand, several alternatives such as FTP access, other Remote Access protocols etc. can be used</li>
+</ul>
 <div class="mw-heading mw-heading2"><h2 id="SSH_agents">SSH agents</h2></div>
 <p>If your private key is encrypted with a passphrase, this passphrase must be entered every time you attempt to connect to an SSH server using public-key authentication.  Each individual invocation of <code>ssh</code> or <code>scp</code> will need the passphrase in order to decrypt your private key before authentication can proceed.
 </p>
@@ -1236,8 +1275,8 @@ $ chmod 600 ~/.ssh/authorized_keys
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=SSH_keys&amp;oldid=862888">https://wiki.archlinux.org/index.php?title=SSH_keys&amp;oldid=862888</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 26 January 2026, at 12:55.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=SSH_keys&amp;oldid=870115">https://wiki.archlinux.org/index.php?title=SSH_keys&amp;oldid=870115</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 27 March 2026, at 22:10.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

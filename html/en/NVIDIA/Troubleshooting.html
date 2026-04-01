@@ -340,6 +340,17 @@
 			<ul id="toc-System_freeze_when_the_display_powers_off_or_on_resume-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Flickering_with_compositor_under_X11_(nvidia-open)" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Flickering_with_compositor_under_X11_(nvidia-open)">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.7</span>
+					<span>Flickering with compositor under X11 (nvidia-open)</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Flickering_with_compositor_under_X11_(nvidia-open)-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-Performance_issues" class="vector-toc-list-item vector-toc-level-1">
@@ -812,7 +823,8 @@ archlinux kernel: NVRM: Xid (PCI:0000:08:00): 13, pid='&lt;unknown&gt;', name=&l
 <li>This has been reported to reduce the performance of some OpenGL applications and may produce issues in WebGL. It also drastically increases the time the driver needs to clock down after load (<a rel="nofollow" class="external text" href="https://forums.developer.nvidia.com/t/if-you-have-gpu-clock-boost-problems-please-try-gl-experimentalperfstrategy-1/71762">NVIDIA Support Thread</a>).</li>
 <li>
 <code>ForceFullCompositionPipeline</code> is known <a rel="nofollow" class="external text" href="https://github.com/ValveSoftware/Proton/issues/6869">to break some games</a> using Vulkan under Proton with NVIDIA driver 535.</li>
-<li>This might cause some fullscreen applications to immediately freeze, making the system unresponsive until tabbing out. One workaround is to run the program in <a href="../../en/Gamescope.html" title="Gamescope">Gamescope</a> as a borderless window (<code>-b</code>) and leaving at least one other thing on the screen (which may be the taskbar or any graphical application). If you experience system freezes while running fullscreen graphical applications that seem to run normally while not in focus, try disabling <code>ForceFullCompositionPipeline</code> (or follow the advice above).</li>
+<li>
+<code>ForceCompositionPipeline</code> is known to cause some fullscreen applications to immediately freeze, making the system unresponsive until tabbing out. One workaround is to run the program in <a href="../../en/Gamescope.html" title="Gamescope">Gamescope</a> as a borderless window (<code>-b</code>) and leaving at least one other thing on the screen (which may be the taskbar or any graphical application).</li>
 </ul>
 </div>
 <p>The NVIDIA driver conditionally applies a <a rel="nofollow" class="external text" href="https://www.reddit.com/r/linux_gaming/comments/6voivr/comment/dm1uz2j/">composition pipeline</a> to prepare the image for display. This not to be confused with a <a href="../../en/Composite_manager.html" class="mw-redirect" title="Composite manager">composite manager</a> which takes over window presentation (and can also mitigate screen tearing, via VSync). By default, the composition pipeline is only applied if the current screen transformations require it. The pipeline uses the GPU's specialized display engine if possible, then the more general graphics engine. There are a couple of options to control this:
@@ -947,6 +959,33 @@ WantedBy=multi-user.target</pre>
 <p>You can adjust the minimum clock so they are lower than the 800 mentioned earlier to lower idle power consumption; just be aware that setting them to low will cause the issue to occur again.
 </p>
 <p>Then <a href="../../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a>/<a href="../../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start">start</a> <code>nvidia-clocks.service</code>.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Flickering_with_compositor_under_X11_(nvidia-open)">
+<span id="Flickering_with_compositor_under_X11_.28nvidia-open.29"></span>Flickering with compositor under X11 (nvidia-open)</h3></div>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../../File:Tango-edit-cut.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is being considered for removal.</b></p>
+<div>
+<b>Reason:</b> The release of <a rel="nofollow" class="external text" href="https://gitlab.archlinux.org/archlinux/packaging/packages/nvidia-utils/-/commit/b314b7b3873c7dbe66e2b68fed7773e7f8e58267">nvidia-utils 595.58.3-1</a> on 24-Mar-2026 fixed this issue. (Discuss in <a rel="nofollow" class="external text" href="../../en/Talk:NVIDIA/Troubleshooting.html">Talk:NVIDIA/Troubleshooting</a>)</div>
+</div>
+<p>Versions of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nvidia-open">nvidia-open</a></span> tracking the 590.x version introduced a regression in the GLX vblank path that causes window flickering when a compositor is active under X11. This affects xfwm4, and potentially other compositors relying on GLX for vertical sync.
+</p>
+<p>Users can use the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/nvidia-580xx-utils/">nvidia-580xx-utils</a></span><sup><small>AUR</small></sup> package which tracks the production versioned driver which is not affected by this bug or continue using the repo packages (which track the new features versioned drivers) implementing the below work-around until upstream fixes the issue.
+</p>
+<p>The default <code>vblank_mode</code> in xfwm4 is <code>auto</code>, which resolves to <code>glx</code> on NVIDIA hardware and triggers the bug.
+</p>
+<p>A good work-around is to change the vblank_mode to a setting of either <b>xpresent</b> or to <b>off</b>
+</p>
+<p>For xfwm4, apply the setting persistently with:
+</p>
+<pre>$ xfconf-query -c xfwm4 -p /general/vblank_mode -s off
+</pre>
+<p>Then restart the X session. Alternatively, <code>xpresent</code> can be used to retain vblank sync at the cost of slightly higher GPU usage:
+</p>
+<pre>$ xfconf-query -c xfwm4 -p /general/vblank_mode -s xpresent
+</pre>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> Tearing may be visible with <code>off</code>. If this is unacceptable, prefer <code>xpresent</code>. See <a href="#ForceCompositionPipeline">#ForceCompositionPipeline</a> to address tearing at the Xorg level alongside either setting.</div>
+<p>See also: <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?id=311088">Flickering XFCE (X11 with compositor) and nvidia-open-dkms</a> (Arch Linux Forums)
 </p>
 <div class="mw-heading mw-heading2"><h2 id="Performance_issues">Performance issues</h2></div>
 <div class="mw-heading mw-heading3"><h3 id="Bad_performance_after_installing_a_new_driver_version">Bad performance after installing a new driver version</h3></div>
@@ -1172,6 +1211,7 @@ Notice that deep color will however be required for HDR monitors.
 </ul>
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
+<li><a href="../../en/Category:Sections_flagged_with_Template:Remove.html" title="Category:Sections flagged with Template:Remove">Sections flagged with Template:Remove</a></li>
 <li><a href="../../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
 <li><a href="../../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
 <li><a href="../../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li>
@@ -1186,8 +1226,8 @@ Notice that deep color will however be required for HDR monitors.
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=NVIDIA/Troubleshooting&amp;oldid=862951">https://wiki.archlinux.org/index.php?title=NVIDIA/Troubleshooting&amp;oldid=862951</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 27 January 2026, at 21:17.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=NVIDIA/Troubleshooting&amp;oldid=869863">https://wiki.archlinux.org/index.php?title=NVIDIA/Troubleshooting&amp;oldid=869863</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 24 March 2026, at 19:01.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

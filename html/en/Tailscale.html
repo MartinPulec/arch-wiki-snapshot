@@ -102,7 +102,29 @@
 			</a>
 			
 			<ul id="toc-Using_a_custom_Control_Server-sublist" class="vector-toc-list">
+				<li id="toc-Share_nodes_between_users" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Share_nodes_between_users">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.1.1</span>
+					<span>Share nodes between users</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Share_nodes_between_users-sublist" class="vector-toc-list">
 			</ul>
+		</li>
+		<li id="toc-Integration_with_nextcloud_or_another_OIDC_provider" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Integration_with_nextcloud_or_another_OIDC_provider">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.1.2</span>
+					<span>Integration with nextcloud or another OIDC provider</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Integration_with_nextcloud_or_another_OIDC_provider-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
 		</li>
 		<li id="toc-Running_as_a_Docker_container" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Running_as_a_Docker_container">
@@ -345,6 +367,56 @@ If you opt out of centralized logging, Tailscale may not be able to provide tech
 </p>
 <pre># tailscale up --login-server <a rel="nofollow" class="external free" href="https://example.com">https://example.com</a> --authkey <i>your_auth_key</i>
 </pre>
+<p>You may create user and auth-key using following commands after <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start">starting</a> <code>headscale.service</code>:
+</p>
+<pre># headscale users create USER -e email@example.com
+# headscale users list
+# headscale preauthkeys create -u &lt;ID&gt; --reusable
+</pre>
+<div class="mw-heading mw-heading4"><h4 id="Share_nodes_between_users">Share nodes between users</h4></div>
+<p>Create file with policy:
+</p>
+<pre>{
+ "tagOwners": {
+   "tag:shared": ["user1@"]
+ },
+ "groups": {
+   "group:all": ["user1@", "user2@", "user3@"]
+ },
+ "acls": [
+   {
+     "action": "accept",
+     "src": ["group:all"],
+     "dst": ["tag:shared:*"]
+   }
+ ]
+}
+</pre>
+<p>Point this file in config.yaml:
+</p>
+<pre>policy:
+ mode: file
+ path: "/etc/headscale/policy.json"
+</pre>
+<p>Advertise tag:
+</p>
+<pre> tailscale up --advertise-tags=tag:shared --login-server=<a rel="nofollow" class="external free" href="https://headscale.localdomain/">https://headscale.localdomain/</a>
+ 
+</pre>
+<div class="mw-heading mw-heading4"><h4 id="Integration_with_nextcloud_or_another_OIDC_provider">Integration with nextcloud or another OIDC provider</h4></div>
+<p>Install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/nextcloud-app-oidc/">nextcloud-app-oidc</a></span><sup><small>AUR</small></sup> and create client key, use <a rel="nofollow" class="external free" href="https://headscale.localdomain/oidc/callback">https://headscale.localdomain/oidc/callback</a> as redirection uri.
+</p>
+<p>Add following snippet into config.yaml:
+</p>
+<pre>oidc:
+ issuer: "<a rel="nofollow" class="external free" href="https://cloud.example.com">https://cloud.example.com</a>"
+ client_id: "&lt;client-id&gt;"
+ client_secret: "&lt;client-secret&gt;"
+ scope: ["openid", "profile", "email"]
+ user_map:
+   name: "preferred_username"
+   email: "email"
+</pre>
 <div class="mw-heading mw-heading3"><h3 id="Running_as_a_Docker_container">Running as a Docker container</h3></div>
 <p>Follow <a rel="nofollow" class="external text" href="https://hub.docker.com/r/tailscale/tailscale">this guide</a> for a general idea of how to run tailscale as a docker container.
 </p>
@@ -430,8 +502,8 @@ unmanaged-devices=interface-name:tailscale0
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Tailscale&amp;oldid=860740">https://wiki.archlinux.org/index.php?title=Tailscale&amp;oldid=860740</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 10 January 2026, at 18:34.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Tailscale&amp;oldid=869257">https://wiki.archlinux.org/index.php?title=Tailscale&amp;oldid=869257</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 15 March 2026, at 20:47.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

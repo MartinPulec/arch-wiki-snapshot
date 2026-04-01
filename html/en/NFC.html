@@ -82,8 +82,24 @@
 			</div>
 		</a>
 		
+			<button aria-controls="toc-Troubleshooting-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle Troubleshooting subsection</span>
+			</button>
+		
 		<ul id="toc-Troubleshooting-sublist" class="vector-toc-list">
-		</ul>
+			<li id="toc-NXP_NCI_2.0_controllers_(PN7150/PN7160)_—_tags_not_detected" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#NXP_NCI_2.0_controllers_(PN7150/PN7160)_%E2%80%94_tags_not_detected">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">4.1</span>
+					<span>NXP NCI 2.0 controllers (PN7150/PN7160) — tags not detected</span>
+				</div>
+			</a>
+			
+			<ul id="toc-NXP_NCI_2.0_controllers_(PN7150/PN7160)_—_tags_not_detected-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
 	</li>
 </ul>
 </div>
@@ -179,6 +195,21 @@ Sun Sep  5 05:15:10 2021
 <div class="mw-heading mw-heading2"><h2 id="Troubleshooting">Troubleshooting</h2></div>
 <p>In case things do not seem to work, investigate the <a href="../en/Systemd/Journal.html" class="mw-redirect" title="Journal">log</a> of <code>pcscd.service</code>
 </p>
+<div class="mw-heading mw-heading3"><h3 id="NXP_NCI_2.0_controllers_(PN7150/PN7160)_—_tags_not_detected">
+<span id="NXP_NCI_2.0_controllers_.28PN7150.2FPN7160.29_.E2.80.94_tags_not_detected"></span>NXP NCI 2.0 controllers (PN7150/PN7160) — tags not detected</h3></div>
+<p>Some laptops (notably ASUS ROG models with a Keystone slot) have a built-in NXP NFC controller connected via I2C. The kernel driver <code>nxp-nci_i2c</code> may load successfully and RF polling appears active in <code>dmesg</code>, but no tags are ever discovered.
+</p>
+<p>This is caused by three bugs in the upstream <code>nci</code> and <code>nxp-nci</code> kernel modules affecting NCI 2.0 protocol handling. As of kernel 6.18, these are not yet fixed upstream.
+</p>
+<p>Check if you are affected:
+</p>
+<pre>$ dmesg | grep -i nxp-nci
+$ cat /sys/class/nfc/nfc*/name
+</pre>
+<p>If RF polling starts but <code>RF_INTF_ACTIVATED_NTF</code> never appears, see <a rel="nofollow" class="external text" href="https://github.com/zmr-233/linux-nxp-nfc-fix">linux-nxp-nfc-fix</a> for patched DKMS modules.
+</p>
+<p>Known ACPI IDs: <code>NXP1001</code>, <code>NXP1002</code>, <code>NXP3001</code>, <code>NXP7471</code>.
+</p>
 </div>
 </div>
 					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
@@ -192,8 +223,8 @@ Sun Sep  5 05:15:10 2021
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=NFC&amp;oldid=796883">https://wiki.archlinux.org/index.php?title=NFC&amp;oldid=796883</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 13 January 2024, at 15:17.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=NFC&amp;oldid=866838">https://wiki.archlinux.org/index.php?title=NFC&amp;oldid=866838</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 22 February 2026, at 12:14.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

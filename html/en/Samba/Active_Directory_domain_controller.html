@@ -794,29 +794,25 @@ tls cafile   = tls/ca.pem</pre>
 <div class="mw-heading mw-heading3"><h3 id="Joining_an_existing_domain_as_a_new_DC">Joining an existing domain as a new DC</h3></div>
 <p>Execute the following command (adding any necessary parameters above to the end of the command):
 </p>
-<pre># samba-tool domain join <b>internal.domain.tld</b> DC -U"<b>INTERNAL</b>\<b>administrator</b>"
+<pre># samba-tool domain join <b>internal.domain.tld</b> DC -U<b>administrator</b> <b>&lt;other options&gt;</b>
 </pre>
 <p>Now copy the <code>krb5.conf</code>:
 </p>
 <pre># cp /var/lib/samba/private/krb5.conf /etc/krb5.conf
 </pre>
-<p>If you used the RFC 2307 schema extensions, you need to copy the idmap from an existing DC. If using Samba, execute the following command from another DC:
-</p>
-<pre># tdbbackup -s .bak /var/lib/samba/private/idmap.ldb
-</pre>
-<p>This will generate a file <code>/var/lib/samba/private/idmap.ldb.bak</code>, transfer this file to the new server in the <code>/var/lib/samba/private</code> directory, removing the .bak extension. If you intend to keep multiple DCs, you will need to automate this process going forward using one of the methods listed on the Samba website <a rel="nofollow" class="external text" href="https://wiki.samba.org/index.php/Joining_a_Samba_DC_to_an_Existing_Active_Directory#Built-in_User_.26_Group_ID_Mappings">here</a>. This also applies to transferring the idmap from Windows DCs.
-</p>
 <p>Enable and start the <code>samba.service</code> unit.
 </p>
-<p>If using BIND9_DLZ DNS backend, you'll need to follow the <a href="#BIND">BIND</a> section above. Check if the <code>/var/lib/samba/private/dns</code> directory is created, and if not, run the following command (ignore warning about updating named.conf):
+<p>If using BIND9_DLZ DNS backend, run the following command:
 </p>
 <pre># samba_upgradedns --dns-backend=BIND9_DLZ
 </pre>
-<p>Restart the <code>named.service</code> and then update the DNS records with the following command:
+<p>You'll need to follow the <a href="#BIND">BIND</a> section above then restart the <code>named.service</code>.
+</p>
+<p>Update the DNS records with the following command:
 </p>
 <pre># samba_dnsupdate --all-names --use-samba-tool --verbose
 </pre>
-<p>Now proceed with LDB configuration and testing as with a new domain <a href="#Samba">here</a>.
+<p>Now set the local server as the first nameserver in the <code>resolv.conf</code> and proceed with LDB configuration and testing as with a new domain <a href="#Samba">here</a>.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Transferring_the_FSMO_roles">Transferring the FSMO roles</h3></div>
 <p>If this is intended to replace an existing domain controller, you will need to transfer the FSMO roles before demoting the existing DC. This is currently outside the scope of this document. See the Samba wiki <a rel="nofollow" class="external text" href="https://wiki.samba.org/index.php/Transferring_and_Seizing_FSMO_Roles">here</a>.
@@ -851,6 +847,11 @@ tls cafile   = tls/ca.pem</pre>
 </pre>
 <div class="mw-heading mw-heading2"><h2 id="Tips_and_tricks">Tips and tricks</h2></div>
 <div class="mw-heading mw-heading3"><h3 id="DHCP_with_dynamic_DNS_updates">DHCP with dynamic DNS updates</h3></div>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
+<div>
+<b>Reason:</b> This section needs to be updated for the newer <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=kea">kea</a></span> DHCP server. (Discuss in <a rel="nofollow" class="external text" href="../../en/Talk:Samba/Active_Directory_domain_controller.html">Talk:Samba/Active Directory domain controller</a>)</div>
+</div>
 <p>It should be noted that using this method will affect functionality of windows clients, as they will still attempt to update DNS on their own. When this occurs, the machine will be denied permission to do so as the record will be owned by the dhcp user rather than the machine account. While this is essentially harmless, it will generate warnings in the system log of the offending machine. You should create a GPO to overcome this, but unfortunately, Samba does not yet have a command line utility to modify GPOs. You will need a Windows PC with the RSAT tools installed. Simply create a dedicated GPO with the Group Policy Editor, and apply only to OUs that contain workstations using DHCP (so that Samba/Windows servers and statically configured Samba/Windows clients can still update using 'ipconfig /registerdns') and configure the following settings:
 </p>
 <pre>Computer Configuration
@@ -1001,9 +1002,13 @@ subnet <b>192.168.1.0</b> netmask <b>255.255.255.0</b> {
 </p>
 </div>
 </div>
-					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
+					<div id="catlinks" class="catlinks" data-mw="interface">
+<div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../../en/Category:Network_sharing.html" title="Category:Network sharing">Network sharing</a></li></ul>
-</div></div>
+</div>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li></ul>
+</div>
+</div>
 				</div>
 			</main>
 			
@@ -1012,8 +1017,8 @@ subnet <b>192.168.1.0</b> netmask <b>255.255.255.0</b> {
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Samba/Active_Directory_domain_controller&amp;oldid=807505">https://wiki.archlinux.org/index.php?title=Samba/Active_Directory_domain_controller&amp;oldid=807505</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 5 May 2024, at 03:31.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Samba/Active_Directory_domain_controller&amp;oldid=866779">https://wiki.archlinux.org/index.php?title=Samba/Active_Directory_domain_controller&amp;oldid=866779</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 22 February 2026, at 05:45.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

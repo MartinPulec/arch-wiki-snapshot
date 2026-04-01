@@ -97,18 +97,7 @@
 			</a>
 			
 			<ul id="toc-Chroot_setup-sublist" class="vector-toc-list">
-				<li id="toc-Install_makepkg-optimize_and_backends" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Install_makepkg-optimize_and_backends">
-				<div class="vector-toc-text">
-					<span class="vector-toc-numb">4.1.1</span>
-					<span>Install makepkg-optimize and backends</span>
-				</div>
-			</a>
-			
-			<ul id="toc-Install_makepkg-optimize_and_backends-sublist" class="vector-toc-list">
 			</ul>
-		</li>
-	</ul>
 		</li>
 		<li id="toc-Using_the_chroot" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Using_the_chroot">
@@ -239,8 +228,8 @@
 <div class="archwiki-template-meta-related-articles">
 <p>Related articles</p>
 <ul>
-<li><a href="../DeveloperWiki:Building_in_a_clean_chroot.html" title="DeveloperWiki:Building in a clean chroot">DeveloperWiki:Building in a clean chroot</a></li>
 <li><a href="../en/Arch_User_Repository.html" title="Arch User Repository">Arch User Repository</a></li>
+<li><a href="../en/Building_in_a_clean_chroot.html" class="mw-redirect" title="Building in a clean chroot">Building in a clean chroot</a></li>
 </ul>
 </div>
 <p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/makepkg-optimize/">makepkg-optimize</a></span><sup><small>AUR</small></sup> is a collection of supplemental <a rel="nofollow" class="external text" href="https://gitlab.archlinux.org/pacman/pacman/commit/295a3491adc4af5c8634ac82777212ed9c664457">tidy</a>, <a rel="nofollow" class="external text" href="https://gitlab.archlinux.org/pacman/pacman/commit/508b4e3ec0cb3e365942f4dc0626edda4789932b">buildenv</a>, and <a rel="nofollow" class="external text" href="https://gitlab.archlinux.org/pacman/pacman/commit/0bb04fa16a82db133dd010478c1256bc8500c5e7">executable</a> scripts for <a href="../en/Pacman.html" title="Pacman">pacman</a> which provide macros for several kinds of optimization in the <code>build()</code> and <code>package()</code> stages.
@@ -268,17 +257,16 @@
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note</strong> <a href="https://en.wikipedia.org/wiki/Profile-guided_optimization" class="extiw" title="wikipedia:Profile-guided optimization">Profile-guided optimization</a> requires that a package be built and installed <i>twice</i>. The first phase initiates profile generation in <code>$PROFDEST/<i>pkgbase</i>.gen</code>; the second moves them to <code>$PROFDEST/<i>pkgbase</i>.used</code> and applies them.</div>
 <div class="mw-heading mw-heading2"><h2 id="Build_an_optimized_package_in_a_clean_chroot">Build an optimized package in a clean chroot</h2></div>
-<p>Alternatively, <code>makepkg-optimize</code> can be used to build optimized packages within a <a href="../DeveloperWiki:Building_in_a_clean_chroot.html#Classic_way" title="DeveloperWiki:Building in a clean chroot">chroot</a>.
+<p>Alternatively, <code>makepkg-optimize</code> can be used to build optimized packages within a <a href="../DeveloperWiki:Building_in_a_clean_chroot.html#Classic_way" title="DeveloperWiki:Building in a clean chroot">classic way</a> of <a href="../en/Clean_chroot.html" class="mw-redirect" title="Clean chroot">clean chroot</a>.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Chroot_setup">Chroot setup</h3></div>
 <p>After <a href="../DeveloperWiki:Building_in_a_clean_chroot.html#Setting_up_a_chroot" title="DeveloperWiki:Building in a clean chroot">setting up a chroot</a>, a few additional steps are needed.
 </p>
-<div class="mw-heading mw-heading4"><h4 id="Install_makepkg-optimize_and_backends">Install makepkg-optimize and backends</h4></div>
 <p>First, install some of the backends for the optimization macros to the base chroot:
 </p>
 <pre>$ arch-nspawn "$CHROOT"/root pacman -S openmp upx optipng polly
 </pre>
-<p>Then <a href="../en/Arch_User_Repository.html#Acquire_build_files" title="Arch User Repository">download</a> and <a href="../DeveloperWiki:Building_in_a_clean_chroot.html#Building_in_the_chroot" title="DeveloperWiki:Building in a clean chroot">build</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/makepkg-optimize/">makepkg-optimize</a></span><sup><small>AUR</small></sup> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=svgo">svgo</a></span>.
+<p>Then <a href="../en/Arch_User_Repository.html#Acquire_build_files" title="Arch User Repository">download</a> and <a href="../DeveloperWiki:Building_in_a_clean_chroot.html#Building_in_the_chroot" title="DeveloperWiki:Building in a clean chroot">build</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/makepkg-optimize/">makepkg-optimize</a></span><sup><small>AUR</small></sup> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=svgo">svgo</a></span> packages.
 </p>
 <p>To install them in the base chroot, copy their package files into it and install them, e.g.:
 </p>
@@ -296,7 +284,7 @@ $ arch-nspawn "$CHROOT"/root pacman -U /root/svgo-1.2.2-2-any.pkg.tar.xz
 <pre>$ makechrootpkg -c -r "$CHROOT" -- -c --config /etc/makepkg-optimize.conf
 </pre>
 <div class="mw-heading mw-heading5"><h5 id="Building_with_PGO">Building with PGO</h5></div>
-<p>The <code>pgo</code> option for <code>BUILDENV</code> enables either <i>generation</i> or <i>application</i> of profiles, depending on if this is the first or second build of the package with this flag enabled. Clean chroot building complicates this because the software is run outside of the chroot to generate profiles, but the profiles need to be applied from inside the chroot when recompiling later. The solution is to bridge the three filesystems with a bind mounted folder.
+<p>The <code>pgo</code> option for <code>BUILDENV</code> enables either <i>generation</i> or <i>application</i> of profiles, depending on if this is the first or second build of the package with this flag enabled. <a href="../en/Clean_chroot.html" class="mw-redirect" title="Clean chroot">Clean chroot</a> building complicates this because the software is run outside of the chroot to generate profiles, but the profiles need to be applied from inside the chroot when recompiling later. The solution is to bridge the three filesystems with a bind mounted folder.
 </p>
 <div class="mw-heading mw-heading6"><h6 id="Create_a_PGO_cache">Create a PGO cache</h6></div>
 <p>Create and bind a folder to store <a rel="nofollow" class="external text" href="https://gcc.gnu.org/onlinedocs/gcc/Gcov-Data-Files.html">profiles</a>:
@@ -337,8 +325,8 @@ $ arch-nspawn "$CHROOT"/root pacman -U /root/svgo-1.2.2-2-any.pkg.tar.xz
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Makepkg-optimize&amp;oldid=818152">https://wiki.archlinux.org/index.php?title=Makepkg-optimize&amp;oldid=818152</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 12 October 2024, at 06:21.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Makepkg-optimize&amp;oldid=869969">https://wiki.archlinux.org/index.php?title=Makepkg-optimize&amp;oldid=869969</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 26 March 2026, at 18:06.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

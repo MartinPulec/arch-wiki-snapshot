@@ -346,9 +346,19 @@
 <div class="archwiki-template-meta-related-articles">
 <p>Related articles</p>
 <ul>
-<li><a href="../../en/ZFS.html" title="ZFS">ZFS</a></li>
 <li><a href="../../en/Installing_Arch_Linux_on_ZFS.html" class="mw-redirect" title="Installing Arch Linux on ZFS">Installing Arch Linux on ZFS</a></li>
 </ul>
+</div>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../../File:Tango-go-next.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is a candidate for moving to <a href="/index.php?title=ZFS/Examples&amp;action=edit&amp;redlink=1" class="new" title="ZFS/Examples (page does not exist)">ZFS/Examples</a>.</b></p>
+<div>
+<b>Notes:</b> 
+<ul>
+<li>This article is not about virtual disks at all. See also <a href="../../en/Talk:ZFS/Virtual_disks.html#Terminology:_vdev" title="Talk:ZFS/Virtual disks">Talk:ZFS/Virtual disks#Terminology: vdev</a>.</li>
+<li>ZFS does not use the term "virtual disk".</li>
+<li>All examples can be repeated by a user without files as vdevs (e.g. using flash drives).</li>
+</ul>
+ (Discuss in <a href="../../en/Talk:ZFS/Virtual_disks.html#Rename_this_article_(once_again)" title="Talk:ZFS/Virtual disks">Talk:ZFS/Virtual disks#Rename this article (once again)</a>)</div>
 </div>
 <p>This article covers some basic tasks and usage of ZFS. It differs from the main article <a href="../../en/ZFS.html" title="ZFS">ZFS</a> somewhat in that the examples herein are demonstrated on a zpool built from virtual disks. So long as users do not place any critical data on the resulting zpool, they are free to experiment without fear of actual data loss.
 </p>
@@ -356,23 +366,22 @@
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note</strong> Using a file as a VDEV is a great method to play with ZFS but is not viable strategy for storing "real" data.</div>
-<p>Due to differences in licensing, ZFS binaries and kernel modules are easily distributed from source, but no-so-easily packaged as pre-compiled sets. Details are provided on the <a href="../../en/ZFS.html#Installation" title="ZFS">ZFS#Installation</a> article.
-</p>
-<meta property="mw:PageProp/toc">
-<div class="mw-heading mw-heading2"><h2 id="Creating_and_destroying_Zpools">Creating and destroying Zpools</h2></div>
-<p>Management of ZFS is pretty simplistic with only two utils needed:
+<p>Management of ZFS is pretty simplistic with only two utilities needed:
 </p>
 <ul>
-<li><code>/usr/bin/zpool</code></li>
-<li><code>/usr/bin/zfs</code></li>
+<li><span class="plainlinks archwiki-template-man" title="$ man 8 zfs"><a rel="nofollow" class="external text" href="https://openzfs.github.io/openzfs-docs/man/master/8/zfs.8.html">zfs(8)</a></span></li>
+<li>
+<span class="plainlinks archwiki-template-man" title="$ man 8 zpool"><a rel="nofollow" class="external text" href="https://openzfs.github.io/openzfs-docs/man/master/8/zpool.8.html">zpool(8)</a></span>.</li>
 </ul>
+<meta property="mw:PageProp/toc">
+<div class="mw-heading mw-heading2"><h2 id="Creating_and_destroying_Zpools">Creating and destroying Zpools</h2></div>
 <div class="mw-heading mw-heading3"><h3 id="Mirror">Mirror</h3></div>
 <p>For zpools with just two drives with redundancy, it is recommended to use ZFS in <i>mirror</i> mode which functions like a RAID1 mirroring the data.  Mirroring can also be used as an alternative to Raidz setups with surprising results.  See more on vdev mirroring <a rel="nofollow" class="external text" href="https://jrs-s.net/2015/02/06/zfs-you-should-use-mirror-vdevs-not-raidz/">here</a>.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="RAIDZ1">RAIDZ1</h3></div>
 <p>The minimum number of drives for a RAIDZ1 is two, but it is best to follow the "power of two plus parity" recommendation.  This is for storage space efficiency and hitting the "sweet spot" in performance.  For RAIDZ-1, use three (2+1), five (4+1), or nine (8+1) disks. This example will use the most simplistic set of (2+1).
 </p>
-<p>Create three x 2G files to serve as virtual hardrives:
+<p>Create three x 2G files to serve as virtual hard drives:
 </p>
 <pre>$ for i in {1..3}; do truncate -s 2G /scratch/$i.img; done
 </pre>
@@ -478,7 +487,7 @@ zpool  atime        off       local
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip</strong> This option like many others can be toggled off when creating the zpool as well by appending the following to the creation step: -O atime-off</div>
 <div class="mw-heading mw-heading2"><h2 id="Add_content_to_the_Zpool_and_query_compression_performance">Add content to the Zpool and query compression performance</h2></div>
-<p>Fill the zpool with files. For this example, first enable compression. ZFS uses many compression types, including, lzjb, gzip, gzip-N, zle, and lz4. Using a setting of simply 'on' will call the default algorithm (lzjb) but lz4 is a nice alternative. See <span class="plainlinks archwiki-template-man" title="$ man 7 zfsprops"><a rel="nofollow" class="external text" href="https://openzfs.github.io/openzfs-docs/man/7/zfsprops.7.html#compression">zfsprops(7) § compression</a></span> for more.
+<p>Fill the zpool with files. For this example, first enable compression. ZFS uses many compression types, including, lzjb, gzip, gzip-N, zle, and lz4. Using a setting of simply 'on' will call the default algorithm (lzjb) but lz4 is a nice alternative. See <span class="plainlinks archwiki-template-man" title="$ man 7 zfsprops"><a rel="nofollow" class="external text" href="https://openzfs.github.io/openzfs-docs/man/master/7/zfsprops.7.html#compression">zfsprops(7) § compression</a></span> for more.
 </p>
 <pre># zfs set compression=lz4 zpool
 </pre>
@@ -582,13 +591,13 @@ errors: No known data errors
 </tr>
 </tbody>
 </table>
-<p>Make a new data set and take ownership of it.
+<p>Make a new data set and take ownership of it:
 </p>
 <pre># zfs create zpool/docs
 # chown facade:users /zpool/docs
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note</strong> The lack of a proceeding / in the create command is intentional, not a typo!</div>
+<strong>Note</strong> The lack of a <code>/</code> before the pool name in the create command is intentional, not a typo!</div>
 <div class="mw-heading mw-heading3"><h3 id="Time_0">Time 0</h3></div>
 <p>Add some files to the new dataset (/zpool/docs):
 </p>
@@ -715,9 +724,10 @@ zpool/docs@004      0      -  8.17M  -
 <div class="mw-heading mw-heading3"><h3 id="Listing_snapshots">Listing snapshots</h3></div>
 <p>Note, this simple but important command is missing frequently from other articles on the subject, so its worth mention.
 </p>
-<p>To list any snapshots on your system, run the following command
+<p>To list any snapshots on your system, run the following command:
 </p>
-<pre>$ zfs list -t snapshot</pre>
+<pre>$ zfs list -t snapshot
+</pre>
 <div class="mw-heading mw-heading3"><h3 id="Deleting_snapshots">Deleting snapshots</h3></div>
 <p>The limit to the number of snapshots users can save is 2^64. User can delete a snapshot like so:
 </p>
@@ -743,9 +753,13 @@ zpool/docs@004      0      -  8.17M  -
 </pre>
 </div>
 </div>
-					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
+					<div id="catlinks" class="catlinks" data-mw="interface">
+<div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../../en/Category:File_systems.html" title="Category:File systems">File systems</a></li></ul>
-</div></div>
+</div>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../../en/Category:Pages_or_sections_flagged_with_Template:Move.html" title="Category:Pages or sections flagged with Template:Move">Pages or sections flagged with Template:Move</a></li></ul>
+</div>
+</div>
 				</div>
 			</main>
 			
@@ -754,8 +768,8 @@ zpool/docs@004      0      -  8.17M  -
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=ZFS/Virtual_disks&amp;oldid=806142">https://wiki.archlinux.org/index.php?title=ZFS/Virtual_disks&amp;oldid=806142</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 16 April 2024, at 11:47.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=ZFS/Virtual_disks&amp;oldid=866498">https://wiki.archlinux.org/index.php?title=ZFS/Virtual_disks&amp;oldid=866498</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 20 February 2026, at 16:15.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

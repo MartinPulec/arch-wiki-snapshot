@@ -470,6 +470,30 @@ prepare() {
   git -c protocol.file.allow=always submodule update
 }
 </pre>
+<p>For recursive submodules, first update the top-level's submodules as above, then do so recursively to the submodules themselves where applicable. In the above example, let's say <code><i>lib-dependency</i></code> had a submodule itself named <code><i>lib-double-dependency</i></code> as shown below.
+</p>
+<pre>[submodule "deps/double-dep"]
+  path = deps/double-dep
+  url = https://example.org/lib-dependency/lib-double-dependency.git
+</pre>
+<p>After updating the top-level project's submodules as in the prior example, change directories to the submodule's path specified in <code>.gitmodules</code>, then perform the same steps again to update its own submodules.
+</p>
+<pre>source=("git+https://example.org/main-project/main-project.git"
+        "git+https://example.org/lib-dependency/lib-dependency.git"
+        "git+https://example.org/lib-dependency/lib-double-dependency.git")
+
+prepare() {
+  cd main-project
+  git submodule init
+  git config submodule.libs/libdep.url "$srcdir/lib-dependency"
+  git -c protocol.file.allow=always submodule update
+
+  cd libs/libdep  # The path specified in main-project's .gitmodules
+  git submodule init
+  git config submodule.deps/double-dep.url "$srcdir/lib-double-dependency"
+  git -c protocol.file.allow=always submodule update
+}
+</pre>
 <div class="mw-heading mw-heading3"><h3 id="Git_LFS">Git LFS</h3></div>
 <p>Git LFS needs a bit of extra setup:
 </p>
@@ -509,8 +533,8 @@ prepare() {
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=VCS_package_guidelines&amp;oldid=860423">https://wiki.archlinux.org/index.php?title=VCS_package_guidelines&amp;oldid=860423</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 7 January 2026, at 03:11.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=VCS_package_guidelines&amp;oldid=869834">https://wiki.archlinux.org/index.php?title=VCS_package_guidelines&amp;oldid=869834</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 24 March 2026, at 08:24.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

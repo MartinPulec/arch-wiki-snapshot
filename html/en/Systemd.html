@@ -509,15 +509,15 @@
 			<ul id="toc-Diagnosing_boot_problems-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Diagnosing_a_service" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Diagnosing_a_service">
+		<li id="toc-Diagnosing_a_systemd-provided_service" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Diagnosing_a_systemd-provided_service">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">6.3</span>
-					<span>Diagnosing a service</span>
+					<span>Diagnosing a systemd-provided service</span>
 				</div>
 			</a>
 			
-			<ul id="toc-Diagnosing_a_service-sublist" class="vector-toc-list">
+			<ul id="toc-Diagnosing_a_systemd-provided_service-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 		<li id="toc-Shutdown/reboot_takes_terribly_long" class="vector-toc-list-item vector-toc-level-2">
@@ -696,7 +696,7 @@
 <p>From the <a rel="nofollow" class="external text" href="https://systemd.io/">project web page</a>:
 </p>
 <dl><dd>
-<i>systemd</i> is a suite of basic building blocks for a Linux system. It provides a system and service manager that runs as PID 1 and starts the rest of the system. <i>systemd</i> provides aggressive parallelization capabilities, uses socket and <a href="../en/D-Bus.html" title="D-Bus">D-Bus</a> activation for starting services, offers on-demand starting of daemons, keeps track of processes using Linux <a href="../en/Control_groups.html" class="mw-redirect" title="Control groups">control groups</a>, maintains mount and automount points, and implements an elaborate transactional dependency-based service control logic. <i>systemd</i> supports SysV and LSB init scripts and works as a replacement for sysvinit. Other parts include a logging daemon, utilities to control basic system configuration like the hostname, date, locale, maintain a list of logged-in users and running containers and virtual machines, system accounts, runtime directories and settings, and daemons to manage simple network configuration, network time synchronization, log forwarding, and name resolution.</dd></dl>
+<i>systemd</i> is a suite of basic building blocks for a Linux system. It provides a system and service manager that runs as PID 1 and starts the rest of the system. <i>systemd</i> provides aggressive parallelization capabilities, uses socket and <a href="../en/D-Bus.html" title="D-Bus">D-Bus</a> activation for starting services, offers on-demand starting of daemons, keeps track of processes using Linux <a href="../en/Control_groups.html" class="mw-redirect" title="Control groups">control groups</a>, maintains mount and automount points, and implements an elaborate transactional dependency-based service control logic. Other parts include a logging daemon, utilities to control basic system configuration like the hostname, date, locale, maintain a list of logged-in users and running containers and virtual machines, system accounts, runtime directories and settings, and daemons to manage simple network configuration, network time synchronization, log forwarding, and name resolution.</dd></dl>
 <p>Historically, what systemd calls "service" was named <a href="https://en.wikipedia.org/wiki/Daemon_(computing)" class="extiw" title="wikipedia:Daemon (computing)">daemon</a>: any program that runs as a "background" process (without a terminal or user interface), commonly waiting for events to occur and offering services. A good example is a web server that waits for a request to deliver a page, or an ssh server waiting for someone trying to log in. While these are full featured applications, there are daemons whose work is not that visible. Daemons are for tasks like writing messages into a log file (e.g. <code>syslog</code>, <code>metalog</code>) or keeping your system time accurate (e.g. <a href="../en/Network_Time_Protocol_daemon.html" class="mw-redirect" title="Ntpd">ntpd</a>). For more information see <span class="plainlinks archwiki-template-man" title="$ man 7 daemon"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/daemon.7">daemon(7)</a></span>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
@@ -1003,6 +1003,8 @@
 <li>
 <code>/usr/lib/systemd/system/</code>: units provided by installed packages</li>
 <li>
+<code>/run/systemd/system/</code>: units installed by the system administrator, deleted on power-off (useful for <a href="#Editing_provided_units">#Editing provided units</a>)</li>
+<li>
 <code>/etc/systemd/system/</code>: units installed by the system administrator</li>
 </ul>
 <div class="archwiki-template-box archwiki-template-box-note">
@@ -1061,6 +1063,8 @@
 </ul>
 </div>
 <div class="mw-heading mw-heading4"><h4 id="Replacement_unit_files">Replacement unit files</h4></div>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> The replacement units will keep on being used even if Pacman updates the original units in the future. This method makes system maintenance more difficult and therefore the next approach is preferred.</div>
 <p>To replace the unit file <code>/usr/lib/systemd/system/<i>unit</i></code>, create the file <code>/etc/systemd/system/<i>unit</i></code> and <a href="#Using_units">reenable</a> the unit to update the symlinks.
 </p>
 <p>Alternatively, run:
@@ -1069,8 +1073,6 @@
 </pre>
 <p>This opens <code>/etc/systemd/system/<i>unit</i></code> in your editor (copying the installed version if it does not exist yet) and automatically reloads it when you finish editing.
 </p>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note</strong> The replacement units will keep on being used even if Pacman updates the original units in the future. This method makes system maintenance more difficult and therefore the next approach is preferred.</div>
 <div class="mw-heading mw-heading4"><h4 id="Drop-in_files">Drop-in files</h4></div>
 <p>To create drop-in files for the unit file <code>/usr/lib/systemd/system/<i>unit</i></code>, create the directory <code>/etc/systemd/system/<i>unit</i>.d/</code> and place <i>.conf</i> files there to override or add new options. <i>systemd</i> will parse and apply these files on top of the original unit.
 </p>
@@ -1078,7 +1080,8 @@
 </p>
 <pre># systemctl edit <i>unit</i> --drop-in=<i>drop_in_name</i>
 </pre>
-<p>This opens the file <code>/etc/systemd/system/<i>unit</i>.d/<i>drop_in_name</i>.conf</code> in your text editor (creating it if necessary) and automatically reloads the unit when you are done editing. Omitting <code>--drop-in=</code> option will result in systemd using the default file name <code>override.conf</code> .
+<p>This opens the file <code>/etc/systemd/system/<i>unit</i>.d/<i>drop_in_name</i>.conf</code> in your text editor (creating it if necessary) and automatically reloads the unit when you are done editing.
+Omitting the <code>--drop-in=</code> option will result in systemd using the default file name <code>override.conf</code> .
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note</strong> 
@@ -1318,21 +1321,21 @@ Created symlink /etc/systemd/system/default.target -&gt; /usr/lib/systemd/system
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/tmpfiles.d/disable-usb-wake.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">#    Path                  Mode UID  GID  Age Argument
-w    /proc/acpi/wakeup     -    -    -    -   USBE
+w!   /proc/acpi/wakeup     -    -    -    -   USBE
 </pre>
+<p>An exclamation mark <code>!</code> signifies that the line is only applied at boot. This will prevent re-enabling the wakeup trigger if systemd-tmpfiles is run again after boot (for example by the pacman hook).
+</p>
 <p>It is possible to write multiple lines to the same file, either with <code>\n</code> in the argument or using the <code>w+</code> type on multiple lines (including the first one) for <i>appending</i>:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/tmpfiles.d/disable-usb-wake.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">#    Path                  Mode UID  GID  Age Argument
-w+   /proc/acpi/wakeup     -    -    -    -   USBE
-w+   /proc/acpi/wakeup     -    -    -    -   LID0
+w+!  /proc/acpi/wakeup     -    -    -    -   USBE
+w+!  /proc/acpi/wakeup     -    -    -    -   LID0
 </pre>
 <p>See the <span class="plainlinks archwiki-template-man" title="$ man 8 systemd-tmpfiles"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-tmpfiles.8">systemd-tmpfiles(8)</a></span> and <span class="plainlinks archwiki-template-man" title="$ man 5 tmpfiles.d"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/tmpfiles.d.5">tmpfiles.d(5)</a></span> man pages for details.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note</strong> This method may not work to set options in <code>/sys</code> since the <i>systemd-tmpfiles-setup</i> service may run before the appropriate device modules are loaded. In this case, you could check whether the module has a parameter for the option you want to set with <code>modinfo <i>module</i></code> and set this option with a <a href="../en/Kernel_modules.html#Setting_module_options" class="mw-redirect" title="Kernel modules">config file in /etc/modprobe.d</a>. Otherwise, you will have to write a <a href="../en/Udev_rule.html" class="mw-redirect" title="Udev rule">udev rule</a> to set the appropriate attribute as soon as the device appears.</div>
-<p><br>
-</p>
 <div class="mw-heading mw-heading3"><h3 id="Drop-in_configuration_files">Drop-in configuration files</h3></div>
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
@@ -1544,20 +1547,17 @@ Group=systemd-journal</pre>
 <div class="mw-heading mw-heading3"><h3 id="Diagnosing_boot_problems">Diagnosing boot problems</h3></div>
 <p><i>systemd</i> has several options for diagnosing problems with the boot process. See <a href="../en/Boot_debugging.html" class="mw-redirect" title="Boot debugging">boot debugging</a> for more general instructions and options to capture boot messages before <i>systemd</i> takes over the <a href="../en/Boot_process.html" class="mw-redirect" title="Boot process">boot process</a>. Also see <a rel="nofollow" class="external text" href="https://systemd.io/DEBUGGING/">systemd debugging documentation</a>.
 </p>
-<div class="mw-heading mw-heading3"><h3 id="Diagnosing_a_service">Diagnosing a service</h3></div>
-<p>If some <i>systemd</i> service misbehaves or you want to get more information about what is happening, set the <code>SYSTEMD_LOG_LEVEL</code> <a href="../en/Environment_variable.html" class="mw-redirect" title="Environment variable">environment variable</a> to <code>debug</code>. For example, to run the <i>systemd-networkd</i> daemon in debug mode:
+<div class="mw-heading mw-heading3"><h3 id="Diagnosing_a_systemd-provided_service">Diagnosing a systemd-provided service</h3></div>
+<p>If some service <a href="#systemd_components">provided by systemd itself</a> misbehaves, or you want to get more information about what it is doing, set the <code>SYSTEMD_LOG_LEVEL</code> <a href="../en/Environment_variable.html" class="mw-redirect" title="Environment variable">environment variable</a> to <code>debug</code>.
 </p>
-<p>Add a <a href="#Drop-in_files">drop-in file</a> for the service adding the two lines:
+<p>For example, to run the <i>systemd-networkd</i> daemon in debug mode, <a href="#Editing_provided_units">edit the service temporarily</a> using <code>systemctl edit --runtime</code> and add the two lines:
 </p>
 <pre>[Service]
-Environment=SYSTEMD_LOG_LEVEL=debug
-</pre>
-<p>Or equivalently, set the environment variable manually:
+Environment=SYSTEMD_LOG_LEVEL=debug</pre>
+<p>Then, start watching the journal for the service with <span class="plainlinks archwiki-template-man" title="$ man 1 journalctl"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/journalctl.1">journalctl(1)</a></span>'s <code>-f</code>/<code>--follow</code> option, and <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Restart">restart</a> <i>systemd-networkd</i>.
 </p>
-<pre># SYSTEMD_LOG_LEVEL=debug /lib/systemd/systemd-networkd
-</pre>
-<p>then <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Restart">restart</a> <i>systemd-networkd</i> and watch the journal for the service with the <code>-f</code>/<code>--follow</code> option.
-</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> Some "core" services, such as <i>systemd-logind</i>, cannot be restarted without breaking e.g. screen and/or session management.</div>
 <div class="mw-heading mw-heading3"><h3 id="Shutdown/reboot_takes_terribly_long">
 <span id="Shutdown.2Freboot_takes_terribly_long"></span>Shutdown/reboot takes terribly long</h3></div>
 <p>If the shutdown process takes a very long time (or seems to freeze), most likely a service not exiting is to blame. <i>systemd</i> waits some time for each service to exit before trying to kill it. To find out whether you are affected, see <a rel="nofollow" class="external text" href="https://systemd.io/DEBUGGING/#shutdown-completes-eventually">Shutdown completes eventually</a> in the <i>systemd</i> documentation.
@@ -1670,8 +1670,8 @@ Environment=SYSTEMD_LOG_LEVEL=debug
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Systemd&amp;oldid=863295">https://wiki.archlinux.org/index.php?title=Systemd&amp;oldid=863295</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 31 January 2026, at 10:45.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Systemd&amp;oldid=869402">https://wiki.archlinux.org/index.php?title=Systemd&amp;oldid=869402</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 19 March 2026, at 06:16.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

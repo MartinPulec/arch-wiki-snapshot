@@ -88,6 +88,17 @@
 			<ul id="toc-Power_management,_undervolting_and_overclocking-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-AMD_3D_V-Cache_scheduling_(multi-CCD_CPUs)" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#AMD_3D_V-Cache_scheduling_(multi-CCD_CPUs)">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">2.3</span>
+					<span>AMD 3D V-Cache scheduling (multi-CCD CPUs)</span>
+				</div>
+			</a>
+			
+			<ul id="toc-AMD_3D_V-Cache_scheduling_(multi-CCD_CPUs)-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-Compiling_a_kernel" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
@@ -297,6 +308,39 @@
 <dl><dd>
 <a rel="nofollow" class="external free" href="https://github.com/amkillam/ryzen_smu">https://github.com/amkillam/ryzen_smu</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/ryzen_smu-dkms-git/">ryzen_smu-dkms-git</a></span><sup><small>AUR</small></sup>
 </dd></dl>
+<div class="mw-heading mw-heading3"><h3 id="AMD_3D_V-Cache_scheduling_(multi-CCD_CPUs)">
+<span id="AMD_3D_V-Cache_scheduling_.28multi-CCD_CPUs.29"></span>AMD 3D V-Cache scheduling (multi-CCD CPUs)</h3></div>
+<p>On CPUs with asymmetric CCDs (e.g. 7950X3D, 9950X3D), one CCD has 3D V-Cache (larger L3,
+better for gaming) and one has higher clock speeds. The <code>amd_x3d_vcache</code> driver
+(kernel 6.13+) exposes a scheduling bias via sysfs.
+</p>
+<p>First, set <b>CPPC Dynamic Preferred Cores</b> to <code>Driver</code> in the UEFI (on MSI boards:
+<code>OC -&gt; Advanced CPU Configuration -&gt; AMD CBS -&gt; CPPC Dynamic Preferred Cores</code>).
+Without this, the sysfs override has no effect.
+</p>
+<p>The recommended setup is to leave the system in <code>frequency</code> mode (default), so the
+OS and background tasks prefer the faster non-X3D CCD, and pin games explicitly to the
+X3D cores:
+</p>
+<pre># echo frequency &gt; /sys/bus/platform/drivers/amd_x3d_vcache/AMDI0101:00/amd_x3d_mode
+</pre>
+<p>To identify which cores are the X3D cores, read the prefcore rankings, in <code>frequency</code>
+mode the X3D cores will have the <b>lowest</b> rankings:
+</p>
+<pre>$ grep -r <i> /sys/devices/system/cpu/cpu*/cpufreq/amd_pstate_prefcore_ranking</i>
+</pre>
+<p>On the 9950X3D these are cpu0–7 and cpu16–23. For <b>native Linux games</b> pin them via
+the Steam launch option:
+</p>
+<pre>taskset -c 0-7,16-23 %command%
+</pre>
+<p>For <b>Proton/Wine games</b>, <code>taskset</code> does not propagate into the Steam Proton
+container (pressure-vessel). Use <code>WINE_CPU_TOPOLOGY</code> instead:
+</p>
+<pre>WINE_CPU_TOPOLOGY=16:0,1,2,3,4,5,6,7,16,17,18,19,20,21,22,23 %command%
+</pre>
+<p>The format is <code>&lt;thread_count&gt;:&lt;comma-separated CPU list&gt;</code>.
+</p>
 <div class="mw-heading mw-heading2"><h2 id="Compiling_a_kernel">Compiling a kernel</h2></div>
 <p>See <a href="https://wiki.gentoo.org/wiki/Ryzen#Kernel" class="extiw" title="gentoo:Ryzen">Gentoo:Ryzen#Kernel</a> on enabling Ryzen support. The <a href="../en/Kernel.html#Officially_supported_kernels" title="Kernel">officially supported kernels</a> have the required configuration by default.
 </p>
@@ -377,8 +421,8 @@ kernel: mce: [Hardware Error]: PROCESSOR 2:a20f10 TIME 1636645367 SOCKET 0 APIC 
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Ryzen&amp;oldid=849225">https://wiki.archlinux.org/index.php?title=Ryzen&amp;oldid=849225</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 16 October 2025, at 08:06.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Ryzen&amp;oldid=869682">https://wiki.archlinux.org/index.php?title=Ryzen&amp;oldid=869682</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 21 March 2026, at 19:36.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

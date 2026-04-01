@@ -252,17 +252,6 @@
 			<ul id="toc-ECONNREFUSED_(Connection_refused)_on_avahi_socket-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-KDE_Connect's_built_in_mDNS_conflicts" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#KDE_Connect's_built_in_mDNS_conflicts">
-				<div class="vector-toc-text">
-					<span class="vector-toc-numb">4.4</span>
-					<span>KDE Connect's built in mDNS conflicts</span>
-				</div>
-			</a>
-			
-			<ul id="toc-KDE_Connect's_built_in_mDNS_conflicts-sublist" class="vector-toc-list">
-			</ul>
-		</li>
 	</ul>
 	</li>
 	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
@@ -351,7 +340,7 @@
 <p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=avahi">avahi</a></span> package and <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> the <code>avahi-daemon.service</code> or use <a href="../en/Socket_activation.html" class="mw-redirect" title="Socket activation">socket activation</a>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note</strong> <a href="../en/Systemd-resolved.html#mDNS" title="Systemd-resolved">systemd-resolved</a> has a built-in mDNS service, make sure to disable systemd-resolved's multicast DNS resolver/responder (refer to <span class="plainlinks archwiki-template-man" title="$ man 5 resolved.conf"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/resolved.conf.5">resolved.conf(5)</a></span>) or <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Disable">disable</a> <code>systemd-resolved.service</code> entirely before using Avahi.</div>
+<strong>Note</strong> <a href="../en/Systemd-resolved.html" title="Systemd-resolved">systemd-resolved</a> has a built-in mDNS service, make sure to <a href="../en/Systemd-resolved.html#mDNS" title="Systemd-resolved">disable systemd-resolved's multicast DNS resolver/responder</a> or <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Disable">disable</a> <code>systemd-resolved.service</code> entirely before using Avahi.</div>
 <div class="mw-heading mw-heading2"><h2 id="Using_Avahi">Using Avahi</h2></div>
 <div class="mw-heading mw-heading3"><h3 id="Hostname_resolution">Hostname resolution</h3></div>
 <p>Avahi provides local hostname resolution using a "<i>hostname</i>.local" naming scheme. To enable it, install the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nss-mdns">nss-mdns</a></span> package and <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start/enable">start/enable</a> <code>avahi-daemon.service</code>.
@@ -500,7 +489,7 @@ As an example, let us say you wanted to advertise a quote of the day (QOTD) serv
 </p>
 <div class="mw-heading mw-heading2"><h2 id="Troubleshooting">Troubleshooting</h2></div>
 <div class="mw-heading mw-heading3"><h3 id="Hostname_changes_with_appending_incrementing_numbers">Hostname changes with appending incrementing numbers</h3></div>
-<p>This is a <a rel="nofollow" class="external text" href="https://github.com/lathiat/avahi/issues/117">known bug</a> that is caused by a hostname race condition. One possible workaround is <a rel="nofollow" class="external text" href="https://github.com/lathiat/avahi/issues/117#issuecomment-302849130">disabling IPv6</a> to attempt to prevent the race condition. If multiple interfaces are present <a rel="nofollow" class="external text" href="https://github.com/lathiat/avahi/issues/117#issuecomment-401225716">use allow-interfaces</a> to limit Avahi to a single interface. Another possible workaround is to <a rel="nofollow" class="external text" href="https://github.com/lathiat/avahi/issues/117#issuecomment-442201162">disable the cache</a> to prevent Avahi from checking for host name conflicts altogether, but this prevents Avahi from performing lookups.
+<p>This can happen if you have not disabled <a href="../en/Systemd-resolved.html#mDNS" title="Systemd-resolved">systemd-resolved's multicast DNS resolver</a>. This is also a <a rel="nofollow" class="external text" href="https://github.com/lathiat/avahi/issues/117">known bug</a> that is caused by a hostname race condition. One possible workaround is <a rel="nofollow" class="external text" href="https://github.com/lathiat/avahi/issues/117#issuecomment-302849130">disabling IPv6</a> to attempt to prevent the race condition. If multiple interfaces are present <a rel="nofollow" class="external text" href="https://github.com/lathiat/avahi/issues/117#issuecomment-401225716">use allow-interfaces</a> to limit Avahi to a single interface. Another possible workaround is to <a rel="nofollow" class="external text" href="https://github.com/lathiat/avahi/issues/117#issuecomment-442201162">disable the cache</a> to prevent Avahi from checking for host name conflicts altogether, but this prevents Avahi from performing lookups.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="systemd-resolved_prevents_nss-mdns_from_working">systemd-resolved prevents nss-mdns from working</h3></div>
 <p><i>nss-mdns</i> only works if the DNS server listed in <code>/etc/resolv.conf</code> returns <code>NXDOMAIN</code> to SOA queries for the "local" domain.<a rel="nofollow" class="external autonumber" href="https://github.com/lathiat/nss-mdns/blob/master/README.md#activation">[1]</a>
@@ -528,14 +517,6 @@ Avahi should be able to find resources in the network normally, even if using <a
 <span id="ECONNREFUSED_.28Connection_refused.29_on_avahi_socket"></span>ECONNREFUSED (Connection refused) on avahi socket</h3></div>
 <p>If your Avahi instance starts and operates correctly, but nss does not seem to forward requests to mdns, this may be caused by stuck socket <code>/run/avahi-daemon/socket</code>. This can be verified e.g. with strace. In this case you may have to <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Restart">restart</a> both <code>avahi-daemon.service</code> and <code>avahi-daemon.socket</code> to make it work correctly.
 </p>
-<div class="mw-heading mw-heading3"><h3 id="KDE_Connect's_built_in_mDNS_conflicts">
-<span id="KDE_Connect.27s_built_in_mDNS_conflicts"></span>KDE Connect's built in mDNS conflicts</h3></div>
-<p>If you use <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=kdeconnect">kdeconnect</a></span>, there are mDNS conflicts with avahi as kdeconnect also runs its mdns server. This can cause hostname conflicts, like renaming your host to <code>myhostname-2</code> after network restarts.
-</p>
-<p>To correct this, either remove <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=kdeconnect">kdeconnect</a></span>, or build a version without mDNS support, like in <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/kdeconnect-no-mdns/">kdeconnect-no-mdns</a></span><sup><small>AUR</small></sup>.
-</p>
-<p>See <a rel="nofollow" class="external text" href="https://bugs.kde.org/show_bug.cgi?id=487719">kde bug 487719</a>.
-</p>
 <div class="mw-heading mw-heading2"><h2 id="See_also">See also</h2></div>
 <ul>
 <li>
@@ -562,8 +543,8 @@ Avahi should be able to find resources in the network normally, even if using <a
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Avahi&amp;oldid=857557">https://wiki.archlinux.org/index.php?title=Avahi&amp;oldid=857557</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 20 December 2025, at 19:53.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Avahi&amp;oldid=869288">https://wiki.archlinux.org/index.php?title=Avahi&amp;oldid=869288</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 16 March 2026, at 17:29.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

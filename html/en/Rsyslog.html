@@ -55,15 +55,15 @@
 			</button>
 		
 		<ul id="toc-Installation-sublist" class="vector-toc-list">
-			<li id="toc-Starting_service" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Starting_service">
+			<li id="toc-Enabling_and_starting_service" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Enabling_and_starting_service">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">1.1</span>
-					<span>Starting service</span>
+					<span>Enabling and starting service</span>
 				</div>
 			</a>
 			
-			<ul id="toc-Starting_service-sublist" class="vector-toc-list">
+			<ul id="toc-Enabling_and_starting_service-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 		<li id="toc-Configure_hostname" class="vector-toc-list-item vector-toc-level-2">
@@ -265,9 +265,12 @@
 <strong>Note</strong> It is recommended to disable and uninstall the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=syslog-ng">syslog-ng</a></span> package to prevent possible conflicts.</div>
 <p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/rsyslog/">rsyslog</a></span><sup><small>AUR</small></sup> package.
 </p>
-<div class="mw-heading mw-heading3"><h3 id="Starting_service">Starting service</h3></div>
-<p>You can <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start/enable">start/enable</a> <code>rsyslog.service</code> after installation.
+<div class="mw-heading mw-heading3"><h3 id="Enabling_and_starting_service">Enabling and starting service</h3></div>
+<p>After installation, run <code>systemctl enable rsyslog.service</code> and <code>systemctl start rsyslog.service</code> afterwards.
 </p>
+<p>
+Running <code>systemctl start rsyslog.service</code> before would likely fail because enabling the service creates a symlink for <code>syslog.service</code> which would be missing otherwise; <code>rsyslog.service</code> would raise the error: </p>
+<pre>rsyslog.service: Job rsyslog.service/start failed with result 'dependency'</pre> 
 <div class="mw-heading mw-heading3"><h3 id="Configure_hostname">Configure hostname</h3></div>
 <p>Rsyslog uses the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=glibc">glibc</a></span> routine <code>gethostname()</code> or <code>gethostbyname()</code> to determine the hostname of the local machine. The <code>gethostname()</code> or <code>gethostbyname()</code> routine check the contents of <code>/etc/hosts</code> for the fully qualified domain name (FQDN) if you are not using <a href="../en/BIND.html" title="BIND">BIND</a> or <a href="../en/NIS.html" title="NIS">NIS</a>.
 </p>
@@ -309,8 +312,6 @@
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/journald.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">ForwardToSyslog=yes
 </pre>
-<p>The <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/rsyslog/">rsyslog</a></span><sup><small>AUR</small></sup> does not create its working directory <code>/var/spool/rsyslog</code> defined by the <code>$WorkDirectory</code> variable in the configuration file. You might need to create it manually or change its destination.
-</p>
 <p>Log output can be fine tuned in <code>/etc/rsyslog.conf</code>. The daemon uses Facility levels (see below) to determine what gets put where. For example:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/rsyslog.conf</pre>
@@ -624,8 +625,8 @@ authpriv.*                                              /var/log/secure
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Rsyslog&amp;oldid=805099">https://wiki.archlinux.org/index.php?title=Rsyslog&amp;oldid=805099</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 1 April 2024, at 09:17.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Rsyslog&amp;oldid=870080">https://wiki.archlinux.org/index.php?title=Rsyslog&amp;oldid=870080</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 27 March 2026, at 09:40.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

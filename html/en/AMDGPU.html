@@ -598,15 +598,15 @@
 		</li>
 	</ul>
 		</li>
-		<li id="toc-High_idle_power_draw_due_to_MCLK_locked_at_MAX_(1000MHz),_or_MIN_(96MHz)_causing_low_game_performance_(on_6.4_kernel)" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#High_idle_power_draw_due_to_MCLK_locked_at_MAX_(1000MHz),_or_MIN_(96MHz)_causing_low_game_performance_(on_6.4_kernel)">
+		<li id="toc-MCLK_(pp_dpm_mclk)_being_locked_at_MAX_(875Mhz_or_1000Mhz)_or_MIN_(96Mhz)" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#MCLK_(pp_dpm_mclk)_being_locked_at_MAX_(875Mhz_or_1000Mhz)_or_MIN_(96Mhz)">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">6.13</span>
-					<span>High idle power draw due to MCLK locked at MAX (1000MHz), or MIN (96MHz) causing low game performance (on 6.4 kernel)</span>
+					<span>MCLK (pp_dpm_mclk) being locked at MAX (875Mhz or 1000Mhz) or MIN (96Mhz)</span>
 				</div>
 			</a>
 			
-			<ul id="toc-High_idle_power_draw_due_to_MCLK_locked_at_MAX_(1000MHz),_or_MIN_(96MHz)_causing_low_game_performance_(on_6.4_kernel)-sublist" class="vector-toc-list">
+			<ul id="toc-MCLK_(pp_dpm_mclk)_being_locked_at_MAX_(875Mhz_or_1000Mhz)_or_MIN_(96Mhz)-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 		<li id="toc-Failure_to_suspend_to_RAM" class="vector-toc-list-item vector-toc-level-2">
@@ -1174,10 +1174,18 @@ EndSection</pre>
 <p>The AMDGPU driver supports user queues, which allow job submission directly to the GPU hardware without going through the kernel driver’s command submission ioctl.
 Enabling this can reduce latency and improve efficiency by bypassing some kernel driver overhead.
 </p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> This feature is currently experimental and requires RDNA 3+ hardware (7000 series and above).</div>
 <p>To enable user queues, set the following environment variable:
 </p>
 <pre>export AMD_USERQ=1
 </pre>
+<p>To verify it is active, check the <code>user_queue</code> parameter:
+</p>
+<pre>$ cat /sys/module/amdgpu/parameters/user_queue
+</pre>
+<p>It should return <code>1</code>. If it returns <code>0</code> or <code>-1</code>, the hardware or driver version is likely incompatible.
+</p>
 <div class="mw-heading mw-heading3"><h3 id="Dedicated_transfer-only_Queue_using_SDMA">Dedicated transfer-only Queue using SDMA</h3></div>
 <p>The code merged for Mesa 26.0 has the RADV dedicated transfer queue support working on GFX9 (Vega) and newer GPUs. Enabling this feature currently requires the <code>RADV_PERFTEST=transfer_queue</code> <a href="../en/Environment_variable.html" class="mw-redirect" title="Environment variable">environment variable</a> to be set. The DXVK Direct3D-on-Vulkan layer is among the software able to benefit from the Vulkan transfer queues support although there are no performance/benchmark numbers noted in <a rel="nofollow" class="external text" href="https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/25594">the merge request</a> for quantifying the benefit of the new functionality.
 </p>
@@ -1273,12 +1281,18 @@ EndSection
 </pre>
 <p>If your CPU supports PCIe atomics (the result being <code>1</code>), change the slot that the GPU is in, it may have lanes coming from the chipset and not the CPU.
 </p>
-<div class="mw-heading mw-heading3"><h3 id="High_idle_power_draw_due_to_MCLK_locked_at_MAX_(1000MHz),_or_MIN_(96MHz)_causing_low_game_performance_(on_6.4_kernel)">
-<span id="High_idle_power_draw_due_to_MCLK_locked_at_MAX_.281000MHz.29.2C_or_MIN_.2896MHz.29_causing_low_game_performance_.28on_6.4_kernel.29"></span>High idle power draw due to MCLK locked at MAX (1000MHz), or MIN (96MHz) causing low game performance (on 6.4 kernel)</h3></div>
-<p>On high resolutions and refresh rates, the MCLK (vram / memory clock) may be locked at the highest clock rate (1000MHz) <a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/drm/amd/-/issues/1403">[16]</a> <a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/drm/amd/-/issues/2646">[17]</a> causing higher GPU idle power draw. On Linux kernel 6.4.x, MCLK clocks at the lowest (96MHz), causing low performance in games <a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/drm/amd/-/issues/2657">[18]</a> <a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/drm/amd/-/issues/2611">[19]</a>.
+<div class="mw-heading mw-heading3"><h3 id="MCLK_(pp_dpm_mclk)_being_locked_at_MAX_(875Mhz_or_1000Mhz)_or_MIN_(96Mhz)">
+<span id="MCLK_.28pp_dpm_mclk.29_being_locked_at_MAX_.28875Mhz_or_1000Mhz.29_or_MIN_.2896Mhz.29"></span>MCLK (pp_dpm_mclk) being locked at MAX (875Mhz or 1000Mhz) or MIN (96Mhz)</h3></div>
+<p>On high resolutions and refresh rates, the MCLK (VRAM / memory clock) values may be locked at the highest clock rate (875Mhz or 1000Mhz) <a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/drm/amd/-/issues/1403">[16]</a> <a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/drm/amd/-/issues/2646">[17]</a>, causing higher GPU idle power draw.
 </p>
-<p>This is likely due to a monitor not using Coordinated Video Timings (CVT) with a low V-Blank value for the affected resolutions and refresh rates, see <a rel="nofollow" class="external text" href="https://gist.github.com/Rend0e/3bddac4285dc1f4fbe303f326f36f6cc">this gist</a> for a workaround.
+<p>In some cases, MCLK values may be locked at the lowest clock rate (96MHz), causing low performance in games <a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/drm/amd/-/issues/2657">[18]</a> <a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/drm/amd/-/issues/2611">[19]</a>.
 </p>
+<p>When using <a href="../en/Variable_refresh_rate.html" title="Variable refresh rate">variable refresh rate</a> technology (such as FreeSync), the problem may also manifest, particularly being locked at the lowest clock rate. <a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/drm/amd/-/issues/4707">[20]</a>
+</p>
+<p>Those problems are likely due to a monitor not using Coordinated Video Timings (CVT) with a low V-Blank value for the affected resolutions and refresh rates. See <a rel="nofollow" class="external text" href="https://gist.github.com/Rend0e/3bddac4285dc1f4fbe303f326f36f6cc">this gist</a> for a workaround.
+</p>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning</strong> After following the gist above, if the EDID file does not work as expected, your screen may present heavy distortion and flickering. To fix the issue, remove the EDID kernel argument.</div>
 <div class="mw-heading mw-heading3"><h3 id="Failure_to_suspend_to_RAM">Failure to suspend to RAM</h3></div>
 <p>The <code>amdgpu</code> kernel module tries to buffer VRAM in RAM when the system enters S3 to prevent memory loss through VRAM decay which is not sufficiently refreshed.
 </p>
@@ -1306,13 +1320,13 @@ kernel:  ttm_pool_alloc+0x19f/0x600 [ttm 0bd92a9d9dccc3a4f19554535860aaeda76eb4f
 <li>Users provide unreliable reports and operate under wrong assumptions. See <a rel="nofollow" class="external text" href="https://gitlab.freedesktop.org/drm/amd/-/issues/3131#note_3007563">explanation</a>.</li>
 <li>If you carefully read through the related issues, the problem appear to be caused by some internal setup of GPU power profiles. Which means the shader clock frequency is not the actual issue here, lowering it is more of a workaround, and it decreases performance.</li>
 <li>Patches addressing the problem were already merged a few major kernel releases back.</li>
-<li>If you are still getting crashes with similar dmesg logs, consider disabling GFXOFF (see <a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/drm/amd/-/issues/3067#note_2959002">[20]</a>)</li>
+<li>If you are still getting crashes with similar dmesg logs, consider disabling GFXOFF (see <a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/drm/amd/-/issues/3067#note_2959002">[21]</a>)</li>
 </ul>
  (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:AMDGPU.html">Talk:AMDGPU</a>)</div>
 </div>
 <p>There is a bug in the amdgpu module, due to which the video core frequencies can be higher than those declared by the manufacturer, which can cause system instability during the game, when exiting sleep, when rebooting.
 </p>
-<p>The problem has been noticed on RDNA 3 GPUs (7XXX Models) <a rel="nofollow" class="external autonumber" href="https://www.reddit.com/r/linux_gaming/comments/1dyhizb/fyi_for_amd_card_owners_the_linux_kernel_is/">[21]</a> <a rel="nofollow" class="external autonumber" href="https://wiki.gentoo.org/wiki/AMDGPU#Frequent_and_Sporadic_Crashes">[22]</a> <a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/drm/amd/-/issues/3131">[23]</a>.
+<p>The problem has been noticed on RDNA 3 GPUs (7XXX Models) <a rel="nofollow" class="external autonumber" href="https://www.reddit.com/r/linux_gaming/comments/1dyhizb/fyi_for_amd_card_owners_the_linux_kernel_is/">[22]</a> <a rel="nofollow" class="external autonumber" href="https://wiki.gentoo.org/wiki/AMDGPU#Frequent_and_Sporadic_Crashes">[23]</a> <a rel="nofollow" class="external autonumber" href="https://gitlab.freedesktop.org/drm/amd/-/issues/3131">[24]</a>.
 </p>
 <p>In dmesg you can see logs like theese:
 </p>
@@ -1357,7 +1371,7 @@ Environment=DRI_PRIME=0</pre>
 <pre>amdgpu.abmlevel=0
 </pre>
 <div class="mw-heading mw-heading3"><h3 id="System_freezes_or_reboots_when_idle">System freezes or reboots when idle</h3></div>
-<p>Issues with some PowerPlay features, such as <a rel="nofollow" class="external text" href="https://www.phoronix.com/news/AMDGPU-GFXOFF-Patches">GFXOFF</a> can cause frequent, unrecoverable driver crashes<a rel="nofollow" class="external autonumber" href="https://forum.endeavouros.com/t/random-crashes-amdgpu/70453">[24]</a>. They coincide with idle GPU usage on a multi-monitor setup, and especially waking up from sleep mode.
+<p>Issues with some PowerPlay features, such as <a rel="nofollow" class="external text" href="https://www.phoronix.com/news/AMDGPU-GFXOFF-Patches">GFXOFF</a> can cause frequent, unrecoverable driver crashes<a rel="nofollow" class="external autonumber" href="https://forum.endeavouros.com/t/random-crashes-amdgpu/70453">[25]</a>. They coincide with idle GPU usage on a multi-monitor setup, and especially waking up from sleep mode.
 </p>
 <p>A well-known solution is appending a kernel parameter (as described in <a href="#Boot_parameter">#Boot parameter</a>) that disables PP_GFXOFF_MASK, for example <code>amdgpu.ppfeaturemask=0xffff7fff</code> - this particular one leaves all other (implemented and unimplemented) PowerPlay features enabled.
 </p>
@@ -1406,8 +1420,8 @@ Environment=DRI_PRIME=0</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=AMDGPU&amp;oldid=862509">https://wiki.archlinux.org/index.php?title=AMDGPU&amp;oldid=862509</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 23 January 2026, at 18:33.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=AMDGPU&amp;oldid=868182">https://wiki.archlinux.org/index.php?title=AMDGPU&amp;oldid=868182</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 5 March 2026, at 11:50.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

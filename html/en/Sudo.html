@@ -472,8 +472,8 @@
 <div class="mw-heading mw-heading2"><h2 id="Installation">Installation</h2></div>
 <p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sudo">sudo</a></span> package.
 </p>
-<div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip</strong> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sudo-rs">sudo-rs</a></span> is an alternative memory-safe implementation of <i>sudo</i> (with <a rel="nofollow" class="external text" href="https://github.com/trifectatechfoundation/sudo-rs#differences-from-original-sudo">some limitations</a>).</div>
+<p>Alternatively, install the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=sudo-rs">sudo-rs</a></span> package, which is a memory-safe implementation of <i>sudo</i>, albeit with <a rel="nofollow" class="external text" href="https://github.com/trifectatechfoundation/sudo-rs#differences-from-original-sudo">some limitations</a>.
+</p>
 <div class="mw-heading mw-heading2"><h2 id="Usage">Usage</h2></div>
 <p>To begin using <code>sudo</code> as a non-privileged user, it must be properly configured. See <a href="#Configuration">#Configuration</a>.
 </p>
@@ -513,8 +513,7 @@ Failed to read or parse configuration '/dev/fd/63'
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note</strong> The order of entries in the drop-in files is important: make sure that the statements do not override themselves.</div>
 <div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning</strong> The files in <code>/etc/sudoers.d/</code> are just as fragile as <code>/etc/sudoers</code> itself: any improperly formatted file will prevent <code>sudo</code> from working.  Hence, for the same reason it is strongly advised to use <code>visudo</code>
-</div>
+<strong>Warning</strong> The files in <code>/etc/sudoers.d/</code> are just as fragile as <code>/etc/sudoers</code> itself: any improperly formatted file will prevent <code>sudo</code> from working.  Hence, for the same reason it is strongly advised to use <code>visudo</code>.</div>
 <div class="mw-heading mw-heading3"><h3 id="Defaults_skeleton">Defaults skeleton</h3></div>
 <p>As explained in <span class="plainlinks archwiki-template-man" title="$ man 5 sudoers"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/sudoers.5#Defaults">sudoers(5) § Defaults</a></span>, many behavioral "configuration options may be changed from their default values at run-time via one or more <i>Default_Entry</i> lines". <span class="plainlinks archwiki-template-man" title="$ man 5 sudoers"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/sudoers.5#SUDOERS_OPTIONS">sudoers(5) § SUDOERS OPTIONS</a></span> lists all the options that can be used with the <code>Defaults</code> command in the configuration.
 </p>
@@ -625,14 +624,13 @@ Defaults umask_override</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Defaults passprompt="<span style="color:var(--archwiki-code-background-color); background-color:var(--archwiki-text-color);">^G</span>[sudo] password for %p: "</pre>
 <p>Note the <code><span style="color:var(--archwiki-code-background-color); background-color:var(--archwiki-text-color);">^G</span></code> is a literal bell character. E.g. in <a href="../en/Vim.html" title="Vim">vim</a>, insert using the sequence <code>Ctrl+v</code> <code>Ctrl+g</code>. If <code>Ctrl+v</code> is mapped, e.g. for pasting, one can <a rel="nofollow" class="external text" href="https://unix.stackexchange.com/a/366875">usually</a> use <code>Ctrl+q</code> instead. In <a href="../en/Nano.html" title="Nano">nano</a>, <code>Alt+v</code> <code>Ctrl+g</code>.
 </p>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
-<div>
-<b>Reason:</b> Is it possible to preserve the localized prompt while using bell? The same question for the case when SUDO_PROMPT is used. Is there an alternative, for example by using "-B" option as default?  (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Sudo.html">Talk:Sudo</a>)</div>
-</div>
 <p>Another option is to set the <code>SUDO_PROMPT</code> <a href="../en/Environment_variable.html" class="mw-redirect" title="Environment variable">environment variable</a>. For example, add the following to your shell configuration file:
 </p>
 <pre>export SUDO_PROMPT=$'\a[sudo] password for %p: '
+</pre>
+<p>An alternative that allows keeping the localized prompt is to add an alias to your <a href="../en/Command-line_shell.html#Configuration_files" title="Command-line shell">shell's configuration file</a>:
+</p>
+<pre>alias sudo='sudo -B'
 </pre>
 <div class="mw-heading mw-heading3"><h3 id="Disable_per-terminal_sudo">Disable per-terminal sudo</h3></div>
 <p>If you are annoyed by sudo's defaults that require you to enter your password every time you open a new terminal, change the <code>timestamp_type</code> (which is <code>tty</code> by default) to <code>ppid</code> so that all processes with the same parent process ID will share the 5 minutes timeout. This is particularly useful with a <a href="../en/Terminal_multiplexer.html" class="mw-redirect" title="Terminal multiplexer">terminal multiplexer</a> or tabbed graphical terminal emulators. An other option is to set it to <code>global</code>.
@@ -860,17 +858,27 @@ $ sudo -i -u admin
 </p>
 <pre># ln -s /etc/pam.d/sudo /etc/pam.d/sudo-i
 </pre>
-<p>Create or edit <code>/etc/sudo-rs/config.toml</code>:
+<p><i>sudo-rs</i> supports both <code>/etc/sudoers</code> and <code>/etc/sudoers-rs</code> and uses the latter if it exists. Create at least one of these. A valid minimal config could be this:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/sudo-rs/config.toml</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[defaults]
-askpass = false
-timeout = 15</pre>
-<p><i>sudo-rs</i> supports both <code>/etc/sudoers</code> and <code>/etc/sudoers-rs</code> and uses the latter if it exists.
-</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/sudoers-rs</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># Keep your editor when running visudo
+Defaults!/usr/bin/visudo-rs env_keep += "SUDO_EDITOR EDITOR VISUAL"
+# The same if you choose to symlink visudo-rs to visudo
+Defaults!/usr/local/bin/visudo env_keep += "SUDO_EDITOR EDITOR VISUAL"
+
+ 
+# Sanitize your path
+Defaults secure_path="/usr/local/sbin:/usr/local/bin:/usr/bin"
+ 
+# "root", and all members of the group "wheel" can run any command after providing a password.
+root ALL=(ALL:ALL) ALL
+%wheel ALL=(ALL:ALL) ALL</pre>
 <p>Optionally, you can replace <code>sudo</code> with <code>sudo-rs</code> by symlinking it from a higher priority <code>PATH</code> directory:
 </p>
 <pre># ln -s /usr/bin/sudo-rs /usr/local/bin/sudo
+# ln -s /usr/bin/su-rs /usr/local/bin/su
+# ln -s /usr/bin/visudo-rs /usr/local/bin/visudo
+# ln -s /usr/bin/sudoedit-rs /usr/local/bin/sudoedit
 </pre>
 </div>
 </div>
@@ -881,10 +889,7 @@ timeout = 15</pre>
 <li><a href="../en/Category:Commands.html" title="Category:Commands">Commands</a></li>
 </ul>
 </div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
-</ul>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li></ul>
 </div>
 </div>
 				</div>
@@ -895,8 +900,8 @@ timeout = 15</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Sudo&amp;oldid=862770">https://wiki.archlinux.org/index.php?title=Sudo&amp;oldid=862770</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 25 January 2026, at 19:56.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Sudo&amp;oldid=869633">https://wiki.archlinux.org/index.php?title=Sudo&amp;oldid=869633</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 21 March 2026, at 08:52.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -599,7 +599,14 @@
 </p>
 <div class="mw-heading mw-heading2"><h2 id="Version">Version</h2></div>
 <div class="mw-heading mw-heading3"><h3 id="pkgver">pkgver</h3></div>
-<p>The version of the package. This should be the same as the version published by the author of the upstream software. It can contain letters, numbers, periods and underscores, but <b>not</b> a hyphen (<code>-</code>). If the author of the software uses one, replace it with an underscore (<code>_</code>). If the <code>pkgver</code> variable is used later in the <code>PKGBUILD</code>, then the underscore can easily be substituted for a hyphen, e.g. <code>source=("${pkgname}-${pkgver//_/-}.tar.gz")</code>.
+<p>The version of the package.
+</p>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Merge-arrows-2.svg" decoding="async" width="36" height="40" class="mw-file-element"></span></span><b>This article or section is a candidate for merging with <a href="../en/Arch_package_guidelines.html#Package_versioning" title="Arch package guidelines">Arch package guidelines#Package versioning</a>.</b></p>
+<div>
+<b>Notes:</b> The <code>PKGBUILD</code> format does not enforce a packaging policy. For example, using a plus sign—<code>+</code>—in <code>pkgver</code> is technically correct—<i>makepkg</i> does not complain about it and builds a package successfully. As said in <span class="plainlinks archwiki-template-man" title="$ man 5 PKGBUILD"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/PKGBUILD.5">PKGBUILD(5)</a></span>: "The variable is not allowed to contain colons, forward slashes, hyphens or whitespace."—that's all. Our <a href="#depends">#depends</a> has the same note. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:PKGBUILD.html">Talk:PKGBUILD</a>)</div>
+</div>
+<p>This should be the same as the version published by the author of the upstream software. It can contain letters, numbers, periods and underscores, but <b>not</b> a hyphen (<code>-</code>). If the author of the software uses one, replace it with an underscore (<code>_</code>). If the <code>pkgver</code> variable is used later in the <code>PKGBUILD</code>, then the underscore can easily be substituted for a hyphen, e.g. <code>source=("${pkgname}-${pkgver//_/-}.tar.gz")</code>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note</strong> If upstream uses a timestamp versioning such as <code>30102014</code>, ensure to use the reversed date, i.e. <code>20141030</code> (<a href="https://en.wikipedia.org/wiki/ISO_8601" class="extiw" title="wikipedia:ISO 8601">ISO 8601</a> format). Otherwise it will not appear as a newer version.</div>
@@ -611,12 +618,14 @@
 <a href="../en/Makepkg.html" title="Makepkg">makepkg</a> can automatically <a rel="nofollow" class="external text" href="http://allanmcrae.com/2013/04/pacman-4-1-released/">update</a> this variable by defining a <code>pkgver()</code> function in the <code>PKGBUILD</code>. See <a href="../en/VCS_package_guidelines.html#The_pkgver()_function" title="VCS package guidelines">VCS package guidelines#The pkgver() function</a> for details.</li>
 </ul>
 </div>
+<p>See also <a href="../en/Arch_package_guidelines.html#Package_versioning" title="Arch package guidelines">Arch package guidelines#Package versioning</a>.
+</p>
 <div class="mw-heading mw-heading3"><h3 id="pkgrel">pkgrel</h3></div>
 <p>The release number. This is usually a positive integer number that allows to differentiate between consecutive builds of the same version of a package. As fixes and additional features are added to the <code>PKGBUILD</code> that influence the resulting package, the <code>pkgrel</code> should be incremented by 1. When a new version of the software is released, this value must be reset to 1. In exceptional cases other formats can be found in use, such as <i>major.minor</i>.
 </p>
+<p>See also <a href="../en/Arch_package_guidelines.html#Package_versioning" title="Arch package guidelines">Arch package guidelines#Package versioning</a>.
+</p>
 <div class="mw-heading mw-heading3"><h3 id="epoch">epoch</h3></div>
-<div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning</strong> <code>epoch</code> should only be used when absolutely required to do so.</div>
 <p>Used to force the package to be seen as newer than any previous version with a lower epoch. This value is required to be a non-negative integer; the default is 0. It is used when the version numbering scheme of a package changes (or is alphanumeric), breaking normal version comparison logic. For example:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">pkgver=5.13
@@ -625,6 +634,8 @@ epoch=1</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">1:5.13-2</pre>
 <p>See <span class="plainlinks archwiki-template-man" title="$ man 8 pacman"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/pacman.8">pacman(8)</a></span> for more information on version comparisons.
 </p>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning</strong> <code>epoch</code> should only be used when absolutely required to do so.</div>
 <div class="mw-heading mw-heading2"><h2 id="Generic">Generic</h2></div>
 <div class="mw-heading mw-heading3"><h3 id="pkgdesc">pkgdesc</h3></div>
 <p>The description of the package. This is recommended to be 80 characters or less and should not include the package name in a self-referencing way, unless the application name differs from the package name. For example, use <code>pkgdesc='Text editor for X11'</code> instead of <code>pkgdesc='Nedit is a text editor for X11'</code>.
@@ -920,8 +931,8 @@ noextract=('foobar.tar.xz')
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PKGBUILD&amp;oldid=860104">https://wiki.archlinux.org/index.php?title=PKGBUILD&amp;oldid=860104</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 4 January 2026, at 07:20.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PKGBUILD&amp;oldid=869867">https://wiki.archlinux.org/index.php?title=PKGBUILD&amp;oldid=869867</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 25 March 2026, at 00:00.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

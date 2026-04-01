@@ -146,21 +146,10 @@
 			<ul id="toc-Other_SDK_packages_in_the_AUR-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Making_/opt/android-sdk_group-writeable" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Making_/opt/android-sdk_group-writeable">
-				<div class="vector-toc-text">
-					<span class="vector-toc-numb">2.2.3</span>
-					<span>Making /opt/android-sdk group-writeable</span>
-				</div>
-			</a>
-			
-			<ul id="toc-Making_/opt/android-sdk_group-writeable-sublist" class="vector-toc-list">
-			</ul>
-		</li>
 		<li id="toc-Using_/opt/android-sdk_as_read-only_with_CoW" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Using_/opt/android-sdk_as_read-only_with_CoW">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">2.2.4</span>
+					<span class="vector-toc-numb">2.2.3</span>
 					<span>Using /opt/android-sdk as read-only with CoW</span>
 				</div>
 			</a>
@@ -759,7 +748,7 @@ For the Canary branch, install the <span class="plainlinks archwiki-template-pkg
 </p>
 <p>To build apps from the command-line (using e.g. <code>./gradlew assembleDebug</code>) set the <a rel="nofollow" class="external text" href="https://developer.android.com/studio/command-line/variables#android_home">ANDROID_HOME</a> <a href="../en/Environment_variable.html" class="mw-redirect" title="Environment variable">environment variable</a> to your SDK location.
 </p>
-<p>Android Studio has experimental Wayland support <a rel="nofollow" class="external text" href="https://blog.jetbrains.com/platform/2024/07/wayland-support-preview-in-2024-2/">since 2024.2</a>, you can enable it by going to <code>Menu -&gt; Help -&gt; Edit Custom VM Options</code> and adding <code>-Dawt.toolkit.name=WLToolkit</code> as a parameter.
+<p>Android Studio has experimental Wayland support <a rel="nofollow" class="external text" href="https://blog.jetbrains.com/platform/2024/07/wayland-support-preview-in-2024-2/">since 2024.2</a>, you can enable it by going to <i>Menu &gt; Help &gt; Edit Custom VM Options</i> and adding <code>-Dawt.toolkit.name=WLToolkit</code> as a parameter.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="SDK_packages">SDK packages</h3></div>
 <p>Android SDK packages can be installed directly from upstream using <a href="#Android_Studio">#Android Studio</a>'s <a rel="nofollow" class="external text" href="https://developer.android.com/studio/intro/update#sdk-manager">SDK Manager</a> or the <a rel="nofollow" class="external text" href="https://developer.android.com/studio/command-line/sdkmanager">sdkmanager</a> command line tool (part of the Android SDK Tools). Some Android SDK packages are also available as <a href="../en/Arch_User_Repository.html" class="mw-redirect" title="AUR">AUR</a> packages, they generally install to <code>/opt/android-sdk/</code>.
@@ -849,27 +838,6 @@ For the Canary branch, install the <span class="plainlinks archwiki-template-pkg
 <p>The <a rel="nofollow" class="external text" href="https://developer.android.com/topic/libraries/support-library/">Android Support Library</a> is now available online from <a rel="nofollow" class="external text" href="https://developer.android.com/studio/build/dependencies#google-maven">Google's Maven repository</a>.
 You can also install it offline through the <code>extras;android;m2repository</code> SDK package (also available as <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/android-support-repository/">android-support-repository</a></span><sup><small>AUR</small></sup>).
 </p>
-<div class="mw-heading mw-heading4"><h4 id="Making_/opt/android-sdk_group-writeable">
-<span id="Making_.2Fopt.2Fandroid-sdk_group-writeable"></span>Making /opt/android-sdk group-writeable</h4></div>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
-<div>
-<b>Reason:</b> Do not do this. Using another package manager (Android SDK manager) to manage pacman-installed files is a bad idea. This renders package manager useless. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Android.html">Talk:Android</a>)</div>
-</div>
-<p>The AUR packages install the SDK in <code>/opt/android-sdk/</code>. This directory has root <a href="../en/File_permissions_and_attributes.html" class="mw-redirect" title="Permissions">permissions</a>, so keep in mind to run sdk manager as root. If you intend to use it as a regular user, create the android-sdk users group, add your user.
-</p>
-<pre># groupadd android-sdk
-# gpasswd -a &lt;user&gt; android-sdk
-</pre>
-<p>Set an access control list to let members of the newly created group write into the android-sdk folder. As running sdkmanager can also create new files, set the ACL as default ACL. the X in the default group entry means "allow execution if executable by the owner (or anyone else)"
-</p>
-<pre># setfacl -R -m g:android-sdk:rwx /opt/android-sdk
-# setfacl -d -m g:android-sdk:rwX /opt/android-sdk  
-</pre>
-<p>Re-login or as &lt;user&gt; log your terminal in to the newly created group:
-</p>
-<pre>$ newgrp android-sdk
-</pre>
 <div class="mw-heading mw-heading4"><h4 id="Using_/opt/android-sdk_as_read-only_with_CoW">
 <span id="Using_.2Fopt.2Fandroid-sdk_as_read-only_with_CoW"></span>Using /opt/android-sdk as read-only with CoW</h4></div>
 <p>The AUR packages install the SDK in <code>/opt/android-sdk/</code>. This directory has root <a href="../en/File_permissions_and_attributes.html" class="mw-redirect" title="Permissions">permissions</a>, so to use it as your regular user, you should have another directory with write permissions.
@@ -1253,16 +1221,12 @@ Sum of sizes in google_dynamic_partitions_partition_list is 4883337216, which is
 </p>
 </div>
 </div>
-					<div id="catlinks" class="catlinks" data-mw="interface">
-<div id="mw-normal-catlinks" class="mw-normal-catlinks">
+					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Categories</a>: <ul>
 <li><a href="../en/Category:Android.html" title="Category:Android">Android</a></li>
 <li><a href="../en/Category:Development.html" title="Category:Development">Development</a></li>
 </ul>
-</div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li></ul>
-</div>
-</div>
+</div></div>
 				</div>
 			</main>
 			
@@ -1271,8 +1235,8 @@ Sum of sizes in google_dynamic_partitions_partition_list is 4883337216, which is
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Android&amp;oldid=862627">https://wiki.archlinux.org/index.php?title=Android&amp;oldid=862627</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 24 January 2026, at 11:47.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Android&amp;oldid=869356">https://wiki.archlinux.org/index.php?title=Android&amp;oldid=869356</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 18 March 2026, at 09:49.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

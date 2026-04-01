@@ -510,6 +510,17 @@
 			<ul id="toc-/etc/resolv.conf:_Read-only_file_system-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Connection_to_iPhone_hotspot_fails_repeatedly" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Connection_to_iPhone_hotspot_fails_repeatedly">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">5.10</span>
+					<span>Connection to iPhone hotspot fails repeatedly</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Connection_to_iPhone_hotspot_fails_repeatedly-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1">
@@ -811,7 +822,7 @@ EAP-Password=<i>your_password</i>
 
 [Settings]
 AutoConnect=true</pre>
-<p>If you do not want autoconnect to the AP you can set the option to False and connect manually to the access point via <code>iwctl</code>. The same applies to the password, if you do not want to store it plaintext leave the option out of the file and just connect to the enterprise AP.
+<p>If you do not want autoconnect to the AP you can set the AutoConnect option to False and connect manually to the access point via <code>iwctl</code>. The same applies to the password, if you do not want to store it plaintext leave the option out of the file and just connect to the enterprise AP.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note</strong> There is no way to change priorities of different SSIDs, you may want to set <code>AutoConnect=false</code> as a workaround.</div>
@@ -1217,6 +1228,26 @@ ReadWritePaths=/etc/resolv.conf</pre>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note</strong> There is a discussion about this issue at the upstream mailing list: <a rel="nofollow" class="external text" href="https://lore.kernel.org/iwd/2249097a-97e0-175a-6b02-e5d6be484498%40gmail.com/">Re: iwd doesn't work with openresolv</a>
 </div>
+<div class="mw-heading mw-heading3"><h3 id="Connection_to_iPhone_hotspot_fails_repeatedly">Connection to iPhone hotspot fails repeatedly</h3></div>
+<p>When connecting to an iPhone personal hotspot, <code>iwd</code> may repeatedly connect and immediately disconnect with <code>connect-failed, status: 1</code> in the journal:
+</p>
+<pre>$ journalctl -b -u iwd
+event: state, old: connected, new: disconnecting
+event: connect-failed, status: 1
+event: state, old: connecting, new: disconnected
+</pre>
+<p>This can be caused by MAC address randomization interfering with the iPhone's hotspot authentication. To resolve it, set <code>AddressRandomization</code> in the iwd configuration:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/iwd/main.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[General]
+AddressRandomization=once
+</pre>
+<p>Then <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Restart">restart</a> <code>iwd.service</code>.
+</p>
+<p>If the issue persists, try setting <code>AddressRandomization=disabled</code>.
+</p>
+<p><br>
+</p>
 <div class="mw-heading mw-heading2"><h2 id="See_also">See also</h2></div>
 <ul>
 <li><a rel="nofollow" class="external text" href="https://archive.kernel.org/oldwiki/iwd.wiki.kernel.org/gettingstarted.html">Getting Started with iwd</a></li>
@@ -1251,8 +1282,8 @@ ReadWritePaths=/etc/resolv.conf</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Iwd&amp;oldid=847035">https://wiki.archlinux.org/index.php?title=Iwd&amp;oldid=847035</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 18 September 2025, at 15:31.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Iwd&amp;oldid=870112">https://wiki.archlinux.org/index.php?title=Iwd&amp;oldid=870112</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 27 March 2026, at 20:43.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -741,10 +741,10 @@
 <li><a href="../en/Arch_User_Repository.html" title="Arch User Repository">Arch User Repository</a></li>
 <li><a href="../en/Creating_packages.html" title="Creating packages">Creating packages</a></li>
 <li><a href="../en/Downgrading_packages.html" title="Downgrading packages">Downgrading packages</a></li>
-<li><a href="../en/Namcap.html" title="Namcap">namcap</a></li>
 <li><a href="../en/Frequently_asked_questions.html#Package_management" class="mw-redirect" title="FAQ">FAQ#Package management</a></li>
+<li><a href="../en/Namcap.html" title="Namcap">namcap</a></li>
+<li><a href="../en/Package_proxy_cache.html" title="Package proxy cache">Package proxy cache</a></li>
 <li><a href="../en/System_maintenance.html" title="System maintenance">System maintenance</a></li>
-<li><a href="../en/Package_Proxy_Cache.html" class="mw-redirect" title="Package Proxy Cache">Package Proxy Cache</a></li>
 </ul>
 </div>
 <p>The <a rel="nofollow" class="external text" href="https://pacman.archlinux.page/">pacman</a> <a href="https://en.wikipedia.org/wiki/Package_manager" class="extiw" title="wikipedia:Package manager">package manager</a> is one of the major distinguishing features of <a href="../en/Arch_Linux.html" title="Arch Linux">Arch Linux</a>. It combines a simple binary package format with an easy-to-use <a href="../en/Arch_build_system.html" title="Arch build system">Arch build system</a>. The goal of <i>pacman</i> is to make it possible to easily manage packages, whether they are from the <a href="../en/Official_repositories.html" title="Official repositories">official repositories</a> or the user's own builds.
@@ -754,7 +754,7 @@
 <p><i>pacman</i> is written in the <a href="../en/C.html" title="C">C</a> programming language and uses the <span class="plainlinks archwiki-template-man" title="$ man 1 bsdtar"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/bsdtar.1">bsdtar(1)</a></span> <a href="https://en.wikipedia.org/wiki/tar_(computing)" class="extiw" title="w:tar (computing)">tar</a> format for packaging.
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip</strong> The <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pacman">pacman</a></span> package contains tools such as <a href="../en/Makepkg.html" title="Makepkg">makepkg</a> and <span class="plainlinks archwiki-template-man" title="$ man 8 vercmp"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/vercmp.8">vercmp(8)</a></span>. Other useful tools such as <a href="#Pactree">pactree</a> and <a href="../en/System_maintenance.html#Partial_upgrades_are_unsupported" class="mw-redirect" title="Checkupdates">checkupdates</a> are found in <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pacman-contrib">pacman-contrib</a></span> (<a rel="nofollow" class="external text" href="https://gitlab.archlinux.org/pacman/pacman/commit/0c99eabd50752310f42ec808c8734a338122ec86">formerly</a> part of <i>pacman</i>). Run <code>pacman -Ql pacman pacman-contrib | grep -E 'bin/.+'</code> to see the full list.</div>
+<strong>Tip</strong> The <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pacman">pacman</a></span> package contains tools such as <a href="../en/Makepkg.html" title="Makepkg">makepkg</a> and <span class="plainlinks archwiki-template-man" title="$ man 8 vercmp"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/vercmp.8">vercmp(8)</a></span>. Other useful tools such as <a href="#Pactree">pactree</a> and <a href="../en/System_maintenance.html#Partial_upgrades_are_unsupported" class="mw-redirect" title="Checkupdates">checkupdates</a> are found in <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pacman-contrib">pacman-contrib</a></span>. Run <code>pacman -Ql pacman pacman-contrib | grep -E 'bin/.+'</code> to see the full list.</div>
 <meta property="mw:PageProp/toc">
 <div class="mw-heading mw-heading2"><h2 id="Usage">Usage</h2></div>
 <p>What follows is just a small sample of the operations that <i>pacman</i> can perform. To read more examples, refer to <span class="plainlinks archwiki-template-man" title="$ man 8 pacman"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/pacman.8">pacman(8)</a></span>.
@@ -791,6 +791,8 @@
 </p>
 <pre># pacman -S <i>package_name1</i> <i>package_name2</i> ...
 </pre>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip</strong> The same command can be used to reinstall a package.</div>
 <p>To install a list of packages with regex (see <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?id=7179">this forum thread</a>):
 </p>
 <pre># pacman -S $(pacman -Ssq <i>package_regex</i>)
@@ -955,8 +957,8 @@
 <p>For advanced functionality, install <a href="../en/Pkgfile.html" title="Pkgfile">pkgfile</a>, which uses a separate database with all files and their associated packages.
 </p>
 <div class="mw-heading mw-heading4"><h4 id="Pactree">Pactree</h4></div>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note</strong> <span class="plainlinks archwiki-template-man" title="$ man 8 pactree"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/pactree.8">pactree(8)</a></span> is not part of the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pacman">pacman</a></span> package anymore. Instead it can be found in <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pacman-contrib">pacman-contrib</a></span>.</div>
+<p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pacman-contrib">pacman-contrib</a></span> package to get <span class="plainlinks archwiki-template-man" title="$ man 8 pactree"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/pactree.8">pactree(8)</a></span>.
+</p>
 <p>To view the dependency tree of a package:
 </p>
 <pre>$ pactree <i>package_name</i>
@@ -1159,7 +1161,7 @@ extra/mariadb           10.1.9-4     10.1.10-1      0.26 MiB      13.80 MiB
 <div class="mw-heading mw-heading4"><h4 id="Hooks">Hooks</h4></div>
 <p><i>pacman</i> can run pre- and post-transaction hooks from the <code>/usr/share/libalpm/hooks/</code> directory; more directories can be specified with the <code>HookDir</code> option in <code>pacman.conf</code>, which defaults to <code>/etc/pacman.d/hooks</code>. Hook file names must be suffixed with <i>.hook</i>. <i>pacman</i> hooks are not interactive.
 </p>
-<p><i>pacman</i> hooks are used, for example, in combination with <code>systemd-sysusers</code> and <code>systemd-tmpfiles</code> to automatically create system users and files during the installation of packages. For example, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=tomcat8">tomcat8</a></span> specifies that it wants a system user called <code>tomcat8</code> and certain directories owned by this user. The <i>pacman</i> hooks <code>systemd-sysusers.hook</code> and <code>systemd-tmpfiles.hook</code> invoke <code>systemd-sysusers</code> and <code>systemd-tmpfiles</code> when <i>pacman</i> determines that <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=tomcat8">tomcat8</a></span> contains files specifying users and tmp files.
+<p><i>pacman</i> hooks are used, for example, in combination with <code>systemd-sysusers</code> and <code>systemd-tmpfiles</code> to automatically create system users and files during the installation of packages. For example, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/tomcat8/">tomcat8</a></span><sup><small>AUR</small></sup> specifies that it wants a system user called <code>tomcat8</code> and certain directories owned by this user. The <i>pacman</i> hooks <code>systemd-sysusers.hook</code> and <code>systemd-tmpfiles.hook</code> invoke <code>systemd-sysusers</code> and <code>systemd-tmpfiles</code> when <i>pacman</i> determines that <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/tomcat8/">tomcat8</a></span><sup><small>AUR</small></sup> contains files specifying users and tmp files.
 </p>
 <p>For more information on alpm hooks, see <span class="plainlinks archwiki-template-man" title="$ man 5 alpm-hooks"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/alpm-hooks.5">alpm-hooks(5)</a></span>.
 </p>
@@ -1288,12 +1290,10 @@ Errors occurred, no packages were upgraded.
 <div class="mw-heading mw-heading4"><h4 id="Using_pacman-static">Using pacman-static</h4></div>
 <p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/pacman-static/">pacman-static</a></span><sup><small>AUR</small></sup> is a statically compiled version of <i>pacman</i>, so it will be able to run even when the libraries on the system are not working. This can also come in handy when a <a href="../en/Partial_upgrade.html" class="mw-redirect" title="Partial upgrade">partial upgrade</a> was performed and <i>pacman</i> can not run anymore.
 </p>
-<p>The pinned comment and the PKGBUILD provides a way to directly download the binary, which can be used to reinstall <i>pacman</i> or to upgrade the entire system in case of partial upgrades.
-</p>
 <div class="mw-heading mw-heading5"><h5 id="Using_a_precompiled_pacman-static_binary_when_PKGBUILD_build_fails">Using a precompiled pacman-static binary when PKGBUILD build fails</h5></div>
 <p>In some situations, your system may be too broken to run <i>makepkg</i> or to build the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/pacman-static/">pacman-static</a></span><sup><small>AUR</small></sup> package (e.g., due to missing or incompatible libraries). In this case, you can download a precompiled <i>pacman-static</i> binary from a trusted source. This static binary does not depend on system libraries and can be used to restore a working <i>pacman</i> on your system.
 </p>
-<p>A reliable source for the binary is <a rel="nofollow" class="external free" href="https://pkgbuild.com/~morganamilo/pacman-static/x86_64/bin/pacman-static">https://pkgbuild.com/~morganamilo/pacman-static/x86_64/bin/pacman-static</a>
+<p>An outdated binary is provided by <a rel="nofollow" class="external free" href="https://pkgbuild.com/~morganamilo/pacman-static/x86_64/bin/pacman-static">https://pkgbuild.com/~morganamilo/pacman-static/x86_64/bin/pacman-static</a>
 </p>
 <p>Download it, make it <a href="../en/Help:Reading.html#Make_executable" class="mw-redirect" title="Executable">executable</a>, then:
 </p>
@@ -1412,12 +1412,10 @@ error: failed to commit transaction (not enough free disk space)
 <span id="error:_GPGME_error:_General_error_and_.22::_File_.2Fvar.2Fcache.2Fpacman.2Fpkg.2F.3Cpackage.3E.pkg.tar.zst_is_corrupted_.28invalid_or_corrupted_package_.28PGP_signature.29.29."></span>error: GPGME error: General error and ":: File /var/cache/pacman/pkg/&lt;package&gt;.pkg.tar.zst is corrupted (invalid or corrupted package (PGP signature)).</h3></div>
 <p>If this error occurs and you are, for instance, unable to update your system or any package at all, it is possible that you have <code>DISPLAY</code> set to a blank value, which seems to break the GPG-Flow.
 </p>
-<p>In this case, <code>unset DISPLAY</code> or setting it to a arbitrary value will most likely allow to update again, in case any other option above did not do the trick yet.
-See <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?pid=2204786">this</a> post for further details.
+<p>In this case, <code>unset DISPLAY</code> or setting it to a arbitrary value will most likely allow to update again, in case any other option above did not do the trick yet. See <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?pid=2204786">this</a> post for further details.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Reinstall_broken_or_out-of-sync_packages">Reinstall broken or out-of-sync packages</h3></div>
-<p>One may use the <code>pacman -Qk $pkg</code> to check if the installed files of the <code>$pkg</code> package match the files from its database version. For several packages, one may use the following loop to
-reinstall all packages which have missing file(s):
+<p>One may use the <code>pacman -Qk $pkg</code> to check if the installed files of the <code>$pkg</code> package match the files from its database version. For several packages, one may use the following loop to reinstall all packages which have missing file(s):
 </p>
 <pre># LC_ALL=C.UTF-8 pacman -Qk 2&gt;/dev/null | grep -v ' 0 missing files' | cut -d: -f1 |
     while read -r package; do
@@ -1456,8 +1454,8 @@ reinstall all packages which have missing file(s):
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Pacman&amp;oldid=862331">https://wiki.archlinux.org/index.php?title=Pacman&amp;oldid=862331</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 22 January 2026, at 05:54.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Pacman&amp;oldid=869940">https://wiki.archlinux.org/index.php?title=Pacman&amp;oldid=869940</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 26 March 2026, at 12:41.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

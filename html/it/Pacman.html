@@ -322,15 +322,15 @@
 			<ul id="toc-Possesso_di_più_file_di_configurazione-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Agganci" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Agganci">
+		<li id="toc-Hook" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Hook">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">2.1.8</span>
-					<span>Agganci</span>
+					<span>Hook</span>
 				</div>
 			</a>
 			
-			<ul id="toc-Agganci-sublist" class="vector-toc-list">
+			<ul id="toc-Hook-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -898,7 +898,7 @@
 </p>
 <pre>$ pactree <i>nome_pacchetto</i>
 </pre>
-<p>Per vedere il grafico di pacchetti che dipendono da un certo pacchetto, si dia l'opzione di invertimento <code>-r</code> a <i>pactree</i>, oppure il comando <i>whoneeds</i> proveniente da <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/pkgtools/">pkgtools</a></span><sup><small>AUR</small></sup><sup>[<a href="../en/Help:Procedures.html#Fix_broken_package_links" title="Help:Procedures">broken link</a>: package not found]</sup>.
+<p>Per vedere il grafico di pacchetti che dipendono da un certo pacchetto, si dia l'opzione di invertimento <code>-r</code> a <i>pactree</i>, oppure il comando <i>whoneeds</i> proveniente da <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/pkgtools/">pkgtools</a></span><sup><small>AUR</small></sup><sup>[<a href="../en/Help:Procedures.html#Fix_broken_package_links" title="Help:Procedures">collegamento interrotto</a>: package not found]</sup>.
 </p>
 <div class="mw-heading mw-heading4"><h4 id="Struttura_dei_database">Struttura dei database</h4></div>
 <p>I database di <i>pacman</i> sono solitamente situati in <code>/var/lib/pacman/sync</code>. Per ogni ripositore specificato in <code>/etc/pacman.conf</code> vi è un database corrispondente in questa directory. I file database sono archivi tar compressi secondo il formato gzip, i quali contengono a loro volta una directory per ogni pacchetto. Per esempio, nel caso del pacchetto <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=which">which</a></span>:
@@ -925,7 +925,7 @@
 <p>È possibile <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">abilitare</a> e <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start">lanciare</a> <code>paccache.timer</code> per rimuovere ogni settimana pacchetti non utilizzati.
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Suggerimento</strong> Si possono istituire degli <a href="#Agganci">agganci</a> da eseguire automaticamente ogni volta che <i>pacman</i> esegue un'operazione. Si <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">installi</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/pacman-cleanup-hook/">pacman-cleanup-hook</a></span><sup><small>AUR</small></sup> e si consulti <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?pid=1694743#p1694743">altri esempi</a> a riguardo.</div>
+<strong>Suggerimento</strong> Si possono istituire degli <a href="#Hooks">hooks</a> (cioè "agganci") da eseguire automaticamente ogni volta che <i>pacman</i> esegue un'operazione. Si <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">installi</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/pacman-cleanup-hook/">pacman-cleanup-hook</a></span><sup><small>AUR</small></sup> e si consultino <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?pid=1694743#p1694743">altri esempi</a> a riguardo.</div>
 <p>Si può anche specificare quante versioni (a partire da quella piu recente) si desidera tenere. Per tenere soltanto una, si può dare:
 </p>
 <pre># paccache -rk1
@@ -1032,7 +1032,7 @@ extra/xscreensaver 5.43-1
 <li>Si esegue la transazione:
 <ol>
 <li>Se possibile, si scaricano i pacchetti (<code>_alpm_sync_load</code>);</li>
-<li>Se dovessero esistere agganci <i>pacman</i> del tipo <code>PreTransaction</code>, questi verrebbero impiegati adesso;</li>
+<li>Se dovessero esistere hook di <i>pacman</i> del tipo <code>PreTransaction</code>, questi verrebbero impiegati adesso;</li>
 <li>I pacchetti da sostituire, rimuovere o in conflitto vengono rimossi;</li>
 <li>Se ci dovessero essere pacchetti da installare, ciò avverrebbe:
 <ol>
@@ -1041,7 +1041,7 @@ extra/xscreensaver 5.43-1
 <li>Nel caso esista uno script post-installazione, la funzione <code>post_install</code> (o <code>post_upgrade</code> o <code>post_remove</code> nel caso di un aggiornamento o di una rimozione) verrebbe impiegata.</li>
 </ol>
 </li>
-<li>Se esistono agganci <i>pacman</i> del tipo <code>PostTransaction</code>, questi verrebbero eseguiti a questo punto.</li>
+<li>Se esistono hooks di <i>pacman</i> del tipo <code>PostTransaction</code>, questi verrebbero eseguiti a questo punto.</li>
 </ol>
 </li>
 <li>
@@ -1115,12 +1115,12 @@ extra/mariadb           10.1.9-4     10.1.10-1      0.26 MiB      13.80 MiB
 </pre>
 <p>in cui <code><i>/path/to/common/settings</i></code> specifica il sentiero del file all'interno del quale si trovano le istruzioni in comune.
 </p>
-<div class="mw-heading mw-heading4"><h4 id="Agganci">Agganci</h4></div>
-<p>Pacman può eseguire agganci per pre e post-transazione, specificati nella directory <code>/usr/share/libalpm/hooks/</code>. Si può aggiungere altre directory nelle quali si intende collocare tali agganci specificandone i sentieri nell'istruzione <code>HookDir</code> in <code>pacman.conf</code>, il cui valore predefinito è <code>/etc/pacman.d/hooks</code>. I nomi di file che specificano un aggancio devono possedere il suffisso <i>.hook</i>. Inoltre, gli agganci pacman non sono interattivi.
+<div class="mw-heading mw-heading4"><h4 id="Hook">Hook</h4></div>
+<p>Pacman può eseguire hook per pre e post-transazione, specificati nella directory <code>/usr/share/libalpm/hooks/</code>. Si possono aggiungere altre directory nelle quali si intende collocare tali hook specificandone i sentieri nell'istruzione <code>HookDir</code> in <code>pacman.conf</code>, il cui valore predefinito è <code>/etc/pacman.d/hooks</code>. I nomi di file che specificano un hook devono possedere il suffisso <i>.hook</i>. Inoltre, gli hook di pacman non sono interattivi.
 </p>
-<p>Gli agganci di pacman possono per esempio essere utilizzati insieme a <code>systemd-sysusers</code> e <code>systemd-tmpfiles</code> per create automaticamente utenti e file di sistema durante l'installazione di pacchetti. Ad esempio, il pacchetto <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=tomcat8">tomcat8</a></span> richiede un utente di sistema chiamato <code>tomcat8</code> ed una serie di directory nel possesso di questo utente. Gli agganci <code>systemd-sysusers.hook</code> e <code>systemd-tmpfiles.hook</code> impiegano <code>systemd-sysusers</code> e <code>systemd-tmpfiles</code> ogni volta che <i>pacman</i> determina che <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=tomcat8">tomcat8</a></span> contiene dei file che specificano utenti e file temporanei.
+<p>Gli hook di pacman possono per esempio essere utilizzati insieme a <code>systemd-sysusers</code> e <code>systemd-tmpfiles</code> per create automaticamente utenti e file di sistema durante l'installazione di pacchetti. Ad esempio, il pacchetto <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/tomcat8/">tomcat8</a></span><sup><small>AUR</small></sup> richiede un utente di sistema chiamato <code>tomcat8</code> ed una serie di directory nel possesso di questo utente. Gli hook <code>systemd-sysusers.hook</code> e <code>systemd-tmpfiles.hook</code> impiegano <code>systemd-sysusers</code> e <code>systemd-tmpfiles</code> ogni volta che <i>pacman</i> determina che <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/tomcat8/">tomcat8</a></span><sup><small>AUR</small></sup> contiene dei file che specificano utenti e file temporanei.
 </p>
-<p>Per approfondire gli agganci <code>alpm</code> si faccia riferimento a <span class="plainlinks archwiki-template-man" title="$ man 5 alpm-hooks"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/alpm-hooks.5">alpm-hooks(5)</a></span>.
+<p>Per approfondire gli hook di <code>alpm</code> si faccia riferimento a <span class="plainlinks archwiki-template-man" title="$ man 5 alpm-hooks"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/alpm-hooks.5">alpm-hooks(5)</a></span>.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Repositori_e_mirror">Repositori e mirror</h3></div>
 <p>Con eccezione della sezione <a href="#Impostazioni_generali">[options]</a>, ogni altra <code>[sezione]</code> definita in <code>pacman.conf</code> specifica un repositore di pacchetti da utilizzare.
@@ -1350,8 +1350,8 @@ error: failed to commit transaction (not enough free disk space)
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Pacman_(Italiano)&amp;oldid=862591">https://wiki.archlinux.org/index.php?title=Pacman_(Italiano)&amp;oldid=862591</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 24 January 2026, at 09:28.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Pacman_(Italiano)&amp;oldid=867819">https://wiki.archlinux.org/index.php?title=Pacman_(Italiano)&amp;oldid=867819</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 1 March 2026, at 12:20.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

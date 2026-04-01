@@ -553,7 +553,7 @@
 <div class="mw-heading mw-heading3"><h3 id="cpupower">cpupower</h3></div>
 <p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=cpupower">cpupower</a></span> is a set of userspace utilities designed to assist with CPU frequency scaling. The package is not required to use scaling, but is highly recommended because it provides useful command-line utilities and a <a href="../en/Systemd.html" title="Systemd">systemd</a> service to change the governor at boot.
 </p>
-<p>The configuration file for <i>cpupower</i> is located in <code>/etc/default/cpupower</code>. This configuration file is read by a bash script in <code>/usr/lib/systemd/scripts/cpupower</code> which is activated by <i>systemd</i> with <code>cpupower.service</code>. You may want to <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> <code>cpupower.service</code> to start at boot.
+<p>The configuration file for <i>cpupower</i> is located in <code>/etc/default/cpupower-service.conf</code>. This configuration file is read by a bash script in <code>/usr/lib/systemd/scripts/cpupower</code> which is activated by <i>systemd</i> with <code>cpupower.service</code>. You may want to <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a> <code>cpupower.service</code> to start at boot.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="thermald">thermald</h3></div>
 <p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=thermald">thermald</a></span> is a <a rel="nofollow" class="external text" href="https://github.com/intel/thermal_daemon">Linux daemon</a> used to prevent the overheating of Intel CPUs. This daemon proactively controls thermal parameters using P-states, T-states, and the Intel power clamp driver. thermald can also be used for older Intel CPUs. If the latest drivers are not available, then the daemon will revert to x86 model specific registers and the Linux "cpufreq subsystem" to control system cooling.
@@ -582,6 +582,8 @@
 <i>power-profiles-daemon</i> <a rel="nofollow" class="external text" href="https://gitlab.freedesktop.org/upower/power-profiles-daemon/-/blob/main/data/power-profiles-daemon.service.in#L3">conflicts</a> with other power management services such as <a href="../en/TLP.html" title="TLP">TLP</a>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=tuned">tuned</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/system76-power/">system76-power</a></span><sup><small>AUR</small></sup>. To use one of the aforementioned services instead without <a href="../en/Pacman.html#Removing_packages" class="mw-redirect" title="Uninstall">uninstalling</a> <i>power-profiles-daemon</i> (due to its potential status as a dependency), disable the <code>power-profiles-daemon</code> service by <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Mask">masking</a> it (see also <a rel="nofollow" class="external autonumber" href="https://github.com/linrunner/TLP/issues/564">[1]</a>, <a rel="nofollow" class="external autonumber" href="https://linrunner.de/tlp/installation/arch.html#service-units">[2]</a>).</li>
 <li>
 <a href="#tuned">tuned</a> now offers a <i>tuned-ppd</i> service compatibility layer for <i>power-profiles-daemon</i> since version 2.23.0.</li>
+<li>
+<a href="../en/TLP.html" title="TLP">TLP</a> also offers a complete compatibility replacement via the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=tlp-pd">tlp-pd</a></span> <a href="../en/D-Bus.html" title="D-Bus">D-Bus</a> API since version 1.9.</li>
 </ul>
 </div>
 <div class="mw-heading mw-heading3"><h3 id="tuned">tuned</h3></div>
@@ -614,17 +616,16 @@
 <p><a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start/enable">Start/enable</a> the <code>nvidia-powerd</code> service, which is provided by the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nvidia-utils">nvidia-utils</a></span> package.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note</strong> The prerequisites for <i>nvidia-powerd</i> are: NVIDIA Ampere (or newer) GPU, Intel Comet Lake (or newer) or AMD Renoir (or newer) chipset, and firmware-level Dynamic Boost support (verify with <code>nvidia-settings -q DynamicBoostSupport</code>).</div>
+<strong>Note</strong> The prerequisites for <i>nvidia-powerd</i> are: NVIDIA Ampere (or newer) GPU, Intel Comet Lake (or newer) or AMD Renoir (or newer) chipset, and firmware-level Dynamic Boost support (verify with <code>nvidia-settings -q DynamicBoostSupport</code> ( nvidia-settings relies on the X server exposing the GPU, and will not work properly under Xwayland or Wayland, so this verification is unreliable on Wayland)).</div>
 <div class="mw-heading mw-heading2"><h2 id="Scaling_drivers">Scaling drivers</h2></div>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
-<div>
-<b>Reason:</b> Some of this information is platform/vendor-specific, lacks clarity/distinction between old and more recent features (such as Hardware P-States), or is an otherwise misinterpretation/conflation of the Kernel <a rel="nofollow" class="external text" href="https://docs.kernel.org/admin-guide/pm/working-state.html">Working-State Power Management</a> and <a rel="nofollow" class="external text" href="https://docs.kernel.org/admin-guide/pm/cpufreq.html">CPU performance scaling</a> subsystems. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:CPU_frequency_scaling.html">Talk:CPU frequency scaling</a>)</div>
-</div>
-<p>Scaling drivers implement controls over frequency scaling by interfacing with the CPU hardware. They can communicate with scaling governor for generic frequency control (the ACPI 2.0 standard introduced <a href="https://en.wikipedia.org/wiki/Advanced_Configuration_and_Power_Interface#Performance_state" class="extiw" title="wikipedia:Advanced Configuration and Power Interface">power-performance states ("P-states")</a>), but can also have additional features (such as Hardware-based P-States, which allow the CPU to govern frequency autonomously).<a rel="nofollow" class="external autonumber" href="https://docs.kernel.org/admin-guide/pm/cpufreq.html#cpu-performance-scaling-in-linux">[5]</a>
+<p>Scaling drivers implement controls over frequency scaling by interfacing with the CPU hardware. The driver is the hardware interface that communicates with the governor which dictates policy for generic frequency control.
+</p>
+<p>However <code>intel_pstate</code> and <code>amd_pstate</code> (active mode) implement their own internal control logic, sometimes bypassing traditional governors.
+</p>
+<p>The ACPI 2.0 standard introduced <a href="https://en.wikipedia.org/wiki/Advanced_Configuration_and_Power_Interface#Performance_state" class="extiw" title="wikipedia:Advanced Configuration and Power Interface">power-performance states ("P-states")</a>), but can also have additional features (such as Hardware-based P-States, which allow the CPU to govern frequency autonomously).<a rel="nofollow" class="external autonumber" href="https://docs.kernel.org/admin-guide/pm/cpufreq.html#cpu-performance-scaling-in-linux">[5]</a>
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note</strong> The native <code>CPUFreq</code> scaling driver is loaded automatically.</div>
+<strong>Note</strong> The kernel automatically selects the appropriate <code>CPUFreq</code> driver for the hardware at boot.</div>
 <table class="wikitable">
 <tbody>
 <tr>
@@ -639,12 +640,12 @@
 </tr>
 <tr>
 <td><code>amd_pstate</code></td>
-<td>This driver has three modes corresponding to different degrees of autonomy from the CPU hardware: active, passive, and guided. The <code>amd_pstate</code> CPU power scaling driver is used automatically in "active mode" on supported CPUs (Zen 2 and newer) since kernel version 6.5. See <a href="#amd_pstate">#amd_pstate</a> for details.
+<td>This driver has three modes corresponding to different degrees of autonomy from the CPU hardware: active, passive, and guided. Kernel 6.5 changed defaults to AMD P-State active (EPP) mode for supported Ryzen systems with CPPC support. However not all systems enable it automatically and server platforms may still default to <code>acpi_cpufreq</code>. See <a href="#amd_pstate">#amd_pstate</a> for details.
 </td>
 </tr>
 <tr>
 <td><code>amd_pstate_epp</code></td>
-<td>This driver implements a scaling driver selected by <code>amd_pstate=active</code> with an internal governor for AMD Ryzen (some Zen 2 and newer) processors.
+<td>EPP-based variant of the <code>amd_pstate</code> driver used in active mode.
 </td>
 </tr>
 <tr>
@@ -664,7 +665,7 @@
 </tr>
 <tr>
 <td><code>p4_clockmod</code></td>
-<td>CPUFreq driver for Intel Pentium 4/Xeon/Celeron processors which lowers the CPU temperature by skipping clocks. (You probably want to use <code>speedstep_lib</code> instead.)
+<td>CPUFreq driver for Intel Pentium 4/Xeon/Celeron processors which lowers the CPU temperature by skipping clocks. (You probably want to use <code>speedstep_lib</code> instead, an internal helper library used by legacy Intel SpeedStep drivers.)
 </td>
 </tr>
 <tr>
@@ -684,14 +685,13 @@
 </tr>
 </tbody>
 </table>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
-<div>
-<b>Reason:</b> The following command will only return the drivers that are built as modules, but not the built-ins: for example <a rel="nofollow" class="external text" href="https://gitlab.archlinux.org/archlinux/packaging/packages/linux/-/blob/main/config?ref_type=heads#L711">intel_pstate and amd_pstate</a>]. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:CPU_frequency_scaling.html">Talk:CPU frequency scaling</a>)</div>
-</div>
 <p>To see a full list of available modules, run:
 </p>
 <pre>$ ls /usr/lib/modules/$(uname -r)/kernel/drivers/cpufreq/
+</pre>
+<p>To view drivers built-in to the current kernel, query its config:
+</p>
+<pre>$ zgrep -E 'CONFIG_X86_(INTEL_PSTATE|AMD_PSTATE|ACPI_CPUFREQ|PCC_CPUFREQ|POWERNOW_K8|P4_CLOCKMOD)=[y]' /proc/config.gz
 </pre>
 <p>Load the appropriate module (see <a href="../en/Kernel_modules.html" class="mw-redirect" title="Kernel modules">Kernel modules</a> for details). Once the appropriate cpufreq driver is loaded, detailed information about the CPU(s) can be displayed by running
 </p>
@@ -994,32 +994,23 @@ ac_adapter)
 </pre>
 <div class="mw-heading mw-heading2"><h2 id="Troubleshooting">Troubleshooting</h2></div>
 <div class="mw-heading mw-heading3"><h3 id="BIOS_frequency_limitation">BIOS frequency limitation</h3></div>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-clear.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs language, wiki syntax or style improvements. See <a href="../en/Help:Style.html" title="Help:Style">Help:Style</a> for reference.</b></p>
-<div>
-<b>Reason:</b> <a href="../en/Help:Style.html#Language_register" title="Help:Style">Help:Style#Language register</a> (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:CPU_frequency_scaling.html">Talk:CPU frequency scaling</a>)</div>
-</div>
-<p>Some CPU/BIOS configurations may have difficulties to scale to the maximum frequency or scale to higher frequencies at all. This is most likely caused by BIOS events telling the OS to limit the frequency resulting in <code>/sys/devices/system/cpu/cpu0/cpufreq/bios_limit</code> set to a lower value.
+<p>Some CPU and BIOS configurations are unable to reach their maximum frequency or scale to higher frequencies at all. This is most likely caused by BIOS events telling the OS to limit the frequency resulting in <code>/sys/devices/system/cpu/cpu0/cpufreq/bios_limit</code> set to a lower value.
 </p>
-<p>Either you just made a specific Setting in the BIOS Setup Utility, (Frequency, Thermal Management, etc.) you can blame a buggy/outdated BIOS or the BIOS might have a serious reason for throttling the CPU on its own.
+<p>Before blaming the BIOS implementation, verify you have not manually set the CPU frequency limits, thermal management preferences, or other relevant options in the BIOS Setup Utility.
 </p>
-<p>Reasons like that can be (assuming your machine's a notebook) that the battery is removed (or near death) so you are on AC-power only. In this case, a weak AC-source might not supply enough electricity to fulfill extreme peak demands by the overall system and as there is no battery to assist this could lead to data loss, data corruption or in worst case even hardware damage!
-</p>
-<p>Not all BIOS'es limit the CPU-Frequency in this case, but, for example, most IBM/Lenovo Thinkpads do. Refer to thinkwiki for more <a rel="nofollow" class="external text" href="https://www.thinkwiki.org/wiki/Problem_with_CPU_frequency_scaling">thinkpad related info on this topic</a>.
-</p>
-<p>If you checked there is not just an odd BIOS setting and you know what you are doing, you can make the Kernel ignore these BIOS-limitations.
+<p>On some devices (e.g. IBM/Lenovo Thinkpads), usage with a failing battery (or it removed) coupled with an undersized AC adapter may trigger a BIOS-enforced CPU frequency limit. See <a rel="nofollow" class="external text" href="https://www.thinkwiki.org/wiki/Problem_with_CPU_frequency_scaling">ThinkWiki</a>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning</strong> 
 <ul>
-<li>Make sure you read and understood the section above. CPU frequency limitation is a safety feature of your BIOS and you should not need to work around it.</li>
-<li>This is <b>not</b> recommended and can seriously damage your hardware: use at your own risk. <a rel="nofollow" class="external autonumber" href="https://github.com/syscl/CPUTune">[11]</a>
+<li>CPU frequency limitation is a safety feature of your BIOS and should not need to be bypassed in most cases.</li>
+<li>This can seriously damage your hardware: use at your own risk. <a rel="nofollow" class="external autonumber" href="https://github.com/syscl/CPUTune">[11]</a>
 </li>
 </ul>
 </div>
-<p>Set the <code>processor.ignore_ppc=1</code> <a href="../en/Kernel_parameter.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a>. For trying this temporarily, change the value in <code>/sys/module/processor/parameters/ignore_ppc</code> from <code>0</code> to <code>1</code>.
+<p>You can tell the kernel to ignore the limitations: set the <code>processor.ignore_ppc=1</code> <a href="../en/Kernel_parameter.html" class="mw-redirect" title="Kernel parameter">kernel parameter</a>. For trying this temporarily, change the value in <code>/sys/module/processor/parameters/ignore_ppc</code> from <code>0</code> to <code>1</code>.
 </p>
-<p>Some systems use another mechanism to limit the CPU frequency, e.g., when running without battery or an unofficial power adapter. See <a href="../en/Lenovo_ThinkPad_T480.html#CPU_stuck_at_minimum_frequency" title="Lenovo ThinkPad T480">Lenovo ThinkPad T480#CPU stuck at minimum frequency</a> for a way to manipulate the BD PROCHOT bit in Intel CPUs and <a href="../en/Dell_XPS_15_(9560).html#General_slowness_&amp;_stuttering" title="Dell XPS 15 (9560)">Dell XPS 15 (9560)#General slowness &amp; stuttering</a> for alternative fixes. It does not only apply to the Lenovo ThinkPad T480, but is a common problem in Dell XPS models like the XPS15 9550 and XPS15 9560, too. The bit also is what makes at least some Intel-based MacBooks run with minimum CPU frequency when no battery is connected.
+<p>Some systems use a different mechanism to limit the CPU frequency when running without battery or an unofficial power adapter. On Intel CPUs, you can manipulate the BD PROCHOT bit in Intel CPUs as explained in <a href="../en/Lenovo_ThinkPad_T480.html#CPU_stuck_at_minimum_frequency" title="Lenovo ThinkPad T480">Lenovo ThinkPad T480#CPU stuck at minimum frequency</a> and <a href="../en/Dell_XPS_15_(9560).html#General_slowness_&amp;_stuttering" title="Dell XPS 15 (9560)">Dell XPS 15 (9560)#General slowness &amp; stuttering</a>. These steps may also apply to other devices, like Intel-based MacBooks running at the minimum CPU frequency without a battery.
 </p>
 <div class="mw-heading mw-heading2"><h2 id="See_also">See also</h2></div>
 <ul>
@@ -1032,19 +1023,12 @@ ac_adapter)
 </ul>
 </div>
 </div>
-					<div id="catlinks" class="catlinks" data-mw="interface">
-<div id="mw-normal-catlinks" class="mw-normal-catlinks">
+					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Categories</a>: <ul>
 <li><a href="../en/Category:Power_management.html" title="Category:Power management">Power management</a></li>
 <li><a href="../en/Category:CPU.html" title="Category:CPU">CPU</a></li>
 </ul>
-</div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li>
-</ul>
-</div>
-</div>
+</div></div>
 				</div>
 			</main>
 			
@@ -1053,8 +1037,8 @@ ac_adapter)
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=CPU_frequency_scaling&amp;oldid=860397">https://wiki.archlinux.org/index.php?title=CPU_frequency_scaling&amp;oldid=860397</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 6 January 2026, at 20:01.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=CPU_frequency_scaling&amp;oldid=870077">https://wiki.archlinux.org/index.php?title=CPU_frequency_scaling&amp;oldid=870077</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 27 March 2026, at 04:51.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -1102,12 +1102,28 @@ To read their clock speed use <i>i7z</i> from the <span class="plainlinks archwi
 </p>
 <p>If the BAR has a 256M size, the feature is not enabled or not supported:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># dmesg | grep BAR=</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># journalctl -k --grep=BAR=</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[drm] Detected VRAM RAM=8176M, BAR=256M</pre>
 <p>To enable it, enable the setting named "Above 4G Decode" or "&gt;4GB MMIO" in your motherboard settings. Verify that the BAR is now larger:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># dmesg | grep BAR=</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># journalctl -k --grep=BAR=</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[drm] Detected VRAM RAM=8176M, BAR=8192M</pre>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> For NVIDIA GPUs, the <a href="../en/NVIDIA.html" title="NVIDIA">NVIDIA</a> driver does not enable Resizable BAR automatically, even if it is enabled in firmware. In addition to enabling Above 4G Decoding and Resizable BAR in UEFI, the driver must be explicitly instructed to use it:
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/modprobe.d/nvidia-rebar.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">options nvidia NVreg_EnableResizableBar=1</pre>
+<p>Then <a href="../en/Regenerate_the_initramfs.html" class="mw-redirect" title="Regenerate the initramfs">regenerate the initramfs</a> so the option is applied when the NVIDIA kernel module is loaded early during boot.
+</p>
+<p>A full power cycle (shutdown and power off) may be required for PCIe BAR resizing to take effect.
+</p>
+</div>
+<p>Resizable BAR can be verified using <code>lspci -vv</code>, where the GPU BAR size should be larger than 256 MB (example shown is a NVIDIA model 4070Ti Super with 16GB of RAM):
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># lspci -vv -d ::03xx | grep BAR</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">Capabilities: [bb0 v1] Physical Resizable BAR
+                BAR 0: current size: 16MB, supported: 16MB
+                BAR 1: current size: <b>16GB</b>, supported: 64MB 128MB 256MB 512MB 1GB 2GB 4GB 8GB 16GB
+                BAR 3: current size: 32MB, supported: 32MB</pre>
 <div class="mw-heading mw-heading2"><h2 id="RAM,_swap_and_OOM_handling">
 <span id="RAM.2C_swap_and_OOM_handling"></span>RAM, swap and OOM handling</h2></div>
 <div class="mw-heading mw-heading3"><h3 id="Clock_frequency_and_timings">Clock frequency and timings</h3></div>
@@ -1216,8 +1232,8 @@ To read their clock speed use <i>i7z</i> from the <span class="plainlinks archwi
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Improving_performance&amp;oldid=862958">https://wiki.archlinux.org/index.php?title=Improving_performance&amp;oldid=862958</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 27 January 2026, at 23:34.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Improving_performance&amp;oldid=864653">https://wiki.archlinux.org/index.php?title=Improving_performance&amp;oldid=864653</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 8 February 2026, at 12:53.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

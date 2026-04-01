@@ -392,12 +392,10 @@
 </p>
 <meta property="mw:PageProp/toc">
 <div class="mw-heading mw-heading2"><h2 id="Mouse_cursor_is_jittery_or_erratic">Mouse cursor is jittery or erratic</h2></div>
-<p>If the cursor jumps around the screen uncontrollably, entering this on the terminal before starting QEMU might help:
+<p>If the cursor jumps around the screen uncontrollably, adding an <a href="../../en/Environment_variable.html" class="mw-redirect" title="Environment variable">environment variable</a> before starting QEMU might help:
 </p>
-<pre>$ export SDL_VIDEO_X11_DGAMOUSE=0
+<pre>export SDL_VIDEO_X11_DGAMOUSE=0
 </pre>
-<p>If this helps, you can add this to your <code>~/.bashrc</code> file.
-</p>
 <div class="mw-heading mw-heading2"><h2 id="No_visible_Cursor">No visible Cursor</h2></div>
 <p>Add <code>-display default,show-cursor=on</code> to QEMU's options to see a mouse cursor.
 </p>
@@ -467,9 +465,7 @@ Try starting the virtual machine with the <code>-m VALUE</code> switch and an ap
 <p>Occasionally, applications running in the virtual machine may crash unexpectedly, whereas they would run normally on a physical machine. If, while running <code>dmesg -wH</code> as root, you encounter an error mentioning <code>MSR</code>, the reason for those crashes is that KVM injects a <a href="https://en.wikipedia.org/wiki/General_protection_fault" class="extiw" title="wikipedia:General protection fault">General protection fault</a> (GPF) when the guest tries to access unsupported <a href="https://en.wikipedia.org/wiki/Model-specific_register" class="extiw" title="wikipedia:Model-specific register">Model-specific registers</a> (MSRs) - this often results in guest applications/OS crashing. A number of those issues can be solved by passing the <code>ignore_msrs=1</code> option to the KVM module, which will ignore unimplemented MSRs.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/modprobe.d/kvm.conf</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">...
-options kvm ignore_msrs=1
-...</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">options kvm ignore_msrs=1</pre>
 <p>Cases where adding this option might help:
 </p>
 <ul>
@@ -512,15 +508,13 @@ sh: can't access tty; job control turned off
 <p>The error message does not give a good clue as to what the real issue is. The problem is with the default 128MB of RAM that QEMU allocates to the virtual machine. Increasing the limit to 1024MB with <code>-m 1024</code> solves the issue and lets the system boot. You can continue installing Arch Linux as usual after that. Once the installation is complete, the memory allocation for the virtual machine can be decreased. The need for 1024MB is due to RAM disk requirements and size of the installation media. See <a rel="nofollow" class="external text" href="https://lists.archlinux.org/archives/list/arch-releng@lists.archlinux.org/message/D5HSGOFTPGYI6IZUEB3ZNAX4D3F3ID37/">this message on the arch-releng mailing list</a> and <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?id=204023">this forum thread</a>.
 </p>
 <div class="mw-heading mw-heading2"><h2 id="Guest_CPU_interrupts_are_not_firing">Guest CPU interrupts are not firing</h2></div>
-<p>If you are writing your own operating system by following the <a rel="nofollow" class="external text" href="https://wiki.osdev.org/">OSDev wiki</a>, or are simply getting stepping through the guest architecture assembly code using QEMU's <code>gdb</code> interface using the <code>-s</code> flag, it is useful to know that many emulators, QEMU included, usually implement some CPU interrupts leaving many hardware interrupts unimplemented. One way to know if your code is firing an interrupt, is by using:
+<p>If you are writing your own operating system by following the <a rel="nofollow" class="external text" href="https://wiki.osdev.org/">OSDev wiki</a>, or are simply getting stepping through the guest architecture assembly code using QEMU's <code>gdb</code> interface using the <code>-s</code> flag, it is useful to know that many emulators, QEMU included, usually implement some CPU interrupts leaving many hardware interrupts unimplemented. One way to know if your code is firing an interrupt, is by using the <code>-d int</code> argument.
 </p>
-<pre>-d int
-</pre>
 <p>to enable showing interrupts/exceptions on stdout.
 </p>
-<p>To see what other guest debugging features QEMU has to offer, see:
+<p>To see what other guest debugging features QEMU has to offer:
 </p>
-<pre>qemu-system-x86_64 -d help
+<pre>$ qemu-system-x86_64 -d help
 </pre>
 <p>or replace <code>x86_64</code> for your chosen guest architecture.
 </p>
@@ -595,8 +589,8 @@ FXSAVE_STATE - 000000007FE6BED0
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=QEMU/Troubleshooting&amp;oldid=852941">https://wiki.archlinux.org/index.php?title=QEMU/Troubleshooting&amp;oldid=852941</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 16 November 2025, at 09:20.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=QEMU/Troubleshooting&amp;oldid=869459">https://wiki.archlinux.org/index.php?title=QEMU/Troubleshooting&amp;oldid=869459</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 20 March 2026, at 00:21.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

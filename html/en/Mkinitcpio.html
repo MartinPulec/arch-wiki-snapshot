@@ -190,15 +190,15 @@
 			<ul id="toc-Post_hooks-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Common_hooks" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Common_hooks">
+		<li id="toc-Hook_list" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Hook_list">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">3.3.4</span>
-					<span>Common hooks</span>
+					<span>Hook list</span>
 				</div>
 			</a>
 			
-			<ul id="toc-Common_hooks-sublist" class="vector-toc-list">
+			<ul id="toc-Hook_list-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -416,27 +416,16 @@
 			<ul id="toc-No_PS/2_controller_found-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Standard_rescue_procedures" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Standard_rescue_procedures">
-				<div class="vector-toc-text">
-					<span class="vector-toc-numb">6.6</span>
-					<span>Standard rescue procedures</span>
-				</div>
-			</a>
-			
-			<ul id="toc-Standard_rescue_procedures-sublist" class="vector-toc-list">
-				<li id="toc-Boot_succeeds_on_one_machine_and_fails_on_another" class="vector-toc-list-item vector-toc-level-3">
+		<li id="toc-Boot_succeeds_on_one_machine_and_fails_on_another" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Boot_succeeds_on_one_machine_and_fails_on_another">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">6.6.1</span>
+					<span class="vector-toc-numb">6.6</span>
 					<span>Boot succeeds on one machine and fails on another</span>
 				</div>
 			</a>
 			
 			<ul id="toc-Boot_succeeds_on_one_machine_and_fails_on_another-sublist" class="vector-toc-list">
 			</ul>
-		</li>
-	</ul>
 		</li>
 		<li id="toc-Cannot_open_access_to_console,_the_root_account_is_locked" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Cannot_open_access_to_console,_the_root_account_is_locked">
@@ -540,39 +529,50 @@
 <li><a href="../en/Kernel_modules.html" class="mw-redirect" title="Kernel modules">Kernel modules</a></li>
 <li><a href="../en/Unified_kernel_image.html" title="Unified kernel image">Unified kernel image</a></li>
 <li><a href="../en/Dracut.html" title="Dracut">dracut</a></li>
-<li><a href="../en/Systemd.html" title="Systemd">systemd</a></li>
 </ul>
 </div>
-<p><a rel="nofollow" class="external text" href="https://gitlab.archlinux.org/archlinux/mkinitcpio/mkinitcpio">mkinitcpio</a> is a Bash script used to create initramfs images. See <a href="../en/Arch_boot_process.html#initramfs" title="Arch boot process">Arch boot process#initramfs</a> for a general introduction.
-</p>
-<p>It is important to note that there are two distinct approaches how the various tasks during initial ramdisk phase are performed:
+<p><a rel="nofollow" class="external text" href="https://gitlab.archlinux.org/archlinux/mkinitcpio/mkinitcpio">mkinitcpio</a> is a <a href="../en/Bash.html" title="Bash">Bash</a> script used to create <a href="../en/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs">initramfs</a> images. There are two distinct approaches how the various tasks during initial ramdisk phase are performed:
 </p>
 <dl>
-<dt>systemd based initial ramdisk</dt>
-<dd>systemd is already started at the beginning of the initial ramdisk phase. The tasks to be executed are determined by regular systemd unit files. See <a rel="nofollow" class="external text" href="https://www.freedesktop.org/software/systemd/man/latest/bootup.html">systemd bootup process</a>.</dd>
+<dt>systemd-based initial RAM file system</dt>
 <dd>
-<b>Pros</b>: Tightly integrated with the rest of the systemd ecosystem, leading to a more consistent and streamlined boot process. Parallelize certain boot tasks more effectively, potentially leading to faster overall boot times in some scenarios. More comprehensive set of features like <a href="../en/Dm-crypt/System_configuration.html#Using_systemd-cryptsetup-generator" title="Dm-crypt/System configuration">systemd-cryptsetup-generator</a> with <code>/etc/crypttab.initramfs</code> or <a href="../en/Systemd.html#GPT_partition_automounting" title="Systemd">GPT partition automounting</a>.</dd>
+<a href="../en/Systemd.html" title="Systemd">systemd</a> is already started at the beginning of the initial ramdisk phase. The tasks to be executed are determined by regular systemd unit files. See <a rel="nofollow" class="external text" href="https://www.freedesktop.org/software/systemd/man/latest/bootup.html">systemd bootup process</a>.</dd>
 <dd>
-<b>Cons</b>: More dependencies and larger size: Generally results in a larger initramfs due to the inclusion of systemd binaries and its dependencies. This can slightly increase boot time.</dd>
-<dt>Busybox based initial ramdisk</dt>
+<b>Pros</b>:
+<ul>
+<li>Tightly integrated with the rest of the systemd ecosystem, leading to a more consistent and streamlined boot process.</li>
+<li>Parallelize certain boot tasks more effectively, potentially leading to faster overall boot times in some scenarios.</li>
+<li>More comprehensive set of features like <a href="../en/Dm-crypt/System_configuration.html#Using_systemd-cryptsetup-generator" title="Dm-crypt/System configuration">systemd-cryptsetup-generator</a> with <code>/etc/crypttab.initramfs</code> or <a href="../en/Systemd.html#GPT_partition_automounting" title="Systemd">GPT partition automounting</a>.</li>
+</ul>
+</dd>
+<dd>
+<b>Cons</b>:
+<ul><li>More dependencies and larger size: Generally results in a larger initramfs due to the inclusion of systemd binaries and its dependencies. This can slightly increase boot time.</li></ul>
+</dd>
+</dl>
+<dl>
+<dt>Busybox-based initial RAM file system</dt>
 <dd>An init script is started that in turn scans the filesystem of the initial ramdisk for scripts to be executed (here in this context called runtime hooks).</dd>
 <dd>
-<b>Pros</b>: lightweight and smaller in size, fewer dependencies.</dd>
+<b>Pros</b>:
+<ul>
+<li>Lightweight and smaller in size, fewer dependencies.</li>
+<li>The init script and runtime hooks are executed sequentially, making it easier to identify which step caused problems during boot.</li>
+</ul>
+</dd>
 </dl>
-<p>The concrete variant is determined by the presence or absence of the <code>systemd</code> hook in the <code>HOOKS</code> array of <code>/etc/mkinitcpio.conf</code>. See <a href="#Common_hooks">#Common hooks</a> for more details.
+<p><br>
+The concrete variant is determined by the presence or absence of the <code>systemd</code> hook in the <code>HOOKS</code> array of <code>/etc/mkinitcpio.conf</code>. See <a href="#Hook_list">#Hook list</a> for more details.
 </p>
-<p><i>mkinitcpio</i> has been developed by the Arch Linux developers and from community contributions. See the <a rel="nofollow" class="external text" href="https://gitlab.archlinux.org/archlinux/mkinitcpio/mkinitcpio">public Git repository</a>.
+<p><i>mkinitcpio</i> has been developed by the Arch Linux <a rel="nofollow" class="external text" href="https://archlinux.org/people/developers/">developers</a> and from community contributions.
 </p>
 <meta property="mw:PageProp/toc">
 <div class="mw-heading mw-heading2"><h2 id="Installation">Installation</h2></div>
-<p><a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">Install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mkinitcpio">mkinitcpio</a></span> package, which is a dependency of the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span> package, so most users will already have it installed.
-</p>
-<p>Advanced users may wish to install the latest development version of <i>mkinitcpio</i> from Git with the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/mkinitcpio-git/">mkinitcpio-git</a></span><sup><small>AUR</small></sup> package.
+<p>The <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mkinitcpio">mkinitcpio</a></span> package is a dependency of the <a href="../en/Kernel.html#Officially_supported_kernels" title="Kernel">kernel</a> packages, so most users will already have it <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">installed</a>.
 </p>
 <div class="mw-heading mw-heading2"><h2 id="Image_creation_and_activation">Image creation and activation</h2></div>
 <div class="mw-heading mw-heading3"><h3 id="Automated_generation">Automated generation</h3></div>
-<p>Every time a kernel is installed or upgraded, a <a href="../en/Pacman_hook.html" class="mw-redirect" title="Pacman hook">pacman hook</a> automatically generates a <i>.preset</i> file saved in <code>/etc/mkinitcpio.d/</code>. For example <code>linux.preset</code> for the official stable <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span> kernel package. A preset is simply a list of information required to create initial ramdisk images, instead of manually specifying the various parameters and the location of the output files.
-By default, it contains the instructions to create only the first image, the second must be explicitly enabled:
+<p>Every time a kernel is installed or upgraded, a <a href="../en/Pacman_hook.html" class="mw-redirect" title="Pacman hook">pacman hook</a> automatically generates a <i>.preset</i> file saved in <code>/etc/mkinitcpio.d/</code>. For example <code>linux.preset</code> for the official stable <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span> kernel package. A preset is simply a list of information required to create initial ramdisk images, instead of manually specifying the various parameters and the location of the output files. By default, it contains the instructions to create only the first image, the second one must be <a href="#Fallback_initramfs_generation">explicitly enabled</a>:
 </p>
 <ol>
 <li>The <i>default</i> ramdisk image created following the directives specified in the <a href="#Configuration">configuration</a>.</li>
@@ -645,7 +645,7 @@ By default, it contains the instructions to create only the first image, the sec
 <ul>
 <li>If using out-of-tree file systems that will be mounted in early userspace (e.g. when using such a file system as the root file system), their modules (e.g. <code>reiser4</code>) <b>must</b> be added to the <code>MODULES</code> array.</li>
 <li>When using the <b>encrypt</b> or <b>sd-encrypt</b> hook, the keyboard modules and/or filesystems needed to unlock the LUKS device during system boot need to be added to the <code>MODULES</code> array when the target system differs from the one used to run <i>mkinitcpio</i>.  For example, if you use a keyfile on an ext2 file system but no ext2 file system is mounted at the time <i>mkinitcpio</i> runs, add <code>ext2</code>. See <a href="../en/Dm-crypt/System_configuration.html#cryptkey" title="Dm-crypt/System configuration">dm-crypt/System configuration#cryptkey</a> for more details.</li>
-<li>If using a keyboard through a USB 3 hub and wish to use it to unlock a LUKS device, add <code>usbhid xhci_hcd</code>.</li>
+<li>If using a keyboard through a USB 3 hub and wish to use it to unlock a LUKS device, add <code>usbhid xhci_hcd</code>. Some laptops need  <code>i2c_hid_acpi</code> module for the built-in keyboard.</li>
 <li>If using displays connected to a docking station, you might need to add a module for your graphics card to make initrd output visible (e.g. <code>i915</code> for most Intel cards).</li>
 </ul>
 </div>
@@ -659,12 +659,14 @@ By default, it contains the instructions to create only the first image, the sec
 <p>Note that as both <code>BINARIES</code> and <code>FILES</code> are <a href="../en/Bash.html" title="Bash">Bash</a> arrays, multiple entries can be added delimited with spaces.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="HOOKS">HOOKS</h3></div>
-<p>The <code>HOOKS</code> array is the most important setting in the file. Hooks are small scripts which describe what will be added to the image. For some hooks, they will also contain a runtime component which provides additional behavior, such as starting a daemon, or assembling a stacked block device. Hooks are referred to by their name, and executed in the order they exist in the <code>HOOKS</code> array of the configuration file.
+<p>The <code>HOOKS</code> array is the most important setting in the file. Hooks are small scripts describing what will be added to the initramfs image. Some hooks are accompanied by a so-called runtime hook providing startup functionality, such as starting a daemon, or assembling a stacked block device.
 </p>
-<p>The default <code>HOOKS</code> setting should be sufficient for most simple, single disk setups. For root devices which are stacked or multi-block devices such as <a href="../en/LVM.html" title="LVM">LVM</a>, <a href="../en/RAID.html" title="RAID">RAID</a>, or <a href="../en/Dm-crypt.html" title="Dm-crypt">dm-crypt</a>, see the respective wiki pages for further necessary configuration.
+<p>Hooks are referred to by their name, and executed in the order they are listed in the <code>HOOKS</code> array of the configuration file. The recommended order of the <a href="#Hook_list">hook list</a> should be followed unless you know what you are doing.
+</p>
+<p>The default <code>HOOKS</code> setting should be sufficient for most simple, single disk setups. For root filesystems based on stacked devices or spanning multiple devices such as <a href="../en/LVM.html" title="LVM">LVM</a>, <a href="../en/RAID.html" title="RAID">RAID</a>, or <a href="../en/Dm-crypt.html" title="Dm-crypt">dm-crypt</a>, see the respective wiki pages for further necessary configuration.
 </p>
 <div class="mw-heading mw-heading4"><h4 id="Build_hooks">Build hooks</h4></div>
-<p>Build hooks are found in <code>/usr/lib/initcpio/install/</code>, custom build hooks can be placed in <code>/etc/initcpio/install/</code>. These files are sourced by the bash shell during runtime of <i>mkinitcpio</i> and should contain two functions: <code>build</code> and <code>help</code>. The <code>build</code> function describes the modules, files, and binaries which will be added to the image. An API, documented by <span class="plainlinks archwiki-template-man" title="$ man 8 mkinitcpio"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/mkinitcpio.8">mkinitcpio(8)</a></span>, serves to facilitate the addition of these items. The <code>help</code> function outputs a description of what the hook accomplishes.
+<p>Build hooks (aka install hooks) are shell script files sourced by the bash shell during execution of <i>mkinitcpio</i> and usually contain two functions: <code>build</code> and <code>help</code>. The <code>build</code> function describes the modules, binaries and other files to be added to the initramfs image. An API, documented by <span class="plainlinks archwiki-template-man" title="$ man 8 mkinitcpio"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/mkinitcpio.8">mkinitcpio(8)</a></span>, serves to facilitate the addition of these items. The <code>help</code> function outputs a short description about functionality and usage of the hook.
 </p>
 <p>For a list of all available hooks:
 </p>
@@ -674,8 +676,10 @@ By default, it contains the instructions to create only the first image, the sec
 </p>
 <pre>$ mkinitcpio -H udev
 </pre>
+<p>Build hooks are located in <code>/usr/lib/initcpio/install/</code>, custom build hooks can be placed in <code>/etc/initcpio/install/</code>.
+</p>
 <div class="mw-heading mw-heading4"><h4 id="Runtime_hooks">Runtime hooks</h4></div>
-<p>Runtime hooks are found in <code>/usr/lib/initcpio/hooks/</code>, custom runtime hooks can be placed in <code>/etc/initcpio/hooks/</code>. For any runtime hook, there should always be a build hook of the same name, which calls <code>add_runscript</code> to add the runtime hook to the image. These files are sourced by the busybox ash shell during early userspace. With the exception of cleanup hooks, they will always be run in the order listed in the <code>HOOKS</code> setting. Runtime hooks may contain several functions:
+<p>Each build hook listed in the <code>HOOKS</code> array may be accompanied by zero or one runtime hook of the same name. Runtime hooks are shell scripts sourced by the busybox <code>ash</code> shell during initramfs phase. They are responsible for startup tasks such as starting a daemon, or assembling a stacked block device. A build hook installs the corresponding runtime hook by calling <code>add_runscript</code>. Runtime hooks may contain several functions:
 </p>
 <p><code>run_earlyhook</code>: Functions of this name will be run once the API file systems have been mounted and the kernel command line has been parsed. This is generally where additional daemons, such as udev, which are needed for the early boot process are started from.
 </p>
@@ -685,10 +689,12 @@ By default, it contains the instructions to create only the first image, the sec
 </p>
 <p><code>run_cleanuphook</code>: Functions of this name are run as late as possible, and in the reverse order of how they are listed in the <code>HOOKS</code> array in the configuration file. These hooks should be used for any last minute cleanup, such as shutting down any daemons started by an early hook.
 </p>
+<p>With the exception of <code>run_cleanuphook</code>, these functions are executed in the order the corresponding build hooks are listed in the <code>HOOKS</code> array. Runtime hooks are located in <code>/usr/lib/initcpio/hooks/</code>, custom runtime hooks can be placed in <code>/etc/initcpio/hooks/</code>.
+</p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note</strong> Runtime hooks are only used by busybox init. <b>systemd</b> hook triggers a systemd based init, which does not run any runtime hooks but uses systemd units instead.</div>
+<strong>Note</strong> Runtime hooks are only used by a busybox initramfs. A systemd based initramfs (<code>systemd</code> present in the <code>HOOKS</code> array) does not run any runtime hooks, but uses systemd units instead.</div>
 <div class="mw-heading mw-heading4"><h4 id="Post_hooks">Post hooks</h4></div>
-<p>Post hooks are executables or shell scripts located in <code>/usr/lib/initcpio/post/</code> (hooks provided by packages) and <code>/etc/initcpio/post/</code> (custom hooks). These files are executed after an image is (re)generated in order to perform additional tasks like signing.
+<p>Post hooks are shell scripts or executables run after an image has been (re)generated in order to perform additional tasks like signing.
 </p>
 <p>To each executable the following arguments are passed in this order:
 </p>
@@ -697,10 +703,16 @@ By default, it contains the instructions to create only the first image, the sec
 <li>the generated <b>initramfs image</b>;</li>
 <li>(optional) the generated <b>unified kernel image</b>.</li>
 </ol>
-<p>Additionally, the following environment variables are set—<code>KERNELVERSION</code> the full kernel version, <code>KERNELDESTINATION</code> the default location where the kernel should be located on order to be booted.
+<p>Additionally, the following environment variables are set:
 </p>
-<div class="mw-heading mw-heading4"><h4 id="Common_hooks">Common hooks</h4></div>
-<p>A table of common hooks and how they affect image creation and runtime follows. Note that this table is not complete, as packages can provide custom hooks.
+<p><code>KERNELVERSION</code> the full kernel version.
+</p>
+<p><code>KERNELDESTINATION</code> the default location where the kernel should be located on order to be booted.
+</p>
+<p>Post hooks are located in <code>/usr/lib/initcpio/post/</code> (hooks provided by packages) and <code>/etc/initcpio/post/</code> (custom hooks).
+</p>
+<div class="mw-heading mw-heading4"><h4 id="Hook_list">Hook list</h4></div>
+<p>A table of hooks and how they affect image creation and runtime follows.
 </p>
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
@@ -721,7 +733,7 @@ By default, it contains the instructions to create only the first image, the sec
 <td class="archwiki-table-cell"><b>base</b></td>
 <td class="archwiki-table-cell archwiki-template-grey"><i>optional</i></td>
 <td>Sets up all initial directories and installs base utilities and libraries. Always keep this hook as the first hook unless you know what you are doing, as it provides critical busybox init when not using <b>systemd</b> hook.
-<p>Optional when using the <b>systemd</b> hook as it only provides a busybox recovery shell. In addition to enabling <b>base</b>, you'll need to temporarily add <code>SYSTEMD_SULOGIN_FORCE=1</code> to your <a href="../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a> to use the shell.
+<p>Optional when using the <b>systemd</b> hook as it only provides a busybox recovery shell. In addition to enabling <b>base</b>, you'll need to add <code>SYSTEMD_SULOGIN_FORCE=1</code> to your <a href="../en/Kernel_parameters.html" title="Kernel parameters">kernel parameters</a> to use the shell.
 </p>
 </td>
 <td class="archwiki-table-cell" data-sort-value="5">–
@@ -865,13 +877,15 @@ By default, it contains the instructions to create only the first image, the sec
 </tr>
 <tr>
 <td colspan="2" class="archwiki-table-cell"><b>acpi_override</b></td>
-<td>Adds ACPI Machine Language (<i>.aml</i>) files found in <code>/usr/initcpio/acpi_override/</code> and <code>/etc/initcpio/acpi_override/</code> to the early uncompressed initramfs image so that the kernel can override ACPI tables (e.g. <a href="../en/DSDT.html" title="DSDT">DSDT</a>) very early during boot.<a rel="nofollow" class="external autonumber" href="https://docs.kernel.org/admin-guide/acpi/initrd_table_override.html">[1]</a>
+<td>Adds ACPI Machine Language (<i>.aml</i>) files found in <code>/usr/lib/initcpio/acpi_override/</code> and <code>/etc/initcpio/acpi_override/</code> to the early uncompressed initramfs image so that the kernel can override ACPI tables (e.g. <a href="../en/DSDT.html" title="DSDT">DSDT</a>) very early during boot.<a rel="nofollow" class="external autonumber" href="https://docs.kernel.org/admin-guide/acpi/initrd_table_override.html">[1]</a>
 </td>
 <td class="archwiki-table-cell" data-sort-value="5">–
 </td>
 </tr>
 </tbody>
 </table>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> This table is not complete, as packages can provide custom hooks.</div>
 <div class="mw-heading mw-heading3"><h3 id="COMPRESSION">COMPRESSION</h3></div>
 <p>The kernel supports several formats for compression of the initramfs: <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=gzip">gzip</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=bzip2">bzip2</a></span>, lzma (<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xz">xz</a></span>), <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=xz">xz</a></span>, lzo (<span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lzop">lzop</a></span>), <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=lz4">lz4</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=zstd">zstd</a></span>. By default mkinitcpio uses zstd compression for kernel version 5.9 and newer and gzip for kernel versions older than 5.9.
 </p>
@@ -1005,7 +1019,7 @@ ip=:::::eth0:dhcp --&gt; Enable dhcp protocol for eth0 configuration.
 </ul>
 <div class="mw-heading mw-heading2"><h2 id="Tips_and_tricks">Tips and tricks</h2></div>
 <div class="mw-heading mw-heading3"><h3 id="Fallback_initramfs_generation">Fallback initramfs generation</h3></div>
-<p>As of version 40 of mkinitcpio, fallback initramfs generation is disabled by default. To enable it:
+<p><a href="#Automated_generation">Fallback</a> initramfs generation is disabled by default. To enable it:
 </p>
 <ul>
 <li>Adjust the respective <b>.preset</b> files in <code>/etc/mkinitcpio.d/</code>
@@ -1013,22 +1027,22 @@ ip=:::::eth0:dhcp --&gt; Enable dhcp protocol for eth0 configuration.
 <li>Disable <code>PRESETS=('default')</code> and enable <code>PRESETS=('default' 'fallback')</code> instead</li>
 <li>Enable <code>fallback_image="/boot/initramfs-linux-fallback.img"</code>
 </li>
-<li>Enable <code>fallback_options="-S autodetect"</code>
+<li>Enable <code>fallback_options="--skiphooks autodetect"</code>
 </li>
 </ul>
 </li>
 <li>Regenerate initramfs</li>
 <li>Update your <a href="../en/Boot_loader.html" class="mw-redirect" title="Boot loader">boot loader</a> configuration.</li>
 </ul>
-<div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning</strong> The lack of a fallback initramfs can deprive you of another option to boot into the system in case a default initramfs fails. Make sure you have a bootable <a href="../en/USB_flash_installation_medium.html" title="USB flash installation medium">installation medium</a> for rescue purposes on hand.</div>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> The lack of a fallback initramfs can deprive you of another option to boot into the system in case a default initramfs fails. Make sure you have a bootable <a href="../en/USB_flash_installation_medium.html" title="USB flash installation medium">installation medium</a> for rescue purposes on hand.</div>
 <div class="mw-heading mw-heading2"><h2 id="Troubleshooting">Troubleshooting</h2></div>
 <div class="mw-heading mw-heading3"><h3 id="Extracting_the_image">Extracting the image</h3></div>
 <p>If you are curious about what is inside the initramfs image, you can extract it and poke at the files inside of it.
 </p>
-<p>The initramfs image is an SVR4 CPIO archive, generated via the <code>find</code> and <code>bsdcpio</code> commands, optionally compressed with a compression scheme understood by the kernel. For more information on the compression schemes, see <a href="#COMPRESSION">#COMPRESSION</a>.
+<p>The initramfs image is an SVR4 CPIO archive, generated via the <i>find</i> and <i>bsdcpio</i> commands, optionally compressed with a compression scheme understood by the kernel. For more information on the compression schemes, see <a href="#COMPRESSION">#COMPRESSION</a>.
 </p>
-<p><i>mkinitcpio</i> includes a utility called <span class="plainlinks archwiki-template-man" title="$ man 1 lsinitcpio"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/lsinitcpio.1">lsinitcpio(1)</a></span> which will list and/or extract the contents of initramfs images.
+<p>The <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mkinitcpio">mkinitcpio</a></span> package includes a utility called <span class="plainlinks archwiki-template-man" title="$ man 1 lsinitcpio"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/lsinitcpio.1">lsinitcpio(1)</a></span> which will list and/or extract the contents of initramfs images.
 </p>
 <p>You can list the files in the image with:
 </p>
@@ -1036,11 +1050,11 @@ ip=:::::eth0:dhcp --&gt; Enable dhcp protocol for eth0 configuration.
 </pre>
 <p>And to extract them all in the current directory:
 </p>
-<pre># lsinitcpio -x /boot/initramfs-linux.img
+<pre># lsinitcpio --extract /boot/initramfs-linux.img
 </pre>
-<p>You can also get a more human-friendly listing of the important parts in the image:
+<p>You can also get a human-friendly listing of the important parts of the image (kernel version, early CPIO presence, included modules and binaries, etc.):
 </p>
-<pre># lsinitcpio -a /boot/initramfs-linux.img
+<pre># lsinitcpio --analyze /boot/initramfs-linux.img
 </pre>
 <div class="mw-heading mw-heading3"><h3 id="Recompressing_a_modified_extracted_image">Recompressing a modified extracted image</h3></div>
 <p>Invoke the <code>build_image</code> function of the <code>/usr/bin/mkinitcpio</code> script with parameters
@@ -1164,17 +1178,14 @@ This will compress the contents present in the current directory in a file named
 <ul><li>If you want to get rid of the warnings, but do not want to waste your system space on unneeded firmware packages, you can disable <a href="#Fallback_initramfs_generation">fallback initramfs generation</a> altogether.</li></ul>
 <p>For unavailable firmware, you can suppress the warnings by creating dummy files, e.g.:
 </p>
-<pre># echo "Device not available" &gt; /usr/lib/firmware/qat_420xx.bin
-# echo "Device not available" &gt; /usr/lib/firmware/qat_420xx_mmp.bin
+<pre># echo 'Silence the "Possibly missing firmware for module" message' \
+    | tee /usr/lib/firmware/qat_6xxx{,_mmp}.bin &gt;/dev/null
 </pre>
 <div class="mw-heading mw-heading3"><h3 id="No_PS/2_controller_found">
 <span id="No_PS.2F2_controller_found"></span>No PS/2 controller found</h3></div>
 <p>On some motherboards (mostly ancient ones, but also a few new ones), the i8042 controller cannot be automatically detected. It is rare, but some people will surely be without keyboard. You can detect this situation in advance. If you have a PS/2 port and get <code>i8042: PNP: No PS/2 controller found. Probing ports directly</code> message, add <code>atkbd</code> to the <code>MODULES</code> array.<a rel="nofollow" class="external autonumber" href="https://archlinux.org/news/linux-313-warning-ps2-keyboard-support-is-now-modular/">[2]</a>
 </p>
-<div class="mw-heading mw-heading3"><h3 id="Standard_rescue_procedures">Standard rescue procedures</h3></div>
-<p>With an improper initial ram-disk a system often is unbootable. So follow a system rescue procedure like below:
-</p>
-<div class="mw-heading mw-heading4"><h4 id="Boot_succeeds_on_one_machine_and_fails_on_another">Boot succeeds on one machine and fails on another</h4></div>
+<div class="mw-heading mw-heading3"><h3 id="Boot_succeeds_on_one_machine_and_fails_on_another">Boot succeeds on one machine and fails on another</h3></div>
 <p><i>mkinitcpio'</i>s <code>autodetect</code> hook filters unneeded <a href="../en/Kernel_modules.html" class="mw-redirect" title="Kernel modules">kernel modules</a> in the primary initramfs scanning <code>/sys</code> and the modules loaded at the time it is run. If you transfer your <code>/boot</code> directory to another machine and the boot sequence fails during early userspace, it may be because the new hardware is not detected due to missing kernel modules. Note that USB 2.0 and 3.0 need different kernel modules.
 </p>
 <p>To fix, first try choosing the <a href="#Image_creation_and_activation">fallback</a> image from your <a href="../en/Boot_loader.html" class="mw-redirect" title="Boot loader">boot loader</a>, as it is not filtered by <code>autodetect</code>. Once booted, run <i>mkinitcpio</i> on the new machine to rebuild the primary image with the correct modules. If the fallback image fails, try booting into an Arch Linux live CD/USB, chroot into the installation, and run <i>mkinitcpio</i> on the new machine. As a last resort, try <a href="#MODULES">manually</a> adding modules to the initramfs.
@@ -1216,8 +1227,8 @@ This will compress the contents present in the current directory in a file named
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Mkinitcpio&amp;oldid=861462">https://wiki.archlinux.org/index.php?title=Mkinitcpio&amp;oldid=861462</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 15 January 2026, at 17:17.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Mkinitcpio&amp;oldid=868254">https://wiki.archlinux.org/index.php?title=Mkinitcpio&amp;oldid=868254</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 6 March 2026, at 02:58.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

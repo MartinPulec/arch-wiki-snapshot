@@ -473,8 +473,11 @@ log_file           "syslog"
 <p>or alternatively one can set the option <code>auto_update</code> to <code>"yes"</code> in the configuration to refresh the database whenever files are changed in <code>music_directory</code>.
 </p>
 <div class="mw-heading mw-heading4"><h4 id="Audio_configuration">Audio configuration</h4></div>
-<p>If <a href="../en/Advanced_Linux_Sound_Architecture.html" class="mw-redirect" title="ALSA">ALSA</a> is used, <b>autodetection</b> of the default device should work out of the box without any particular setting. If not, the syntax for ALSA audio output definition is provided thereafter; the required <code>name</code> parameter specifies a unique name for the audio output.
-The exact device as displayed using <code>aplay --list-pcm</code> from the package <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=alsa-utils">alsa-utils</a></span> can optionally be indicated with the <code>device</code> option.
+<p>By default, no audio outputs are configured, which leads MPD to perform auto-detection using <a href="../en/Advanced_Linux_Sound_Architecture.html" class="mw-redirect" title="ALSA">ALSA</a>. However, it is possible to configure outputs manually; MPD even supports the ability to emit to more than one at once.
+</p>
+<p>All audio outputs accept a <code>name</code> setting, which is displayed by MPD clients in output control dialogs. (<a rel="nofollow" class="external text" href="https://mpd.readthedocs.io/en/stable/user.html#configuring-audio-outputs">Full list of common settings</a>)
+</p>
+<p>The exact <a href="../en/Advanced_Linux_Sound_Architecture.html" class="mw-redirect" title="ALSA">ALSA</a> device can be indicated with the <code>device</code> option; devices can be listed using <code>aplay --list-pcm</code> from the package <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=alsa-utils">alsa-utils</a></span>. (<a rel="nofollow" class="external text" href="https://mpd.readthedocs.io/en/stable/plugins.html#alsa-plugin">Full list of ALSA-specific settings</a>)
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.config/mpd/mpd.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">audio_output {
@@ -484,22 +487,26 @@ The exact device as displayed using <code>aplay --list-pcm</code> from the packa
         #device        "<i>iec958:CARD=Intel,DEV=0</i>"
         #mixer_control "PCM"
 }</pre>
-<p>Users of <a href="../en/PulseAudio.html" title="PulseAudio">PulseAudio</a> will need to make the following modification:
+<p>The following configures a <a href="../en/PulseAudio.html" title="PulseAudio">PulseAudio</a> output (<a rel="nofollow" class="external text" href="https://mpd.readthedocs.io/en/stable/plugins.html#pulse">list of specific settings</a>). Sink identifiers can be obtained with <code>pactl list short sinks</code>.
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.config/mpd/mpd.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">audio_output {
         type            "pulse"
-        name            "<i>pulse audio</i>"
+        name            "<i>PulseAudio output</i>"
+        # Optional
+        #sink            "<i>alsa_output.pci-0000_c1_00.6.analog-stereo</i>"
 }</pre>
-<p>Output with <a href="../en/PipeWire.html" title="PipeWire">PipeWire</a> can also be configured:
+<p>The following configures a <a href="../en/PipeWire.html" title="PipeWire">PipeWire</a> output (<a rel="nofollow" class="external text" href="https://mpd.readthedocs.io/en/stable/plugins.html#pipewire">list of specific settings</a>). Target identifiers can be obtained with <code>pw-cli ls Node</code> as the <code>node.name</code> property; audio outputs can be identified by the <code>media.class = "Audio/Sink"</code> property (or obtained via <code>pactl list short sinks</code>, if available).
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.config/mpd/mpd.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">audio_output {
         type            "pipewire"
-        name            "<i>PipeWire Sound Server</i>"
+        name            "<i>PipeWire output</i>"
+        # Optional
+        #target          "<i>bluez_output.F4_9D_8A_B4_8D_37.1</i>"
 }</pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note</strong> Volume controls won't work for PulseAudio or PipeWire, if the respective audio_output is not set.</div>
+<strong>Note</strong> It may not be possible to change which output MPD is emitting to via tools like <code>pavucontrol</code> unless <i>some</i> target is specified.</div>
 <div class="mw-heading mw-heading4"><h4 id="Listen_on_Unix_domain_socket">Listen on Unix domain socket</h4></div>
 <p>Running MPD on an IPC socket instead of the network stack can be advantageous for performance and security if MPD is going to be used locally only.
 </p>
@@ -678,6 +685,10 @@ To describe how MPD drops its superuser privileges and switch to those of the us
 <a rel="nofollow" class="external free" href="https://github.com/htkhiem/euphonica">https://github.com/htkhiem/euphonica</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/euphonica-git/">euphonica-git</a></span><sup><small>AUR</small></sup>
 </dd></dl>
 <ul><li>
+<b>MPD Plasma Widget</b> — Plasmoid for the <a href="../en/KDE.html" title="KDE">KDE Plasma desktop</a>.</li></ul>
+<dl><dd>
+<a rel="nofollow" class="external free" href="https://store.kde.org/p/2258843">https://store.kde.org/p/2258843</a> || Install via the Plasma DE build-in widget store.</dd></dl>
+<ul><li>
 <b>myMPD</b> — Standalone and mobile friendly web-based MPD client with a tiny footprint and advanced features.</li></ul>
 <dl><dd>
 <a rel="nofollow" class="external free" href="https://github.com/jcorporation/myMPD">https://github.com/jcorporation/myMPD</a> || <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=mympd">mympd</a></span>
@@ -764,8 +775,8 @@ To describe how MPD drops its superuser privileges and switch to those of the us
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Music_Player_Daemon&amp;oldid=860234">https://wiki.archlinux.org/index.php?title=Music_Player_Daemon&amp;oldid=860234</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 5 January 2026, at 10:44.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Music_Player_Daemon&amp;oldid=867489">https://wiki.archlinux.org/index.php?title=Music_Player_Daemon&amp;oldid=867489</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 27 February 2026, at 05:49.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -77,15 +77,15 @@
 			</button>
 		
 		<ul id="toc-Troubleshooting-sublist" class="vector-toc-list">
-			<li id="toc-ROCm_is_not_utilizing_my_AMD_integrated_GPU" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#ROCm_is_not_utilizing_my_AMD_integrated_GPU">
+			<li id="toc-ROCm_is_not_utilizing_my_AMD_GPU" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#ROCm_is_not_utilizing_my_AMD_GPU">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">3.1</span>
-					<span>ROCm is not utilizing my AMD integrated GPU</span>
+					<span>ROCm is not utilizing my AMD GPU</span>
 				</div>
 			</a>
 			
-			<ul id="toc-ROCm_is_not_utilizing_my_AMD_integrated_GPU-sublist" class="vector-toc-list">
+			<ul id="toc-ROCm_is_not_utilizing_my_AMD_GPU-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 		<li id="toc-Models_are_not_removed_after_uninstalling_Ollama" class="vector-toc-list-item vector-toc-level-2">
@@ -234,12 +234,14 @@
 <pre>$ ollama list
 </pre>
 <div class="mw-heading mw-heading2"><h2 id="Troubleshooting">Troubleshooting</h2></div>
-<div class="mw-heading mw-heading3"><h3 id="ROCm_is_not_utilizing_my_AMD_integrated_GPU">ROCm is not utilizing my AMD integrated GPU</h3></div>
-<p>You may have used utilities like <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=amdgpu_top">amdgpu_top</a></span> to monitor the utilization of your integrated GPU during an Ollama session, but only to notice that your integrated GPU has not been used at all.
+<div class="mw-heading mw-heading3"><h3 id="ROCm_is_not_utilizing_my_AMD_GPU">ROCm is not utilizing my AMD GPU</h3></div>
+<p>You may have used utilities like <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=amdgpu_top">amdgpu_top</a></span> to monitor the utilization of your GPU during an Ollama session, but only to notice that your GPU has not been used at all.
 </p>
-<p>That is expected: without configuration, <a href="../en/General-purpose_computing_on_graphics_processing_units.html#ROCm" class="mw-redirect" title="ROCm">ROCm</a> simply ignores your integrated GPU, causing everything to be computed on CPU.
+<p>Without configuration, <a href="../en/General-purpose_computing_on_graphics_processing_units.html#ROCm" class="mw-redirect" title="ROCm">ROCm</a> simply ignores unsupported GPUs, causing everything to be computed on CPU.
 </p>
-<p>The required configuration is, however, very simple because all you need is to create a <a href="../en/Drop-in_file.html" class="mw-redirect" title="Drop-in file">drop-in file</a> for <code>ollama.service</code>:
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> Verify supported GPUs by consulting <a rel="nofollow" class="external text" href="https://rocm.docs.amd.com/projects/install-on-linux/en/latest/reference/system-requirements.html">ROCm System Requirements</a>.</div>
+<p>To work this around, create a <a href="../en/Drop-in_file.html" class="mw-redirect" title="Drop-in file">drop-in file</a> for <code>ollama.service</code>:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/ollama.service.d/override_gfx_version.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Service]
@@ -274,12 +276,12 @@ Environment="HSA_OVERRIDE_GFX_VERSION=X.Y.Z"</pre>
 <p>Then, run your model as usual. You may wish to monitor GPU utilization with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=amdgpu_top">amdgpu_top</a></span> again.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Models_are_not_removed_after_uninstalling_Ollama">Models are not removed after uninstalling Ollama</h3></div>
-<p>You can easily remove the model files manually. They are stored in <code>/var/lib/ollama/blobs</code>.
+<p>You can manually remove the model files. They are stored in <code>/var/lib/ollama/blobs</code>.
 </p>
 <div class="mw-heading mw-heading2"><h2 id="See_also">See also</h2></div>
 <ul>
 <li><a rel="nofollow" class="external text" href="https://ollama.com/blog">Ollama Blog</a></li>
-<li><a rel="nofollow" class="external text" href="https://github.com/ollama/ollama/tree/main/docs">Ollama Docs</a></li>
+<li><a rel="nofollow" class="external text" href="https://docs.ollama.com">Ollama Docs</a></li>
 <li><a rel="nofollow" class="external text" href="https://rocm.docs.amd.com/projects/rocBLAS/en/latest/how-to/what-is-rocblas.html">What is rocBLAS</a></li>
 </ul>
 </div>
@@ -298,8 +300,8 @@ Environment="HSA_OVERRIDE_GFX_VERSION=X.Y.Z"</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Ollama&amp;oldid=862886">https://wiki.archlinux.org/index.php?title=Ollama&amp;oldid=862886</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 26 January 2026, at 12:44.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Ollama&amp;oldid=863883">https://wiki.archlinux.org/index.php?title=Ollama&amp;oldid=863883</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 4 February 2026, at 12:25.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

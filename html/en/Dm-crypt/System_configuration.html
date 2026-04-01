@@ -236,6 +236,17 @@
 			<ul id="toc-Trusted_Platform_Module_and_FIDO2_keys-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Pinning_a_LUKS_volume" class="vector-toc-list-item vector-toc-level-5">
+			<a class="vector-toc-link" href="#Pinning_a_LUKS_volume">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">1.2.4.4.4</span>
+					<span>Pinning a LUKS volume</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Pinning_a_LUKS_volume-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 		</li>
 		<li id="toc-rd.luks.data" class="vector-toc-list-item vector-toc-level-4">
@@ -382,6 +393,17 @@
 			</a>
 			
 			<ul id="toc-Keyboard_or_keyfile_on_filesystem_unavailable_for_unlocking-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Unresponsive_file_transfers" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Unresponsive_file_transfers">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.3</span>
+					<span>Unresponsive file transfers</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Unresponsive_file_transfers-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -773,6 +795,24 @@ HOOKS=(base <b>systemd</b> autodetect microcode modconf kms keyboard <b>sd-vcons
 </p>
 <p>If specifying the device via UUID as shown above, ensure it is that of the underlying (encrypted) storage device, not the UUID of the decrypted volume that is specified elsewhere as the root filesystem.
 </p>
+<div class="mw-heading mw-heading6"><h6 id="Pinning_a_LUKS_volume">Pinning a LUKS volume</h6></div>
+<p>Since systemd <b>v260</b>, it is possible to pin the expected hash of a LUKS volume key in the crypttab configuration using the <code>fixate-volume-key=</code> option. This option allows you to specify the expected volume key hash and prevents the system from attaching the volume if the hash does not match. The expected hash corresponds to the digest measured in the SHA256 PCR bank of the TPM2 when the <code>tpm2-measure-pcr=</code> option is used.
+</p>
+<p>This feature helps defend against rogue operating systems that could use copied metadata (such as partition UUIDs) from the real root filesystem to impersonate the original partition. For optimal security, this option should be used in conjunction with a signed <a href="../../en/Unified_kernel_image.html" title="Unified kernel image">unified kernel image</a>.
+</p>
+<p>To determine the expected hash value for the <code>fixate-volume-key=</code> option:
+</p>
+<ul>
+<li>Enable <code>tpm2-measure-pcr=yes</code>.</li>
+<li>Reboot the system.</li>
+<li>Run the following command to retrieve the hash value:</li>
+</ul>
+<pre># grep volume-key /run/log/systemd/tpm2-measure.log | jq --seq '.digests[].digest'
+</pre>
+<p>The resulting option in the kernel command line will typically look like this:
+</p>
+<pre>rd.luks.options=<i>XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX</i>=tpm2-device=auto,tpm2-measure-pcr=yes,fixate-volume-key=<i>XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</i>
+</pre>
 <div class="mw-heading mw-heading5"><h5 id="rd.luks.data">rd.luks.data</h5></div>
 <p>When using a detached LUKS header, specify the block device with the encrypted data. Must be used together with <code>rd.luks.options</code> to specify the header file location.
 </p>
@@ -789,7 +829,7 @@ HOOKS=(base <b>systemd</b> autodetect microcode modconf kms keyboard <b>sd-vcons
 <div class="mw-heading mw-heading3"><h3 id="crypttab">crypttab</h3></div>
 <p>The <code>/etc/crypttab</code> (encrypted device table) file is similar to the <a href="../../en/Fstab.html" title="Fstab">fstab</a> file and contains a list of encrypted devices to be unlocked during system boot up. This file can be used for automatically mounting encrypted swap devices or secondary file systems.
 </p>
-<p><code>crypttab</code> is read <i>before</i> <code>fstab</code>, so that dm-crypt containers can be unlocked before the file system inside is mounted. Note that <code>crypttab</code> is read <i>after</i> the system has booted up, therefore it is not a replacement for unlocking encrypted partitions by using <a href="#mkinitcpio">mkinitcpio</a> hooks and <a href="#Kernel_parameters">configuring them by using kernel parameters</a> as in the case of <a href="../../en/Dm-crypt/Encrypting_an_entire_system.html" title="Dm-crypt/Encrypting an entire system">encrypting the root partition</a>. <code>crypttab</code> processing at boot time is made by the <span class="plainlinks archwiki-template-man" title="$ man 8 systemd-cryptsetup-generator"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-cryptsetup-generator.8">systemd-cryptsetup-generator(8)</a></span> automatically.
+<p><code>crypttab</code> is read <i>before</i> <code>fstab</code>, so that encrypted devices can be unlocked before the file system inside is mounted. Note that <code>crypttab</code> is read <i>after</i> the system has booted up, therefore it is not a replacement for unlocking encrypted partitions by using <a href="#mkinitcpio">mkinitcpio</a> hooks and <a href="#Kernel_parameters">configuring them by using kernel parameters</a> as in the case of <a href="../../en/Dm-crypt/Encrypting_an_entire_system.html" title="Dm-crypt/Encrypting an entire system">encrypting the root partition</a>. <code>crypttab</code> processing at boot time is made by the <span class="plainlinks archwiki-template-man" title="$ man 8 systemd-cryptsetup-generator"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-cryptsetup-generator.8">systemd-cryptsetup-generator(8)</a></span> automatically.
 </p>
 <p>See <span class="plainlinks archwiki-template-man" title="$ man 5 crypttab"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/crypttab.5">crypttab(5)</a></span> for details, read below for some examples, and the <a href="#Mounting_at_boot_time">#Mounting at boot time</a> section for instructions on how to use UUIDs to mount an encrypted device.
 </p>
@@ -927,6 +967,9 @@ myvolume  PARTUUID=<i>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</i>  none  tpm2-devic
 </p>
 <p>In general, for keyboards that are not connected to the PC at initramfs generation time, you need to place the <code>keyboard</code> hook before the <code>autodetect</code> hook or only the parts necessary for the currently connected hardware are kept, see <a href="../../en/Mkinitcpio.html#Common_hooks" title="Mkinitcpio">mkinitcpio#Common hooks</a>.
 </p>
+<div class="mw-heading mw-heading3"><h3 id="Unresponsive_file_transfers">Unresponsive file transfers</h3></div>
+<p>Copying large files to encrypted HDD disks may result in unresponsive transfer process. The root cause of the issue are the working queues of dm-crypt, which can be filled in very rapid bursts that exceed the writing speed of the encrypted physical device. A responsive I/O scheduler will not help because the working queues of dm-crypt are implmented as separate buffers before the rest of I/O stack. The issue can be mitigated by <a href="../../en/Dm-crypt/Specialties.html#Disable_workqueue_for_increased_solid_state_drive_(SSD)_performance" title="Dm-crypt/Specialties">disabling the working queues</a>.
+</p>
 </div>
 </div>
 					<div id="catlinks" class="catlinks" data-mw="interface">
@@ -947,8 +990,8 @@ myvolume  PARTUUID=<i>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</i>  none  tpm2-devic
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/System_configuration&amp;oldid=862972">https://wiki.archlinux.org/index.php?title=Dm-crypt/System_configuration&amp;oldid=862972</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 28 January 2026, at 08:06.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dm-crypt/System_configuration&amp;oldid=869793">https://wiki.archlinux.org/index.php?title=Dm-crypt/System_configuration&amp;oldid=869793</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 23 March 2026, at 09:08.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

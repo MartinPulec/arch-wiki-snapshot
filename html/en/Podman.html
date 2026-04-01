@@ -450,43 +450,10 @@
 		</li>
 	</ul>
 		</li>
-		<li id="toc-Error:_netavark:_nftables_error:_unable_to_execute_&quot;nft&quot;_(os_error_2)" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Error:_netavark:_nftables_error:_unable_to_execute_&quot;nft&quot;_(os_error_2)">
-				<div class="vector-toc-text">
-					<span class="vector-toc-numb">6.10</span>
-					<span>Error: netavark: nftables error: unable to execute "nft" (os error 2)</span>
-				</div>
-			</a>
-			
-			<ul id="toc-Error:_netavark:_nftables_error:_unable_to_execute_&quot;nft&quot;_(os_error_2)-sublist" class="vector-toc-list">
-				<li id="toc-Symptom" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Symptom">
-				<div class="vector-toc-text">
-					<span class="vector-toc-numb">6.10.1</span>
-					<span>Symptom</span>
-				</div>
-			</a>
-			
-			<ul id="toc-Symptom-sublist" class="vector-toc-list">
-			</ul>
-		</li>
-		<li id="toc-Solution" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Solution">
-				<div class="vector-toc-text">
-					<span class="vector-toc-numb">6.10.2</span>
-					<span>Solution</span>
-				</div>
-			</a>
-			
-			<ul id="toc-Solution-sublist" class="vector-toc-list">
-			</ul>
-		</li>
-	</ul>
-		</li>
 		<li id="toc-kernel_does_not_support_overlay_fs:_'overlay'_is_not_supported_over_&lt;filesystem&gt;" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#kernel_does_not_support_overlay_fs:_'overlay'_is_not_supported_over_<filesystem>">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">6.11</span>
+					<span class="vector-toc-numb">6.10</span>
 					<span>kernel does not support overlay fs: 'overlay' is not supported over &lt;filesystem&gt;</span>
 				</div>
 			</a>
@@ -823,7 +790,7 @@ runtime = "krun"</pre>
 </p>
 <p>Podman will read Quadlet files with extensions <i>.container</i>, <i>.volume</i>, <i>.network</i>, <i>.kube</i>, <i>.image</i>, <i>.build</i> and <i>.pod</i>. A corresponding <i>.service</i> file will be generated using <span class="plainlinks archwiki-template-man" title="$ man 7 systemd.generator"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd.generator.7">systemd.generator(7)</a></span>. The Quadlet files are read during boot or manually by running a <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Daemon-reload">daemon-reload</a>.
 </p>
-<p>Quadlet files can also be generated from Podman commands using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/podlet/">podlet</a></span><sup><small>AUR</small></sup>.
+<p>Quadlet files can also be generated from Podman commands using <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=podlet">podlet</a></span>.
 </p>
 <p>For example, here is a command that will run <a href="../en/Syncthing.html" title="Syncthing">Syncthing</a> container from LinuxServer.io:
 </p>
@@ -1100,21 +1067,6 @@ nameserver 10.89.0.1
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">...
 dns_bind_port = 20053
 </pre>
-<div class="mw-heading mw-heading3"><h3 id="Error:_netavark:_nftables_error:_unable_to_execute_&quot;nft&quot;_(os_error_2)">
-<span id="Error:_netavark:_nftables_error:_unable_to_execute_.22nft.22_.28os_error_2.29"></span>Error: netavark: nftables error: unable to execute "nft" (os error 2)</h3></div>
-<p>This error occurs when the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nftables">nftables</a></span> package is missing. While <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=netavark">netavark</a></span> does not list it as a hard dependency, it defaults to the <code>nftables</code> backend on modern kernels.
-</p>
-<p>A common scenario for this is uninstalling <a href="../en/Docker.html" title="Docker">Docker</a>, which explicitly depends on <code>nftables</code>, causing it to be removed as an orphan while Podman still requires the <code>nft</code> binary for network isolation.
-</p>
-<div class="mw-heading mw-heading4"><h4 id="Symptom">Symptom</h4></div>
-<p>When managed by <a href="#Quadlet">Quadlet</a>, the main service may fail with a generic dependency error. However, the underlying <code>netavark</code> failure can be found in the journal during container creation or cleanup:
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">journalctl</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">podman[PID]: Error: cleaning up container &lt;ID&gt; network: netavark: nftables error: unable to execute "nft": No such file or directory (os error 2)
-&lt;unit&gt;[PID]: Error: netavark: nftables error: unable to execute "nft": No such file or directory (os error 2)</pre>
-<div class="mw-heading mw-heading4"><h4 id="Solution">Solution</h4></div>
-<p><a href="../en/Help:Reading.html#Installation_of_packages" title="Help:Reading">Install</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nftables">nftables</a></span> package.
-</p>
 <div class="mw-heading mw-heading3"><h3 id="kernel_does_not_support_overlay_fs:_'overlay'_is_not_supported_over_&lt;filesystem&gt;">
 <span id="kernel_does_not_support_overlay_fs:_.27overlay.27_is_not_supported_over_.3Cfilesystem.3E"></span>kernel does not support overlay fs: 'overlay' is not supported over &lt;filesystem&gt;</h3></div>
 <p>Reboot your system, as explained in <a href="../en/General_troubleshooting.html#Cannot_use_some_peripherals_after_kernel_upgrade" title="General troubleshooting">General troubleshooting#Cannot use some peripherals after kernel upgrade</a>.
@@ -1149,8 +1101,8 @@ dns_bind_port = 20053
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Podman&amp;oldid=863174">https://wiki.archlinux.org/index.php?title=Podman&amp;oldid=863174</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 30 January 2026, at 07:29.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Podman&amp;oldid=864365">https://wiki.archlinux.org/index.php?title=Podman&amp;oldid=864365</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 7 February 2026, at 09:27.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

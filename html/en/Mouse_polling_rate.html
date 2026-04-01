@@ -475,11 +475,11 @@ E:  Ad=81(I) Atr=03(Int.) MxPS=   2 Ivl=255ms</pre>
 </p>
 <p>Another work-around is to disable <a href="https://en.wikipedia.org/wiki/Extensible_Host_Controller_Interface" class="extiw" title="wikipedia:Extensible Host Controller Interface">xHCI</a>. There might be a BIOS setting for this or you can do so by <a href="../en/Kernel_module.html#Blacklisting" class="mw-redirect" title="Blacklisting">blacklisting</a> the <code>xhci-hcd</code> module. <b>However</b>, either way will cause any USB 3 ports to act as USB 2 as the kernel will use the <code>ehci-hcd</code> module instead.
 </p>
-<p>As an alternative, one can install a kernel module <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/wmo_oc-dkms/">wmo_oc-dkms</a></span><sup><small>AUR</small></sup> (or build it manually from <a rel="nofollow" class="external text" href="https://github.com/YeaSeb/wmo-oc-kmod">wmo_oc-kmod</a>), which is a fork of gcadapter-oc-kmod for wmo1.1a (MS Wheel Mouse Optical 1.1a). The <code>wmo_oc-dkms</code> identifies a mouse with its vendor and product ID (VID:PID) values to overclock it even with XHCI hubs, without losing USB 3 functionality. Changing the polling rate of any USB mouse other than the default wmo1.1a requires modifying the default VID:PID values (045e:0040) found in the module's source file <code>wmo_oc.c</code> in <code>/usr/src/<i>module_name</i>/</code> and finally rebuilding (removing and installing) the kernel module using DKMS.  The polling rate of the wmc_oc module can be configured by editing the source, or with a runtime option e.g. a <i>.conf</i> file in <code>/etc/modprobe.d/</code>:
+<p>As an alternative, one can install a kernel module <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/usb_oc-dkms/">usb_oc-dkms</a></span><sup><small>AUR</small></sup>. The module identifies a mouse with its vendor and product ID (VID:PID) values to overclock it even with XHCI hubs, without losing USB 3 functionality. The polling rate of the usb_oc module can be configured with a runtime option e.g. a <i>.conf</i> file in <code>/etc/modprobe.d/</code>:
 </p>
-<pre>options wmc_oc rate=2
+<pre>options usb_oc interrupt_interval_override=045e:0040:2
 </pre>
-<p>The example above would set an interval of 2ms, or 500Hz.
+<p>The example above would set an interval of 2ms, or 500Hz, for the device with VID:PID of 045e:0040. More information is available in the project's <a rel="nofollow" class="external text" href="https://github.com/p0358/usb_oc-dkms/blob/master/README.md">README</a>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip</strong> To see which <code>hcd</code> drivers are in use, see the <code>S: Manufacturer</code> line for hub devices in <code>/sys/kernel/debug/usb/devices</code>.</div>
@@ -494,6 +494,8 @@ E:  Ad=81(I) Atr=03(Int.) MxPS=   2 Ivl=255ms</pre>
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Polling_rates_higher_than_1000_Hz">Polling rates higher than 1000 Hz</h3></div>
 <p>Make sure the device is connected to a USB slot supporting at least USB 2.0 High Speed. Polling rates higher than 1 kHz are only supported starting with USB 2.0 High Speed. This will allow the device "to be polled" at a higher rate.
+</p>
+<p>Note that the device itself also needs to support the High Speed to begin with: if this mode cannot be negotiated, then higher polling rates cannot be used either. Many devices operate in the slower Full Speed mode known from USB 1.1, sometimes despite using USB 2.0 protocol themselves. This can be checked with the command <code>lsusb -d <i>VID:PID</i> -v</code> and looking at the top of the output for <i>Negotiated speed</i>.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Logitech_mice_with_onboard_memory">Logitech mice with onboard memory</h3></div>
 <p>Certain Logitech mice can store the polling rate among other parameters in their built-in onboard memory. If onboard memory is enabled, it can be configured with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=solaar">solaar</a></span>. This may not work if onboard memory has been disabled. The Logitech G HUB software for Windows and MacOS tends to disable onboard memory to allow for more advanced customisations handled by the software itself. <i>If the onboard memory is disabled, the mouse will default to a 125 Hz polling rate</i> and ignore the <code>usbhid</code> <code>mousepoll</code> setting.
@@ -514,8 +516,8 @@ E:  Ad=81(I) Atr=03(Int.) MxPS=   2 Ivl=255ms</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Mouse_polling_rate&amp;oldid=850771">https://wiki.archlinux.org/index.php?title=Mouse_polling_rate&amp;oldid=850771</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 26 October 2025, at 11:57.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Mouse_polling_rate&amp;oldid=865859">https://wiki.archlinux.org/index.php?title=Mouse_polling_rate&amp;oldid=865859</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 16 February 2026, at 00:41.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

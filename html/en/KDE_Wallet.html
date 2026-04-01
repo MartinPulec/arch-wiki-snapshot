@@ -66,30 +66,41 @@
 			</button>
 		
 		<ul id="toc-Configuration-sublist" class="vector-toc-list">
-			<li id="toc-Unlock_KDE_Wallet_automatically_on_login" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Unlock_KDE_Wallet_automatically_on_login">
+			<li id="toc-Configure_PAM_on_Plasma_6_(KF6)" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Configure_PAM_on_Plasma_6_(KF6)">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">2.1</span>
+					<span>Configure PAM on Plasma 6 (KF6)</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Configure_PAM_on_Plasma_6_(KF6)-sublist" class="vector-toc-list">
+				<li id="toc-Plasma_5_(KF5)_–_legacy" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Plasma_5_(KF5)_%E2%80%93_legacy">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">2.1.1</span>
+					<span>Plasma 5 (KF5) – legacy</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Plasma_5_(KF5)_–_legacy-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+		</li>
+		<li id="toc-Unlock_KDE_Wallet_automatically_on_login" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Unlock_KDE_Wallet_automatically_on_login">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">2.2</span>
 					<span>Unlock KDE Wallet automatically on login</span>
 				</div>
 			</a>
 			
 			<ul id="toc-Unlock_KDE_Wallet_automatically_on_login-sublist" class="vector-toc-list">
-				<li id="toc-Configure_PAM" class="vector-toc-list-item vector-toc-level-3">
-			<a class="vector-toc-link" href="#Configure_PAM">
-				<div class="vector-toc-text">
-					<span class="vector-toc-numb">2.1.1</span>
-					<span>Configure PAM</span>
-				</div>
-			</a>
-			
-			<ul id="toc-Configure_PAM-sublist" class="vector-toc-list">
-			</ul>
-		</li>
-		<li id="toc-Using_SDDM_autologin_and_LUKS_encryption" class="vector-toc-list-item vector-toc-level-3">
+				<li id="toc-Using_SDDM_autologin_and_LUKS_encryption" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Using_SDDM_autologin_and_LUKS_encryption">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">2.1.2</span>
+					<span class="vector-toc-numb">2.2.1</span>
 					<span>Using SDDM autologin and LUKS encryption</span>
 				</div>
 			</a>
@@ -148,15 +159,15 @@
 			<ul id="toc-Store_GPG_key_passphrases-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-KDE_Wallet_for_Chrome_and_Chromium" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#KDE_Wallet_for_Chrome_and_Chromium">
+		<li id="toc-KDE_Wallet_for_Chromium_and_VSCode" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#KDE_Wallet_for_Chromium_and_VSCode">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">3.4</span>
-					<span>KDE Wallet for Chrome and Chromium</span>
+					<span>KDE Wallet for Chromium and VSCode</span>
 				</div>
 			</a>
 			
-			<ul id="toc-KDE_Wallet_for_Chrome_and_Chromium-sublist" class="vector-toc-list">
+			<ul id="toc-KDE_Wallet_for_Chromium_and_VSCode-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 		<li id="toc-Query_passwords_from_the_terminal" class="vector-toc-list-item vector-toc-level-2">
@@ -302,6 +313,51 @@
 <p>Optionally install the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=kwalletmanager">kwalletmanager</a></span> package for the wallet management tool. This tool can be used to graphically create and manage a KDE Wallet.
 </p>
 <div class="mw-heading mw-heading2"><h2 id="Configuration">Configuration</h2></div>
+<div class="mw-heading mw-heading3"><h3 id="Configure_PAM_on_Plasma_6_(KF6)">
+<span id="Configure_PAM_on_Plasma_6_.28KF6.29"></span>Configure PAM on Plasma 6 (KF6)</h3></div>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
+<div>
+<b>Reason:</b> Configuring PAM does not seem necessary to make KWallet function. Plasma Login Manager is also not mentioned (SDDM is no longer the preferred display manager). (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:KDE_Wallet.html">Talk:KDE Wallet</a>)</div>
+</div>
+<p>Plasma 6 uses <code>ksecretd</code> as secret service API for <code>kwallet</code>.
+Therefore PAM must explicitly point to the daemon.
+</p>
+<p>Add to the relevant PAM files (e.g. <code>system-login</code>, <code>sddm</code>, <code>login</code> depending on setup):
+</p>
+<pre>auth            optional        pam_kwallet5.so
+session         optional        pam_kwallet5.so auto_start <b>kwalletd=/usr/bin/ksecretd</b></pre>
+<p>Without the <code>kwalletd=</code> parameter, <code>pam_kwallet5.so</code> falls back to default and tries to use <code>kwallet5</code>.
+</p>
+<p>Edit the <a href="../en/PAM.html" title="PAM">PAM</a> configuration corresponding to your situation:
+</p>
+<ul>
+<li>For <a href="../en/SDDM.html" title="SDDM">SDDM</a>, no further edits should be needed because the lines are already present in <code>/etc/pam.d/sddm</code>.</li>
+<li>For <a href="../en/LightDM.html" title="LightDM">LightDM</a>, no further edits should be needed because the lines are already present in <code>/etc/pam.d/lightdm</code> and <code>/etc/pam.d/lightdm-autologin</code>.</li>
+<li>For <a href="../en/GDM.html" title="GDM">GDM</a>, edit <code>/etc/pam.d/gdm-password</code> accordingly.</li>
+<li>For <a href="../en/Greetd.html" title="Greetd">greetd</a>, edit <code>/etc/pam.d/greetd</code> accordingly.</li>
+<li>For unlocking on tty login (no display manager, or like <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=greetd-tuigreet">greetd-tuigreet</a></span>), edit <code>/etc/pam.d/login</code> accordingly. You will need to specify the <b>force_run</b> parameter.</li>
+</ul>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pam.d/login</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">auth            optional        pam_kwallet5.so
+session         optional        pam_kwallet5.so auto_start <b>force_run</b> kwalletd=/usr/bin/ksecretd</pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pam.d/greetd</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">#%PAM-1.0
+
+auth       required     pam_securetty.so
+auth       requisite    pam_nologin.so
+auth       include      system-local-login
+<b>auth       optional     pam_kwallet5.so</b>
+account    include      system-local-login
+session    include      system-local-login
+<b>session    optional     pam_kwallet5.so auto_start force_run</b> kwalletd=/usr/bin/ksecretd</pre>
+<div class="mw-heading mw-heading4"><h4 id="Plasma_5_(KF5)_–_legacy">
+<span id="Plasma_5_.28KF5.29_.E2.80.93_legacy"></span>Plasma 5 (KF5) – legacy</h4></div>
+<p>Older Plasma versions use <code>kwalletd5</code> and do not require specifying the daemon.
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pam.d/login</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">auth     optional  pam_kwallet5.so
+<b>session  optional  pam_kwallet5.so auto_start</b></pre>
 <div class="mw-heading mw-heading3"><h3 id="Unlock_KDE_Wallet_automatically_on_login">Unlock KDE Wallet automatically on login</h3></div>
 <p>To unlock KDE Wallet automatically on login, <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=kwallet-pam">kwallet-pam</a></span> for the <a href="../en/PAM.html" title="PAM">PAM</a> compatible module. The chosen KWallet password must be the same as the current <a href="../en/Users_and_groups.html" class="mw-redirect" title="User">user</a> password.
 </p>
@@ -321,34 +377,12 @@
 </div>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip</strong> An alternative is to use KWalletManager and set an empty Kwallet-password, thus preventing the need of entering a password to unlock a wallet. Simply do not enter a password on both fields in <i>Change Password..</i>. This may however lead to unwanted (read/write) access to the user's wallet. Enabling <i>Prompt when an application accesses a wallet</i> under <i>Access Control</i> is highly recommended to prevent unwanted access to the wallet.</div>
-<div class="mw-heading mw-heading4"><h4 id="Configure_PAM">Configure PAM</h4></div>
-<p>The following lines must be present under their corresponding sections:
-</p>
-<pre>auth            optional        pam_kwallet5.so
-session         optional        pam_kwallet5.so auto_start</pre>
-<p>Edit the <a href="../en/PAM.html" title="PAM">PAM</a> configuration corresponding to your situation:
-</p>
-<ul>
-<li>For <a href="../en/SDDM.html" title="SDDM">SDDM</a> no further edits should be needed because the lines are already present in <code>/etc/pam.d/sddm</code>.</li>
-<li>For <a href="../en/LightDM.html" title="LightDM">LightDM</a> no further edits should be needed because the lines are already present in <code>/etc/pam.d/lightdm</code> and <code>/etc/pam.d/lightdm-autologin</code>.</li>
-<li>For <a href="../en/GDM.html" title="GDM">GDM</a> edit <code>/etc/pam.d/gdm-password</code> accordingly.</li>
-<li>For <a href="../en/Greetd.html" title="Greetd">greetd</a> edit <code>/etc/pam.d/greetd</code> accordingly.</li>
-<li>For unlocking on tty login (no display manager, or like <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=greetd-tuigreet">greetd-tuigreet</a></span>), edit <code>/etc/pam.d/login</code> accordingly. You will need to specify the <b>force_run</b> parameter.</li>
-</ul>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pam.d/login</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">auth            optional        pam_kwallet5.so
-session         optional        pam_kwallet5.so auto_start <b>force_run</b></pre>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pam.d/greetd</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">#%PAM-1.0
-
-auth       required     pam_securetty.so
-auth       requisite    pam_nologin.so
-auth       include      system-local-login
-<b>auth       optional     pam_kwallet5.so</b>
-account    include      system-local-login
-session    include      system-local-login
-<b>session    optional     pam_kwallet5.so auto_start force_run</b></pre>
 <div class="mw-heading mw-heading4"><h4 id="Using_SDDM_autologin_and_LUKS_encryption">Using SDDM autologin and LUKS encryption</h4></div>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:View-refresh-red.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is out of date.</b></p>
+<div>
+<b>Reason:</b> SDDM is no longer the preferred display manager; it was replaced by <a href="../en/Plasma_Login_Manager.html" title="Plasma Login Manager">Plasma Login Manager</a>. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:KDE_Wallet.html">Talk:KDE Wallet</a>)</div>
+</div>
 <p>When the system is encrypted using <a href="../en/Dm-crypt.html" title="Dm-crypt">dm-crypt</a> it is possible to automatically unlock KDE Wallet using the passphrase that decrypts the disk. When <a href="../en/SDDM.html#Autologin" title="SDDM">SDDM#Autologin</a> is configured, the wallet can still be unlocked automatically. Edit <code>/etc/pam.d/sddm-autologin</code> to add <span class="plainlinks archwiki-template-man" title="$ man 8 pam_systemd_loadkey"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/pam_systemd_loadkey.8">pam_systemd_loadkey(8)</a></span>:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pam.d/sddm-autologin</pre>
@@ -356,7 +390,7 @@ session    include      system-local-login
 -auth       optional    pam_gnome_keyring.so
 -auth       optional    pam_kwallet5.so
 -session    optional    pam_gnome_keyring.so auto_start
--session    optional    pam_kwallet5.so auto_start</pre>
+-session    optional    pam_kwallet5.so auto_start kwalletd=/usr/bin/ksecretd</pre>
 <p>Then <a href="../en/Systemd.html#Editing_provided_units" class="mw-redirect" title="Edit">edit</a> <code>sddm.service</code>, and add:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/sddm.service.d/keyringmode.conf</pre>
@@ -409,8 +443,14 @@ apiEnabled=true</pre>
 <pre>$ qdbus org.kde.kwalletd6 /modules/kwalletd6 closeAllWallets
 $ qdbus org.kde.kwalletd6 /modules/kwalletd6 open <i>kdewallet</i> 0 $0
 </pre>
-<div class="mw-heading mw-heading3"><h3 id="KDE_Wallet_for_Chrome_and_Chromium">KDE Wallet for Chrome and Chromium</h3></div>
-<p>Chrome/Chromium/Opera has built in wallet integration. To enable it, run Chromium with the <code>--password-store=kwallet5</code> or  <code>--password-store=kwallet6</code> or <code>--password-store=detect</code> argument. To make the change persistent, see <a href="../en/Chromium.html#Making_flags_persistent" title="Chromium">Chromium#Making flags persistent</a>. (Setting CHROMIUM_USER_FLAGS will not work.)
+<div class="mw-heading mw-heading3"><h3 id="KDE_Wallet_for_Chromium_and_VSCode">KDE Wallet for Chromium and VSCode</h3></div>
+<p><a href="../en/Chromium.html" title="Chromium">Chromium</a>-based browsers have built-in wallet integration. <a href="../en/Visual_Studio_Code.html" class="mw-redirect" title="VSCode">VSCode</a>-based <a href="../en/List_of_applications/Utilities.html#Integrated_development_environments" class="mw-redirect" title="IDE">IDEs</a> rely on the same Chromium oscrypt module for keyring detection.
+<a rel="nofollow" class="external autonumber" href="https://code.visualstudio.com/docs/configure/settings-sync#_troubleshooting-keychain-issues">[1]</a> 
+</p>
+<p>To enable it, run the program with either the <code>--password-store=kwallet5</code> or <code>--password-store=kwallet6</code> or <code>--password-store=detect</code> argument.
+<a rel="nofollow" class="external autonumber" href="https://source.chromium.org/chromium/chromium/src/+/main:docs/linux/password_storage.md">[2]</a> 
+</p>
+<p>To make the change persistent, see <a href="../en/Chromium.html#Making_flags_persistent" title="Chromium">Chromium#Making flags persistent</a> (Setting CHROMIUM_USER_FLAGS will not work).
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Query_passwords_from_the_terminal">Query passwords from the terminal</h3></div>
 <p>Instead of storing passwords in plain text files, you can manually add new entries in your wallet and retrieve them with <i>kwallet-query</i>.
@@ -451,9 +491,16 @@ Exec=/usr/bin/kwalletd6</pre>
 </ul>
 </div>
 </div>
-					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
+					<div id="catlinks" class="catlinks" data-mw="interface">
+<div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:KDE.html" title="Category:KDE">KDE</a></li></ul>
-</div></div>
+</div>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Out_of_date.html" title="Category:Pages or sections flagged with Template:Out of date">Pages or sections flagged with Template:Out of date</a></li>
+</ul>
+</div>
+</div>
 				</div>
 			</main>
 			
@@ -462,8 +509,8 @@ Exec=/usr/bin/kwalletd6</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=KDE_Wallet&amp;oldid=846868">https://wiki.archlinux.org/index.php?title=KDE_Wallet&amp;oldid=846868</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 15 September 2025, at 07:03.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=KDE_Wallet&amp;oldid=870223">https://wiki.archlinux.org/index.php?title=KDE_Wallet&amp;oldid=870223</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 30 March 2026, at 06:11.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -579,7 +579,7 @@ KMem use:       7.21 MiB
 </p>
 <div class="mw-heading mw-heading4"><h4 id="Enable_support_to_run_unprivileged_containers_(optional)">
 <span id="Enable_support_to_run_unprivileged_containers_.28optional.29"></span>Enable support to run unprivileged containers (optional)</h4></div>
-<p>Modify the configuration contain the following lines:
+<p>Modify the configuration to contain the following lines:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/lxc/default.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">lxc.idmap = u 0 100000 65536
@@ -895,7 +895,15 @@ Start a container:
 <p>Systemd units and wrapper scripts to manage snapshots for <a href="../en/Pi-hole.html" title="Pi-hole">pi-hole</a> and <a href="../en/OpenVPN.html" title="OpenVPN">OpenVPN</a> are available to automate the process in <a rel="nofollow" class="external text" href="https://github.com/graysky2/lxc-service-snapshots">lxc-service-snapshots</a>.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Converting_a_privileged_container_to_an_unprivileged_container">Converting a privileged container to an unprivileged container</h3></div>
-<p>Once the system has been configured to use unprivileged containers (see, <a href="#Enable_support_to_run_unprivileged_containers_(optional)">#Enable support to run unprivileged containers (optional)</a>), <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/nsexec-bzr/">nsexec-bzr</a></span><sup><small>AUR</small></sup> contains a utility called <code>uidmapshift</code> which is able to convert an existing <i>privileged</i> container to an <i>unprivileged</i> container to avoid a total rebuild of the image.
+<p>Once the system has been configured to use unprivileged containers (see <a href="#Enable_support_to_run_unprivileged_containers_(optional)">#Enable support to run unprivileged containers (optional)</a>), it is possible to make an existing privileged container run as unprivileged by editing the configuration file.
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/var/lib/lxc/playtime/config</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># Copy these from /etc/lxc/default.conf.
+lxc.idmap = u 0 100000 65536
+lxc.idmap = g 0 100000 65536
+# Make the rootfs mount automatically map the UIDs, so they appear the same as before from inside the container.
+lxc.rootfs.options = idmap=container</pre>
+<p>As an alternative to the <code>idmap=container</code> option, there is also a utility <code>uidmapshift</code> in <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/nsexec-bzr/">nsexec-bzr</a></span><sup><small>AUR</small></sup> which changes UIDs and GIDs in the container's rootfs.
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning</strong> 
@@ -1041,8 +1049,8 @@ keyctl errno 38
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Linux_Containers&amp;oldid=862687">https://wiki.archlinux.org/index.php?title=Linux_Containers&amp;oldid=862687</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 25 January 2026, at 03:59.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Linux_Containers&amp;oldid=869790">https://wiki.archlinux.org/index.php?title=Linux_Containers&amp;oldid=869790</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 23 March 2026, at 05:48.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

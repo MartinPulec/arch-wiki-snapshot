@@ -297,7 +297,29 @@
 			</a>
 			
 			<ul id="toc-GNOME_Keyring_XDG_Portal-sublist" class="vector-toc-list">
+				<li id="toc-Configuring_user-level_Secrets_Portal" class="vector-toc-list-item vector-toc-level-4">
+			<a class="vector-toc-link" href="#Configuring_user-level_Secrets_Portal">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">6.8.2.1</span>
+					<span>Configuring user-level Secrets Portal</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Configuring_user-level_Secrets_Portal-sublist" class="vector-toc-list">
 			</ul>
+		</li>
+		<li id="toc-Modifying_gnome-keyring.portal" class="vector-toc-list-item vector-toc-level-4">
+			<a class="vector-toc-link" href="#Modifying_gnome-keyring.portal">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">6.8.2.2</span>
+					<span>Modifying gnome-keyring.portal</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Modifying_gnome-keyring.portal-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
 		</li>
 	</ul>
 		</li>
@@ -671,12 +693,23 @@ password	optional	pam_gnome_keyring.so</pre>
 <p>During login, PAM starts <code>gnome-keyring-daemon --login</code> which is responsible for keeping gnome-keyring unlocked with login password. If <code>gnome-keyring-daemon --login</code> is not connected to session dbus within a few minutes, <code>gnome-keyring-daemon --login</code> dies. If <code>gnome-keyring-daemon --start ...</code> is started against session dbus in a window manager, <code>gnome-keyring-daemon --login</code> is connected to session dbus. If your login session does not start <code>gnome-keyring-daemon --start ...</code> before <code>gnome-keyring-daemon --login</code> quits, you can also use any program that uses gnome-keyring or secret service API before <code>gnome-keyring-daemon --login</code> dies.
 </p>
 <div class="mw-heading mw-heading4"><h4 id="GNOME_Keyring_XDG_Portal">GNOME Keyring XDG Portal</h4></div>
+<p>GNOME Keyring exposes an XDG Portal backend (for use with applications sandboxed through <a href="../../en/Flatpak.html" title="Flatpak">flatpak</a> for example). In order for it to work outside of GNOME, one must configure it to be used.  There are a few ways to do this.
+</p>
+<div class="mw-heading mw-heading5"><h5 id="Configuring_user-level_Secrets_Portal">Configuring user-level Secrets Portal</h5></div>
+<p>The method which avoids modifying system files is to configure <code>gnome-keyring</code> to be preferred as the <code>Secrets</code> portal in <code>$XDG_CONFIG_HOME/xdg-desktop-portal/$XDG_CURRENT_DESKTOP-portals.conf</code>.  For example, to configure <a href="../../en/Sway.html" title="Sway">sway</a> to use <code>gnome-keyring</code> as the preferred portal to use for <code>org.freedesktop.impl.portal.Secret</code>.
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.config/xdg-desktop-portal/sway-portals.conf</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[preferred]
+default=wlr;gtk
+org.freedesktop.impl.portal.Secret=gnome-keyring
+</pre>
+<div class="mw-heading mw-heading5"><h5 id="Modifying_gnome-keyring.portal">Modifying gnome-keyring.portal</h5></div>
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
 <div>
 <b>Reason:</b> Modifies package files in <code>/usr/share</code>, will be undone on pacman upgrades (Discuss in <a rel="nofollow" class="external text" href="../../en/Talk:GNOME/Keyring.html">Talk:GNOME/Keyring</a>)</div>
 </div>
-<p>GNOME Keyring exposes an XDG Portal backend (for use with applications sandboxed through <a href="../../en/Flatpak.html" title="Flatpak">flatpak</a> for example). In order for it to work outside of GNOME, one must add their desktop environment to the <code>/usr/share/xdg-desktop-portal/portals/gnome-keyring.portal</code> configuration file by modifying the <code>UseIn</code> key. For instance, to add <a href="../../en/Sway.html" title="Sway">sway</a>:
+<p>Another method is to add your desktop environment to the <code>/usr/share/xdg-desktop-portal/portals/gnome-keyring.portal</code> configuration file by modifying the <code>UseIn</code> key. For instance, to add <a href="../../en/Sway.html" title="Sway">sway</a>:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/usr/share/xdg-desktop-portal/portals/gnome-keyring.portal</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[portal]
@@ -775,8 +808,8 @@ UseIn=gnome;sway
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GNOME/Keyring&amp;oldid=861011">https://wiki.archlinux.org/index.php?title=GNOME/Keyring&amp;oldid=861011</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 13 January 2026, at 06:34.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GNOME/Keyring&amp;oldid=865971">https://wiki.archlinux.org/index.php?title=GNOME/Keyring&amp;oldid=865971</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 17 February 2026, at 05:19.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>
