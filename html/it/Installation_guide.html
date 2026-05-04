@@ -5,7 +5,7 @@
 <title>Installation guide (Italiano) - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.45.1">
+<meta name="generator" content="MediaWiki 1.45.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -420,7 +420,7 @@
 					<div id="mw-content-text" class="mw-body-content">
 <div class="mw-content-ltr mw-parser-output" lang="it" dir="ltr">
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Stato della traduzione</strong>Questo articolo è la versione tradotta di <a href="../en/Installation_guide.html" title="Installation guide">Installation guide</a>. Data dell'ultima traduzione: 2026-01-02. Se ci sono <a rel="nofollow" class="external text" href="https://wiki.archlinux.org/index.php?title=Installation_guide&amp;diff=0&amp;oldid=858613">cambiamenti</a> nella versione inglese, è possibile dare una mano a sincronizzarne la traduzione.</div>
+<strong>Stato della traduzione</strong>Questo articolo è la versione tradotta di <a href="../en/Installation_guide.html" title="Installation guide">Installation guide</a>. Data dell'ultima traduzione: 2026-01-02. Se ci sono <a rel="nofollow" class="external text" href="https://wiki.archlinux.org/index.php?title=Installation_guide&amp;diff=0&amp;oldid=870170">cambiamenti</a> nella versione inglese, è possibile dare una mano a sincronizzarne la traduzione.</div>
 <p>Questo documento costituisce una guida per l'installazione di <a href="../it/Arch_Linux.html" title="Arch Linux (Italiano)">Arch Linux</a> utilizzando un sistema <i>live</i> avviato da un supporto di installazione creato con un'immagine di installazione ufficiale. Il supporto di installazione offre funzioni di accessibilità descritte nella pagina <a href="../en/Install_Arch_Linux_with_accessibility_options.html" title="Install Arch Linux with accessibility options">Install Arch Linux with accessibility options</a>. Per informazioni sui metodi di installazione alternativi, vedere <a href="../en/Category:Installation_process.html" title="Category:Installation process">Category:Installation process</a>.
 </p>
 <p>Prima di eseguire l'installazione, si consiglia di consultare le <a href="../it/FAQ.html" class="mw-redirect" title="FAQ (Italiano)">FAQ</a>. In riferimento alle convenzioni utilizzate nel presente documento, vedere <a href="../it/Help:Reading.html" title="Help:Reading (Italiano)">Help:Reading (Italiano)</a>. In particolare, gli esempi di codice potrebbero contenere dei segnaposto (formattati in <code><i>corsivo</i></code>) che devono essere sostituiti manualmente.
@@ -742,17 +742,20 @@
 </div>
 <div class="mw-heading mw-heading2"><h2 id="Configurare_il_sistema">Configurare il sistema</h2></div>
 <div class="mw-heading mw-heading3"><h3 id="Fstab">Fstab</h3></div>
-<p>Generare un file <a href="../it/Fstab.html" title="Fstab (Italiano)">fstab</a> (utilizzare <code>-U</code> o <code>-L</code> per definire le partizioni rispettivamente in base agli <a href="../en/Persistent_block_device_naming.html#by-uuid" class="mw-redirect" title="UUID">UUID</a> o alle etichette):
+<p>Per far sì che i file system necessari (come quello usato per la directory di boot <code>/boot</code>) vengano montati all'avvio, generare un file <a href="../it/Fstab.html" title="Fstab (Italiano)">fstab</a> con <a href="../en/Persistent_block_device_naming.html" title="Persistent block device naming">nomi persistenti dei dispositivi a blocchi</a> usando <span class="plainlinks archwiki-template-man" title="$ man 8 genfstab"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/genfstab.8">genfstab(8)</a></span>. Ad esempio, per fare riferimento ai file system tramite i loro <a href="../en/Persistent_block_device_naming.html#by-uuid" class="mw-redirect" title="UUID">UUID</a> usare l'opzione <code>-U</code>:
 </p>
 <pre># genfstab -U /mnt &gt;&gt; /mnt/etc/fstab
 </pre>
 <p>Verificare il file <code>/mnt/etc/fstab</code> ottenuto e, in caso di errori, <a href="../it/Help:Reading.html#Apporre,_aggiungere,_creare,_modificare" title="Help:Reading (Italiano)">modificarlo</a>.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Chroot">Chroot</h3></div>
-<p>Passare al nuovo sistema <a href="../en/Change_root.html" class="mw-redirect" title="Change root">entrando nell'ambiente chroot</a>:
+<p>Per i prossimi passaggi bisognerà interagire con il nuovo ambiente di sistema, i suoi strumenti e le sue configurazioni come se il PC fosse stato avviato con questo sistema. Passare quindi ad esso <a href="../en/Change_root.html" class="mw-redirect" title="Change root">entrando nell'ambiente chroot</a>:
 </p>
 <pre># arch-chroot /mnt
 </pre>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Nota</strong> Alcuni strumenti di <a href="../en/Systemd.html" title="Systemd">systemd</a> come <span class="plainlinks archwiki-template-man" title="$ man 1 hostnamectl"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/hostnamectl.1">hostnamectl(1)</a></span>, <span class="plainlinks archwiki-template-man" title="$ man 1 localectl"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/localectl.1">localectl(1)</a></span> e <span class="plainlinks archwiki-template-man" title="$ man 1 timedatectl"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/timedatectl.1">timedatectl(1)</a></span> non possono essere usati all'interno di un <span class="plainlinks archwiki-template-man" title="$ man 1 chroot"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/chroot.1">chroot(1)</a></span>, perché richiedono una connessione <a href="../en/D-Bus.html" class="mw-redirect" title="Dbus">dbus</a> attiva. <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/798#issuecomment-126568596">[2]</a>
+</div>
 <div class="mw-heading mw-heading3"><h3 id="Fuso_orario">Fuso orario</h3></div>
 <p>Impostare il proprio <a href="../en/Time_zone.html" class="mw-redirect" title="Time zone">fuso orario</a>:
 </p>
@@ -830,8 +833,8 @@
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Installation_guide_(Italiano)&amp;oldid=859908">https://wiki.archlinux.org/index.php?title=Installation_guide_(Italiano)&amp;oldid=859908</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 2 January 2026, at 08:09.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Installation_guide_(Italiano)&amp;oldid=871484">https://wiki.archlinux.org/index.php?title=Installation_guide_(Italiano)&amp;oldid=871484</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 18 April 2026, at 05:43.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

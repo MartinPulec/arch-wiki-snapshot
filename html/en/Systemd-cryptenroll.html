@@ -5,7 +5,7 @@
 <title>systemd-cryptenroll - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.45.1">
+<meta name="generator" content="MediaWiki 1.45.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -261,7 +261,7 @@
 <p><i>systemd-cryptenroll</i> is part of and packaged with <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=systemd">systemd</a></span>. However, extra packages are required to use hardware devices as keys:
 </p>
 <ul>
-<li>To use PKCS#11 tokens, <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=libp11-kit">libp11-kit</a></span>, you may also need <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=opensc">opensc</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/opensc-p11-kit-module/">opensc-p11-kit-module</a></span><sup><small>AUR</small></sup>.</li>
+<li>To use PKCS#11 tokens, <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=libp11-kit">libp11-kit</a></span>, you may also need <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=opensc">opensc</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/opensc-p11-kit-module/">opensc-p11-kit-module</a></span><sup><small>AUR</small></sup><sup>[<a href="../en/Help:Procedures.html#Fix_broken_package_links" title="Help:Procedures">broken link</a>: package not found]</sup>.</li>
 <li>To use FIDO2 tokens, install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=libfido2">libfido2</a></span>.</li>
 <li>To use TPM2 devices, install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=tpm2-tss">tpm2-tss</a></span>.</li>
 </ul>
@@ -395,7 +395,7 @@
 <li>The state of PCR 7 can change if firmware certificates change, which can risk locking the user out. This can be implicitly done by <a href="../en/Fwupd.html" title="Fwupd">fwupd</a><a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/blob/ed272a9ff59a26beedaab508dd3c9d631de67165/TODO#L664-L673">[1]</a> or explicitly by rotating Secure Boot keys.</li>
 <li>Only binding to PCRs measured pre-boot (PCRs 0-7) opens a vulnerability from rogue operating systems. A rogue partition with metadata copied from the real root filesystem (such as partition UUID) can mimic the original partition. Then, initramfs will attempt to mount the rogue partition as the root filesystem (decryption failure will fall back to password entry), leaving pre-boot PCRs unchanged. The rogue root filesystem with files controlled by an attacker is still able to receive the decryption key for the real root partition. See <a rel="nofollow" class="external text" href="https://0pointer.net/blog/brave-new-trusted-boot-world.html">Brave New Trusted Boot World</a> and <a rel="nofollow" class="external text" href="https://learn.microsoft.com/en-us/windows/security/operating-system-security/data-protection/bitlocker/countermeasures">BitLocker documentation</a> for additional information.</li>
 <li>A solution for the root volume is to bind to an empty PCR 15 using <code>--tpm2-pcrs=<i>other_pcrs</i>+15:sha256=0000000000000000000000000000000000000000000000000000000000000000</code>. If you set any <code>rd.luks</code> kernel parameters or use <code>/etc/crypttab.initramfs</code>, additionally add the <code>tpm2-measure-pcr=yes</code> option to <code>rd.luks.options=</code> or the fourth field in <code>/etc/crypttab.initramfs</code>; this is not required when relying on <a href="../en/Systemd.html#GPT_partition_automounting" title="Systemd">GPT partition automounting</a>. After the root volume is unlocked in early userspace, PCR 15 will change and the enrolled key will no longer be retrievable.</li>
-<li>Another cleaner solution is described in the <a href="../en/Dm-crypt/System_configuration.html#Pinning_a_LUKS_Volume" title="Dm-crypt/System configuration">Pinning a LUKS volume</a> section.</li>
+<li>Another cleaner solution is described in <a href="../en/Dm-crypt/System_configuration.html#Pinning_a_LUKS_volume" title="Dm-crypt/System configuration">dm-crypt/System configuration#Pinning a LUKS volume</a>.</li>
 </ul>
 </div>
 <p>The combination of PCRs to bind to depends on the individual case to balance usability and lock-down. For example, you may require UEFI firmware updates without manual intervention to the <a href="../en/Secure_Boot.html" class="mw-redirect" title="Secure Boot">Secure Boot</a> state, or different boot devices. As another example, Microsoft's <a rel="nofollow" class="external text" href="https://learn.microsoft.com/en-us/windows-hardware/test/hlk/testref/954cf796-a640-4134-b742-eaf0ed2663ff#troubleshooting">Bitlocker</a> prefers PCR <code>7+11</code>, but may also use other PCR combinations.
@@ -432,7 +432,10 @@
 <div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Data-at-rest_encryption.html" title="Category:Data-at-rest encryption">Data-at-rest encryption</a></li></ul>
 </div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li></ul>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
+<li><a href="../en/Category:Pages_with_broken_package_links.html" title="Category:Pages with broken package links">Pages with broken package links</a></li>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
+</ul>
 </div>
 </div>
 				</div>
@@ -443,8 +446,8 @@
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Systemd-cryptenroll&amp;oldid=869765">https://wiki.archlinux.org/index.php?title=Systemd-cryptenroll&amp;oldid=869765</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 22 March 2026, at 15:51.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Systemd-cryptenroll&amp;oldid=872172">https://wiki.archlinux.org/index.php?title=Systemd-cryptenroll&amp;oldid=872172</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 26 April 2026, at 08:47.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

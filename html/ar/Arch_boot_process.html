@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html class="client-nojs vector-feature-language-in-header-enabled vector-feature-language-in-main-page-header-disabled vector-feature-page-tools-pinned-disabled vector-feature-toc-pinned-clientpref-1 vector-feature-main-menu-pinned-disabled vector-feature-limited-width-clientpref-1 vector-feature-limited-width-content-enabled vector-feature-custom-font-size-clientpref-0 vector-feature-appearance-pinned-clientpref-1 vector-feature-night-mode-enabled skin-theme-clientpref-os vector-sticky-header-enabled vector-toc-available" lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<title>Arch boot process (العربية) - ArchWiki</title>
+<link rel="stylesheet" href="../ArchWikiOffline.css">
+<meta name="ResourceLoaderDynamicStyles" content="">
+<meta name="generator" content="MediaWiki 1.45.3">
+<meta name="referrer" content="no-referrer-when-downgrade">
+<meta name="robots" content="max-image-preview:standard">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, minimum-scale=0.25, maximum-scale=5.0">
+<link rel="search" type="application/opensearchdescription+xml" href="/rest.php/v1/search" title="ArchWiki (en)">
+<link rel="EditURI" type="application/rsd+xml" href="https://wiki.archlinux.org/api.php?action=rsd">
+<link rel="license" href="https://www.gnu.org/copyleft/fdl.html">
+<link rel="alternate" type="application/atom+xml" title="ArchWiki Atom feed" href="/index.php?title=Special:RecentChanges&amp;feed=atom">
+</head>
+<body class="skin--responsive skin-vector skin-vector-search-vue mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-0 ns-subject page-Arch_boot_process_العربية rootpage-Arch_boot_process_العربية skin-vector-2022 action-view">
+<a class="mw-jump-link" href="#bodyContent">Jump to content</a>
+<div class="vector-header-container">
+	</div>
+<div class="mw-page-container">
+	<div class="mw-page-container-inner">
+		<div class="vector-column-start">
+			<div class="vector-main-menu-container">
+		</div>
+	<div class="vector-sticky-pinned-container">
+				<nav id="mw-panel-toc" aria-label="Contents" data-event-name="ui.sidebar-toc" class="mw-table-of-contents-container vector-toc-landmark">
+					<div id="vector-toc-pinned-container" class="vector-pinned-container">
+					<div id="vector-toc" class="vector-toc vector-pinnable-element">
+	<div class="vector-pinnable-header vector-toc-pinnable-header vector-pinnable-header-pinned" data-feature-name="toc-pinned" data-pinnable-element-id="vector-toc">
+	<h2 class="vector-pinnable-header-label">Contents</h2>
+	<button class="vector-pinnable-header-toggle-button vector-pinnable-header-pin-button" data-event-name="pinnable-header.vector-toc.pin">move to sidebar</button>
+	<button class="vector-pinnable-header-toggle-button vector-pinnable-header-unpin-button" data-event-name="pinnable-header.vector-toc.unpin">hide</button>
+</div>
+
+
+	<ul class="vector-toc-contents" id="mw-panel-toc-list">
+		<li id="toc-mw-content-text" class="vector-toc-list-item vector-toc-level-1">
+			<a href="#" class="vector-toc-link">
+				<div class="vector-toc-text">Beginning</div>
+			</a>
+		</li>
+		<li id="toc-أنواع_البرامج_الثابتة_(Firmware)" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#%D8%A3%D9%86%D9%88%D8%A7%D8%B9_%D8%A7%D9%84%D8%A8%D8%B1%D8%A7%D9%85%D8%AC_%D8%A7%D9%84%D8%AB%D8%A7%D8%A8%D8%AA%D8%A9_(Firmware)">
+			<div class="vector-toc-text">
+				<span class="vector-toc-numb">١</span>
+				<span>أنواع البرامج الثابتة (Firmware)</span>
+			</div>
+		</a>
+		
+			<button aria-controls="toc-أنواع_البرامج_الثابتة_(Firmware)-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle أنواع البرامج الثابتة (Firmware) subsection</span>
+			</button>
+		
+		<ul id="toc-أنواع_البرامج_الثابتة_(Firmware)-sublist" class="vector-toc-list">
+			<li id="toc-UEFI" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#UEFI">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">١.١</span>
+					<span>UEFI</span>
+				</div>
+			</a>
+			
+			<ul id="toc-UEFI-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-BIOS" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#BIOS">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">١.٢</span>
+					<span>BIOS</span>
+				</div>
+			</a>
+			
+			<ul id="toc-BIOS-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+	</li>
+	<li id="toc-تهيئة_النظام" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#%D8%AA%D9%87%D9%8A%D8%A6%D8%A9_%D8%A7%D9%84%D9%86%D8%B8%D8%A7%D9%85">
+			<div class="vector-toc-text">
+				<span class="vector-toc-numb">٢</span>
+				<span>تهيئة النظام</span>
+			</div>
+		</a>
+		
+			<button aria-controls="toc-تهيئة_النظام-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle تهيئة النظام subsection</span>
+			</button>
+		
+		<ul id="toc-تهيئة_النظام-sublist" class="vector-toc-list">
+			<li id="toc-UEFI_2" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#UEFI_2">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">٢.١</span>
+					<span>UEFI</span>
+				</div>
+			</a>
+			
+			<ul id="toc-UEFI_2-sublist" class="vector-toc-list">
+				<li id="toc-الإقلاع_المتعدد_(Multibooting)" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#%D8%A7%D9%84%D8%A5%D9%82%D9%84%D8%A7%D8%B9_%D8%A7%D9%84%D9%85%D8%AA%D8%B9%D8%AF%D8%AF_(Multibooting)">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">٢.١.١</span>
+					<span>الإقلاع المتعدد (Multibooting)</span>
+				</div>
+			</a>
+			
+			<ul id="toc-الإقلاع_المتعدد_(Multibooting)-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+		</li>
+		<li id="toc-BIOS_2" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#BIOS_2">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">٢.٢</span>
+					<span>BIOS</span>
+				</div>
+			</a>
+			
+			<ul id="toc-BIOS_2-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+	</li>
+	<li id="toc-محمل_الإقلاع" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#%D9%85%D8%AD%D9%85%D9%84_%D8%A7%D9%84%D8%A5%D9%82%D9%84%D8%A7%D8%B9">
+			<div class="vector-toc-text">
+				<span class="vector-toc-numb">٣</span>
+				<span>محمل الإقلاع</span>
+			</div>
+		</a>
+		
+			<button aria-controls="toc-محمل_الإقلاع-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle محمل الإقلاع subsection</span>
+			</button>
+		
+		<ul id="toc-محمل_الإقلاع-sublist" class="vector-toc-list">
+			<li id="toc-مقارنة_الميزات" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D9%85%D9%82%D8%A7%D8%B1%D9%86%D8%A9_%D8%A7%D9%84%D9%85%D9%8A%D8%B2%D8%A7%D8%AA">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">٣.١</span>
+					<span>مقارنة الميزات</span>
+				</div>
+			</a>
+			
+			<ul id="toc-مقارنة_الميزات-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+	</li>
+	<li id="toc-النواة_(Kernel)" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#%D8%A7%D9%84%D9%86%D9%88%D8%A7%D8%A9_(Kernel)">
+			<div class="vector-toc-text">
+				<span class="vector-toc-numb">٤</span>
+				<span>النواة (Kernel)</span>
+			</div>
+		</a>
+		
+		<ul id="toc-النواة_(Kernel)-sublist" class="vector-toc-list">
+		</ul>
+	</li>
+	<li id="toc-initramfs" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#initramfs">
+			<div class="vector-toc-text">
+				<span class="vector-toc-numb">٥</span>
+				<span>initramfs</span>
+			</div>
+		</a>
+		
+			<button aria-controls="toc-initramfs-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle initramfs subsection</span>
+			</button>
+		
+		<ul id="toc-initramfs-sublist" class="vector-toc-list">
+			<li id="toc-التشغيل_بدون_initramfs" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D8%A7%D9%84%D8%AA%D8%B4%D8%BA%D9%8A%D9%84_%D8%A8%D8%AF%D9%88%D9%86_initramfs">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">٥.١</span>
+					<span>التشغيل بدون initramfs</span>
+				</div>
+			</a>
+			
+			<ul id="toc-التشغيل_بدون_initramfs-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+	</li>
+	<li id="toc-مساحة_المستخدم_المبكرة_(Early_userspace)" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#%D9%85%D8%B3%D8%A7%D8%AD%D8%A9_%D8%A7%D9%84%D9%85%D8%B3%D8%AA%D8%AE%D8%AF%D9%85_%D8%A7%D9%84%D9%85%D8%A8%D9%83%D8%B1%D8%A9_(Early_userspace)">
+			<div class="vector-toc-text">
+				<span class="vector-toc-numb">٦</span>
+				<span>مساحة المستخدم المبكرة (Early userspace)</span>
+			</div>
+		</a>
+		
+		<ul id="toc-مساحة_المستخدم_المبكرة_(Early_userspace)-sublist" class="vector-toc-list">
+		</ul>
+	</li>
+	<li id="toc-مساحة_المستخدم_المتأخرة_(Late_userspace)" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#%D9%85%D8%B3%D8%A7%D8%AD%D8%A9_%D8%A7%D9%84%D9%85%D8%B3%D8%AA%D8%AE%D8%AF%D9%85_%D8%A7%D9%84%D9%85%D8%AA%D8%A3%D8%AE%D8%B1%D8%A9_(Late_userspace)">
+			<div class="vector-toc-text">
+				<span class="vector-toc-numb">٧</span>
+				<span>مساحة المستخدم المتأخرة (Late userspace)</span>
+			</div>
+		</a>
+		
+			<button aria-controls="toc-مساحة_المستخدم_المتأخرة_(Late_userspace)-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle مساحة المستخدم المتأخرة (Late userspace) subsection</span>
+			</button>
+		
+		<ul id="toc-مساحة_المستخدم_المتأخرة_(Late_userspace)-sublist" class="vector-toc-list">
+			<li id="toc-getty" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#getty">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">٧.١</span>
+					<span>getty</span>
+				</div>
+			</a>
+			
+			<ul id="toc-getty-sublist" class="vector-toc-list">
+				<li id="toc-تسجيل_الدخول_(Login)" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#%D8%AA%D8%B3%D8%AC%D9%8A%D9%84_%D8%A7%D9%84%D8%AF%D8%AE%D9%88%D9%84_(Login)">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">٧.١.١</span>
+					<span>تسجيل الدخول (Login)</span>
+				</div>
+			</a>
+			
+			<ul id="toc-تسجيل_الدخول_(Login)-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-الصدفة_(Shell)" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#%D8%A7%D9%84%D8%B5%D8%AF%D9%81%D8%A9_(Shell)">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">٧.١.٢</span>
+					<span>الصدفة (Shell)</span>
+				</div>
+			</a>
+			
+			<ul id="toc-الصدفة_(Shell)-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+		</li>
+		<li id="toc-مدير_العرض_(Display_manager)" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#%D9%85%D8%AF%D9%8A%D8%B1_%D8%A7%D9%84%D8%B9%D8%B1%D8%B6_(Display_manager)">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">٧.٢</span>
+					<span>مدير العرض (Display manager)</span>
+				</div>
+			</a>
+			
+			<ul id="toc-مدير_العرض_(Display_manager)-sublist" class="vector-toc-list">
+				<li id="toc-الجلسة_الرسومية_(Xorg)" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#%D8%A7%D9%84%D8%AC%D9%84%D8%B3%D8%A9_%D8%A7%D9%84%D8%B1%D8%B3%D9%88%D9%85%D9%8A%D8%A9_(Xorg)">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">٧.٢.١</span>
+					<span>الجلسة الرسومية (Xorg)</span>
+				</div>
+			</a>
+			
+			<ul id="toc-الجلسة_الرسومية_(Xorg)-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+		</li>
+	</ul>
+	</li>
+	<li id="toc-انظر_أيضاً" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#%D8%A7%D9%86%D8%B8%D8%B1_%D8%A3%D9%8A%D8%B6%D8%A7%D9%8B">
+			<div class="vector-toc-text">
+				<span class="vector-toc-numb">٨</span>
+				<span>انظر أيضاً</span>
+			</div>
+		</a>
+		
+		<ul id="toc-انظر_أيضاً-sublist" class="vector-toc-list">
+		</ul>
+	</li>
+</ul>
+</div>
+
+					</div>
+		</nav>
+			</div>
+		</div>
+		<div class="mw-content-container">
+			<main id="content" class="mw-body" style="margin: 0">
+				<header class="mw-body-header vector-page-titlebar no-font-mode-scale">
+					<nav aria-label="Contents" class="vector-toc-landmark">
+						
+<div id="vector-page-titlebar-toc" class="vector-dropdown vector-page-titlebar-toc vector-button-flush-left" title="Table of Contents">
+	<input type="checkbox" id="vector-page-titlebar-toc-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-vector-page-titlebar-toc" class="vector-dropdown-checkbox " aria-label="Toggle the table of contents">
+	<label id="vector-page-titlebar-toc-label" for="vector-page-titlebar-toc-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only " aria-hidden="true"><span class="vector-icon mw-ui-icon-listBullet mw-ui-icon-wikimedia-listBullet"></span>
+
+<span class="vector-dropdown-label-text">Toggle the table of contents</span>
+	</label>
+	<div class="vector-dropdown-content">
+
+
+							<div id="vector-page-titlebar-toc-unpinned-container" class="vector-unpinned-container">
+			</div>
+		
+	</div>
+</div>
+
+					</nav>
+					<h1 id="firstHeading" class="firstHeading mw-first-heading"><span class="mw-page-title-main">Arch boot process (العربية)</span></h1>
+							
+</header>
+				<div class="vector-column-end no-font-mode-scale">
+					<div class="vector-sticky-pinned-container">
+						<nav class="vector-page-tools-landmark" aria-label="Page tools">
+							<div id="vector-page-tools-pinned-container" class="vector-pinned-container">
+				
+							</div>
+		</nav>
+						<nav class="vector-appearance-landmark" aria-label="Appearance">
+							<div id="vector-appearance-pinned-container" class="vector-pinned-container">
+				<div id="vector-appearance" class="vector-appearance vector-pinnable-element">
+	<div class="vector-pinnable-header vector-appearance-pinnable-header vector-pinnable-header-pinned" data-feature-name="appearance-pinned" data-pinnable-element-id="vector-appearance" data-pinned-container-id="vector-appearance-pinned-container" data-unpinned-container-id="vector-appearance-unpinned-container">
+	<div class="vector-pinnable-header-label">Appearance</div>
+	<button class="vector-pinnable-header-toggle-button vector-pinnable-header-pin-button" data-event-name="pinnable-header.vector-appearance.pin">move to sidebar</button>
+	<button class="vector-pinnable-header-toggle-button vector-pinnable-header-unpin-button" data-event-name="pinnable-header.vector-appearance.unpin">hide</button>
+</div>
+
+
+</div>
+
+							</div>
+		</nav>
+					</div>
+				</div>
+				<div id="bodyContent" class="vector-body" aria-labelledby="firstHeading" data-mw-ve-target-container>
+					<div class="vector-body-before-content">
+							<div class="mw-indicators">
+		</div>
+
+						<div id="siteSub" class="noprint">From ArchWiki</div>
+					</div>
+					<div id="contentSub"><div id="mw-content-subtitle"></div></div>
+					
+					
+					<div id="mw-content-text" class="mw-body-content">
+<div class="mw-content-rtl mw-parser-output" lang="ar" dir="rtl">
+<div class="archwiki-template-meta-related-articles">
+<p>Related articles</p>
+<ul>
+<li><a href="../en/Autostarting.html" title="Autostarting">Autostarting</a></li>
+<li><a href="../en/GUID_Partition_Table.html" class="mw-redirect" title="GUID Partition Table">GUID Partition Table</a></li>
+<li><a href="../en/Master_Boot_Record.html" class="mw-redirect" title="Master Boot Record">Master Boot Record</a></li>
+<li><a href="../en/Unified_Extensible_Firmware_Interface.html" title="Unified Extensible Firmware Interface">Unified Extensible Firmware Interface</a></li>
+<li><a href="../en/Fstab.html" title="Fstab">fstab</a></li>
+<li><a href="../en/Init.html" title="Init">init</a></li>
+<li><a href="../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a></li>
+<li><a href="../en/Systemd.html" title="Systemd">systemd</a></li>
+</ul>
+</div>
+<p>من أجل إقلاع آرتش لينكس، يجب إعداد <a href="#%D9%85%D8%AD%D9%85%D9%84_%D8%A7%D9%84%D8%A5%D9%82%D9%84%D8%A7%D8%B9">محمل إقلاع</a> (Boot loader) قادر على تشغيل لينكس. محمل الإقلاع مسؤول عن تحميل النواة (kernel) وصورة <a href="#initramfs">initramfs</a> قبل بدء عملية الإقلاع. تختلف هذه العملية بشكل كبير بين أنظمة <a href="https://en.wikipedia.org/wiki/BIOS" class="extiw" title="wikipedia:BIOS">BIOS</a> وأنظمة <a href="../en/Unified_Extensible_Firmware_Interface.html" class="mw-redirect" title="UEFI">UEFI</a>.
+</p>
+<meta property="mw:PageProp/toc">
+<div class="mw-heading mw-heading2"><h2 id="أنواع_البرامج_الثابتة_(Firmware)">
+<span id=".D8.A3.D9.86.D9.88.D8.A7.D8.B9_.D8.A7.D9.84.D8.A8.D8.B1.D8.A7.D9.85.D8.AC_.D8.A7.D9.84.D8.AB.D8.A7.D8.A8.D8.AA.D8.A9_.28Firmware.29"></span>أنواع البرامج الثابتة (Firmware)</h2></div>
+<p>البرنامج الثابت (Firmware) هو أول برنامج يتم تنفيذه بمجرد تشغيل الجهاز.
+</p>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>تلميحة</strong> 
+<ul>
+<li>غالباً ما تُستخدم كلمتي <i>BIOS</i> و <i>UEFI</i> بدلاً من كلمة <i>البرامج الثابتة (firmware)</i>.</li>
+<li>لا تخلط بينها وبين <a href="../en/Linux_firmware.html" title="Linux firmware">البرامج الثابتة الخاصة بلينكس</a> (Linux firmware) التي تخص عتاد الجهاز.</li>
+</ul>
+</div>
+<div class="mw-heading mw-heading3"><h3 id="UEFI">UEFI</h3></div>
+<p>تمتلك واجهة البرامج الثابتة الممتدة الموحدة (<a href="../en/Unified_Extensible_Firmware_Interface.html" title="Unified Extensible Firmware Interface">Unified Extensible Firmware Interface</a>) دعماً لقراءة جدول الأقسام (partition table) بالإضافة إلى أنظمة الملفات. لا يقوم UEFI بتشغيل أي <a href="../en/Partitioning.html#Master_Boot_Record_(bootstrap_code)" title="Partitioning">كود إقلاع من سجل الإقلاع الرئيسي (MBR)</a> سواء كان موجوداً أم لا، بل يعتمد الإقلاع بدلاً من ذلك على إدخالات الإقلاع (boot entries) الموجودة في الذاكرة غير المتطايرة (<a href="https://en.wikipedia.org/wiki/Non-volatile_random-access_memory" class="extiw" title="wikipedia:Non-volatile random-access memory">NVRAM</a>).
+</p>
+<p>تلزم مواصفات UEFI بدعم أنظمة ملفات <a href="../en/FAT.html" title="FAT">FAT12 و FAT16 و FAT32</a> (انظر <a rel="nofollow" class="external text" href="https://uefi.org/specs/UEFI/2.11/13_Protocols_Media_Access.html#file-system-format-1">مواصفات UEFI الإصدار 2.11، القسم 13.3.1.1</a>)، ولكن يمكن لأي مُصنّع متوافق إضافة دعم لأنظمة ملفات إضافية اختيارياً؛ على سبيل المثال، <a href="https://en.wikipedia.org/wiki/HFS%2B" class="extiw" title="wikipedia:HFS+">HFS+</a> أو <a href="https://en.wikipedia.org/wiki/APFS" class="extiw" title="wikipedia:APFS">APFS</a> في بعض البرامج الثابتة الخاصة بشركة آبل. تدعم تطبيقات UEFI أيضاً معيار <a href="https://en.wikipedia.org/wiki/ISO_9660" class="extiw" title="wikipedia:ISO 9660">ISO 9660</a> للأقراص الضوئية.
+</p>
+<p>يقوم UEFI بتشغيل تطبيقات EFI، مثل <a href="#%D9%85%D8%AD%D9%85%D9%84_%D8%A7%D9%84%D8%A5%D9%82%D9%84%D8%A7%D8%B9">محملات الإقلاع</a> (boot loaders)، ومديري الإقلاع (boot managers)، و <a href="../en/UEFI_shell.html" class="mw-redirect" title="UEFI shell">صدفة UEFI</a>، وما إلى ذلك. تُخزن هذه التطبيقات عادةً كملفات في <a href="../en/EFI_system_partition.html" title="EFI system partition">قسم نظام EFI</a>. يمكن لكل مُصنّع تخزين ملفاته في قسم نظام EFI تحت مجلد <span dir="ltr"><code>/EFI/<i>vendor_name</i></code></span>. يمكن تشغيل التطبيقات عن طريق إضافة إدخال إقلاع إلى الـ NVRAM أو من خلال صدفة UEFI.
+</p>
+<p>تحتوي مواصفات UEFI على دعم لإقلاع <a href="#BIOS">BIOS</a> القديم (legacy) من خلال وحدة دعم التوافق (<a href="https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface#CSM_booting" class="extiw" title="wikipedia:Unified Extensible Firmware Interface">CSM</a>). إذا تم تفعيل CSM في UEFI، سيقوم UEFI بتوليد إدخالات إقلاع CSM لجميع الأقراص. إذا تم اختيار إدخال إقلاع CSM للإقلاع منه، سيحاول CSM الخاص بـ UEFI الإقلاع من كود إقلاع MBR الخاص بالقرص.
+</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>ملاحظة</strong> تقوم شركة Intel بإلغاء دعم CSM تدريجياً، الاعتماد على هذه الميزة قد لا يكون متاحاً في المستقبل. <a rel="nofollow" class="external autonumber" href="https://www.intel.com/content/dam/support/us/en/documents/intel-nuc/Legacy-BIOS-Boot-Support-Removal-for-Intel-Platforms.pdf">[١]</a>
+</div>
+<div class="mw-heading mw-heading3"><h3 id="BIOS">BIOS</h3></div>
+<p>في معظم الحالات، يُخزن نظام الإدخال والإخراج الأساسي (<a href="https://en.wikipedia.org/wiki/BIOS" class="extiw" title="wikipedia:BIOS">BIOS</a>) في ذاكرة وميضية (flash memory) على اللوحة الأم نفسها وهو مستقل عن وحدة تخزين النظام. تم إنشاؤه في الأصل لأجهزة <a href="https://en.wikipedia.org/wiki/IBM_PC" class="extiw" title="wikipedia:IBM PC">IBM PC</a> للتعامل مع تهيئة العتاد وعملية الإقلاع، وتم استبداله تدريجياً منذ عام 2010 بـ UEFI الذي لا يعاني من نفس القيود التقنية.
+</p>
+<div class="mw-heading mw-heading2"><h2 id="تهيئة_النظام">
+<span id=".D8.AA.D9.87.D9.8A.D8.A6.D8.A9_.D8.A7.D9.84.D9.86.D8.B8.D8.A7.D9.85"></span>تهيئة النظام</h2></div>
+<p>عند تشغيل النظام، يتم تنفيذ الفحص الذاتي عند التشغيل (<a href="https://en.wikipedia.org/wiki/Power-on_self-test" class="extiw" title="wikipedia:Power-on self-test">POST</a>). انظر أيضاً <a rel="nofollow" class="external text" href="https://www.devever.net/~hl/backstage-cast">المعالجات الحديثة تمتلك طاقم كواليس</a> بقلم Hugo Landau.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="UEFI_2">UEFI</h3></div>
+<ol>
+<li>بعد اختبار POST، يقوم UEFI بتهيئة العتاد اللازم للإقلاع (القرص، متحكمات لوحة المفاتيح، إلخ).</li>
+<li>يقرأ البرنامج الثابت إدخالات الإقلاع في الـ NVRAM لتحديد تطبيق EFI الذي يجب تشغيله ومن أين (أي من أي قرص وقسم).
+<ul><li>قد يكون إدخال الإقلاع ببساطة عبارة عن قرص. في هذه الحالة يبحث البرنامج الثابت عن <a href="../en/EFI_system_partition.html" title="EFI system partition">قسم نظام EFI</a> على ذلك القرص ويحاول العثور على تطبيق EFI في مسار الإقلاع الاحتياطي <span dir="ltr"><code>\EFI\BOOT\BOOTx64.EFI</code></span> (أو <span dir="ltr"><code>BOOTIA32.EFI</code></span> على <a href="../en/Unified_Extensible_Firmware_Interface.html#UEFI_firmware_bitness" title="Unified Extensible Firmware Interface">الأنظمة ذات UEFI بـ 32 بت IA32</a>). هكذا تعمل وسائط النقل القابلة للإقلاع عبر UEFI.</li></ul>
+</li>
+<li>يقوم البرنامج الثابت بتشغيل تطبيق EFI.
+<ul>
+<li>قد يكون هذا <a href="#%D9%85%D8%AD%D9%85%D9%84_%D8%A7%D9%84%D8%A5%D9%82%D9%84%D8%A7%D8%B9">محمل إقلاع</a> أو <a href="../en/Kernel.html" title="Kernel">نواة</a> آرتش نفسها باستخدام <a href="../en/EFI_boot_stub.html" title="EFI boot stub">EFI boot stub</a>.</li>
+<li>قد يكون تطبيق EFI آخر مثل <a href="../en/UEFI_shell.html" class="mw-redirect" title="UEFI shell">صدفة UEFI</a> أو مدير إقلاع مثل <a href="../en/Systemd-boot.html" title="Systemd-boot">systemd-boot</a> أو <a href="../en/REFInd.html" title="REFInd">rEFInd</a>.</li>
+</ul>
+</li>
+</ol>
+<p>إذا كان الإقلاع الآمن (<a href="../en/Secure_Boot.html" class="mw-redirect" title="Secure Boot">Secure Boot</a>) مفعلاً، فستتحقق عملية الإقلاع من موثوقية ملف EFI التنفيذي عن طريق التوقيع.
+</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>ملاحظة</strong> بعض أنظمة UEFI لا يمكنها الإقلاع إلا من مسار الإقلاع الاحتياطي (fallback boot path).</div>
+<div class="mw-heading mw-heading4"><h4 id="الإقلاع_المتعدد_(Multibooting)">
+<span id=".D8.A7.D9.84.D8.A5.D9.82.D9.84.D8.A7.D8.B9_.D8.A7.D9.84.D9.85.D8.AA.D8.B9.D8.AF.D8.AF_.28Multibooting.29"></span>الإقلاع المتعدد (Multibooting)</h4></div>
+<p>بما أن كل نظام تشغيل أو مُصنّع يمكنه الاحتفاظ بملفاته الخاصة داخل <a href="../en/EFI_system_partition.html" title="EFI system partition">قسم نظام EFI</a> دون التأثير على الآخر، فإن الإقلاع المتعدد باستخدام UEFI هو ببساطة مسألة تشغيل تطبيق EFI مختلف يتوافق مع محمل إقلاع نظام التشغيل المعين. هذا يزيل الحاجة للاعتماد على آليات التحميل المتسلسل (<a href="https://en.wikipedia.org/wiki/Chain_loading" class="extiw" title="wikipedia:Chain loading">chain loading</a>) لمحمل إقلاع معين لتحميل نظام تشغيل آخر.
+</p>
+<p>انظر أيضاً <a href="../en/Dual_boot_with_Windows.html" title="Dual boot with Windows">الإقلاع المزدوج مع ويندوز</a>.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="BIOS_2">BIOS</h3></div>
+<ol>
+<li>بعد اختبار POST، يقوم BIOS بتهيئة العتاد اللازم للإقلاع (القرص، متحكمات لوحة المفاتيح، إلخ).</li>
+<li>يقوم BIOS بتشغيل أول 440 بايت (<a href="../en/Partitioning.html#Master_Boot_Record_(bootstrap_code)" title="Partitioning">منطقة كود الإقلاع في سجل الإقلاع الرئيسي MBR</a>) من القرص الأول حسب ترتيب أقراص BIOS.</li>
+<li>تقوم المرحلة الأولى لمحمل الإقلاع في كود إقلاع MBR بتشغيل كود المرحلة الثانية (إن وُجد) من إما:
+<ul>
+<li>قطاعات القرص التالية بعد الـ MBR، أي ما يسمى فجوة ما بعد الـ MBR (فقط على جدول أقسام MBR).</li>
+<li>قسم أو قرص بدون أقسام يحتوي على سجل إقلاع وحدة التخزين (<a href="https://en.wikipedia.org/wiki/Volume_boot_record" class="extiw" title="wikipedia:Volume boot record">VBR</a>).</li>
+<li>بالنسبة لـ <a href="../en/GRUB.html" title="GRUB">GRUB</a> على قرص مقسم بنظام GPT — <a href="../en/BIOS_boot_partition.html" class="mw-redirect" title="BIOS boot partition">قسم إقلاع BIOS</a> مخصص لـ GRUB (يُستخدم بدلاً من فجوة ما بعد الـ MBR التي لا توجد في نظام GPT).</li>
+</ul>
+</li>
+<li>يتم تشغيل <a href="#%D9%85%D8%AD%D9%85%D9%84_%D8%A7%D9%84%D8%A5%D9%82%D9%84%D8%A7%D8%B9">محمل الإقلاع</a> الفعلي.</li>
+<li>يقوم محمل الإقلاع بعد ذلك بتحميل نظام التشغيل إما عن طريق التحميل المتسلسل (chain-loading) أو التحميل المباشر لنواة نظام التشغيل.</li>
+</ol>
+<div class="mw-heading mw-heading2"><h2 id="محمل_الإقلاع">
+<span id=".D9.85.D8.AD.D9.85.D9.84_.D8.A7.D9.84.D8.A5.D9.82.D9.84.D8.A7.D8.B9"></span>محمل الإقلاع</h2></div>
+<p>محمل الإقلاع (<a href="https://en.wikipedia.org/wiki/Bootloader" class="extiw" title="wikipedia:Bootloader">Boot loader</a>) هو جزء من البرمجيات يبدأ تشغيله بواسطة البرنامج الثابت (Firmware) — سواء كان <a href="../en/Unified_Extensible_Firmware_Interface.html" class="mw-redirect" title="UEFI">UEFI</a> أو <a href="https://en.wikipedia.org/wiki/BIOS" class="extiw" title="wikipedia:BIOS">BIOS</a>. وهو مسؤول عن تحميل <a href="../en/Kernel.html" title="Kernel">النواة</a> مع <a href="../en/Kernel_parameters.html" title="Kernel parameters">عوامل النواة</a> المطلوبة وأي صور <a href="../en/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs">initramfs</a> خارجية.
+</p>
+<p>مدير الإقلاع (<a rel="nofollow" class="external text" href="https://www.rodsbooks.com/efi-bootloaders/principles.html">boot manager</a>) يعرض قائمة بخيارات الإقلاع، أو يوفر طريقة أخرى للتحكم في عملية الإقلاع — أي أنه ببساطة يقوم بتشغيل ملفات EFI التنفيذية الأخرى.
+</p>
+<p>في حالة UEFI، يمكن تشغيل النواة نفسها مباشرة بواسطة UEFI باستخدام <a href="../en/EFI_boot_stub.html" title="EFI boot stub">EFI boot stub</a>. ومع ذلك، لا يزال من الممكن استخدام محمل إقلاع أو مدير إقلاع منفصل بغرض تعديل عوامل النواة قبل الإقلاع.
+</p>
+<p>الأنظمة التي تحتوي على <a href="../en/Unified_Extensible_Firmware_Interface.html#UEFI_firmware_bitness" title="Unified Extensible Firmware Interface">UEFI بـ 32-بت IA32</a> تتطلب محمل إقلاع يدعم الإقلاع بالوضع المختلط (mixed mode booting).
+</p>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>تحذير</strong> للإقلاع بنجاح في آرتش، يحتاج محمل الإقلاع إلى الوصول إلى النواة وصورة (صور) initramfs التي توجد عادةً في مجلد <span dir="ltr"><code>/boot</code></span>. هذا يعني أن محمل الإقلاع يجب أن يدعم كل شيء بدءاً من أجهزة الكتل (block devices)، أجهزة الكتل المكدسة (LVM، RAID، dm-crypt، LUKS، إلخ) وصولاً إلى نظام الملفات الذي توجد عليه النواة وصورة initramfs.
+<p>نظراً لأن معظم محملات الإقلاع تقريباً لا تدعم أجهزة الكتل المكدسة هذه، ولأن أنظمة الملفات قد تُدخل ميزات جديدة ربما لا تكون مدعومة بعد من قِبل أي محمل إقلاع (مثل <a rel="nofollow" class="external text" href="https://gitlab.archlinux.org/archlinux/packaging/packages/grub/-/issues/7">archlinux/packaging/packages/grub#7</a>، <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/79857">FS#79857</a>، <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/59047">FS#59047</a>، <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/58137">FS#58137</a>، <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/51879">FS#51879</a>، <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/46856">FS#46856</a>، <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/38750">FS#38750</a>، <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/21733">FS#21733</a> ومجلدات مشفرة بـ <a href="../en/Fscrypt.html" title="Fscrypt">fscrypt</a>)، فإن استخدام <a href="../en/Partitioning.html#/boot" title="Partitioning">قسم /boot</a> منفصل مع نظام ملفات مدعوم عالمياً، مثل <a href="../en/FAT.html" class="mw-redirect" title="FAT32">FAT32</a>، يكون في كثير من الأحيان الخيار الأفضل والعملي أكثر.
+</p>
+</div>
+<div class="mw-heading mw-heading3"><h3 id="مقارنة_الميزات">
+<span id=".D9.85.D9.82.D8.A7.D8.B1.D9.86.D8.A9_.D8.A7.D9.84.D9.85.D9.8A.D8.B2.D8.A7.D8.AA"></span>مقارنة الميزات</h3></div>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>ملاحظة</strong> 
+<ul>
+<li>بما أن GPT هو جزء من مواصفات UEFI، فإن جميع محملات إقلاع UEFI تدعم أقراص GPT. دعم GPT على أنظمة BIOS ممكن، باستخدام "الإقلاع الهجين" مع <a rel="nofollow" class="external text" href="https://www.rodsbooks.com/gdisk/hybrid.html">Hybrid MBR</a>، أو بروتوكول <a rel="nofollow" class="external text" href="https://repo.or.cz/syslinux.git/blob/HEAD:/doc/gpt.txt">GPT-only</a> الجديد. قد يسبب هذا البروتوكول مشاكل مع بعض تطبيقات BIOS؛ راجع موقع <a rel="nofollow" class="external text" href="https://www.rodsbooks.com/gdisk/bios.html#bios">rodsbooks</a> للتفاصيل.</li>
+<li>بما أن الإقلاع الآمن (<a href="../en/Secure_Boot.html" class="mw-redirect" title="Secure Boot">Secure Boot</a>) هو جزء من مواصفات UEFI، فإن جميع محملات إقلاع UEFI تدعمه، على الرغم من أن بعضها لديه قيود.</li>
+</ul>
+</div>
+<table class="wikitable sortable">
+<tbody>
+<tr>
+<th rowspan="2">الاسم
+</th>
+<th colspan="2">البرنامج الثابت (Firmware)
+</th>
+<th colspan="2">
+<a href="../en/Partition_table.html" class="mw-redirect" title="Partition table">جدول الأقسام</a>
+</th>
+<th rowspan="2">إقلاع متعدد
+</th>
+<th rowspan="2">
+<a href="../en/File_systems.html" title="File systems">أنظمة الملفات</a>
+</th>
+<th rowspan="2">ملاحظات
+</th>
+</tr>
+<tr>
+<th>BIOS</th>
+<th>
+<a href="../en/Unified_Extensible_Firmware_Interface.html" class="mw-redirect" title="UEFI">UEFI</a>
+</th>
+<th><a href="../en/Partitioning.html#Master_Boot_Record" class="mw-redirect" title="MBR">MBR</a></th>
+<th>
+<a href="../en/Partitioning.html#GUID_Partition_Table" class="mw-redirect" title="GPT">GPT</a>
+</th>
+</tr>
+<tr>
+<th>
+<a href="../en/Clover.html" title="Clover">Clover</a>
+</th>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes
+</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes
+</td>
+<td class="archwiki-table-cell archwiki-template-r" data-sort-value="1">No</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes
+</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes
+</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">
+<a href="../en/Clover.html#Supported_file_systems" title="Clover">قابلة للتوسيع</a><sup>2,5</sup>
+</td>
+<td>يمكنه محاكاة UEFI على أنظمة BIOS القديمة.
+</td>
+</tr>
+<tr>
+<th>
+<a href="../en/EFI_boot_stub.html" title="EFI boot stub">EFI boot stub</a>
+</th>
+<td class="archwiki-table-cell" data-sort-value="5">–
+</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes<sup>1</sup>
+</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes
+</td>
+<td class="archwiki-table-cell" data-sort-value="5">–
+</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">موروثة من البرنامج الثابت<sup>2</sup>
+</td>
+<td>النواة هي ملف EFI تنفيذي صالح يمكن تشغيله مباشرة من UEFI أو من محمل إقلاع UEFI آخر.
+</td>
+</tr>
+<tr>
+<th>
+<a href="../en/GRUB.html" title="GRUB">GRUB</a>
+</th>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes
+</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes<sup>3</sup>
+</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes
+</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes
+</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">
+<a href="../en/GRUB.html#Supported_file_systems" title="GRUB">مدمجة</a>
+</td>
+<td>يدعم RAID، و LUKS (ولكن ليس Argon2 PBKDFs) و LVM (ولكن ليس thin provisioned volumes). انظر <a href="../en/GRUB.html" title="GRUB">GRUB</a> لقيود خاصة بالإعداد.
+</td>
+</tr>
+<tr>
+<th>
+<a href="../en/Limine.html" title="Limine">Limine</a>
+</th>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes
+</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes<sup>3</sup>
+</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes
+</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes
+</td>
+<td class="archwiki-table-cell archwiki-template-y" data-sort-value="3">
+<a href="../en/Limine.html#Supported_file_systems" title="Limine">محدودة</a>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<th>
+<a href="../en/REFInd.html" title="REFInd">rEFInd</a>
+</th>
+<td class="archwiki-table-cell archwiki-template-r" data-sort-value="1">No
+</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes
+</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes
+</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes<sup>4</sup>
+</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">
+<a href="../en/REFInd.html#Supported_file_systems" title="REFInd">قابلة للتوسيع</a><sup>2,5</sup>
+</td>
+<td>يدعم الاكتشاف التلقائي للأنوية وعواملها دون إعدادات صريحة، ويدعم الإقلاع السريع (fastboot) <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=258805">[٢]</a>.
+</td>
+</tr>
+<tr>
+<th>
+<a href="../en/Syslinux.html" title="Syslinux">Syslinux</a>
+</th>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes
+</td>
+<td class="archwiki-table-cell archwiki-template-y" data-sort-value="3">
+<a href="../en/Syslinux.html#Limitations_of_UEFI_Syslinux" title="Syslinux">جزئي</a><sup>1</sup>
+</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes
+</td>
+<td class="archwiki-table-cell archwiki-template-y" data-sort-value="3">
+<a href="../en/Syslinux.html#Chainloading" title="Syslinux">جزئي</a>
+</td>
+<td class="archwiki-table-cell archwiki-template-y" data-sort-value="3">
+<a href="../en/Syslinux.html#Supported_file_systems" title="Syslinux">محدودة</a>
+</td>
+<td>لا يدعم ميزات معينة لأنظمة الملفات.<br>يمكنه فقط الوصول لنظام الملفات الذي <a href="../en/Syslinux.html#Chainloading" title="Syslinux">تم تثبيته عليه</a>.
+</td>
+</tr>
+<tr>
+<th>
+<a href="../en/Systemd-boot.html" title="Systemd-boot">systemd-boot</a>
+</th>
+<td class="archwiki-table-cell archwiki-template-r" data-sort-value="1">No
+</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes<sup>3</sup>
+</td>
+<td class="archwiki-table-cell archwiki-template-y" data-sort-value="3"><a rel="nofollow" class="external text" href="https://github.com/systemd/systemd/issues/1125">يدوي</a></td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes
+</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes<sup>4</sup>
+</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">
+<a href="../en/Systemd-boot.html#Supported_file_systems" title="Systemd-boot">قابلة للتوسيع</a><sup>2,5</sup>
+</td>
+<td>يمكنه تشغيل الملفات التنفيذية فقط من الـ <a href="../en/EFI_system_partition.html" class="mw-redirect" title="ESP">ESP</a> الذي تم تثبيته عليه أو من Extended Boot Loader Partition (قسم XBOOTLDR) على نفس القرص.<br>يكتشف تلقائياً صور <a href="../en/Unified_kernel_image.html" title="Unified kernel image">النواة الموحدة</a> (UKI) الموجودة في <span dir="ltr"><code><i>esp</i>/EFI/Linux/</code></span>.
+</td>
+</tr>
+<tr>
+<th>
+<a href="../en/Unified_kernel_image.html" title="Unified kernel image">صورة النواة الموحدة</a>
+</th>
+<td class="archwiki-table-cell" data-sort-value="5">–
+</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes<sup>3</sup>
+</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes
+</td>
+<td class="archwiki-table-cell" data-sort-value="5">–
+</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">موروثة من البرنامج الثابت<sup>2</sup>
+</td>
+<td>
+<span class="plainlinks archwiki-template-man" title="$ man 7 systemd-stub"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-stub.7">systemd-stub(7)</a></span>، نواة، و initramfs، وسطر أوامر النواة معبأة في ملف EFI تنفيذي ليتم تحميله مباشرة من البرامج الثابتة لـ UEFI أو محمل إقلاع آخر.
+</td>
+</tr>
+<tr>
+<th class="archwiki-table-cell archwiki-template-grey">
+<a href="../en/GRUB_Legacy.html" title="GRUB Legacy">GRUB Legacy</a>
+</th>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes
+</td>
+<td class="archwiki-table-cell archwiki-template-r" data-sort-value="1">No
+</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes</td>
+<td class="archwiki-table-cell archwiki-template-r" data-sort-value="1">No
+</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes
+</td>
+<td class="archwiki-table-cell archwiki-template-y" data-sort-value="3">
+<a href="../en/GRUB_Legacy.html#Supported_file_systems" title="GRUB Legacy">محدودة</a>
+</td>
+<td>
+<a rel="nofollow" class="external text" href="https://www.gnu.org/software/grub/grub-legacy.html">توقف دعمه</a> لصالح <a href="../en/GRUB.html" title="GRUB">GRUB</a>.
+</td>
+</tr>
+<tr>
+<th class="archwiki-table-cell archwiki-template-grey">
+<a href="../en/LILO.html" title="LILO">LILO</a>
+</th>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes
+</td>
+<td class="archwiki-table-cell archwiki-template-r" data-sort-value="1">No
+</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes</td>
+<td class="archwiki-table-cell archwiki-template-y" data-sort-value="3">
+<a rel="nofollow" class="external text" href="https://salsa.debian.org/joowie-guest/upstream_lilo/-/commit/29a64e6b92cac22d472f4b352de5b1535e4afc5f">جزئي</a>
+</td>
+<td class="archwiki-table-cell archwiki-template-g" data-sort-value="5">Yes
+</td>
+<td class="archwiki-table-cell archwiki-template-y" data-sort-value="3">
+<a href="../en/LILO.html#Supported_file_systems" title="LILO">محدودة</a>
+</td>
+<td>
+<a rel="nofollow" class="external text" href="https://web.archive.org/web/20180323163248/http://lilo.alioth.debian.org/">توقف دعمه</a> بسبب القيود (مثل مع Btrfs، GPT، RAID، التشفير).
+</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>بالرغم من أنه يمكن توقيع الملف التنفيذي من أجل الإقلاع الآمن (<a href="../en/Secure_Boot.html" class="mw-redirect" title="Secure Boot">Secure Boot</a>)، إلا أنه لا يقوم بأي تحقق لاحق، مما يكسر سلسلة الثقة (chain of trust).</li>
+<li>دعم أنظمة الملفات موروث من البرنامج الثابت. مواصفات UEFI تلزم بدعم أنظمة ملفات FAT12 و FAT16 و FAT32 <a rel="nofollow" class="external autonumber" href="https://uefi.org/specs/UEFI/2.11/13_Protocols_Media_Access.html#file-system-format-1">[٣]</a>، ولكن يمكن للشركات المصنعة اختيارياً إضافة دعم لأنظمة ملفات إضافية؛ على سبيل المثال، البرامج الثابتة في أجهزة <a href="../en/Mac.html" title="Mac">Mac</a> من آبل تدعم نظام ملفات HFS+. إذا كان البرنامج الثابت يوفر واجهة لتحميل <a href="../en/Unified_Extensible_Firmware_Interface.html#UEFI_drivers" title="Unified Extensible Firmware Interface">تعريفات UEFI</a> عند بدء التشغيل، يمكن إضافة دعم لأنظمة ملفات إضافية عبر تحميل تعريفات أنظمة ملفات (يتم الحصول عليها بشكل مستقل).</li>
+<li>يدعم الإقلاع بالوضع المختلط (mixed mode booting). أي أنه يمكنه إقلاع نواة لينكس 64-بت x86_64 على <a href="../en/Unified_Extensible_Firmware_Interface.html#UEFI_firmware_bitness" title="Unified Extensible Firmware Interface">UEFI بـ 32-بت IA32</a>.</li>
+<li>مدير إقلاع (boot manager). يمكنه فقط تشغيل تطبيقات EFI الأخرى، على سبيل المثال، صور نواة لينكس المبنية بـ <span dir="ltr"><code>CONFIG_EFI_STUB=y</code></span> ومدير إقلاع ويندوز <a rel="nofollow" class="external text" href="https://learn.microsoft.com/en-us/windows-hardware/drivers/bringup/boot-and-uefi#understanding-the-windows-boot-manager">Windows Boot Manager</a> (وهو <span dir="ltr"><code>bootmgfw.efi</code></span>).</li>
+<li>يدعم تحميل <a href="../en/Unified_Extensible_Firmware_Interface.html#UEFI_drivers" title="Unified Extensible Firmware Interface">تعريفات أنظمة ملفات UEFI</a>.</li>
+</ol>
+<p>انظر أيضاً <a href="https://en.wikipedia.org/wiki/ar:%D9%85%D9%82%D8%A7%D8%B1%D9%86%D8%A9_%D9%85%D8%AD%D9%85%D9%84%D8%A7%D8%AA_%D8%A7%D9%84%D8%A5%D9%82%D9%84%D8%A7%D8%B9" class="extiw" title="wikipedia:ar:مقارنة محملات الإقلاع">مقارنة بين محملات الإقلاع</a>.
+</p>
+<div class="mw-heading mw-heading2"><h2 id="النواة_(Kernel)">
+<span id=".D8.A7.D9.84.D9.86.D9.88.D8.A7.D8.A9_.28Kernel.29"></span>النواة (Kernel)</h2></div>
+<p>يقوم <a href="#%D9%85%D8%AD%D9%85%D9%84_%D8%A7%D9%84%D8%A5%D9%82%D9%84%D8%A7%D8%B9">محمل الإقلاع</a> بتشغيل صورة <a href="https://en.wikipedia.org/wiki/vmlinux" class="extiw" title="wikipedia:vmlinux">vmlinux</a> التي تحتوي على <a href="../en/Kernel.html" title="Kernel">النواة</a>.
+</p>
+<p>تعمل النواة على مستوى منخفض (<i>مساحة النواة - kernelspace</i>) لتتفاعل بين عتاد الجهاز والبرامج. تقوم النواة في البداية بحصر العتاد وتهيئته قبل المتابعة إلى مساحة المستخدم (userspace). انظر <a href="https://en.wikipedia.org/wiki/ar:%D9%86%D9%88%D8%A7%D8%A9_(%D9%86%D8%B8%D9%85_%D8%AA%D8%B4%D8%BA%D9%8A%D9%84)" class="extiw" title="wikipedia:ar:نواة (نظم تشغيل)">النواة (نظام تشغيل)</a> و <a href="https://en.wikipedia.org/wiki/ar:%D9%86%D9%88%D8%A7%D8%A9_%D9%84%D9%8A%D9%86%D9%83%D8%B3" class="extiw" title="wikipedia:ar:نواة لينكس">نواة لينكس</a> للحصول على شرح مفصل.
+</p>
+<div class="mw-heading mw-heading2"><h2 id="initramfs">initramfs</h2></div>
+<p>صورة الـ <i>initramfs</i> (وهي اختصار لـ <i><b>init</b></i>ial <i><b>RAM</b></i> <i><b>f</b></i>ile <i><b>s</b></i>ystem - نظام ملفات الذاكرة العشوائية الأولي) هي أرشيف <a href="https://en.wikipedia.org/wiki/cpio" class="extiw" title="wikipedia:cpio">cpio</a> يوفر الملفات الضرورية لـ <i>مساحة المستخدم المبكرة</i> (انظر أدناه) لبدء مساحة المستخدم المتأخرة بنجاح. وهذا يعني في الغالب توفير جميع وحدات النواة (kernel modules)، أدوات مساحة المستخدم، المكتبات المرتبطة بها، الملفات الداعمة مثل قواعد udev، إلخ.. اللازمة لتحديد موقع نظام ملفات الجذر والوصول إليه وتركيبه. من خلال مفهوم initramfs، يصبح من الممكن التعامل مع إعدادات أكثر تعقيداً، مثل الإقلاع من قرص خارجي، أجهزة مكدسة (الأقسام المنطقية LVM، مصفوفات RAID البرمجية، الضغط، التشفير) أو تشغيل خادم SSH صغير في مساحة المستخدم المبكرة لفك التشفير عن بُعد أو لمهام صيانة نظام ملفات الجذر.
+</p>
+<p>سيتم تحميل غالبية وحدات النواة خلال المراحل اللاحقة من عملية init بواسطة <a href="../en/Udev.html" title="Udev">udev</a> بعد تبديل الجذر (switch root) إلى نظام ملفات الجذر الفعلي.
+</p>
+<p>تسير العملية على النحو التالي:
+</p>
+<ol>
+<li>يبدأ نظام ملفات الجذر عند <span dir="ltr"><code>/</code></span> كـ <a rel="nofollow" class="external text" href="https://docs.kernel.org/filesystems/ramfs-rootfs-initramfs.html">rootfs</a> فارغ، وهو حالة خاصة من tmpfs أو ramfs. هذا هو نظام ملفات الجذر المؤقت الذي سيتم فك ضغط صور initramfs إليه.</li>
+<li>تفك النواة ضغط الـ initramfs المدمج (builtin) الخاص بها إلى الجذر المؤقت. تستخدم <a href="../en/Kernel.html#Officially_supported_kernels" title="Kernel">أنوية آرتش لينكس المدعومة رسمياً</a> أرشيفاً فارغاً لـ initramfs المدمج، وهو الإعداد الافتراضي عند بناء لينكس.</li>
+<li>تفك النواة ضغط صور initramfs الخارجية بالترتيب المحدد عبر سطر الأوامر المُمرر بواسطة <a href="#%D9%85%D8%AD%D9%85%D9%84_%D8%A7%D9%84%D8%A5%D9%82%D9%84%D8%A7%D8%B9">محمل الإقلاع</a>، وتقوم بالكتابة فوق (overwriting) أي ملفات من initramfs المدمج أو الملفات التي فُكت مسبقاً. لاحظ أنه يمكن دمج عدة صور initramfs في ملف واحد وستقوم النواة بمعالجتها حسب ترتيبها في الملف.
+<ul>
+<li>إذا كانت أول صورة initramfs غير مضغوطة، بعد فك ضغطها، ستبحث النواة عن تحديثات <a href="../en/Microcode.html" title="Microcode">المايكروكود</a> للمعالج وتحديثات جدول ACPI في <span dir="ltr"><code>/kernel/x86/microcode/</code></span> و <span dir="ltr"><code>/kernel/firmware/acpi/</code></span> على التوالي.</li>
+<li>بعد معالجة تحديثات مايكروكود المعالج وجدول ACPI، ستشرع النواة في فك ضغط باقي صور initramfs، إن وُجدت.</li>
+</ul>
+</li>
+</ol>
+<p>صور Initramfs هي الطريقة المفضلة في آرتش لينكس لإعداد مساحة المستخدم المبكرة ويمكن توليدها باستخدام <a href="../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a>، أو <a href="../en/Dracut.html" title="Dracut">dracut</a>، أو <a href="../en/Booster.html" title="Booster">booster</a>.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="التشغيل_بدون_initramfs">
+<span id=".D8.A7.D9.84.D8.AA.D8.B4.D8.BA.D9.8A.D9.84_.D8.A8.D8.AF.D9.88.D9.86_initramfs"></span>التشغيل بدون initramfs</h3></div>
+<p>منذ الإصدار 6.13.8 تمتلك <a href="../en/Kernel.html#Officially_supported_kernels" title="Kernel">الأنوية المدعومة رسمياً</a> تعريفات مدمجة لـ <a href="../en/Btrfs.html" title="Btrfs">Btrfs</a> و <a href="../en/Ext4.html" title="Ext4">Ext4</a> <a rel="nofollow" class="external autonumber" href="https://gitlab.archlinux.org/archlinux/packaging/packages/linux/-/commit/a7e2a17f9c0e55937ea3e18c4d5b905a8e4f8047">[٤]</a>.
+</p>
+<p>هذا يجعل من الممكن للنواة استخدام قسم الجذر مع هذه الأنظمة للملفات مباشرةً وتحميل بقية الوحدات الخارجية اللازمة من هناك. بالرغم من ذلك، هناك بعض التفاصيل التي يجب وضعها في الاعتبار:
+</p>
+<ul>
+<li>لا يمكن استخدام <a href="../en/Systemd.html#GPT_partition_automounting" title="Systemd">التركيب التلقائي لأقسام GPT</a>، لذلك <a href="../en/Kernel_parameters.html" title="Kernel parameters">عامل النواة</a> <span dir="ltr"><code>root</code></span> مطلوب دائماً.</li>
+<li>تقتصر <a href="../en/Persistent_block_device_naming.html" title="Persistent block device naming">الأسماء الثابتة لأجهزة الكتل</a> لعامل <span dir="ltr"><code>root</code></span> على <span dir="ltr"><code>PARTUUID</code></span> و <span dir="ltr"><code>PARTLABEL</code></span> فقط <a rel="nofollow" class="external autonumber" href="https://github.com/torvalds/linux/blob/v6.14/block/early-lookup.c#L216-L243">[٥]</a>.</li>
+<li>خيارات <a href="../en/File_systems.html#Mount_a_file_system" class="mw-redirect" title="Mount">التركيب</a> لـ <span dir="ltr"><code>rootflags</code></span> محدودة، على سبيل المثال، خيار <span dir="ltr"><code>noatime</code></span> لن يعمل <a rel="nofollow" class="external autonumber" href="https://bugzilla.kernel.org/show_bug.cgi?id=61601">[٦]</a>. لتخفيف الآثار الجانبية المحتملة، يمكنك جعل التركيب الأولي للقراءة فقط باستخدام <span dir="ltr"><code>rootflags=ro</code></span>. الخيارات المطلوبة يمكن تطبيقها لاحقاً عند إعادة التركيب (remount) عبر <a href="../en/Fstab.html" title="Fstab">fstab</a>.</li>
+<li>استخدام <span class="plainlinks archwiki-template-man" title="$ man 8 systemd-gpt-auto-generator"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-gpt-auto-generator.8">systemd-gpt-auto-generator(8)</a></span> غير مجدٍ بدون initramfs ولديه مشاكل <a rel="nofollow" class="external autonumber" href="https://github.com/systemd/systemd/issues/16953">[٧]</a>، قم بتعطيله بضبط <span dir="ltr"><code>systemd.gpt_auto=no</code></span>.</li>
+</ul>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>ملاحظة</strong> الأقراص من نوع virtio و SCSI/SATA/AHCI العادية هي فقط التي تمتلك وحدات مدمجة في الوقت الحالي. أنواع التخزين الأخرى (<a href="../en/Solid_state_drive/NVMe.html" class="mw-redirect" title="NVMe">NVMe</a>، <a href="../en/USB_storage_devices.html" title="USB storage devices">USB</a>، جهاز التخطيط <a href="https://en.wikipedia.org/wiki/Device_mapper" class="extiw" title="w:Device mapper">device mapper</a>، إلخ) لن تعمل. كما لا يمكن استخدام <a href="../en/LVM.html" title="LVM">LVM</a> أو التشفير بدون initramfs لأنها تتطلب أدوات مساحة المستخدم لكي تعمل.</div>
+<p>شيء آخر تحتاجه فعلياً من أجل الـ initramfs هو <a href="../en/Microcode.html#Early_loading" title="Microcode">التحميل المبكر للمايكروكود</a>. ولكن ليس من الضروري بناء صورة كاملة لذلك، يوفر آرتش <a href="../en/Microcode.html#Microcode_in_a_separate_initramfs_file" title="Microcode">مايكروكود في ملفات initramfs منفصلة</a>، والتي يمكن استخدامها بشكل مستقل.
+</p>
+<p>إذا لم يتم توفير صورة initramfs، فإن النواة تحتوي دائماً على صورة فارغة للبدء منها <a rel="nofollow" class="external autonumber" href="https://docs.kernel.org/filesystems/ramfs-rootfs-initramfs.html#populating-initramfs">[٨]</a>. لذلك لا ينبغي أن تكون هناك مشكلات تتعلق بتثبيت (pinning) قسم الجذر <a rel="nofollow" class="external autonumber" href="https://github.com/torvalds/linux/blob/1b907d0507354b74a4f2c286380cd6059af79248/fs/namespace.c#L4222">[٩]</a>.
+</p>
+<div class="mw-heading mw-heading2"><h2 id="مساحة_المستخدم_المبكرة_(Early_userspace)">
+<span id=".D9.85.D8.B3.D8.A7.D8.AD.D8.A9_.D8.A7.D9.84.D9.85.D8.B3.D8.AA.D8.AE.D8.AF.D9.85_.D8.A7.D9.84.D9.85.D8.A8.D9.83.D8.B1.D8.A9_.28Early_userspace.29"></span>مساحة المستخدم المبكرة (Early userspace)</h2></div>
+<p>تحدث مرحلة <i>مساحة المستخدم المبكرة</i>، المعروفة أيضاً بمرحلة الـ <i>initramfs</i>، في rootfs يتكون من الملفات المقدمة بواسطة <a href="#initramfs">#initramfs</a>. تبدأ مساحة المستخدم المبكرة عندما تقوم النواة بتنفيذ الملف الثنائي <span dir="ltr"><code>/init</code></span> كعملية رقم PID 1.
+</p>
+<p>وظيفة مساحة المستخدم المبكرة <a href="../en/Mkinitcpio.html#Hook_list" title="Mkinitcpio">قابلة للتخصيص والإعداد</a>، لكن غرضها الرئيسي هو تجهيز النظام لدرجة تمكنه من الوصول إلى نظام ملفات الجذر الفعلي. هذا يشمل:
+</p>
+<ul>
+<li>يقوم <span class="plainlinks archwiki-template-man" title="$ man 8 systemd-modules-load"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd-modules-load.8">systemd-modules-load(8)</a></span> بتحميل وحدات النواة، مثل أي وحدات لأجهزة الكتل اللازمة لتركيب نظام ملفات الجذر الحقيقي.</li>
+<li>إعداد مكدس التخزين (storage stack) الذي قد يوجد عليه نظام ملفات الجذر، مثلاً عبر <a href="../en/Dm-crypt.html" title="Dm-crypt">dm-crypt</a>، أو <a href="../en/Dm-verity.html" title="Dm-verity">dm-verity</a>، أو <a href="../en/RAID.html" class="mw-redirect" title="Mdadm">mdadm</a>، أو <a href="../en/LVM.html" title="LVM">LVM</a>، أو <a href="../en/Systemd-repart.html" title="Systemd-repart">systemd-repart</a>، إلخ.
+<ul><li>التعامل مع فك تشفير نظام ملفات الجذر الحقيقي، إن وُجد.</li></ul>
+</li>
+<li>حل وربط <a href="../en/Persistent_block_device_naming.html" title="Persistent block device naming">الأسماء الثابتة لأجهزة الكتل</a> بالأجهزة الفعلية من خلال <a href="../en/Udev.html" title="Udev">udev</a>.</li>
+<li>تحميل وحدة DRM، حيث أن <a href="../en/Kernel_mode_setting.html#Early_KMS_start" title="Kernel mode setting">البدء المبكر لـ KMS</a> مفعل افتراضياً.</li>
+</ul>
+<p>لاحظ أن مساحة المستخدم المبكرة تخدم أكثر من مجرد إعداد نظام ملفات الجذر. هناك مهام لا يمكن القيام بها إلا قبل تركيب نظام ملفات الجذر، مثل فحص الأقراص بـ <a href="../en/Fsck.html" title="Fsck">fsck</a> والاستئناف من وضع الإسبات (<a href="../en/Power_management/Suspend_and_hibernate.html#Hibernation" class="mw-redirect" title="Hibernation">hibernation</a>).
+</p>
+<p>في المرحلة النهائية من مساحة المستخدم المبكرة، يتم تركيب الجذر الحقيقي في مسار <span dir="ltr"><code>/sysroot/</code></span> (في حال استخدام initramfs مبني على <a href="../en/Systemd.html" title="Systemd">systemd</a>) أو في <span dir="ltr"><code>/new_root/</code></span> (في حال استخدام initramfs مبني على busybox)، ثم يتم التبديل إليه باستخدام الأمر <span dir="ltr"><code>systemctl switch-root</code></span> عند استخدام initramfs المبني على systemd أو <span class="plainlinks archwiki-template-man" title="$ man 8 switch_root"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/switch_root.8">switch_root(8)</a></span> عند استخدام initramfs المبني على busybox. تبدأ مساحة المستخدم المتأخرة (late userspace) بتشغيل برنامج <a href="../en/Init.html" title="Init">init</a> من نظام ملفات الجذر الحقيقي.
+</p>
+<div class="mw-heading mw-heading2"><h2 id="مساحة_المستخدم_المتأخرة_(Late_userspace)">
+<span id=".D9.85.D8.B3.D8.A7.D8.AD.D8.A9_.D8.A7.D9.84.D9.85.D8.B3.D8.AA.D8.AE.D8.AF.D9.85_.D8.A7.D9.84.D9.85.D8.AA.D8.A3.D8.AE.D8.B1.D8.A9_.28Late_userspace.29"></span>مساحة المستخدم المتأخرة (Late userspace)</h2></div>
+<p>يتم تنفيذ بدء تشغيل مساحة المستخدم المتأخرة بواسطة عملية <a href="../en/Init.html" title="Init">init</a>. يستخدم آرتش رسمياً <a href="../en/Systemd.html" title="Systemd">systemd</a> الذي يُبنى على مفهوم الوحدات (units) والخدمات (services)، لكن الوظيفة الموضحة هنا تتداخل بشكل كبير مع أنظمة init الأخرى.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="getty">getty</h3></div>
+<p>تستدعي عملية init برنامج <a href="../en/Getty.html" title="Getty">getty</a> مرة واحدة لكل <a href="https://en.wikipedia.org/wiki/Virtual_console" class="extiw" title="wikipedia:Virtual console">طرفية افتراضية</a> (عادةً ما تكون ستة). يقوم <i>getty</i> بتهيئة كل طرفية وحمايتها من الوصول غير المصرح به. عندما يتم إدخال اسم المستخدم وكلمة المرور، يتحقق <i>getty</i> منهما مقابل ملفات <span dir="ltr"><code>/etc/passwd</code></span> و <span dir="ltr"><code>/etc/shadow</code></span>، ثم يستدعي <span class="plainlinks archwiki-template-man" title="$ man 1 login"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/login.1">login(1)</a></span>.
+</p>
+<div class="mw-heading mw-heading4"><h4 id="تسجيل_الدخول_(Login)">
+<span id=".D8.AA.D8.B3.D8.AC.D9.8A.D9.84_.D8.A7.D9.84.D8.AF.D8.AE.D9.88.D9.84_.28Login.29"></span>تسجيل الدخول (Login)</h4></div>
+<p>يبدأ برنامج تسجيل الدخول (<i>login</i>) جلسة للمستخدم عن طريق ضبط متغيرات البيئة وتشغيل الصدفة (shell) الخاصة بالمستخدم، بناءً على <span dir="ltr"><code>/etc/passwd</code></span>. يعرض برنامج <i>login</i> محتويات ملف <a href="https://en.wikipedia.org/wiki/motd_(Unix)" class="extiw" title="wikipedia:motd (Unix)">/etc/motd</a> (رسالة اليوم) بعد تسجيل الدخول بنجاح، قبل تنفيذ صدفة تسجيل الدخول مباشرة. هذا مكان جيد لعرض شروط الخدمة الخاصة بك لتذكير المستخدمين بالسياسات المحلية أو أي شيء ترغب في إخبارهم به.
+</p>
+<div class="mw-heading mw-heading4"><h4 id="الصدفة_(Shell)">
+<span id=".D8.A7.D9.84.D8.B5.D8.AF.D9.81.D8.A9_.28Shell.29"></span>الصدفة (Shell)</h4></div>
+<p>بمجرد بدء <a href="../en/Command-line_shell.html" class="mw-redirect" title="Shell">صدفة</a> المستخدم، فإنها عادةً ستقوم بتشغيل <a href="../en/Command-line_shell.html#Configuration_files" title="Command-line shell">ملف إعدادات وقت التشغيل</a>، مثل <a href="../en/Bash.html#Configuration_files" class="mw-redirect" title="Bashrc">bashrc</a>، قبل تقديم موجه الأوامر للمستخدم. إذا كان الحساب معداً لـ <a href="../en/Start_X_at_login.html" class="mw-redirect" title="Start X at login">بدء تشغيل X عند تسجيل الدخول</a>، سيقوم ملف إعدادات وقت التشغيل باستدعاء <a href="../en/Xinit.html" class="mw-redirect" title="Startx">startx</a> أو <a href="../en/Xinit.html" title="Xinit">xinit</a>. انتقل إلى قسم <a href="#%D8%A7%D9%84%D8%AC%D9%84%D8%B3%D8%A9_%D8%A7%D9%84%D8%B1%D8%B3%D9%88%D9%85%D9%8A%D8%A9_(Xorg)">#الجلسة الرسومية (Xorg)</a> للنهاية.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="مدير_العرض_(Display_manager)">
+<span id=".D9.85.D8.AF.D9.8A.D8.B1_.D8.A7.D9.84.D8.B9.D8.B1.D8.B6_.28Display_manager.29"></span>مدير العرض (Display manager)</h3></div>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-view-fullscreen.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs expansion.</b></p>
+<div>
+<b>Reason:</b> يصف هذا القسم فقط العملية باستخدام <a href="../en/Xorg.html" title="Xorg">Xorg</a> ولكنه لا يشرح ما يحدث مع <a href="../en/Wayland.html" title="Wayland">Wayland</a>. (Discuss in <a rel="nofollow" class="external text" href="../ar/Talk:Arch_boot_process.html">Talk:Arch boot process (العربية)</a>)</div>
+</div>
+<p>بالإضافة إلى ذلك، يمكن إعداد <a href="../en/Init.html" title="Init">init</a> لبدء <a href="../en/Display_manager.html" title="Display manager">مدير عرض</a> بدلاً من <i>getty</i> على طرفية افتراضية معينة. يتطلب هذا <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enabling">تفعيل</a> <a href="../en/Systemd.html#Using_units" title="Systemd">ملف خدمة systemd</a> الخاص به يدوياً. يقوم مدير العرض بعد ذلك ببدء جلسة رسومية.
+</p>
+<div class="mw-heading mw-heading4"><h4 id="الجلسة_الرسومية_(Xorg)">
+<span id=".D8.A7.D9.84.D8.AC.D9.84.D8.B3.D8.A9_.D8.A7.D9.84.D8.B1.D8.B3.D9.88.D9.85.D9.8A.D8.A9_.28Xorg.29"></span>الجلسة الرسومية (Xorg)</h4></div>
+<p>يقوم <a href="../en/Xinit.html" title="Xinit">xinit</a> بتشغيل ملف إعدادات وقت التشغيل <a href="../en/Xinit.html#xinitrc" class="mw-redirect" title="Xinitrc">xinitrc</a> الخاص بالمستخدم، والذي يبدأ عادةً تشغيل <a href="../en/Window_manager.html" title="Window manager">مدير نوافذ</a> أو <a href="../en/Desktop_environment.html" title="Desktop environment">بيئة سطح مكتب</a>. عندما ينتهي المستخدم ويخرج، سيتم إنهاء كل من <i>xinit</i> و <i>startx</i> والصدفة وبرنامج تسجيل الدخول بهذا الترتيب، ليعود إلى <i>getty</i> أو مدير العرض.
+</p>
+<div class="mw-heading mw-heading2"><h2 id="انظر_أيضاً">
+<span id=".D8.A7.D9.86.D8.B8.D8.B1_.D8.A3.D9.8A.D8.B6.D8.A7.D9.8B"></span>انظر أيضاً</h2></div>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/ar:%D8%B9%D9%85%D9%84%D9%8A%D8%A9_%D8%A5%D9%82%D9%84%D8%A7%D8%B9_%D9%84%D9%8A%D9%86%D9%83%D8%B3" class="extiw" title="wikipedia:ar:عملية إقلاع لينكس">عملية إقلاع لينكس</a></li>
+<li><a rel="nofollow" class="external text" href="https://web.archive.org/web/20230313210814/https://developer.ibm.com/articles/l-linuxboot/">نظرة داخل عملية إقلاع لينكس</a></li>
+<li><a rel="nofollow" class="external text" href="https://www.rodsbooks.com/efi-bootloaders/">إدارة محملات إقلاع EFI للينكس - بقلم Rod Smith</a></li>
+<li><a rel="nofollow" class="external text" href="https://neosmart.net/wiki/mbr-boot-process/">عملية إقلاع BIOS/MBR</a></li>
+<li><a rel="nofollow" class="external text" href="https://0pointer.net/blog/linux-boot-partitions.html">أقسام إقلاع لينكس وكيفية إعدادها - بقلم Lennart Poettering</a></li>
+<li><a href="https://en.wikipedia.org/wiki/ar:%D8%A5%D9%86%D9%8A%D8%AA_%D8%B1%D8%A7%D9%85_%D8%A5%D9%81_%D8%A5%D8%B3" class="extiw" title="wikipedia:ar:إنيت رام إف إس">initramfs</a></li>
+<li><a rel="nofollow" class="external text" href="https://web.archive.org/web/20150430223035/http://archlinux.me/brain0/2010/02/13/early-userspace-in-arch-linux/">مساحة المستخدم المبكرة في آرتش لينكس</a></li>
+<li><a rel="nofollow" class="external text" href="https://www.linux.com/learn/kernel-newbie-corner-initrd-and-initramfs-whats">ركن المبتدئين في النواة: initrd و initramfs</a></li>
+<li>
+<span class="plainlinks archwiki-template-man" title="$ man 7 bootup"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/bootup.7">bootup(7)</a></span> (معظمه حول جزء مساحة المستخدم في systemd initramfs)</li>
+</ul>
+</div>
+</div>
+					<div id="catlinks" class="catlinks" data-mw="interface">
+<div id="mw-normal-catlinks" class="mw-normal-catlinks">
+<a href="../Special:Categories.html" title="Special:Categories">Categories</a>: <ul>
+<li><a href="../ar/Category:Boot_process.html" title="Category:Boot process (العربية)">Boot process (العربية)</a></li>
+<li><a href="../ar/Category:About_Arch.html" title="Category:About Arch (العربية)">About Arch (العربية)</a></li>
+</ul>
+</div>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li></ul>
+</div>
+</div>
+				</div>
+			</main>
+			
+		</div>
+		<div class="mw-footer-container">
+			
+<footer id="footer" class="mw-footer" style="margin: 0">
+	<ul id="footer-info">
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Arch_boot_process_(%D8%A7%D9%84%D8%B9%D8%B1%D8%A8%D9%8A%D8%A9)&amp;oldid=870382">https://wiki.archlinux.org/index.php?title=Arch_boot_process_(العربية)&amp;oldid=870382</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 1 April 2026, at 14:56.</li>
+	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
+<br>
+</ul>
+
+	<ul id="footer-places">
+	<li id="footer-places-privacy"><a href="https://terms.archlinux.org/docs/privacy-policy/">Privacy policy</a></li>
+	<li id="footer-places-about"><a href="../en/ArchWiki:About.html">About ArchWiki</a></li>
+	<li id="footer-places-disclaimers"><a href="../en/ArchWiki:General_disclaimer.html">Disclaimers</a></li>
+	<li id="footer-places-archwiki-code-of-conduct"><a href="https://terms.archlinux.org/docs/code-of-conduct/" class="extiw" title="archlinux-service-agreements:code-of-conduct">Code of conduct</a></li>
+	<li id="footer-places-archwiki-terms-of-service"><a href="https://terms.archlinux.org/docs/terms-of-service/" class="extiw" title="archlinux-service-agreements:terms-of-service">Terms of service</a></li>
+</ul>
+
+	<ul id="footer-icons" class="noprint">
+	<li id="footer-copyrightico"><a href="https://www.gnu.org/copyleft/fdl.html" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled"><img src="/resources/assets/licenses/gnu-fdl.png" alt="GNU Free Documentation License 1.3 or later" width="88" height="31" loading="lazy"></a></li>
+	<li id="footer-poweredbyico"><picture><source media="(min-width: 500px)" srcset="/resources/assets/poweredby_mediawiki.svg" width="88" height="31"><img src="/resources/assets/mediawiki_compact.svg" width="25" height="25" loading="lazy"></picture></li>
+</ul>
+
+</footer>
+
+		</div>
+	</div> 
+</div> 
+<div class="vector-header-container vector-sticky-header-container no-font-mode-scale">
+	<div id="vector-sticky-header" class="vector-sticky-header">
+		<div class="vector-sticky-header-start">
+			<div class="vector-sticky-header-icon-start vector-button-flush-left vector-button-flush-right" aria-hidden="true">
+				<button class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-sticky-header-search-toggle" tabindex="-1" data-event-name="ui.vector-sticky-search-form.icon"><span class="vector-icon mw-ui-icon-search mw-ui-icon-wikimedia-search"></span>
+
+<span>Search</span>
+			</button>
+		</div>
+			
+		<div role="search" class="vector-search-box-vue  vector-search-box-show-thumbnail vector-search-box">
+			<div class="vector-typeahead-search-container">
+				<div class="cdx-typeahead-search cdx-typeahead-search--show-thumbnail">
+					<form action="/index.php" id="vector-sticky-search-form" class="cdx-search-input cdx-search-input--has-end-button">
+						<div class="cdx-search-input__input-wrapper" data-search-loc="header-moved">
+							<div class="cdx-text-input cdx-text-input--has-start-icon">
+								<input class="cdx-text-input__input mw-searchInput" autocomplete="off" type="search" name="search" placeholder="Search ArchWiki">
+								<span class="cdx-text-input__icon cdx-text-input__start-icon"></span>
+							</div>
+							<input type="hidden" name="title" value="Special:Search">
+						</div>
+						<button class="cdx-button cdx-search-input__end-button">Search</button>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="vector-sticky-header-context-bar">
+				<nav aria-label="Contents" class="vector-toc-landmark">
+						
+					<div id="vector-sticky-header-toc" class="vector-dropdown mw-portlet mw-portlet-sticky-header-toc vector-sticky-header-toc vector-button-flush-left">
+						<input type="checkbox" id="vector-sticky-header-toc-checkbox" role="button" aria-haspopup="true" data-event-name="ui.dropdown-vector-sticky-header-toc" class="vector-dropdown-checkbox " aria-label="Toggle the table of contents">
+						<label id="vector-sticky-header-toc-label" for="vector-sticky-header-toc-checkbox" class="vector-dropdown-label cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only " aria-hidden="true"><span class="vector-icon mw-ui-icon-listBullet mw-ui-icon-wikimedia-listBullet"></span>
+
+<span class="vector-dropdown-label-text">Toggle the table of contents</span>
+						</label>
+						<div class="vector-dropdown-content">
+					
+						<div id="vector-sticky-header-toc-unpinned-container" class="vector-unpinned-container">
+						</div>
+					
+						</div>
+					</div>
+			</nav>
+				<div class="vector-sticky-header-context-bar-primary" aria-hidden="true"><span class="mw-page-title-main">Arch boot process (العربية)</span></div>
+			</div>
+		</div>
+		<div class="vector-sticky-header-end" aria-hidden="true">
+			<div class="vector-sticky-header-icons">
+				<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-talk-sticky-header" tabindex="-1" data-event-name="talk-sticky-header"><span class="vector-icon mw-ui-icon-speechBubbles mw-ui-icon-wikimedia-speechBubbles"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-subject-sticky-header" tabindex="-1" data-event-name="subject-sticky-header"><span class="vector-icon mw-ui-icon-article mw-ui-icon-wikimedia-article"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-history-sticky-header" tabindex="-1" data-event-name="history-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-history mw-ui-icon-wikimedia-wikimedia-history"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only mw-watchlink" id="ca-watchstar-sticky-header" tabindex="-1" data-event-name="watch-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-star mw-ui-icon-wikimedia-wikimedia-star"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only reading-lists-bookmark" id="ca-bookmark-sticky-header" tabindex="-1" data-event-name="watch-sticky-bookmark"><span class="vector-icon mw-ui-icon-wikimedia-bookmarkOutline mw-ui-icon-wikimedia-wikimedia-bookmarkOutline"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-edit-sticky-header" tabindex="-1" data-event-name="wikitext-edit-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-wikiText mw-ui-icon-wikimedia-wikimedia-wikiText"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-ve-edit-sticky-header" tabindex="-1" data-event-name="ve-edit-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-edit mw-ui-icon-wikimedia-wikimedia-edit"></span>
+
+<span></span>
+			</a>
+			<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--icon-only" id="ca-viewsource-sticky-header" tabindex="-1" data-event-name="ve-edit-protected-sticky-header"><span class="vector-icon mw-ui-icon-wikimedia-editLock mw-ui-icon-wikimedia-wikimedia-editLock"></span>
+
+<span></span>
+			</a>
+		</div>
+			<div class="vector-sticky-header-buttons">
+				<a href="#" class="cdx-button cdx-button--fake-button cdx-button--fake-button--enabled cdx-button--weight-quiet cdx-button--action-progressive" id="ca-addsection-sticky-header" tabindex="-1" data-event-name="addsection-sticky-header"><span class="vector-icon mw-ui-icon-speechBubbleAdd-progressive mw-ui-icon-wikimedia-speechBubbleAdd-progressive"></span>
+
+<span>Add topic</span>
+			</a>
+		</div>
+			<div class="vector-sticky-header-icon-end">
+				<div class="vector-user-links">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="mw-portlet mw-portlet-dock-bottom emptyPortlet" id="p-dock-bottom">
+	<ul>
+		
+	</ul>
+</div>
+</body>
+</html>

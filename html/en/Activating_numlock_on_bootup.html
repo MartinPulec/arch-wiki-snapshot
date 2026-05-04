@@ -5,7 +5,7 @@
 <title>Activating numlock on bootup - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.45.1">
+<meta name="generator" content="MediaWiki 1.45.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -285,10 +285,21 @@
 			<ul id="toc-Hyprland-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Labwc" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Labwc">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.3</span>
+					<span>Labwc</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Labwc-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 		<li id="toc-SDDM_with_KWIN_(KDE_Plasma)" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#SDDM_with_KWIN_(KDE_Plasma)">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">3.3</span>
+					<span class="vector-toc-numb">3.4</span>
 					<span>SDDM with KWIN (KDE Plasma)</span>
 				</div>
 			</a>
@@ -296,10 +307,21 @@
 			<ul id="toc-SDDM_with_KWIN_(KDE_Plasma)-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Plasma_Login_Manager" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Plasma_Login_Manager">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">3.5</span>
+					<span>Plasma Login Manager</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Plasma_Login_Manager-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 		<li id="toc-DWL" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#DWL">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">3.4</span>
+					<span class="vector-toc-numb">3.6</span>
 					<span>DWL</span>
 				</div>
 			</a>
@@ -392,6 +414,11 @@ HOOKS=(base udev autodetect microcode modconf kms keyboard keymap consolefont <b
 <p>An advantage of using this method is that the numlock setting will be replicated in the later boot process, and new virtual consoles will default to having numlock on.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="With_systemd_service">With systemd service</h3></div>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
+<div>
+<b>Reason:</b> numlockx works only with X11, not with wayland. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Activating_numlock_on_bootup.html">Talk:Activating numlock on bootup</a>)</div>
+</div>
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip</strong> These steps can be automated by <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">installing</a> the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/systemd-numlockontty/">systemd-numlockontty</a></span><sup><small>AUR</small></sup> package and <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enabling">enabling</a> the <code>numLockOnTty</code> service.</div>
 <p>First install the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=numlockx">numlockx</a></span> package.
@@ -473,16 +500,24 @@ $ dconf write org.mate.peripherals-keyboard numlock-state 'on'
 <p>Alternatively, you can use add <code>numlockx on</code> (from <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=numlockx">numlockx</a></span>) to a startup script or <code>~/.profile</code>.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="GDM">GDM</h3></div>
-<p>Create the following keyfile:
+<p>Create the following dconf keyfile:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/dconf/db/gdm.d/90-numlock</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[org/gnome/desktop/peripherals/keyboard]
-numlock-state=true
-remember-numlock-state=true</pre>
+remember-numlock-state=true
+numlock-state=true</pre>
+<p>According to <a rel="nofollow" class="external text" href="https://github.com/GNOME/gsettings-desktop-schemas/blob/8c672b3a0b659ddafb361411f820589627653642/schemas/org.gnome.desktop.peripherals.gschema.xml.in#L107">gsettings definitions</a>, <code>remember-numlock-state</code> decides whether to remember and restore the last state of numlock, and <code>numlock-state</code> provides an <b>initial</b> value. The <a rel="nofollow" class="external text" href="https://github.com/GNOME/mutter/blob/e7b7c1648474b22d3f49422d5f818a5b03b208ff/src/backends/meta-input-settings.c#L1890">mutter source code</a> shows that if <code>remember-numlock-state</code> is false, the <code>numlock-state</code> setting won't even be touched, and the query function will return a default false value directly.
+</p>
+<p>To prevent GDM from updating the value of <code>numlock-state</code> (force a deterministic numlock state), create a <code>locks</code> directory and lock it, as the <a rel="nofollow" class="external text" href="https://help.gnome.org/system-admin-guide/dconf-lockdown.html">guide</a> says:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/dconf/db/gdm.d/locks/numlock</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">/org/gnome/desktop/peripherals/keyboard/numlock-state</pre>
 <p>And run the following command:
 </p>
 <pre># dconf update
 </pre>
+<p>This is a general method and also suitable for GDM on Wayland.
+</p>
 <div class="mw-heading mw-heading3"><h3 id="Xfce">Xfce</h3></div>
 <p>In the file <code>~/.config/xfce4/xfconf/xfce-perchannel-xml/keyboards.xml</code>, make sure the following values are set to true:
 </p>
@@ -526,7 +561,7 @@ Numlock=on
 numlock=true</pre>
 <div class="mw-heading mw-heading2"><h2 id="Wayland">Wayland</h2></div>
 <div class="mw-heading mw-heading3"><h3 id="Sway">Sway</h3></div>
-<p>See <a href="../en/Sway.html#Initially_enable_CapsLock/NumLock" title="Sway">Sway#Initially enable CapsLock/NumLock</a>.
+<p>See <a href="../en/Sway.html#Activating_numlock_on_startup" title="Sway">Sway#Activating numlock on startup</a>.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Hyprland">Hyprland</h3></div>
 <p>Set the option in <code>~/.config/hypr/hyprland.conf</code>:
@@ -536,6 +571,9 @@ numlock=true</pre>
   numlock_by_default = true
   ...
 }</pre>
+<div class="mw-heading mw-heading3"><h3 id="Labwc">Labwc</h3></div>
+<p>See <a href="../en/Labwc.html#Activating_numlock_on_startup" title="Labwc">Labwc#Activating numlock on startup</a>.
+</p>
 <div class="mw-heading mw-heading3"><h3 id="SDDM_with_KWIN_(KDE_Plasma)">
 <span id="SDDM_with_KWIN_.28KDE_Plasma.29"></span>SDDM with KWIN (KDE Plasma)</h3></div>
 <p>Create or edit <code>/var/lib/sddm/.config/kcminputrc</code>:
@@ -544,6 +582,14 @@ numlock=true</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Keyboard]
 NumLock=0</pre>
 <p>The file must be owned by <code>sddm:sddm</code>
+</p>
+<div class="mw-heading mw-heading3"><h3 id="Plasma_Login_Manager">Plasma Login Manager</h3></div>
+<p>Edit <code>/var/lib/plasmalogin/.config/kdedefaults/kcminputrc</code>:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/var/lib/plasmalogin/.config/kdedefaults/kcminputrc</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Keyboard]
+NumLock=0</pre>
+<p>The file must be owned by <code>plasmalogin:plasmalogin</code>
 </p>
 <div class="mw-heading mw-heading3"><h3 id="DWL">DWL</h3></div>
 <p>Initialize the <code>xkb_rules</code> struct with the <code>numpad:mac</code> option:
@@ -554,12 +600,16 @@ NumLock=0</pre>
 };</pre>
 </div>
 </div>
-					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
+					<div id="catlinks" class="catlinks" data-mw="interface">
+<div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Categories</a>: <ul>
 <li><a href="../en/Category:Boot_process.html" title="Category:Boot process">Boot process</a></li>
 <li><a href="../en/Category:Keyboards.html" title="Category:Keyboards">Keyboards</a></li>
 </ul>
-</div></div>
+</div>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li></ul>
+</div>
+</div>
 				</div>
 			</main>
 			
@@ -568,8 +618,8 @@ NumLock=0</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Activating_numlock_on_bootup&amp;oldid=865552">https://wiki.archlinux.org/index.php?title=Activating_numlock_on_bootup&amp;oldid=865552</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 14 February 2026, at 10:35.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Activating_numlock_on_bootup&amp;oldid=872550">https://wiki.archlinux.org/index.php?title=Activating_numlock_on_bootup&amp;oldid=872550</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 30 April 2026, at 07:45.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -5,7 +5,7 @@
 <title>libvirt - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.45.1">
+<meta name="generator" content="MediaWiki 1.45.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -877,6 +877,17 @@
 			<ul id="toc-Error_starting_domain:_Requested_operation_is_not_valid:_network_'default'_is_not_active-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-UFW_firewall_blocking_Libvirt" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#UFW_firewall_blocking_Libvirt">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">11.8</span>
+					<span>UFW firewall blocking Libvirt</span>
+				</div>
+			</a>
+			
+			<ul id="toc-UFW_firewall_blocking_Libvirt-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1">
@@ -1258,8 +1269,9 @@ $ virsh vol-dumpxml --pool <i>poolname</i> <i>volumename</i>  # for details.
   --name arch-linux_testing \
   --memory 1024             \
   --vcpus=2,maxvcpus=4      \
-  --cpu host                \
+  --cpu host-model                \
   --cdrom $HOME/Downloads/arch-linux_install.iso \
+  --osinfo detect=on,name=archlinux \
   --disk size=2,format=qcow2  \
   --network user            \
   --virt-type kvm
@@ -1271,7 +1283,7 @@ $ virsh vol-dumpxml --pool <i>poolname</i> <i>volumename</i>  # for details.
   --name fedora-testing \
   --memory 2048         \
   --vcpus=2             \
-  --cpu=host            \
+  --cpu=host-model            \
   --cdrom /tmp/fedora20_x84-64.iso      \
   --os-type=linux --os-variant=fedora20 \
   --disk pool=testing,size=4            \
@@ -1981,6 +1993,24 @@ If you plan to run the virtual machine in headless mode, consider removing some 
 </pre>
 <p>For additional troubleshooting steps, see <a rel="nofollow" class="external autonumber" href="https://www.xmodulo.com/network-default-is-not-active.html">[4]</a>.
 </p>
+<div class="mw-heading mw-heading3"><h3 id="UFW_firewall_blocking_Libvirt">UFW firewall blocking Libvirt</h3></div>
+<p>Libvirt requires IP forwarding to be enabled. Run the following commands:
+</p>
+<pre># sudo ufw route allow in on virbr0
+# sudo ufw route allow out on virbr0
+# sudo ufw allow in on virbr0
+</pre>
+<p>In addition to routing rules and policy, you must also setup IP forwarding. This may be done by setting the following in /etc/ufw/sysctl.conf: 
+</p>
+<pre># net/ipv4/ip_forward=1
+# net/ipv6/conf/default/forwarding=1
+# net/ipv6/conf/all/forwarding=1
+</pre>
+<p>then restarting the firewall:
+</p>
+<pre># ufw disable
+# ufw enable
+</pre>
 <div class="mw-heading mw-heading2"><h2 id="See_also">See also</h2></div>
 <ul>
 <li><a rel="nofollow" class="external text" href="https://libvirt.org/drvqemu.html">Official libvirt web site</a></li>
@@ -2007,8 +2037,8 @@ If you plan to run the virtual machine in headless mode, consider removing some 
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Libvirt&amp;oldid=869309">https://wiki.archlinux.org/index.php?title=Libvirt&amp;oldid=869309</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 17 March 2026, at 00:54.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Libvirt&amp;oldid=871775">https://wiki.archlinux.org/index.php?title=Libvirt&amp;oldid=871775</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 20 April 2026, at 21:01.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

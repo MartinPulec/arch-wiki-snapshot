@@ -5,7 +5,7 @@
 <title>Zsh - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.45.1">
+<meta name="generator" content="MediaWiki 1.45.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -872,11 +872,11 @@ key[Shift-Tab]="${terminfo[kcbt]}"
 # Finally, make sure the terminal is in application mode, when zle is
 # active. Only then are the values from $terminfo valid.
 if (( ${+terminfo[smkx]} &amp;&amp; ${+terminfo[rmkx]} )); then
-	autoload -Uz add-zle-hook-widget
-	function zle_application_mode_start { echoti smkx }
-	function zle_application_mode_stop { echoti rmkx }
-	add-zle-hook-widget -Uz zle-line-init zle_application_mode_start
-	add-zle-hook-widget -Uz zle-line-finish zle_application_mode_stop
+    autoload -Uz add-zle-hook-widget
+    function zle_application_mode_start { echoti smkx }
+    function zle_application_mode_stop { echoti rmkx }
+    add-zle-hook-widget -Uz zle-line-init zle_application_mode_start
+    add-zle-hook-widget -Uz zle-line-finish zle_application_mode_stop
 fi</pre>
 <div class="mw-heading mw-heading4"><h4 id="Shift,_Alt,_Ctrl_and_Meta_modifiers">
 <span id="Shift.2C_Alt.2C_Ctrl_and_Meta_modifiers"></span>Shift, Alt, Ctrl and Meta modifiers</h4></div>
@@ -963,7 +963,7 @@ autoload -Uz promptinit &amp;&amp; promptinit
 
 # Define the theme
 prompt_mytheme_setup() {
-  PS1="%~%# "
+    PS1="%~%# "
 }
 
 # Add the theme to promptsys
@@ -1124,7 +1124,7 @@ RPROMPT='[%F{#0000ff}%?%f]'
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">autoload -Uz add-zsh-hook
 
 function reset_broken_terminal () {
-	printf '%b' '\e[0m\e(B\e)0\017\e[?5l\e7\e[0;0r\e8'
+    printf '%b' '\e[0m\e(B\e)0\017\e[?5l\e7\e[0;0r\e8'
 }
 
 add-zsh-hook -Uz precmd reset_broken_terminal</pre>
@@ -1141,11 +1141,11 @@ add-zsh-hook -Uz precmd reset_broken_terminal</pre>
 
 DIRSTACKFILE="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/dirs"
 if [[ -f "$DIRSTACKFILE" ]] &amp;&amp; (( ${#dirstack} == 0 )); then
-	dirstack=("${(@f)"$(&lt; "$DIRSTACKFILE")"}")
-	[[ -d "${dirstack[1]}" ]] &amp;&amp; cd -- "${dirstack[1]}"
+    dirstack=("${(@f)"$(&lt; "$DIRSTACKFILE")"}")
+    [[ -d "${dirstack[1]}" ]] &amp;&amp; cd -- "${dirstack[1]}"
 fi
 chpwd_dirstack() {
-	print -l -- "$PWD" "${(u)dirstack[@]}" &gt; "$DIRSTACKFILE"
+    print -l -- "$PWD" "${(u)dirstack[@]}" &gt; "$DIRSTACKFILE"
 }
 add-zsh-hook -Uz chpwd chpwd_dirstack
 
@@ -1224,7 +1224,9 @@ Operation = Upgrade
 Operation = Remove
 Type = Path
 Target = usr/bin/*
+
 [Action]
+Description=Rehash executables
 Depends = zsh
 When = PostTransaction
 Exec = /usr/bin/install -Dm644 /dev/null /var/cache/zsh/pacman</pre>
@@ -1236,13 +1238,13 @@ Exec = /usr/bin/install -Dm644 /dev/null /var/cache/zsh/pacman</pre>
 autoload -Uz add-zsh-hook
 
 rehash_precmd() {
-  if [[ -a /var/cache/zsh/pacman ]]; then
-    local paccache_time="$(date -r /var/cache/zsh/pacman +%s%N)"
-    if (( zshcache_time &lt; paccache_time )); then
-      rehash
-      zshcache_time="$paccache_time"
+    if [[ -a /var/cache/zsh/pacman ]]; then
+        local paccache_time="$(date -r /var/cache/zsh/pacman +%s%N)"
+        if (( zshcache_time &lt; paccache_time )); then
+            rehash
+            zshcache_time="$paccache_time"
+        fi
     fi
-  fi
 }
 
 add-zsh-hook -Uz precmd rehash_precmd
@@ -1261,6 +1263,7 @@ Type = Path
 Target = usr/bin/*
 
 [Action]
+Description=Rehash executables
 Depends = zsh
 Depends = procps-ng
 When = PostTransaction
@@ -1279,8 +1282,8 @@ Exec = /usr/bin/pkill zsh --signal=USR1</pre>
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.zshrc</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">ncmpcppShow() {
-  BUFFER="ncmpcpp"
-  zle accept-line
+    BUFFER="ncmpcpp"
+    zle accept-line
 }
 zle -N ncmpcppShow
 bindkey '^[\' ncmpcppShow</pre>
@@ -1288,8 +1291,8 @@ bindkey '^[\' ncmpcppShow</pre>
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.zshrc</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">ncmpcppShow() {
-  ncmpcpp &lt;$TTY
-  zle redisplay
+    ncmpcpp &lt;$TTY
+    zle redisplay
 }
 zle -N ncmpcppShow
 bindkey '^[\' ncmpcppShow</pre>
@@ -1298,19 +1301,19 @@ bindkey '^[\' ncmpcppShow</pre>
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">~/.zshrc</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">cdUndoKey() {
-  popd
-  zle       reset-prompt
-  print
-  ls
-  zle       reset-prompt
+    popd
+    zle       reset-prompt
+    print
+    ls
+    zle       reset-prompt
 }
 
 cdParentKey() {
-  pushd ..
-  zle      reset-prompt
-  print
-  ls
-  zle       reset-prompt
+    pushd ..
+    zle      reset-prompt
+    print
+    ls
+    zle       reset-prompt
 }
 
 zle -N                 cdParentKey
@@ -1352,18 +1355,18 @@ bindkey '^[[1;3D'      cdUndoKey
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">autoload -Uz add-zsh-hook
 
 function xterm_title_precmd () {
-	print -Pn -- '\e]2;%n@%m %~\a'
-	[[ "$TERM" == 'screen'* ]] &amp;&amp; print -Pn -- '\e_\005{2}%n\005{-}@\005{5}%m\005{-} \005{+b 4}%~\005{-}\e\\'
+    print -Pn -- '\e]2;%n@%m %~\a'
+    [[ "$TERM" == 'screen'* ]] &amp;&amp; print -Pn -- '\e_\005{2}%n\005{-}@\005{5}%m\005{-} \005{+b 4}%~\005{-}\e\\'
 }
 
 function xterm_title_preexec () {
-	print -Pn -- '\e]2;%n@%m %~ %# ' &amp;&amp; print -n -- "${(q)1}\a"
-	[[ "$TERM" == 'screen'* ]] &amp;&amp; { print -Pn -- '\e_\005{2}%n\005{-}@\005{5}%m\005{-} \005{+b 4}%~\005{-} %# ' &amp;&amp; print -n -- "${(q)1}\e\\"; }
+    print -Pn -- '\e]2;%n@%m %~ %# ' &amp;&amp; print -n -- "${(q)1}\a"
+    [[ "$TERM" == 'screen'* ]] &amp;&amp; { print -Pn -- '\e_\005{2}%n\005{-}@\005{5}%m\005{-} \005{+b 4}%~\005{-} %# ' &amp;&amp; print -n -- "${(q)1}\e\\"; }
 }
 
 if [[ "$TERM" == (Eterm*|alacritty*|aterm*|foot*|gnome*|konsole*|kterm*|putty*|rxvt*|screen*|wezterm*|tmux*|xterm*) ]]; then
-	add-zsh-hook -Uz precmd xterm_title_precmd
-	add-zsh-hook -Uz preexec xterm_title_preexec
+    add-zsh-hook -Uz precmd xterm_title_precmd
+    add-zsh-hook -Uz preexec xterm_title_preexec
 fi
 </pre>
 <div class="mw-heading mw-heading4"><h4 id="Terminal_emulator_tab_title">Terminal emulator tab title</h4></div>
@@ -1594,8 +1597,8 @@ source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zs
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Zsh&amp;oldid=867199">https://wiki.archlinux.org/index.php?title=Zsh&amp;oldid=867199</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 24 February 2026, at 13:12.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Zsh&amp;oldid=871505">https://wiki.archlinux.org/index.php?title=Zsh&amp;oldid=871505</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 18 April 2026, at 08:57.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

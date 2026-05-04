@@ -5,7 +5,7 @@
 <title>Install Arch Linux on ZFS - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.45.1">
+<meta name="generator" content="MediaWiki 1.45.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -589,12 +589,17 @@ A detailed explanation of them can be found in the <span class="plainlinks archw
 <ul><li>When creating the initial ramdisk, first edit <code>/etc/mkinitcpio.conf</code>. Add <code>zfs</code> to <code>MODULES</code>:</li></ul>
 <pre>MODULES=(zfs)
 </pre>
-<p>Then in <code>HOOKS</code>, add <code>zfs</code> before filesystems. Also, move <code>keyboard</code> hook before <code>zfs</code> so you can type in console if something goes wrong. You may also remove fsck (if you are not using Ext3 or Ext4). Your <code>HOOKS</code> line should look something like the following:
+<p>Then in <code>HOOKS</code>, add <code>zfs</code> before filesystems. Also, move <code>keyboard</code> hook before <code>zfs</code> so you can type in console if something goes wrong. Your <code>HOOKS</code> line should look something like the following:
 </p>
-<pre>HOOKS=(base udev autodetect microcode modconf kms keyboard keymap consolefont block zfs filesystems)
+<pre>HOOKS=(base udev … block <b>zfs</b> filesystems)
 </pre>
-<div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning</strong> Recent installations of Arch Linux uses a <a href="../en/Mkinitcpio.html" title="Mkinitcpio">systemd initramfs</a>. The ZFS hook provided by <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zfs-utils/">zfs-utils</a></span><sup><small>AUR</small></sup> is only compatible with busybox-based initramfs images. Unless you plan to use a different ZFS hook compatible with systemd-based initramfs images, <b>please make sure that you are using a busybox-based initramfs by putting <code>base udev</code> at the beginning of the <code>HOOKS</code> array instead of <code>systemd</code>.</b> </div>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> 
+<ul>
+<li>The <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zfs-utils/">zfs-utils</a></span><sup><small>AUR</small></sup> package provides a <a href="../en/Dracut.html" title="Dracut">dracut</a> hook which works out of the box for systemd-based initramfs.</li>
+<li>The <a href="../en/Mkinitcpio.html" title="Mkinitcpio">mkinitcpio</a> ZFS hook provided by the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/zfs-utils/">zfs-utils</a></span><sup><small>AUR</small></sup> package is only compatible with busybox-based initramfs images.</li>
+</ul>
+</div>
 <ul><li>
 <a href="../en/Regenerate_the_initramfs.html" class="mw-redirect" title="Regenerate the initramfs">Regenerate the initramfs</a>.</li></ul>
 <ul><li>Add ZFS to your kernel command line</li></ul>
@@ -728,8 +733,8 @@ A detailed explanation of them can be found in the <span class="plainlinks archw
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Install_Arch_Linux_on_ZFS&amp;oldid=866764">https://wiki.archlinux.org/index.php?title=Install_Arch_Linux_on_ZFS&amp;oldid=866764</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 21 February 2026, at 23:08.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Install_Arch_Linux_on_ZFS&amp;oldid=871174">https://wiki.archlinux.org/index.php?title=Install_Arch_Linux_on_ZFS&amp;oldid=871174</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 13 April 2026, at 20:11.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

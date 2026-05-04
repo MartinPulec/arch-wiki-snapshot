@@ -5,7 +5,7 @@
 <title>umask - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.45.1">
+<meta name="generator" content="MediaWiki 1.45.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -314,6 +314,12 @@
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/user@.service.d/override.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Service]
 UMask=0002</pre>
+<p>After applying the above, if you don't see services/programs in your user session picking up the new umask value, then you can drop the same file into <code>~/.config/systemd/user/service.d/</code> and it will be applied to all services in your user session. <a rel="nofollow" class="external autonumber" href="https://wiki.debian.org/Permissions#Per-user_umask_settings">[1]</a>
+</p>
+<p>To check what umask is being used by your user's services/programs run:
+</p>
+<pre>$ ps -u $USER -o pid= | xargs -I % sh -c 'echo PID=%, $(grep '^Umask:' "/proc/%/status"), Process=$(ps -w -p % -o cmd=)'
+</pre>
 <p>Using <code>pam_umask.so</code> allows to set the system-wide umask value for both, text console and graphical KDE sessions in one single place. Any changes in <code>/etc/profile</code> or systemd configuration can be omitted. Therefore, <code>pam_umask.so</code> needs to be enabled in a configuration file that is included by both, <code>/etc/pam.d/login</code> and <code>/etc/pam.d/systemd-user</code>. 
 </p>
 <p>Add the following line to <code>/etc/pam.d/system-login</code>:
@@ -358,8 +364,8 @@ UMask=0002</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Umask&amp;oldid=839281">https://wiki.archlinux.org/index.php?title=Umask&amp;oldid=839281</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 25 June 2025, at 04:23.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Umask&amp;oldid=872245">https://wiki.archlinux.org/index.php?title=Umask&amp;oldid=872245</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 26 April 2026, at 19:17.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

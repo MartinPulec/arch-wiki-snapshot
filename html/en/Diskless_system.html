@@ -5,7 +5,7 @@
 <title>Diskless system - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.45.1">
+<meta name="generator" content="MediaWiki 1.45.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -290,10 +290,26 @@
 			<ul id="toc-NBD_3-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-SKUF_3" class="vector-toc-list-item vector-toc-level-2">
+	</ul>
+	</li>
+	<li id="toc-copyonwrite_permissions" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#copyonwrite_permissions">
+			<div class="vector-toc-text">
+				<span class="vector-toc-numb">5</span>
+				<span>copyonwrite permissions</span>
+			</div>
+		</a>
+		
+			<button aria-controls="toc-copyonwrite_permissions-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle copyonwrite permissions subsection</span>
+			</button>
+		
+		<ul id="toc-copyonwrite_permissions-sublist" class="vector-toc-list">
+			<li id="toc-SKUF_3" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#SKUF_3">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">4.2</span>
+					<span class="vector-toc-numb">5.1</span>
 					<span>SKUF</span>
 				</div>
 			</a>
@@ -306,7 +322,7 @@
 	<li id="toc-See_also" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
 		<a class="vector-toc-link" href="#See_also">
 			<div class="vector-toc-text">
-				<span class="vector-toc-numb">5</span>
+				<span class="vector-toc-numb">6</span>
 				<span>See also</span>
 			</div>
 		</a>
@@ -659,16 +675,14 @@ menuentry "Arch Linux (NBD)" {
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">/dev/nbd0  /  btrfs  rw,noatime,compress=lzo  0 0</pre>
 <div class="mw-heading mw-heading2"><h2 id="Client_boot">Client boot</h2></div>
 <div class="mw-heading mw-heading3"><h3 id="NBD_3">NBD</h3></div>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
-<div>
-<b>Reason:</b> When using COW on the server, the clients all effectively have read-only mounts of the original filesystem; it should theoretically be safe to do a read-write mount on the NBD server (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Diskless_system.html">Talk:Diskless system</a>)</div>
-</div>
-<p>If you are using NBD, you will need to umount the <code>arch.img</code> before/while you boot your client.
+<p>If you are using NBD, the need to unmount <code>arch.img</code> on the server before booting a client depends on your configuration:
 </p>
+<ul>
+<li>If <code>copyonwrite</code> is disabled, you must unmount <code>arch.img</code> before booting any client. Simultaneous read-write access to the base image will cause corruption.</li>
+<li>If <code>copyonwrite</code> is enabled, clients only read from the base image and write to a separate cache, so a read-only server-side mount is theoretically safe. A read-write server-side mount is still discouraged while clients are active, as any modification to the base image during a live session risks inconsistency.</li>
+</ul>
 <p>This makes things particularly interesting when it comes to kernel updates. You cannot have your client filesystem mounted while you are booting a client, but that also means you need to use a kernel separate from your client filesystem in order to build it.
-</p>
-<p>You will need to first copy <code>$root/boot</code> from the client installation to your tftp root (i.e. <code>/srv/boot</code>).
+You will need to first copy <code>$root/boot</code> from the client installation to your tftp root (i.e. <code>/srv/boot</code>).
 </p>
 <pre># cp -r "$root/boot" /srv/boot
 </pre>
@@ -677,7 +691,20 @@ menuentry "Arch Linux (NBD)" {
 <pre># umount "$root"
 </pre>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note</strong> To update the kernel in this setup, you either need to mount <code>/srv/boot</code> using <a href="../en/NFS.html" title="NFS">NFS</a> in <a href="../en/Fstab.html" title="Fstab">fstab</a> on the client (prior to doing the kernel update) or mount your client filesystem after the client has disconnected from NBD</div>
+<strong>Note</strong>  To update the kernel in this setup, you either need to mount <code>/srv/boot</code> using NFS in fstab on the client (prior to doing the kernel update) or mount your client filesystem after the client has disconnected from NBD.</div>
+<div class="mw-heading mw-heading2"><h2 id="copyonwrite_permissions">copyonwrite permissions</h2></div>
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning</strong>  When <code>copyonwrite</code> is enabled, <code>nbd-server</code> runs as the user defined in  the <code>[generic]</code> section of <code>/etc/nbd-server/config</code> (commonly <code>nbd</code>). This user must have write permission on the directory containing the exported image, as COW cache files are written there by default. Without this, clients will fail to boot with the misleading error <code>received invalid negotiation magic</code>, which gives no indication that the root cause is a permissions issue.</div>
+<p>To fix this, either transfer ownership of the export directory to the <code>nbd</code> user:
+</p>
+<pre># chown nbd: /path/to/export/directory
+</pre>
+<p>Or redirect COW cache files to a dedicated directory that the <code>nbd</code> user already owns, by adding to:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/nbd-server/config</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">cowdir=/path/to/cow/cache</pre>
+<p>Ensure that directory is also owned by <code>nbd</code>.
+</p>
 <div class="mw-heading mw-heading3"><h3 id="SKUF_3">SKUF</h3></div>
 <p>Write <code>skuflinux-smth.iso</code> to your USB drive, plug it in client computer and select in <a href="../en/Unified_Extensible_Firmware_Interface.html" class="mw-redirect" title="UEFI">UEFI</a>/BIOS settings as a boot device.
 </p>
@@ -694,10 +721,7 @@ menuentry "Arch Linux (NBD)" {
 <div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Installation_process.html" title="Category:Installation process">Installation process</a></li></ul>
 </div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Merge.html" title="Category:Pages or sections flagged with Template:Merge">Pages or sections flagged with Template:Merge</a></li>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
-</ul>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Merge.html" title="Category:Pages or sections flagged with Template:Merge">Pages or sections flagged with Template:Merge</a></li></ul>
 </div>
 </div>
 				</div>
@@ -708,8 +732,8 @@ menuentry "Arch Linux (NBD)" {
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Diskless_system&amp;oldid=869182">https://wiki.archlinux.org/index.php?title=Diskless_system&amp;oldid=869182</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 15 March 2026, at 12:55.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Diskless_system&amp;oldid=870818">https://wiki.archlinux.org/index.php?title=Diskless_system&amp;oldid=870818</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 9 April 2026, at 20:50.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -5,7 +5,7 @@
 <title>Securely wipe disk - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.45.1">
+<meta name="generator" content="MediaWiki 1.45.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -626,15 +626,14 @@ Device     Boot      Start        End         Sectors     Size  Id Type
 <p>You can choose from several utilities to overwrite a drive. If you only want to wipe a single file, <a href="../en/Securely_wipe_disk/Tips_and_tricks.html#Wipe_a_single_file" title="Securely wipe disk/Tips and tricks">Securely wipe disk/Tips and tricks#Wipe a single file</a> has considerations in addition to the utilities mentioned below.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="By_redirecting_output">By redirecting output</h3></div>
-<p>The redirected output can be used to create files, rewrite free space on the partition, and to wipe the whole device or a single partition on it. The examples here use <code>/dev/zero</code> to zero the device, but <code>/dev/urandom</code> may be substituted if a random wipe is desired.
+<p>The redirected output can be used to create files, rewrite free space on the partition, and to wipe the whole device or a single partition on it. The examples here use sparse file to zero the device, but <code>/dev/urandom</code> may be substituted if a random wipe is desired.
+</p>
+<p>Note that <i>cat</i> of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=coreutils">coreutils</a></span> 9.11 (with <span class="plainlinks archwiki-template-man" title="$ man 2 splice"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/splice.2">splice(2)</a></span> system call support) generates zero with sparse file on tmpfs faster than <code>/dev/zero</code> or <i>dd</i>.
 </p>
 <p>The following examples show how to rewrite the partition or a block device by redirecting <a rel="nofollow" class="external text" href="https://tldp.org/HOWTO/Bash-Prog-Intro-HOWTO-3.html">stdout</a> from other utilities:
 </p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># cat /dev/zero &gt; /dev/sd<i>XY</i></pre>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># truncate -s 1PB /tmp/huge; cat /tmp/huge &gt; /dev/sd<i>XY</i></pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">cat: write error: No space left on device
-</pre>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># xz -z0 /dev/zero -c &gt; /dev/sd<i>XY</i></pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">xz: (stdout): Write error: No space left on device
 </pre>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;"># dd if=/dev/zero status=progress &gt; /dev/sd<i>XY</i></pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">dd: writing to ‘standard output’: No space left on device
@@ -755,8 +754,8 @@ Device     Boot      Start        End         Sectors     Size  Id Type
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Securely_wipe_disk&amp;oldid=856431">https://wiki.archlinux.org/index.php?title=Securely_wipe_disk&amp;oldid=856431</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 16 December 2025, at 08:33.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Securely_wipe_disk&amp;oldid=872063">https://wiki.archlinux.org/index.php?title=Securely_wipe_disk&amp;oldid=872063</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 25 April 2026, at 16:46.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

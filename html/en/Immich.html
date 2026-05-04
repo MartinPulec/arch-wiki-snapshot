@@ -5,7 +5,7 @@
 <title>Immich - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.45.1">
+<meta name="generator" content="MediaWiki 1.45.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -207,24 +207,33 @@
 <p>The main package to <a href="../en/Help:Reading.html#Installation_of_packages" class="mw-redirect" title="Install">install</a> is <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/immich-server/">immich-server</a></span><sup><small>AUR</small></sup>. Optionally, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/immich-machine-learning/">immich-machine-learning</a></span><sup><small>AUR</small></sup> enables Google-Photos-like intelligence including: the ability to use natural language search terms to find photos, facial recognition, and people group, duplicate detection, and optical character recognition (OCR).
 </p>
 <div class="mw-heading mw-heading2"><h2 id="PostgreSQL_setup">PostgreSQL setup</h2></div>
-<p>Immich uses <a href="../en/PostgreSQL.html" title="PostgreSQL">PostgreSQL</a> for database activities. Manual setup of the admin user and of the database is required. Below is an baseline example configuration, the steps of which have been summed from <a href="../en/PostgreSQL.html" title="PostgreSQL">PostgreSQL</a>.
+<p>Immich uses <a href="../en/PostgreSQL.html" title="PostgreSQL">PostgreSQL</a> for database activities. Manual setup of the admin user and of the database is required. Below is a baseline example configuration, the steps of which have been summarized from <a href="../en/PostgreSQL.html" title="PostgreSQL">PostgreSQL</a>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note</strong> The following needs to be <a href="../en/List_of_applications/Security.html#Privilege_elevation" title="List of applications/Security">run as</a> the postgres user to keep permissions straight. As an example, using <code>runuser</code> from <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=util-linux">util-linux</a></span>: <code>runuser -u postgres -- command string</code>
-</div>
+<strong>Note</strong> The following needs to be <a href="../en/List_of_applications/Security.html#Privilege_elevation" title="List of applications/Security">run as</a> the postgres user to keep permissions correct. For example, using <code>runuser</code> from <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=util-linux">util-linux</a></span>: <code>runuser -u postgres -- <i>command</i></code>, where <i>command</i> is one of the commands below that should be run as the postgres user.</div>
+<p>Initialize the database:
+</p>
 <pre>[postgres]$ initdb --locale=C.UTF-8 --encoding=UTF8 -D /var/lib/postgres/data --data-checksums
-[postgres]$ createuser --interactive (immich/immich)
-[postgres]$ createdb immich
 </pre>
-<p>Edit the password for the admin user interactively:
+<p>Edit <code>/var/lib/postgres/data/postgresql.conf</code> by adding:
+</p>
+<pre>shared_preload_libraries = 'vchord.so'
+</pre>
+<p><a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start/enable">Start/enable</a> the <code>postgresql.service</code>.
+</p>
+<p>Interactively create the <code>immich</code> user. For a typical install, answer <code>immich</code> for the role name, then <code>n</code> for the remaining superuser/createdb/createrole prompts.
+</p>
+<pre>[postgres]$ createuser --interactive
+</pre>
+<p>Create the <code>immich</code> database:
+</p>
+<pre>[postgres]$ createdb immich
+</pre>
+<p>Edit the password for the admin user, replacing <code>strongpassword</code> with your desired password:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">[postgres]$ psql</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">ALTER USER immich WITH ENCRYPTED PASSWORD 'strongpassword';
 \q
-</pre>
-<p>Edit <code>/var/lib/postgres/data/postgresql.conf</code> adding:
-</p>
-<pre>shared_preload_libraries = 'vchord.so'
 </pre>
 <div class="mw-heading mw-heading2"><h2 id="Reverse_proxy_setup">Reverse proxy setup</h2></div>
 <p>Immich requires a reverse proxy to handle TLS termination, load balancing, traffic flow, and other advanced features. While the project officially supports <a href="../en/Nginx.html" title="Nginx">Nginx</a>, <a href="../en/Caddy.html" title="Caddy">Caddy</a>, <a href="../en/Category:Apache.html" class="mw-redirect" title="Apache">Apache</a>, and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=traefik">traefik</a></span>, the AUR package provides a pre-configured nginx drop-in. To configure any of the other supported daemons, refer to the <a rel="nofollow" class="external text" href="https://docs.immich.app/administration/reverse-proxy/">documentation</a>.
@@ -272,8 +281,8 @@ types_hash_max_size 4096;
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Immich&amp;oldid=869227">https://wiki.archlinux.org/index.php?title=Immich&amp;oldid=869227</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 15 March 2026, at 18:59.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Immich&amp;oldid=872674">https://wiki.archlinux.org/index.php?title=Immich&amp;oldid=872674</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 1 May 2026, at 08:35.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

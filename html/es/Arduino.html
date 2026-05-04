@@ -5,7 +5,7 @@
 <title>Arduino (Español) - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.45.1">
+<meta name="generator" content="MediaWiki 1.45.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -219,6 +219,17 @@
 			<ul id="toc-Arduino-CMake-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-Makefile" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Makefile">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">5.2</span>
+					<span>Makefile</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Makefile-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-Vea_también" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
@@ -406,11 +417,22 @@ Para arreglar la instalación puedes seguir <a rel="nofollow" class="external te
 <div class="mw-heading mw-heading3"><h3 id="Arduino-CMake">Arduino-CMake</h3></div>
 <p>Usando <a rel="nofollow" class="external text" href="https://github.com/a9183756-gh/Arduino-CMake-Toolchain">Arduino-CMake-Toolchain</a> y <a rel="nofollow" class="external text" href="https://www.cmake.org/cmake/resources/software.html">CMake</a> puedes construir firmware de Arduino desde la línea de comandos usando multiples sistemas de construcción. CMake te permite generar el sistema de construcción que encaje a lo que necesites, usando las herramientas que te gusten. Esto puede generar cualquier tipo de sistema de construcción, desde Makefiles simples, hasta proyectos completos para Eclipse, Visual Studio, XCode, etc.
 </p>
-<p>Requerimientos: 
+<p>Requerimientos: <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=cmake">cmake</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/groups/x86_64/arduino/">arduino</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=avr-gcc">avr-gcc</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=avr-binutils">avr-binutils</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=avr-libc">avr-libc</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=avrdude">avrdude</a></span>.
 </p>
-<p><span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=cmake">cmake</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/groups/x86_64/arduino/">arduino</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=avr-gcc">avr-gcc</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=avr-binutils">avr-binutils</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=avr-libc">avr-libc</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=avrdude">avrdude</a></span>.
+<div class="mw-heading mw-heading3"><h3 id="Makefile">Makefile</h3></div>
+<p>En lugar de usar el IDE de Arduino, puedes usar otro editor y un Makefile.
 </p>
-<p><br>
+<p>Crea un directorio para programar tu Arduino y copia el Makefile en él. Puedes obtener una copia del Makefile en <a rel="nofollow" class="external text" href="https://github.com/tomswartz07/arduino-makefile">esta plantilla de GitHub</a>.
+</p>
+<p>Tendrás que modificarlo un poco para que refleje tu configuración. El Makefile es bastante intuitivo. Aquí tienes algunas líneas que podrías tener que editar:
+</p>
+<pre>PORT = normalmente /dev/ttyUSBx, donde x es el puerto serie USB al que está conectado tu Arduino.
+TARGET = nombre de tu sketch.
+ARDUINO = /usr/share/arduino/lib/targets/arduino.
+</pre>
+<p>Dependiendo de las funciones de la biblioteca que uses en tu sketch, es posible que tengas que compilar partes de la biblioteca. Para ello, debes editar tus archivos SRC y CXXSRC para incluir las bibliotecas necesarias.
+</p>
+<p>Ahora debería poder <code>make &amp;&amp; make upload</code> en su placa para ejecutar su boceto.
 </p>
 <div class="mw-heading mw-heading2"><h2 id="Vea_también">
 <span id="Vea_tambi.C3.A9n"></span>Vea también</h2></div>
@@ -435,8 +457,8 @@ Para arreglar la instalación puedes seguir <a rel="nofollow" class="external te
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Arduino_(Espa%C3%B1ol)&amp;oldid=868245">https://wiki.archlinux.org/index.php?title=Arduino_(Español)&amp;oldid=868245</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 6 March 2026, at 01:21.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Arduino_(Espa%C3%B1ol)&amp;oldid=870389">https://wiki.archlinux.org/index.php?title=Arduino_(Español)&amp;oldid=870389</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 1 April 2026, at 22:03.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

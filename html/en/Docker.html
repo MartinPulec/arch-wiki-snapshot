@@ -5,7 +5,7 @@
 <title>Docker - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.45.1">
+<meta name="generator" content="MediaWiki 1.45.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -760,7 +760,7 @@
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:View-refresh-red.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is out of date.</b></p>
 <div>
-<b>Reason:</b> <a rel="nofollow" class="external text" href="https://docs.docker.com/engine/deprecated/#unauthenticated-tcp-connections">Unauthenticated TCP connections were deprecated in Docker 26 and are scheduled for removal in Docker 27.</a> (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Docker.html">Talk:Docker</a>)</div>
+<b>Reason:</b> <a rel="nofollow" class="external text" href="https://docs.docker.com/engine/deprecated/#unauthenticated-tcp-connections">Unauthenticated TCP connections were deprecated in Docker 26 and are scheduled for removal in Docker 28.</a> (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Docker.html">Talk:Docker</a>)</div>
 </div>
 <p>By default, the Docker daemon serves the Docker API using a <a href="https://en.wikipedia.org/wiki/Unix_domain_socket" class="extiw" title="wikipedia:Unix domain socket">Unix socket</a> at <code>/var/run/docker.sock</code>. This is an appropriate option for most use cases.
 </p>
@@ -795,17 +795,38 @@ ExecStart=/usr/bin/dockerd -H unix:///var/run/docker.sock -H tcp://0.0.0.0:2376<
 <p>If you are using a service such as <a href="../en/Dnsmasq.html" title="Dnsmasq">dnsmasq</a> to provide a local resolver, consider adding a virtual interface with a link local IP address in the <code>169.254.0.0/16</code> block for dnsmasq to bind to instead of <code>127.0.0.1</code> to avoid the network namespace conflict.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Images_location">Images location</h3></div>
-<p>By default, docker images are located at <code>/var/lib/docker</code>. They can be moved to other partitions, e.g. if you wish to use a dedicated partition or disk for your images. In this example, we will move the images to <code>/mnt/docker</code>.
+<p>Since <a rel="nofollow" class="external text" href="https://docs.docker.com/engine/release-notes/29/#2900">version 29</a> (2025-11), the default image store has been changed to containerd <b>for new installs</b>.
 </p>
-<p>First, <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Stop">stop</a> <code>docker.service</code>, which will also stop all currently running containers and unmount any running images. You may then move the images from <code>/var/lib/docker</code> to the target destination, e.g. <code>cp -r /var/lib/docker /mnt/docker</code>.
+<p>When using the <a rel="nofollow" class="external text" href="https://docs.docker.com/engine/storage/containerd/">containerd image store</a>, image contents and container snapshots are stored in <code>/var/lib/containerd/</code> by default. For old installs that were upgraded, Docker images remain located in <code>/var/lib/docker/</code>.
 </p>
-<p>Configure <code>data-root</code> in <code>/etc/docker/daemon.json</code>:
+<p>To verify which image store is in use:
 </p>
+<pre>docker info -f '{{ .DriverStatus }}'
+</pre>
+<p>For the <i>containerd</i> image store, the output will be: 
+</p>
+<pre>[[driver-type io.containerd.snapshotter.v1]]
+</pre>
+<p>The image storage location can be changed, <i>e.g.</i> if you wish to use a dedicated partition or disk for your images, by <a rel="nofollow" class="external text" href="https://docs.docker.com/engine/daemon/#configure-the-data-directory-location">configuring the data root location</a>.
+</p>
+<p>The first step before changing anything is to <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Stop">stop</a> <code>docker.service</code>, which will also stop all currently running containers and unmount any running images.
+</p>
+<p>Then edit the appropriate configuration file depending on the image store driver:
+</p>
+<ul><li>if using the containerd image store:</li></ul>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/containerd/config.toml</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">version = 2
+root = "<i>/path/to/containerd-data</i>"</pre>
+<ul><li>if using the classic Docker overlay image store:</li></ul>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/docker/daemon.json</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">{
-  "data-root": "/mnt/docker"
+  "data-root": "<i>/path/to/docker-data</i>"
 }</pre>
-<p>Restart <code>docker.service</code> to apply changes.
+<p>Then move the contents from either <code>/var/lib/containerd</code> or <code>/var/lib/docker</code> to the target destination.
+</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> Note that this is a global option: it is not possible to move only images in the case of the classic Docker image store, so volumes will be moved as well.</div>
+<p>Finally, start <code>docker.service</code> to apply the changes.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Insecure_registries">Insecure registries</h3></div>
 <p>If you decide to use a self signed certificate for your private registries, Docker will refuse to use it until you declare that you trust it. For example, to allow images from a registry hosted at <code>myregistry.example.com:8443</code>, configure <code>insecure-registries</code> in the <code>/etc/docker/daemon.json</code> file:
@@ -1059,19 +1080,19 @@ Switch to a different driver, or turn on the containerd image store, and try aga
 </p>
 <div class="mw-heading mw-heading4"><h4 id="With_the_--gpus_option_(recommended)">
 <span id="With_the_--gpus_option_.28recommended.29"></span>With the --gpus option (recommended)</h4></div>
-<pre># docker run --gpus all nvidia/cuda:12.1.1-runtime-ubuntu22.04 nvidia-smi
+<pre># docker run --rm --gpus all nvidia/cuda:12.1.1-runtime-ubuntu22.04 nvidia-smi
 </pre>
 <p>Specify how many GPUs are enabled inside a container:
 </p>
-<pre># docker run --gpus 2 nvidia/cuda:12.1.1-runtime-ubuntu22.04 nvidia-smi
+<pre># docker run --rm --gpus 2 nvidia/cuda:12.1.1-runtime-ubuntu22.04 nvidia-smi
 </pre>
 <p>Specify which GPUs to use:
 </p>
-<pre># docker run --gpus '"device=1,2"' nvidia/cuda:12.1.1-runtime-ubuntu22.04 nvidia-smi
+<pre># docker run --rm --gpus '"device=1,2"' nvidia/cuda:12.1.1-runtime-ubuntu22.04 nvidia-smi
 </pre>
 <p>or
 </p>
-<pre># docker run --gpus '"device=UUID-ABCDEF,1"' nvidia/cuda:12.1.1-runtime-ubuntu22.04 nvidia-smi
+<pre># docker run --rm --gpus '"device=UUID-ABCDEF,1"' nvidia/cuda:12.1.1-runtime-ubuntu22.04 nvidia-smi
 </pre>
 <p>For more information see <a rel="nofollow" class="external text" href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html">the documentation</a> and <a rel="nofollow" class="external text" href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html">install guide</a>.
 </p>
@@ -1082,11 +1103,11 @@ Switch to a different driver, or turn on the containerd image store, and try aga
 </div>
 <p>If, when using the above commands, you receive an error such as <code>Failed to initialize NVML: Unknown Error</code>, you can try being more specific in specifying the GPU:
 </p>
-<pre># docker run --gpus all --device /dev/nvidiactl:/dev/nvidiactl --device /dev/nvidia-uvm:/dev/nvidia-uvm --device /dev/nvidia0:/dev/nvidia0 nvidia/cuda:12.1.1-runtime-ubuntu22.04 nvidia-smi
+<pre># docker run --rm --gpus all --device /dev/nvidiactl:/dev/nvidiactl --device /dev/nvidia-uvm:/dev/nvidia-uvm --device /dev/nvidia0:/dev/nvidia0 nvidia/cuda:12.1.1-runtime-ubuntu22.04 nvidia-smi
 </pre>
 <p>Specify a capability (graphics, compute, ...) for the container (though this is rarely if ever used this way):
 </p>
-<pre># docker run --gpus all,capabilities=utility nvidia/cuda:12.1.1-runtime-ubuntu22.04 nvidia-smi
+<pre># docker run --rm --gpus all,capabilities=utility nvidia/cuda:12.1.1-runtime-ubuntu22.04 nvidia-smi
 </pre>
 <div class="mw-heading mw-heading4"><h4 id="With_NVIDIA_container_runtime">With NVIDIA container runtime</h4></div>
 <p>Register the NVIDIA runtime by editing <code>/etc/docker/daemon.json</code>
@@ -1108,7 +1129,7 @@ Switch to a different driver, or turn on the containerd image store, and try aga
 </pre>
 <p>Afterwards GPU accelerated containers can be started with
 </p>
-<pre># docker run --runtime=nvidia nvidia/cuda:9.0-base nvidia-smi
+<pre># docker run --rm --runtime=nvidia nvidia/cuda:12.1.1-runtime-ubuntu22.04 nvidia-smi
 </pre>
 <p>See also <a rel="nofollow" class="external text" href="https://github.com/NVIDIA/nvidia-container-toolkit/tree/main/cmd/nvidia-container-runtime">README.md</a>.
 </p>
@@ -1284,9 +1305,9 @@ $ docker run cr.example.com/nginx:1.19.3
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
 <div>
-<b>Reason:</b> <a href="../en/Nftables.html#Working_with_Docker" title="Nftables">Nftables#Working with Docker</a> advises to not use <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=iptables-nft">iptables-nft</a></span>. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Docker.html">Talk:Docker</a>)</div>
+<b>Reason:</b> <a href="../en/Nftables.html#Working_with_Docker" title="Nftables">Nftables#Working with Docker</a> advises to not use <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=iptables">iptables</a></span>. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Docker.html">Talk:Docker</a>)</div>
 </div>
-<p>If you see this error when running a container, install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=iptables-nft">iptables-nft</a></span> instead of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=iptables">iptables</a></span> (legacy) and reboot<a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=256709">[22]</a>.
+<p>If you see this error when running a container, install <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=iptables">iptables</a></span> instead of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=iptables-legacy">iptables-legacy</a></span> and reboot<a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=256709">[22]</a>.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="&quot;Your_password_will_be_stored_unencrypted&quot;_when_running_docker_login">
 <span id=".22Your_password_will_be_stored_unencrypted.22_when_running_docker_login"></span>"Your password will be stored unencrypted" when running docker login</h3></div>
@@ -1398,8 +1419,8 @@ $ docker run cr.example.com/nginx:1.19.3
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Docker&amp;oldid=861188">https://wiki.archlinux.org/index.php?title=Docker&amp;oldid=861188</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 13 January 2026, at 19:29.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Docker&amp;oldid=872517">https://wiki.archlinux.org/index.php?title=Docker&amp;oldid=872517</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 29 April 2026, at 16:54.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

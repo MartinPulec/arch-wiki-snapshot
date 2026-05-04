@@ -5,7 +5,7 @@
 <title>Map scancodes to keycodes - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.45.1">
+<meta name="generator" content="MediaWiki 1.45.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -41,10 +41,37 @@
 				<div class="vector-toc-text">Beginning</div>
 			</a>
 		</li>
-		<li id="toc-Identifying_scancodes" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
-		<a class="vector-toc-link" href="#Identifying_scancodes">
+		<li id="toc-Technical_background" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#Technical_background">
 			<div class="vector-toc-text">
 				<span class="vector-toc-numb">1</span>
+				<span>Technical background</span>
+			</div>
+		</a>
+		
+			<button aria-controls="toc-Technical_background-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle Technical background subsection</span>
+			</button>
+		
+		<ul id="toc-Technical_background-sublist" class="vector-toc-list">
+			<li id="toc-setkeycodes_modifies_user-given_scancodes" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#setkeycodes_modifies_user-given_scancodes">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">1.1</span>
+					<span><i>setkeycodes</i> modifies user-given scancodes</span>
+				</div>
+			</a>
+			
+			<ul id="toc-setkeycodes_modifies_user-given_scancodes-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
+	</li>
+	<li id="toc-Identifying_scancodes" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#Identifying_scancodes">
+			<div class="vector-toc-text">
+				<span class="vector-toc-numb">2</span>
 				<span>Identifying scancodes</span>
 			</div>
 		</a>
@@ -55,7 +82,7 @@
 	<li id="toc-Using_udev" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
 		<a class="vector-toc-link" href="#Using_udev">
 			<div class="vector-toc-text">
-				<span class="vector-toc-numb">2</span>
+				<span class="vector-toc-numb">3</span>
 				<span>Using udev</span>
 			</div>
 		</a>
@@ -66,12 +93,23 @@
 	<li id="toc-Using_setkeycodes" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
 		<a class="vector-toc-link" href="#Using_setkeycodes">
 			<div class="vector-toc-text">
-				<span class="vector-toc-numb">3</span>
+				<span class="vector-toc-numb">4</span>
 				<span>Using setkeycodes</span>
 			</div>
 		</a>
 		
 		<ul id="toc-Using_setkeycodes-sublist" class="vector-toc-list">
+		</ul>
+	</li>
+	<li id="toc-Using_evmap" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#Using_evmap">
+			<div class="vector-toc-text">
+				<span class="vector-toc-numb">5</span>
+				<span>Using evmap</span>
+			</div>
+		</a>
+		
+		<ul id="toc-Using_evmap-sublist" class="vector-toc-list">
 		</ul>
 	</li>
 </ul>
@@ -149,17 +187,69 @@
 </div>
 <p>This page assumes that you have read <a href="../en/Keyboard_input.html" title="Keyboard input">Keyboard input</a>, which provides wider context.
 </p>
-<p>Mapping <i>scancodes</i> to <i>keycodes</i> is achieved in a layer lower than Xorg and Linux console, which means that changes to this mapping will be effective in both. <a rel="nofollow" class="external autonumber" href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/uapi/linux/input-event-codes.h#n64">[1]</a><a rel="nofollow" class="external autonumber" href="https://elixir.bootlin.com/linux/latest/A/ident/hid_keyboard">[2]</a><a rel="nofollow" class="external autonumber" href="https://elixir.bootlin.com/linux/latest/A/ident/atkbd_set2_keycode">[3]</a> Note that this method can only be used for simple 1:1 key remaps; see <a href="../en/Input_remap_utilities.html" title="Input remap utilities">Input remap utilities</a> for programs which allow more complex remaps at the same low level.
+<p>Mapping <i>scancodes</i> to <i>keycodes</i> is part of the keyboard driver's job <a rel="nofollow" class="external autonumber" href="https://elixir.bootlin.com/linux/v6.19/source/drivers/input/input.c">[1]</a>. Since this is achieved in a layer lower than Xorg, Wayland and the Linux console, it will be effective in all. <a rel="nofollow" class="external autonumber" href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/uapi/linux/input-event-codes.h#n64">[2]</a><a rel="nofollow" class="external autonumber" href="https://elixir.bootlin.com/linux/latest/A/ident/hid_keyboard">[3]</a><a rel="nofollow" class="external autonumber" href="https://elixir.bootlin.com/linux/latest/A/ident/atkbd_set2_keycode">[4]</a> Note that this method can only be used for simple 1:1 key remaps; see <a href="../en/Input_remap_utilities.html" title="Input remap utilities">Input remap utilities</a> for programs which allow more complex remaps at a similar low level.
 </p>
-<p>There are two ways of mapping <i>scancodes</i> to <i>keycodes</i>:
+<p>The <i>scancode</i>-<i>keycode</i> mapping table is stored in memory by the keyboard driver and any changes made are not persistent (i.e. when you unplug the device or reboot, all changes will be lost).
+</p>
+<p><a href="../en/Systemd.html" title="Systemd">Systemd</a> has a standardized way to make changes to the mapping table effectively permanent <a href="#Using_udev">#Using udev</a>. <a href="../en/Udev.html" title="Udev">Udev</a> provides an infrastructure to manage devices. That includes matching the device's modalias (a hardware identifier) of every newly connected device against the entries in the udev hardware database. If there's a match, specific things can be applied, including <i>scancode</i>-<i>keycode</i> remappings.
+Systemd uses this itself to assign "unknown scancodes" of many keyboard models to the correct keycode. That means your keys are recognized <i>out of the box</i> when your keyboard model has been found in the hardware database (the corresponding .hwdb file can be found under <code>/lib/udev/hwdb.d/60-keyboard.hwdb</code>).
+</p>
+<p>Alternatively, you can automatically run remapping tools like <span class="plainlinks archwiki-template-man" title="$ man 8 setkeycodes"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/setkeycodes.8">setkeycodes(8)</a></span> or <a rel="nofollow" class="external text" href="https://github.com/vovcat/evmap">evmap</a> when your desktop session starts. For example, by using a systemd service. But this way the remappings won't be applied when you plug your keyboard in after your system has booted up or when you reconnect your keyboard.
+</p>
+<p><br>
+</p>
+<meta property="mw:PageProp/toc">
+<div class="mw-heading mw-heading2"><h2 id="Technical_background">Technical background</h2></div>
+<p>Since linux kernel version 2.6.37 there are 3 ioctl calls that can change one entry of the mapping table and 3 corresponding calls that can query one entry of the mapping table.
+Namely, 
 </p>
 <ul>
-<li>Using <a href="../en/Udev.html" title="Udev">udev</a>
-</li>
-<li>Using <span class="plainlinks archwiki-template-man" title="$ man 8 setkeycodes"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/setkeycodes.8">setkeycodes(8)</a></span>
-</li>
+<li><code>ioctl(console_fd, KDSETKEYCODE, *kbkeycode)</code></li>
+<li><code>ioctl(dev_fd, EVIOCSKEYCODE, (unsigned int[]) {scancode, keycode})</code></li>
+<li><code>ioctl(dev_fd, EVIOCSKEYCODE_V2, *input_keymap_entry)</code></li>
 </ul>
-<p>The preferred method is to use <i>udev</i> because it uses hardware information (which is a quite reliable source) to choose the keyboard model in a database. It means that if your keyboard model has been found in the database, your keys are recognized <i>out of the box</i>.
+<p>modify a mapping table entry and
+</p>
+<ul>
+<li><code>ioctl(console_fd, KDGETKEYCODE, *kbkeycode)</code></li>
+<li><code>ioctl(dev_fd, EVIOCGKEYCODE, (unsigned int[]) {scancode, keycode})</code></li>
+<li><code>ioctl(dev_fd, EVIOCGKEYCODE_V2, *input_keymap_entry)</code></li>
+</ul>
+<p>query a mapping table entry.
+<code>console_fd</code> is a file descriptor pointing to a virtual console (it doesn't matter which virtual console) and <code>dev_fd</code> is a file descriptor pointing to a device file.
+</p>
+<p>The <code>KDSETKEYCODE</code> and <code>KDGETKEYCODE</code> ioctl calls are legacy calls because they are unreliable and it can be hard to predict which device they'll operate on. To be specific, they will iterate over connected devices that satisfy specific rules (which can also match devices that <i>do not</i> correspond to a physical keyboard) and return as soon as one device driver doesn't return an error when asked to remap/query a mapping entry. To make things more problematic, some device drivers may not return an error even though the call didn't have any effect, letting the ioctl call return successfully without any changes at all. The iteration's order is the order of initalization of the devices within the kernel (which is random for devices that were plugged in since boot) <a rel="nofollow" class="external autonumber" href="https://elixir.bootlin.com/linux/v6.19/source/drivers/tty/vt/keyboard.c">[5]</a>.
+</p>
+<p>The legacy <code>KDSETKEYCODE</code> ioctl and <code>KDGETKEYCODE</code> ioctl calls are used by the tools <span class="plainlinks archwiki-template-man" title="$ man 8 setkeycodes"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/setkeycodes.8">setkeycodes(8)</a></span> and <span class="plainlinks archwiki-template-man" title="$ man 8 getkeycodes"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/getkeycodes.8">getkeycodes(8)</a></span>.
+<br>The device-specific <code>EVIOC[SG]KEYCODE_V2</code> ioctl calls are used by <a rel="nofollow" class="external text" href="https://github.com/vovcat/evmap">evmap</a>.
+</p>
+<p><br>
+</p>
+<div class="mw-heading mw-heading5"><h5 id="setkeycodes_modifies_user-given_scancodes">
+<i>setkeycodes</i> modifies user-given scancodes</h5></div>
+<p>Notice how <i>setkeycodes</i> wants to be helpful and substracts 0xdf80 (-0xe000 + 128) from every scancode bigger than 0xe000 before calling ioctl. 
+But this may not be very helpful at all and is intransparent to users that want to remap, for example, an USB keyboard.
+The scancodes of USB keyboards normally consist of a 16-Bit Usage Page and a 16-Bit Usage ID. The Usage Page for <i>keyboard</i> is 7, resulting in large scancodes in the form 0x0007XXXX which is above 0xe000 and are therefore modified by <i>setkeycodes</i>, resulting in an error.
+</p>
+<p>I'm not too sure why <i>setkeycodes</i> subtracts 0xdf80 but I have a theory:
+</p>
+<p>First of all, it's ambiguous what exactly a <i>scancode</i> is.
+Converting the raw byte stream to a <i>keycode</i> stream involves many operations and across different protocolls it can be hard to tell at which step we have a scancode (and what belongs to a scancode).
+</p>
+<p>In this article a <i>scancode</i> is a number (i.e. byte array) that corresponds to a key on the keyboard and can be passed to the keyboard driver to query or set the corresponding keycode.
+But this doesn't match the definition the <a rel="nofollow" class="external text" href="https://en.wikipedia.org/wiki/Scancode">scancode wikipedia article</a> is giving.
+According to the wikipedia article <i>scancodes</i> are the key-related bytes that are transfered when a key is pressed or released (refered to as <i>wikipedia scancode</i> from now on). The difference between a <i>wikipedia scancode</i> and an actual <i>scancode</i> is that a <i>wikipedia scancode</i> can be more raw (unprocessed) and may contain encoding artifacts. For a given keyboard, <i>scancodes</i> are defined by the developer of the keyboard driver and <i>wikipedia scancodes</i> are defined by the protocol.
+</p>
+<p>IBM PS/2 was the most widely used protocol for keyboards for the last couple of decades but is currently declining. However it's still sometimes/often used for internal laptop keyboards (If your keyboard is named <i>AT Translated Set 2 keyboard</i> it uses the PS/2 protocol).
+The byte 0xe0 is used to indicate trailing bytes as part of the encoding.
+</p>
+<p>My guess is that the drivers for PS/2 compatible keyboards process the <i>wikipedia scancodes</i> before substituting them with keycodes.
+All <i>wikipedia scancodes</i> above 0xe000 are subtracted by 0xdf80 to be within the range 0x80 to 0xFF (In the pre-2000s <i>scancodes</i> were typically in the range 0x00 to 0x7F so there should be no overlap).
+Those <i>wikipedia scancodes</i> under 0x80 are just used directly as <i>scancodes</i> .
+This creates a hole-less range of <i>scancodes</i> which is easier to implement (dense mapping table).
+Normally, tools that query the <i>scancodes</i> of keyboards should show <i>scancodes</i>, but my guess is that back in the pre-2000s (the time when <i>setkeycodes</i> was written) some tools showed the actual bytes transfered (<i>wikipedia scancodes</i>) which people used to pass directly to <i>setkeycodes</i>. Since that returned an error, <i>setkeycodes</i> wanted to be helpful: Because almost all keyboards used the PS/2 protocol and <i>scancodes</i> were typically one byte, <i>setkeycodes</i> itself processed too large <i>scancodes</i> (that are likely of type <i>wikipedia scancode</i>) to <i>scancodes</i> that PS/2 keyboard drivers understand. This paragraph is pure speculation, so take it with a grain of salt.
+</p>
+<p><br>
 </p>
 <div class="mw-heading mw-heading2"><h2 id="Identifying_scancodes">Identifying scancodes</h2></div>
 <p>You need to know the <i>scancodes</i> of keys you wish to remap. See <a href="../en/Keyboard_input.html#Identifying_scancodes" title="Keyboard input">Keyboard input#Identifying scancodes</a> for details.
@@ -168,17 +258,19 @@
 <p>You can use <a href="../en/Udev.html" title="Udev">udev</a>'s hardware database to override the default <i>scancodes-to-keycodes</i> mapping by following <a href="../en/Udev.html#Remap_specific_device" title="Udev">udev#Remap specific device</a> and the update/reload sections after.
 </p>
 <div class="mw-heading mw-heading2"><h2 id="Using_setkeycodes">Using setkeycodes</h2></div>
-<p><i>setkeycodes</i> is a tool to load <i>scancodes</i>-to-<i>keycodes</i> mapping table into Linux kernel. It is best to use it with <i>showkey</i>. See <a href="../en/Keyboard_input.html#Using_showkey" title="Keyboard input">Keyboard input#Using showkey</a> and <a href="../en/Keyboard_input.html#Identifying_keycodes_in_console" title="Keyboard input">Keyboard input#Identifying keycodes in console</a>.
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> You may want to avoid <i>setkeycodes</i> because it's a bit of a gamble whether it will remap your keyboard. And even if it works in one boot session that doesn't 100 % guarantee it will work the next time you boot your system. See <a href="#Technical_background">#Technical background</a> for an in-depth explanation.</div>
+<p><i>setkeycodes</i> is a tool to update <i>scancode</i>-<i>keycode</i> mappings of a keyboard. It is best to use it with <i>showkey</i>. See <a href="../en/Keyboard_input.html#Using_showkey" title="Keyboard input">Keyboard input#Using showkey</a> and <a href="../en/Keyboard_input.html#Identifying_keycodes_in_console" title="Keyboard input">Keyboard input#Identifying keycodes in console</a>.
 </p>
-<p>Do note that <i>setkeycodes</i> only accepts <i>xx</i> and <i>e0xx</i> formatted hexadecimal scancodes, therefore you must omit the leading <i>0x</i> portion of the scancodes given by <i>showkey</i>.
+<p>Do note that <i>setkeycodes</i> only works as expected with <i>xx</i> and <i>e0xx</i> formatted hexadecimal <i>scancodes</i>. For USB keyboards that use larger scancodes you can do a little workaround by adding 0xdf80 to the <i>scancode number</i> before passing it to <i>setkeycodes</i> (see <a href="#setkeycodes_modifies_user-given_scancodes">#setkeycodes modifies user-given scancodes</a>).
 </p>
 <p><i>setkeycodes</i> usage is:
 </p>
-<pre># setkeycodes <i>scancode</i> <i>keycode</i> ...
+<pre># setkeycodes <i>scancode1</i> <i>keycode1</i> <i>scancode2</i> <i>keycode2</i> ...
 </pre>
-<p>It is possible to specify multiple pairs at once. <i>Scancodes</i> are given in hexadecimal, <i>keycodes</i> in decimal.
+<p><i>Scancodes</i> are given in hexadecimal (without a leading 0x prefix), <i>keycodes</i> in decimal.
 </p>
-<p>If using this simple command, changes will be lost after reboot. The changes can be made permanent by creating a new service:
+<p>As stated, just executing this command will result in non-persistent changes. The changes can be made permanent by creating a new service:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/setkeycodes.service</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Unit]
@@ -193,6 +285,36 @@ WantedBy=multi-user.target
 </pre>
 <p>and <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enabling">enabling</a> <code>setkeycodes.service</code>.
 </p>
+<div class="mw-heading mw-heading2"><h2 id="Using_evmap">Using evmap</h2></div>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> You have to compile <a rel="nofollow" class="external text" href="https://github.com/vovcat/evmap">evmap</a> yourself.</div>
+<p><i>evmap</i> is a tool similar to <i>setkeycodes</i> to update <i>scancode</i>-<i>keycode</i> mappings of a keyboard, but it's keyboard specific. That means it requires a device file path of the keyboard you want to apply the remapping on. You'd want to use the corresponding keyboard device file in the folder <code>/dev/input/by-id/</code> since the device file names in here are generated using hardware information, meaning the names (usually) contain information unique to the specific device they correspond to.
+</p>
+<p><i>evmap'</i>s basic usage is:
+</p>
+<pre># evmap -d /dev/input/by-id/your-device-file-here -s scancode1=keycode1 -s scancode2=keycode2 ...
+</pre>
+<p><i>Scancodes</i> are given in hexadecimal (without a leading 0x prefix), <i>keycodes</i> in decimal or hexadecimal (for which you need to prefix the number with 0x).
+You need to pad <i>scancodes</i> to full bytes, e.g. instead of <i>3</i> write <i>03</i> and instead of <i>123</i> write <i>0123</i> (otherwise you'll get the non-descriptive error message <code>Invalid definition</code>).
+Instead of <i>keycode numbers</i> you can also use <i>keycode names</i>. You can print the list of all recognized <i>keycode names</i> with the command:
+</p>
+<pre>gcc -E -dM -x c - &lt;&lt;&lt; '#include &lt;linux/input-event-codes.h&gt;' | perl -ne 'if (/^\#define (KEY_(\w+))\s+\S+/) { print "$2\n" }'
+</pre>
+<p>As stated, just executing <i>evmap</i> will result in non-persistent changes. The changes can be made permanent by creating a new service:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/evmap.service</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Unit]
+Description=Change keycodes at boot
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/evmap -d /dev/input/by-id/your-device-file-here -s scancode1=keycode1 -s scancode2=keycode2 ...
+
+[Install]
+WantedBy=multi-user.target
+</pre>
+<p>and <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enabling">enabling</a> <code>evmap.service</code>.
+</p>
 </div>
 </div>
 					<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks">
@@ -206,8 +328,8 @@ WantedBy=multi-user.target
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Map_scancodes_to_keycodes&amp;oldid=852891">https://wiki.archlinux.org/index.php?title=Map_scancodes_to_keycodes&amp;oldid=852891</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 16 November 2025, at 00:30.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Map_scancodes_to_keycodes&amp;oldid=871825">https://wiki.archlinux.org/index.php?title=Map_scancodes_to_keycodes&amp;oldid=871825</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 22 April 2026, at 09:23.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

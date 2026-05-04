@@ -5,7 +5,7 @@
 <title>NVIDIA/Troubleshooting - ArchWiki</title>
 <link rel="stylesheet" href="../../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.45.1">
+<meta name="generator" content="MediaWiki 1.45.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -176,6 +176,17 @@
 			<ul id="toc-Black_screen_returning_from_suspend-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-One_or_more_monitors_not_working_in_multi-monitor_setup_in_Xorg" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#One_or_more_monitors_not_working_in_multi-monitor_setup_in_Xorg">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">1.12</span>
+					<span>One or more monitors not working in multi-monitor setup in Xorg</span>
+				</div>
+			</a>
+			
+			<ul id="toc-One_or_more_monitors_not_working_in_multi-monitor_setup_in_Xorg-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 	</ul>
 	</li>
 	<li id="toc-Crashes_and_hangs" class="vector-toc-list-item vector-toc-level-1">
@@ -338,17 +349,6 @@
 			</a>
 			
 			<ul id="toc-System_freeze_when_the_display_powers_off_or_on_resume-sublist" class="vector-toc-list">
-			</ul>
-		</li>
-		<li id="toc-Flickering_with_compositor_under_X11_(nvidia-open)" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Flickering_with_compositor_under_X11_(nvidia-open)">
-				<div class="vector-toc-text">
-					<span class="vector-toc-numb">3.7</span>
-					<span>Flickering with compositor under X11 (nvidia-open)</span>
-				</div>
-			</a>
-			
-			<ul id="toc-Flickering_with_compositor_under_X11_(nvidia-open)-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -780,6 +780,20 @@ archlinux kernel: NVRM: Xid (PCI:0000:08:00): 13, pid='&lt;unknown&gt;', name=&l
 </pre>
 <p>You need to enable the NVIDIA suspend, hibernate and sleep services as explained in <a href="../../en/NVIDIA/Tips_and_tricks.html#Preserve_video_memory_after_suspend" title="NVIDIA/Tips and tricks">NVIDIA/Tips and tricks#Preserve video memory after suspend</a>.
 </p>
+<div class="mw-heading mw-heading3"><h3 id="One_or_more_monitors_not_working_in_multi-monitor_setup_in_Xorg">One or more monitors not working in multi-monitor setup in Xorg</h3></div>
+<p>If one or more of your monitors is not outputting anything in Xorg and is showing up as "Disabled" in the <code>nvidia-settings</code> control panel, then your current Xorg configuration may be incompatible.
+The proprietary NVIDIA driver should not require a X configuration to simply function. See <a href="../../en/NVIDIA.html#Xorg_configuration" title="NVIDIA">NVIDIA#Xorg configuration</a>.
+</p>
+<p>Simply move or rename the <code>/etc/X11/xorg.conf</code> file and any configuration files in <code>xorg.conf.d</code> pertaining to the NVIDIA driver. Only files ending in <code>.conf</code> will be read by Xorg.
+</p>
+<pre>$ mv /etc/X11/xorg.conf /etc/X11/xorg.conf.old
+</pre>
+<p>After disabling the old NVIDIA Xorg configuration you may want to use <code>nvidia-xconfig</code> to generate a new NVIDIA Xorg configuration suited to your hardware. This shouldn't however be necessary to get the driver to work.
+</p>
+<pre>$ nvidia-xconfig
+</pre>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> <code>nvidia-xconfig</code> does create a backup file as <code>/etc/X11/xorg.conf.backup</code>, but this file may be overwritten by running <code>nvidia-xconfig</code> multiple times.</div>
 <div class="mw-heading mw-heading2"><h2 id="Crashes_and_hangs">Crashes and hangs</h2></div>
 <div class="mw-heading mw-heading3"><h3 id="Crashing_in_general">Crashing in general</h3></div>
 <ul>
@@ -960,33 +974,6 @@ WantedBy=multi-user.target</pre>
 </p>
 <p>Then <a href="../../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Enable">enable</a>/<a href="../../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start">start</a> <code>nvidia-clocks.service</code>.
 </p>
-<div class="mw-heading mw-heading3"><h3 id="Flickering_with_compositor_under_X11_(nvidia-open)">
-<span id="Flickering_with_compositor_under_X11_.28nvidia-open.29"></span>Flickering with compositor under X11 (nvidia-open)</h3></div>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../../File:Tango-edit-cut.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is being considered for removal.</b></p>
-<div>
-<b>Reason:</b> The release of <a rel="nofollow" class="external text" href="https://gitlab.archlinux.org/archlinux/packaging/packages/nvidia-utils/-/commit/b314b7b3873c7dbe66e2b68fed7773e7f8e58267">nvidia-utils 595.58.3-1</a> on 24-Mar-2026 fixed this issue. (Discuss in <a rel="nofollow" class="external text" href="../../en/Talk:NVIDIA/Troubleshooting.html">Talk:NVIDIA/Troubleshooting</a>)</div>
-</div>
-<p>Versions of <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nvidia-open">nvidia-open</a></span> tracking the 590.x version introduced a regression in the GLX vblank path that causes window flickering when a compositor is active under X11. This affects xfwm4, and potentially other compositors relying on GLX for vertical sync.
-</p>
-<p>Users can use the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/nvidia-580xx-utils/">nvidia-580xx-utils</a></span><sup><small>AUR</small></sup> package which tracks the production versioned driver which is not affected by this bug or continue using the repo packages (which track the new features versioned drivers) implementing the below work-around until upstream fixes the issue.
-</p>
-<p>The default <code>vblank_mode</code> in xfwm4 is <code>auto</code>, which resolves to <code>glx</code> on NVIDIA hardware and triggers the bug.
-</p>
-<p>A good work-around is to change the vblank_mode to a setting of either <b>xpresent</b> or to <b>off</b>
-</p>
-<p>For xfwm4, apply the setting persistently with:
-</p>
-<pre>$ xfconf-query -c xfwm4 -p /general/vblank_mode -s off
-</pre>
-<p>Then restart the X session. Alternatively, <code>xpresent</code> can be used to retain vblank sync at the cost of slightly higher GPU usage:
-</p>
-<pre>$ xfconf-query -c xfwm4 -p /general/vblank_mode -s xpresent
-</pre>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note</strong> Tearing may be visible with <code>off</code>. If this is unacceptable, prefer <code>xpresent</code>. See <a href="#ForceCompositionPipeline">#ForceCompositionPipeline</a> to address tearing at the Xorg level alongside either setting.</div>
-<p>See also: <a rel="nofollow" class="external text" href="https://bbs.archlinux.org/viewtopic.php?id=311088">Flickering XFCE (X11 with compositor) and nvidia-open-dkms</a> (Arch Linux Forums)
-</p>
 <div class="mw-heading mw-heading2"><h2 id="Performance_issues">Performance issues</h2></div>
 <div class="mw-heading mw-heading3"><h3 id="Bad_performance_after_installing_a_new_driver_version">Bad performance after installing a new driver version</h3></div>
 <div class="noprint archwiki-template-message">
@@ -1145,7 +1132,7 @@ EndSection
 </pre>
 <p>Example to set multiple variables at once (overclock GPU by 50MHz, overclock video memory by 50MHz, increase GPU voltage by 100mV):
 </p>
-<pre> nvidia-settings -a GPUGraphicsClockOffsetAllPerformanceLevels=50 -a GPUMemoryTransferRateOffsetGPUGraphicsClockOffsetAllPerformanceLevels=50 -a GPUOverVoltageOffset=100
+<pre> nvidia-settings -a GPUGraphicsClockOffsetAllPerformanceLevels=50 -a GPUMemoryTransferRateOffsetAllPerformanceLevels=50 -a GPUOverVoltageOffset=100
 </pre>
 <div class="mw-heading mw-heading3"><h3 id="Overclocking_not_working_with_Unknown_Error">Overclocking not working with Unknown Error</h3></div>
 <p>If you are running Xorg as a non-root user and trying to overclock your NVIDIA GPU, you will get an error similar to this one:
@@ -1211,7 +1198,6 @@ Notice that deep color will however be required for HDR monitors.
 </ul>
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
-<li><a href="../../en/Category:Sections_flagged_with_Template:Remove.html" title="Category:Sections flagged with Template:Remove">Sections flagged with Template:Remove</a></li>
 <li><a href="../../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
 <li><a href="../../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
 <li><a href="../../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li>
@@ -1226,8 +1212,8 @@ Notice that deep color will however be required for HDR monitors.
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=NVIDIA/Troubleshooting&amp;oldid=869863">https://wiki.archlinux.org/index.php?title=NVIDIA/Troubleshooting&amp;oldid=869863</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 24 March 2026, at 19:01.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=NVIDIA/Troubleshooting&amp;oldid=872361">https://wiki.archlinux.org/index.php?title=NVIDIA/Troubleshooting&amp;oldid=872361</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 27 April 2026, at 19:47.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

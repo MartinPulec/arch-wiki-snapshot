@@ -5,7 +5,7 @@
 <title>libinput - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.45.1">
+<meta name="generator" content="MediaWiki 1.45.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -436,7 +436,7 @@
 <li>The <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=libinput-tools">libinput-tools</a></span> package contains the <i>libinput</i> diagnostics tool, which can be helpful in debugging interaction with the library and your hardware - regardless of the display server in use.</li>
 </ul>
 <div class="mw-heading mw-heading2"><h2 id="Configuration">Configuration</h2></div>
-<p>For <a href="../en/Wayland.html" title="Wayland">Wayland</a>, there is no libinput configuration file. The configurable options depend on the progress of your desktop environment's support for them (see <a href="#Graphical_tools">#Graphical tools</a>) or by applying desktop-agnostic <a href="../en/Udev.html" title="Udev">udev</a> rules (see <a href="../en/Calibrating_Touchscreen.html#Do_it_automatically_via_a_udev_rule" title="Calibrating Touchscreen">Calibrating Touchscreen#Do it automatically via a udev rule</a> and <a href="#Via_a_udev_rule">#Via a udev rule</a>). To configure options that your desktop environment does not yet support (e.g. touchpad scroll speed on <a href="../en/GNOME.html" title="GNOME">GNOME</a>), <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/libinput-config-git/">libinput-config-git</a></span><sup><small>AUR</small></sup><sup>[<a href="../en/Help:Procedures.html#Fix_broken_package_links" title="Help:Procedures">broken link</a>: package not found]</sup> may be used as a work-around. Available options for that tool are documented in the <a rel="nofollow" class="external text" href="https://gitlab.com/warningnonpotablewater/libinput-config">libinput-config README</a>.
+<p>For <a href="../en/Wayland.html" title="Wayland">Wayland</a>, there is no libinput configuration file. The configurable options depend on the progress of your desktop environment's support for them (see <a href="#Graphical_tools">#Graphical tools</a>) or by applying desktop-agnostic <a href="../en/Udev.html" title="Udev">udev</a> rules (see <a href="../en/Calibrating_Touchscreen.html#Do_it_automatically_via_a_udev_rule" title="Calibrating Touchscreen">Calibrating Touchscreen#Do it automatically via a udev rule</a> and <a href="#Via_a_udev_rule">#Via a udev rule</a>). Also see the <a rel="nofollow" class="external text" href="https://wayland.freedesktop.org/libinput/doc/latest/lua-plugins.html">libinput plugin system</a>.
 </p>
 <p>For <a href="../en/Xorg.html" title="Xorg">Xorg</a>, a default configuration file for the wrapper is installed to <code>/usr/share/X11/xorg.conf.d/40-libinput.conf</code>. No extra configuration is necessary for it to autodetect keyboards, touchpads, trackpointers and supported touchscreens.
 </p>
@@ -536,25 +536,18 @@ To configure the device of your choice specify a filter by using one of the avai
 <p>Bear in mind that some of them may only apply to certain devices and you will need to restart X for changes to take effect.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Via_a_udev_rule">Via a udev rule</h3></div>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-clear.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs language, wiki syntax or style improvements. See <a href="../en/Help:Style.html" title="Help:Style">Help:Style</a> for reference.</b></p>
-<div>
-<b>Reason:</b> This does not look like a general configuration method, more than just <code>LIBINPUT_CALIBRATION_MATRIX</code> can be actually set this way. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Libinput.html">Talk:Libinput</a>)</div>
-</div>
-<p>The main <a href="../en/Udev.html" title="Udev">udev</a> and <a href="../en/Calibrating_Touchscreen.html" title="Calibrating Touchscreen">Calibrating Touchscreen</a> articles have more details, but to summarize:
+<p>The <a href="../en/Udev.html" title="Udev">udev</a> device-manager can be used to configure hardware properties and the libinput project provides documentation for the supported <a rel="nofollow" class="external text" href="https://wayland.freedesktop.org/libinput/doc/latest/device-configuration-via-udev.html">static device configuration via udev</a>.
+</p>
+<p>The following example cherry-picks the first hardware property listed in the documentation (<code>LIBINPUT_CALIBRATION_MATRIX</code>) to create a udev rule to <a href="../en/Calibrating_Touchscreen.html" title="Calibrating Touchscreen">calibrate a touchscreen</a>:
 </p>
 <pre># libinput list-devices
 </pre>
-<p>Take note of the <i>Device:</i> name and <i>Kernel</i> path for the relevant input device. For example this might be <code>HID 02eb:114e</code> at path <code>/dev/input/event0</code>.
-</p>
-<p>Create a rule for that device. E.g. to rotate all touchscreen input by 270 degrees:
+<p>Take note of the <i>Device:</i> name and <i>Kernel</i> path for the relevant input device. In this example the device <code>HID 02eb:114e</code> is at path <code>/dev/input/event0</code> and a rule is created to rotate all touchscreen input by 270 degrees:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/udev/rules.d/99-mytouchscreen-calibration.rules</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># Do a 270 degree rotation on the input
 ENV{ID_USB_SERIAL}=="02eb_114e", ENV{LIBINPUT_CALIBRATION_MATRIX}="0 1 0 -1 0 1"
 </pre>
-<div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip</strong> Have a look at <i>Static Device Configuration Via Udev</i> heading at the <a rel="nofollow" class="external text" href="https://wayland.freedesktop.org/libinput/doc/latest/device-configuration-via-udev.html">Libinput docs</a> for other coordinate transformations.</div>
 <p>Then, <a href="../en/Udev.html#Loading_new_rules" title="Udev">reload the rules</a> and test to see if your device has registered the rule:
 </p>
 <pre># udevadm info /dev/input/event0
@@ -563,6 +556,8 @@ ENV{ID_USB_SERIAL}=="02eb_114e", ENV{LIBINPUT_CALIBRATION_MATRIX}="0 1 0 -1 0 1"
 </p>
 <p>Finally, either restart your machine or restart your Wayland desktop.
 </p>
+<div class="archwiki-template-box archwiki-template-box-tip">
+<strong>Tip</strong> Have a look at <a href="#Tips_and_tricks">#Tips and tricks</a> and <a href="#Troubleshooting">#Troubleshooting</a> for other common libinput examples.</div>
 <div class="mw-heading mw-heading3"><h3 id="Graphical_tools">Graphical tools</h3></div>
 <p>There are different GUI tools:
 </p>
@@ -889,10 +884,7 @@ ModelTabletModeNoSuspend=0</pre>
 <div id="mw-normal-catlinks" class="mw-normal-catlinks">
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Input_devices.html" title="Category:Input devices">Input devices</a></li></ul>
 </div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
-<li><a href="../en/Category:Pages_with_broken_package_links.html" title="Category:Pages with broken package links">Pages with broken package links</a></li>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li>
-</ul>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li></ul>
 </div>
 </div>
 				</div>
@@ -903,8 +895,8 @@ ModelTabletModeNoSuspend=0</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Libinput&amp;oldid=869731">https://wiki.archlinux.org/index.php?title=Libinput&amp;oldid=869731</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 22 March 2026, at 10:46.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Libinput&amp;oldid=872170">https://wiki.archlinux.org/index.php?title=Libinput&amp;oldid=872170</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 26 April 2026, at 08:28.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

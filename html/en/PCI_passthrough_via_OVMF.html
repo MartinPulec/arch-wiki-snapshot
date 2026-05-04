@@ -5,7 +5,7 @@
 <title>PCI passthrough via OVMF - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.45.1">
+<meta name="generator" content="MediaWiki 1.45.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -1513,7 +1513,7 @@ IOMMU Group 13:
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Gotchas">Gotchas</h3></div>
 <div class="mw-heading mw-heading4"><h4 id="Plugging_your_guest_GPU_in_an_unisolated_CPU-based_PCIe_slot">Plugging your guest GPU in an unisolated CPU-based PCIe slot</h4></div>
-<p>Not all PCI-E slots are the same. Most motherboards have PCIe slots provided by both the CPU and the PCH. Depending on your CPU, it is possible that your processor-based PCIe slot does not support isolation properly, in which case the PCI slot itself will appear to be grouped with the device that is connected to it.
+<p>Not all PCIe slots are the same. Most motherboards have PCIe slots provided by both the CPU and the PCH. Depending on your CPU, it is possible that your processor-based PCIe slot does not support isolation properly, in which case the PCI slot itself will appear to be grouped with the device that is connected to it.
 </p>
 <pre>IOMMU Group 1:
 	 00:01.0 PCI bridge: Intel Corporation Xeon E3-1200 v2/3rd Gen Core processor PCI Express Root Port (rev 09)
@@ -2054,7 +2054,7 @@ esac</pre>
 </p>
 <p><a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Restart">Restart</a> <code>libvirtd.service</code> and then start your virtual machine. If you create some heavily multithreaded load on your host now, you should see that it keeps your chosen CPUs free from load while the virtual machine can still make use of it. You should also see those CPUs automatically getting fully used by your host once you terminate the virtual machine.
 </p>
-<p>If you have multiple VMs and want to pin CPU cores only for some of them (or different amounts of cores for each), you can edit the hook file like so:
+<p>If you have multiple virtual machines and want to pin CPU cores only for some of them (or different amounts of cores for each), you can edit the hook file like so:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/libvirt/hooks/qemu</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">#!/bin/env sh
@@ -2397,13 +2397,12 @@ f  /dev/shm/looking-glass  0660  <i>user</i>  kvm  -    -</pre>
 </p>
 <p>You also need to edit the <code>/etc/libvirt/qemu.conf</code> file and uncomment the <code>cgroup_device_acl</code> block, adding <code>/dev/kvmfr0</code> to the list. To make this change active you then must restart <code>libvirtd.service</code>.
 </p>
-<p>Finally, edit the VM's XML:
+<p>Finally, edit the virtual machine's XML:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">$ virsh edit <i>vmname</i></pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">&lt;domain type='kvm' xmlns:qemu='<a rel="nofollow" class="external free" href="http://libvirt.org/schemas/domain/qemu/1.0'">http://libvirt.org/schemas/domain/qemu/1.0'</a>&gt;
 
 ...
-
 
 &lt;qemu:commandline&gt;
   &lt;qemu:arg value="-device"/&gt;
@@ -2414,7 +2413,7 @@ f  /dev/shm/looking-glass  0660  <i>user</i>  kvm  -    -</pre>
 &lt;/domain&gt;</pre>
 <p>Add the required value, in bytes, that you calculated earlier.
 </p>
-<p>You can load this module automatically <a href="../en/Kernel_module.html#systemd" title="Kernel module">at boot time</a> (as suggested by upstream) or whenever a VM starts with a <a href="../en/Libvirt.html#Hooks" title="Libvirt">libvirt hook</a>:
+<p>You can load this module automatically <a href="../en/Kernel_module.html#systemd" title="Kernel module">at boot time</a> (as suggested by upstream) or whenever a virtual machine starts with a <a href="../en/Libvirt.html#Hooks" title="Libvirt">libvirt hook</a>:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/libvirt/hooks/qemu</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">#!/bin/env sh
@@ -2541,7 +2540,7 @@ virsh attach-device [VirtualMachine-Name] [USBdevice]</pre>
 
 virsh attach-device win10 /home/$USER/.VFIOinput/input_mouse.xml
 virsh attach-device win10 /home/$USER/.VFIOinput/input_keyboard.xml</pre>
-<p>Next, duplicate the script file and replace <code>attach-device</code> with <code>detach-device</code>, so the devices are returned to the host after the VM is powered down. Ensure all scripts are <a href="../en/Help:Reading.html#Make_executable" class="mw-redirect" title="Executable">executable</a>.
+<p>Next, duplicate the script file and replace <code>attach-device</code> with <code>detach-device</code>, so the devices are returned to the host after the virtual machine is powered down. Ensure all scripts are <a href="../en/Help:Reading.html#Make_executable" class="mw-redirect" title="Executable">executable</a>.
 </p>
 <p>These 2 script files can now be executed to attach or detach your USB devices from the host to the guest virtual machine. It is important to note that they may need to be executed as root. To run the script from the Windows virtual machine, one possibility is using <a href="../en/PuTTY.html" title="PuTTY">PuTTY</a> to <a href="../en/Secure_Shell.html" class="mw-redirect" title="SSH">SSH</a> into the host, and execute the script. On Windows PuTTY comes with plink.exe which can execute singular commands over SSH before then logging out, instead of opening a SSH terminal, all in the background.
 </p>
@@ -2960,9 +2959,9 @@ cBcBC9A5C1gCCywBCjwKPA0ADQANTElPTgANABQSX0JTVACkEgoEAAALcBcL0Dk=' | base64 -d &g
 <div class="mw-heading mw-heading3"><h3 id="UEFI_(OVMF)_compatibility_in_VBIOS">
 <span id="UEFI_.28OVMF.29_compatibility_in_VBIOS"></span>UEFI (OVMF) compatibility in VBIOS</h3></div>
 <div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-cut.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is being considered for removal.</b></p>
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
 <div>
-<b>Reason:</b> Flashing you guest GPU for the purpose of a GPU passthrough is <b>never</b> good advice. A full section should be dedicated to VBIOS compatibility. (Discuss in <a href="../en/Talk:PCI_passthrough_via_OVMF.html#UEFI_(OVMF)_Compatibility_in_VBIOS" title="Talk:PCI passthrough via OVMF">Talk:PCI passthrough via OVMF#UEFI (OVMF) Compatibility in VBIOS</a>)</div>
+<b>Reason:</b> Flashing your guest GPU for the purpose of a GPU passthrough is <b>never</b> good advice. A full section should be dedicated to VBIOS compatibility. (Discuss in <a href="../en/Talk:PCI_passthrough_via_OVMF.html#UEFI_(OVMF)_Compatibility_in_VBIOS" title="Talk:PCI passthrough via OVMF">Talk:PCI passthrough via OVMF#UEFI (OVMF) Compatibility in VBIOS</a>)</div>
 </div>
 <p>With respect to <a rel="nofollow" class="external text" href="https://pve.proxmox.com/wiki/Pci_passthrough#How_to_known_if_card_is_UEFI_.28ovmf.29_compatible">this article</a>:
 </p>
@@ -3219,7 +3218,7 @@ ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x1002", ATTR{device}=="0x73bf",
 <li>changing <code>Max TOLUD</code> from <code>dynamic</code> to a specific value,</li>
 <li>switching your <code>Initiate Graphic Adapter</code> from <code>PEG</code> to <code>IGD</code>.</li>
 </ul>
-<p>At the very least, VEGA cards seem to be picky about those settings and won't actually work unless you change them.
+<p>At the very least, VEGA cards seem to be picky about those settings and will not actually work unless you change them.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="GPU_timeouts_when_running_games_in_the_virtual_machine">GPU timeouts when running games in the virtual machine</h3></div>
 <p>Starting with recent kernels (6.12+ for AMD, 5.x for Intel), split lock detection is enabled by default. This causes a forced 10ms pause for the process creating the split lock which can result in GPU timeouts and similar virtual machine hanging. This behavior can be disabled by running:
@@ -3228,7 +3227,7 @@ ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x1002", ATTR{device}=="0x73bf",
 </pre>
 <div class="mw-heading mw-heading3"><h3 id="vfio:_DMA_mapping_failed,_unable_to_continue">
 <span id="vfio:_DMA_mapping_failed.2C_unable_to_continue"></span>vfio: DMA mapping failed, unable to continue</h3></div>
-<p>When starting the virtual machine, an error like "qemu: hardware error: vfio: DMA mapping failed, unable to continue" may occur and prevent the VM from booting. To fix this, add the following to the XML file: <a rel="nofollow" class="external autonumber" href="https://github.com/tianocore/edk2/discussions/4662#discussioncomment-6541549">[13]</a>
+<p>When starting the virtual machine, an error like "qemu: hardware error: vfio: DMA mapping failed, unable to continue" may occur and prevent the virtual machine from booting. To fix this, add the following to the XML file: <a rel="nofollow" class="external autonumber" href="https://github.com/tianocore/edk2/discussions/4662#discussioncomment-6541549">[13]</a>
 </p>
 <pre>&lt;cpu&gt;
   &lt;maxphysaddr mode="passthrough" limit="<b>40</b>"/&gt;
@@ -3236,7 +3235,7 @@ ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x1002", ATTR{device}=="0x73bf",
 </pre>
 <p>If directly using QEMU, the example above would be <code>-cpu host,host-phys-bits-limit=<b>0x28</b></code>.
 </p>
-<p>If the VM still doesn't work, try decreasing the value (like <b>39</b> and <b>0x27</b>, respectively).
+<p>If the virtual machine still does not work, try decreasing the value (like <b>39</b> and <b>0x27</b>, respectively).
 </p>
 <p>You can use <span class="plainlinks archwiki-template-man" title="$ man 1 lscpu"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/lscpu.1">lscpu(1)</a></span> to see the actual address size of your CPU and use it rather than the values shown above. Unless you need a large address space, it's safer to choose the physical address size intead of the virtual size.
 </p>
@@ -3261,7 +3260,7 @@ ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x1002", ATTR{device}=="0x73bf",
 <li><a rel="nofollow" class="external text" href="https://libvirt.org/formatdomain.html#iommu-devices">libvirt options</a></li>
 </ul>
 <div class="mw-heading mw-heading3"><h3 id="The_VM_stucks_during_boot_when_using_Looking_Glass">The VM stucks during boot when using Looking Glass</h3></div>
-<p>Sometimes, when using <a href="#Using_Looking_Glass_to_stream_guest_screen_to_the_host">Looking Glass</a>, the VM may get stuck indefinitely at the boot process <a rel="nofollow" class="external autonumber" href="https://www.reddit.com/r/VFIO/comments/16a8xzb/comment/k87n4ai/">[15]</a>. This might be caused by divergences between P-Cores and E-Cores specs on new processors with hybrid architectures.
+<p>Sometimes, when using <a href="#Using_Looking_Glass_to_stream_guest_screen_to_the_host">Looking Glass</a>, the virtual machine may get stuck indefinitely at the boot process <a rel="nofollow" class="external autonumber" href="https://www.reddit.com/r/VFIO/comments/16a8xzb/comment/k87n4ai/">[15]</a>. This might be caused by divergences between P-Cores and E-Cores specs on new processors with hybrid architectures.
 </p>
 <p>To solve this, follow <a href="#vfio:_DMA_mapping_failed,_unable_to_continue">these instructions</a>. It's better to pick the physical address size instead of the virtual address size <a rel="nofollow" class="external autonumber" href="https://www.reddit.com/r/VFIO/comments/16a8xzb/comment/le7obu0/">[16]</a>.
 </p>
@@ -3283,7 +3282,6 @@ ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x1002", ATTR{device}=="0x73bf",
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Merge.html" title="Category:Pages or sections flagged with Template:Merge">Pages or sections flagged with Template:Merge</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Move.html" title="Category:Pages or sections flagged with Template:Move">Pages or sections flagged with Template:Move</a></li>
-<li><a href="../en/Category:Sections_flagged_with_Template:Remove.html" title="Category:Sections flagged with Template:Remove">Sections flagged with Template:Remove</a></li>
 <li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li>
 <li><a href="../en/Category:Pages_with_broken_package_links.html" title="Category:Pages with broken package links">Pages with broken package links</a></li>
 </ul>
@@ -3297,8 +3295,8 @@ ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x1002", ATTR{device}=="0x73bf",
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PCI_passthrough_via_OVMF&amp;oldid=869861">https://wiki.archlinux.org/index.php?title=PCI_passthrough_via_OVMF&amp;oldid=869861</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 24 March 2026, at 18:52.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=PCI_passthrough_via_OVMF&amp;oldid=871701">https://wiki.archlinux.org/index.php?title=PCI_passthrough_via_OVMF&amp;oldid=871701</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 20 April 2026, at 00:56.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

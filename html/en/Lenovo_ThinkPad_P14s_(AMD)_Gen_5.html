@@ -5,7 +5,7 @@
 <title>Lenovo ThinkPad P14s (AMD) Gen 5 - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.45.1">
+<meta name="generator" content="MediaWiki 1.45.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -645,11 +645,36 @@ It is soldered and glued onto the mainboard.
 Likely related to a <code>ath11k</code> / <code>ath11k_pci</code> module issue.
 See the discussion here: <a rel="nofollow" class="external free" href="https://bugzilla.kernel.org/show_bug.cgi?id=214649#c34">https://bugzilla.kernel.org/show_bug.cgi?id=214649#c34</a>
 </p>
-<p>See <a href="../en/Lenovo_ThinkPad_T14s_(AMD)_Gen_3.html#Network_/_Wi-Fi" title="Lenovo ThinkPad T14s (AMD) Gen 3">Lenovo ThinkPad T14s (AMD) Gen 3#Network / Wi-Fi</a> for a fix that unloads the <code>ath11k_pci</code> module before sleep and loads it again after resume.
+<p>This can be automated via sleep hooks - if the module is unloaded before hibernating or suspending it unloads immediately with no delay, and the resume kernel bug does not happen:
+</p>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/usr/lib/systemd/system-sleep/ath11k</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">#!/bin/sh
+
+case "$1" in
+  pre)
+    /usr/bin/modprobe -r ath11k_pci
+    ;;
+  post)
+    /usr/bin/modprobe ath11k_pci
+    ;;
+esac</pre>
+<p>You just need to make <code>/usr/lib/systemd/system-sleep/ath11k</code> executable. No need to <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Restart">restart</a> <code>NetworkManager.service</code>
 </p>
 <p>If the Wi-Fi does not work after suspend to ram with the above fix, try suspend to disk (hibernate).
 </p>
 <p>Hibernation issues have been resolved starting with kernel 6.16.
+</p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> You will find these messages in the journal:
+<p><i>kernel:ath11k_pci: failed to process regulatory info -22</i>
+</p>
+<p><i>kernel:ath11k_pci: Failed to set the requested Country regulatory setting</i>
+<i></i>
+</p>
+<p><br>
+</p>
+This is just a warning and it will block suspend/resume or have connection issue</div>
+<p><br>
 </p>
 <div class="mw-heading mw-heading2"><h2 id="Peripherals">Peripherals</h2></div>
 <div class="mw-heading mw-heading3"><h3 id="Smartcard_Reader">Smartcard Reader</h3></div>
@@ -945,8 +970,8 @@ Optional: Apply tlp configuration for P14s Gen5 (put in `/etc/tlp.d`): <a rel="n
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Lenovo_ThinkPad_P14s_(AMD)_Gen_5&amp;oldid=852763">https://wiki.archlinux.org/index.php?title=Lenovo_ThinkPad_P14s_(AMD)_Gen_5&amp;oldid=852763</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 15 November 2025, at 13:39.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Lenovo_ThinkPad_P14s_(AMD)_Gen_5&amp;oldid=871973">https://wiki.archlinux.org/index.php?title=Lenovo_ThinkPad_P14s_(AMD)_Gen_5&amp;oldid=871973</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 24 April 2026, at 07:01.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

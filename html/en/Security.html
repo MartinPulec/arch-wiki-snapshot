@@ -5,7 +5,7 @@
 <title>Security - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.45.1">
+<meta name="generator" content="MediaWiki 1.45.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -722,10 +722,21 @@
 			<ul id="toc-Linux_containers-sublist" class="vector-toc-list">
 			</ul>
 		</li>
+		<li id="toc-gVisor" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#gVisor">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">10.6</span>
+					<span>gVisor</span>
+				</div>
+			</a>
+			
+			<ul id="toc-gVisor-sublist" class="vector-toc-list">
+			</ul>
+		</li>
 		<li id="toc-Full_virtualization_options" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Full_virtualization_options">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">10.6</span>
+					<span class="vector-toc-numb">10.7</span>
 					<span>Full virtualization options</span>
 				</div>
 			</a>
@@ -1226,7 +1237,7 @@ Some password managers compute the contained passwords based on the master passw
 </p>
 <pre>#%PAM-1.0
 password required pam_pwquality.so retry=2 minlen=10 difok=6 dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1 [badwords=myservice mydomain] enforce_for_root
-password required pam_unix.so use_authtok sha512 shadow</pre>
+password required pam_unix.so use_authtok yescrypt shadow</pre>
 <p>The <code>password required pam_unix.so use_authtok</code> instructs the <i>pam_unix</i> module to not prompt for a password but rather to use the one provided by <i>pam_pwquality</i>.
 </p>
 <p>You can refer to the <span class="plainlinks archwiki-template-man" title="$ man 8 pam_pwquality"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/pam_pwquality.8">pam_pwquality(8)</a></span> and <span class="plainlinks archwiki-template-man" title="$ man 8 pam_unix"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/pam_unix.8">pam_unix(8)</a></span> man pages for more information.
@@ -1353,9 +1364,9 @@ password required pam_unix.so use_authtok sha512 shadow</pre>
 <li>
 <code>/boot</code>: The <a href="../en/Partitioning.html#/boot" title="Partitioning">boot directory</a>, which may include traditional <a href="../en/Kernel.html" class="mw-redirect" title="Vmlinuz">vmlinuz</a> and <a href="../en/Arch_boot_process.html#initramfs" class="mw-redirect" title="Initramfs">initramfs</a> images, or a <a href="../en/Unified_kernel_image.html" title="Unified kernel image">Unified kernel image</a>. Note that safe permissions are used by default when using <a href="../en/Systemd.html#GPT_partition_automounting" title="Systemd">systemd#GPT partition automounting</a>.</li>
 <li>
-<code>/etc/nftables.conf</code>: The <a href="../en/Nftables.html" title="Nftables">nftables</a> configuration, applicable to <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nftables">nftables</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=iptables-nft">iptables-nft</a></span>.</li>
+<code>/etc/nftables.conf</code>: The <a href="../en/Nftables.html" title="Nftables">nftables</a> configuration, applicable to <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nftables">nftables</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=iptables">iptables</a></span>.</li>
 <li>
-<code>/etc/iptables</code>: The legacy <a href="../en/Iptables.html" title="Iptables">iptables</a> configuration, applicable to <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=iptables">iptables</a></span>.</li>
+<code>/etc/iptables</code>: The legacy <a href="../en/Iptables.html" title="Iptables">iptables</a> configuration, applicable to <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=iptables-legacy">iptables-legacy</a></span>.</li>
 </ul>
 <p>The default <a href="../en/Umask.html" title="Umask">umask</a> <code>0022</code> can be changed to improve security for newly created files. The <a rel="nofollow" class="external text" href="https://apps.nsa.gov/iaarchive/library/ia-guidance/security-configuration/operating-systems/guide-to-the-secure-configuration-of-red-hat-enterprise.cfm">NSA RHEL5 Security Guide</a> suggests a umask of <code>0077</code> for maximum security, which makes new files not readable by users other than the owner. To change this, see <a href="../en/Umask.html#Set_the_mask_value" title="Umask">Umask#Set the mask value</a>. If you use <a href="../en/Sudo.html" title="Sudo">sudo</a>, consider configuring it to use the <a href="../en/Sudo.html#Permissive_umask" title="Sudo">default root umask</a>.
 </p>
@@ -1773,12 +1784,15 @@ SupplementaryGroups=proc</pre>
 </p>
 <p>To improve the security of systemd service units, see <a href="../en/Systemd/Sandboxing.html" title="Systemd/Sandboxing">systemd/Sandboxing</a>.
 </p>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note</strong> The user namespace configuration item <code>CONFIG_USER_NS</code> is currently enabled in <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux">linux</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-lts">linux-lts</a></span>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-zen">linux-zen</a></span> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-hardened">linux-hardened</a></span>. Lack of it may prevent certain sandboxing features from being made available to applications.</div>
-<div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip</strong> User namespaces have been available from Linux 3.8 (24 years ago). All the security vulnerabilities have been patched, and no security issues have emerged in recent years. Therefore, they can be considered safe for unprivileged users. 
-Additionally, <a href="../en/Systemd.html" title="Systemd">systemd</a>, <a href="../en/Bubblewrap.html" title="Bubblewrap">bubblewrap</a>, <a href="../en/Firefox.html" title="Firefox">Firefox</a> and many other tools require them to implement efficient sandboxes, therefore it is wise to enable them also with the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-hardened">linux-hardened</a></span> kernel</div>
-<p>Of all the officially supported kernels, only <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-hardened">linux-hardened</a></span> disables user namespaces for unprivilegied users. In order to efficiently sandbox applications without requiring root privilegies it is advisable to set <code>kernel.unprivileged_userns_clone</code> to <code>1</code>.
+<div class="archwiki-template-box archwiki-template-box-warning">
+<strong>Warning</strong> Unprivileged user namespace usage is enabled by default in all <a href="../en/Kernel.html#Officially_supported_kernels" title="Kernel">officially supported kernels</a> except for <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-hardened">linux-hardened</a></span>. Unprivileged user namespaces greatly increase the attack surface for local privilege escalation; see <a rel="nofollow" class="external text" href="https://gitlab.com/apparmor/apparmor/-/wikis/unprivileged_userns_restriction">AppArmor's Wiki</a> and <a rel="nofollow" class="external text" href="https://bugs.archlinux.org/task/36969">FS#36969</a>.</div>
+<p>To mitigate this, either:
+</p>
+<ul>
+<li>use the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=linux-hardened">linux-hardened</a></span> kernel which has the safe default, or</li>
+<li>set the <code>kernel.unprivileged_userns_clone</code> <a href="../en/Sysctl.html" title="Sysctl">sysctl</a> to <code>0</code>.</li>
+</ul>
+<p>Note that this can break applications such as <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=nsjail">nsjail</a></span>. <a href="../en/Chromium.html" title="Chromium">Chromium</a> based applications need SUID bit for <code>chrome-sandbox</code> to work with this setting.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Firejail">Firejail</h3></div>
 <p><a href="../en/Firejail.html" title="Firejail">Firejail</a> is an easy to use tool for sandboxing applications and servers alike. It was originally created for browsers and internet facing applications, but supports a large number of applications by now. To establish a sandboxed environment with a variety of features, it is installed as a suid binary and builds a sandboxed runtime environment for the target application based on black and white lists.
@@ -1802,6 +1816,13 @@ Additionally, <a href="../en/Systemd.html" title="Systemd">systemd</a>, <a href=
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Linux_containers">Linux containers</h3></div>
 <p><a href="../en/Linux_Containers.html" title="Linux Containers">Linux Containers</a> are another good option when you need more separation than the other options (short of <a href="#Full_virtualization_options">full system virtualization</a>) provide. LXC is run on top of the existing kernel in a pseudo-chroot with their own virtual hardware.
+</p>
+<div class="mw-heading mw-heading3"><h3 id="gVisor">gVisor</h3></div>
+<p>The <a rel="nofollow" class="external text" href="https://gvisor.dev/">gVisor</a> project, led by Google, is providing a sandboxing application with a focus on containers following the <a rel="nofollow" class="external text" href="https://opencontainers.org/">OCI initiative</a>, such as <a href="../en/Docker.html" title="Docker">Docker</a> and <a href="../en/Kubernetes.html" title="Kubernetes">Kubernetes</a>. It isolates containers and individual applications from the host by intercepting a majority of system calls to the kernel and presenting itself as guest kernel.
+</p>
+<p>A key difference to other intercepting sandboxing projects is that gVisor re-implements system calls in the Go programming language, as described in its <a rel="nofollow" class="external text" href="https://gvisor.dev/docs/architecture_guide/intro/">design overview</a>. Details for the list of <a rel="nofollow" class="external text" href="https://gvisor.dev/docs/user_guide/compatibility/linux/amd64/">re-implemented syscalls support</a> can be seen in <a rel="nofollow" class="external text" href="https://github.com/google/gvisor/blob/master/pkg/sentry/syscalls/linux/linux64.go">git</a>. For usage examples, limitations and special features see the project <a rel="nofollow" class="external text" href="https://gvisor.dev/docs/">documentation</a>.
+</p>
+<p>The application is available as <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/gvisor-git/">gvisor-git</a></span><sup><small>AUR</small></sup> and <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/gvisor-bin/">gvisor-bin</a></span><sup><small>AUR</small></sup>.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Full_virtualization_options">Full virtualization options</h3></div>
 <p>Using full virtualization options such as <a href="../en/VirtualBox.html" title="VirtualBox">VirtualBox</a>, <a href="../en/KVM.html" title="KVM">KVM</a>, <a href="../en/Xen.html" title="Xen">Xen</a> or <a rel="nofollow" class="external text" href="https://www.qubes-os.org/">Qubes OS</a> (based on Xen) can also improve isolation and security in the event you plan on running risky applications or browsing dangerous websites.
@@ -2078,8 +2099,8 @@ esac
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Security&amp;oldid=870235">https://wiki.archlinux.org/index.php?title=Security&amp;oldid=870235</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 30 March 2026, at 17:17.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Security&amp;oldid=872298">https://wiki.archlinux.org/index.php?title=Security&amp;oldid=872298</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 27 April 2026, at 10:33.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -5,7 +5,7 @@
 <title>Tor - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.45.1">
+<meta name="generator" content="MediaWiki 1.45.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -228,17 +228,6 @@
 			</a>
 			
 			<ul id="toc-Pidgin-sublist" class="vector-toc-list">
-			</ul>
-		</li>
-		<li id="toc-Irssi" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Irssi">
-				<div class="vector-toc-text">
-					<span class="vector-toc-numb">6.2</span>
-					<span>Irssi</span>
-				</div>
-			</a>
-			
-			<ul id="toc-Irssi-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -869,46 +858,20 @@ DataDirectoryGroupReadable 1
 <p>You can also use this setup in other applications like messaging (e.g. <a href="../en/List_of_applications/Internet.html#XMPP_clients" class="mw-redirect" title="Jabber">Jabber</a>, <a href="../en/IRC_client.html" class="mw-redirect" title="IRC client">IRC clients</a>). Applications that support HTTP proxies you can connect to Privoxy (i.e. <code>127.0.0.1:8118</code>). To use SOCKS proxy directly, you can point your application at Tor (i.e. <code>127.0.0.1:9050</code>). A problem with this method though is that applications doing DNS resolves by themselves may leak information. Consider using Socks4A (e.g. with Privoxy) instead.
 </p>
 <div class="mw-heading mw-heading2"><h2 id="Instant_messaging">Instant messaging</h2></div>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-cut.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is being considered for removal.</b></p>
-<div>
-<b>Reason:</b> Instant messaging clients should document Tor usage on their respective pages, to avoid cluttering this page. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Tor.html">Talk:Tor</a>)</div>
-</div>
 <p>In order to use an instant messaging client with tor, we do not need an HTTP proxy like <a href="../en/Privoxy.html" title="Privoxy">privoxy</a>. We will be using tor's daemon directly which listens to port 9050 by default.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Pidgin">Pidgin</h3></div>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-go-next.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is a candidate for moving to <a href="../en/Pidgin.html" title="Pidgin">Pidgin</a>.</b></p>
+<div>
+<b>Notes:</b> Instant messaging clients should document Tor usage on their respective pages, to avoid cluttering this page. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Tor.html">Talk:Tor</a>)</div>
+</div>
 <p>You can set up <a href="../en/Pidgin.html" title="Pidgin">Pidgin</a> to use Tor globally, or per account. To use Tor globally, go to <i>Tools -&gt; Preferences -&gt; Proxy</i>. To use Tor for specific accounts, go to <i>Accounts &gt; Manage Accounts</i>, select the desired account, click Modify, then go to the Proxy tab. The proxy settings are as follows:
 </p>
 <pre>Proxy type: SOCKS 5
 Host: 127.0.0.1
 Port: 9050
 </pre>
-<div class="mw-heading mw-heading3"><h3 id="Irssi">Irssi</h3></div>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:View-refresh-red.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is out of date.</b></p>
-<div>
-<b>Reason:</b> <code>cap_sasl.pl</code> is broken with <i>perl</i> 5.20; SSL does also not work with <code>torsocks</code> (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Tor.html">Talk:Tor</a>)</div>
-</div>
-<p>Libera Chat recommends connecting to <code>.onion</code> directly. It also requires SASL to identify to NickServ during connection; see <a href="../en/Irssi.html#Authenticating_with_SASL" title="Irssi">Irssi#Authenticating with SASL</a>. Start irssi:
-</p>
-<pre>$ torsocks irssi
-</pre>
-<p>Set your identification to nickserv, which will be read when connecting. Supported mechanisms are ECDSA-NIST256P-CHALLENGE (see <a rel="nofollow" class="external text" href="https://github.com/kaniini/ecdsatool/blob/master/example-for-cap_sasl.pl">ecdsatool</a>) and PLAIN. DH-BLOWFISH <a rel="nofollow" class="external text" href="https://libera.chat/guides/sasl">is not supported</a>.
-</p>
-<pre>/sasl set <i>network</i> <i>username</i> <i>password</i> <i>mechanism</i>
-</pre>
-<p>Disable CTCP and DCC and set a different hostname to prevent information disclosure: <a rel="nofollow" class="external autonumber" href="https://web.archive.org/web/20160123165938/https://encrypteverything.ca/IRC_Anonymity_Guide">[3]</a>
-</p>
-<pre>/ignore * CTCPS
-/ignore * DCC
-/set hostname <i>fake_host</i>
-</pre>
-<p>Connect to Libera Chat:
-</p>
-<pre>/connect -network <i>network</i> libera75jm6of4wxpxt4aynol3xjmbtxgfyjpu34ss4d7r7q2v5zrpyd.onion
-</pre>
-<p>For more information check <a rel="nofollow" class="external text" href="https://libera.chat/guides/connect#accessing-liberachat-via-tor">Accessing Libera.Chat Via Tor</a>, <a rel="nofollow" class="external text" href="https://libera.chat/guides/sasl">Using SASL</a> or <a rel="nofollow" class="external text" href="https://trac.torproject.org/projects/tor/wiki/doc/TorifyHOWTO/IrcSilc">IRC/SILC Wiki article</a>.
-</p>
 <div class="mw-heading mw-heading2"><h2 id="Pacman">Pacman</h2></div>
 <p><a href="../en/Pacman.html" title="Pacman">Pacman</a> download operations (repository databases, packages, and public keys) can be done using the Tor network.
 </p>
@@ -956,25 +919,25 @@ XferCommand = /usr/bin/curl --socks5-hostname localhost:9050 --location --contin
 </p>
 <p>This means that your machine will act as an entry node or forwarding relay and, unlike a <a href="#Running_a_Tor_bridge">bridge</a>, it will be listed in the public Tor directory. Your IP address will be publicly visible in the Tor directory but the relay will only forward to other relays or <a href="#Running_a_Tor_exit_relay">Tor exit nodes</a>, not directly to the internet.
 </p>
-<p>To <a rel="nofollow" class="external text" href="https://community.torproject.org/relay/setup/">setup</a> a non-exit relay, see <a rel="nofollow" class="external autonumber" href="https://community.torproject.org/relay/setup/guard/archlinux/">[4]</a> and <a rel="nofollow" class="external autonumber" href="https://community.torproject.org/relay/setup/post-install/">[5]</a>.
+<p>To <a rel="nofollow" class="external text" href="https://community.torproject.org/relay/setup/">setup</a> a non-exit relay, see <a rel="nofollow" class="external autonumber" href="https://community.torproject.org/relay/setup/guard/archlinux/">[3]</a> and <a rel="nofollow" class="external autonumber" href="https://community.torproject.org/relay/setup/post-install/">[4]</a>.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Running_a_Tor_bridge">Running a Tor bridge</h3></div>
 <p>A Tor bridge is a Tor relay that is not listed in the public Tor directory, thus making it possible for people to connect to the Tor network when governments or ISPs block all public Tor relays. Visit <a rel="nofollow" class="external free" href="https://bridges.torproject.org/">https://bridges.torproject.org/</a> for more information and instructions on how to get bridge addresses.
 </p>
-<p>To <a rel="nofollow" class="external text" href="https://community.torproject.org/relay/setup/bridge/">setup</a> a Tor bridge, see <a rel="nofollow" class="external autonumber" href="https://community.torproject.org/relay/setup/bridge/archlinux/">[6]</a> and <a rel="nofollow" class="external autonumber" href="https://community.torproject.org/relay/setup/post-install/">[7]</a>.
+<p>To <a rel="nofollow" class="external text" href="https://community.torproject.org/relay/setup/bridge/">setup</a> a Tor bridge, see <a rel="nofollow" class="external autonumber" href="https://community.torproject.org/relay/setup/bridge/archlinux/">[5]</a> and <a rel="nofollow" class="external autonumber" href="https://community.torproject.org/relay/setup/post-install/">[6]</a>.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Running_a_Tor_exit_relay">Running a Tor exit relay</h3></div>
 <p>Any requests from a Tor user to the regular internet must exit the Tor network at some point, and exit relays provide this essential service. To the destination host, these requests will appear to originate from your machine. This means that running an exit relay is typically viewed as more legally burdensome than running other types of Tor relays.
 </p>
 <p>Before becoming an exit relay, it is <b>strongly</b> recommended to read <a rel="nofollow" class="external text" href="https://community.torproject.org/relay/community-resources/">Legal resources</a> and <a rel="nofollow" class="external text" href="https://blog.torproject.org/tips-running-exit-node/">tips for running an exit node</a>.
 </p>
-<p>To setup an exit relay, see <a rel="nofollow" class="external autonumber" href="https://community.torproject.org/relay/setup/exit/">[8]</a> and <a rel="nofollow" class="external autonumber" href="https://community.torproject.org/relay/setup/post-install/">[9]</a>.
+<p>To setup an exit relay, see <a rel="nofollow" class="external autonumber" href="https://community.torproject.org/relay/setup/exit/">[7]</a> and <a rel="nofollow" class="external autonumber" href="https://community.torproject.org/relay/setup/post-install/">[8]</a>.
 </p>
 <div class="mw-heading mw-heading4"><h4 id="Configuration_2">Configuration</h4></div>
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-cut.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is being considered for removal.</b></p>
 <div>
-<b>Reason:</b> Content that is 10+ years old provides little value beyond the <a rel="nofollow" class="external text" href="https://community.torproject.org/relay/">official documentation</a>, including possibly wrong iptables rules that could pose risks. Also, pdnsd has not been maintained since 2012. Tor Project recommends using up-to-date resources for firewall rules and unbound for DNS. <a rel="nofollow" class="external autonumber" href="https://community.torproject.org/relay/setup/post-install/">[10]</a><a rel="nofollow" class="external autonumber" href="https://community.torproject.org/relay/setup/exit/">[11]</a> (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Tor.html">Talk:Tor</a>)</div>
+<b>Reason:</b> Content that is 10+ years old provides little value beyond the <a rel="nofollow" class="external text" href="https://community.torproject.org/relay/">official documentation</a>, including possibly wrong iptables rules that could pose risks. Also, pdnsd has not been maintained since 2012. Tor Project recommends using up-to-date resources for firewall rules and unbound for DNS. <a rel="nofollow" class="external autonumber" href="https://community.torproject.org/relay/setup/post-install/">[9]</a><a rel="nofollow" class="external autonumber" href="https://community.torproject.org/relay/setup/exit/">[10]</a> (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Tor.html">Talk:Tor</a>)</div>
 </div>
 <p>Using the <code>torrc</code>, you can configure which services you wish to allow through your exit relay.
 </p>
@@ -1007,7 +970,7 @@ XferCommand = /usr/bin/curl --socks5-hostname localhost:9050 --location --contin
 <strong>Note</strong> See <a href="#Running_Tor_in_a_systemd-nspawn_container_with_a_virtual_network_interface">#Running Tor in a systemd-nspawn container with a virtual network interface</a> for instructions to install Tor in a <code>systemd-nspawn</code> container.</div>
 <div class="mw-heading mw-heading5"><h5 id="Tor_2">Tor</h5></div>
 <div class="mw-heading mw-heading6"><h6 id="Raise_maximum_number_of_open_file_descriptors">Raise maximum number of open file descriptors</h6></div>
-<p>To handle more than 32768 connections, <code>LimitNOFILE</code> can be raised <a rel="nofollow" class="external autonumber" href="https://support.torproject.org/#relay-operators_packaged-tor">[12]</a>:
+<p>To handle more than 32768 connections, <code>LimitNOFILE</code> can be raised <a rel="nofollow" class="external autonumber" href="https://support.torproject.org/#relay-operators_packaged-tor">[11]</a>:
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/systemd/system/tor.service.d/increase-file-limits.conf</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Service]
@@ -1178,7 +1141,7 @@ AutomapHostsSuffixes .exit,.onion
 <p>A downside of both methods is that they are only able to resolve DNS queries for A, AAAA and PTR records; MX and NS queries are never answered. For more information see this <a rel="nofollow" class="external text" href="https://techstdout.boum.org/TorDns/">Debian-based introduction</a>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-tip">
-<strong>Tip</strong> See <a rel="nofollow" class="external autonumber" href="https://support.torproject.org/#misc_check-socks-dns-leaks">[13]</a> to check if an application is leaking DNS requests.</div>
+<strong>Tip</strong> See <a rel="nofollow" class="external autonumber" href="https://support.torproject.org/#misc_check-socks-dns-leaks">[12]</a> to check if an application is leaking DNS requests.</div>
 <div class="mw-heading mw-heading3"><h3 id="Using_Tor_DNS_systemwide">Using Tor DNS systemwide</h3></div>
 <p>It is possible to configure your system to use Tor DNS for any A, AAAA, and PTR queries your system makes, regardless of whether you eventually use Tor to connect to your final destination. To do this, configure your system to use <code>127.0.0.1</code> as its DNS server and edit the <code>DNSPort</code> line in <code>/etc/tor/torrc</code> to show:
 </p>
@@ -1214,7 +1177,7 @@ listen-address=127.0.0.1</pre>
 </p>
 <dl><dd>
 <b>torsocks</b> is a wrapper between the torsocks library and the application in order to make every Internet communication go through the Tor network.</dd></dl>
-<p>For a comparison of <code>torsocks</code> with its predecessor, see <a rel="nofollow" class="external autonumber" href="https://tor.stackexchange.com/a/21000">[14]</a>.
+<p>For a comparison of <code>torsocks</code> with its predecessor, see <a rel="nofollow" class="external autonumber" href="https://tor.stackexchange.com/a/21000">[13]</a>.
 </p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note</strong> The wrapper deliberately and verbosely fails for certain system calls, which cause some applications to not fully work with it. See <a rel="nofollow" class="external text" href="https://stackoverflow.com/questions/46634215/torsocks-and-unsupported-syscalls">torsocks-and-unsupported-syscalls</a>.</div>
@@ -1227,16 +1190,16 @@ $ torsocks wget -qO- <a rel="nofollow" class="external free" href="https://check
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Inaccurate.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>The factual accuracy of this article or section is disputed.</b></p>
 <div>
-<b>Reason:</b> How well those iptables rules protect against leaks, and why not just use <a rel="nofollow" class="external text" href="https://www.whonix.org/wiki/About">Whonix</a><a rel="nofollow" class="external autonumber" href="https://www.whonix.org/wiki/Leaks">[15]</a>? It may be unwise to apply them blindly in your system. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Tor.html">Talk:Tor</a>)</div>
+<b>Reason:</b> How well those iptables rules protect against leaks, and why not just use <a rel="nofollow" class="external text" href="https://www.whonix.org/wiki/About">Whonix</a><a rel="nofollow" class="external autonumber" href="https://www.whonix.org/wiki/Leaks">[14]</a>? It may be unwise to apply them blindly in your system. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Tor.html">Talk:Tor</a>)</div>
 </div>
 <p>In some cases it is more secure and often easier to transparently torify an entire system instead of configuring individual applications to use Tor's socks port, not to mention preventing DNS leaks. Transparent torification can be done with <a href="../en/Iptables.html" title="Iptables">iptables</a> in such a way that all outbound packets are redirected through Tor's <i>TransPort</i>, except the Tor traffic itself. Once in place, applications do not need to be configured to use Tor, though Tor's <i>SOCKSPort</i> will still work. This also works for DNS via Tor's <i>DNSPort</i>, but realize that Tor only supports TCP, thus UDP packets other than DNS cannot be sent through Tor and therefore must be blocked entirely to prevent leaks.
 </p>
-<p>Using iptables to transparently torify a system affords comparatively strong leak protection, but it is not a substitute for virtualized torification applications such as Whonix, or TorVM <a rel="nofollow" class="external autonumber" href="https://www.whonix.org/wiki/Comparison_with_Others">[16]</a>. Transparent torification also will not protect against fingerprinting attacks on its own, so it is recommended to use an amnesic solution like <a rel="nofollow" class="external text" href="https://tails.net/">Tails</a> instead. Applications can still learn your computer's hostname, MAC address, serial number, timezone, etc. and those with root privileges can disable the firewall entirely. In other words, transparent torification with iptables protects against accidental connections and DNS leaks by misconfigured software, it is not sufficient to protect against malware or software with serious security vulnerabilities.
+<p>Using iptables to transparently torify a system affords comparatively strong leak protection, but it is not a substitute for virtualized torification applications such as Whonix, or TorVM <a rel="nofollow" class="external autonumber" href="https://www.whonix.org/wiki/Comparison_with_Others">[15]</a>. Transparent torification also will not protect against fingerprinting attacks on its own, so it is recommended to use an amnesic solution like <a rel="nofollow" class="external text" href="https://tails.net/">Tails</a> instead. Applications can still learn your computer's hostname, MAC address, serial number, timezone, etc. and those with root privileges can disable the firewall entirely. In other words, transparent torification with iptables protects against accidental connections and DNS leaks by misconfigured software, it is not sufficient to protect against malware or software with serious security vulnerabilities.
 </p>
 <p>When a transparent proxy is used, it is possible to start a Tor session from the client as well as from the transparent proxy, creating a "Tor over Tor" scenario.
 Doing so produces undefined and potentially unsafe behavior. In theory, the user could get six hops instead of three in the Tor network. However, it is not guaranteed that the three additional hops received are different; the user could end up with the same hops, possibly in reverse or mixed order. 
-The Tor Project opinion is that this is unsafe <a rel="nofollow" class="external autonumber" href="https://support.torproject.org/misc/#misc_misc-11">[17]</a><sup>[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2025-11-17—HTTP 404]</sup>
-<a rel="nofollow" class="external autonumber" href="https://gitlab.torproject.org/legacy/trac/-/wikis/doc/TorifyHOWTO#tor-over-tor">[18]</a>.
+The Tor Project opinion is that this is unsafe <a rel="nofollow" class="external autonumber" href="https://support.torproject.org/misc/#misc_misc-11">[16]</a><sup>[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2025-11-17—HTTP 404]</sup>
+<a rel="nofollow" class="external autonumber" href="https://gitlab.torproject.org/legacy/trac/-/wikis/doc/TorifyHOWTO#tor-over-tor">[17]</a>.
 </p>
 <p>To enable transparent torification, use the following file for <code>iptables-restore</code> and <code>ip6tables-restore</code> (internally used by <a href="../en/Systemd.html" title="Systemd">systemd</a>'s <code>iptables.service</code> and <code>ip6tables.service</code>).
 </p>
@@ -1363,7 +1326,7 @@ Instructions are provided in the starter file for the browser, which by default 
 <div class="noprint archwiki-template-message">
 <p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-cut.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section is being considered for removal.</b></p>
 <div>
-<b>Reason:</b> chroot is not a security feature <a rel="nofollow" class="external autonumber" href="https://www.redhat.com/en/blog/chroot-security-feature">[19]</a>. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=tor">tor</a></span> ships with several systemd sandboxing options which conflicts with a chroot environment <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=259710">[20]</a>. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Tor.html">Talk:Tor</a>)</div>
+<b>Reason:</b> chroot is not a security feature <a rel="nofollow" class="external autonumber" href="https://www.redhat.com/en/blog/chroot-security-feature">[18]</a>. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=tor">tor</a></span> ships with several systemd sandboxing options which conflicts with a chroot environment <a rel="nofollow" class="external autonumber" href="https://bbs.archlinux.org/viewtopic.php?id=259710">[19]</a>. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Tor.html">Talk:Tor</a>)</div>
 </div>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note</strong>  Connecting with telnet to the local ControlPort seems to be broken while running Tor in a chroot</div>
@@ -1513,6 +1476,7 @@ LimitNOFILE=65536</pre>
 <a href="../Special:Categories.html" title="Special:Categories">Category</a>: <ul><li><a href="../en/Category:Anonymity_networks.html" title="Category:Anonymity networks">Anonymity networks</a></li></ul>
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Move.html" title="Category:Pages or sections flagged with Template:Move">Pages or sections flagged with Template:Move</a></li>
 <li><a href="../en/Category:Sections_flagged_with_Template:Remove.html" title="Category:Sections flagged with Template:Remove">Sections flagged with Template:Remove</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Out_of_date.html" title="Category:Pages or sections flagged with Template:Out of date">Pages or sections flagged with Template:Out of date</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
@@ -1529,8 +1493,8 @@ LimitNOFILE=65536</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Tor&amp;oldid=865303">https://wiki.archlinux.org/index.php?title=Tor&amp;oldid=865303</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 13 February 2026, at 14:20.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Tor&amp;oldid=871816">https://wiki.archlinux.org/index.php?title=Tor&amp;oldid=871816</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 22 April 2026, at 00:00.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

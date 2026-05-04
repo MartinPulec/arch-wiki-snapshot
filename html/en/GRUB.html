@@ -5,7 +5,7 @@
 <title>GRUB - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.45.1">
+<meta name="generator" content="MediaWiki 1.45.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -848,17 +848,6 @@
 			</a>
 			
 			<ul id="toc-GRUB_is_installed,_but_receive_&quot;ERROR_CODE_1962_-_No_operating_system_found&quot;_message_on_older_Lenovo_machines-sublist" class="vector-toc-list">
-			</ul>
-		</li>
-		<li id="toc-Warning_to_perform_grub-install/grub-mkconfig_at_each_grub_update" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Warning_to_perform_grub-install/grub-mkconfig_at_each_grub_update">
-				<div class="vector-toc-text">
-					<span class="vector-toc-numb">7.17</span>
-					<span>Warning to perform grub-install/grub-mkconfig at each grub update</span>
-				</div>
-			</a>
-			
-			<ul id="toc-Warning_to_perform_grub-install/grub-mkconfig_at_each_grub_update-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -1741,7 +1730,7 @@ Boot0002* Festplatte BIOS(2,0,00)P0: SAMSUNG HD204UI
 </pre>
 <div class="mw-heading mw-heading4"><h4 id="Default/fallback_boot_path">
 <span id="Default.2Ffallback_boot_path"></span>Default/fallback boot path</h4></div>
-<p>Some UEFI firmwares require a bootable file at a known location before they will show UEFI NVRAM boot entries. If this is the case, <code>grub-install</code> will claim <code>efibootmgr</code> has added an entry to boot GRUB, however the entry will not show up in the VisualBIOS boot order selector. The solution is to install GRUB at the default/fallback boot path:
+<p>Some UEFI firmwares (e.g. MSI motherboards) require a bootable file at a known location before they will show UEFI NVRAM boot entries. If this is the case, <code>grub-install</code> will claim <code>efibootmgr</code> has added an entry to boot GRUB, however the entry will not show up in the VisualBIOS boot order selector. The solution is to install GRUB at the default/fallback boot path:
 </p>
 <pre># grub-install --target=x86_64-efi --efi-directory=<i>esp</i> <b>--removable</b>
 </pre>
@@ -1827,29 +1816,6 @@ grub rescue&gt; normal
 <span id="GRUB_is_installed.2C_but_receive_.22ERROR_CODE_1962_-_No_operating_system_found.22_message_on_older_Lenovo_machines"></span>GRUB is installed, but receive "ERROR CODE 1962 - No operating system found" message on older Lenovo machines</h3></div>
 <p>See <a rel="nofollow" class="external text" href="https://www.reddit.com/r/ManjaroLinux/comments/e682d6/fixing_lenovos_error_code_1962_by_spoofing_the/">Fixing Lenovo’s ERROR CODE 1962 by spoofing the EFI boot entries</a>.
 </p>
-<div class="mw-heading mw-heading3"><h3 id="Warning_to_perform_grub-install/grub-mkconfig_at_each_grub_update">
-<span id="Warning_to_perform_grub-install.2Fgrub-mkconfig_at_each_grub_update"></span>Warning to perform grub-install/grub-mkconfig at each grub update</h3></div>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-clear.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs language, wiki syntax or style improvements. See <a href="../en/Help:Style.html" title="Help:Style">Help:Style</a> for reference.</b></p>
-<div>
-<b>Reason:</b> This does not belong in a troubleshooting section. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:GRUB.html">Talk:GRUB</a>)</div>
-</div>
-<p>You can do it manually or use a <a href="../en/Pacman_hook.html" class="mw-redirect" title="Pacman hook">pacman hook</a>, for example:
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/pacman.d/hooks/grub-update.hook</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Trigger]
-Operation = Upgrade
-
-Type = Package
-Target = grub
-
-[Action]
-Description = Regenerate grub if updated
-When = PostTransaction
-Depends = grub
-Exec = /bin/sh -c "/usr/bin/grub-install --efi-directory=<i>esp</i> --bootloader-id=GRUB &amp;&amp; /usr/bin/grub-mkconfig -o /boot/grub/grub.cfg"</pre>
-<p>Change <i>grub-install</i> options such as the <code>--efi-directory</code> path to match your settings.
-</p>
 <div class="mw-heading mw-heading2"><h2 id="See_also">See also</h2></div>
 <ul>
 <li><a rel="nofollow" class="external text" href="https://www.gnu.org/software/grub/manual/grub.html">Official GRUB Manual</a></li>
@@ -1871,7 +1837,6 @@ Exec = /bin/sh -c "/usr/bin/grub-install --efi-directory=<i>esp</i> --bootloader
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Merge.html" title="Category:Pages or sections flagged with Template:Merge">Pages or sections flagged with Template:Merge</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Out_of_date.html" title="Category:Pages or sections flagged with Template:Out of date">Pages or sections flagged with Template:Out of date</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li>
 </ul>
 </div>
 </div>
@@ -1883,8 +1848,8 @@ Exec = /bin/sh -c "/usr/bin/grub-install --efi-directory=<i>esp</i> --bootloader
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GRUB&amp;oldid=862736">https://wiki.archlinux.org/index.php?title=GRUB&amp;oldid=862736</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 25 January 2026, at 18:28.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GRUB&amp;oldid=871648">https://wiki.archlinux.org/index.php?title=GRUB&amp;oldid=871648</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 19 April 2026, at 09:50.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

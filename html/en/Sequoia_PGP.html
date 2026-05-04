@@ -5,7 +5,7 @@
 <title>Sequoia PGP - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.45.1">
+<meta name="generator" content="MediaWiki 1.45.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -198,15 +198,15 @@
 		</li>
 	</ul>
 		</li>
-		<li id="toc-Kerservers" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Kerservers">
+		<li id="toc-Keyservers" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Keyservers">
 				<div class="vector-toc-text">
 					<span class="vector-toc-numb">4.5</span>
-					<span>Kerservers</span>
+					<span>Keyservers</span>
 				</div>
 			</a>
 			
-			<ul id="toc-Kerservers-sublist" class="vector-toc-list">
+			<ul id="toc-Keyservers-sublist" class="vector-toc-list">
 				<li id="toc-Sending_keys" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Sending_keys">
 				<div class="vector-toc-text">
@@ -438,7 +438,7 @@
 <li><a href="../en/OpenPGP.html" title="OpenPGP">OpenPGP</a></li>
 </ul>
 </div>
-<p><a rel="nofollow" class="external text" href="https://sequoia-pgp.org/">Sequoia PGP</a> is a complete implementation of OpenPGP as defined by the (deprecated) <a rel="nofollow" class="external text" href="https://tools.ietf.org/html/rfc4880">RFC 4880</a> and the new <a rel="nofollow" class="external text" href="https://www.rfc-editor.org/rfc/rfc9580.html">RFC 9580</a>, and various related standards.
+<p><a rel="nofollow" class="external text" href="https://sequoia-pgp.org/">Sequoia PGP</a> is a complete implementation of OpenPGP as defined by the (deprecated) <a href="https://tools.ietf.org/html/rfc4880" class="extiw" title="rfc:4880"> RFC 4880</a> and the new <a href="https://tools.ietf.org/html/rfc9580" class="extiw" title="rfc:9580">RFC 9580</a>, and various related standards.
 </p>
 <p>Sequoia consists also of several crates, providing both a low-level and a higher-level API for dealing with OpenPGP data. Moreover, Sequoia provides a <a rel="nofollow" class="external text" href="https://sequoia-pgp.gitlab.io/sequoia-wot/">detailed implementation of its Web of Trust</a> which may be different (but largely compatible) from the one implemented by other tools like <a href="../en/GnuPG.html" title="GnuPG">GnuPG</a>, because OpenPGP does not specify how a web of trust implementation should work.
 </p>
@@ -472,12 +472,12 @@
 <li>
 <i>Centralized authentication</i>: there are a certain number of trust introducers, called <i>certification authorities</i> (CAs), which are known to everyone and everyone must fully trust their certifications. TLS/HTTPS uses this scheme with the X.509 protocol for example;</li>
 <li>
-<i>Decentralized authentication</i>: everyone can be a trust introducer and certificate any certificate-UserID bingind, however the end user is free to choose which trust introducer to trust and decide how much trust put on each introducer. Therefore, trust is no more a zero/one choice, and intermediate amounts are possible. Sequoia, GnuPG and several other OpenPGP implementations uses this scheme.</li>
+<i>Decentralized authentication</i>: everyone can be a trust introducer and certify any certificate-UserID binding, however the end user is free to choose which trust introducer to trust and decide how much trust put on each introducer. Therefore, trust is no more a zero/one choice, and intermediate amounts are possible. Sequoia, GnuPG and several other OpenPGP implementations use this scheme.</li>
 </ul>
 <p>In Sequoia each certification of a certificate-UserID binding also specifies the following quantities:
 </p>
 <ul>
-<li>the <i>trust amout</i> (how much trust is put on that certification) is a number between 1 and 120 which states "how much trust" we put in this association, with 1 the least trust and 120 full trust. Usually, you can express partial trust by setting the trust amount to 60;</li>
+<li>the <i>trust amount</i> (how much trust is put on that certification) is a number between 1 and 120 which states "how much trust" we put in this association, with 1 the least trust and 120 full trust. Usually, you can express partial trust by setting the trust amount to 60;</li>
 <li>the <i>trust depth</i> (how far is that certification) instead can be used to certificate trust introducers: a 0 trust depth only certificate the target binding, instead a 1 trust depth in addition states that the target is also a trust introducer and can certificate other bindings with depth at most 0, a 2 trust depth additionally allows the target to issue certifications with depth at most 1, and so on.</li>
 </ul>
 <p>A certificate-UserID binding is said to be (locally for an end-user) <i>authenticated</i> if and only if there is one or more valid chains of third-part certifications from your local trust authority key (which is automatically generated the first time you execute <code>sq</code>) to the target. For these chains of certifications to be valid it is needed that:
@@ -658,7 +658,7 @@ profile = "rfc9580"
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning</strong> It is not possible to retract a certification issued with <code>sq pki vouch</code>.</div>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note</strong> Spammer can issue a large number of bogus third-part certification on a target certificate and floods the keyserver to make the certificate unusable. In order to avoid malicious actor to add an enormous number of third-part certifications some keyholders needs to "approve" third-part certifications by signing them with their private key. You can approce a third-part certification with the following command:
+<strong>Note</strong> Spammer can issue a large number of bogus third-part certification on a target certificate and floods the keyserver to make the certificate unusable. In order to avoid malicious actor to add an enormous number of third-part certifications some keyholders needs to "approve" third-part certifications by signing them with their private key. You can approve a third-part certification with the following command:
 <pre>$ sq key approvals update --cert <i>FINGERPRINT</i> <i>CERTIFICATORS_QUERY</i></pre>
 <p>Additional information can be found on manpages of <code>sq-key-approvals</code>, <code>sq-key-approvals-update</code> and <code>sq-key-approvals-list</code>
 </p>
@@ -666,11 +666,11 @@ profile = "rfc9580"
 <p>You can test if a binding is authenticated through the <code>sq pki authenticate</code> command.
 </p>
 <div class="mw-heading mw-heading4"><h4 id="Certification_replaying">Certification replaying</h4></div>
-<p>After rotating one or more keys with <code>sq key rotate</code>, you would like to (re)create all the certifications made by the old key using the new one. This operation to take all certifications made by <i>A</i> and recertify them with <i>B</i> is called <i>certification replay</i> and can be done with the following command(s):
+<p>After rotating one or more keys with <code>sq key rotate</code>, you would like to (re)create all the certifications made by the old key using the new one. This operation to take all certifications made by <i>A</i> and re-certify them with <i>B</i> is called <i>certification replay</i> and can be done with the following command(s):
 </p>
 <pre>$ sq pki vouch replay --source-* <i>A</i> --target-* <i>B</i>
 </pre>
-<div class="mw-heading mw-heading3"><h3 id="Kerservers">Kerservers</h3></div>
+<div class="mw-heading mw-heading3"><h3 id="Keyservers">Keyservers</h3></div>
 <div class="mw-heading mw-heading4"><h4 id="Sending_keys">Sending keys</h4></div>
 <p>You can register your key with a public PGP key server with the command
 </p>
@@ -719,7 +719,7 @@ profile = "rfc9580"
 <strong>Note</strong> By default <code>sq encrypt</code> also signs encrypted messages. You can use the <code>--signer-*</code> options to specify the key used to sign, or <code>--without-signature</code> if you do not want to add a signature.
 When decrypting with <code>sq decrypt</code> Sequoia will automatically check the signature with only <i>authenticated</i> stored certificate and prints a warning if it was not able to verify the signature. If you pass any <code>--signer-*</code> option to <code>sq decrypt</code> then only the provided signatures are checked.</div>
 <div class="mw-heading mw-heading4"><h4 id="Symmetric_ciphers_and_passwords">Symmetric ciphers and passwords</h4></div>
-<p>The <code>--with-password</code> option can be used to prompt a password, which is used to securely generate a symmetric chypher key which is then used to encrypt/decrypt the passed file. To encrypt:
+<p>The <code>--with-password</code> option can be used to prompt a password, which is used to securely generate a symmetric cypher key which is then used to encrypt/decrypt the passed file. To encrypt:
 </p>
 <pre>$ sq encrypt --profile <i>PROFILE</i> --with-password <i>FILE</i></pre>
 <p>where <i>PROFILE</i> is either <code>rfc4880</code> (older but compatible with every OpenPGP implementation) or <code>rfc9580</code> (newer but only compatible with newest OpenPGP implementations).
@@ -729,7 +729,7 @@ When decrypting with <code>sq decrypt</code> Sequoia will automatically check th
 <pre>$ sq decrypt <i>FILE</i></pre>
 <p>which automatically detect if the file has been encrypted with a password and asks you to provide it if needed. 
 </p>
-<p>ou can also use <code>--with-password-file <i>PSW_FILE</i></code> instead of <code>--with-password</code> to use an entire file instead a password to generate a file
+<p>you can also use <code>--with-password-file <i>PWD_FILE</i></code> instead of <code>--with-password</code> to use an entire file instead a password to generate a file
 </p>
 <div class="archwiki-template-box archwiki-template-box-warning">
 <strong>Warning</strong> The <code>--with-password-file</code> uses the entire file content to generate a password, including leading and trailing whitespaces, newlines and other non-printable characters. Be sure to use the same exact file when decrypting it.</div>
@@ -743,7 +743,7 @@ When decrypting with <code>sq decrypt</code> Sequoia will automatically check th
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Signatures">Signatures</h3></div>
 <div class="mw-heading mw-heading4"><h4 id="Sign_a_file">Sign a file</h4></div>
-<p>To sign a file you can use the <code>sq sign [--message <i>or</i> --signature-file <i>SIGFILE</i>]</code> command with any <code>--signer-*</code> option to sign a file. Use <code>--signature-file <i>SIGFILE</i></code> instead of <code>--message</code> to create a detached signature instead of inlined one. 
+<p>To sign a file you can use the <code>sq sign [--message <i>or</i> --signature-file <i>SIGFILE</i>]</code> command with any <code>--signer-*</code> option to sign a file. Use <code>--signature-file <i>SIGFILE</i></code> instead of <code>--message</code> to create a detached signature instead of an in-lined one. 
 </p>
 <div class="mw-heading mw-heading4"><h4 id="Verify_a_signature">Verify a signature</h4></div>
 <p>A signature can be verified with <code>sq verify [--message <i>or</i> --signature-file <i>SIGFILE</i>] <i>FILE</i></code>. By default any stored authenticated certificate is used to verify a signature, but you can use <code>--signer-*</code> options to restrict verification to the selected certificates.
@@ -792,8 +792,8 @@ When decrypting with <code>sq decrypt</code> Sequoia will automatically check th
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Sequoia_PGP&amp;oldid=869256">https://wiki.archlinux.org/index.php?title=Sequoia_PGP&amp;oldid=869256</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 15 March 2026, at 20:38.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Sequoia_PGP&amp;oldid=872297">https://wiki.archlinux.org/index.php?title=Sequoia_PGP&amp;oldid=872297</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 27 April 2026, at 10:21.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

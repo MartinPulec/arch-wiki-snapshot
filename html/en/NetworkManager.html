@@ -5,7 +5,7 @@
 <title>NetworkManager - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.45.1">
+<meta name="generator" content="MediaWiki 1.45.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -2079,11 +2079,14 @@ ACTION="$2"
 
 case $ACTION in
 up | dhcp4-change | dhcp6-change)
-	[ -n "$DHCP4_NTP_SERVERS" ] || exit 0
+	# `DHCP6_DHCP6_NTP_SERVERS` with double `DHCP6` is the correct variable name as varified by `printenv` as of NetworkManager 1.56.0-1
+	set -- ${DHCP6_DHCP6_NTP_SERVERS-} ${DHCP4_NTP_SERVERS-}
+	servers=$*
+	[ -n "$servers" ] || exit 0
 	mkdir -p /etc/systemd/timesyncd.conf.d
 	cat &lt;&lt;-THE_END &gt;"/etc/systemd/timesyncd.conf.d/${CONNECTION_UUID}.conf"
 		[Time]
-		NTP=$DHCP4_NTP_SERVERS
+		NTP=$servers
 	THE_END
 	systemctl restart systemd-timesyncd.service
 	;;
@@ -2093,8 +2096,10 @@ down)
 	;;
 esac
 </pre>
-<p>Every time NetworkManager sets up a new network connection (<code>ACTION=up</code>) or gets some update for an existing connection (<code>ACTION=dhcp4-change</code> or <code>ACTION=dhcp6-change</code>) and the provided connection data contains information about NTP server(s) (<code>DHCP4_NTP_SERVERS</code>), a connection specific overlay configuration file is written to <code>/etc/systemd/timesyncd.conf.d</code>, containing the provided NTP server(s). Whenever a connection is taken down (<code>ACTION=down</code>) the connection specific overlay file is removed. After each change to the configuration of systemd-timesyncd, this service is restarted to pick up the updated configuration. The use of connection specific configuration files is intentional so that when two or more connections are managed by NetworkManager in parallel the different NTP server names in the configuration are not overwritten as <code>up</code>, <code>dhcp4-change</code>, <code>dhcp6-change</code> and <code>down</code> actions might come in an arbitrary order.
+<p>Every time NetworkManager sets up a new network connection (<code>ACTION=up</code>) or gets some update for an existing connection (<code>ACTION=dhcp4-change</code> or <code>ACTION=dhcp6-change</code>) and the provided connection data contains information about NTP server(s) (<code>DHCP6_DHCP6_NTP_SERVERS</code> and <code>DHCP4_NTP_SERVERS</code>), a connection specific overlay configuration file is written to <code>/etc/systemd/timesyncd.conf.d</code>, containing the provided NTP server(s). Whenever a connection is taken down (<code>ACTION=down</code>) the connection specific overlay file is removed. After each change to the configuration of systemd-timesyncd, this service is restarted to pick up the updated configuration. The use of connection specific configuration files is intentional so that when two or more connections are managed by NetworkManager in parallel the different NTP server names in the configuration are not overwritten as <code>up</code>, <code>dhcp4-change</code>, <code>dhcp6-change</code> and <code>down</code> actions might come in an arbitrary order.
 </p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> <code>DHCP6_DHCP6_NTP_SERVERS</code> with double <code>DHCP6</code> is the correct variable name as varified by <code>printenv</code> as of NetworkManager 1.56.0-1 </div>
 <div class="mw-heading mw-heading2"><h2 id="Testing">Testing</h2></div>
 <p>NetworkManager applets are designed to load upon login so no further configuration should be necessary for most users.  If you have already disabled your previous network settings and disconnected from your network, you can now test if NetworkManager will work. The first step is to <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start">start</a> <code>NetworkManager.service</code>.
 </p>
@@ -2627,8 +2632,8 @@ wpa_supplicant[3320]: wlp3s0: CTRL-EVENT-EAP-FAILURE EAP authentication failed
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=NetworkManager&amp;oldid=868404">https://wiki.archlinux.org/index.php?title=NetworkManager&amp;oldid=868404</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 8 March 2026, at 14:06.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=NetworkManager&amp;oldid=872001">https://wiki.archlinux.org/index.php?title=NetworkManager&amp;oldid=872001</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 25 April 2026, at 00:30.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

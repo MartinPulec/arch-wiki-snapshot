@@ -5,7 +5,7 @@
 <title>Bluetooth - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.45.1">
+<meta name="generator" content="MediaWiki 1.45.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -1940,7 +1940,7 @@ Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
 </pre>
 <p>Alternatively, boot into Windows (a virtual machine installation will suffice) and get the firmware name from the Device Manager utility. If you want to know the model of your device but cannot see it in <i>lsusb</i>, you might see it in <i>lsusb -v</i> as <code>iProduct</code>.
 </p>
-<p>The <i>.hex</i> file can be extracted from the downloaded Windows driver without having to run Windows for it. Download the right driver, for example <a rel="nofollow" class="external text" href="http://www.fujitsupc.com/downloads/mobile/BLUETOOTH_WIDCOMM_V6.5.0.3100_WIN7-32_FPC46-1771-01.EXE">Bluetooth Widcomm</a><sup>[<a href="https://en.wikipedia.org/wiki/Wikipedia:Link_rot" class="extiw" title="wikipedia:Wikipedia:Link rot">dead link</a> 2023-09-16—domain name not resolved]</sup>. Depending on the format, extracting the files might need <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=unrar">unrar</a></span> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=cabextract">cabextract</a></span>. To find out which of the many <i>.hex</i> files is the right one for you, look in the file <code>Win32/bcbtums-win7x86-brcm.inf</code> and search for <code>[RAMUSB<b>E031</b>.CopyList]</code>, where <code>E031</code> should be replaced with the product code (the second hex number in <i>lsusb</i>) of your device in upper-case. Underneath you should see the file name of the right <i>.hex</i> file.
+<p>The <i>.hex</i> file can be extracted from the downloaded Windows driver without having to run Windows for it. Download the right driver, for example <a rel="nofollow" class="external text" href="https://web.archive.org/web/20210225164755/http://www.fujitsupc.com/downloads/mobile/BLUETOOTH_WIDCOMM_V6.5.0.3100_WIN7-32_FPC46-1771-01.EXE">Bluetooth Widcomm</a>. Depending on the format, extracting the files might need <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=unrar">unrar</a></span> or <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=cabextract">cabextract</a></span>. To find out which of the many <i>.hex</i> files is the right one for you, look in the file <code>Win32/bcbtums-win7x86-brcm.inf</code> and search for <code>[RAMUSB<b>E031</b>.CopyList]</code>, where <code>E031</code> should be replaced with the product code (the second hex number in <i>lsusb</i>) of your device in upper-case. Underneath you should see the file name of the right <i>.hex</i> file.
 </p>
 <p>Once you have the <i>.hcd</i> file, copy it into <code>/lib/firmware/brcm/BCM.hcd</code> - this filename is suggested by <a href="../en/Core_utilities.html#Essentials" class="mw-redirect" title="Dmesg">dmesg</a> and it may change in your case so check your <i>dmesg</i> output in order to verify. Then reload the <i>btusb</i> module:
 </p>
@@ -2009,6 +2009,8 @@ Class = 0x100100 # (Object-Transfer Service &amp; Computer Type)
 </p>
 <div class="mw-heading mw-heading4"><h4 id="Device_connects,_then_disconnects_after_a_few_moments">
 <span id="Device_connects.2C_then_disconnects_after_a_few_moments"></span>Device connects, then disconnects after a few moments</h4></div>
+<p><a rel="nofollow" class="external text" href="https://github.com/bluez/bluez/issues/1330">A bug</a> introduced in BlueZ 5.83 (still present as of 5.86) causes a disconnection after an extraneous authentication attempt is made and fails. This bug appears to only affect devices with multipoint support<a rel="nofollow" class="external autonumber" href="https://github.com/bluez/bluez/issues/1743#issuecomment-3690606230">[4]</a>. A temporary workaround is to <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Restart">restart</a> <code>bluetooth.service</code>. On KDE Plasma, killing or disabling KDE Connect can stop the issue. 
+</p>
 <p>If you see messages like the following in the journal, and your device fails to connect or disconnects shortly after connecting:
 </p>
 <pre>bluetoothd: Unable to get connect data for Headset Voice gateway: getpeername: Transport endpoint is not connected (107)
@@ -2130,7 +2132,6 @@ ExecStart=/usr/lib/bluetooth/obexd --symlinks</pre>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Out_of_date.html" title="Category:Pages or sections flagged with Template:Out of date">Pages or sections flagged with Template:Out of date</a></li>
-<li><a href="../en/Category:Pages_with_dead_links.html" title="Category:Pages with dead links">Pages with dead links</a></li>
 </ul>
 </div>
 </div>
@@ -2142,8 +2143,8 @@ ExecStart=/usr/lib/bluetooth/obexd --symlinks</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Bluetooth&amp;oldid=868369">https://wiki.archlinux.org/index.php?title=Bluetooth&amp;oldid=868369</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 8 March 2026, at 10:57.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Bluetooth&amp;oldid=871108">https://wiki.archlinux.org/index.php?title=Bluetooth&amp;oldid=871108</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 13 April 2026, at 16:44.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

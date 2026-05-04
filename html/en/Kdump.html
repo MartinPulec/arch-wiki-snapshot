@@ -5,7 +5,7 @@
 <title>Kdump - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.45.1">
+<meta name="generator" content="MediaWiki 1.45.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -284,6 +284,11 @@ It is recommended to use the Arch Linux linux or linux-lts kernel, which already
 </p>
 <p>After the reboot, there should be a new crash dump at <code>/var/crash/crashdump-*</code>.
 </p>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> The default <code>BOOT_OPTIONS</code> in <code>/etc/conf.d/simple-kdump.conf</code> are placeholders (<code>root=/dev/os/root</code>). They must be replaced with the same <code>root=</code>, <code>rootflags=</code>, <code>rootfstype=</code> and any decryption parameters used by your normal boot, otherwise the kexec kernel cannot mount the root filesystem and <code>/var/crash/</code> will stay empty. Do <b>not</b> include <code>crashkernel=</code> or <code>quiet</code>; the service appends <code>nr_cpus=1 reset_devices systemd.unit=emergency-kdump.target</code> itself. After editing, run <code>systemctl restart simple-kdump-setup.service</code> to reload the kexec image.</div>
+<div class="archwiki-template-box archwiki-template-box-note">
+<strong>Note</strong> If the root filesystem is on <a href="../en/Dm-crypt.html" title="Dm-crypt">dm-crypt</a>/LUKS, the kexec environment will prompt for the passphrase on the console before it can write the vmcore. This requires an additional <code>1G</code> of memory for the kexec kernel for the keyslot, on top of the memory needed for the crashkernel itself. The <code>encrypt</code> hook (or <code>sd-encrypt</code>) must also be present in the initramfs used for kdump (it is, by default, on installs that already boot from LUKS).
+For fully unattended capture, store the dump on a separate, unencrypted partition and adjust <code>simple-kdump-collect.service</code> accordingly, or temporarily unlock the root device via a keyfile embedded in the initramfs (see <a href="../en/Dm-crypt/Device_encryption.html#Keyfiles" title="Dm-crypt/Device encryption">Dm-crypt/Device encryption#Keyfiles</a>).</div>
 <div class="mw-heading mw-heading3"><h3 id="Manual_steps">Manual steps</h3></div>
 <p>In case the preference is for doing that manually, the below guide will help with that.
 </p>
@@ -495,8 +500,8 @@ HELPEOF
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Kdump&amp;oldid=832759">https://wiki.archlinux.org/index.php?title=Kdump&amp;oldid=832759</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 26 April 2025, at 09:04.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Kdump&amp;oldid=872154">https://wiki.archlinux.org/index.php?title=Kdump&amp;oldid=872154</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 26 April 2026, at 05:07.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

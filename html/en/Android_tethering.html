@@ -5,7 +5,7 @@
 <title>Android tethering - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.45.1">
+<meta name="generator" content="MediaWiki 1.45.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -101,16 +101,32 @@
 		</li>
 	</ul>
 	</li>
-	<li id="toc-USB_tethering_with_EasyTether" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
-		<a class="vector-toc-link" href="#USB_tethering_with_EasyTether">
+	<li id="toc-USB_tethering_via_Android_apps" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
+		<a class="vector-toc-link" href="#USB_tethering_via_Android_apps">
 			<div class="vector-toc-text">
 				<span class="vector-toc-numb">2</span>
-				<span>USB tethering with EasyTether</span>
+				<span>USB tethering via Android apps</span>
 			</div>
 		</a>
 		
-		<ul id="toc-USB_tethering_with_EasyTether-sublist" class="vector-toc-list">
-		</ul>
+			<button aria-controls="toc-USB_tethering_via_Android_apps-sublist" class="cdx-button cdx-button--weight-quiet cdx-button--icon-only vector-toc-toggle">
+				<span class="vector-icon mw-ui-icon-wikimedia-expand"></span>
+				<span>Toggle USB tethering via Android apps subsection</span>
+			</button>
+		
+		<ul id="toc-USB_tethering_via_Android_apps-sublist" class="vector-toc-list">
+			<li id="toc-Tetrd" class="vector-toc-list-item vector-toc-level-2">
+			<a class="vector-toc-link" href="#Tetrd">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">2.1</span>
+					<span>Tetrd</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Tetrd-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+	</ul>
 	</li>
 	<li id="toc-Reverse_tethering" class="vector-toc-list-item vector-toc-level-1 vector-toc-list-item-expanded">
 		<a class="vector-toc-link" href="#Reverse_tethering">
@@ -260,7 +276,13 @@
 					
 					<div id="mw-content-text" class="mw-body-content">
 <div class="mw-content-ltr mw-parser-output" lang="en" dir="ltr">
-<p><a href="https://en.wikipedia.org/wiki/Tethering" class="extiw" title="wikipedia:Tethering">Tethering</a> is a way to have internet access on your PC through your smartphone using its network connection. USB tethering and Wi-Fi access point tethering are natively supported since Android 2.2 "Froyo". USB <a href="#Reverse_tethering">#Reverse tethering</a>, to have internet access on your smartphone through your PC, is also possible.
+<div class="archwiki-template-meta-related-articles">
+<p>Related articles</p>
+<ul>
+<li><a href="../en/Android.html" title="Android">Android</a></li>
+</ul>
+</div>
+<p><a href="https://en.wikipedia.org/wiki/Tethering" class="extiw" title="wikipedia:Tethering">Tethering</a> is a way to have internet access on your PC through your smartphone using its network connection. USB tethering and Wi-Fi access point tethering are natively supported. USB <a href="#Reverse_tethering">reverse tethering</a>—to have internet access on your smartphone through your PC—is also possible.
 </p>
 <meta property="mw:PageProp/toc">
 <div class="mw-heading mw-heading2"><h2 id="Natively">Natively</h2></div>
@@ -293,8 +315,7 @@
 </p>
 <pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/udev/rules.d/90-android-tethering.rules</pre>
 <pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"># Execute pairing program when appropriate
-ACTION=="add|remove", SUBSYSTEM=="net", ATTR{idVendor}=="18d1", ENV{ID_USB_DRIVER}=="rndis_host", SYMLINK+="android"
-</pre>
+ACTION=="add|remove", SUBSYSTEM=="net", ATTR{idVendor}=="18d1", ENV{ID_USB_DRIVER}=="rndis_host", SYMLINK+="android"</pre>
 <p>You may have to adjust the <code>idVendor</code> attribute depending on your phone. You can check using <i>udevadm</i>:
 </p>
 <pre>$ udevadm info /sys/class/net/enp0s26u1u2
@@ -306,8 +327,7 @@ ACTION=="add|remove", SUBSYSTEM=="net", ATTR{idVendor}=="18d1", ENV{ID_USB_DRIVE
 Name=enp0s26u1u2
 
 [Network]
-DHCP=yes
-</pre>
+DHCP=yes</pre>
 <div class="mw-heading mw-heading3"><h3 id="Wi-Fi_access_point">Wi-Fi access point</h3></div>
 <p>Using an Android phone as a Wi-Fi access point (to a 3G/4G mobile internet connection) is available for devices running Android 2.2 "Froyo" or newer.
 </p>
@@ -331,20 +351,29 @@ DHCP=yes
 </p>
 <p>Alternatively: pair and ensure you can connect your computer and Android device, as described on <a href="../en/Bluetooth.html" title="Bluetooth">Bluetooth</a>, then, substituting the address of the Android device (here given as <code>AA_BB_CC_DD_EE_FF</code>), do:
 </p>
-<pre>$ dbus-send --system --type=method_call --dest=org.bluez /org/bluez/hci0/dev_AA_BB_CC_DD_EE_FF org.bluez.Network1.Connect string:'nap'</pre>
+<pre>$ dbus-send --system --type=method_call --dest=org.bluez /org/bluez/hci0/dev_AA_BB_CC_DD_EE_FF org.bluez.Network1.Connect string:'nap'
+</pre>
 <p>This will create a network interface <code>bnep0</code>.  Finally, <a href="../en/Network_configuration.html" title="Network configuration">configure a network connection</a> on this interface; Android offers DHCP by default.
 </p>
-<div class="mw-heading mw-heading2"><h2 id="USB_tethering_with_EasyTether">USB tethering with EasyTether</h2></div>
-<p>Get the <a rel="nofollow" class="external text" href="http://www.mobile-stream.com/easytether/drivers.html">easytether</a> linux client software. The commands to set it up and run it are as follows.
+<div class="mw-heading mw-heading2"><h2 id="USB_tethering_via_Android_apps">USB tethering via Android apps</h2></div>
+<p>Many cell carriers treat hotspot data independently from the data used by the phone itself. Unless one is subscribed to a data plan that includes hotspot data, native Android tethering may not be available or will be throttled to impractically slow speeds. Some apps have been created to work around this problem.
 </p>
-<pre># pacman -U easytether-0.8.5-2-x86_64.pkg.tar.xz
-# easytether-usb
-# dhcpcd tap-easytether
+<div class="mw-heading mw-heading3"><h3 id="Tetrd">Tetrd</h3></div>
+<div class="noprint archwiki-template-message">
+<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-clear.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs language, wiki syntax or style improvements. See <a href="../en/Help:Style.html" title="Help:Style">Help:Style</a> for reference.</b></p>
+<div>
+<b>Reason:</b> Violates <a href="../en/Help:Style.html#Package_management_instructions" title="Help:Style">Help:Style#Package management instructions</a>. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:Android_tethering.html">Talk:Android tethering</a>)</div>
+</div>
+<p>Tetrd is a newer USB tethering app for Android featuring bidirectional tethering and functions without USB debugging or requiring root privileges to run on Linux. Like EasyTether, it requires payment to use its full functionality.
+</p>
+<p>Get the <a rel="nofollow" class="external text" href="https://tetrd.app/server">Tetrd</a> Linux server software and install it via:
+</p>
+<pre># pacman -U tetrd.linux_amd64.pkg.tar.xz
 </pre>
-<p>Make sure you have the EasyTether android app installed on your phone for it to connect to. Note: The Lite app disables some connections and you must have the paid app for full functionality. For this reason, using the AziLink setup is recommended instead.
+<p>Once installed, Tetrd should be accessible from the applications menu of your desktop environment. Make sure the Tetrd android app is installed on your phone. Then, open Tetrd on your PC and connect your phone. When connected, Tetrd should appear automatically, prompting the user to run in either normal or reverse tethering modes.
 </p>
 <div class="mw-heading mw-heading2"><h2 id="Reverse_tethering">Reverse tethering</h2></div>
-<p>Reverse tethering is to provide internet connection to Android through PC. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/gnirehtet/">gnirehtet</a></span><sup><small>AUR</small></sup> provides reverse tethering.
+<p>Reverse tethering is to provide internet connection to Android through PC. <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/gnirehtet/">gnirehtet</a></span><sup><small>AUR</small></sup> and Tetrd provide reverse tethering.
 </p>
 <p>Connect your phone to your computer via USB like mentioned above and start: 
 </p>
@@ -401,7 +430,10 @@ DHCP=yes
 <li><a href="../en/Category:Network_sharing.html" title="Category:Network sharing">Network sharing</a></li>
 </ul>
 </div>
-<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden category: <ul><li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li></ul>
+<div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Expansion.html" title="Category:Pages or sections flagged with Template:Expansion">Pages or sections flagged with Template:Expansion</a></li>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li>
+</ul>
 </div>
 </div>
 				</div>
@@ -412,8 +444,8 @@ DHCP=yes
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Android_tethering&amp;oldid=857490">https://wiki.archlinux.org/index.php?title=Android_tethering&amp;oldid=857490</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 20 December 2025, at 19:51.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Android_tethering&amp;oldid=872675">https://wiki.archlinux.org/index.php?title=Android_tethering&amp;oldid=872675</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 1 May 2026, at 08:48.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

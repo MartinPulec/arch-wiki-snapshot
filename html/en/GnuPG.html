@@ -5,7 +5,7 @@
 <title>GnuPG - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.45.1">
+<meta name="generator" content="MediaWiki 1.45.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -1762,16 +1762,17 @@ polkit.addRule(function(action, subject) {
 <p>After creating the file, make sure to <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Restart">restart</a> <code>polkit.service</code>.
 </p>
 <div class="mw-heading mw-heading2"><h2 id="OpenPGP_compatibility">OpenPGP compatibility</h2></div>
-<p>GnuPG started out as an implementation of the <a href="../en/OpenPGP.html" title="OpenPGP">OpenPGP</a> format. Currently, the project is based on <a rel="nofollow" class="external text" href="https://www.rfc-editor.org/rfc/rfc4880.html">RFC 4880</a> and does not support <a rel="nofollow" class="external text" href="https://www.rfc-editor.org/rfc/rfc9580.html">RFC 9580</a> (which supersedes RFC 4880).
+<p>GnuPG started out as an implementation of the <a href="../en/OpenPGP.html" title="OpenPGP">OpenPGP</a> format. Currently, the project is based on <a href="https://tools.ietf.org/html/rfc4880" class="extiw" title="rfc:4880">RFC 4880</a> and does not support <a href="https://tools.ietf.org/html/rfc9580" class="extiw" title="rfc:9580">RFC 9580</a> (which supersedes RFC 4880).
 </p>
 <p>However, beginning with version 2.4.0 (from December 2022) GnuPG has opted to roll out changes and extensions to the format outside of the IETF process (see <a rel="nofollow" class="external text" href="https://datatracker.ietf.org/doc/draft-koch-librepgp/">draft-koch-librepgp</a>).
 </p>
-<p>Most of the GnuPG-proprietary formats (which diverge from the <a href="../en/OpenPGP.html#Standardization" title="OpenPGP">OpenPGP standard</a>) carry "version 5" (this version is not used in the IETF OpenPGP standard) and introduce incompatibilities:
+<p>Most of the GnuPG-proprietary formats (which diverge from the <a href="../en/OpenPGP.html#Standardization" title="OpenPGP">OpenPGP standard</a>) carry "version 5" or "packet type 20" (these code points are not used in the IETF OpenPGP standard) and introduce incompatibilities:
 </p>
 <ul>
-<li>GnuPG "version 5" keys use different fingerprints (longer, due to the use of SHA-256).</li>
-<li>A new symmetrically encrypted data packet format (<a rel="nofollow" class="external text" href="https://www.ietf.org/archive/id/draft-koch-librepgp-01.html#name-ocb-encrypted-data-packet-t">OCB Encrypted Data Packet</a>) is added. Support for this format is signalled with a "feature flag" which is aggressively enabled by default. See <a href="#Disable_unsupported_AEAD_mechanism">#Disable unsupported AEAD mechanism</a>.</li>
-<li>A new <a rel="nofollow" class="external text" href="https://www.ietf.org/archive/id/draft-koch-librepgp-01.html#name-post-quantum-cryptography">Post-Quantum Cryptography</a> format, again diverging from the IETF process (see <a rel="nofollow" class="external text" href="https://datatracker.ietf.org/doc/draft-ietf-openpgp-pqc/">draft-ietf-openpgp-pqc</a>).</li>
+<li>GnuPG's "version 5" keys use different fingerprints from v4 (longer, due to the use of SHA-256), but are also visually indistinguishable from v6 (RFC 9580) fingerprints.</li>
+<li>GnuPG's "version 5" signatures use a different calculation method with known design flaws.</li>
+<li>GnuPG's "type 20" symmetrically encrypted data packet format (<a rel="nofollow" class="external text" href="https://www.ietf.org/archive/id/draft-koch-librepgp-01.html#name-ocb-encrypted-data-packet-t">OCB Encrypted Data Packet</a>) is added, however it also has known design flaws. Support for this format is signalled with a "feature flag" which is aggressively enabled by default. See <a href="#Disable_unsupported_AEAD_mechanism">#Disable unsupported AEAD mechanism</a>.</li>
+<li>GnuPG's <a rel="nofollow" class="external text" href="https://www.ietf.org/archive/id/draft-koch-librepgp-01.html#name-post-quantum-cryptography">Post-Quantum Cryptography</a> formats again diverge from the upcoming IETF specification (see <a rel="nofollow" class="external text" href="https://datatracker.ietf.org/doc/draft-ietf-openpgp-pqc/">draft-ietf-openpgp-pqc</a>) in arbitrary details that cause incompatibility.</li>
 </ul>
 <p>External reviews have raised concerns about the soundness of the format extensions by GnuPG (see <a rel="nofollow" class="external text" href="https://blog.pgpkeys.eu/security-issues-librepgp-2024-08.html">A Summary of Known Security Issues in LibrePGP</a>).
 </p>
@@ -2016,8 +2017,8 @@ gpg: [stdin]: clear-sign failed: Inappropriate ioctl for device
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GnuPG&amp;oldid=860217">https://wiki.archlinux.org/index.php?title=GnuPG&amp;oldid=860217</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 5 January 2026, at 09:56.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=GnuPG&amp;oldid=872039">https://wiki.archlinux.org/index.php?title=GnuPG&amp;oldid=872039</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 25 April 2026, at 11:11.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

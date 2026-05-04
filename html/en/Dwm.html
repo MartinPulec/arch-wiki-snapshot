@@ -5,7 +5,7 @@
 <title>dwm - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.45.1">
+<meta name="generator" content="MediaWiki 1.45.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -243,6 +243,17 @@
 			</a>
 			
 			<ul id="toc-Adjusting_brightness-sublist" class="vector-toc-list">
+			</ul>
+		</li>
+		<li id="toc-Adjusting_keyboard_backlight_brightness" class="vector-toc-list-item vector-toc-level-3">
+			<a class="vector-toc-link" href="#Adjusting_keyboard_backlight_brightness">
+				<div class="vector-toc-text">
+					<span class="vector-toc-numb">4.10.3</span>
+					<span>Adjusting keyboard backlight brightness</span>
+				</div>
+			</a>
+			
+			<ul id="toc-Adjusting_keyboard_backlight_brightness-sublist" class="vector-toc-list">
 			</ul>
 		</li>
 	</ul>
@@ -656,7 +667,10 @@ Give them <a href="../en/Help:Reading.html#Make_executable" class="mw-redirect" 
 <div class="mw-heading mw-heading4"><h4 id="Adjusting_volume">Adjusting volume</h4></div>
 <p>Install the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=pipewire">pipewire</a></span> package. Now in <code>config.h</code> we may add commands for mute and volume increase/decrease.
 </p>
-<pre>static const char *up_vol[]   = { "pactl", "set-sink-volume", "@DEFAULT_SINK@", "+10%",   NULL };
+<pre>/* commands */
+...
+
+static const char *up_vol[]   = { "pactl", "set-sink-volume", "@DEFAULT_SINK@", "+10%",   NULL };
 static const char *down_vol[] = { "pactl", "set-sink-volume", "@DEFAULT_SINK@", "-10%",   NULL };
 static const char *mute_vol[] = { "pactl", "set-sink-mute",   "@DEFAULT_SINK@", "toggle", NULL };
 ...
@@ -664,24 +678,51 @@ static const char *mute_vol[] = { "pactl", "set-sink-mute",   "@DEFAULT_SINK@", 
 static const Key keys[] = {
        ...
        
-       { 0, XF86XK_AudioMute,        spawn, {.v = mute_vol } },
-       { 0, XF86XK_AudioLowerVolume, spawn, {.v = down_vol } },
-       { 0, XF86XK_AudioRaiseVolume, spawn, {.v = up_vol } },
+       { 0,             XF86XK_AudioMute,         spawn,          {.v = mute_vol } },
+       { 0,             XF86XK_AudioLowerVolume,  spawn,          {.v = down_vol } },
+       { 0,             XF86XK_AudioRaiseVolume,  spawn,          {.v = up_vol } },
        
        ... 
 };</pre>
 <div class="mw-heading mw-heading4"><h4 id="Adjusting_brightness">Adjusting brightness</h4></div>
 <p>Install the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=brightnessctl">brightnessctl</a></span> package. Now in <code>config.h</code> we may add commands for dimming and brightening the screen.
 </p>
-<pre>static const char *brighter[] = { "brightnessctl", "set", "10%+", NULL };
+<pre>/* commands */
+...
+
+static const char *brighter[] = { "brightnessctl", "set", "10%+", NULL };
 static const char *dimmer[]   = { "brightnessctl", "set", "10%-", NULL };
 ...
 
 static const Key keys[] = {
        ...
        
-       { 0, XF86XK_MonBrightnessDown, spawn, {.v = dimmer } },
-       { 0, XF86XK_MonBrightnessUp,   spawn, {.v = brighter } },
+       { 0,             XF86XK_MonBrightnessDown, spawn,          {.v = dimmer } },
+       { 0,             XF86XK_MonBrightnessUp,   spawn,          {.v = brighter } },
+       
+       ...
+};</pre>
+<div class="mw-heading mw-heading4"><h4 id="Adjusting_keyboard_backlight_brightness">Adjusting keyboard backlight brightness</h4></div>
+<p>Install the <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=brightnessctl">brightnessctl</a></span> package. Now in <code>config.h</code> we may add commands for dimming and brightening the keyboard backlight.
+</p>
+<p>Find the name of your device
+</p>
+<pre>brightnessctl --list
+</pre>
+<p>Look for <code><i>vendor</i>::kbd_backlight</code>, where <code><i>vendor</i></code> is the manufacturer of your device, e. g. <code>smc</code> or <code>apple</code> for Apple, <code>asus</code> for Asus etc.
+</p>
+<pre>/* commands */
+...
+
+static const char *kbd_up[]   = { "brightnessctl", "--device=<i>vendor</i>::kbd_backlight", "set", "+10%", NULL };
+static const char *kbd_down[] = { "brightnessctl", "--device=<i>vendor</i>::kbd_backlight", "set", "10%-", NULL };
+...
+
+static const Key keys[] = {
+       ...
+       
+       { 0,             XF86XK_KbdBrightnessUp,   spawn,          {.v = kbd_up } },
+       { 0,             XF86XK_KbdBrightnessDown, spawn,          {.v = kbd_down } },
        
        ...
 };</pre>
@@ -738,8 +779,8 @@ static const Key keys[] = {
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dwm&amp;oldid=861411">https://wiki.archlinux.org/index.php?title=Dwm&amp;oldid=861411</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 15 January 2026, at 12:40.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Dwm&amp;oldid=871368">https://wiki.archlinux.org/index.php?title=Dwm&amp;oldid=871368</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 16 April 2026, at 20:51.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

@@ -5,7 +5,7 @@
 <title>SSHFS - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.45.1">
+<meta name="generator" content="MediaWiki 1.45.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -453,7 +453,7 @@
 <div class="archwiki-template-box archwiki-template-box-tip">
 <strong>Tip</strong> 
 <ul>
-<li>If you often need to mount sshfs file systems you may be interested in using an sshfs helper, such as <a href="../en/Sftpman.html" title="Sftpman">sftpman</a>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/sshmnt/">sshmnt</a></span><sup><small>AUR</small></sup> or <a rel="nofollow" class="external text" href="https://github.com/lahwaacz/Scripts/blob/master/fmount.py">fmount.py</a>.</li>
+<li>If you often need to mount sshfs file systems you may be interested in using an sshfs helper, such as <a href="../en/Sftpman.html" title="Sftpman">sftpman</a>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/sshmnt/">sshmnt</a></span><sup><small>AUR</small></sup>, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://aur.archlinux.org/packages/sshfs-mountctl/">sshfs-mountctl</a></span><sup><small>AUR</small></sup> or <a rel="nofollow" class="external text" href="https://github.com/lahwaacz/Scripts/blob/master/fmount.py">fmount.py</a>.</li>
 <li>You may want to use <a href="../en/Google_Authenticator.html" title="Google Authenticator">Google Authenticator</a> or <a href="../en/SSH_keys.html#FIDO/U2F" title="SSH keys">Fido Tokens</a> providing additional security as in two-step authentication.</li>
 <li>
 <a href="../en/SSH_keys.html" title="SSH keys">SSH keys</a> may be used over traditional password authentication.</li>
@@ -535,17 +535,38 @@ Match User <i>someuser</i>
 <p>Similar to other file system mounts see <span class="plainlinks archwiki-template-man" title="$ man 5 systemd.mount"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd.mount.5">systemd.mount(5)</a></span> and possibly <span class="plainlinks archwiki-template-man" title="$ man 5 systemd.automount"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd.automount.5">systemd.automount(5)</a></span>. Because of the FUSE system and its mechanics you should use <a href="../en/Systemd/User.html" title="Systemd/User">user units</a>. Setup SSH with public key authentication.
 </p>
 <div class="mw-heading mw-heading4"><h4 id="As_user_unit">As user unit</h4></div>
-<div class="noprint archwiki-template-message">
-<p><span class="mw-default-size" typeof="mw:File"><span><img src="../File:Tango-edit-clear.svg" decoding="async" width="48" height="48" class="mw-file-element"></span></span><b>This article or section needs language, wiki syntax or style improvements. See <a href="../en/Help:Style.html" title="Help:Style">Help:Style</a> for reference.</b></p>
-<div>
-<b>Reason:</b> Add an example of a working user <i>.mount</i> unit. (Discuss in <a rel="nofollow" class="external text" href="../en/Talk:SSHFS.html">Talk:SSHFS</a>)</div>
-</div>
-<p>Place the <code><i>foo</i>.mount</code> inside <code>${XDG_CONFIG_HOME}/systemd/user/</code>.
-</p>
-<p><a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Start">Start</a> the unit as usual with the <code>--user</code> option.
-</p>
 <div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note</strong> <span class="plainlinks archwiki-template-man" title="$ man 5 systemd.automount"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd.automount.5#DESCRIPTION">systemd.automount(5) § DESCRIPTION</a></span> says: "Note that automount support on Linux is privileged, automount units are hence only available in the system service manager (and root's user service manager), but not in unprivileged users' service managers."</div>
+<strong>Note</strong> Although systemd automount is not supported for user units (see <span class="plainlinks archwiki-template-man" title="$ man 5 systemd.automount"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd.automount.5#DESCRIPTION">systemd.automount(5) § DESCRIPTION</a></span>), the on-demand mounting behavior can be emulated using the sshfs <code>delay_connect</code> option.</div>
+<p>The example user unit mounts an sshfs filesystem in <code>~/share/data</code> with the following options:
+</p>
+<ul>
+<li>
+<code>_netdev,user</code> is carried over from the system-wide config. May not be relevant when run as a regular user, but also doesn't harm anything.</li>
+<li>
+<code>delay_connect</code> causes sshfs to not attempt to connect to the server unless the directory is accessed (similar to a systemd automount unit).</li>
+<li>
+<code>reconnect</code> makes sshfs attempt to re-establish a lost connection. This is useful when waking from sleep mode.</li>
+<li>
+<code>ServerAliveInterval=15</code> sends a TCP keep-alive packet to the server every 15 seconds. This helps with responsiveness.</li>
+<li>
+<code>dir_cache=yes</code> enables sshfs directory caching. This also helps with responsiveness, particularly when used in a desktop environment.</li>
+<li>
+<code>idmap=user</code> maps the UID/GID of the remote user to UID/GID of the mounting user. See <span class="plainlinks archwiki-template-man" title="$ man 1 sshfs"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/sshfs.1#user">sshfs(1) § user</a></span>.</li>
+<li>
+<code>follow_symlinks,transform_symlinks</code> makes symlinks behave as expected (they can be followed, and absolute symlinks access files on the remote system).</li>
+<li>
+<code>compression=yes</code> enables SSH compression. Depending on the file types involved this can result in significant bandwidth savings.</li>
+</ul>
+<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">${XDG_CONFIG_HOME}/systemd/user/home-user-share-data.mount</pre>
+<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;">[Mount]
+What=user@remote:/mnt/data
+Where=%h/share/data
+Type=sshfs
+Options=_netdev,user,delay_connect,reconnect,ServerAliveInterval=15,dir_cache=yes,idmap=user,follow_symlinks,transform_symlinks,compression=yes
+
+[Install]
+WantedBy=default.target
+</pre>
 <div class="mw-heading mw-heading5"><h5 id="Use_ssh-key_with_passphrase">Use ssh-key with passphrase</h5></div>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note</strong> The user has to enter the passphrase for the ssh-key manually, this is not intended to work without any user interaction.</div>
@@ -749,8 +770,8 @@ WantedBy=multi-user.target</pre>
 </ul>
 </div>
 <div id="mw-hidden-catlinks" class="mw-hidden-catlinks mw-hidden-cats-hidden">Hidden categories: <ul>
-<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li>
 <li><a href="../en/Category:Sections_flagged_with_Template:Remove.html" title="Category:Sections flagged with Template:Remove">Sections flagged with Template:Remove</a></li>
+<li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Style.html" title="Category:Pages or sections flagged with Template:Style">Pages or sections flagged with Template:Style</a></li>
 <li><a href="../en/Category:Pages_or_sections_flagged_with_Template:Accuracy.html" title="Category:Pages or sections flagged with Template:Accuracy">Pages or sections flagged with Template:Accuracy</a></li>
 </ul>
 </div>
@@ -763,8 +784,8 @@ WantedBy=multi-user.target</pre>
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=SSHFS&amp;oldid=849980">https://wiki.archlinux.org/index.php?title=SSHFS&amp;oldid=849980</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 20 October 2025, at 20:08.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=SSHFS&amp;oldid=871802">https://wiki.archlinux.org/index.php?title=SSHFS&amp;oldid=871802</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 21 April 2026, at 14:50.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>

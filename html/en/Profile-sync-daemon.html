@@ -5,7 +5,7 @@
 <title>Profile-sync-daemon - ArchWiki</title>
 <link rel="stylesheet" href="../ArchWikiOffline.css">
 <meta name="ResourceLoaderDynamicStyles" content="">
-<meta name="generator" content="MediaWiki 1.45.1">
+<meta name="generator" content="MediaWiki 1.45.3">
 <meta name="referrer" content="no-referrer-when-downgrade">
 <meta name="robots" content="max-image-preview:standard">
 <meta name="format-detection" content="telephone=no">
@@ -131,21 +131,10 @@
 			<ul id="toc-Sync_at_more_frequent_intervals-sublist" class="vector-toc-list">
 			</ul>
 		</li>
-		<li id="toc-Overlayfs_mode" class="vector-toc-list-item vector-toc-level-2">
-			<a class="vector-toc-link" href="#Overlayfs_mode">
-				<div class="vector-toc-text">
-					<span class="vector-toc-numb">4.2</span>
-					<span>Overlayfs mode</span>
-				</div>
-			</a>
-			
-			<ul id="toc-Overlayfs_mode-sublist" class="vector-toc-list">
-			</ul>
-		</li>
 		<li id="toc-Allocate_more_memory_to_accommodate_profiles_in_/run/user/xxxx" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Allocate_more_memory_to_accommodate_profiles_in_/run/user/xxxx">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">4.3</span>
+					<span class="vector-toc-numb">4.2</span>
 					<span>Allocate more memory to accommodate profiles in /run/user/xxxx</span>
 				</div>
 			</a>
@@ -156,7 +145,7 @@
 		<li id="toc-Snapshots" class="vector-toc-list-item vector-toc-level-2">
 			<a class="vector-toc-link" href="#Snapshots">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">4.4</span>
+					<span class="vector-toc-numb">4.3</span>
 					<span>Snapshots</span>
 				</div>
 			</a>
@@ -165,7 +154,7 @@
 				<li id="toc-Clean_all_the_snapshot_with_the_clean_mode" class="vector-toc-list-item vector-toc-level-3">
 			<a class="vector-toc-link" href="#Clean_all_the_snapshot_with_the_clean_mode">
 				<div class="vector-toc-text">
-					<span class="vector-toc-numb">4.4.1</span>
+					<span class="vector-toc-numb">4.3.1</span>
 					<span>Clean all the snapshot with the clean mode</span>
 				</div>
 			</a>
@@ -286,6 +275,8 @@
 </ol>
 <p>Since the profile(s), browser cache, etc. are relocated into <a href="../en/Tmpfs.html" title="Tmpfs">tmpfs</a> (RAM disk), the corresponding I/O associated with using the browser is also redirected from the physical drive to RAM, thus reducing wear to the physical drive and also greatly improving browser speed and responsiveness.
 </p>
+<p>Starting with psd version 7, <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=fuse-overlayfs">fuse-overlayfs</a></span> is used to reduce the memory footprint of psd's tmpfs space and to speed up sync and unsync operations. The magic is in how the overlay mount only writes out data that has changed rather than the entire profile. 
+</p>
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note</strong> 
 <ul>
@@ -304,7 +295,6 @@
 <div class="archwiki-template-box archwiki-template-box-note">
 <strong>Note</strong> Any edits made to this file while psd is active will be applied only after <code>psd.service</code> has been <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Restart">restarted</a>.</div>
 <ul>
-<li>Optionally enable the use of overlayfs to improve sync speed and to use a smaller memory footprint. Do this in the <code>USE_OVERLAYFS</code> variable. The user will require sudo rights to <code>/usr/bin/psd-overlay-helper</code> to use this option and the kernel must support overlayfs version 22 or higher. See <a href="#Overlayfs_mode">#Overlayfs mode</a> for additional details.</li>
 <li>Optionally define which browsers are to be managed in the <code>BROWSERS</code> array. If none are defined, the default is all detected browsers.</li>
 <li>Optionally disable the use of crash-recovery snapshots (not recommended). Do this in the <code>USE_BACKUPS</code> variable.</li>
 <li>Optionally define the number of crash-recovery snapshots to keep. Do this in the <code>BACKUP_LIMIT</code> variable.</li>
@@ -313,7 +303,7 @@
 </p>
 <pre>BROWSERS=(chromium opera)
 </pre>
-<p>Beginning with version 5.54 of psd, native support for <a href="#Overlayfs_mode">overlayfs</a> is included. This feature requires at least a Linux kernel version of 3.18.0 or greater.
+<p>Beginning with version 7 of psd, support for <span class="plainlinks archwiki-template-pkg"><a rel="nofollow" class="external text" href="https://archlinux.org/packages/?name=fuse-overlayfs">fuse-overlayfs</a></span> is required. This feature requires at least a Linux kernel version of 4.18 or greater.
 </p>
 <div class="mw-heading mw-heading3"><h3 id="Supported_browsers">Supported browsers</h3></div>
 <p>Currently, the following browsers are auto-detected and managed:
@@ -377,22 +367,6 @@ OnUnitActiveSec=
 OnUnitActiveSec=10min</pre>
 <p>See <span class="plainlinks archwiki-template-man" title="$ man 5 systemd.timer"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/systemd.timer.5">systemd.timer(5)</a></span> for additional options.
 </p>
-<div class="mw-heading mw-heading3"><h3 id="Overlayfs_mode">Overlayfs mode</h3></div>
-<div class="archwiki-template-box archwiki-template-box-note">
-<strong>Note</strong> There are several versions of overlayfs available to the Linux kernel in production in various distributions. Versions 22 and lower have a module called 'overlayfs' while newer versions (23 and higher) have a module called 'overlay' -- note the lack of the 'fs' in the newer version. Psd will automatically detect the overlayfs available to your kernel if it is configured to use one of them.</div>
-<p>Overlayfs is a simple union file-system mainlined in the Linux kernel version 3.18.0. Starting with psd version 5.54, overlayfs can be used to reduce the memory footprint of psd's tmpfs space and to speed up sync and unsync operations. The magic is in how the overlay mount only writes out data that has changed rather than the entire profile. The same recovery features psd uses in its default mode are also active when running in overlayfs mode. Overlayfs mode is enabled by uncommenting the <code>USE_OVERLAYFS="yes"</code> line in <code>$XDG_CONFIG_HOME/psd/psd.conf</code> followed by a <a href="../en/Help:Reading.html#Control_of_systemd_units" class="mw-redirect" title="Restart">restart</a> of the daemon.
-</p>
-<p>Since version 6.05 of psd, users wanting to take advantage of this mode MUST have <a href="../en/Sudo.html" title="Sudo">sudo</a> rights (without password prompt) to <code>/usr/bin/psd-overlay-helper</code> or global sudo rights. Create the following drop-in file using the <code>visudo</code> command as root.:
-</p>
-<pre style="margin-bottom: 0; border-bottom:none; padding-bottom:0.8em;">/etc/sudoers.d/90-profile-sync-daemon</pre>
-<pre style="margin-top: 0; border-top-style:dashed; padding-top: 0.8em;"><i>user</i> ALL=(ALL) NOPASSWD: /usr/bin/psd-overlay-helper</pre>
-<p>See the example in the PREVIEW MODE section above which shows a system using overlayfs to illustrate the memory savings that can be achieved. Note the "overlayfs size" report compared to the total "profile size" report for each profile. Be aware that these numbers will change depending on how much data is written to the profile, but in common use cases the overlayfs size will always be less than the profile size.
-</p>
-<div class="archwiki-template-box archwiki-template-box-warning">
-<strong>Warning</strong> Usage of psd in overlayfs mode (in particular, <i>psd-overlay-helper</i>) may lead to privilege escalation. <a rel="nofollow" class="external autonumber" href="https://github.com/graysky2/profile-sync-daemon/issues/235">[2]</a><a rel="nofollow" class="external autonumber" href="https://github.com/graysky2/profile-sync-daemon/issues/286">[3]</a>
-</div>
-<p>The way overlayfs works is to mount a read-only base copy (browser-back-ovfs) of the profile, and manage the new data on top of that. In order to avoid resyncing to the read-only file system, a copy is used instead. So using overlayfs is a trade off: faster initial sync times and less memory usage vs. disk space in the home dir.
-</p>
 <div class="mw-heading mw-heading3"><h3 id="Allocate_more_memory_to_accommodate_profiles_in_/run/user/xxxx">
 <span id="Allocate_more_memory_to_accommodate_profiles_in_.2Frun.2Fuser.2Fxxxx"></span>Allocate more memory to accommodate profiles in /run/user/xxxx</h3></div>
 <p>The standard way of controlling the size of <code>/run/user</code> is the RuntimeDirectorySize directive in <code>/etc/systemd/logind.conf</code> (see <span class="plainlinks archwiki-template-man" title="$ man 5 logind.conf"><a rel="nofollow" class="external text" href="https://man.archlinux.org/man/logind.conf.5">logind.conf(5)</a></span> for more). By default, 10% of physical memory is used but one can increase it safely. Remember that tmpfs only consumes what is actually used; the number specified here is just a maximum allowed.
@@ -444,8 +418,8 @@ $ cp -a ~/.config/chromium-backup-crashrecovery-20130912_153310 ~/.config/chromi
 			
 <footer id="footer" class="mw-footer" style="margin: 0">
 	<ul id="footer-info">
-	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Profile-sync-daemon&amp;oldid=862126">https://wiki.archlinux.org/index.php?title=Profile-sync-daemon&amp;oldid=862126</a>"</li>
-<li id="footer-info-lastmod"> This page was last edited on 20 January 2026, at 12:22.</li>
+	<li data-nosnippet="">Retrieved from "<a dir="ltr" href="https://wiki.archlinux.org/index.php?title=Profile-sync-daemon&amp;oldid=872502">https://wiki.archlinux.org/index.php?title=Profile-sync-daemon&amp;oldid=872502</a>"</li>
+<li id="footer-info-lastmod"> This page was last edited on 29 April 2026, at 12:09.</li>
 	<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="https://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3 or later</a> unless otherwise noted.</li>
 <br>
 </ul>
